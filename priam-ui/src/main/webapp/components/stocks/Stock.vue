@@ -52,13 +52,9 @@
                 return this.$store.getters.funds;
             },
             insufficientFunds() {
-                var result = this.quantity * this.stock.price > this.funds;
-                console.log(this.quantity * this.stock.price);
-                console.log(Number.isInteger(this.funds));
+                return this.quantity * this.stock.price > this.funds;
+            },
 
-                console.log(result);
-                return result;
-            }
         },
         methods: {
             buyStock() {
