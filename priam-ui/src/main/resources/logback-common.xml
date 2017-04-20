@@ -1,0 +1,7 @@
+<included>
+
+    <property name="priam.log.default.directory" value="${catalina.base:-./tmp}/logs" />
+
+
+
+</included>

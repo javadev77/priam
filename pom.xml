@@ -4,6 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>1.5.2.RELEASE</version>
+    </parent>
+
+
     <groupId>fr.sacem.priam</groupId>
     <artifactId>priam-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
@@ -14,8 +21,8 @@
     <modules>
         <module>priam-common</module>
         <module>priam-services</module>
-        <module>priam-ui</module>
         <module>priam-model</module>
+        <module>priam-ui</module>
     </modules>
 
     <organization>
@@ -30,20 +37,48 @@
     </scm>
 
     <properties>
+
+
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring-boot.version>1.5.2.RELEASE</spring-boot.version>
+
+
+        <priam.project.version>${project.version}</priam.project.version>
     </properties>
 
 
-    <dependencies>
 
-    </dependencies>
 
 
     <build>
-        <plugins>
 
+        <pluginManagement>
+
+            <plugins>
+
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring-boot.version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.1</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>2.4</version>
+                </plugin>
+
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -63,6 +98,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.10</version>
                 <configuration>
                     <argLine>-XX:MaxPermSize=128m -Xmx256m</argLine>
                     <forkCount>1</forkCount>
@@ -84,5 +120,20 @@
 
     </build>
 
+    <!--
+    <dependencyManagement>
+        <dependencies>
 
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <type>pom</type>
+                <version>${spring-boot.version}</version>
+                <scope>import</scope>
+            </dependency>
+
+        </dependencies>
+
+    </dependencyManagement>
+-->
 </project>
