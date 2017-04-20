@@ -36,6 +36,11 @@
         <developerConnection>scm:git:ssh://git@git.sacem.fr:repositories/priam/priam.git</developerConnection>
     </scm>
 
+    <ciManagement>
+        <system>Jenkins</system>
+        <url>http://schenk.sacem.fr:34103/jenkins/</url>
+    </ciManagement>
+
     <properties>
 
 
@@ -120,20 +125,17 @@
 
     </build>
 
-    <!--
-    <dependencyManagement>
-        <dependencies>
-
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <type>pom</type>
-                <version>${spring-boot.version}</version>
-                <scope>import</scope>
-            </dependency>
-
-        </dependencies>
-
-    </dependencyManagement>
--->
+    <distributionManagement>
+        <repository>
+            <id>releases-repository</id>
+            <name>Releases Repository</name>
+            <url>http://repository.sacem.fr:8081/nexus/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots-repository</id>
+            <name>snapshots repository</name>
+            <url>http://repository.sacem.fr:8081/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+    
 </project>
