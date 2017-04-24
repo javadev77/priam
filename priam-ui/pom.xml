@@ -78,7 +78,7 @@
         <artifactId>maven-war-plugin</artifactId>
 
         <configuration>
-          <warSourceDirectory>dist</warSourceDirectory>
+          <warSourceDirectory>${project.basedir}/dist</warSourceDirectory>
         </configuration>
 
       </plugin>
