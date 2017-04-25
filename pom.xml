@@ -20,8 +20,8 @@
 
     <modules>
         <module>priam-common</module>
-        <module>priam-services</module>
         <module>priam-model</module>
+        <module>priam-services</module>
         <module>priam-ui</module>
     </modules>
 

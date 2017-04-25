@@ -8,8 +8,8 @@
 
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
-                    <router-link to="/portfolio" activeClass="active" tag="li"><a>Extraction</a></router-link>
-                    <router-link to="/stocks" activeClass="active" tag="li"><a>Repartiiton</a></router-link>
+                    <router-link to="/portfolio" activeClass="active" tag="li"><a>Chargement</a></router-link>
+                    <router-link to="/stocks" activeClass="active" tag="li"><a>Affectation</a></router-link>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li
