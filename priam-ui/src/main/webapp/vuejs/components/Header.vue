@@ -8,8 +8,8 @@
 
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
-                    <router-link to="/portfolio" activeClass="active" tag="li"><a>Chargement</a></router-link>
-                    <router-link to="/stocks" activeClass="active" tag="li"><a>Affectation</a></router-link>
+                    <router-link to="/chargement" activeClass="active" tag="li"><a>Chargement</a></router-link>
+                    <router-link to="/affectation" activeClass="active" tag="li"><a>Affectation</a></router-link>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li
@@ -17,14 +17,14 @@
                             :class="{open: isDropdownOpen}"
                             @click="isDropdownOpen = !isDropdownOpen">
                         <a
-                                href="#"
                                 class="dropdown-toggle"
                                 data-toggle="dropdown"
                                 role="button"
                                 aria-haspopup="true"
-                                aria-expanded="false"><strong>Bonjour : PRIAM <span class="caret"></span></strong></a>
+                                aria-expanded="false"><strong>Mes préférences <span class="caret"></span></strong></a>
                         <ul class="dropdown-menu">
-                            <li><a href="#" @click="saveData">Déconnexion</a></li>
+                            <li><a href="#">Page de santé</a></li>
+                            <li><a href="#">Déconnexion</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -34,13 +34,11 @@
 </template>
 
 <script>
-    import {mapActions} from 'vuex';
-
-    export default {
-        data() {
-          return {
-              isDropdownOpen: false
-          }
-        }
+  export default {
+    data() {
+      return {
+        isDropdownOpen: false
+      }
     }
+  }
 </script>

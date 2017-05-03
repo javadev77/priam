@@ -1,4 +1,4 @@
-package fr.sacem.priam.web;
+package fr.sacem.priam.web.rest;
 
 import fr.sacem.priam.common.exception.TechnicalException;
 import fr.sacem.priam.common.zip.UnzipFile;

@@ -1,9 +1,9 @@
 <template>
     <div>
-        <h1>Extraction</h1>
+      <h1>Affectation</h1>
+
     </div>
 </template>
 
 <script>
-
 </script>

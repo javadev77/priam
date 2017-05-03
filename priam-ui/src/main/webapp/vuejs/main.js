@@ -4,16 +4,11 @@ import VueResource from 'vue-resource';
 
 import App from './App.vue'
 import { routes } from './routes';
-import store from './store/store';
 
 Vue.use(VueRouter);
 Vue.use(VueResource);
 
-Vue.http.options.root = 'https://vuejs-stock-trader.firebaseio.com/';
-
-Vue.filter('currency', (value) => {
-  return '$' + value.toLocaleString();
-});
+Vue.http.options.root="/priam"
 
 const router = new VueRouter({
   routes
@@ -22,6 +17,5 @@ const router = new VueRouter({
 new Vue({
   el: '#app',
   router,
-  store,
   render: h => h(App)
 })
