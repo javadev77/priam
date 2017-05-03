@@ -52,7 +52,7 @@ public class ChargementResource {
                                  180,
                                 new StatutFichier("EN_COURS", "En cours")
                                 ));
-      result.add(new FileData("Fichier 01",
+      result.add(new FileData("Fichier 02",
                               "Copie prive",
                               "Copie privee sono",
                               new Date(),
@@ -61,7 +61,7 @@ public class ChargementResource {
                               new StatutFichier("EN_COURS", "En cours")
       ));
   
-      result.add(new FileData("Fichier 01",
+      result.add(new FileData("Fichier 03",
                               "Copie prive",
                               "Copie privee sono",
                               new Date(),

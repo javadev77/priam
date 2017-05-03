@@ -43,17 +43,32 @@
 
     <properties>
 
-
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring-boot.version>1.5.2.RELEASE</spring-boot.version>
-
+        <sacem-fwkcore.version>5.3.9</sacem-fwkcore.version>
 
         <priam.project.version>${project.version}</priam.project.version>
     </properties>
 
 
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>fr.sacem.fwk</groupId>
+                <artifactId>sacem-fwkcore</artifactId>
+                <version>${sacem-fwkcore.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>commons-logging</artifactId>
+                        <groupId>commons-logging</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+        </dependencies>
+
+    </dependencyManagement>
 
 
     <build>
