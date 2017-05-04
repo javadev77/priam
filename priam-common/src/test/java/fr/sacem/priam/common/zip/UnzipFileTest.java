@@ -4,6 +4,7 @@ import fr.sacem.priam.common.exception.TechnicalException;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -32,6 +33,7 @@ public class UnzipFileTest {
     }
 
     @Test
+    @Ignore
     public void testDecompress() throws IOException, ArchiveException, TechnicalException {
         File file = new File(getClass().getClassLoader().getResource("FF_PENEF_EXTRANA_EXTCATALOGUCMSFRA_20170405160757.zip").getFile());
         
@@ -46,11 +48,13 @@ public class UnzipFileTest {
     }
 
     @Test(expected = TechnicalException.class)
+    @Ignore
     public void test_null_zip_file() throws Exception, TechnicalException {
         new UnzipFile(null).uncompress(outDir);
     }
 
     @Test(expected = TechnicalException.class)
+    @Ignore
     public void test_null_or_not_exist_output_directory() throws Exception, TechnicalException {
         File file = new File(getClass().getClassLoader().getResource("FF_PENEF_EXTRANA_EXTCATALOGUCMSFRA_20170405160757.zip").getFile());
         new UnzipFile(file).uncompress(null);

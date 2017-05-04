@@ -1,6 +1,5 @@
 package fr.sacem.priam.web.rest;
 
-import com.google.common.collect.Lists;
 import fr.sacem.priam.web.rest.dto.ChargementCritereRecherche;
 import fr.sacem.priam.web.rest.dto.FileData;
 import fr.sacem.priam.web.rest.dto.InputChgtCriteria;
@@ -11,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -20,6 +21,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/app/rest/chargement")
 public class ChargementResource {
+  
+  private static final int PAGE_SIZE = 10;
+  private static List<FileData> FILES = new ArrayList<>();
+    
+    static {
+      populateData();
+    }
   
     @RequestMapping(value = "/initCritereRecherche",
                     method = RequestMethod.GET,
@@ -37,40 +45,41 @@ public class ChargementResource {
     public List<FileData> rechercheFichiers(@RequestBody InputChgtCriteria input) {
   
         //TODO : HABIB - A compeleter
-      
-        
-        return populateData();
+  
+      //int fromIndex = (pageId - 1) * PAGE_SIZE;
+      //List<FileData> fileData = FILES.subList(fromIndex, (fromIndex + PAGE_SIZE) - 1);
+  
+      return FILES;
     }
     
-    private List<FileData> populateData() {
-        List<FileData> result = Lists.newArrayList();
-        result.add(new FileData("Fichier 01",
-                                "Copie prive",
-                                "Copie privee sono",
-                                 new Date(),
-                                 new Date(),
-                                 180,
-                                new StatutFichier("EN_COURS", "En cours")
-                                ));
-      result.add(new FileData("Fichier 02",
-                              "Copie prive",
-                              "Copie privee sono",
-                              new Date(),
-                              new Date(),
-                              280,
-                              new StatutFichier("EN_COURS", "En cours")
-      ));
+    private static void populateData() {
+        
+        for(int i=0; i<20; i++) {
   
-      result.add(new FileData("Fichier 03",
-                              "Copie prive",
-                              "Copie privee sono",
-                              new Date(),
-                              new Date(),
-                              390,
-                              new StatutFichier("EN_COURS", "En cours")
-      ));
+          if(i % 2 == 0) {
+            FILES.add(new FileData("Fichier " + i,
+              "Copie prive",
+              "Copie privee sono",
+              new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()),
+              new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()),
+              180 * i,
+              new StatutFichier("EN_COURS", "En cours")
+            ));
+            
+          } else {
+            FILES.add(new FileData("Fichier " + i,
+              "Copie prive",
+              "Copie privee sono",
+              new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()),
+              new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()),
+              170 * i,
+              new StatutFichier("CHG_OK", "Chargement OK")
+            ));
+            
+          }
   
-  
-      return result;
+        }
+        
+      
     }
 }

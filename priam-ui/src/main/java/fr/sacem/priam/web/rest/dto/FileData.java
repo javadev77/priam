@@ -1,7 +1,5 @@
 package fr.sacem.priam.web.rest.dto;
 
-import java.util.Date;
-
 /**
  * Created by benmerzoukah on 28/04/2017.
  */
@@ -9,14 +7,14 @@ public class FileData {
     private String nomFichier;
     private String famille;
     private String typeUtilisation;
-    private Date dateDebutChgt;
-    private Date dateFinChgt;
+    private String dateDebutChgt;
+    private String dateFinChgt;
     private Integer nbLignes;
     private StatutFichier statut;
     
    
   
-  public FileData(String nomFichier, String famille, String typeUtilisation, Date dateDebutChgt, Date dateFinChgt, Integer nbLignes, StatutFichier statut) {
+  public FileData(String nomFichier, String famille, String typeUtilisation, String dateDebutChgt, String dateFinChgt, Integer nbLignes, StatutFichier statut) {
     this.nomFichier = nomFichier;
     this.famille = famille;
     this.typeUtilisation = typeUtilisation;
@@ -38,11 +36,11 @@ public class FileData {
       this.typeUtilisation = typeUtilisation;
     }
     
-    public void setDateDebutChgt(Date dateDebutChgt) {
+    public void setDateDebutChgt(String dateDebutChgt) {
       this.dateDebutChgt = dateDebutChgt;
     }
     
-    public void setDateFinChgt(Date dateFinChgt) {
+    public void setDateFinChgt(String dateFinChgt) {
       this.dateFinChgt = dateFinChgt;
     }
     
@@ -67,11 +65,11 @@ public class FileData {
       return typeUtilisation;
     }
     
-    public Date getDateDebutChgt() {
+    public String getDateDebutChgt() {
       return dateDebutChgt;
     }
     
-    public Date getDateFinChgt() {
+    public String getDateFinChgt() {
       return dateFinChgt;
     }
     

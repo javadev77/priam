@@ -69,14 +69,23 @@
     </div>
 
     <div class="panel-body">
+      <!--
       <form id="search">
         Search <input name="query" v-model="priamGrid.searchQuery">
       </form>
+      -->
         <priam-grid
           :data="priamGrid.gridData"
           :columns="priamGrid.gridColumns"
           :filter-key="priamGrid.searchQuery">
         </priam-grid>
+    <!--
+      <paginator :current-page="pageOne.currentPage"
+                 :total-pages="pageOne.totalPages"
+                 @page-changed="pageOneChanged">
+
+      </paginator>
+-->
     </div>
 
 
@@ -90,25 +99,47 @@
 <script>
 
   import Grid from '../common/Grid.vue';
+  import Paginatiion from '../common/Pagination.vue'
 
   export default {
 
       data () {
           return {
-            isCollapsed: false,
-            critereInit : {},
+              isCollapsed: false,
+              critereInit : {},
 
-            inputChgtCriteria : {
-              familleCode : '',
-              typeUtilisationCode : '',
-              statutCode         : []
-            },
+              inputChgtCriteria : {
+                familleCode : '',
+                typeUtilisationCode : '',
+                statutCode         : []
+              },
 
-            priamGrid : {
-                gridColumns : ['nomFichier', 'famille', 'typeUtilisation', 'dateDebutChgt', 'dateFinChgt', 'nbLignes'],
-                gridData : [],
-                searchQuery : ''
-            }
+              priamGrid : {
+                  /*gridColumns : {
+                    keys : [
+                      'nomFichier', 'famille', 'typeUtilisation', 'dateDebutChgt', 'dateFinChgt', 'nbLignes'
+                    ],
+
+                    values: [
+                      'Nom Fichier',
+                      'Famille',
+                      "Type d'Utilisation",
+                      'Date Début Chargt',
+                      'Date de Fin Chargt',
+                      'Nombre de Lignes'
+                    ]
+
+                  },*/
+
+                  gridColumns : ['nomFichier', 'famille', 'typeUtilisation', 'dateDebutChgt', 'dateFinChgt', 'nbLignes'],
+                  gridData : [],
+                  searchQuery : ''
+              },
+
+              pageOne: {
+                currentPage: 1,
+                totalPages: 20
+              }
 
           }
       },
@@ -126,25 +157,30 @@
       },
 
       methods: {
-        rechercher() {
-          console.log(this.inputChgtCriteria);
-          this.$http.post('app/rest/chargement/search', this.inputChgtCriteria)
-            .then(response => {
-              return response.json();
-            })
-            .then(data => {
-              console.log(data);
-              this.priamGrid.gridData = data;
-            });
-        },
 
-        retablir() {
+          rechercher() {
+            console.log(this.inputChgtCriteria);
+            this.$http.post('app/rest/chargement/search', this.inputChgtCriteria)
+              .then(response => {
+                return response.json();
+              })
+              .then(data => {
+                console.log(data);
+                this.priamGrid.gridData = data;
+              });
+          },
 
-        }
+          retablir() {
+          },
+
+          pageOneChanged (pageNum) {
+            this.pageOne.currentPage = pageNum
+          }
       },
 
       components : {
-          priamGrid : Grid
+          priamGrid : Grid,
+          paginator : Paginatiion
       }
 
   }
