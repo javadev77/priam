@@ -1,42 +1,80 @@
 <template>
-  <table class="table">
-    <thead>
-    <tr>
-      <th v-for="key in columns"
-          @click="sortBy(key)"
-          :class="{ active: sortKey == key }">
-        {{ key | capitalize }}
-        <span class="arrow" :class="sortOrders[key] > 0 ? 'asc' : 'dsc'">
-          </span>
-      </th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr v-for="entry in filteredData">
-      <td v-for="key in columns">
-        {{entry[key]}}
-      </td>
-    </tr>
-    </tbody>
-  </table>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h5 class="panel-title" @click="isCollapsed = !isCollapsed">
+        <strong>Résultats</strong>
+        <span class="pull-right glyphicon" :class="{'glyphicon-triangle-top' : isCollapsed, 'glyphicon-triangle-bottom' : !isCollapsed}"></span>
+      </h5>
+    </div>
+
+
+    <div class="panel-collapse" :class="{collapse : isCollapsed}">
+      <div class="panel-body">
+        <paginator :current-page="pageOne.currentPage"
+                   :total-pages="pageOne.totalPages"
+                   :total-items="30"
+                   @page-changed="pageOneChanged">
+
+        </paginator>
+
+        <table class="table">
+            <thead>
+            <tr>
+              <th v-for="(value, key) in columns"
+                  @click="sortBy(key)"
+                  :class="{ active: sortKey == key }">
+
+                {{ value | capitalize }}
+                <span class="arrow" :class="sortOrders[key] > 0 ? 'asc' : 'dsc'">
+                  </span>
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="entry in filteredData">
+              <td v-for="(value, key) in columns" >
+                {{entry[key]}}
+              </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <paginator :current-page="pageOne.currentPage"
+                   :total-pages="pageOne.totalPages"
+                   :total-items="30"
+                   @page-changed="pageOneChanged">
+
+        </paginator>
+
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
+
+  import Paginator from '../common/Pagination.vue'
+
   export default {
 
     props : ['data', 'columns', 'filterKey'],
 
-    data : function() {
+    data() {
       var sortOrders = {}
-      //if(this.columns != undefined) {
-        this.columns.forEach(function (key) {
-           sortOrders[key] = 1
-        });
 
-      //}
+        for(let key in this.columns) {
+          sortOrders[key] = 1;
+        }
+
       return {
+        isCollapsed: false,
         sortKey: '',
-        sortOrders: sortOrders
+        sortOrders: sortOrders,
+
+        pageOne: {
+          currentPage: 1,
+          totalPages: 5
+        }
       }
     },
 
@@ -72,10 +110,19 @@
 
 
     methods: {
+
       sortBy(key) {
         this.sortKey = key
         this.sortOrders[key] = this.sortOrders[key] * -1
+      },
+
+      pageOneChanged (pageNum) {
+        this.pageOne.currentPage = pageNum
       }
+    },
+
+    components : {
+        paginator : Paginator
     }
 
   }

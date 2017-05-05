@@ -9,7 +9,7 @@
       </h5>
 
     </div>
-    <div class="panel-collapse" :class="{collapse : isCollapsed}">
+    <div class="priam-panel panel-collapse" :class="{collapse : isCollapsed}">
       <div class="panel-body">
         <form class="form-horizontal" role="form">
           <div class="row">
@@ -50,7 +50,7 @@
             </div>
         </div>
           <div class="row">
-            <div class="col-xs-2 pull-right">
+            <div class="col-sm-2 pull-right">
               <button class="btn btn-default btn-primary" type="button" @click="rechercher()">Rechercher</button>
               <button class="btn btn-default btn-primary" type="button" @click="retablir()">Rétablir</button>
             </div>
@@ -61,35 +61,18 @@
     </div>
   </div>
 
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h5 class="panel-title">
-        <strong>Liste de résultat</strong>
-      </h5>
-    </div>
 
-    <div class="panel-body">
       <!--
       <form id="search">
         Search <input name="query" v-model="priamGrid.searchQuery">
       </form>
       -->
-        <priam-grid
+   <priam-grid
           :data="priamGrid.gridData"
           :columns="priamGrid.gridColumns"
           :filter-key="priamGrid.searchQuery">
         </priam-grid>
-    <!--
-      <paginator :current-page="pageOne.currentPage"
-                 :total-pages="pageOne.totalPages"
-                 @page-changed="pageOneChanged">
 
-      </paginator>
--->
-    </div>
-
-
-  </div>
 
  </div>
 </template>
@@ -99,7 +82,7 @@
 <script>
 
   import Grid from '../common/Grid.vue';
-  import Paginatiion from '../common/Pagination.vue'
+
 
   export default {
 
@@ -115,30 +98,21 @@
               },
 
               priamGrid : {
-                  /*gridColumns : {
-                    keys : [
-                      'nomFichier', 'famille', 'typeUtilisation', 'dateDebutChgt', 'dateFinChgt', 'nbLignes'
-                    ],
 
-                    values: [
-                      'Nom Fichier',
-                      'Famille',
-                      "Type d'Utilisation",
-                      'Date Début Chargt',
-                      'Date de Fin Chargt',
-                      'Nombre de Lignes'
-                    ]
-
-                  },*/
-
-                  gridColumns : ['nomFichier', 'famille', 'typeUtilisation', 'dateDebutChgt', 'dateFinChgt', 'nbLignes'],
-                  gridData : [],
+                  gridColumns : {
+                    nomFichier: 'Nom Fichier',
+                    famille: 'Famille',
+                    typeUtilisation: 'Type Utilisation',
+                    dateDebutChgt : 'Date Début Chagt',
+                    dateFinChgt : 'Date Fin Chagt',
+                    nbLignes : 'Nb Lignes',
+                    statut : 'Statut',
+                    logs: 'Logs',
+                    abondon:  'Abondon'
+                  },
+                  gridData : [{"nomFichier":"Fichier 0","famille":"Copie prive","typeUtilisation":"Copie privee sono","dateDebutChgt":"04/05/2017 16:02","dateFinChgt":"04/05/2017 16:02","nbLignes":0,"statut":"En cours"},{"nomFichier":"Fichier 1","famille":"Copie prive","typeUtilisation":"Copie privee sono","dateDebutChgt":"04/05/2017 16:02","dateFinChgt":"04/05/2017 16:02","nbLignes":170,"statut":"Chargement OK"},{"nomFichier":"Fichier 2","famille":"Copie prive","typeUtilisation":"Copie privee sono","dateDebutChgt":"04/05/2017 16:02","dateFinChgt":"04/05/2017 16:02","nbLignes":360,"statut":"En cours"},{"nomFichier":"Fichier 3","famille":"Copie prive","typeUtilisation":"Copie privee sono","dateDebutChgt":"04/05/2017 16:02","dateFinChgt":"04/05/2017 16:02","nbLignes":510,"statut":"Chargement OK"},{"nomFichier":"Fichier 4","famille":"Copie prive","typeUtilisation":"Copie privee sono","dateDebutChgt":"04/05/2017 16:02","dateFinChgt":"04/05/2017 16:02","nbLignes":720,"statut":"En cours"},{"nomFichier":"Fichier 5","famille":"Copie prive","typeUtilisation":"Copie privee sono","dateDebutChgt":"04/05/2017 16:02","dateFinChgt":"04/05/2017 16:02","nbLignes":850,"statut":"Chargement OK"},{"nomFichier":"Fichier 6","famille":"Copie prive","typeUtilisation":"Copie privee sono","dateDebutChgt":"04/05/2017 16:02","dateFinChgt":"04/05/2017 16:02","nbLignes":1080,"statut":"En cours"},{"nomFichier":"Fichier 7","famille":"Copie prive","typeUtilisation":"Copie privee sono","dateDebutChgt":"04/05/2017 16:02","dateFinChgt":"04/05/2017 16:02","nbLignes":1190,"statut":"Chargement OK"},{"nomFichier":"Fichier 8","famille":"Copie prive","typeUtilisation":"Copie privee sono","dateDebutChgt":"04/05/2017 16:02","dateFinChgt":"04/05/2017 16:02","nbLignes":1440,"statut":"En cours"},{"nomFichier":"Fichier 9","famille":"Copie prive","typeUtilisation":"Copie privee sono","dateDebutChgt":"04/05/2017 16:02","dateFinChgt":"04/05/2017 16:02","nbLignes":1530,"statut":"Chargement OK"}
+                  ],
                   searchQuery : ''
-              },
-
-              pageOne: {
-                currentPage: 1,
-                totalPages: 20
               }
 
           }
@@ -171,17 +145,16 @@
           },
 
           retablir() {
-          },
-
-          pageOneChanged (pageNum) {
-            this.pageOne.currentPage = pageNum
           }
       },
 
       components : {
-          priamGrid : Grid,
-          paginator : Paginatiion
+          priamGrid : Grid
       }
 
   }
 </script>
+
+
+<style scoped>
+</style>

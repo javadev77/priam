@@ -10,11 +10,11 @@ public class FileData {
     private String dateDebutChgt;
     private String dateFinChgt;
     private Integer nbLignes;
-    private StatutFichier statut;
+    private String statut;
     
    
   
-  public FileData(String nomFichier, String famille, String typeUtilisation, String dateDebutChgt, String dateFinChgt, Integer nbLignes, StatutFichier statut) {
+  public FileData(String nomFichier, String famille, String typeUtilisation, String dateDebutChgt, String dateFinChgt, Integer nbLignes, String statut) {
     this.nomFichier = nomFichier;
     this.famille = famille;
     this.typeUtilisation = typeUtilisation;
@@ -48,7 +48,7 @@ public class FileData {
       this.nbLignes = nbLignes;
     }
     
-    public void setStatut(StatutFichier statut) {
+    public void setStatut(String statut) {
       this.statut = statut;
     }
     
@@ -77,7 +77,7 @@ public class FileData {
       return nbLignes;
     }
     
-    public StatutFichier getStatut() {
+    public String getStatut() {
       return statut;
     }
 }

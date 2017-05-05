@@ -3,7 +3,6 @@ package fr.sacem.priam.web.rest;
 import fr.sacem.priam.web.rest.dto.ChargementCritereRecherche;
 import fr.sacem.priam.web.rest.dto.FileData;
 import fr.sacem.priam.web.rest.dto.InputChgtCriteria;
-import fr.sacem.priam.web.rest.dto.StatutFichier;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -54,7 +53,7 @@ public class ChargementResource {
     
     private static void populateData() {
         
-        for(int i=0; i<20; i++) {
+        for(int i=0; i<10; i++) {
   
           if(i % 2 == 0) {
             FILES.add(new FileData("Fichier " + i,
@@ -63,7 +62,7 @@ public class ChargementResource {
               new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()),
               new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()),
               180 * i,
-              new StatutFichier("EN_COURS", "En cours")
+              "En cours"
             ));
             
           } else {
@@ -73,8 +72,8 @@ public class ChargementResource {
               new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()),
               new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()),
               170 * i,
-              new StatutFichier("CHG_OK", "Chargement OK")
-            ));
+              "Chargement OK")
+            );
             
           }
   

@@ -1,8 +1,13 @@
 <template>
   <div class="row sacem-pager">
-    <div class="col-sm-12">
+    <div class="col-sm-24">
       <div class="results pull-left">
-        {{ totalItems }} résultats
+        {{ (totalItems || 0) | number: 0 }} résultat{{ totalItems > 1 ? 's' : '' }}
+        - Page {{ currentPage}} / {{ totalPages}}
+            <span>
+                - Resultat par page
+
+            </span>
       </div>
       <div class="pull-right">
         <ul class="pagination-plain">
@@ -81,7 +86,7 @@
 
     methods: {
       pageChanged (pageNum) {
-        this.$emit('page-changed', pageNum)
+        this.$emit('page-changed', pageNum);
       },
       activePage (pageNum) {
         return this.currentPage === pageNum ? 'active' : ''
@@ -94,26 +99,8 @@
 
 
 <style scoped>
-  ul {
-    display: inline-block;
-  }
-  .sacem-pager{
+  .sacem-pager {
     margin: 1px;
-  }
-  .pagination-plain, ul.pagination-plain, ul.pagination-plain li {
-    font-size: 13px;
-  }
-
-  .pagination-plain li > a {
-    cursor: pointer;
-  }
-
-  .pagination-plain > li.previous {
-    padding-right: 0px;
-  }
-
-  .pagination-plain > li.next {
-    padding-left: 2px;
   }
 
   .results {
