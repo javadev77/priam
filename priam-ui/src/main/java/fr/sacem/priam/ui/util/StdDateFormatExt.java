@@ -116,10 +116,11 @@ public class StdDateFormatExt extends StdDateFormat {
         return super.parse(dateStr, pos);
     }
   
-  @Override
-  public StringBuffer format(Date date, StringBuffer toAppendTo, FieldPosition fieldPosition) {
-    return super.format(date, toAppendTo, fieldPosition);
-  }
+    @Override
+    public StringBuffer format(Date date, StringBuffer toAppendTo, FieldPosition fieldPosition) {
+      LOGGER.info("date=" + date);
+      return DATE_FORMAT_PRIAM.format(date, toAppendTo, fieldPosition);
+    }
   
   private boolean isOscarLongYMDDate(String trimmed) {
         return trimmed.length() == DATE_FORMAT_STR_PRIAM.length() && trimmed.indexOf("-") == 4 && trimmed.lastIndexOf(" ") == 10;

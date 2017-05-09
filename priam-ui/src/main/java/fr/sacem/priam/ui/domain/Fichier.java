@@ -35,9 +35,9 @@ public class Fichier {
     @Column(name = "NB_LIGNES")
     private Long nbLignes;
     
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="STATUT_CODE")
-    private Statut statut;
+    @Enumerated(EnumType.STRING)
+    @Column(name="STATUT_CODE", nullable = false)
+    private Status statut;
     
     public  Fichier() {
     
@@ -71,7 +71,7 @@ public class Fichier {
         return nbLignes;
     }
     
-    public Statut getStatut() {
+    public Status getStatut() {
         return statut;
     }
     
@@ -104,7 +104,7 @@ public class Fichier {
         this.nbLignes = nbLignes;
     }
     
-    public void setStatut(Statut statut) {
+    public void setStatut(Status statut) {
         this.statut = statut;
     }
     

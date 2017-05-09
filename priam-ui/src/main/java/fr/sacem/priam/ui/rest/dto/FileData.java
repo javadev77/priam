@@ -1,6 +1,8 @@
 package fr.sacem.priam.ui.rest.dto;
 
-import fr.sacem.priam.ui.domain.Statut;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import fr.sacem.priam.ui.domain.Status;
+import fr.sacem.priam.ui.util.CustomDateSerializer;
 
 import java.util.Date;
 
@@ -12,14 +14,19 @@ public class FileData {
     private String nomFichier;
     private String famille;
     private String typeUtilisation;
+    
+    @JsonSerialize(using = CustomDateSerializer.class)
     private Date dateDebutChgt;
+  
+    @JsonSerialize(using = CustomDateSerializer.class)
     private Date dateFinChgt;
+    
     private Long nbLignes;
-    private Statut statut;
+    private Status statut;
     
    
   
-  public FileData(Long id, String nomFichier, String famille, String typeUtilisation, Date dateDebutChgt, Date dateFinChgt, Long nbLignes, Statut statut) {
+  public FileData(Long id, String nomFichier, String famille, String typeUtilisation, Date dateDebutChgt, Date dateFinChgt, Long nbLignes, Status statut) {
     this.id = id;
     this.nomFichier = nomFichier;
     this.famille = famille;
@@ -62,7 +69,7 @@ public class FileData {
       this.nbLignes = nbLignes;
     }
     
-    public void setStatut(Statut statut) {
+    public void setStatut(Status statut) {
       this.statut = statut;
     }
     
@@ -91,7 +98,7 @@ public class FileData {
       return nbLignes;
     }
     
-    public Statut getStatut() {
+    public Status getStatut() {
       return statut;
     }
 }
