@@ -20,13 +20,13 @@ import java.util.Properties;
  */
 @Configuration
 @EnableJpaRepositories(basePackages = "fr.sacem.priam.model.dao.jpa")
-public class JPAConfigurationTest {
+public class JpaConfigurationTest {
     
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource());
-        em.setPackagesToScan("fr.sacem.homer.common.domain");
+        em.setPackagesToScan("fr.sacem.priam.model.domain");
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
         em.setJpaProperties(additionalProperties());
@@ -38,7 +38,7 @@ public class JPAConfigurationTest {
     public DataSource dataSource(){
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("org.h2.Driver");
-        dataSource.setUrl("jdbc:h2:mem:homer;MODE=MySQL;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS XXSAREF_APP\\;RUNSCRIPT FROM './target/test-classes/TEST_SCHEMA.sql'\\;RUNSCRIPT FROM './target/test-classes/TEST_DATA.sql'");
+        dataSource.setUrl("jdbc:h2:mem:priam;MODE=MySQL;DB_CLOSE_DELAY=-1;RUNSCRIPT FROM './target/test-classes/scripts/init-schema.sql'\\;RUNSCRIPT FROM './target/test-classes/scripts/data.sql'");
         dataSource.setUsername("sa");
         dataSource.setPassword("sa");
         return dataSource;
@@ -62,7 +62,7 @@ public class JPAConfigurationTest {
         properties.setProperty("hibernate.hbm2ddl.auto", "update");
         properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
         properties.setProperty("hibernate.show_sql", "true");
-        properties.setProperty("javax.persistence.sql-load-script-source", "classpath:TEST_SCHEMA.sql");
+        properties.setProperty("javax.persistence.sql-load-script-source", "classpath:init-schema.sql");
         return properties;
     }
     
