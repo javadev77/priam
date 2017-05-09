@@ -1,20 +1,26 @@
-package fr.sacem.priam.web.rest.dto;
+package fr.sacem.priam.ui.rest.dto;
+
+import fr.sacem.priam.ui.domain.Statut;
+
+import java.util.Date;
 
 /**
  * Created by benmerzoukah on 28/04/2017.
  */
 public class FileData {
+    private Long id;
     private String nomFichier;
     private String famille;
     private String typeUtilisation;
-    private String dateDebutChgt;
-    private String dateFinChgt;
-    private Integer nbLignes;
-    private String statut;
+    private Date dateDebutChgt;
+    private Date dateFinChgt;
+    private Long nbLignes;
+    private Statut statut;
     
    
   
-  public FileData(String nomFichier, String famille, String typeUtilisation, String dateDebutChgt, String dateFinChgt, Integer nbLignes, String statut) {
+  public FileData(Long id, String nomFichier, String famille, String typeUtilisation, Date dateDebutChgt, Date dateFinChgt, Long nbLignes, Statut statut) {
+    this.id = id;
     this.nomFichier = nomFichier;
     this.famille = famille;
     this.typeUtilisation = typeUtilisation;
@@ -22,6 +28,14 @@ public class FileData {
     this.dateFinChgt = dateFinChgt;
     this.nbLignes = nbLignes;
     this.statut = statut;
+  }
+  
+  public Long getId() {
+    return id;
+  }
+  
+  public void setId(Long id) {
+    this.id = id;
   }
   
   public void setNomFichier(String nomFichier) {
@@ -36,19 +50,19 @@ public class FileData {
       this.typeUtilisation = typeUtilisation;
     }
     
-    public void setDateDebutChgt(String dateDebutChgt) {
+    public void setDateDebutChgt(Date dateDebutChgt) {
       this.dateDebutChgt = dateDebutChgt;
     }
     
-    public void setDateFinChgt(String dateFinChgt) {
+    public void setDateFinChgt(Date dateFinChgt) {
       this.dateFinChgt = dateFinChgt;
     }
     
-    public void setNbLignes(Integer nbLignes) {
+    public void setNbLignes(Long nbLignes) {
       this.nbLignes = nbLignes;
     }
     
-    public void setStatut(String statut) {
+    public void setStatut(Statut statut) {
       this.statut = statut;
     }
     
@@ -65,19 +79,19 @@ public class FileData {
       return typeUtilisation;
     }
     
-    public String getDateDebutChgt() {
+    public Date getDateDebutChgt() {
       return dateDebutChgt;
     }
     
-    public String getDateFinChgt() {
+    public Date getDateFinChgt() {
       return dateFinChgt;
     }
     
-    public Integer getNbLignes() {
+    public Long getNbLignes() {
       return nbLignes;
     }
     
-    public String getStatut() {
+    public Statut getStatut() {
       return statut;
     }
 }

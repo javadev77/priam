@@ -1,24 +1,28 @@
-package fr.sacem.priam.web;
+package fr.sacem.priam.ui;
 
-import org.springframework.boot.SpringApplication;
+import fr.sacem.priam.ui.config.JpaConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
+import org.springframework.context.annotation.Import;
 
 /**
  * Created by benmerzoukah on 18/04/2017.
  */
-@SpringBootApplication
-public class SpringBootWebApplication extends SpringBootServletInitializer {
+@Import(JpaConfiguration.class)
+@SpringBootApplication(scanBasePackages = {"fr.sacem.priam"})
+public class PriamWebApp extends SpringBootServletInitializer {
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(SpringBootWebApplication.class);
+        return application.sources(PriamWebApp.class);
     }
 
+    /*
     public static void main(String[] args) throws Exception {
-        SpringApplication.run(SpringBootWebApplication.class, args);
+        SpringApplication.run(PriamWebApp.class, args);
     }
+    */
 /*
   @Bean
   public SessionFactory<ChannelSftp.LsEntry> sftpSessionFactory() {

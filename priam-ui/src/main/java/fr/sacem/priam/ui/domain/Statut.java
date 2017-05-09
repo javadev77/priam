@@ -1,4 +1,4 @@
-package fr.sacem.priam.model.domain;
+package fr.sacem.priam.ui.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

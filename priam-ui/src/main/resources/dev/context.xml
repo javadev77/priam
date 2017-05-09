@@ -1,0 +1,10 @@
+<Context path="/priam">
+
+    <Resource type="javax.sql.DataSource"
+              driverClassName="com.mysql.jdbc.Driver"
+              name="priamMariaDbDataSource"
+              username="priam_app"
+              password="bidon"
+              url="jdbc:mysql://msqdev08:3306/"/>
+
+</Context>

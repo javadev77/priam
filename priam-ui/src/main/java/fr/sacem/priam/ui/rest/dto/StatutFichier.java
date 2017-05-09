@@ -1,4 +1,4 @@
-package fr.sacem.priam.web.rest.dto;
+package fr.sacem.priam.ui.rest.dto;
 
 /**
  * Created by benmerzoukah on 28/04/2017.

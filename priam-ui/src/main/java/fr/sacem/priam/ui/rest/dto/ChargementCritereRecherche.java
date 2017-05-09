@@ -1,4 +1,4 @@
-package fr.sacem.priam.web.rest.dto;
+package fr.sacem.priam.ui.rest.dto;
 
 import java.util.ArrayList;
 import java.util.List;

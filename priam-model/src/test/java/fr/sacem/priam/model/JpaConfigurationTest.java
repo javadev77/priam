@@ -11,7 +11,6 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.util.Properties;
 
@@ -38,16 +37,16 @@ public class JpaConfigurationTest {
     public DataSource dataSource(){
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("org.h2.Driver");
-        dataSource.setUrl("jdbc:h2:mem:priam;MODE=MySQL;DB_CLOSE_DELAY=-1;RUNSCRIPT FROM './target/test-classes/scripts/init-schema.sql'\\;RUNSCRIPT FROM './target/test-classes/scripts/data.sql'");
+        dataSource.setUrl("jdbc:h2:mem:priam;MODE=MySQL;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS PRIAM_APP\\;RUNSCRIPT FROM './target/test-classes/scripts/init-schema.sql'\\;RUNSCRIPT FROM './target/test-classes/scripts/data.sql'");
         dataSource.setUsername("sa");
         dataSource.setPassword("sa");
         return dataSource;
     }
     
     @Bean
-    public PlatformTransactionManager transactionManager(EntityManagerFactory emf){
+    public PlatformTransactionManager transactionManager(){
         JpaTransactionManager transactionManager = new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(emf);
+        transactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
         
         return transactionManager;
     }

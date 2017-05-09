@@ -1,4 +1,4 @@
-package fr.sacem.priam.web;
+package fr.sacem.priam.ui.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

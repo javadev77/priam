@@ -1,6 +1,6 @@
 <included>
 
-    <property name="priam.log.default.directory" value="${catalina.base:-./tmp}/logs" />
+    <property name="priam.log.default.directory" value="/export/home/mylogs/priam" />
 
 
 

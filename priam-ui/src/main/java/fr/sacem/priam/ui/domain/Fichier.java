@@ -1,4 +1,4 @@
-package fr.sacem.priam.model.domain;
+package fr.sacem.priam.ui.domain;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -35,7 +35,7 @@ public class Fichier {
     @Column(name = "NB_LIGNES")
     private Long nbLignes;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="STATUT_CODE")
     private Statut statut;
     
