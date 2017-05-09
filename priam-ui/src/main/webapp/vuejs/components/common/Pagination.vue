@@ -13,7 +13,7 @@
         <ul class="pagination-plain">
         <li class="previous">
           <a href="#" @click.prevent="pageChanged(1)" aria-label="Previous">
-            <span aria-hidden="true">&laquo;</span>
+            <span aria-hidden="true">&leftarrow;</span>
           </a>
         </li>
         <li v-for="n in paginationRange" :class="activePage(n)">
@@ -21,10 +21,14 @@
         </li>
         <li class="next">
           <a href="#" @click.prevent="pageChanged(lastPage)" aria-label="Next">
-            <span aria-hidden="true">&raquo;</span>
+            <span aria-hidden="true">&rightarrow;</span>
           </a>
         </li>
       </ul>
+      </div>
+
+      <div class="pull-right second-message" style="padding-right: 25px;" ng-show="secondAdditionalMessage">
+        </span>&#160; &#160;</span>
       </div>
     </div>
   </div>
