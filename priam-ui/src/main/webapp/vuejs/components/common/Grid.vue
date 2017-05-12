@@ -1,4 +1,5 @@
 <template>
+  <div class="container-fluid">
   <div class="panel panel-default">
     <div class="panel-heading">
       <h5 class="panel-title" @click="isCollapsed = !isCollapsed">
@@ -9,15 +10,17 @@
 
 
     <div class="panel-collapse" :class="{collapse : isCollapsed}">
-      <div class="panel-body">
-        <paginator :current-page="pageOne.currentPage"
-                   :total-pages="pageOne.totalPages"
-                   :total-items="30"
+      <div class="result-panel-body panel-body">
+        <paginator :current-page="this.data.number"
+                   :total-pages="this.data.totalPages"
+                   :total-items="this.data.totalElements"
+                   :itemsPerPage="this.data.numberOfElements"
+                   :visiblePages="this.data.size"
                    @page-changed="pageOneChanged">
 
         </paginator>
 
-        <table class="table">
+        <table class="table-responsive table-drop table-bordered table-striped table-hover resultsTable">
             <thead>
             <tr>
               <th v-for="(value, key) in columns"
@@ -32,16 +35,28 @@
             </thead>
             <tbody>
             <tr v-for="entry in filteredData">
-              <td v-for="(value, key) in columns" >
-                {{entry[key]}}
-              </td>
+              <!--<td v-for="key in columns" class="statusColor" :class="statusColor(key)">-->
+              <template v-for="(value,key) in columns">
+                  <td class="statusColor" v-if="key === 'statut'" :class="getStatuLibelleByKey(entry[key]).color">
+                    {{ getStatuLibelleByKey(entry[key]).libelle }}
+                  </td>
+                  <td class="columnCenter" v-else-if="key === 'dateDebutChgt'">
+                    {{entry[key]}}
+                  </td>
+                  <td v-else>
+                    {{entry[key]}}
+                  </td>
+              </template>
+
             </tr>
             </tbody>
         </table>
 
-        <paginator :current-page="pageOne.currentPage"
-                   :total-pages="pageOne.totalPages"
-                   :total-items="30"
+        <paginator :current-page="this.data.number"
+                   :total-pages="this.data.totalPages"
+                   :total-items="this.data.totalElements"
+                   :itemsPerPage="this.data.numberOfElements"
+                   :visiblePages="this.data.size"
                    @page-changed="pageOneChanged">
 
         </paginator>
@@ -49,11 +64,13 @@
       </div>
     </div>
   </div>
+  </div>
 </template>
 
 <script>
 
   import Paginator from '../common/Pagination.vue'
+  import Constants from '../../store/modules/chargement.js'
 
   export default {
 
@@ -71,10 +88,13 @@
         sortKey: '',
         sortOrders: sortOrders,
 
-        pageOne: {
-          currentPage: 1,
-          totalPages: 5
-        }
+        /*pagination: {
+          currentPage: this.data.number,
+          totalPages: this.data.totalPages,
+          totalElements : this.data.totalElements,
+          numberOfElements : this.data.numberOfElements,
+          size : this.data.size
+        }*/
       }
     },
 
@@ -83,7 +103,9 @@
         var sortKey = this.sortKey
         var filterKey = this.filterKey && this.filterKey.toLowerCase()
         var order = this.sortOrders[sortKey] || 1
-        var data = this.data
+        var dataTemp = this.data.content;
+        var data = dataTemp;
+
         if (filterKey) {
           data = data.filter(function (row) {
             return Object.keys(row).some(function (key) {
@@ -117,8 +139,31 @@
       },
 
       pageOneChanged (pageNum) {
-        this.pageOne.currentPage = pageNum
+        this.pagination.currentPage = pageNum;
+      },
+
+      getStatuLibelleByKey (key) {
+
+        var stat = Constants.constants.statut;
+
+        for(var i in stat) {
+          if(stat[i].code === key) {
+            return stat[i];
+          }
+        }
+      },
+
+      statusColor(key) {
+        var stat = Constants.constants.statut;
+        console.log("key" + key)
+        for(var i in stat) {
+          console.log("stat[i].color" + stat[i].color)
+          if(stat[i].code === key) {
+            return stat[i].color;
+          }
+        }
       }
+
     },
 
     components : {
@@ -148,5 +193,35 @@
     border-left: 4px solid transparent;
     border-right: 4px solid transparent;
     border-top: 4px solid #fff;
+  }
+
+  .table-striped > tbody > tr:nth-child(odd) > td.statusColor.orange {
+    color: black;
+    background-color: orange;
+  }
+
+  .table-striped > tbody > tr:nth-child(even) > td.statusColor.orange {
+    color: black;
+    background-color: orange;
+  }
+
+  .table-striped > tbody > tr:nth-child(odd) > td.statusColor.green {
+    color: black;
+    background-color: green;
+  }
+
+  .table-striped > tbody > tr:nth-child(even) > td.statusColor.green {
+    color: black;
+    background-color: green;
+  }
+
+  .table-striped > tbody > tr:nth-child(odd) > td.statusColor.red {
+    color: black;
+    background-color: red;
+  }
+
+  .table-striped > tbody > tr:nth-child(even) > td.statusColor.red {
+    color: black;
+    background-color: red;
   }
 </style>

@@ -2,34 +2,34 @@ server:
   port: 8080
   contextPath: /priam
 ---
-spring:
-  profiles: dev,default
-datasource:
-  priam:
-    url: jdbc:mysql://msqdev08:3306/priam_app
-    username: priam_app
-    password: bidon
-    driverClassName: com.mysql.jdbc.Driver
-    defaultSchema: priam_app
-    maxPoolSize: 20
-    hibernate:
-      show_sql: true
-      format_sql: true
-      dialect: org.hibernate.dialect.MySQL5InnoDBDialect
-
----
 #spring:
-#  profiles: local,default
+#  profiles: dev,default
 #datasource:
 #  priam:
-#    url: jdbc:h2:mem:priam;MODE=MySQL;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS PRIAM_APP\;RUNSCRIPT FROM 'classpath:/scripts/init-schema.sql'\;RUNSCRIPT FROM 'classpath:scripts/data.sql'
-#    username: sa
-#    password:
-#    driverClassName: org.h2.Driver
-#    defaultSchema:
-#    maxPoolSize: 10
+#    url: jdbc:mysql://msqdev08:3306/priam_app
+#    username: priam_app
+#    password: bidon
+#    driverClassName: com.mysql.jdbc.Driver
+#    defaultSchema: priam_app
+#    maxPoolSize: 20
 #    hibernate:
-#
 #      show_sql: true
 #      format_sql: true
-#      dialect: org.hibernate.dialect.H2Dialect
+#      dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+
+---
+spring:
+  profiles: local,default
+datasource:
+  priam:
+    url: jdbc:h2:mem:priam;MODE=MySQL;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS PRIAM_APP\;RUNSCRIPT FROM 'classpath:/scripts/init-schema.sql'\;RUNSCRIPT FROM 'classpath:scripts/data.sql'
+    username: sa
+    password:
+    driverClassName: org.h2.Driver
+    defaultSchema:
+    maxPoolSize: 10
+    hibernate:
+
+      show_sql: true
+      format_sql: true
+      dialect: org.hibernate.dialect.H2Dialect

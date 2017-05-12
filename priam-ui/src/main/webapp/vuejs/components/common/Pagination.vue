@@ -2,8 +2,8 @@
   <div class="row sacem-pager">
     <div class="col-sm-24">
       <div class="results pull-left">
-        {{ (totalItems || 0) | number: 0 }} résultat{{ totalItems > 1 ? 's' : '' }}
-        - Page {{ currentPage}} / {{ totalPages}}
+        {{ totalItems }} résultat{{ totalItems > 1 ? 's' : '' }}
+        - Page {{ currentPage }} / {{ totalPages }}
             <span>
                 - Resultat par page
 
@@ -27,7 +27,7 @@
       </ul>
       </div>
 
-      <div class="pull-right second-message" style="padding-right: 25px;" ng-show="secondAdditionalMessage">
+      <div class="pull-right second-message">
         </span>&#160; &#160;</span>
       </div>
     </div>
