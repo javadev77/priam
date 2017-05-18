@@ -11,10 +11,36 @@
 
     <title>PRIAM</title>
     <link href="static/css/homer.css" rel="stylesheet" type="text/css" charset="utf-8">
-    <!--<link href="static/css/priam.css" rel="stylesheet" type="text/css" charset="utf-8">-->
     <link href="static/css/sacem.css" rel="stylesheet" type="text/css" charset="utf-8">
   </head>
   <body class="homer">
     <div id="app"></div>
+    <script type="text/x-template" id="select2-template">
+      <select>
+        <slot></slot>
+      </select>
+    </script>
+
+    <script type="text/x-template" id="demo-template">
+      <div>
+        <p>Selected: {{ selected }}</p>
+        <select2 :options="options" v-model="selected">
+          <option disabled value="0">Select one</option>
+        </select2>
+      </div>
+    </script>
+    <!-- sacem libs -->
+    <script src="static/sacem/js/jquery-ui-1.10.3.custom.min.js"></script>
+    <script src="static/sacem/js/jquery.ui.touch-punch.min.js"></script>
+    <script src="static/sacem/js/bootstrap.js"></script>
+    <script src="static/sacem/js/bootstrap-switch.js"></script>
+    <script src="static/sacem/js/flatui-checkbox.js"></script>
+    <script src="static/sacem/js/flatui-fileinput.js"></script>
+    <script src="static/sacem/js/holder.js"></script>
+    <script src="static/sacem/js/jquery.tagsinput.js"></script>
+    <script src="static/sacem/js/jquery.placeholder.js"></script>
+    <script src="static/sacem/js/keyboard/mousetrap.min.js"></script>
+    <!-- end of sacem libs -->
+
   </body>
 </html>

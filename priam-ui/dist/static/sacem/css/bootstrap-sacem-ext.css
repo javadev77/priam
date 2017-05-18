@@ -1,0 +1,65 @@
+/*----- Pour compenser le menu fixed-top */
+body { 
+	/*-- A ajuster en fonction de la hauteur de la navbar */
+	padding-top: 40px;
+}
+/*-- Container */
+.container, .container-fluid , .navbar {
+	min-width: 980px;
+}
+
+/*-- Menu principal - NavBar */
+/*-- Navbar de 30px de haut pour le menu principal */
+.navbar-sm {
+	height:30px !important;
+}
+
+.logo, .logo:visited, .logo:active {
+	width: 80px;
+	height: 30px;
+	/*-- force la surcharge des couleurs */
+	background-color: #E74C3C !important;
+	color: #FFFFFF !important;
+}
+
+.logo:hover {
+	background-color: #D2527F !important;
+}
+
+.environment {
+	color: #E74C3C !important;
+}
+
+/*-- Breadcrumb */
+.breadcrumb a {
+	text-decoration: underline;
+	font-size: 14px;
+}
+
+/*-- Barre de Titre */
+.titre-page {
+	margin: 0 auto;
+	text-align: center;
+	font-size: 18px;
+}
+
+#bar-titre-bloc a {
+	text-decoration: underline;
+	color: #4b77be;
+}
+
+.retourhack{
+	margin-left: -5px;
+}
+
+#menu-cont-bloc {
+	margin-bottom: 10px;
+}
+
+.panel-heading {
+	padding: 3px 10px; 
+}
+/*-- 9px en padding-bottom = 15px - .form-group margin-bottom */
+.panel-body {
+	padding:15px 15px 9px 15px;
+}

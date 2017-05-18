@@ -53,11 +53,17 @@ public class ChargementResource {
         } else {
             status = Lists.transform(input.getStatutCode(), code -> Status.valueOf(code));
         }
-        
-        if(!"ALL".equals(input.getFamilleCode()) && !"ALL".equals(input.getTypeUtilisationCode())) {
-            return fichierDao.findAllFichiersByCriteria(input.getFamilleCode(), input.getTypeUtilisationCode(),status,pageable);
-        } else  {
-             return fichierDao.findAllFichiersByStatus(status,pageable);
+  
+        String codeFamille = null;
+        if(!"ALL".equals(input.getFamilleCode())) {
+            codeFamille = input.getFamilleCode();
         }
+  
+        String codeTypeUtil = null;
+        if(!"ALL".equals(input.getTypeUtilisationCode())) {
+          codeFamille = input.getTypeUtilisationCode();
+        }
+        
+        return fichierDao.findAllFichiersByCriteria(codeFamille, codeTypeUtil,status,pageable);
     }
 }

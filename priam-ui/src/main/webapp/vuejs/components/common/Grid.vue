@@ -37,7 +37,8 @@
             <tr v-for="entry in filteredData">
               <!--<td v-for="key in columns" class="statusColor" :class="statusColor(key)">-->
               <template v-for="(value,key) in columns">
-                  <td class="statusColor" v-if="key === 'statut'" :class="getStatutLibelleByKey(entry[key]).color">
+                  <!--<td class="statusColor" v-if="key === 'statut'" v-status-color="" :class="getStatutLibelleByKey(entry[key]).color">-->
+                  <td v-if="key === 'statut'" v-status-color="getStatutLibelleByKey(entry[key]).color">
                     {{ getStatutLibelleByKey(entry[key]).libelle }}
                   </td>
                   <td class="columnCenter" v-else-if="key === 'dateDebutChgt'">

@@ -1,9 +1,9 @@
 const state = {
-  famille: {'COPIEPRIV':'Copie Privee'},
-  typeUtilisation : {'COPRIVSON':'Copie Privee Sono'},
-  familleOptions : {'COPIEPRIV':'Copie Privee'},
-  typeUtilisationOptions :{'COPRIVSON':'Copie Privee Sono'},
-  familleTypeUtilMap : {"COPIEPRIV":["COPRIVSON","CPRIVAUDPL","CPRIVAUDV","CPRIVSONPH","CPRIVSONRD"],"FDSVAL":["PRIME","VALORIS"],"CMS":["ENCOURG"]},
+  famille: {"COPIEPRIV":"Copie Privée","FDSVAL":"Valorisation","CMS":"CMS"},
+  typeUtilisation : {"CPRIVSONPH":"Copie privée sonore Phono","PRIME":"Prime","CPRIVAUDPL":"Copie Privée Audiovisuel - Part Littéraire","COPRIVSON":"Copie Privée Sonore","CPRIVSONRD":"Copie Privée Sonore radio","ENCOURG":"Encouragement","VALORIS":"Fonds de valorisation","CPRIVAUDV":"Copie Privée Audiovisuelle"},
+  familleOptions  : {"COPIEPRIV":"Copie Privée","FDSVAL":"Valorisation","CMS":"CMS"},
+  typeUtilisationOptions : {} ,
+  familleTypeUtilMap : {"COPIEPRIV":{"CPRIVSONPH":"Copie privée sonore Phono","CPRIVAUDPL":"Copie Privée Audiovisuel - Part Littéraire","COPRIVSON":"Copie Privée Sonore","CPRIVSONRD":"Copie Privée Sonore radio","CPRIVAUDV":"Copie Privée Audiovisuelle"},"FDSVAL":{"PRIME":"Prime","VALORIS":"Fonds de valorisation"},"CMS":{"ENCOURG":"Encouragement"}},
   statut : [
     {
       "code" : 'EN_COURS',
@@ -42,12 +42,12 @@ const state = {
 const mutations = {
   'SET_LIBELLE_FAMILLE' (state, famille) {
     state.famille = famille;
-    state.familleOptions =famille;
+    state.familleOptions = famille;
   },
 
   'SET_LIBELLE_TYPE_UTILSATION' (state, typeUtilisation) {
     state.typeUtilisation = typeUtilisation;
-    state.typeUtilisationOptions =typeUtilisation;
+    state.typeUtilisationOptions = {};
   },
 
   'SET_FAMILLE_TYPE_UTILSATION_MAP' (state, data) {
@@ -56,9 +56,9 @@ const mutations = {
 
   'CHANGE_TYPE_UTILSATION_LIST' (state, familleCode) {
     if(familleCode && familleCode != 'ALL') {
-      state.typeUtilisationOptions = state.familleTypeUtilMap[familleCode];
+        state.typeUtilisationOptions = state.familleTypeUtilMap[familleCode];
     } else {
-      state.typeUtilisationOptions = state.typeUtilisation;
+        state.typeUtilisationOptions ={};
     }
 
   }
@@ -72,12 +72,20 @@ const actions = {
 };
 
 const getters = {
-  famille: state => {
+  familleOptions: state => {
     return state.familleOptions;
   },
 
-  typeUtilisation: state => {
+  famille: state => {
+    return state.famille;
+  },
+
+  typeUtilisationOptions: state => {
     return state.typeUtilisationOptions;
+  },
+
+  typeUtilisation: state => {
+    return state.typeUtilisation;
   },
 
   statut: state => {

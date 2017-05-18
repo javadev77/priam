@@ -1,0 +1,70 @@
+/* ----- Classe générale pour tous les sprites */
+.socspr48 {
+    width: 48px;
+    height: 48px;
+    background-image: url("../images/societairesprite48.png");
+    background-repeat:  no-repeat;
+    display: inline-block;
+    margin-right: 3px;
+    vertical-align: middle;
+}
+/* ----- Sociétaire ----- */
+.soc48 {
+    background-position: -0px -0px;
+}
+/* ----- Sociétaire (non valide) ----- */
+.socnonval48 {
+    background-position: -49px -0px;
+}
+/* ----- Sociétaire identifié IPI ----- */
+.socipi48 {
+    background-position: -98px -0px;
+}
+/* ----- Personne ----- */
+.per48 {
+    background-position: -0px -49px;
+}
+/* ----- Personne (non valide) ----- */
+.pernonval48 {
+    background-position: -49px -49px;
+}
+/* ----- Personne identifié IPI ----- */
+.peripi48 {
+    background-position: -98px -49px;
+}
+/* ----- Groupe ----- */
+.grp48 {
+    background-position: -0px -98px;
+}
+/* ----- Groupe (non valide) ----- */
+.grpnonval48 {
+    background-position: -49px -98px;
+}
+/* ----- Groupe identifié IPI ----- */
+.grpipi48 {
+    background-position: -98px -98px;
+}
+/* ----- Personne morale ----- */
+.pem48 {
+    background-position: -0px -147px;
+}
+/* ----- Personne morale (non valide) ----- */
+.pemnonval48 {
+    background-position: -49px -147px;
+}
+/* ----- Personne morale identifiée IPI ----- */
+.pemipi48 {
+    background-position: -98px -147px;
+}
+/* ----- Œuvre ----- */
+.oeuv48 {
+    background-position: -0px -196px;
+}
+/* ----- Œuvre codifiée ----- */
+.oeuvcodif48 {
+    background-position: -49px -196px;
+}
+/* ----- Œuvre numérique ----- */
+.oeuvnum48 {
+    background-position: -98px -196px;
+}
