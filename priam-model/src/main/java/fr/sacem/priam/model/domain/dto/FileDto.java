@@ -1,15 +1,15 @@
-package fr.sacem.priam.ui.rest.dto;
+package fr.sacem.priam.model.domain.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import fr.sacem.priam.ui.domain.Status;
-import fr.sacem.priam.ui.util.CustomDateSerializer;
+import fr.sacem.priam.model.domain.Status;
+import fr.sacem.priam.model.util.CustomDateSerializer;
 
 import java.util.Date;
 
 /**
  * Created by benmerzoukah on 28/04/2017.
  */
-public class FileData {
+public class FileDto {
     private Long id;
     private String nomFichier;
     private String famille;
@@ -26,7 +26,7 @@ public class FileData {
     
    
   
-  public FileData(Long id, String nomFichier, String famille, String typeUtilisation, Date dateDebutChgt, Date dateFinChgt, Long nbLignes, Status statut) {
+  public FileDto(Long id, String nomFichier, String famille, String typeUtilisation, Date dateDebutChgt, Date dateFinChgt, Long nbLignes, Status statut) {
     this.id = id;
     this.nomFichier = nomFichier;
     this.famille = famille;
