@@ -1,4 +1,4 @@
-package fr.sacem.priam.ui.util;
+package fr.sacem.priam.model.util;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -14,7 +14,7 @@ import java.util.Date;
  */
 public class CustomDateSerializer extends StdSerializer<Date> {
   
-    private SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+    private SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm");
     
     public CustomDateSerializer() {
         this(null);

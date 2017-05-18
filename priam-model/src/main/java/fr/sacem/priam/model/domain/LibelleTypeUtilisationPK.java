@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Created by benmerzoukah on 15/05/2017.
  */
-public class TypeUtilisationPK implements Serializable {
+public class LibelleTypeUtilisationPK implements Serializable {
     private String code;
     
     private String lang;
@@ -28,7 +28,7 @@ public class TypeUtilisationPK implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
     
-        TypeUtilisationPK that = (TypeUtilisationPK) o;
+        LibelleTypeUtilisationPK that = (LibelleTypeUtilisationPK) o;
         
         if (code != null ? code.equals(that.code) : that.code != null) return false;
         return (lang != null ? lang.equals(that.lang) : that.lang == null);

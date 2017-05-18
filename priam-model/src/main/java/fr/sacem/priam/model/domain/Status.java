@@ -1,4 +1,4 @@
-package fr.sacem.priam.ui.domain;
+package fr.sacem.priam.model.domain;
 
 /**
  * Created by benmerzoukah on 09/05/2017.
@@ -9,5 +9,4 @@ public enum Status {
     CHARGEMENT_KO,
     ABONDONNE,
     AFFECTE
-  
 }

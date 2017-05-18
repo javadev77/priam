@@ -37,11 +37,17 @@
             <tr v-for="entry in filteredData">
               <!--<td v-for="key in columns" class="statusColor" :class="statusColor(key)">-->
               <template v-for="(value,key) in columns">
-                  <td class="statusColor" v-if="key === 'statut'" :class="getStatuLibelleByKey(entry[key]).color">
-                    {{ getStatuLibelleByKey(entry[key]).libelle }}
+                  <td class="statusColor" v-if="key === 'statut'" :class="getStatutLibelleByKey(entry[key]).color">
+                    {{ getStatutLibelleByKey(entry[key]).libelle }}
                   </td>
                   <td class="columnCenter" v-else-if="key === 'dateDebutChgt'">
                     {{entry[key]}}
+                  </td>
+                  <td v-else-if="key === 'famille'">
+                  {{ libelleFamilleByKey(entry[key]) }}
+                  </td>
+                  <td v-else-if="key === 'typeUtilisation'">
+                  {{ libelleTypeUtilisationByKey(entry[key]) }}
                   </td>
                   <td v-else>
                     {{entry[key]}}
@@ -70,7 +76,7 @@
 <script>
 
   import Paginator from '../common/Pagination.vue'
-  import Constants from '../../store/modules/chargement.js'
+  import StatutFichier from '../../data/statutFichier'
 
   export default {
 
@@ -86,7 +92,7 @@
       return {
         isCollapsed: false,
         sortKey: '',
-        sortOrders: sortOrders,
+        sortOrders: sortOrders
 
         /*pagination: {
           currentPage: this.data.number,
@@ -122,6 +128,7 @@
         }
         return data
       }
+
     },
 
     filters: {
@@ -142,10 +149,9 @@
         this.pagination.currentPage = pageNum;
       },
 
-      getStatuLibelleByKey (key) {
+      getStatutLibelleByKey (key) {
 
-        var stat = Constants.constants.statut;
-
+        var stat = StatutFichier;
         for(var i in stat) {
           if(stat[i].code === key) {
             return stat[i];
@@ -154,16 +160,25 @@
       },
 
       statusColor(key) {
-        var stat = Constants.constants.statut;
-        console.log("key" + key)
+        var stat = StatutFichier;
         for(var i in stat) {
-          console.log("stat[i].color" + stat[i].color)
           if(stat[i].code === key) {
             return stat[i].color;
           }
         }
-      }
+      },
 
+      libelleFamilleByKey(code) {
+        var LIB_FAMILLE = this.$store.getters.famille;
+        return LIB_FAMILLE[code];
+
+      },
+
+      libelleTypeUtilisationByKey(code) {
+        var LIB_TYPEUTIL = this.$store.getters.typeUtilisation;
+        return LIB_TYPEUTIL[code];
+
+      }
     },
 
     components : {

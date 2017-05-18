@@ -1,9 +1,11 @@
 package fr.sacem.priam.ui;
 
-import fr.sacem.priam.ui.config.JpaConfiguration;
+
+import fr.sacem.priam.model.config.JpaConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Import;
 
 /**
@@ -11,6 +13,7 @@ import org.springframework.context.annotation.Import;
  */
 @Import(JpaConfiguration.class)
 @SpringBootApplication(scanBasePackages = {"fr.sacem.priam"})
+@EnableCaching
 public class PriamWebApp extends SpringBootServletInitializer {
 
     @Override

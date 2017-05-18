@@ -1,10 +1,10 @@
-package fr.sacem.priam.ui.config;
+package fr.sacem.priam.model.config;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
-import fr.sacem.priam.ui.util.StdDateFormatExt;
+import fr.sacem.priam.model.util.StdDateFormatExt;
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.beanutils.ConvertUtilsBean;
 import org.slf4j.Logger;

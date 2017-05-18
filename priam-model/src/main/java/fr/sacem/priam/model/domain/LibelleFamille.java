@@ -7,8 +7,8 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "PRIAM_LIBFAMITYPUTIL")
-@IdClass(FamillePK.class)
-public class Famille {
+@IdClass(LibelleFamillePK.class)
+public class LibelleFamille {
     
     private String code;
     private String libelle;

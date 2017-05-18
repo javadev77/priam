@@ -1,8 +1,11 @@
 package fr.sacem.priam.ui.rest;
 
-import fr.sacem.priam.ui.dao.FichierDao;
+
+import com.google.common.collect.Lists;
+import fr.sacem.priam.model.dao.jpa.FichierDao;
+import fr.sacem.priam.model.domain.Status;
+import fr.sacem.priam.model.domain.dto.FileDto;
 import fr.sacem.priam.ui.rest.dto.ChargementCritereRecherche;
-import fr.sacem.priam.ui.rest.dto.FileData;
 import fr.sacem.priam.ui.rest.dto.InputChgtCriteria;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by benmerzoukah on 27/04/2017.
@@ -40,8 +46,18 @@ public class ChargementResource {
                     method = RequestMethod.POST,
                     consumes = MediaType.APPLICATION_JSON_VALUE,
                     produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<FileData> rechercheFichiers(@RequestBody InputChgtCriteria input, Pageable pageable) {
-      
-      return fichierDao.findAllFichiersByName(pageable);
+    public Page<FileDto> rechercheFichiers(@RequestBody InputChgtCriteria input, Pageable pageable) {
+        List<Status> status = null;
+        if(input.getStatutCode().isEmpty()) {
+            status = Arrays.asList(Status.values());
+        } else {
+            status = Lists.transform(input.getStatutCode(), code -> Status.valueOf(code));
+        }
+        
+        if(!"ALL".equals(input.getFamilleCode()) && !"ALL".equals(input.getTypeUtilisationCode())) {
+            return fichierDao.findAllFichiersByCriteria(input.getFamilleCode(), input.getTypeUtilisationCode(),status,pageable);
+        } else  {
+             return fichierDao.findAllFichiersByStatus(status,pageable);
+        }
     }
 }

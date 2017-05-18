@@ -1,4 +1,4 @@
-package fr.sacem.priam.ui.util;
+package fr.sacem.priam.model.util;
 
 import com.fasterxml.jackson.databind.util.StdDateFormat;
 import org.slf4j.Logger;

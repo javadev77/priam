@@ -1,7 +1,7 @@
 package fr.sacem.priam.model.dao.jpa;
 
-import fr.sacem.priam.model.domain.LibelleFamille;
-import fr.sacem.priam.model.domain.LibelleFamillePK;
+import fr.sacem.priam.model.domain.LibelleTypeUtilisation;
+import fr.sacem.priam.model.domain.LibelleTypeUtilisationPK;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,8 +14,8 @@ import java.util.List;
  */
 @Lazy
 @Transactional(readOnly = true)
-public interface LibelleFamilleDao extends JpaRepository<LibelleFamille, LibelleFamillePK> {
+public interface LibelleTypeUtilisationDao extends JpaRepository<LibelleTypeUtilisation, LibelleTypeUtilisationPK> {
     
-    @Cacheable("familles")
-    List<LibelleFamille> findByLang(String lang);
+    @Cacheable("typeUtilisation")
+    List<LibelleTypeUtilisation> findByLang(String lang);
 }

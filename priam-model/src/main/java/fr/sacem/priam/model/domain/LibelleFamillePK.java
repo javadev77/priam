@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Created by benmerzoukah on 15/05/2017.
  */
-public class FamillePK implements Serializable {
+public class LibelleFamillePK implements Serializable {
     private String code;
     
     private String lang;
@@ -28,7 +28,7 @@ public class FamillePK implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
     
-        FamillePK that = (FamillePK) o;
+        LibelleFamillePK that = (LibelleFamillePK) o;
         
         if (code != null ? code.equals(that.code) : that.code != null) return false;
         return (lang != null ? lang.equals(that.lang) : that.lang == null);

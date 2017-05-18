@@ -2,7 +2,7 @@
   <div class="row sacem-pager">
     <div class="col-sm-24">
       <div class="results pull-left">
-        {{ totalItems }} résultat{{ totalItems > 1 ? 's' : '' }}
+        {{ totalItems || 0 }} résultat{{ totalItems > 1 ? 's' : '' }}
         - Page {{ currentPage }} / {{ totalPages }}
             <span>
                 - Resultat par page

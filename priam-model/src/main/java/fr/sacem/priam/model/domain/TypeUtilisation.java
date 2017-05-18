@@ -7,19 +7,19 @@ import java.util.Date;
  * Created by benmerzoukah on 15/05/2017.
  */
 @Entity
-@Table(name = "PRIAM_FAMILTYPUTIL")
-public class Famille {
-    
+@Table(name = "PRIAM_TYPUTIL")
+public class TypeUtilisation {
     private String code;
+    private String codeFamille;
     private Date dateDebut;
     private Date dateFin;
     
-    public Famille() {
+    public TypeUtilisation() {
     
     }
     
     @Id
-    @Column(name = "CDEFAMILTYPUTIL")
+    @Column(name = "CDETYPUTIL")
     public String getCode() {
         return code;
     }
@@ -34,6 +34,15 @@ public class Famille {
     @Temporal(TemporalType.DATE)
     public Date getDateFin() {
         return dateFin;
+    }
+    
+    @Column(name = "CDEFAMILTYPUTIL")
+    public String getCodeFamille() {
+        return codeFamille;
+    }
+    
+    public void setCodeFamille(String codeFamille) {
+        this.codeFamille = codeFamille;
     }
     
     public void setCode(String code) {

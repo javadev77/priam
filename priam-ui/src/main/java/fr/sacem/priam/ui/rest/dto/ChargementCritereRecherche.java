@@ -1,5 +1,7 @@
 package fr.sacem.priam.ui.rest.dto;
 
+import fr.sacem.priam.model.domain.Status;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +11,7 @@ import java.util.List;
 public class ChargementCritereRecherche {
   private List<Famille> famille = new ArrayList<>(3);
   private List<TypeUtilisation> typeUtilisation = new ArrayList<>(3);
-  private List<StatutFichier> statuts = new ArrayList<>();
+  private Status[] statuts;
   
   public ChargementCritereRecherche() {
   
@@ -39,17 +41,11 @@ public class ChargementCritereRecherche {
     return typeUtilisation;
   }
   
-  public List<StatutFichier> getStatuts() {
-    statuts.add(new StatutFichier("CHG_EN_COURS", "En cours"));
-    statuts.add(new StatutFichier("CHG_OK", "Chargement OK"));
-    statuts.add(new StatutFichier("CHG_KO", "Chargement KO"));
-    statuts.add(new StatutFichier("CHG_AFCT", "Affecte"));
-    statuts.add(new StatutFichier("CHG_ABDN", "Abondonné"));
-    
-    return statuts;
+  public Status[] getStatuts() {
+    return Status.values();
   }
   
-  public void setStatuts(List<StatutFichier> statuts) {
+  public void setStatuts(Status[] statuts) {
     this.statuts = statuts;
   }
   

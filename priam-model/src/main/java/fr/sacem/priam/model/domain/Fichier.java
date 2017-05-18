@@ -18,11 +18,13 @@ public class Fichier {
     @Column(name = "NOM")
     private String nom;
     
-    @Column(name = "FAMILLE")
-    private String famille;
+    @OneToOne
+    @JoinColumn(name = "CDEFAMILTYPUTIL")
+    private Famille famille;
     
-    @Column(name = "TYPE_UTIL")
-    private String typeUtilisation;
+    @OneToOne
+    @JoinColumn(name = "CDETYPUTIL")
+    private TypeUtilisation typeUtilisation;
     
     @Column(name = "DATE_DEBUT_CHGT")
     @Temporal(TemporalType.TIMESTAMP)
@@ -35,12 +37,11 @@ public class Fichier {
     @Column(name = "NB_LIGNES")
     private Long nbLignes;
     
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="STATUT_CODE")
-    private Statut statut;
+    @Enumerated(EnumType.STRING)
+    @Column(name="STATUT_CODE", nullable = false)
+    private Status statut;
     
     public  Fichier() {
-    
     }
     
     public Long getId() {
@@ -51,11 +52,11 @@ public class Fichier {
         return nom;
     }
     
-    public String getFamille() {
+    public Famille getFamille() {
         return famille;
     }
     
-    public String getTypeUtilisation() {
+    public TypeUtilisation getTypeUtilisation() {
         return typeUtilisation;
     }
     
@@ -71,7 +72,7 @@ public class Fichier {
         return nbLignes;
     }
     
-    public Statut getStatut() {
+    public Status getStatut() {
         return statut;
     }
     
@@ -84,11 +85,11 @@ public class Fichier {
         this.nom = nom;
     }
     
-    public void setFamille(String famille) {
+    public void setFamille(Famille famille) {
         this.famille = famille;
     }
     
-    public void setTypeUtilisation(String typeUtilisation) {
+    public void setTypeUtilisation(TypeUtilisation typeUtilisation) {
         this.typeUtilisation = typeUtilisation;
     }
     
@@ -104,7 +105,7 @@ public class Fichier {
         this.nbLignes = nbLignes;
     }
     
-    public void setStatut(Statut statut) {
+    public void setStatut(Status statut) {
         this.statut = statut;
     }
     

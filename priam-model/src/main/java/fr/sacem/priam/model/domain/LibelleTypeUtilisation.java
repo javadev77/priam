@@ -7,8 +7,8 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "PRIAM_LIBTYPUTIL")
-@IdClass(TypeUtilisationPK.class)
-public class TypeUtilisation {
+@IdClass(LibelleTypeUtilisationPK.class)
+public class LibelleTypeUtilisation {
     
     private String code;
     private String libelle;
