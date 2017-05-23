@@ -3,7 +3,8 @@
   <div class="panel panel-default">
     <div class="panel-heading">
       <h5 class="panel-title" @click="isCollapsed = !isCollapsed">
-        <strong>Résultats</strong>
+        <a>Résultats</a>
+        <span class="pull-left collapsible-icon bg-ico-tablerow"></span>
         <span class="pull-right glyphicon" :class="{'glyphicon-triangle-top' : isCollapsed, 'glyphicon-triangle-bottom' : !isCollapsed}"></span>
       </h5>
     </div>
@@ -27,7 +28,7 @@
                   @click="sortBy(key)"
                   :class="{ active: sortKey == key }">
 
-                {{ value | capitalize }}
+                {{ value }}
                 <span class="arrow" :class="sortOrders[key] > 0 ? 'asc' : 'dsc'">
                   </span>
               </th>
@@ -155,6 +156,8 @@
         var stat = StatutFichier;
         for(var i in stat) {
           if(stat[i].code === key) {
+
+            console.log(stat[i]);
             return stat[i];
           }
         }
@@ -170,14 +173,18 @@
       },
 
       libelleFamilleByKey(code) {
-        var LIB_FAMILLE = this.$store.getters.famille;
-        return LIB_FAMILLE[code];
+          var result = this.$store.getters.famille.find(function (element) {
+            return element.id === code;
+          });
+          return result.value;
 
       },
 
       libelleTypeUtilisationByKey(code) {
-        var LIB_TYPEUTIL = this.$store.getters.typeUtilisation;
-        return LIB_TYPEUTIL[code];
+          var result  = this.$store.getters.typeUtilisation.find(function (element) {
+            return element.id === code;
+          });
+          return result.value;
 
       }
     },

@@ -1,9 +1,9 @@
 const state = {
-  famille: {"COPIEPRIV":"Copie Privée","FDSVAL":"Valorisation","CMS":"CMS"},
-  typeUtilisation : {"CPRIVSONPH":"Copie privée sonore Phono","PRIME":"Prime","CPRIVAUDPL":"Copie Privée Audiovisuel - Part Littéraire","COPRIVSON":"Copie Privée Sonore","CPRIVSONRD":"Copie Privée Sonore radio","ENCOURG":"Encouragement","VALORIS":"Fonds de valorisation","CPRIVAUDV":"Copie Privée Audiovisuelle"},
-  familleOptions  : {"COPIEPRIV":"Copie Privée","FDSVAL":"Valorisation","CMS":"CMS"},
-  typeUtilisationOptions : {} ,
-  familleTypeUtilMap : {"COPIEPRIV":{"CPRIVSONPH":"Copie privée sonore Phono","CPRIVAUDPL":"Copie Privée Audiovisuel - Part Littéraire","COPRIVSON":"Copie Privée Sonore","CPRIVSONRD":"Copie Privée Sonore radio","CPRIVAUDV":"Copie Privée Audiovisuelle"},"FDSVAL":{"PRIME":"Prime","VALORIS":"Fonds de valorisation"},"CMS":{"ENCOURG":"Encouragement"}},
+  famille: [],
+  typeUtilisation : [],
+  familleOptions  : [],
+  typeUtilisationOptions : [],
+  familleTypeUtilMap : {},
   statut : [
     {
       "code" : 'EN_COURS',
@@ -30,8 +30,8 @@ const state = {
       "checked" : true
     },
     {
-      "code": "ABONDONNE",
-      "libelle": 'Abondonné',
+      "code": "ABANDONNE",
+      "libelle": 'Abandonné',
       "color"  : '',
       "checked" : false
     }
@@ -41,26 +41,55 @@ const state = {
 
 const mutations = {
   'SET_LIBELLE_FAMILLE' (state, famille) {
-    state.famille = famille;
-    state.familleOptions = famille;
+      /*for(var i in famille) {
+          var prop = famille[i].id;
+          state.famille[prop] = famille[i].value;
+      }*/
+
+      state.famille = famille;
+      state.familleOptions=famille;
+      state.familleOptions.unshift({'id' :'ALL', "value" : "Toutes"});
   },
 
   'SET_LIBELLE_TYPE_UTILSATION' (state, typeUtilisation) {
-    state.typeUtilisation = typeUtilisation;
-    state.typeUtilisationOptions = {};
+      /*for(var i in typeUtilisation) {
+        var prop = typeUtilisation[i].id;
+        state.typeUtilisation[prop] = typeUtilisation[i].value;
+      }*/
+
+      state.typeUtilisation = typeUtilisation;
+      state.typeUtilisationOptions = [{'id' :'ALL', "value" : "Tous"}];
   },
 
   'SET_FAMILLE_TYPE_UTILSATION_MAP' (state, data) {
-    state.familleTypeUtilMap = data;
+      state.familleTypeUtilMap = data;
   },
 
   'CHANGE_TYPE_UTILSATION_LIST' (state, familleCode) {
-    if(familleCode && familleCode != 'ALL') {
-        state.typeUtilisationOptions = state.familleTypeUtilMap[familleCode];
+    if(familleCode && familleCode.id !== 'ALL') {
+
+      state.typeUtilisationOptions = state.familleTypeUtilMap[familleCode.id].slice();
+      state.typeUtilisationOptions.unshift({'id' :'ALL', "value" : "Tous"});
+
     } else {
-        state.typeUtilisationOptions ={};
+        state.typeUtilisationOptions = [{'id' :'ALL', "value" : "Tous"}];
     }
 
+  },
+
+  'CHANGE_STATUT_VALUE' (state, statutCode) {
+      if(statutCode != null) {
+
+        for(var stat in state.statut) {
+          for(var i in statutCode) {
+            if(state.statut[stat].code === statutCode[i]) {
+              state.statut[stat].checked = true;
+            }
+          }
+
+        }
+
+      }
   }
 
 };
@@ -68,6 +97,10 @@ const mutations = {
 const actions = {
   loadTypeUtilisation : ({commit}, familleCode) => {
     commit('CHANGE_TYPE_UTILSATION_LIST', familleCode);
+  },
+
+  changeStatut : ({commit}, statutCode) => {
+    commit('CHANGE_STATUT_VALUE', statutCode);
   }
 };
 

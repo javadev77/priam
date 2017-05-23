@@ -7,6 +7,6 @@ public enum Status {
     EN_COURS,
     CHARGEMENT_OK,
     CHARGEMENT_KO,
-    ABONDONNE,
+    ABANDONNE,
     AFFECTE
 }

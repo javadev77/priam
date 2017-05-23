@@ -6,19 +6,15 @@ import App from './App.vue'
 import { routes } from './routes';
 import { fetchInitData } from './store/actions';
 import store from './store/store';
+import './directives/form-elements'
 //import 'select2';
 //import 'select2/dist/css/select2.css'
+
 
 Vue.use(VueRouter);
 Vue.use(VueResource);
 
-Vue.directive('status-color', {
-    bind(el, binding, vnode) {
-      el.style.color= 'black';
-      el.style.backgroundColor = binding.value;
-   },
 
-});
 
 /*Vue.directive('sacem-combo', {
     bind(el, binding, vnode) {

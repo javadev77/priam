@@ -13445,7 +13445,7 @@ fieldset[disabled] .navbar-inverse .navbar-btn.active {
 @brandsecondary: @steelblue;
 
 body {
-  
+
     font-size: 14px;
 }
 */
@@ -13469,7 +13469,7 @@ label {
   /*--padding: 8px 12px;*/
   padding: 0px 10px;
   /*--height: 42px;*/
-  height: 30px;
+  height: 25px;
 }
 .form-group {
   /*-- margin-bottom: 20px; */
@@ -13512,7 +13512,7 @@ label {
     border-radius: 6px;
 }
 .input-sm {
-	/*-- 
+	/*--
 	height: 35px;
 	padding: 6px 10px;
 	font-size: 13px;
@@ -13552,7 +13552,7 @@ label {
 	border-radius: 6px;
 }
 .input-group-addon {
-	/*-- 
+	/*--
 	padding: 10px 12px;
     font-size: 15px;
     color: #FFF;
@@ -13588,7 +13588,7 @@ label {
   padding: 5px 45px 5px 30px;
   /*-- New */
   margin-bottom : 10Px;
-  
+
 }
 .alert  {
   position: relative;
@@ -13599,7 +13599,7 @@ label {
   color: #34495e;
 }
 .nav-pills > li > a {
-  /*-- font-size: 16px; */	
+  /*-- font-size: 16px; */
   font-size: 14px;
   /*-- padding: 12px 21px 13px;*/
   padding: 5px 5px 5px;
@@ -13783,7 +13783,7 @@ h4, h5, h6 {
     color: #243366;
     font-weight: bold;
     display:block;
-    float:left;   
+    float:left;
     background-color:#CCC;
     text-decoration:none;
     text-align:center;
@@ -13791,11 +13791,11 @@ h4, h5, h6 {
 .menu ul li a:hover {
     color: #2C81BA;
     background-color:transparent;
-} 
+}
 .menu li.active a {
     color: #FFF;
     background-color:#FF9933;
-} 
+}
 .submenu {
     position: relative;
     height: 19px;
@@ -13820,7 +13820,7 @@ h4, h5, h6 {
     color: #243366;
     font-weight: bold;
     display:block;
-    float:left;   
+    float:left;
     background-color:#CECAAE;
     text-decoration:none;
     text-align:center;
@@ -13828,11 +13828,11 @@ h4, h5, h6 {
 .submenu ul li a:hover {
     color: #2C81BA;
     background-color:transparent;
-} 
+}
 .submenu li.active a {
     color: #FFF;
     background-color:#FF9933;
-} 
+}
 .notifications {
     display: inline-block;
     vertical-align: middle;
@@ -14071,7 +14071,7 @@ label {
     z-index: 1050;
 }
 /*----- Pour compenser le menu fixed-top */
-body { 
+body {
 	/*-- A ajuster en fonction de la hauteur de la navbar */
 	padding-top: 40px;
 }
@@ -14129,7 +14129,7 @@ body {
 }
 
 .panel-heading {
-	padding: 3px 10px; 
+	padding: 3px 10px;
 }
 /*-- 9px en padding-bottom = 15px - .form-group margin-bottom */
 .panel-body {

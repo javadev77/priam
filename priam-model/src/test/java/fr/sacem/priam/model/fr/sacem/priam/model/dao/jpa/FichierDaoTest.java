@@ -96,7 +96,7 @@ public class FichierDaoTest {
     }
     
     @Test
-    public void should_find_all_fichiers_by_famille_all_and_typeutil_all_criteria() {
+    public void should_find_all_fichiers_with_null_criteria() {
         List<Status> status = Arrays.asList(Status.values());
         Page<FileDto> allFichiersByStatus = fichierDao.findAllFichiersByCriteria(null, null, status, PAGEABLE);
         

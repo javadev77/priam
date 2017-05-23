@@ -26,12 +26,12 @@ public class FamilleDaoTest {
     
     
     @Test
-    public void should_return_all_famille_FR() {
+    public void should_return_all_famille() {
     
         List<Famille> all = familleDao.findAll();
     
-        assertThat(all).isNotNull().isNotEmpty().hasSize(3);
-        assertThat(all.get(0).getTypeUtilisations()).isNotEmpty().hasSize(5);
+        assertThat(all).isNotNull().isNotEmpty();
+        assertThat(all).extracting("code").containsExactly("COPIEPRIV", "FDSVAL", "CMS");
     }
 
 }

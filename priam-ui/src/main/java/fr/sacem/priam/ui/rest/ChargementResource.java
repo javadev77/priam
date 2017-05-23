@@ -61,9 +61,9 @@ public class ChargementResource {
   
         String codeTypeUtil = null;
         if(!"ALL".equals(input.getTypeUtilisationCode())) {
-          codeFamille = input.getTypeUtilisationCode();
+          codeTypeUtil = input.getTypeUtilisationCode();
         }
         
-        return fichierDao.findAllFichiersByCriteria(codeFamille, codeTypeUtil,status,pageable);
+        return fichierDao.findAllFichiersByCriteria(codeFamille, codeTypeUtil, status,pageable);
     }
 }

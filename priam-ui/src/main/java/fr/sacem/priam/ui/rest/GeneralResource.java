@@ -16,10 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 import static com.google.common.collect.Lists.transform;
 
@@ -45,47 +42,73 @@ public class GeneralResource {
     @RequestMapping(value = "/libellefamille",
                     method = RequestMethod.GET,
                     produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, String> getAllLibelleFamille(Locale locale) {
+    public Map<String, String> [] getAllLibelleFamille(Locale locale) {
         List<LibelleFamille> labels = libelleFamilleDao.findByLang(StringUtils.upperCase(locale.getLanguage()));
-        Map<String, String> map = new HashMap<>();
-        labels.forEach(libelle -> map.put(libelle.getCode(), libelle.getLibelle()));
-        return map;
+        List<Map<String, String>> result = new ArrayList<>(labels.size());
+        
+        labels.forEach(libelle -> {
+            Map<String, String> map;
+            map = new HashMap<>();
+            map.put("id", libelle.getCode());
+            map.put("value", libelle.getLibelle());
+            
+            result.add(map);
+        });
+        
+       
+        return result.toArray(new Map[0]);
     }
   
     @RequestMapping(value = "/libelletypeutil",
                     method = RequestMethod.GET,
                     produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, String> getAllLibelleTypeUtilisation(Locale locale) {
+    public  Map<String, String> [] getAllLibelleTypeUtilisation(Locale locale) {
         List<LibelleTypeUtilisation> labels = libelleTypeUtilisationDao.findByLang(StringUtils.upperCase(locale.getLanguage()));
-        Map<String, String> map = new HashMap<>();
         
-        labels.forEach(libelle -> map.put(libelle.getCode(), libelle.getLibelle()));
-        
-        return map;
+        List<Map<String, String>> result = new ArrayList<>(labels.size());
+        labels.forEach(libelle -> {
+          Map<String, String> map;
+          map = new HashMap<>();
+          map.put("id", libelle.getCode());
+          map.put("value", libelle.getLibelle());
+      
+          result.add(map);
+        });
+  
+      return result.toArray(new Map[0]);
     }
   
     @RequestMapping(value = "/familleByTypeUil",
                     method = RequestMethod.GET,
                     produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Map<String, String>> getFamilleByTypeUtilisation(Locale locale) {
+    public Map<String, Map<String, String> []> getFamilleByTypeUtilisation(Locale locale) {
         List<Famille> all = familleDao.findAll();
-        Map<String, Map<String, String>> map = new HashMap<>();
+  
+        Map<String, Map<String, String> []> result = new HashMap<>();
   
         String lang = StringUtils.upperCase(locale.getLanguage());
         all.forEach( famille -> {
             List<String> typeUtilCodes = transform(famille.getTypeUtilisations(), typeUtilisation -> typeUtilisation.getCode());
-            map.put(famille.getCode(), getLibelleTypeUtilisationByCodes(typeUtilCodes, lang));
+            result.put(famille.getCode(), getLibelleTypeUtilisationByCodes(typeUtilCodes, lang));
         });
         
-        return map;
+        return result;
     }
     
-    private Map<String, String> getLibelleTypeUtilisationByCodes(List<String> typeUtilCodes, String lang) {
+    private Map<String, String> [] getLibelleTypeUtilisationByCodes(List<String> typeUtilCodes, String lang) {
         List<LibelleTypeUtilisation> byCodeAndLang = libelleTypeUtilisationDao.findByCodeAndLang(typeUtilCodes, lang);
-        Map<String, String> map = new HashMap<>();
-        byCodeAndLang.forEach(libelle -> map.put(libelle.getCode(), libelle.getLibelle()));
+        List<Map<String, String>> result = new ArrayList<>(byCodeAndLang.size());
+        byCodeAndLang.forEach(libelle -> {
+    
+            Map<String, String> map;
+            map = new HashMap<>();
+            map.put("id", libelle.getCode());
+            map.put("value", libelle.getLibelle());
+    
+            result.add(map);
+          });
         
-        return map;
+        return result.toArray(new Map[0]);
     }
   
 }

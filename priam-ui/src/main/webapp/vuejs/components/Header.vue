@@ -1,36 +1,41 @@
 <template>
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
+  <div class="container-fluid">
+    <nav class="navbar navbar-default navbar-fixed-top">
             <div class="navbar-header">
                 <router-link to="/" class="navbar-brand">PRIAM</router-link>
             </div>
 
 
-            <div class="collapse navbar-collapse">
-                <ul class="nav navbar-nav">
+            <div class="nav navbar-nav">
+              <ul class="nav navbar-nav">
                     <router-link to="/chargement" activeClass="active" tag="li"><a>Chargement</a></router-link>
                     <router-link to="/affectation" activeClass="active" tag="li"><a>Affectation</a></router-link>
                 </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <li
-                            class="dropdown"
-                            :class="{open: isDropdownOpen}"
-                            @click="isDropdownOpen = !isDropdownOpen">
-                        <a
-                                class="dropdown-toggle"
-                                data-toggle="dropdown"
-                                role="button"
-                                aria-haspopup="true"
-                                aria-expanded="false"><strong>Mes préférences <span class="caret"></span></strong></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#">Page de santé</a></li>
-                            <li><a href="#">Déconnexion</a></li>
-                        </ul>
+            </div>
+            <div class="nav navbar-nav navbar-right">
+              <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown"
+                    :class="{open: isDropdownOpen}"
+                    @click="isDropdownOpen = !isDropdownOpen">
+                  <a class="dropdown-toggle clickable" data-toggle="dropdown" aria-expanded="false">
+                    <span>Bonjour GUEST</span>
+                    <span class="caret"></span>
+                  </a>
+
+                  <ul class="dropdown-menu" role="menu">
+                    <li> <a href="logout">
+                    <span class="fui-exit"></span> Déconnexion</a>
                     </li>
-                </ul>
+                  </ul>
+                </li>
+                    <li>
+                      <p class="homerversion">Version : 1.0.0</p>
+                    </li>
+              </ul>
             </div><!-- /.navbar-collapse -->
-        </div><!-- /.container-fluid -->
     </nav>
+  </div><!-- /.container-fluid -->
+
 </template>
 
 <script>

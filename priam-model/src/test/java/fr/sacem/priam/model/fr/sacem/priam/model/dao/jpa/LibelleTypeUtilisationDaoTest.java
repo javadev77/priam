@@ -1,8 +1,8 @@
 package fr.sacem.priam.model.fr.sacem.priam.model.dao.jpa;
 
 import fr.sacem.priam.model.JpaConfigurationTest;
-import fr.sacem.priam.model.dao.jpa.LibelleFamilleDao;
-import fr.sacem.priam.model.domain.LibelleFamille;
+import fr.sacem.priam.model.dao.jpa.LibelleTypeUtilisationDao;
+import fr.sacem.priam.model.domain.LibelleTypeUtilisation;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,23 +19,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes={JpaConfigurationTest.class})
-public class LibelleFamilleDaoTest {
+public class LibelleTypeUtilisationDaoTest {
     
     @Autowired
-    private LibelleFamilleDao libelleFamilleDao;
+    private LibelleTypeUtilisationDao typeUtilisationDao;
     
     
     @Test
-    public void should_return_all_famille_FR() {
-        List<LibelleFamille> all = libelleFamilleDao.findByLang("FR");
+    public void should_return_all_type_utilisation_FR() {
+        List<LibelleTypeUtilisation> all = typeUtilisationDao.findByLang("FR");
     
         assertThat(all).isNotNull().isNotEmpty();
-        assertThat(all).extracting("code").containsExactly("COPIEPRIV", "FDSVAL", "CMS");
+        assertThat(all).extracting("code").containsExactly("CPRIVSONPH", "CPRIVAUDV", "CPRIVSONRD", "COPRIVSON", "CPRIVAUDPL", "PRIME", "VALORIS", "ENCOURG");
     }
     
     @Test
-    public void should_return_empty_famille_when_null() {
-        List<LibelleFamille> all = libelleFamilleDao.findByLang(null);
+    public void should_return_empty_when_null() {
+        List<LibelleTypeUtilisation> all = typeUtilisationDao.findByLang(null);
         
         assertThat(all).isNotNull().isEmpty();
     }
