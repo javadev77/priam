@@ -7,70 +7,11 @@ import { routes } from './routes';
 import { fetchInitData } from './store/actions';
 import store from './store/store';
 import './directives/form-elements'
-//import 'select2';
-//import 'select2/dist/css/select2.css'
+import './utils/Arrays'
 
 
 Vue.use(VueRouter);
 Vue.use(VueResource);
-
-
-
-/*Vue.directive('sacem-combo', {
-    bind(el, binding, vnode) {
-
-      $(() => {
-        $(el).select2('destroy') ;
-        $(el).select2({dropdownAutoWidth: 'true', minimumInputLength: 0, minimumResultsForSearch: -1, data: binding.options});
-        $(el).select2('container').css('display', 'block');
-        $(el).addClass('select select-primary');
-      });
-    }
-});*/
-
-/*Vue.component('select2', {
-  props: ['options', 'value'],
-  template: '#select2-template',
-  mounted: function () {
-    var vm = this;
-    $(() => {
-      $(this.$el)
-      // init select2
-        .select2({dropdownAutoWidth: 'true', minimumInputLength: 0, minimumResultsForSearch: -1,data: this.options})
-        .addClass('select select-primary')
-        .val(this.value)
-        .trigger('change')
-        // emit event on change.
-        .on('change', function () {
-          vm.$emit('input', this.value);
-          vm.$emit('change-list');
-        });
-    });
-  },
-  watch: {
-    value: function (value) {
-      // update value
-      $(() => {
-        $(this.$el).val(value).trigger('change');
-
-      });
-    },
-    options: function (options) {
-      // update options
-      $(() => {
-        $(this.$el).select2({
-          dropdownAutoWidth: 'true',
-          minimumInputLength: 0,
-          minimumResultsForSearch: -1,
-          data: options
-        });
-      });
-    }
-  },
-  destroyed: function () {
-    $(this.$el).off().select2('destroy')
-  }
-})*/
 
 Vue.http.options.root="/priam"
 
@@ -85,16 +26,7 @@ new Vue({
   render: h => h(App)
 })
 
-/*var vm = new Vue({
-  el: '#app',
-  template: '#demo-template',
-  data: {
-    selected: 2,
-    options: [
-      { id: 1, text: 'Hello' },
-      { id: 2, text: 'World' }
-    ]
-  }
-});*/
-
+/*********************************************
+ * ******** Fetch init Data only Once ********
+ * ********************************************/
 fetchInitData(store);

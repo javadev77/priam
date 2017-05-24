@@ -6,9 +6,9 @@
       <div class="panel-heading">
         <h5 class="panel-title" @click="isCollapsed = !isCollapsed">
             <!--<strong>Critères de Recherche</strong>-->
-          <a>Critères de Recherche</a>
+          <a>Critères de recherche</a>
           <span class="pull-left collapsible-icon formula-criteria-search"></span>
-          <span class="pull-right glyphicon" :class="{'glyphicon-triangle-top' : isCollapsed, 'glyphicon-triangle-bottom' : !isCollapsed}"></span>
+          <span class="pull-right fa" :class="{'fui-triangle-up' : isCollapsed,  'fui-triangle-down' : !isCollapsed}"></span>
         </h5>
 
 
@@ -21,14 +21,7 @@
                   <label class="control-label pull-right">Famille</label>
                 </div>
                 <div class="col-sm-4">
-                  <!--<select class="form-control select select-primary" v-model="inputChgtCriteria.familleCode" @change="loadTypeUtilisation()">
-                    <option value="ALL">Toutes</option>
-                    <option v-for="(libelle, code) in familleOptions"
-                            :value="code">
-                      {{ libelle }}
-                    </option>
-                  </select>
-                  -->
+
                   <v-select :searchable="false" label="value" v-model="familleSelected" :options="familleOptions" :on-change="loadTypeUtilisation">
                   </v-select>
                 </div>
@@ -36,37 +29,30 @@
                 <label class="control-label pull-right">Type d'utilisation</label>
               </div>
               <div class="col-sm-5">
-               <!-- <select class="form-control" :options="typeUtilisationOptions"  v-model="inputChgtCriteria.typeUtilisationCode">
-                   <option value="ALL">
-                    Tous
-                    </option>
-                    <option v-for="(libelle, code) in typeUtilisationOptions"
-                          :value="code">
-                    {{ libelle }}
-                    </option>
-                </select>
-                -->
+
                 <v-select :searchable="false" label="value" v-model="typeUtilisationSelected" :options="typeUtilisationOptions">
                 </v-select>
               </div>
 
             </div>
-            <div class="row">
-              <div class="col-sm-2">
-                  <label class="control-label pull-right">Statut</label>
-              </div>
-              <div class="col-sm-12">
-                <template v-for="item in statut">
-                  <label class="checkbox checkbox-inline" :class="{'checked' : isChecked(item.code)}">
-                    <input type="checkbox" v-model="inputChgtCriteria.statutCode" :value="item.code">{{item.libelle}}
-                    <span class="icons"><span class="first-icon fui-checkbox-unchecked"></span><span class="second-icon fui-checkbox-checked"></span></span>
-                  </label>
-                </template>
-              </div>
-          </div>
+
           </form>
         </div>
       </div>
+    </div>
+
+    <div class="form-horizontal">
+      <div class="col-sm-2">
+        <label class="control-label pull-right">Statut</label>
+      </div>
+      <div class="col-sm-12">
+          <template v-for="item in statut">
+            <label class="checkbox checkbox-inline" :class="{'checked' : isChecked(item.code)}">
+              <input type="checkbox" v-model="inputChgtCriteria.statutCode" :value="item.code">{{item.libelle}}
+              <span class="icons"><span class="first-icon fui-checkbox-unchecked"></span><span class="second-icon fui-checkbox-checked"></span></span>
+            </label>
+          </template>
+        </div>
     </div>
 
     <div class="row formula-buttons">

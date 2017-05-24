@@ -81,7 +81,7 @@
 
   }
 
-  .dropdown-toggle:hover, .dropdown-toggle:focus {
+  .dropdown-toggle:hover, .dropdown-toggle:focus, .dropdown-toggle:active {
     background-color: #fff;
     border-color: #4b77be;
   }

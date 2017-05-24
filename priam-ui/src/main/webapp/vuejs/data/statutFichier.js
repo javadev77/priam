@@ -18,3 +18,9 @@ export default [
       "color"  : 'red'
     }
 ]
+
+/*export default {
+  EN_COURS,
+  CHARGEMENT_OK,
+  CHARGEMENT_KO,
+ }*/

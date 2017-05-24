@@ -5,7 +5,7 @@
       <h5 class="panel-title" @click="isCollapsed = !isCollapsed">
         <a>Résultats</a>
         <span class="pull-left collapsible-icon bg-ico-tablerow"></span>
-        <span class="pull-right glyphicon" :class="{'glyphicon-triangle-top' : isCollapsed, 'glyphicon-triangle-bottom' : !isCollapsed}"></span>
+        <span class="pull-right fa" :class="{'fui-triangle-up' : isCollapsed,  'fui-triangle-down' : !isCollapsed}"></span>
       </h5>
     </div>
 
@@ -39,17 +39,20 @@
               <!--<td v-for="key in columns" class="statusColor" :class="statusColor(key)">-->
               <template v-for="(value,key) in columns">
                   <!--<td class="statusColor" v-if="key === 'statut'" v-status-color="" :class="getStatutLibelleByKey(entry[key]).color">-->
-                  <td v-if="key === 'statut'" v-status-color="getStatutLibelleByKey(entry[key]).color">
-                    {{ getStatutLibelleByKey(entry[key]).libelle }}
+                  <td v-if="key === 'statut'" v-status-color="statusColor(entry[key])">
+                    {{ getStatutLibelleByKey(entry[key]) }}
                   </td>
                   <td class="columnCenter" v-else-if="key === 'dateDebutChgt'">
                     {{entry[key]}}
                   </td>
                   <td v-else-if="key === 'famille'">
-                  {{ libelleFamilleByKey(entry[key]) }}
+                    {{ libelleFamilleByKey(entry[key]) }}
                   </td>
                   <td v-else-if="key === 'typeUtilisation'">
-                  {{ libelleTypeUtilisationByKey(entry[key]) }}
+                    {{ libelleTypeUtilisationByKey(entry[key]) }}
+                  </td>
+                  <td v-else-if="isToShowActions(key, entry['statut'])" class="columnCenter">
+                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                   </td>
                   <td v-else>
                     {{entry[key]}}
@@ -143,40 +146,37 @@
     methods: {
 
       sortBy(key) {
-        this.sortKey = key
-        this.sortOrders[key] = this.sortOrders[key] * -1
+          this.sortKey = key
+          this.sortOrders[key] = this.sortOrders[key] * -1
       },
 
       pageOneChanged (pageNum) {
-        this.pagination.currentPage = pageNum;
+          this.pagination.currentPage = pageNum;
+      },
+
+      findStatusByCode(code) {
+          return StatutFichier.find(function (element) {
+            return element.code === code;
+          })
       },
 
       getStatutLibelleByKey (key) {
+          var status = this.findStatusByCode(key);
 
-        var stat = StatutFichier;
-        for(var i in stat) {
-          if(stat[i].code === key) {
-
-            console.log(stat[i]);
-            return stat[i];
-          }
-        }
+          return status !== undefined && status.libelle;
       },
 
       statusColor(key) {
-        var stat = StatutFichier;
-        for(var i in stat) {
-          if(stat[i].code === key) {
-            return stat[i].color;
-          }
-        }
+          var status = this.findStatusByCode(key);
+
+          return status !== undefined && status.color;
       },
 
       libelleFamilleByKey(code) {
           var result = this.$store.getters.famille.find(function (element) {
             return element.id === code;
           });
-          return result.value;
+          return result !== undefined && result.value;
 
       },
 
@@ -184,9 +184,21 @@
           var result  = this.$store.getters.typeUtilisation.find(function (element) {
             return element.id === code;
           });
-          return result.value;
+          return result !== undefined && result.value;
 
-      }
+      },
+
+      isToShowActions(key, statusCode) {
+          if(key === 'action') {
+            let element = this.findStatusByCode(statusCode);
+              if(element !== undefined && 'CHARGEMENT_KO' === element.code || 'CHARGEMENT_OK' === element.code) {
+                return true;
+              }
+          }
+
+          return false;
+        }
+
     },
 
     components : {
