@@ -38,7 +38,7 @@ public class Famille {
         return dateFin;
     }
     
-    @OneToMany(mappedBy = "codeFamille", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "codeFamille", fetch = FetchType.LAZY)
     public List<TypeUtilisation> getTypeUtilisations() {
         return typeUtilisations;
     }

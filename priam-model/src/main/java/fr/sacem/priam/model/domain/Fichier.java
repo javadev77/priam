@@ -18,11 +18,11 @@ public class Fichier {
     @Column(name = "NOM")
     private String nom;
     
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "CDEFAMILTYPUTIL")
     private Famille famille;
     
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "CDETYPUTIL")
     private TypeUtilisation typeUtilisation;
     

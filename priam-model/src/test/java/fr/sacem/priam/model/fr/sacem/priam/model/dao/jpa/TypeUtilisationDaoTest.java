@@ -40,7 +40,7 @@ public class TypeUtilisationDaoTest {
         List<TypeUtilisation> all = typeUtilisationDao.findByCodeFamille("COPIEPRIV");
         
         assertThat(all).isNotNull().isNotEmpty();
-        assertThat(all).extracting("code").containsExactly("CPRIVSONPH", "CPRIVAUDV", "CPRIVSONRD", "COPRIVSON", "CPRIVAUDPL");
+        assertThat(all).extracting("code").containsExactly("CPRIVSONPH", "CPRIVAUDV", "CPRIVSONRD", "CPRIVAUDPL");
     }
     
     @Test

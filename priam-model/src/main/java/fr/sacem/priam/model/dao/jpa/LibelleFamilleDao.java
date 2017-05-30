@@ -5,6 +5,8 @@ import fr.sacem.priam.model.domain.LibelleFamillePK;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -17,5 +19,10 @@ import java.util.List;
 public interface LibelleFamilleDao extends JpaRepository<LibelleFamille, LibelleFamillePK> {
     
     @Cacheable("familles")
-    List<LibelleFamille> findByLang(String lang);
+    @Query("SELECT libFam FROM LibelleFamille libFam " +
+            "WHERE libFam.famille.dateDebut is not null " +
+            "AND (libFam.famille.dateFin is null OR libFam.famille.dateFin >= CURRENT_DATE)" +
+            "AND libFam.lang = :lang")
+    List<LibelleFamille> findByLang(@Param("lang") String lang);
+    
 }

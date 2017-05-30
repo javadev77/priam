@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid">
-  <div class="panel panel-default">
+    <div class="panel panel-default">
     <div class="panel-heading">
       <h5 class="panel-title" @click="isCollapsed = !isCollapsed">
         <a>Résultats</a>
@@ -36,13 +36,14 @@
             </thead>
             <tbody>
             <tr v-for="entry in filteredData">
-              <!--<td v-for="key in columns" class="statusColor" :class="statusColor(key)">-->
               <template v-for="(value,key) in columns">
-                  <!--<td class="statusColor" v-if="key === 'statut'" v-status-color="" :class="getStatutLibelleByKey(entry[key]).color">-->
-                  <td v-if="key === 'statut'" v-status-color="statusColor(entry[key])">
+                  <td v-if="key === 'statut'" v-status-color="statusColor(entry[key])" class="columnCenter">
                     {{ getStatutLibelleByKey(entry[key]) }}
                   </td>
                   <td class="columnCenter" v-else-if="key === 'dateDebutChgt'">
+                    {{entry[key]}}
+                  </td>
+                  <td class="columnCenter" v-else-if="key === 'dateFinChgt'">
                     {{entry[key]}}
                   </td>
                   <td v-else-if="key === 'famille'">
@@ -52,7 +53,13 @@
                     {{ libelleTypeUtilisationByKey(entry[key]) }}
                   </td>
                   <td v-else-if="isToShowActions(key, entry['statut'])" class="columnCenter">
-                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                      <a @click="showPopupSupprimer(entry)">
+                        <span class="glyphicon glyphicon-trash" aria-hidden="true" ></span>
+                      </a>
+                  </td>
+
+                  <td v-else-if="key === 'nbLignes'" class="columnRight">
+                    {{entry[key]}}
                   </td>
                   <td v-else>
                     {{entry[key]}}
@@ -75,6 +82,11 @@
       </div>
     </div>
   </div>
+    <modal v-if="showModal" @close="showModal = false" @yes="supprimerDonneesFichier()">
+      <label class="homer-prompt-q control-label" slot="body">
+        Etes-vous sûr de vouloir supprimer les données liées à ce fichier ?
+      </label>
+    </modal>
   </div>
 </template>
 
@@ -82,6 +94,7 @@
 
   import Paginator from '../common/Pagination.vue'
   import StatutFichier from '../../data/statutFichier'
+  import Modal from '../common/Modal.vue'
 
   export default {
 
@@ -95,6 +108,8 @@
         }
 
       return {
+        selectedEntry : {},
+        showModal : false,
         isCollapsed: false,
         sortKey: '',
         sortOrders: sortOrders
@@ -113,9 +128,8 @@
       filteredData() {
         var sortKey = this.sortKey
         var filterKey = this.filterKey && this.filterKey.toLowerCase()
-        var order = this.sortOrders[sortKey] || 1
-        var dataTemp = this.data.content;
-        var data = dataTemp;
+        var order = this.sortOrders[sortKey] || 1;
+        var data = this.data.content;
 
         if (filterKey) {
           data = data.filter(function (row) {
@@ -136,6 +150,15 @@
 
     },
 
+    created() {
+
+      const customActions = {
+        deleteFichier : {method : 'GET', url :'app/rest/chargement/deleteFichier{/fileId}'}
+      }
+      this.resource= this.$resource('', {}, customActions);
+
+    },
+
     filters: {
       capitalize(str) {
         return str.charAt(0).toUpperCase() + str.slice(1)
@@ -144,6 +167,27 @@
 
 
     methods: {
+
+      showPopupSupprimer(entry) {
+          this.selectedEntry = entry;
+          this.showModal = true;
+      },
+
+      supprimerDonneesFichier() {
+          this.showModal = false;
+          console.log('Supprimer le fichier selectionne : ' + this.selectedEntry.id);
+          this.resource.deleteFichier({fileId : this.selectedEntry.id})
+                .then(response => {
+                  return response.json();
+                })
+                .then(data => {
+                  //this.priamGrid.gridData = data;
+                  console.log('data = ' + data);
+
+                  this.selectedEntry.statut = data.statut;
+
+                });
+      },
 
       sortBy(key) {
           this.sortKey = key
@@ -155,7 +199,8 @@
       },
 
       findStatusByCode(code) {
-          return StatutFichier.find(function (element) {
+        let statut = this.$store.getters.statut;
+        return statut.find(function (element) {
             return element.code === code;
           })
       },
@@ -191,7 +236,7 @@
       isToShowActions(key, statusCode) {
           if(key === 'action') {
             let element = this.findStatusByCode(statusCode);
-              if(element !== undefined && 'CHARGEMENT_KO' === element.code || 'CHARGEMENT_OK' === element.code) {
+              if(element !== undefined && ('CHARGEMENT_KO' === element.code || 'CHARGEMENT_OK' === element.code)) {
                 return true;
               }
           }
@@ -202,7 +247,8 @@
     },
 
     components : {
-        paginator : Paginator
+        paginator : Paginator,
+        modal : Modal
     }
 
   }

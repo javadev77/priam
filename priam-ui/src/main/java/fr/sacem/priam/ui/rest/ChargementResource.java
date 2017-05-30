@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.dto.FileDto;
+import fr.sacem.priam.services.FichierService;
 import fr.sacem.priam.ui.rest.dto.ChargementCritereRecherche;
 import fr.sacem.priam.ui.rest.dto.InputChgtCriteria;
 import org.slf4j.Logger;
@@ -13,10 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,6 +30,9 @@ public class ChargementResource {
 
     @Autowired
     FichierDao fichierDao;
+    
+    @Autowired
+    FichierService fichierService;
     
     @RequestMapping(value = "/initCritereRecherche",
                     method = RequestMethod.GET,
@@ -65,5 +66,15 @@ public class ChargementResource {
         }
         
         return fichierDao.findAllFichiersByCriteria(codeFamille, codeTypeUtil, status,pageable);
+    }
+    
+    @RequestMapping(value = "/deleteFichier/{fileId}",
+                    method = RequestMethod.GET,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
+    public FileDto deleteDonneesFichiers(@PathVariable("fileId") Long fileId) {
+        fichierService.deleteDonneesFichiers(fileId);
+        FileDto fileDto = fichierDao.findById(fileId);
+        logger.info("File = " + fileDto.getNomFichier());
+        return fileDto;
     }
 }

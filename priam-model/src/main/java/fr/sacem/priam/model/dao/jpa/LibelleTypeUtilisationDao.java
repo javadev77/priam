@@ -19,12 +19,18 @@ import java.util.List;
 public interface LibelleTypeUtilisationDao extends JpaRepository<LibelleTypeUtilisation, LibelleTypeUtilisationPK> {
     
     @Cacheable("typeUtilisation")
-    List<LibelleTypeUtilisation> findByLang(String lang);
+    @Query("SELECT lib FROM LibelleTypeUtilisation lib " +
+            "WHERE lib.typeUtilisation.dateDebut is not null " +
+            "AND (lib.typeUtilisation.dateFin is null OR lib.typeUtilisation.dateFin >= CURRENT_DATE)" +
+            "AND lib.lang = :lang")
+    List<LibelleTypeUtilisation> findByLang(@Param("lang") String lang);
     
     @Cacheable("typeUtilisationByCodeAndLang")
     @Query("SELECT lib " +
            "FROM LibelleTypeUtilisation AS lib " +
            "WHERE lib.code in (:codes) " +
+           "AND lib.typeUtilisation.dateDebut is not null " +
+           "AND (lib.typeUtilisation.dateFin is null OR lib.typeUtilisation.dateFin >= CURRENT_DATE) " +
            "AND  lib.lang = :lang")
     List<LibelleTypeUtilisation> findByCodeAndLang(@Param("codes") List<String> codes,@Param("lang") String lang);
 }

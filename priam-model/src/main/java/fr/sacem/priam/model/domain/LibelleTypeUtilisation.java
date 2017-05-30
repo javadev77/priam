@@ -14,10 +14,18 @@ public class LibelleTypeUtilisation {
     private String libelle;
     private String lang;
     
+    private TypeUtilisation typeUtilisation;
+    
     @Id
     @Column(name = "CODE")
     public String getCode() {
         return code;
+    }
+    
+    @ManyToOne(fetch = FetchType.LAZY, optional = false, targetEntity = TypeUtilisation.class)
+    @JoinColumn(name = "CODE", insertable = false, updatable = false)
+    public TypeUtilisation getTypeUtilisation() {
+        return typeUtilisation;
     }
     
     public void setCode(String code) {
@@ -41,5 +49,9 @@ public class LibelleTypeUtilisation {
     
     public void setLang(String cdelng) {
         this.lang = cdelng;
+    }
+    
+    public void setTypeUtilisation(TypeUtilisation typeUtilisation) {
+        this.typeUtilisation = typeUtilisation;
     }
 }

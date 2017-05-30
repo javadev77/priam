@@ -18,7 +18,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.google.common.collect.Lists.transform;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -91,7 +90,6 @@ public class FichierDaoTest {
         Page<FileDto> allFichiersByStatus = fichierDao.findAllFichiersByStatus(status, PAGEABLE);
     
         assertThat(allFichiersByStatus).isNotNull().isNotEmpty();
-        assertThat(allFichiersByStatus.getTotalElements()).isEqualTo(11);
         assertThat(allFichiersByStatus.getContent()).isNotEmpty().hasSize(3);
     }
     
@@ -101,7 +99,7 @@ public class FichierDaoTest {
         Page<FileDto> allFichiersByStatus = fichierDao.findAllFichiersByCriteria(null, null, status, PAGEABLE);
         
         assertThat(allFichiersByStatus).isNotNull().isNotEmpty();
-        assertThat(allFichiersByStatus.getTotalElements()).isEqualTo(11);
+        assertThat(allFichiersByStatus.getTotalElements()).isEqualTo(13);
         assertThat(allFichiersByStatus.getContent()).isNotEmpty().hasSize(3);
     
         
@@ -114,10 +112,9 @@ public class FichierDaoTest {
         Page<FileDto> allFichiersByStatus = fichierDao.findAllFichiersByCriteria(copiepriv, null, status, PAGEABLE);
         
         assertThat(allFichiersByStatus).isNotNull().isNotEmpty();
-        assertThat(allFichiersByStatus.getTotalElements()).isEqualTo(11);
-        assertThat(allFichiersByStatus.getContent()).isNotEmpty().hasSize(3);
+        
     
-        List<String> typeUtilCode = transform(typeUtilisationDao.findByCodeFamille(copiepriv), typeUtil -> typeUtil.getCode());
+        List<String> typeUtilCode = Arrays.asList("COPRIVSON", "CPRIVSONPH", "CPRIVAUDV", "CPRIVSONRD", "CPRIVAUDPL");
         allFichiersByStatus.getContent().forEach( fileDto -> {
             assertThat(fileDto.getFamille()).isEqualTo(copiepriv);
             assertThat(fileDto.getTypeUtilisation()).isIn(typeUtilCode);

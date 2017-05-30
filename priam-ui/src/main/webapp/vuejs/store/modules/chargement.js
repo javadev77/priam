@@ -26,13 +26,13 @@ const state = {
     {
       "code": "AFFECTE",
       "libelle": 'Affecté',
-      "color"  : '',
+      "color"  : 'grey',
       "checked" : true
     },
     {
       "code": "ABANDONNE",
       "libelle": 'Abandonné',
-      "color"  : '',
+      "color"  : '#4b77be',
       "checked" : false
     }
 

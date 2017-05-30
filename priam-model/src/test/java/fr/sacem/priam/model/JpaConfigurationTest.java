@@ -5,6 +5,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -40,7 +43,13 @@ public class JpaConfigurationTest {
         dataSource.setUrl("jdbc:h2:mem:priam;MODE=MySQL;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS PRIAM_APP\\;RUNSCRIPT FROM './target/test-classes/scripts/init-schema.sql'\\;RUNSCRIPT FROM './target/test-classes/scripts/data.sql'");
         dataSource.setUsername("sa");
         dataSource.setPassword("sa");
-        return dataSource;
+    
+        EmbeddedDatabase embeddedDatabase = new EmbeddedDatabaseBuilder()
+                .setType(EmbeddedDatabaseType.H2)
+                .setName("priam")
+                .addScript("scripts/init-schema.sql").addScript("scripts/data.sql")
+                .build();
+        return embeddedDatabase;
     }
     
     @Bean

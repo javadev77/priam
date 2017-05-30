@@ -17,3 +17,16 @@ Vue.directive('status-color', {
     }
 
 });
+
+Vue.directive('numeric-align', {
+  bind(el, binding, vnode) {
+    el.style.textAlign = 'right';
+  },
+
+  update(el, binding, vnode, oldVnode) {
+    if(binding.oldValue != binding.value) {
+      el.style.textAlign = 'right';
+    }
+  }
+
+});

@@ -13,11 +13,18 @@ public class LibelleFamille {
     private String code;
     private String libelle;
     private String lang;
+    private Famille famille;
     
     @Id
     @Column(name = "CODE")
     public String getCode() {
         return code;
+    }
+    
+    @ManyToOne(fetch = FetchType.LAZY, optional = false, targetEntity = Famille.class)
+    @JoinColumn(name = "CODE", insertable = false, updatable = false)
+    public Famille getFamille() {
+        return famille;
     }
     
     public void setCode(String code) {
@@ -41,5 +48,9 @@ public class LibelleFamille {
     
     public void setLang(String cdelng) {
         this.lang = cdelng;
+    }
+    
+    public void setFamille(Famille famille) {
+        this.famille = famille;
     }
 }
