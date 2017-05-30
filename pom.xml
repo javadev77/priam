@@ -19,6 +19,7 @@
     <name>PRIAM</name>
 
     <modules>
+        <module>priam-batch</module>
         <module>priam-common</module>
         <module>priam-model</module>
         <module>priam-services</module>
