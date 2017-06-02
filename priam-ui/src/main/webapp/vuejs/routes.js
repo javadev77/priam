@@ -13,8 +13,8 @@ export const routes = [
           component: Affectation
         },
         {
-          path: 'CreateProg',
-          name : 'CreateProg',
+          path: 'createProg',
+          name : 'createProg',
           component: Affectation
         }
       ]

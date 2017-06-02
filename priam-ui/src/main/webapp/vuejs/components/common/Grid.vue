@@ -16,7 +16,6 @@
                    :total-pages="this.data.totalPages"
                    :total-items="this.data.totalElements"
                    :itemsPerPage="this.data.numberOfElements"
-                   :visiblePages="this.data.size"
                    @page-changed="pageOneChanged">
 
         </paginator>
@@ -24,19 +23,22 @@
         <table class="table-responsive table-drop table-bordered table-striped table-hover resultsTable">
             <thead>
             <tr>
-              <th v-for="(value, key) in columns"
-                  @click="sortBy(key)"
-                  :class="{ active: sortKey == key }">
+              <th v-for="entry in columns"
+                  @click="sortBy(entry.id)"
+                  :class="{ active: sortKey == entry.id }">
 
-                {{ value }}
-                <span class="arrow" :class="sortOrders[key] > 0 ? 'asc' : 'dsc'">
-                  </span>
+                <span>{{ entry.name }}</span>
+               <!-- <span class="arrow" :class="sortOrders[key] > 0 ? 'fui-triangle-up' : 'fui-triangle-down'">
+                  </span>-->
+
+                <span v-if="entry.sortable" class="fui" :class="sortOrders[entry.id] > 0 ? 'fui-triangle-up' : 'fui-triangle-down'">
+                </span>
               </th>
             </tr>
             </thead>
             <tbody>
             <tr v-for="entry in filteredData">
-              <template v-for="(value,key) in columns">
+              <!--<template v-for="(value,key) in columns">
                   <td v-if="key === 'statut'" v-status-color="statusColor(entry[key])" class="columnCenter">
                     {{ getStatutLibelleByKey(entry[key]) }}
                   </td>
@@ -64,6 +66,41 @@
                   <td v-else>
                     {{entry[key]}}
                   </td>
+              </template>-->
+
+              <template v-for="entryColumn in columns">
+                <template v-if="entryColumn.type === 'date'">
+                  <td class="columnCenter">
+                    {{ entry[entryColumn.id] }}
+                  </td>
+                </template>
+                <template v-else-if="entryColumn.type === 'numeric'">
+                  <td class="columnRight">
+                    {{ entry[entryColumn.id] }}
+                  </td>
+                </template>
+                <template v-else-if="entryColumn.type === 'code-value'">
+                  <td>
+                    {{entryColumn.cell.toText(entry[entryColumn.id])}}
+                  </td>
+                </template>
+                <template v-else-if="entryColumn.type === 'code-value-hightlight'">
+                  <td>
+                    <div v-html="entryColumn.cell.cellTemplate(entry)"></div>
+                  </td>
+                </template>
+                <template v-else-if="entryColumn.type === 'clickable-icon'">
+                  <td class="columnCenter">
+                    <a v-html="entryColumn.cell.cellTemplate(entry)" @click="emitCellClick(entry, entryColumn)">
+                    </a>
+                  </td>
+                </template>
+                <template  v-else>
+                  <td>
+                    {{ entry[entryColumn.id] }}
+                  </td>
+                </template>
+
               </template>
 
             </tr>
@@ -74,7 +111,7 @@
                    :total-pages="this.data.totalPages"
                    :total-items="this.data.totalElements"
                    :itemsPerPage="this.data.numberOfElements"
-                   :visiblePages="this.data.size"
+                   @page-size-changed="pageSizeChanged"
                    @page-changed="pageOneChanged">
 
         </paginator>
@@ -82,11 +119,6 @@
       </div>
     </div>
   </div>
-    <modal v-if="showModal" @close="showModal = false" @yes="supprimerDonneesFichier()">
-      <label class="homer-prompt-q control-label" slot="body">
-        Etes-vous sûr de vouloir supprimer les données liées à ce fichier ?
-      </label>
-    </modal>
   </div>
 </template>
 
@@ -103,13 +135,11 @@
     data() {
       var sortOrders = {}
 
-        for(let key in this.columns) {
-          sortOrders[key] = 1;
+        for(let entry in this.columns) {
+          sortOrders[entry.id] = 1;
         }
 
       return {
-        selectedEntry : {},
-        showModal : false,
         isCollapsed: false,
         sortKey: '',
         sortOrders: sortOrders
@@ -152,11 +182,6 @@
 
     created() {
 
-      const customActions = {
-        deleteFichier : {method : 'GET', url :'app/rest/chargement/deleteFichier{/fileId}'}
-      }
-      this.resource= this.$resource('', {}, customActions);
-
     },
 
     filters: {
@@ -168,81 +193,23 @@
 
     methods: {
 
-      showPopupSupprimer(entry) {
-          this.selectedEntry = entry;
-          this.showModal = true;
+      emitCellClick(entry, column) {
+        this.$emit('cellClick', entry, column);
       },
 
-      supprimerDonneesFichier() {
-          this.showModal = false;
-          console.log('Supprimer le fichier selectionne : ' + this.selectedEntry.id);
-          this.resource.deleteFichier({fileId : this.selectedEntry.id})
-                .then(response => {
-                  return response.json();
-                })
-                .then(data => {
-                  //this.priamGrid.gridData = data;
-                  console.log('data = ' + data);
-
-                  this.selectedEntry.statut = data.statut;
-
-                });
-      },
 
       sortBy(key) {
-          this.sortKey = key
-          this.sortOrders[key] = this.sortOrders[key] * -1
+          this.sortKey = key;
+          this.sortOrders[key] = this.sortOrders[key] * -1;
       },
 
       pageOneChanged (pageNum) {
-          this.pagination.currentPage = pageNum;
+          this.$emit('load-page', pageNum);
       },
 
-      findStatusByCode(code) {
-        let statut = this.$store.getters.statut;
-        return statut.find(function (element) {
-            return element.code === code;
-          })
-      },
-
-      getStatutLibelleByKey (key) {
-          var status = this.findStatusByCode(key);
-
-          return status !== undefined && status.libelle;
-      },
-
-      statusColor(key) {
-          var status = this.findStatusByCode(key);
-
-          return status !== undefined && status.color;
-      },
-
-      libelleFamilleByKey(code) {
-          var result = this.$store.getters.famille.find(function (element) {
-            return element.id === code;
-          });
-          return result !== undefined && result.value;
-
-      },
-
-      libelleTypeUtilisationByKey(code) {
-          var result  = this.$store.getters.typeUtilisation.find(function (element) {
-            return element.id === code;
-          });
-          return result !== undefined && result.value;
-
-      },
-
-      isToShowActions(key, statusCode) {
-          if(key === 'action') {
-            let element = this.findStatusByCode(statusCode);
-              if(element !== undefined && ('CHARGEMENT_KO' === element.code || 'CHARGEMENT_OK' === element.code)) {
-                return true;
-              }
-          }
-
-          return false;
-        }
+      pageSizeChanged(pageSize) {
+        this.$emit('load-page', 1, pageSize);
+      }
 
     },
 

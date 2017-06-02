@@ -47,12 +47,14 @@
 <script>
   import TwoLinesMenu from './common/TwoLinesMenu.vue'
   export default {
+
+    props :['activeMenu', 'activeSubMenu'],
     data() {
       return {
         menus : [
 
           {
-            id : 'Programme',
+            id : 'programme',
             name : 'programme',
             label : 'Programme',
             items : [
@@ -60,35 +62,34 @@
                 id : 'ListePrg',
                 name : 'ListePrg',
                 label : 'Liste Programmes'
-              },
-              {
-                id : 'CreateProg',
-                name : 'CreateProg',
-                label : 'Créer Programme'
               }
             ]
           },
           {
-            id : 'Chargement',
+            id : 'chargement',
             name : 'chargement',
             label : 'Chargement'
           },
           {
-            id : 'Parametre',
+            id : 'parametrage',
             name : 'parametrage',
             label : 'Paramétrage'
           },
 
         ],
-        activeMenu :  {
+        /*activeMenu :  {
           id : 'Programme'
         },
         activeSubMenu :  {
           id : 'ListePrg'
-        },
+        },*/
 
         isDropdownOpen: false
       }
+    },
+
+    created()  {
+        console.log("activeMenu"  + this.activeMenu)
     },
 
     components :    {

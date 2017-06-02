@@ -3,27 +3,31 @@
     <div class="col-sm-24">
       <div class="results pull-left">
         {{ totalItems || 0 }} résultat{{ totalItems > 1 ? 's' : '' }}
-        - Page {{ currentPage }} / {{ totalPages }}
+        - Page <input v-model.number="currentPage" type="number" @keyup.enter="selectPage($event.target.value)"> / {{ totalPages }}
             <span>
                 - Resultat par page
-
+              <!--<select v-model="itemsPerPage" @change="pageSizeChange">
+                <option v-for="s in sizes"> {{ s }}</option>
+              </select>-->
             </span>
       </div>
       <div class="pull-right">
-        <ul class="pagination-plain">
-        <li class="previous">
-          <a href="#" @click.prevent="pageChanged(1)" aria-label="Previous">
-            <span aria-hidden="true">&leftarrow;</span>
-          </a>
-        </li>
-        <li v-for="n in paginationRange" :class="activePage(n)">
-          <a href="#" @click.prevent="pageChanged(n)">{{ n }}</a>
-        </li>
-        <li class="next">
-          <a href="#" @click.prevent="pageChanged(lastPage)" aria-label="Next">
-            <span aria-hidden="true">&rightarrow;</span>
-          </a>
-        </li>
+        <ul class="pagination-plain no-select">
+          <li class="previous" :class="currentPage === 1 ? 'active': ''">
+            <a @click.prevent="selectPage(currentPage - 1)" aria-label="Previous">
+              &leftarrow;
+            </a>
+          </li>
+
+          <li v-for="p in pages" :class="currentPage === p ? 'active': ''">
+            <a @click.prevent="selectPage(p)" >{{ p  }}</a>
+          </li>
+
+          <li class="next" :class="currentPage === totalPages ? 'active': ''">
+            <a  @click.prevent="selectPage(currentPage + 1)" aria-label="Next">
+              &rightarrow;
+            </a>
+          </li>
       </ul>
       </div>
 
@@ -55,8 +59,19 @@
       // Visible Pages
       visiblePages: {
         type: Number,
-        default: 5,
+        default: 3,
         coerce: (val) => parseInt(val)
+      },
+
+      sizes : {
+          type : Array,
+          default : [25, 50, 100]
+
+      },
+
+      disabled : {
+        type: Boolean,
+        default: false
       }
     },
 
@@ -75,8 +90,8 @@
             : Math.floor(this.totalItems / this.itemsPerPage) + 1
         }
       },
-      paginationRange () {
-        let start = this.currentPage - this.visiblePages / 2 <= 0
+      pages () {
+        /*let start = this.currentPage - this.visiblePages / 2 <= 0
           ? 1 : this.currentPage + this.visiblePages / 2 > this.lastPage
             ? Util.lowerBound(this.lastPage - this.visiblePages + 1, 1)
             : Math.ceil(this.currentPage - this.visiblePages / 2)
@@ -84,17 +99,58 @@
         for (let i = 0; i < this.visiblePages && i < this.lastPage; i++) {
           range.push(start + i)
         }
-        return range
+        return range*/
+
+        let pages = [];
+
+        if (this.currentPage <= 0 || this.currentPage > this.totalPages) {
+          return pages;
+        }
+
+        // Default page limits
+        let startPage = 1, endPage = this.totalPages;
+        let isMaxSized = this.visiblePages !== undefined && this.visiblePages < this.totalPages;
+
+        // recompute if maxSize
+        if (isMaxSized) {
+            // Current page is displayed in the middle of the visible ones
+            startPage = Math.max(this.currentPage - Math.floor(this.visiblePages / 2), 1);
+            endPage = startPage + this.visiblePages - 1;
+
+            // Adjust if limit is exceeded
+            if (endPage > this.totalPages) {
+              endPage = this.totalPages;
+              startPage = endPage - this.visiblePages + 1;
+            }
+        }
+
+        // Add page number links
+        for (let number = startPage; number <= endPage; number++) {
+          pages.push(number);
+        }
+
+        return pages;
       }
     },
 
     methods: {
-      pageChanged (pageNum) {
-        this.$emit('page-changed', pageNum);
+
+      selectPage(page) {
+        console.log("page selected" + page);
+        if (!this.disabled && this.currentPage !== page && page > 0 && page <= this.totalPages) {
+          this.currentPage = page;
+          this.$emit('page-changed', page);
+        }
       },
+
       activePage (pageNum) {
         return this.currentPage === pageNum ? 'active' : ''
+      },
+
+      pageSizeChange() {
+        this.$emit('page-size-changed', this.itemsPerPage);
       }
+
 
     }
   }

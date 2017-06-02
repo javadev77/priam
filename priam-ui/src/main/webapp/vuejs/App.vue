@@ -1,6 +1,6 @@
 <template>
     <div class="container-fluid">
-        <app-header></app-header>
+        <app-header :activeMenu="activeMenu" ></app-header>
         <div class="container-fluid">
                 <transition name="slide" mode="out-in">
                     <router-view></router-view>
@@ -12,6 +12,21 @@
 <script>
     import Header from './components/Header.vue';
     export default {
+        data() {
+
+            return {
+              activeMenu : {
+                  id : ''
+              }
+            }
+        },
+
+        created() {
+          this.activeMenu.id = this.$route.name;
+          console.log('current route ' + this.activeMenu.id);
+        },
+
+
         components: {
             appHeader: Header
         }

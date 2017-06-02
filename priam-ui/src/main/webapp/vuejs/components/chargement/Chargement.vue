@@ -64,8 +64,16 @@
   <priam-grid
     :data="priamGrid.gridData"
     :columns="priamGrid.gridColumns"
-    :filter-key="priamGrid.searchQuery">
+    :filter-key="priamGrid.searchQuery"
+    @cellClick="onCellClick"
+    @load-page="loadPage">
   </priam-grid>
+
+   <modal v-if="showModal" @close="showModal = false" @yes="supprimerDonneesFichier">
+     <label class="homer-prompt-q control-label" slot="body">
+       Etes-vous sûr de vouloir supprimer les données liées à ce fichier ?
+     </label>
+   </modal>
 </div>
 </template>
 
@@ -75,12 +83,18 @@
 
   import Grid from '../common/Grid.vue';
   import vSelect from '../common/Select.vue';
+  import Modal from '../common/Modal.vue';
 
   export default {
 
       data () {
 
+          var $this =this;
+          var getters = this.$store.getters;
+
           return {
+              showModal : false,
+              entrySelected : {},
               selected: '',
               options: [{"id":"CMS","value":"CMS"},{"id":"COPIEPRIV","value":"Copie Privée"},{"id":"FDSVAL","value":"Valorisation"}],
               isCollapsed: false,
@@ -99,21 +113,103 @@
 
               defaultPageable : {
                 page : 0,
-                size : 20
+                size : 5
               },
 
               priamGrid : {
-                  gridColumns : {
-                    nomFichier: 'Fichier',
-                    famille: 'Famille',
-                    typeUtilisation: "Type d'utilisation",
-                    dateDebutChgt : 'Début chargement',
-                    dateFinChgt : 'Fin chargement',
-                    nbLignes : 'Nb lignes',
-                    statut : 'Statut',
-                    logs: 'Logs',
-                    action:  'Actions'
-                  },
+                  gridColumns : [
+                    {
+                         id :  'nomFichier',
+                         name :   'Fichier',
+                         sortable : true,
+                         type : 'long-text'
+                    },
+                    {
+                        id :  'famille',
+                        name :   'Famille',
+                        sortable : true,
+                        type : 'code-value',
+                        cell : {
+                          toText : function(cellValue) {
+                            var result  = getters.famille.find(function (element) {
+                              return element.id === cellValue;
+                            });
+                            return result !== undefined && result.value;
+                          }
+                        }
+                    },
+                    {
+                        id :  'typeUtilisation',
+                        name :   "Type d'utilisation",
+                        sortable : true,
+                        type : 'code-value',
+                        cell : {
+                          toText : function(cellValue) {
+                              var result  = getters.typeUtilisation.find(function (element) {
+                                return element.id === cellValue;
+                              });
+                              return result !== undefined && result.value;
+                          }
+                        }
+                    },
+                    {
+                        id :  'dateDebutChgt',
+                        name :   "Début chargement",
+                        sortable : true,
+                        type : 'date'
+                    },
+                    {
+                        id :  'dateFinChgt',
+                        name :   "Fin chargement",
+                        sortable : true,
+                        type : 'date'
+                    },
+                    {
+                        id :  'nbLignes',
+                        name :   "Nb lignes",
+                        sortable : true,
+                        type : 'numeric'
+                    },
+                    {
+                        id :  'statut',
+                        name :   "Statut",
+                        sortable : true,
+                        type : 'code-value-hightlight',
+                        cell : {
+                          cellTemplate : function (entry) {
+                            let element = $this.findStatusByCode(entry.statut);
+                            var template = '<div style="padding-left : 2px; color : #fff; background-color: ' + element.color + '">' +
+                                              element.libelle +
+                                            '</div>'
+                            return template;
+                          }
+                        }
+                    },
+                    {
+                        id :  'logs',
+                        name :   "Logs",
+                        sortable : false,
+                        type : 'icon'
+
+                    },
+                    {
+                        id :  'action',
+                        name :   "Actions",
+                        sortable : false,
+                        type : 'clickable-icon',
+                        cell : {
+                          cellTemplate: function (cellValue) {
+                            var tempalte = '<a @click="$emit(\'showPopup\')"><span class="glyphicon glyphicon-trash" aria-hidden="true" ></span></a>';
+                            var statusCode = cellValue.statut;
+                            let element = $this.findStatusByCode(statusCode);
+                            if(element !== undefined && ('CHARGEMENT_KO' === element.code || 'CHARGEMENT_OK' === element.code)) {
+                                return tempalte;
+                            }
+                            return '';
+                          }
+                        }
+                    }
+                  ],
                   gridData : {"content":[{"id":31,"nomFichier":"Fichier 14","famille":"COPIEPRIV","typeUtilisation":"COPRIVSON","dateDebutChgt":"24/05/2017 18:15","dateFinChgt":"24/05/2017 22:57","nbLignes":12000,"statut":"AFFECTE"},{"id":30,"nomFichier":"Fichier 14","famille":"COPIEPRIV","typeUtilisation":"COPRIVSON","dateDebutChgt":"24/05/2017 18:15","dateFinChgt":"24/05/2017 22:57","nbLignes":12000,"statut":"AFFECTE"},{"id":32,"nomFichier":"Fichier 17","famille":"COPIEPRIV","typeUtilisation":"COPRIVSON","dateDebutChgt":"24/05/2017 16:00","dateFinChgt":"24/05/2017 22:57","nbLignes":150780,"statut":"ABANDONNE"},{"id":29,"nomFichier":"Fichier 13","famille":"COPIEPRIV","typeUtilisation":"COPRIVSON","dateDebutChgt":"04/05/2017 18:15","dateFinChgt":"04/05/2017 22:57","nbLignes":15000,"statut":"CHARGEMENT_KO"},{"id":28,"nomFichier":"Fichier 12","famille":"COPIEPRIV","typeUtilisation":"COPRIVSON","dateDebutChgt":"02/05/2017 18:15","dateFinChgt":"01/05/2017 18:50","nbLignes":15000,"statut":"CHARGEMENT_KO"},{"id":24,"nomFichier":"Fichier 06","famille":"COPIEPRIV","typeUtilisation":"COPRIVSON","dateDebutChgt":"02/05/2017 18:15","dateFinChgt":null,"nbLignes":15000,"statut":"EN_COURS"},{"id":23,"nomFichier":"Fichier 05","famille":"COPIEPRIV","typeUtilisation":"COPRIVSON","dateDebutChgt":"01/05/2017 17:10","dateFinChgt":null,"nbLignes":7451,"statut":"EN_COURS"},{"id":27,"nomFichier":"Fichier 11","famille":"COPIEPRIV","typeUtilisation":"COPRIVSON","dateDebutChgt":"01/05/2017 17:10","dateFinChgt":"02/05/2017 01:10","nbLignes":45789,"statut":"CHARGEMENT_OK"},{"id":22,"nomFichier":"Fichier 04","famille":"COPIEPRIV","typeUtilisation":"COPRIVSON","dateDebutChgt":"01/04/2017 17:15","dateFinChgt":null,"nbLignes":1478,"statut":"EN_COURS"},{"id":26,"nomFichier":"Fichier 09","famille":"COPIEPRIV","typeUtilisation":"COPRIVSON","dateDebutChgt":"01/04/2017 17:15","dateFinChgt":"01/04/2017 22:10","nbLignes":22000,"statut":"CHARGEMENT_OK"},{"id":19,"nomFichier":"Fichier 01","famille":"COPIEPRIV","typeUtilisation":"COPRIVSON","dateDebutChgt":"04/02/2017 17:15","dateFinChgt":null,"nbLignes":3000,"statut":"EN_COURS"},{"id":20,"nomFichier":"Fichier 02","famille":"COPIEPRIV","typeUtilisation":"COPRIVSON","dateDebutChgt":"03/02/2017 17:15","dateFinChgt":null,"nbLignes":9500,"statut":"EN_COURS"},{"id":25,"nomFichier":"Fichier 08","famille":"COPIEPRIV","typeUtilisation":"COPRIVSON","dateDebutChgt":"01/02/2017 17:15","dateFinChgt":null,"nbLignes":6500,"statut":"EN_COURS"},{"id":21,"nomFichier":"Fichier 03","famille":"COPIEPRIV","typeUtilisation":"COPRIVSON","dateDebutChgt":"01/02/2017 17:15","dateFinChgt":null,"nbLignes":6500,"statut":"EN_COURS"}],"totalElements":14,"totalPages":1,"last":true,"numberOfElements":14,"sort":null,"first":true,"size":20,"number":0},
                   //gridData : {},
                   searchQuery : ''
@@ -143,9 +239,11 @@
 
       created() {
           const customActions = {
-              search : {method : 'POST', url :'app/rest/chargement/search?page={page}&size={size}'}
+              search : {method : 'POST', url :'app/rest/chargement/search?page={page}&size={size}'},
+              deleteFichier : {method : 'GET', url :'app/rest/chargement/deleteFichier{/fileId}'}
           }
           this.resource= this.$resource('', {}, customActions);
+
 
           let statut = this.$store.getters.statut;
           for(var stt in statut) {
@@ -160,6 +258,58 @@
       },
 
       methods: {
+
+          loadPage: function(pageNum, size) {
+            let pageSize = this.defaultPageable.size;
+             if(size !== undefined) {
+               pageSize = size;
+             }
+             this.resource.search({page : pageNum - 1, size : pageSize}, this.inputChgtCriteria)
+                  .then(response => {
+                     return response.json();
+                  })
+                  .then(data => {
+                      this.priamGrid.gridData = data;
+                      this.priamGrid.gridData.number = data.number + 1;
+                  });
+          },
+
+          onCellClick : function(entry, column) {
+              this.selectedEntry = entry;
+              console.log('columnn' + column.id)
+              if(column.id === 'action') {
+                this.showModal = true;
+              }
+          },
+
+          supprimerDonneesFichier() {
+            this.showModal = false;
+            console.log('Supprimer le fichier selectionne : ' + this.selectedEntry.id);
+            this.resource.deleteFichier({fileId : this.selectedEntry.id})
+              .then(response => {
+                return response.json();
+              })
+              .then(data => {
+                //this.priamGrid.gridData = data;
+                console.log('data = ' + data);
+
+                this.selectedEntry.statut = data.statut;
+
+              });
+          },
+
+          findStatusByCode(code) {
+            let statut = this.$store.getters.statut;
+            return statut.find(function (element) {
+              return element.code === code;
+            })
+          },
+
+          getStatutLibelleByKey(key) {
+            var status = this.findStatusByCode(key);
+
+            return status !== undefined && status.libelle;
+          },
 
           changeStatut() {
               this.$store.dispatch('changeStatut', this.inputChgtCriteria.statutCode);
@@ -188,6 +338,7 @@
                   })
                   .then(data => {
                       this.priamGrid.gridData = data;
+                      this.priamGrid.gridData.number = data.number + 1;
                   });
           },
 
@@ -205,7 +356,8 @@
 
       components : {
           priamGrid : Grid,
-          vSelect : vSelect
+          vSelect : vSelect,
+          modal : Modal
       }
 
   }
