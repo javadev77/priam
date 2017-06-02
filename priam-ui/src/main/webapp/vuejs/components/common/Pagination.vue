@@ -3,12 +3,16 @@
     <div class="col-sm-24">
       <div class="results pull-left">
         {{ totalItems || 0 }} résultat{{ totalItems > 1 ? 's' : '' }}
-        - Page <input v-model.number="currentPage" type="number" @keyup.enter="selectPage($event.target.value)"> / {{ totalPages }}
+        - Page <input style="width: 20px; height: 20px;" :value="currentPage"
+                      type="number"
+                      ref="input"
+                      @keyup.enter="gotoInputPage($event.target.value)"> / {{ totalPages }}
+        <!--@input="updateValue($event.target.value)"-->
             <span>
-                - Resultat par page
-              <!--<select v-model="itemsPerPage" @change="pageSizeChange">
+                - Résultats par page
+              <select v-model="itemsPerPage" @change="pageSizeChanged()">
                 <option v-for="s in sizes"> {{ s }}</option>
-              </select>-->
+              </select>
             </span>
       </div>
       <div class="pull-right">
@@ -48,7 +52,8 @@
       // Current Page
       currentPage: {
         type: Number,
-        required: true
+        required: true,
+        default : 1
       },
       // Total page
       totalPages: Number,
@@ -59,14 +64,8 @@
       // Visible Pages
       visiblePages: {
         type: Number,
-        default: 3,
+        default: 5,
         coerce: (val) => parseInt(val)
-      },
-
-      sizes : {
-          type : Array,
-          default : [25, 50, 100]
-
       },
 
       disabled : {
@@ -77,7 +76,10 @@
 
     data () {
 
-      return {}
+      return {
+        pageSize : 25,
+        sizes : [25, 50, 100]
+      }
     },
 
     computed: {
@@ -133,22 +135,38 @@
       }
     },
 
+    created() {
+      this.pageSize = this.itemsPerPage;
+    },
+
     methods: {
 
+      gotoInputPage(pageInput) {
+          let page = Number.parseInt(pageInput);
+          if(page <= 0 || page > this.totalPages) {
+            this.$refs.input.value = this.currentPage;
+          } else {
+            this.selectPage(page);
+          }
+
+      },
+
       selectPage(page) {
-        console.log("page selected" + page);
+
         if (!this.disabled && this.currentPage !== page && page > 0 && page <= this.totalPages) {
           this.currentPage = page;
-          this.$emit('page-changed', page);
+          this.$emit('page-changed', page, Number.parseInt(this.itemsPerPage));
         }
+        console.log("currentPage=" + this.currentPage);
       },
 
       activePage (pageNum) {
         return this.currentPage === pageNum ? 'active' : ''
       },
 
-      pageSizeChange() {
-        this.$emit('page-size-changed', this.itemsPerPage);
+      pageSizeChanged() {
+        console.log("pageSizeChanged" + this.itemsPerPage)
+        this.$emit('page-size-changed', Number.parseInt(this.itemsPerPage));
       }
 
 

@@ -61,7 +61,7 @@
               {
                 id : 'ListePrg',
                 name : 'ListePrg',
-                label : 'Liste Programmes'
+                label : 'Liste programmes'
               }
             ]
           },

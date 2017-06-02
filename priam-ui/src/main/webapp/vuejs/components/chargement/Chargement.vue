@@ -64,9 +64,11 @@
   <priam-grid
     :data="priamGrid.gridData"
     :columns="priamGrid.gridColumns"
+    noResultText="Aucun résultat."
     :filter-key="priamGrid.searchQuery"
     @cellClick="onCellClick"
-    @load-page="loadPage">
+    @load-page="loadPage"
+    @on-sort="onSort">
   </priam-grid>
 
    <modal v-if="showModal" @close="showModal = false" @yes="supprimerDonneesFichier">
@@ -112,8 +114,10 @@
               resource : {},
 
               defaultPageable : {
-                page : 0,
-                size : 5
+                page : 1,
+                sort : 'dateDebutChargt',
+                dir : 'desc',
+                size : 25
               },
 
               priamGrid : {
@@ -153,13 +157,13 @@
                         }
                     },
                     {
-                        id :  'dateDebutChgt',
+                        id :  'dateDebutChargt',
                         name :   "Début chargement",
                         sortable : true,
                         type : 'date'
                     },
                     {
-                        id :  'dateFinChgt',
+                        id :  'dateFinChargt',
                         name :   "Fin chargement",
                         sortable : true,
                         type : 'date'
@@ -210,7 +214,8 @@
                         }
                     }
                   ],
-                  gridData : {"content":[{"id":31,"nomFichier":"Fichier 14","famille":"COPIEPRIV","typeUtilisation":"COPRIVSON","dateDebutChgt":"24/05/2017 18:15","dateFinChgt":"24/05/2017 22:57","nbLignes":12000,"statut":"AFFECTE"},{"id":30,"nomFichier":"Fichier 14","famille":"COPIEPRIV","typeUtilisation":"COPRIVSON","dateDebutChgt":"24/05/2017 18:15","dateFinChgt":"24/05/2017 22:57","nbLignes":12000,"statut":"AFFECTE"},{"id":32,"nomFichier":"Fichier 17","famille":"COPIEPRIV","typeUtilisation":"COPRIVSON","dateDebutChgt":"24/05/2017 16:00","dateFinChgt":"24/05/2017 22:57","nbLignes":150780,"statut":"ABANDONNE"},{"id":29,"nomFichier":"Fichier 13","famille":"COPIEPRIV","typeUtilisation":"COPRIVSON","dateDebutChgt":"04/05/2017 18:15","dateFinChgt":"04/05/2017 22:57","nbLignes":15000,"statut":"CHARGEMENT_KO"},{"id":28,"nomFichier":"Fichier 12","famille":"COPIEPRIV","typeUtilisation":"COPRIVSON","dateDebutChgt":"02/05/2017 18:15","dateFinChgt":"01/05/2017 18:50","nbLignes":15000,"statut":"CHARGEMENT_KO"},{"id":24,"nomFichier":"Fichier 06","famille":"COPIEPRIV","typeUtilisation":"COPRIVSON","dateDebutChgt":"02/05/2017 18:15","dateFinChgt":null,"nbLignes":15000,"statut":"EN_COURS"},{"id":23,"nomFichier":"Fichier 05","famille":"COPIEPRIV","typeUtilisation":"COPRIVSON","dateDebutChgt":"01/05/2017 17:10","dateFinChgt":null,"nbLignes":7451,"statut":"EN_COURS"},{"id":27,"nomFichier":"Fichier 11","famille":"COPIEPRIV","typeUtilisation":"COPRIVSON","dateDebutChgt":"01/05/2017 17:10","dateFinChgt":"02/05/2017 01:10","nbLignes":45789,"statut":"CHARGEMENT_OK"},{"id":22,"nomFichier":"Fichier 04","famille":"COPIEPRIV","typeUtilisation":"COPRIVSON","dateDebutChgt":"01/04/2017 17:15","dateFinChgt":null,"nbLignes":1478,"statut":"EN_COURS"},{"id":26,"nomFichier":"Fichier 09","famille":"COPIEPRIV","typeUtilisation":"COPRIVSON","dateDebutChgt":"01/04/2017 17:15","dateFinChgt":"01/04/2017 22:10","nbLignes":22000,"statut":"CHARGEMENT_OK"},{"id":19,"nomFichier":"Fichier 01","famille":"COPIEPRIV","typeUtilisation":"COPRIVSON","dateDebutChgt":"04/02/2017 17:15","dateFinChgt":null,"nbLignes":3000,"statut":"EN_COURS"},{"id":20,"nomFichier":"Fichier 02","famille":"COPIEPRIV","typeUtilisation":"COPRIVSON","dateDebutChgt":"03/02/2017 17:15","dateFinChgt":null,"nbLignes":9500,"statut":"EN_COURS"},{"id":25,"nomFichier":"Fichier 08","famille":"COPIEPRIV","typeUtilisation":"COPRIVSON","dateDebutChgt":"01/02/2017 17:15","dateFinChgt":null,"nbLignes":6500,"statut":"EN_COURS"},{"id":21,"nomFichier":"Fichier 03","famille":"COPIEPRIV","typeUtilisation":"COPRIVSON","dateDebutChgt":"01/02/2017 17:15","dateFinChgt":null,"nbLignes":6500,"statut":"EN_COURS"}],"totalElements":14,"totalPages":1,"last":true,"numberOfElements":14,"sort":null,"first":true,"size":20,"number":0},
+                  gridData : {"content":[{"id":254,"nomFichier":"FF_PENEF_EXTRANA_EXTCPRIVCPRIVAUDPL_201704061020001.csv","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"02/06/2017 16:17","dateFinChargt":null,"nbLignes":87933,"statut":"EN_COURS"},{"id":12,"nomFichier":"Fichier 15","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"24/05/2017 16:00","dateFinChargt":"24/05/2017 22:57","nbLignes":150780,"statut":"AFFECTE"},{"id":11,"nomFichier":"Fichier 13","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"04/05/2017 18:15","dateFinChargt":"04/05/2017 22:57","nbLignes":15000,"statut":"CHARGEMENT_KO"},{"id":10,"nomFichier":"Fichier 12","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"02/05/2017 18:15","dateFinChargt":"01/05/2017 18:50","nbLignes":15000,"statut":"CHARGEMENT_KO"},{"id":6,"nomFichier":"Fichier 06","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"02/05/2017 18:15","dateFinChargt":null,"nbLignes":15000,"statut":"EN_COURS"},{"id":5,"nomFichier":"Fichier 05","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"01/05/2017 17:10","dateFinChargt":null,"nbLignes":7451,"statut":"EN_COURS"},{"id":9,"nomFichier":"Fichier 11","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"01/05/2017 17:10","dateFinChargt":"02/05/2017 01:10","nbLignes":45789,"statut":"CHARGEMENT_OK"},{"id":8,"nomFichier":"Fichier 09","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"01/04/2017 17:15","dateFinChargt":"01/04/2017 22:10","nbLignes":22000,"statut":"CHARGEMENT_OK"},{"id":4,"nomFichier":"Fichier 04","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"01/04/2017 17:15","dateFinChargt":null,"nbLignes":1478,"statut":"EN_COURS"},{"id":1,"nomFichier":"Fichier 01","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"04/02/2017 17:15","dateFinChargt":null,"nbLignes":3000,"statut":"EN_COURS"},{"id":2,"nomFichier":"Fichier 02","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"03/02/2017 17:15","dateFinChargt":null,"nbLignes":9500,"statut":"EN_COURS"},{"id":3,"nomFichier":"Fichier 03","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"01/02/2017 17:15","dateFinChargt":null,"nbLignes":6500,"statut":"EN_COURS"},{"id":7,"nomFichier":"Fichier 08","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"01/02/2017 17:15","dateFinChargt":null,"nbLignes":6500,"statut":"EN_COURS"}],"last":true,"totalPages":1,"totalElements":13,"size":25,"number":0,"sort":[{"direction":"DESC","property":"dateDebutChargt","ignoreCase":false,"nullHandling":"NATIVE","ascending":false,"descending":true}],"first":true,"numberOfElements":13},
+                  //gridData : {"content":[],"totalElements":0,"totalPages":1,"last":true,"numberOfElements":25,"sort":null,"first":true,"size":25,"number":1},
                   //gridData : {},
                   searchQuery : ''
               }
@@ -239,7 +244,7 @@
 
       created() {
           const customActions = {
-              search : {method : 'POST', url :'app/rest/chargement/search?page={page}&size={size}'},
+              search : {method : 'POST', url :'app/rest/chargement/search?page={page}&size={size}&sort={sort},{dir}'},
               deleteFichier : {method : 'GET', url :'app/rest/chargement/deleteFichier{/fileId}'}
           }
           this.resource= this.$resource('', {}, customActions);
@@ -259,19 +264,37 @@
 
       methods: {
 
-          loadPage: function(pageNum, size) {
+          onSort(currentPage, pageSize, sort) {
+
+              this.launchRequest(currentPage, pageSize,
+                                 sort.property, sort.direction);
+
+              this.defaultPageable.sort = sort.property;
+              this.defaultPageable.dir = sort.direction;
+          },
+
+          loadPage: function(pageNum, size, sort) {
             let pageSize = this.defaultPageable.size;
              if(size !== undefined) {
                pageSize = size;
              }
-             this.resource.search({page : pageNum - 1, size : pageSize}, this.inputChgtCriteria)
-                  .then(response => {
-                     return response.json();
-                  })
-                  .then(data => {
-                      this.priamGrid.gridData = data;
-                      this.priamGrid.gridData.number = data.number + 1;
-                  });
+
+             this.launchRequest(pageNum, pageSize,
+                                sort.property, sort.direction);
+
+          },
+
+          launchRequest(pageNum, pageSize, sort, dir) {
+            this.resource.search({page : pageNum - 1, size : pageSize,
+                                  sort : sort, dir: dir}, this.inputChgtCriteria)
+              .then(response => {
+                return response.json();
+              })
+              .then(data => {
+                this.priamGrid.gridData = data;
+                this.priamGrid.gridData.number = data.number + 1;
+
+              });
           },
 
           onCellClick : function(entry, column) {
@@ -332,14 +355,8 @@
               this.inputChgtCriteria.typeUtilisationCode = this.typeUtilisationSelected.id;
               this.inputChgtCriteria.familleCode = this.familleSelected.id;
 
-              this.resource.search({page : this.defaultPageable.page, size : this.defaultPageable.size}, this.inputChgtCriteria)
-                  .then(response => {
-                      return response.json();
-                  })
-                  .then(data => {
-                      this.priamGrid.gridData = data;
-                      this.priamGrid.gridData.number = data.number + 1;
-                  });
+              this.launchRequest(this.defaultPageable.page, this.defaultPageable.size,
+                                 this.defaultPageable.sort, this.defaultPageable.dir);
           },
 
           retablir() {

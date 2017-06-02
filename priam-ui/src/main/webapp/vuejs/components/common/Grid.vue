@@ -12,109 +12,116 @@
 
     <div class="panel-collapse" :class="{collapse : isCollapsed}">
       <div class="result-panel-body panel-body">
-        <paginator :current-page="this.data.number"
-                   :total-pages="this.data.totalPages"
-                   :total-items="this.data.totalElements"
-                   :itemsPerPage="this.data.numberOfElements"
-                   @page-changed="pageOneChanged">
+        <temeplate v-if="emptyResult">
+          <div class="row text-center ng-binding"  v-html="this.noResultText">
+          </div>
+        </temeplate>
+        <template v-else>
+          <paginator :current-page="this.data.number"
+                     :total-pages="this.data.totalPages"
+                     :total-items="this.data.totalElements"
+                     :itemsPerPage="this.data.size"
+                     @page-size-changed="pageSizeChanged"
+                     @page-changed="pageOneChanged">
 
-        </paginator>
+          </paginator>
 
-        <table class="table-responsive table-drop table-bordered table-striped table-hover resultsTable">
-            <thead>
-            <tr>
-              <th v-for="entry in columns"
-                  @click="sortBy(entry.id)"
-                  :class="{ active: sortKey == entry.id }">
+          <table class="table-responsive table-drop table-bordered table-striped table-hover resultsTable">
+              <thead>
+              <tr>
+                <th v-for="entry in columns">
+                  <a @click="sortBy(entry)">
+                    <span>{{ entry.name }}</span>
+                    <span v-if="entry.sortable"
+                          class="fui"
+                          :class="{'fui-triangle-down':!sortAsc,
+                                  'fui-triangle-up': sortAsc,
+                                  sorted: entry.id === sortProp}">
+                    </span>
+                  </a>
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr v-for="entry in filteredData">
+                <!--<template v-for="(value,key) in columns">
+                    <td v-if="key === 'statut'" v-status-color="statusColor(entry[key])" class="columnCenter">
+                      {{ getStatutLibelleByKey(entry[key]) }}
+                    </td>
+                    <td class="columnCenter" v-else-if="key === 'dateDebutChgt'">
+                      {{entry[key]}}
+                    </td>
+                    <td class="columnCenter" v-else-if="key === 'dateFinChgt'">
+                      {{entry[key]}}
+                    </td>
+                    <td v-else-if="key === 'famille'">
+                      {{ libelleFamilleByKey(entry[key]) }}
+                    </td>
+                    <td v-else-if="key === 'typeUtilisation'">
+                      {{ libelleTypeUtilisationByKey(entry[key]) }}
+                    </td>
+                    <td v-else-if="isToShowActions(key, entry['statut'])" class="columnCenter">
+                        <a @click="showPopupSupprimer(entry)">
+                          <span class="glyphicon glyphicon-trash" aria-hidden="true" ></span>
+                        </a>
+                    </td>
 
-                <span>{{ entry.name }}</span>
-               <!-- <span class="arrow" :class="sortOrders[key] > 0 ? 'fui-triangle-up' : 'fui-triangle-down'">
-                  </span>-->
+                    <td v-else-if="key === 'nbLignes'" class="columnRight">
+                      {{entry[key]}}
+                    </td>
+                    <td v-else>
+                      {{entry[key]}}
+                    </td>
+                </template>-->
 
-                <span v-if="entry.sortable" class="fui" :class="sortOrders[entry.id] > 0 ? 'fui-triangle-up' : 'fui-triangle-down'">
-                </span>
-              </th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr v-for="entry in filteredData">
-              <!--<template v-for="(value,key) in columns">
-                  <td v-if="key === 'statut'" v-status-color="statusColor(entry[key])" class="columnCenter">
-                    {{ getStatutLibelleByKey(entry[key]) }}
-                  </td>
-                  <td class="columnCenter" v-else-if="key === 'dateDebutChgt'">
-                    {{entry[key]}}
-                  </td>
-                  <td class="columnCenter" v-else-if="key === 'dateFinChgt'">
-                    {{entry[key]}}
-                  </td>
-                  <td v-else-if="key === 'famille'">
-                    {{ libelleFamilleByKey(entry[key]) }}
-                  </td>
-                  <td v-else-if="key === 'typeUtilisation'">
-                    {{ libelleTypeUtilisationByKey(entry[key]) }}
-                  </td>
-                  <td v-else-if="isToShowActions(key, entry['statut'])" class="columnCenter">
-                      <a @click="showPopupSupprimer(entry)">
-                        <span class="glyphicon glyphicon-trash" aria-hidden="true" ></span>
+                <template v-for="entryColumn in columns">
+                  <template v-if="entryColumn.type === 'date'">
+                    <td class="columnCenter">
+                      {{ entry[entryColumn.id] }}
+                    </td>
+                  </template>
+                  <template v-else-if="entryColumn.type === 'numeric'">
+                    <td class="columnRight">
+                      {{ entry[entryColumn.id] }}
+                    </td>
+                  </template>
+                  <template v-else-if="entryColumn.type === 'code-value'">
+                    <td>
+                      {{entryColumn.cell.toText(entry[entryColumn.id])}}
+                    </td>
+                  </template>
+                  <template v-else-if="entryColumn.type === 'code-value-hightlight'">
+                    <td>
+                      <div v-html="entryColumn.cell.cellTemplate(entry)"></div>
+                    </td>
+                  </template>
+                  <template v-else-if="entryColumn.type === 'clickable-icon'">
+                    <td class="columnCenter">
+                      <a v-html="entryColumn.cell.cellTemplate(entry)" @click="emitCellClick(entry, entryColumn)">
                       </a>
-                  </td>
+                    </td>
+                  </template>
+                  <template  v-else>
+                    <td>
+                      {{ entry[entryColumn.id] }}
+                    </td>
+                  </template>
 
-                  <td v-else-if="key === 'nbLignes'" class="columnRight">
-                    {{entry[key]}}
-                  </td>
-                  <td v-else>
-                    {{entry[key]}}
-                  </td>
-              </template>-->
-
-              <template v-for="entryColumn in columns">
-                <template v-if="entryColumn.type === 'date'">
-                  <td class="columnCenter">
-                    {{ entry[entryColumn.id] }}
-                  </td>
-                </template>
-                <template v-else-if="entryColumn.type === 'numeric'">
-                  <td class="columnRight">
-                    {{ entry[entryColumn.id] }}
-                  </td>
-                </template>
-                <template v-else-if="entryColumn.type === 'code-value'">
-                  <td>
-                    {{entryColumn.cell.toText(entry[entryColumn.id])}}
-                  </td>
-                </template>
-                <template v-else-if="entryColumn.type === 'code-value-hightlight'">
-                  <td>
-                    <div v-html="entryColumn.cell.cellTemplate(entry)"></div>
-                  </td>
-                </template>
-                <template v-else-if="entryColumn.type === 'clickable-icon'">
-                  <td class="columnCenter">
-                    <a v-html="entryColumn.cell.cellTemplate(entry)" @click="emitCellClick(entry, entryColumn)">
-                    </a>
-                  </td>
-                </template>
-                <template  v-else>
-                  <td>
-                    {{ entry[entryColumn.id] }}
-                  </td>
                 </template>
 
-              </template>
+              </tr>
+              </tbody>
+          </table>
 
-            </tr>
-            </tbody>
-        </table>
+          <paginator :current-page="this.data.number"
+                     :total-pages="this.data.totalPages"
+                     :total-items="this.data.totalElements"
+                     :itemsPerPage="this.data.size"
+                     @page-size-changed="pageSizeChanged"
+                     @page-changed="pageOneChanged">
 
-        <paginator :current-page="this.data.number"
-                   :total-pages="this.data.totalPages"
-                   :total-items="this.data.totalElements"
-                   :itemsPerPage="this.data.numberOfElements"
-                   @page-size-changed="pageSizeChanged"
-                   @page-changed="pageOneChanged">
-
-        </paginator>
+          </paginator>
+        </template>
 
       </div>
     </div>
@@ -130,7 +137,7 @@
 
   export default {
 
-    props : ['data', 'columns', 'filterKey'],
+    props : ['data', 'columns', 'filterKey', 'noResultText'],
 
     data() {
       var sortOrders = {}
@@ -142,7 +149,10 @@
       return {
         isCollapsed: false,
         sortKey: '',
-        sortOrders: sortOrders
+        sortOrders: sortOrders,
+        sort : {},
+        currentPage : 1,
+        pageSize : 25
 
         /*pagination: {
           currentPage: this.data.number,
@@ -155,13 +165,31 @@
     },
 
     computed : {
+
+      sortAsc() {
+
+          return this.sort && this.sort != null && this.sort.ascending === true;
+      },
+
+      sortProp() {
+        if(this.sort !== undefined && this.sort!= null) {
+            console.log("property" + this.sort.property)
+          return this.sort.property;
+        }
+        return '';
+      },
+
+      emptyResult() {
+        return this.data.content.length === 0 && this.data.totalElements === 0;
+      },
+
       filteredData() {
         var sortKey = this.sortKey
         var filterKey = this.filterKey && this.filterKey.toLowerCase()
         var order = this.sortOrders[sortKey] || 1;
         var data = this.data.content;
 
-        if (filterKey) {
+        /*if (filterKey) {
           data = data.filter(function (row) {
             return Object.keys(row).some(function (key) {
               return String(row[key]).toLowerCase().indexOf(filterKey) > -1
@@ -174,13 +202,14 @@
             b = b[sortKey]
             return (a === b ? 0 : a > b ? 1 : -1) * order
           })
-        }
+        }*/
         return data
       }
 
     },
 
     created() {
+        this.sort = this.data.sort[0];
 
     },
 
@@ -198,17 +227,36 @@
       },
 
 
-      sortBy(key) {
-          this.sortKey = key;
-          this.sortOrders[key] = this.sortOrders[key] * -1;
+      sortBy(entryColumn) {
+          //this.sortKey = key;
+          //this.sortOrders[key] = this.sortOrders[key] * -1;
+        //sort[0].property = entryColumn.id;
+        //sort[0].property
+        let sortProp = entryColumn.id;
+        let isAsc = false;
+        if(sortProp === this.sort.property ) {
+          isAsc = !this.sort.ascending;
+        } else {
+          isAsc = true;
+        }
+
+        this.sort.ascending = isAsc;
+        this.sort.property = sortProp;
+        this.sort.direction = isAsc ? 'ASC' : 'DESC';
+
+        this.$emit('on-sort', this.currentPage, this.pageSize, this.sort);
       },
 
-      pageOneChanged (pageNum) {
-          this.$emit('load-page', pageNum);
+      pageOneChanged (pageNum, pageSize) {
+          this.currentPage = pageNum;
+          this.$emit('load-page', pageNum, pageSize, this.sort);
       },
 
       pageSizeChanged(pageSize) {
-        this.$emit('load-page', 1, pageSize);
+        console.log("type of pageSize = "  + typeof pageSize);
+        this.currentPage = 1;
+        this.pageSize = pageSize;
+        this.$emit('load-page', 1, pageSize, this.sort);
       }
 
     },

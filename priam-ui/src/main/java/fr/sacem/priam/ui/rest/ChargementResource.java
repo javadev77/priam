@@ -64,7 +64,7 @@ public class ChargementResource {
         if(!"ALL".equals(input.getTypeUtilisationCode())) {
           codeTypeUtil = input.getTypeUtilisationCode();
         }
-        
+        //Pageable realPageable = PagingUtil.parenthesisEncapsulation(pageable);
         return fichierDao.findAllFichiersByCriteria(codeFamille, codeTypeUtil, status,pageable);
     }
     

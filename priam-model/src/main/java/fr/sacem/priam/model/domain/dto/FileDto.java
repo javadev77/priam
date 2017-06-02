@@ -16,10 +16,10 @@ public class FileDto {
     private String typeUtilisation;
     
     @JsonSerialize(using = CustomDateSerializer.class)
-    private Date dateDebutChgt;
+    private Date dateDebutChargt;
   
     @JsonSerialize(using = CustomDateSerializer.class)
-    private Date dateFinChgt;
+    private Date dateFinChargt;
     
     private Long nbLignes;
     private Status statut;
@@ -31,8 +31,8 @@ public class FileDto {
     this.nomFichier = nomFichier;
     this.famille = famille;
     this.typeUtilisation = typeUtilisation;
-    this.dateDebutChgt = dateDebutChgt;
-    this.dateFinChgt = dateFinChgt;
+    this.dateDebutChargt = dateDebutChgt;
+    this.dateFinChargt = dateFinChgt;
     this.nbLignes = nbLignes;
     this.statut = statut;
   }
@@ -56,16 +56,17 @@ public class FileDto {
     public void setTypeUtilisation(String typeUtilisation) {
       this.typeUtilisation = typeUtilisation;
     }
-    
-    public void setDateDebutChgt(Date dateDebutChgt) {
-      this.dateDebutChgt = dateDebutChgt;
-    }
-    
-    public void setDateFinChgt(Date dateFinChgt) {
-      this.dateFinChgt = dateFinChgt;
-    }
-    
-    public void setNbLignes(Long nbLignes) {
+  
+  
+  public void setDateDebutChargt(Date dateDebutChargt) {
+    this.dateDebutChargt = dateDebutChargt;
+  }
+  
+  public void setDateFinChargt(Date dateFinChargt) {
+    this.dateFinChargt = dateFinChargt;
+  }
+  
+  public void setNbLignes(Long nbLignes) {
       this.nbLignes = nbLignes;
     }
     
@@ -85,16 +86,16 @@ public class FileDto {
     public String getTypeUtilisation() {
       return typeUtilisation;
     }
-    
-    public Date getDateDebutChgt() {
-      return dateDebutChgt;
+  
+    public Date getDateDebutChargt() {
+      return dateDebutChargt;
     }
-    
-    public Date getDateFinChgt() {
-      return dateFinChgt;
-    }
-    
-    public Long getNbLignes() {
+  
+  public Date getDateFinChargt() {
+    return dateFinChargt;
+  }
+  
+  public Long getNbLignes() {
       return nbLignes;
     }
     

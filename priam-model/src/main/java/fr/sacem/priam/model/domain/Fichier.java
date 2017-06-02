@@ -16,7 +16,7 @@ public class Fichier {
     private Long id;
     
     @Column(name = "NOM")
-    private String nom;
+    private String nomFichier;
     
     @ManyToOne
     @JoinColumn(name = "CDEFAMILTYPUTIL")
@@ -48,8 +48,8 @@ public class Fichier {
         return id;
     }
     
-    public String getNom() {
-        return nom;
+    public String getNomFichier() {
+        return nomFichier;
     }
     
     public Famille getFamille() {
@@ -81,8 +81,8 @@ public class Fichier {
         this.id = id;
     }
     
-    public void setNom(String nom) {
-        this.nom = nom;
+    public void setNomFichier(String nomFichier) {
+        this.nomFichier = nomFichier;
     }
     
     public void setFamille(Famille famille) {
