@@ -1,5 +1,6 @@
 package fr.sacem.service;
 
+import fr.sacem.domain.Fichier;
 import fr.sacem.util.UtilFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +10,7 @@ import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemStreamException;
 import org.springframework.batch.item.file.MultiResourceItemReader;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -33,7 +35,8 @@ public class ZipMultiResourceItemReader<T> extends MultiResourceItemReader<T> {
     @Value("#{jobParameters['output.archives']}")
     private String outputDirectory = null;
     private UtilFile utilFile;
-
+    @Autowired
+    private FichierService fichierService;
 
     /**
      * Tries to extract all files in the archives and adds them as resources to
@@ -68,37 +71,40 @@ public class ZipMultiResourceItemReader<T> extends MultiResourceItemReader<T> {
                 try {
                     // controle le nombre de repertoires passé, pour refuser le traitement des sous repertoires
                     if (archives.length >= 1) {
-                        Integer nbrDeFichierDansLeRepertoire = archives[0].getFile().listFiles().length;
-                        List<File> fichiersDansLeRepertoire = Arrays.asList(archives[0].getFile().listFiles());
-                        List<File> fichiersZipDansLeRepertoire = new ArrayList<File>();
-                        for (int j = 0; j < nbrDeFichierDansLeRepertoire; j++) {
-                            File file = fichiersDansLeRepertoire.get(j);
-                            if (file.getName().matches(EXTENTION_ZIP)) {
-                                File fichierEnCoursDeTraitement = new File(rep + file.getName() + "_en_cours_de_traiement");
-                                boolean renommageOk = file.renameTo(fichierEnCoursDeTraitement);
-                                if (renommageOk) {
-                                    fichiersZipDansLeRepertoire.add(fichierEnCoursDeTraitement);
-                                    JobParameter jobParameterFichierZipEnCours = new JobParameter(fichierEnCoursDeTraitement.getAbsolutePath());
-                                    JobParameter jobParameterNomFichierOriginal = new JobParameter(file.getName());
-                                    this.stepExecution.getExecutionContext().put("nomFichierOriginal", jobParameterNomFichierOriginal);
-                                    this.stepExecution.getExecutionContext().put("fichierZipEnCours", jobParameterFichierZipEnCours);
-                                    this.stepExecution.getExecutionContext().put("outputArchives", outputDirectory);
+                        if (archives[0] != null) {
+                            Integer nbrDeFichierDansLeRepertoire = archives[0].getFile().listFiles().length;
+                            List<File> fichiersDansLeRepertoire = Arrays.asList(archives[0].getFile().listFiles());
+                            List<File> fichiersZipDansLeRepertoire = new ArrayList<File>();
+                            for (int j = 0; j < nbrDeFichierDansLeRepertoire; j++) {
+                                File file = fichiersDansLeRepertoire.get(j);
+                                if (file.getName().matches(EXTENTION_ZIP)) {
+                                    File fichierEnCoursDeTraitement = new File(rep + file.getName() + "_en_cours_de_traiement");
+                                    boolean renommageOk = file.renameTo(fichierEnCoursDeTraitement);
+                                    if (renommageOk) {
+                                        fichiersZipDansLeRepertoire.add(fichierEnCoursDeTraitement);
+                                        JobParameter jobParameterFichierZipEnCours = new JobParameter(fichierEnCoursDeTraitement.getAbsolutePath());
+                                        JobParameter jobParameterNomFichierOriginal = new JobParameter(file.getName());
+                                        this.stepExecution.getExecutionContext().put("nomFichierOriginal", jobParameterNomFichierOriginal);
+                                        this.stepExecution.getExecutionContext().put("fichierZipEnCours", jobParameterFichierZipEnCours);
+                                        this.stepExecution.getExecutionContext().put("outputArchives", outputDirectory);
+                                    }
                                 }
                             }
-                        }
-                        if (fichiersZipDansLeRepertoire.size() >= 1) {
-                            //on traite qu'un seul fichier zip par operation, ce fichier zip va etre déplacer si le batch est complet
-                            File file = fichiersZipDansLeRepertoire.get(0);
-                            zipFile = new ZipFile(file);
-                            // find files inside the current zip resource
-                            //La fonction extractFiles traite le fichier csv et retourne son nom
-                            //Le nom du fichier est entregister dans le context du step pour pouvoir l'utiliser dans le itemWriter
-                            String nomFichier = utilFile.extractFiles(zipFile, extractedResources);
-                            JobParameter jobParameterNomDuFichier = new JobParameter(nomFichier);
-                            this.stepExecution.getExecutionContext().put("nomFichier", jobParameterNomDuFichier);
+                            if (fichiersZipDansLeRepertoire.size() >= 1) {
+                                //on traite qu'un seul fichier zip par operation, ce fichier zip va etre déplacer si le batch est complet
+                                File file = fichiersZipDansLeRepertoire.get(0);
+                                zipFile = new ZipFile(file);
+                                // find files inside the current zip resource
+                                //La fonction extractFiles traite le fichier csv et retourne son nom
+                                //Le nom du fichier est entregister dans le context du step pour pouvoir l'utiliser dans le itemWriter
+                                String nomFichier = utilFile.extractFiles(zipFile, extractedResources);
+                                Fichier fichier = fichierService.findByName(nomFichier);
+                                JobParameter jobParameterNomDuFichier = new JobParameter(nomFichier);
+                                this.stepExecution.getExecutionContext().put("nomFichier", jobParameterNomDuFichier);
+                            }
                         }
                     }
-                } catch (Exception ex) {
+                    } catch (Exception ex) {
                     throw new ItemStreamException(ex);
                 }
 
