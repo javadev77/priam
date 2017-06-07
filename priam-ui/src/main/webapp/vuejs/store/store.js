@@ -6,6 +6,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 
 import chargement from './modules/chargement';
+import programme from './modules/programme';
 import * as actions from './actions';
 
 
@@ -16,7 +17,7 @@ const debug = process.env.NODE_ENV !== 'production'
 export default new Vuex.Store({
   actions,
   modules: {
-    chargement
+    chargement, programme
   },
   strict: debug
 });

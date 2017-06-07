@@ -99,7 +99,7 @@ public class FichierDaoTest {
         Page<FileDto> allFichiersByStatus = fichierDao.findAllFichiersByCriteria(null, null, status, PAGEABLE);
         
         assertThat(allFichiersByStatus).isNotNull().isNotEmpty();
-        assertThat(allFichiersByStatus.getTotalElements()).isEqualTo(13);
+        assertThat(allFichiersByStatus.getTotalElements()).isEqualTo(fichierDao.findAll().size());
         assertThat(allFichiersByStatus.getContent()).isNotEmpty().hasSize(3);
     
         
