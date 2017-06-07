@@ -1,16 +1,17 @@
 import Home from './components/Home.vue';
 import Chargement from './components/chargement/Chargement.vue';
 import Affectation from './components/affectation/Affectation.vue';
+import ListeProgramme from './components/programme/ListeProgramme.vue';
 
 export const routes = [
     { path: '/', name :'home', component: Affectation },
     { path: '/chargement', name :'chargement', component: Chargement },
-    { path: '/programme', name: 'programme', component: Affectation,
+    { path: '/programme', name: 'programme', component: ListeProgramme,
       children: [
         {
           path: 'listePrg',
           name: 'ListePrg',
-          component: Affectation
+          component: ListeProgramme
         },
         {
           path: 'createProg',

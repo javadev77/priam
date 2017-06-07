@@ -41,6 +41,10 @@ public class Fichier {
     @Column(name="STATUT_CODE", nullable = false)
     private Status statut;
     
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "NUMPROG")
+    private Programme programme;
+    
     public  Fichier() {
     }
     
@@ -107,6 +111,14 @@ public class Fichier {
     
     public void setStatut(Status statut) {
         this.statut = statut;
+    }
+    
+    public Programme getProgramme() {
+        return programme;
+    }
+    
+    public void setProgramme(Programme programme) {
+        this.programme = programme;
     }
     
     @Override

@@ -180,7 +180,7 @@
       },
 
       emptyResult() {
-        return this.data.content.length === 0 && this.data.totalElements === 0;
+        return this.data.content !== undefined  && this.data.content.length === 0 && this.data.totalElements === 0;
       },
 
       filteredData() {

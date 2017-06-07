@@ -1,0 +1,120 @@
+package fr.sacem.priam.model.domain.dto;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import fr.sacem.priam.model.domain.StatutProgramme;
+import fr.sacem.priam.model.domain.TypeRepart;
+import fr.sacem.priam.model.util.CustomDateSerializer;
+
+import java.util.Date;
+
+/**
+ * Created by benmerzoukah on 28/04/2017.
+ */
+public class ProgrammeDto {
+    private String numProg;
+    private String nom;
+    private String famille;
+    private String typeUtilisation;
+    private Integer rionTheorique;
+    
+    @JsonSerialize(using = CustomDateSerializer.class)
+    private Date dateCreation;
+    private TypeRepart typeRepart;
+    private StatutProgramme statut;
+    private Integer rionPaiement;
+    private Long fichiers;
+    
+  
+  public ProgrammeDto(String numProg, String nom, String famille, String typeUtilisation, Integer rionTheorique, Date dateCreation, TypeRepart typeRepart, StatutProgramme statut, Integer rionPaiement, Long nbFichiers) {
+    this.numProg = numProg;
+    this.nom = nom;
+    this.famille = famille;
+    this.typeUtilisation = typeUtilisation;
+    this.rionTheorique = rionTheorique;
+    this.dateCreation = dateCreation;
+    this.typeRepart = typeRepart;
+    this.statut = statut;
+    this.rionPaiement = rionPaiement;
+    this.fichiers = nbFichiers;
+  }
+    
+    public String getNumProg() {
+    return numProg;
+  }
+  
+  public void setNumProg(String numProg) {
+    this.numProg = numProg;
+  }
+  
+  public String getNom() {
+    return nom;
+  }
+  
+  public void setNom(String nom) {
+    this.nom = nom;
+  }
+  
+  public String getFamille() {
+    return famille;
+  }
+  
+  public void setFamille(String famille) {
+    this.famille = famille;
+  }
+  
+  public String getTypeUtilisation() {
+    return typeUtilisation;
+  }
+  
+  public void setTypeUtilisation(String typeUtilisation) {
+    this.typeUtilisation = typeUtilisation;
+  }
+  
+  public Integer getRionTheorique() {
+    return rionTheorique;
+  }
+  
+  public void setRionTheorique(Integer rionTheorique) {
+    this.rionTheorique = rionTheorique;
+  }
+  
+  public Date getDateCreation() {
+    return dateCreation;
+  }
+  
+  public void setDateCreation(Date dateCreation) {
+    this.dateCreation = dateCreation;
+  }
+  
+  public TypeRepart getTypeRepart() {
+    return typeRepart;
+  }
+  
+  public void setTypeRepart(TypeRepart typeRepart) {
+    this.typeRepart = typeRepart;
+  }
+  
+  public StatutProgramme getStatut() {
+    return statut;
+  }
+  
+  public void setStatut(StatutProgramme statut) {
+    this.statut = statut;
+  }
+  
+  public Integer getRionPaiement() {
+    return rionPaiement;
+  }
+  
+  public void setRionPaiement(Integer rionPaiement) {
+    this.rionPaiement = rionPaiement;
+  }
+    
+    public Long getFichiers() {
+        return fichiers;
+    }
+    
+    public void setFichiers(Long fichiers) {
+        this.fichiers = fichiers;
+    }
+}
