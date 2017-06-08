@@ -36,6 +36,7 @@ public class JobCompletionNotificationLigneProgrammeListener extends JobExecutio
     public void afterJob(JobExecution jobExecution) {
 
         if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
+
             Collection<StepExecution> stepExecutions = jobExecution.getStepExecutions();
             Iterator it = stepExecutions.iterator();
             while (it.hasNext()) {

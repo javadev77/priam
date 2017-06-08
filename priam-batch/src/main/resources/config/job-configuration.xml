@@ -20,7 +20,7 @@
                         reader="readerPriamZip"
                         writer="writerPriam"
                         processor="ligneProgrammeItemProcessor"
-                        commit-interval="1">
+                        commit-interval="${commit-interval}">
                 </chunk>
             </tasklet>
         </step>

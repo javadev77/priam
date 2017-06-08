@@ -112,6 +112,7 @@ public class UtilFile {
      */
     public String extractFiles(final ZipFile currentZipFile, final List<Resource> extractedResources) throws IOException {
         Enumeration<? extends ZipEntry> zipEntryEnum = currentZipFile.entries();
+
         //Le code support que l'operation traite un seul fichier csv comme demander fonctionnellement
         String nomFichier = "";
         while (zipEntryEnum.hasMoreElements()) {
@@ -122,9 +123,8 @@ public class UtilFile {
             if (!zipEntry.isDirectory() && !zipEntry.getName().contains(MON_FILTER) && zipEntry.getName().contains(EXTENTION_CSV)) {
                 // add inputStream
                 InputStreamResource inputStreamResourceForExtraction = new InputStreamResource(currentZipFile.getInputStream(zipEntry), zipEntry.getName());
-                ZipEntry zipEntryCSV = currentZipFile.entries().nextElement();
-                InputStream csvInputStream = currentZipFile.getInputStream(zipEntryCSV);
-                InputStreamResource inputStreamResourceForBDD = new InputStreamResource(csvInputStream);
+                InputStream csvInputStream = currentZipFile.getInputStream(zipEntry);
+                InputStreamResource inputStreamResourceForBDD = new InputStreamResource(csvInputStream,zipEntry.getName());
                 fichierService.addFichier(inputStreamResourceForBDD.getInputStream(), zipEntry.getName());
                 extractedResources.add(inputStreamResourceForExtraction);
                 nomFichier = zipEntry.getName();
