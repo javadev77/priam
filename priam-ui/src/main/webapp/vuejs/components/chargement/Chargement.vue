@@ -22,7 +22,7 @@
                 </div>
                 <div class="col-sm-4">
 
-                  <v-select :searchable="false" label="value" v-model="familleSelected" :options="familleOptions" :on-change="loadTypeUtilisation">
+                  <v-select :searchable="false" label="value" v-model="familleSelected" :options="familleListOptions" :on-change="loadTypeUtilisation">
                   </v-select>
                 </div>
               <div class="col-sm-2">
@@ -30,7 +30,7 @@
               </div>
               <div class="col-sm-5">
 
-                <v-select :searchable="false" label="value" v-model="typeUtilisationSelected" :options="typeUtilisationOptions">
+                <v-select :searchable="false" label="value" v-model="typeUtilisationSelected" :options="typeUtilisationListOptions">
                 </v-select>
               </div>
 
@@ -61,15 +61,31 @@
     </div>
  </div>
 
-  <priam-grid
-    :data="priamGrid.gridData"
-    :columns="priamGrid.gridColumns"
-    noResultText="Aucun résultat."
-    :filter-key="priamGrid.searchQuery"
-    @cellClick="onCellClick"
-    @load-page="loadPage"
-    @on-sort="onSort">
-  </priam-grid>
+
+ <div class="container-fluid">
+     <div class="panel panel-default">
+       <div class="panel-heading">
+         <h5 class="panel-title">
+           <a>Résultats</a>
+           <span class="pull-left collapsible-icon bg-ico-tablerow"></span>
+         </h5>
+       </div>
+       <div class="panel-collapse">
+         <div class="result-panel-body panel-body">
+           <priam-grid
+             :data="priamGrid.gridData"
+             :columns="priamGrid.gridColumns"
+             noResultText="Aucun résultat."
+             :filter-key="priamGrid.searchQuery"
+             @cellClick="onCellClick"
+             @load-page="loadPage"
+             @on-sort="onSort">
+           </priam-grid>
+         </div>
+       </div>
+     </div>
+ </div>
+
 
    <modal v-if="showModal">
      <label class="homer-prompt-q control-label" slot="body">
@@ -108,6 +124,10 @@
 
               familleSelected : {'id' : 'ALL', 'value' : 'Toutes'},
               typeUtilisationSelected : {'id' : 'ALL', 'value' : 'Tous'},
+
+              familleOptions : [],
+              typeUtilisationOptions : [],
+
 
               inputChgtCriteria : {
                 familleCode : '',
@@ -228,16 +248,15 @@
       },
 
       computed : {
-          familleOptions() {
-              return this.$store.getters.familleOptions;
+          familleListOptions() {
+              var options = this.familleOptions;
+              options.unshift({'id' :'ALL', "value" : "Toutes"});
+              return options;
           },
 
-         typeUtilisationOptions() {
-              return this.$store.getters.typeUtilisationOptions;
-          },
-
-          familleTypeUtilMap() {
-            return this.$store.getters.familleTypeUtilMap;
+         typeUtilisationListOptions() {
+              var options = this.typeUtilisationOptions;
+              return options;
           },
 
           statut() {
@@ -247,6 +266,9 @@
       },
 
       created() {
+          this.familleOptions = this.$store.getters.famille;
+          this.typeUtilisationOptions = {'id' :'ALL', "value" : "Toutes"};
+
           const customActions = {
               search : {method : 'POST', url :'app/rest/chargement/search?page={page}&size={size}&sort={sort},{dir}'},
               deleteFichier : {method : 'GET', url :'app/rest/chargement/deleteFichier{/fileId}'}
@@ -338,10 +360,6 @@
             return status !== undefined && status.libelle;
           },
 
-          changeStatut() {
-              this.$store.dispatch('changeStatut', this.inputChgtCriteria.statutCode);
-          },
-
           isChecked (code) {
               var statutCode = this.inputChgtCriteria.statutCode;
               for(var i in statutCode) {
@@ -355,7 +373,6 @@
           },
 
           rechercher() {
-
               this.inputChgtCriteria.typeUtilisationCode = this.typeUtilisationSelected.id;
               this.inputChgtCriteria.familleCode = this.familleSelected.id;
 
@@ -367,10 +384,18 @@
 
           },
 
-          loadTypeUtilisation(val) {
-              this.familleSelected = val;
+          loadTypeUtilisation(familleCode) {
+              this.familleSelected = familleCode;
               this.typeUtilisationSelected = {'id' : 'ALL', 'value': 'Tous'};
-              this.$store.dispatch('loadTypeUtilisation', val);
+              //this.$store.dispatch('loadTypeUtilisation', val);
+              if(familleCode && familleCode.id !== 'ALL') {
+                var map = this.$store.getters.familleTypeUtilMap;
+                this.typeUtilisationOptions = map[familleCode.id].slice();
+                this.typeUtilisationOptions.unshift({'id' :'ALL', "value" : "Tous"});
+
+              } else {
+                this.typeUtilisationOptions = [{'id' :'ALL', "value" : "Tous"}];
+              }
 
           }
       },

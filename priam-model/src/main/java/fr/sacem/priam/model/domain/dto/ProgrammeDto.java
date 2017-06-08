@@ -37,6 +37,19 @@ public class ProgrammeDto {
     this.fichiers = nbFichiers;
   }
     
+    public ProgrammeDto(String numProg, String nom, String famille, String typeUtilisation, Integer rionTheorique, Date dateCreation, TypeRepart typeRepart, StatutProgramme statut, Integer rionPaiement, Long fichiers) {
+        this.numProg = numProg;
+        this.nom = nom;
+        this.famille = famille;
+        this.typeUtilisation = typeUtilisation;
+        this.rionTheorique = rionTheorique;
+        this.dateCreation = dateCreation;
+        this.typeRepart = typeRepart;
+        this.statut = statut;
+        this.rionPaiement = rionPaiement;
+        this.fichiers = fichiers;
+    }
+    
     public String getNumProg() {
     return numProg;
   }

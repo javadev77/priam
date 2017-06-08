@@ -1,22 +1,10 @@
 <template>
   <div class="container-fluid">
-    <div class="panel panel-default">
-    <div class="panel-heading">
-      <h5 class="panel-title" @click="isCollapsed = !isCollapsed">
-        <a>Résultats</a>
-        <span class="pull-left collapsible-icon bg-ico-tablerow"></span>
-        <span class="pull-right fa" :class="{'fui-triangle-up' : isCollapsed,  'fui-triangle-down' : !isCollapsed}"></span>
-      </h5>
-    </div>
-
-
-    <div class="panel-collapse" :class="{collapse : isCollapsed}">
-      <div class="result-panel-body panel-body">
         <temeplate v-if="emptyResult">
           <div class="row text-center ng-binding"  v-html="this.noResultText">
           </div>
         </temeplate>
-        <template v-else>
+    <template v-else>
           <paginator :current-page="this.data.number"
                      :total-pages="this.data.totalPages"
                      :total-items="this.data.totalElements"
@@ -36,7 +24,7 @@
                           class="fui"
                           :class="{'fui-triangle-down':!sortAsc,
                                   'fui-triangle-up': sortAsc,
-                                  sorted: entry.id === sortProp}">
+                                  'sorted' : entry.id === sortProp}">
                     </span>
                   </a>
                 </th>
@@ -137,10 +125,6 @@
 
           </paginator>
         </template>
-
-      </div>
-    </div>
-  </div>
   </div>
 </template>
 
@@ -223,7 +207,8 @@
 
     },
 
-    created() {
+    mounted() {
+        console.log(this.data.sort);
         this.sort = this.data.sort[0];
 
     },

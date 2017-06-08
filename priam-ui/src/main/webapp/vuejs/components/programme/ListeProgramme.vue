@@ -6,20 +6,43 @@
         <button class="btn btn-default btn-primary pull-right" type="button" @click="rechercherProgrammes()">Rechercher</button>
       </div>
     </div>
-    <priam-grid
-      :data="priamGrid.gridData"
-      :columns="priamGrid.gridColumns"
-      noResultText="Aucun résultat."
-      @cellClick="onCellClick"
-      @update-programme="onUpdateProgramme"
-      @delete-programme="onDeleteProgramme"
-      @load-page="loadPage"
-      @on-sort="onSort">
-    </priam-grid>
+
+    <div class="container-fluid">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h5 class="panel-title">
+            <a>Résultats</a>
+            <span class="pull-left collapsible-icon bg-ico-tablerow"></span>
+          </h5>
+        </div>
+        <div class="panel-collapse">
+          <div class="result-panel-body panel-body">
+            <div>
+              <button style="width: 160px;" class="btn btn-primary pull-right" type="button" @click="openEcranAjouterProgramme()">Créer un programme </button>
+            </div>
+            <priam-grid
+              :data="priamGrid.gridData"
+              :columns="priamGrid.gridColumns"
+              noResultText="Aucun résultat."
+              @cellClick="onCellClick"
+              @update-programme="onUpdateProgramme"
+              @delete-programme="onDeleteProgramme"
+              @load-page="loadPage"
+              @on-sort="onSort">
+            </priam-grid>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <ecran-modal v-if="showEcranModal">
-      <modifier-programme slot="body" @cancel="close">
-      </modifier-programme>
+        <template v-if="ecranAjouterProgramme">
+          <ajouter-programme slot="body"  @cancel="close"></ajouter-programme>
+        </template>
+        <template v-else>
+          <modifier-programme slot="body" @cancel="close">
+          </modifier-programme>
+        </template>
     </ecran-modal>
 
   </div>
@@ -30,7 +53,7 @@
   import Grid from '../common/Grid.vue';
   import EcranModal from '../common/EcranModal.vue';
   import ModifierProgramme from './ModifierProgramme.vue';
-  import Chargement from '../chargement/Chargement.vue';
+  import AjouterProgramme from './ajouterProgramme.vue';
 
   export default {
 
@@ -41,12 +64,14 @@
 
 
         return {
-          showEcranModal : false,
-
+            showEcranModal : false,
+            ecranAjouterProgramme : false,
             resource : {},
 
             defaultPageable : {
               page : 1,
+              sort : 'dateCreation',
+              dir : 'desc',
               size : 25
             },
 
@@ -102,7 +127,15 @@
                   id :  'typeRepart',
                   name :   "Type répartition",
                   sortable : true,
-                  type : 'long-text'
+                  type : 'code-value',
+                  cell : {
+                    toText : function(cellValue) {
+                      var result  = getters.typeRepart.find(function (element) {
+                        return element.code === cellValue;
+                      });
+                      return result !== undefined && result.libelle;
+                    }
+                  }
                 },
                 {
                   id :  'dateCreation',
@@ -137,7 +170,7 @@
                   type : 'clickable-icon',
                   cell : {
                     cellTemplate: function (cellValue) {
-                      var tempalte = '<a><span class="glyphicon glyphicon-alert" aria-hidden="true" ></span></a>';
+                      var tempalte = '<a><span class="glyphicon glyphicon-log-in" aria-hidden="true" ></span></a>';
                       var statusCode = cellValue.statut;
 
                       if(statusCode !== undefined && 'VALIDE' === statusCode) {
@@ -180,7 +213,7 @@
                   }
                 }
               ],
-              gridData : {"content":[{"numProg":"PR170001","nom":"Programme 01","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","rionTheorique":619,"dateCreation":"06/06/2017 00:00","typeRepart":"OEUVRE","statut":"CREE","rionPaiement":null,"fichiers":4},{"numProg":"PR170002","nom":"Programme 02","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","rionTheorique":619,"dateCreation":"06/06/2017 00:00","typeRepart":"OEUVRE","statut":"EN_COURS","rionPaiement":null,"fichiers":0},{"numProg":"PR170003","nom":"Programme 03","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","rionTheorique":619,"dateCreation":"06/06/2017 00:00","typeRepart":"OEUVRE","statut":"EN_COURS","rionPaiement":null,"fichiers":0},{"numProg":"PR170004","nom":"Programme 04","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","rionTheorique":619,"dateCreation":"06/06/2017 00:00","typeRepart":"OEUVRE","statut":"EN_COURS","rionPaiement":null,"fichiers":0},{"numProg":"PR170005","nom":"Programme 05","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","rionTheorique":619,"dateCreation":"06/06/2017 00:00","typeRepart":"OEUVRE","statut":"EN_COURS","rionPaiement":null,"fichiers":0}],"last":true,"totalPages":1,"totalElements":5,"size":25,"number":0,"sort":null,"numberOfElements":5,"first":true},
+              gridData : {"content":[{"numProg":"PR170001","nom":"Programme 01","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","rionTheorique":619,"dateCreation":"06/06/2017 00:00","typeRepart":"OEUVRE","statut":"EN_COURS","rionPaiement":null,"fichiers":4},{"numProg":"PR170003","nom":"Programme 03","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","rionTheorique":619,"dateCreation":"06/06/2017 00:00","typeRepart":"OEUVRE","statut":"EN_COURS","rionPaiement":null,"fichiers":0},{"numProg":"PR170005","nom":"Programme 05","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","rionTheorique":619,"dateCreation":"06/06/2017 00:00","typeRepart":"OEUVRE","statut":"EN_COURS","rionPaiement":null,"fichiers":0},{"numProg":"PR170002","nom":"Programme 02","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","rionTheorique":619,"dateCreation":"06/06/2017 00:00","typeRepart":"OEUVRE","statut":"EN_COURS","rionPaiement":null,"fichiers":0},{"numProg":"PR170004","nom":"Programme 04","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","rionTheorique":619,"dateCreation":"06/06/2017 00:00","typeRepart":"OEUVRE","statut":"EN_COURS","rionPaiement":null,"fichiers":0}],"totalPages":1,"totalElements":5,"last":true,"size":25,"number":0,"sort":[{"direction":"ASC","property":"dateCreation","ignoreCase":false,"nullHandling":"NATIVE","ascending":true,"descending":false}],"numberOfElements":5,"first":true},
               //gridData : {"content":[],"totalElements":0,"totalPages":1,"last":true,"numberOfElements":25,"sort":null,"first":true,"size":25,"number":1},
               //gridData : {},
               searchQuery : ''
@@ -200,6 +233,45 @@
 
       methods : {
 
+          onSort(currentPage, pageSize, sort) {
+
+            this.launchRequest(currentPage, pageSize,
+              sort.property, sort.direction);
+
+            this.defaultPageable.sort = sort.property;
+            this.defaultPageable.dir = sort.direction;
+          },
+
+          loadPage: function(pageNum, size, sort) {
+            let pageSize = this.defaultPageable.size;
+            if(size !== undefined) {
+              pageSize = size;
+            }
+
+            this.launchRequest(pageNum, pageSize,
+              sort.property, sort.direction);
+
+          },
+
+          launchRequest(pageNum, pageSize, sort, dir) {
+            this.resource.searchProgramme({page : pageNum - 1, size : pageSize,
+              sort : sort, dir: dir}, this.inputChgtCriteria)
+              .then(response => {
+                return response.json();
+              })
+              .then(data => {
+                this.priamGrid.gridData = data;
+                this.priamGrid.gridData.number = data.number + 1;
+
+              });
+          },
+
+          openEcranAjouterProgramme() {
+              console.log("openEcranAjouterProgramme()");
+              this.ecranAjouterProgramme = true;
+              this.showEcranModal = true;
+          },
+
           close() {
               console.log("Close Modal Dialog");
             this.showEcranModal = false;
@@ -207,6 +279,7 @@
 
           onUpdateProgramme(row, column) {
             console.log("onUpdateProgramme()");
+            this.ecranAjouterProgramme = false;
             this.showEcranModal = true;
           },
 
@@ -218,14 +291,9 @@
           },
 
           rechercherProgrammes() {
-              this.resource.searchProgramme({page : 0, size : 25})
-                .then(response => {
-                  return response.json();
-                })
-                .then(data => {
-                  this.priamGrid.gridData = data;
-                  this.priamGrid.gridData.number = data.number + 1;
-                });
+            this.launchRequest(this.defaultPageable.page, this.defaultPageable.size,
+              this.defaultPageable.sort, this.defaultPageable.dir);
+
           }
 
       },
@@ -234,7 +302,7 @@
           priamGrid : Grid,
           ecranModal : EcranModal,
           modifierProgramme : ModifierProgramme,
-          chargement : Chargement
+          ajouterProgramme : AjouterProgramme
       }
 
   }
