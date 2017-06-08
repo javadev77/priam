@@ -101,6 +101,21 @@
                       </a>
                     </td>
                   </template>
+                  <template v-else-if="entryColumn.type === 'clickable-icons'">
+                    <td class="columnCenter">
+                        <template v-for="elem in entryColumn.cell.cellTemplate(entry)">
+                          <a v-html="elem.template" @click="emitIconCellClick(elem.event, entry, entryColumn)">
+                          </a>
+                        </template>
+                    </td>
+                  </template>
+                  <template v-else-if="entryColumn.type === 'clickable-link'">
+                    <td class="columnCenter">
+                      <a @click="emitCellClick(entry, entryColumn)">
+                        {{ entry[entryColumn.id] }}
+                      </a>
+                    </td>
+                  </template>
                   <template  v-else>
                     <td>
                       {{ entry[entryColumn.id] }}
@@ -224,6 +239,10 @@
 
       emitCellClick(entry, column) {
         this.$emit('cellClick', entry, column);
+      },
+
+      emitIconCellClick(event, entry, column) {
+        this.$emit(event, entry, column);
       },
 
 

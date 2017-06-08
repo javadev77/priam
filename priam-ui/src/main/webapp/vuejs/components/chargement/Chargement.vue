@@ -71,10 +71,14 @@
     @on-sort="onSort">
   </priam-grid>
 
-   <modal v-if="showModal" @close="showModal = false" @yes="supprimerDonneesFichier">
+   <modal v-if="showModal">
      <label class="homer-prompt-q control-label" slot="body">
        Etes-vous sûr de vouloir supprimer les données liées à ce fichier ?
      </label>
+     <template slot="footer">
+       <button class="btn btn-default btn-primary pull-right no" @click="showModal = false">Non</button>
+       <button class="btn btn-default btn-primary pull-right yes" @click="supprimerDonneesFichier">Oui</button>
+     </template>
    </modal>
 </div>
 </template>
@@ -203,7 +207,7 @@
                         type : 'clickable-icon',
                         cell : {
                           cellTemplate: function (cellValue) {
-                            var tempalte = '<a @click="$emit(\'showPopup\')"><span class="glyphicon glyphicon-trash" aria-hidden="true" ></span></a>';
+                            var tempalte = '<span class="glyphicon glyphicon-trash" aria-hidden="true" ></span>';
                             var statusCode = cellValue.statut;
                             let element = $this.findStatusByCode(statusCode);
                             if(element !== undefined && ('CHARGEMENT_KO' === element.code || 'CHARGEMENT_OK' === element.code)) {
