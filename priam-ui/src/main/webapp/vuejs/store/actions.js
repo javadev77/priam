@@ -9,6 +9,7 @@ export const fetchInitData = ({commit}) => {
     commit('SET_LIBELLE_FAMILLE', data);
     commit('SET_LIBELLE_TYPE_UTILSATION', JSON.parse('[{"id":"COPRIVSON","value":"Copie Privée Sonore"},{"id":"CPRIVAUDPL","value":"Copie Privée Audiovisuel - Part Littéraire"},{"id":"CPRIVAUDV","value":"Copie Privée Audiovisuelle"},{"id":"CPRIVSONPH","value":"Copie privée sonore Phono"},{"id":"CPRIVSONRD","value":"Copie Privée Sonore radio"},{"id":"ENCOURG","value":"Encouragement"},{"id":"PRIME","value":"Prime"},{"id":"VALORIS","value":"Fonds de valorisation"}]'));
     commit('SET_FAMILLE_TYPE_UTILSATION_MAP', JSON.parse('{"COPIEPRIV":[{"id":"COPRIVSON","value":"Copie Privée Sonore"},{"id":"CPRIVAUDPL","value":"Copie Privée Audiovisuel - Part Littéraire"},{"id":"CPRIVAUDV","value":"Copie Privée Audiovisuelle"},{"id":"CPRIVSONPH","value":"Copie privée sonore Phono"},{"id":"CPRIVSONRD","value":"Copie Privée Sonore radio"}],"FDSVAL":[{"id":"PRIME","value":"Prime"},{"id":"VALORIS","value":"Fonds de valorisation"}],"CMS":[{"id":"ENCOURG","value":"Encouragement"}]}'));
+    commit('SET_RIONS', JSON.parse('[{"id":"639","value":"639"}]'));
 
   } else {
     Vue.http.get('app/rest/general/libellefamille')
@@ -32,6 +33,14 @@ export const fetchInitData = ({commit}) => {
       .then(data => {
         if (data) {
           commit('SET_FAMILLE_TYPE_UTILSATION_MAP', data);
+        }
+      });
+
+    Vue.http.get('app/rest/general/rions')
+      .then(response => response.json())
+      .then(data => {
+        if (data) {
+          commit('SET_RIONS', data);
         }
       });
 

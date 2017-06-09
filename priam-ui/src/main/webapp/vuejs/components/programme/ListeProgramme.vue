@@ -1,9 +1,107 @@
 <template>
   <div>
     <div class="container-fluid sacem-formula">
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h5 class="panel-title" @click="isCollapsed = !isCollapsed">
+            <!--<strong>Critères de Recherche</strong>-->
+            <a>Critères de recherche</a>
+            <span class="pull-left collapsible-icon formula-criteria-search"></span>
+            <span class="pull-right fa" :class="{'fui-triangle-up' : isCollapsed,  'fui-triangle-down' : !isCollapsed}"></span>
+          </h5>
+
+
+        </div>
+        <div class="panel-collapse" :class="{collapse : isCollapsed}">
+          <div class="panel-body">
+            <form class="form-horizontal" role="form">
+              <div class="row">
+                <div class="col-sm-2">
+                  <label class="control-label pull-right">N° programme</label>
+                </div>
+                <div class="col-sm-3">
+                  <input type="text" class="form-control" v-model="critereRechercheData.numProg">
+                </div>
+                <div class="col-sm-2">
+                  <label class="control-label pull-right">Famille</label>
+                </div>
+                <div class="col-sm-3">
+                  <v-select :searchable="false" label="value" v-model="familleSelected" :options="familleOptions" :on-change="loadTypeUtilisation">
+                  </v-select>
+                </div>
+                <div class="col-sm-2">
+                  <label class="control-label pull-right">Date de création</label>
+                </div>
+                <div class="col-sm-2">
+                  <input homer-date-picker="" class="form-control from" type="text" size="10" placeholder="Début" name="exploitDateFrom" ng-model="$parent.ngModel.exploitDateFrom" maxlength="10" pattern="^[0-9]{2}/[0-9]{2}/[0-9]{4}$" id="dp1497016925899">
+                </div>
+                <div class="col-sm-2">
+                  <input homer-date-picker="" class="form-control from" type="text" size="10" placeholder="Fin" name="exploitDateFrom" ng-model="$parent.ngModel.exploitDateFrom" maxlength="10" pattern="^[0-9]{2}/[0-9]{2}/[0-9]{4}$" id="dp1497016925899">
+                </div>
+
+                <div class="col-sm-2">
+                  <label class="control-label pull-right">Rion théorique</label>
+                </div>
+                <div class="col-sm-3">
+                  <v-select :searchable="false" label="value" v-model="rionTheoriqueSelected" :options="rionTheoriqueOptions">
+                  </v-select>
+                </div>
+              </div>
+
+              <!-- 2 eme ligne du form -->
+              <div class="row">
+                <div class="col-sm-2">
+                  <label class="control-label pull-right">Nom</label>
+                </div>
+                <div class="col-sm-3">
+                  <input type="text" class="form-control" v-model="critereRechercheData.nom">
+                </div>
+                <div class="col-sm-2">
+                  <label class="control-label pull-right">Type d'utilisation</label>
+                </div>
+                <div class="col-sm-3">
+                  <v-select :searchable="false" label="value" v-model="typeUtilisationSelected" :options="typeUtilisationOptions">
+                  </v-select>
+                </div>
+                <div class="col-sm-2">
+                  <label class="control-label pull-right">Type répartition</label>
+                </div>
+                <div class="col-sm-4">
+                  <v-select :searchable="false" label="value" v-model="typeRepartSelected" :options="typeRepartOptions">
+                  </v-select>
+                </div>
+                <div class="col-sm-2">
+                  <label class="control-label pull-right">Rion de paiement</label>
+                </div>
+                <div class="col-sm-3">
+                  <v-select :searchable="false" label="value" v-model="rionPaiementSelected" :options="rionPaiementOptions">
+                  </v-select>
+                </div>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-horizontal">
+        <div class="col-sm-2">
+          <label class="control-label pull-right">Statut</label>
+        </div>
+        <div class="col-sm-12">
+          <template v-for="item in statut">
+            <label class="checkbox checkbox-inline" :class="{'checked' : isChecked(item.code)}">
+              <input type="checkbox" v-model="inputChgtCriteria.statutCode" :value="item.code">{{item.libelle}}
+              <span class="icons"><span class="first-icon fui-checkbox-unchecked"></span><span class="second-icon fui-checkbox-checked"></span></span>
+            </label>
+          </template>
+        </div>
+      </div>
+
       <div class="row formula-buttons">
         <button class="btn btn-default btn-primary pull-right" type="button" @click="retablir()">Rétablir</button>
-        <button class="btn btn-default btn-primary pull-right" type="button" @click="rechercherProgrammes()">Rechercher</button>
+        <button class="btn btn-default btn-primary pull-right" type="button" @click="rechercher()">Rechercher</button>
       </div>
     </div>
 
@@ -54,6 +152,7 @@
   import EcranModal from '../common/EcranModal.vue';
   import ModifierProgramme from './ModifierProgramme.vue';
   import AjouterProgramme from './ajouterProgramme.vue';
+  import vSelect from '../common/Select.vue';
 
   export default {
 
@@ -64,8 +163,10 @@
 
 
         return {
+            isCollapsed : false,
             showEcranModal : false,
             ecranAjouterProgramme : false,
+
             resource : {},
 
             defaultPageable : {
@@ -73,6 +174,24 @@
               sort : 'dateCreation',
               dir : 'desc',
               size : 25
+            },
+
+            familleSelected : {'id' : 'ALL', 'value' : 'Toutes'},
+            typeUtilisationSelected : {'id' : 'ALL', 'value' : 'Tous'},
+            rionTheoriqueSelected : {'id' : 'ALL', 'value' : 'Toutes'},
+            rionPaiementSelected : {'id' : 'ALL', 'value' : 'Toutes'},
+            typeRepartSelected : {'id' : 'ALL', 'value' : 'Tous'},
+
+            critereRechercheData : {
+                numProg : '',
+                famille : '',
+                typeUtilisation: '',
+                nom : '',
+                rionTheorique : '',
+                rionPaiement : '',
+                typeRepart : '',
+                dateCreationFrom : '',
+                dataCreationTo : ''
             },
 
             priamGrid : {
@@ -147,7 +266,7 @@
                   id :  'fichiers',
                   name :   "Fichiers",
                   sortable : true,
-                  type : 'clickable-link'
+                  type : 'numeric-link'
                 },
                 {
                   id :  'statut',
@@ -230,6 +349,28 @@
         this.rechercherProgrammes();
       },
 
+      computed : {
+        familleOptions() {
+          return this.$store.getters.familleOptions;
+        },
+
+        typeUtilisationOptions() {
+          return this.$store.getters.typeUtilisationOptions;
+        },
+
+        rionTheoriqueOptions() {
+            return this.$store.getters.rions;
+        },
+
+        rionPaiementOptions() {
+          return this.$store.getters.rions;
+        },
+
+        typeRepartOptions() {
+            return [{id : 'ALL', value: 'Tous'}]
+        }
+      },
+
 
       methods : {
 
@@ -294,6 +435,13 @@
             this.launchRequest(this.defaultPageable.page, this.defaultPageable.size,
               this.defaultPageable.sort, this.defaultPageable.dir);
 
+          },
+
+        loadTypeUtilisation(val) {
+            this.familleSelected = val;
+            this.typeUtilisationSelected = {'id' : 'ALL', 'value': 'Tous'};
+            this.$store.dispatch('loadTypeUtilisation', val);
+
           }
 
       },
@@ -302,7 +450,8 @@
           priamGrid : Grid,
           ecranModal : EcranModal,
           modifierProgramme : ModifierProgramme,
-          ajouterProgramme : AjouterProgramme
+          ajouterProgramme : AjouterProgramme,
+          vSelect : vSelect
       }
 
   }

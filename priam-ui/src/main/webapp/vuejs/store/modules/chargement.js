@@ -1,6 +1,8 @@
 const state = {
   famille: [],
   typeUtilisation : [],
+  familleOptions  : [],
+  typeUtilisationOptions : [],
   familleTypeUtilMap : {},
   statut : [
     {
@@ -39,28 +41,46 @@ const state = {
 
 const mutations = {
   'SET_LIBELLE_FAMILLE' (state, famille) {
-       state.famille = famille;
+      state.famille = famille;
+      state.familleOptions=famille.slice();
+      state.familleOptions.unshift({'id' :'ALL', "value" : "Toutes"});
   },
 
   'SET_LIBELLE_TYPE_UTILSATION' (state, typeUtilisation) {
       state.typeUtilisation = typeUtilisation;
+      state.typeUtilisationOptions = [{'id' :'ALL', "value" : "Tous"}];
   },
 
   'SET_FAMILLE_TYPE_UTILSATION_MAP' (state, data) {
       state.familleTypeUtilMap = data;
   },
 
-  /*'CHANGE_TYPE_UTILSATION_LIST' (state, familleCode) {
+  'CHANGE_TYPE_UTILSATION_LIST' (state, familleCode) {
     if(familleCode && familleCode.id !== 'ALL') {
 
       state.typeUtilisationOptions = state.familleTypeUtilMap[familleCode.id].slice();
       state.typeUtilisationOptions.unshift({'id' :'ALL', "value" : "Tous"});
 
     } else {
-      state.typeUtilisationOptions = [{'id' :'ALL', "value" : "Tous"}];
+        state.typeUtilisationOptions = [{'id' :'ALL', "value" : "Tous"}];
     }
 
-  },*/
+  },
+
+  'CHANGE_STATUT_VALUE' (state, statutCode) {
+      if(statutCode != null) {
+
+        for(var stat in state.statut) {
+          for(var i in statutCode) {
+            if(state.statut[stat].code === statutCode[i]) {
+              state.statut[stat].checked = true;
+            }
+          }
+
+        }
+
+      }
+  }
 
 };
 
@@ -75,8 +95,16 @@ const actions = {
 };
 
 const getters = {
+  familleOptions: state => {
+    return state.familleOptions;
+  },
+
   famille: state => {
     return state.famille;
+  },
+
+  typeUtilisationOptions: state => {
+    return state.typeUtilisationOptions;
   },
 
   typeUtilisation: state => {
@@ -88,7 +116,7 @@ const getters = {
   },
 
   familleTypeUtilMap: state => {
-    return state.familleTypeUtilMap;
+    return state.statut;
   },
 };
 

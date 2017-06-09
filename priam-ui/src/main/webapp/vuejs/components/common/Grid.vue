@@ -97,8 +97,8 @@
                         </template>
                     </td>
                   </template>
-                  <template v-else-if="entryColumn.type === 'clickable-link'">
-                    <td class="columnCenter">
+                  <template v-else-if="entryColumn.type === 'numeric-link'">
+                    <td class="columnRight">
                       <a @click="emitCellClick(entry, entryColumn)">
                         {{ entry[entryColumn.id] }}
                       </a>
@@ -130,9 +130,7 @@
 
 <script>
 
-  import Paginator from '../common/Pagination.vue'
-  import StatutFichier from '../../data/statutFichier'
-  import Modal from '../common/Modal.vue'
+  import Paginator from '../common/Pagination.vue';
 
   export default {
 
@@ -266,8 +264,7 @@
     },
 
     components : {
-        paginator : Paginator,
-        modal : Modal
+        paginator : Paginator
     }
 
   }

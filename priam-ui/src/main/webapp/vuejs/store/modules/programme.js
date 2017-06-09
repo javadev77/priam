@@ -16,6 +16,8 @@ const state = {
 
   ],
 
+  rions : [],
+
   statutProgramme : [
     {
       "code" : 'EN_COURS',
@@ -42,6 +44,9 @@ const state = {
 }
 
 const mutations = {
+  'SET_RIONS' (state, rions) {
+    state.rions = rions;
+  },
 };
 
 const actions = {
@@ -54,6 +59,12 @@ const getters = {
 
   typeRepart: state => {
     return state.typeRepart;
+  },
+
+  rions : state => {
+    var options = state.rions.slice();
+    options.unshift({id : 'ALL', value: 'Toutes'});
+    return options;
   }
 
 
