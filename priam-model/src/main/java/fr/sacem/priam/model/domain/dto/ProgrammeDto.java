@@ -1,8 +1,7 @@
 package fr.sacem.priam.model.domain.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import fr.sacem.priam.model.domain.StatutProgramme;
-import fr.sacem.priam.model.domain.TypeRepart;
+import fr.sacem.priam.model.domain.*;
 import fr.sacem.priam.model.util.CustomDateSerializer;
 
 import java.util.Date;
@@ -25,18 +24,31 @@ public class ProgrammeDto {
     private Long fichiers;
     
   
-  public ProgrammeDto(String numProg, String nom, String famille, String typeUtilisation, Integer rionTheorique, Date dateCreation, TypeRepart typeRepart, StatutProgramme statut, Integer rionPaiement, Long nbFichiers) {
+  public ProgrammeDto(String numProg, String nom, Famille famille, TypeUtilisation typeUtilisation, Rion rionTheorique, Date dateCreation, TypeRepart typeRepart, StatutProgramme statut, Rion rionPaiement, Long nbFichiers) {
     this.numProg = numProg;
     this.nom = nom;
-    this.famille = famille;
-    this.typeUtilisation = typeUtilisation;
-    this.rionTheorique = rionTheorique;
+    this.famille = famille != null ? famille.getCode() : "";
+    this.typeUtilisation = typeUtilisation!=null ? typeUtilisation.getCode() : "";
+    this.rionTheorique = rionTheorique!=null ? rionTheorique.getRion() : null;
     this.dateCreation = dateCreation;
     this.typeRepart = typeRepart;
     this.statut = statut;
-    this.rionPaiement = rionPaiement;
+    this.rionPaiement = rionPaiement != null ? rionPaiement.getRion(): null;
     this.fichiers = nbFichiers;
   }
+    
+    public ProgrammeDto(String numProg, String nom, String famille, String typeUtilisation, Integer rionTheorique, Date dateCreation, TypeRepart typeRepart, StatutProgramme statut, Integer rionPaiement, Long fichiers) {
+        this.numProg = numProg;
+        this.nom = nom;
+        this.famille = famille;
+        this.typeUtilisation = typeUtilisation;
+        this.rionTheorique = rionTheorique;
+        this.dateCreation = dateCreation;
+        this.typeRepart = typeRepart;
+        this.statut = statut;
+        this.rionPaiement = rionPaiement;
+        this.fichiers = fichiers;
+    }
     
     public String getNumProg() {
     return numProg;

@@ -3,6 +3,7 @@ package fr.sacem.priam.model.fr.sacem.priam.model.dao.jpa;
 import fr.sacem.priam.model.JpaConfigurationTest;
 import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.dao.jpa.ProgrammeDao;
+import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +41,7 @@ public class ProgrammeDaoTest {
         
         @Override
         public Sort getSort() {
-            return null;
+            return new Sort(Sort.Direction.ASC, "fichiers");
         }
         
         @Override
@@ -71,24 +72,24 @@ public class ProgrammeDaoTest {
     private FichierDao fichierDao;
     
     
-    /*@Test
+    @Test
     public void should_find_programmes_rion_619() {
         
         Page<ProgrammeDto> all = programmeDao.findAllProgrammeByCriteria(PAGEABLE);
     
         assertThat(all).isNotNull();
-        assertThat(all.getContent()).isNotNull().isNotEmpty().hasSize(1);
+        assertThat(all.getContent()).isNotNull().isNotEmpty().hasSize(5);
     
         all.getContent().forEach( programmeDto -> {
             assertThat(programmeDto.getNumProg()).startsWith("PR17");
             assertThat(programmeDto.getRionTheorique()).isEqualTo(619);
         });
     }
-    */
+    
     @Test
     public void count_nb_fichiers_par_programme() {
     
-        Page<Object[]> all = programmeDao.findAllProgrammeByCriteria(PAGEABLE);
+        Page<ProgrammeDto> all = programmeDao.findAllProgrammeByCriteria(PAGEABLE);
         
         assertThat(all).isNotNull();
     

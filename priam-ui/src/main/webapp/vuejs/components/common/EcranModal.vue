@@ -1,25 +1,10 @@
 <template>
   <transition name="modal">
     <div class="modal-mask" id="HomerPrompt">
-      <div class="modal-dialog" style="margin: 15% auto;">
-        <div class="modal-content">
-
-          <!--<div class="modal-header">
-            <slot name="header">
-                <h4 class="modal-title prompt-title"></h4>
-              </slot>
-          </div>
-        -->
-          <div class="modal-body">
-              <slot name="body">
-              </slot>
-
-          </div>
-
-          <div class="modal-footer">
-            <slot name="footer">
-            </slot>
-          </div>
+      <div class="container-fluid" style="margin: 15% auto;">
+        <div class="modal-container">
+          <slot name="body">
+          </slot>
         </div>
       </div>
     </div>
@@ -63,9 +48,9 @@
     transition: all .3s ease;
     font-family: Helvetica, Arial, sans-serif;*/
 
-    width: 600px;
+    width: auto;
     margin: 0px auto;
-    background: #def;
+    background: #fff;
     border: none;
     border-radius: 4px;
   }

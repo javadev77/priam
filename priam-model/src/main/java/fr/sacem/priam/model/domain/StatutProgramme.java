@@ -7,5 +7,6 @@ public enum StatutProgramme {
     EN_COURS,
     VALIDE,
     ABANDONNE,
-    AFFECTE
+    AFFECTE,
+    CREE
 }

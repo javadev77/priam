@@ -74,6 +74,11 @@
 
           </form>
         </div>
+
+        <div class="row formula-buttons">
+          <button class="btn btn-default btn-primary pull-right" type="button" @click="$emit('cancel')">Annuler</button>
+          <button class="btn btn-default btn-primary pull-right" type="button" @click="$emit('valider')">Valider</button>
+        </div>
     <!--    <form>-->
 
           <!--

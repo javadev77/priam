@@ -4,6 +4,18 @@
 
 const state = {
 
+  typeRepart : [
+    {
+      code : 'OEUVRE',
+      libelle : 'Oeuvre'
+    },
+    {
+      code : 'AYANT_DROIT',
+      libelle : 'Ayant droit'
+    }
+
+  ],
+
   statutProgramme : [
     {
       "code" : 'EN_COURS',
@@ -20,6 +32,10 @@ const state = {
     {
       "code": "ABANDONNE",
       "libelle": 'Abandonné'
+    },
+    {
+      "code": "CREE",
+      "libelle": 'Crée'
     }
 
   ]
@@ -34,6 +50,10 @@ const actions = {
 const getters = {
   statutProgramme: state => {
     return state.statutProgramme;
+  },
+
+  typeRepart: state => {
+    return state.typeRepart;
   }
 
 
