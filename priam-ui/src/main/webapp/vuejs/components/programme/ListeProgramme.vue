@@ -1,10 +1,15 @@
 <template>
   <div>
     <div class="container-fluid sacem-formula">
+<<<<<<< Updated upstream
       <div class="row formula-buttons">
         <button class="btn btn-default btn-primary pull-right" type="button" @click="retablir()">Rétablir</button>
         <button class="btn btn-default btn-primary pull-right" type="button" @click="rechercherProgrammes()">Rechercher</button>
       </div>
+=======
+      <ajouter-programme></ajouter-programme>
+
+>>>>>>> Stashed changes
     </div>
 
     <div class="container-fluid">
@@ -51,10 +56,8 @@
 <script>
 
   import Grid from '../common/Grid.vue';
-  import EcranModal from '../common/EcranModal.vue';
-  import ModifierProgramme from './ModifierProgramme.vue';
-  import AjouterProgramme from './ajouterProgramme.vue';
 
+  import AjouterProgramme from  './ajouterProgramme.vue';
   export default {
 
       data() {
@@ -221,6 +224,7 @@
           }
       },
 
+
       created() {
         const customActions = {
           searchProgramme : {method : 'GET', url :'app/rest/programme/search?page={page}&size={size}'}
@@ -299,12 +303,11 @@
       },
 
       components : {
-          priamGrid : Grid,
-          ecranModal : EcranModal,
-          modifierProgramme : ModifierProgramme,
-          ajouterProgramme : AjouterProgramme
+        priamGrid: Grid,
+        ecranModal: EcranModal,
+        modifierProgramme: ModifierProgramme,
+        ajouterProgramme: AjouterProgramme
       }
-
   }
 
 </script>

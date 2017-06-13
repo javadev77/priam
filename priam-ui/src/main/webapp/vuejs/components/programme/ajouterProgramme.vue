@@ -7,31 +7,53 @@
           <a>Création programme</a>
           <span class="pull-left collapsible-icon formula-criteria-search"></span>
         </h5>
-
-
       </div>
-      <div class="panel-collapse" :class="{collapse : isCollapsed}">
-        <div class="panel-body">
-          <form class="form-horizontal" role="form">
+      <div class="panel-collapse">
+        <div class="container-fluid">
+          <form  role="form" class="espacement">
             <div class="row">
-              <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
+              <div class="col-sm-2">
+                <label class="control-label pull right" for="nomProgramme">Nom programme</label>
+              </div>
+              <div class="col-sm-3">
+              <input
+                  type="text"
+                  id="nomProgramme"
+                  class="form-control"
+                  v-model="programmeData.nomProgramme">
+              </div>
+              <div class="col-sm-2">
+                <label class="control-label pull right" for="rionTheorique">Rion théorique</label>
+              </div>
+                <div class="col-sm-1">
+                <select
+                  id="rionTheorique"
+                  v-model="programmeData.rionTheorique">
 
-                  <label for="nomProgramme">Nom programme</label>
-                  <input
-                    type="text"
-                    id="nomProgramme"
-                    class="form-control"
-                    v-model="programmeData.nomProgramme">
-
-
-                    <label for="rionTheorique">Rion théorique</label>
-                    <select
-                      id="rionTheorique"
-                      class="form-control"
-                      v-model="programmeData.rionTheorique">
-                      <option>Rion1</option>
-                    </select>
-                <label for="TypeRepartitionOeuvre">
+                  <option>Rion1</option>
+                </select>
+              </div>
+              <div class="col-sm-2">
+                <label class="control-label pull-right">Famille</label>
+              </div>
+              <div class="col-sm-2">
+                <v-select :searchable="false" label="value" v-model="programmeData.famille" :options="familleOptions" :on-change="loadTypeUtilisation">
+                </v-select>
+              </div>
+              <div class="col-sm-2">
+                <label class="control-label pull-right">Type d'utilisation</label>
+              </div>
+              <div class="col-sm-3">
+            <v-select :searchable="false" label="value" v-model="programmeData.typeUtilisation" :options="typeUtilisationOptions">
+            </v-select>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-2">
+                <label class="control-label pull right">Type répartition</label>
+              </div>
+                <div class="col-md-3">
+                <label class="control-label pull right" for="TypeRepartitionOeuvre">
                   <input
                     type="radio"
                     id="TypeRepartitionOeuvre"
@@ -39,91 +61,46 @@
                     v-model="programmeData.typeRepartition"
                     disabled> Oeuvre
                 </label>
-                <label for="TypeRepartitionOeuvreAyantDroit">
-                  <input
+                </div>
+                  <div class="col-md-3">
+                  <label class="control-label pull right" for="TypeRepartitionOeuvreAyantDroit">
+                    <input
                     type="radio"
                     id="TypeRepartitionOeuvreAyantDroit"
                     value="Ayant droit"
                     v-model="programmeData.typeRepartition"
                     disabled> Ayant droit
                 </label>
-              </div>
+                  </div>
             </div>
-
-              <div class="col-sm-2">
-                <label class="control-label pull-right">Famille</label>
-              </div>
-              <div class="col-sm-4">
-
-                <v-select :searchable="false" label="value" v-model="programmeData.typeUtilisation" :options="familleOptions" :on-change="loadTypeUtilisation">
-                </v-select>
-              </div>
-              <div class="col-sm-2">
-                <label class="control-label pull-right">Type d'utilisation</label>
-              </div>
-              <div class="col-sm-5">
-
-                <v-select :searchable="false" label="value" v-model="programmeData.typeUtilisation" :options="typeUtilisationOptions">
-                </v-select>
-              </div>
-              <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
-                <button
-                  class="btn btn-primary">Submit!
-                </button>
-              </div>
-
           </form>
         </div>
+
 
         <div class="row formula-buttons">
           <button class="btn btn-default btn-primary pull-right" type="button" @click="$emit('cancel')">Annuler</button>
           <button class="btn btn-default btn-primary pull-right" type="button" @click="$emit('valider')">Valider</button>
         </div>
-    <!--    <form>-->
 
-          <!--
-                   <div class="row">
-                     <div class="col-sm-2">
-                       <label class="control-label pull-right">Famille</label>
-                     </div>
-                     <div class="col-sm-4">
-
-                       <v-select :searchable="false" label="value" v-model="programmeData.famille" :options="familleOptions" :on-change="loadTypeUtilisation">
-                       </v-select>
-                     </div>
-                     <div class="col-sm-2">
-                       <label class="control-label pull-right">Type d'utilisation</label>
-                     </div>
-                     <div class="col-sm-5">
-
-                       <v-select :searchable="false" label="value" v-model="programmeData.typeUtilisation" :options="typeUtilisationOptions">
-                       </v-select>
-                     </div>
-
-                   </div>
-         -->
-
-       <!-- </form>-->
-        <hr>
-        <div class="row">
-          <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
-            <div class="panel panel-default">
-              <div class="panel-heading">
-                <h4>Your Data</h4>
-              </div>
-              <div class="panel-body">
-                <p>Nom programme:{{programmeData.nomProgramme}}</p>
-                <p>famille:{{programmeData.famille}}</p>
-                <p>Type d'utilisation:{{programmeData.typeUtilisation}}</p>
-                <p>Rion théorique:{{programmeData.rionTheorique}} </p>
-                <p>type répartition{{programmeData.typeRepartition}}</p>
-              </div>
+      <hr>
+      <div class="row">
+        <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4>Your Data</h4>
+            </div>
+            <div class="panel-body">
+              <p>Nom programme:{{programmeData.nomProgramme}}</p>
+              <p>famille:{{programmeData.famille}}</p>
+              <p>Type d'utilisation:{{programmeData.typeUtilisation}}</p>
+              <p>Rion théorique:{{programmeData.rionTheorique}} </p>
+              <p>type répartition{{programmeData.typeRepartition}}</p>
             </div>
           </div>
         </div>
       </div>
     </div>
-
+  </div>
   </div>
 
 </template>
@@ -132,16 +109,16 @@
 
   export default {
     data(){
-        return {
-            programmeData : {
-              nomProgramme: '',
-              rionTheorique:'',
-              famille:'',
-              typeUtilisation:'',
-              typeRepartition:'Oeuvre'
-            }
-
+      return {
+        programmeData : {
+          nomProgramme: '',
+          rionTheorique:'',
+          famille: {'id' : 'ALL', 'value' : 'Toutes'},
+          typeUtilisation: {'id' : 'ALL', 'value' : 'Tous'},
+          typeRepartition:'Oeuvre'
         }
+
+      }
     },
     computed :{
       familleOptions() {
@@ -155,10 +132,10 @@
         return this.$store.getters.familleTypeUtilMap;
       }
     },
-    method : {
+    methods : {
       loadTypeUtilisation(val) {
         this.programmeData.famille = val;
-        this.programmeData.typeUtilisation = {'id' : '', 'value': ''};
+        this.programmeData.typeUtilisation = {'id' : 'ALL', 'value': 'Tous'};
         this.$store.dispatch('loadTypeUtilisation', val);
 
       }
@@ -169,5 +146,9 @@
   }
 </script>
 <style>
-
+.espacement{
+  height:100px;
+  margin-top: 20px;
+  margin-left:40px ;
+}
 </style>
