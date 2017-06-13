@@ -1,11 +1,13 @@
 package fr.sacem.priam.services;
 
-import fr.sacem.priam.model.dao.jpa.ProgrammeDao;
+import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
+import fr.sacem.priam.model.domain.criteria.ProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by benmerzoukah on 07/06/2017.
@@ -14,28 +16,16 @@ import org.springframework.stereotype.Component;
 public class ProgrammeService {
     
     @Autowired
-    ProgrammeDao programmeDao;
+    ProgrammeViewDao programmeViewDao;
     
-    /*public Page<ProgrammeDto> findProgrammeByCriteria(Pageable pageable) {
-        Page<Object[]> pageProgramme = programmeDao.findAllProgrammeByCriteria(pageable);
+    @Transactional
+    public Page<ProgrammeDto> findProgrammeByCriteria(ProgrammeCriteria criteria, Pageable pageable) {
         
-        List<ProgrammeDto> dtos = Lists.newArrayList(Iterables.transform(pageProgramme, obj -> {
-            Programme p = (Programme) obj[0];
-            Long nbFichiersProg = (Long) obj[1];
-    
-            ProgrammeDto dto = new ProgrammeDto(p.getNumProg(), p.getNom(), p.getFamille(),
-                    p.getTypeUtilisation(), p.getRionTheorique(),
-                    p.getDateCreation(), p.getTypeRepart(), p.getStatut(),
-                    p.getRionPaiement(), nbFichiersProg);
-            
-            return dto;
-        }));
+        Page<ProgrammeDto> pageProgramme = programmeViewDao.findAllProgrammeByCriteria(criteria.getNumProg(), criteria.getNom(),
+                criteria.getStatut(), criteria.getDateCreationDebut(), criteria.getDateCreationFin(), criteria.getFamille(),
+                criteria.getTypeUtilisation(), criteria.getRionTheorique(), criteria.getRionPaiement(), criteria.getTypeRepart(),
+                pageable);
         
-        return new PageImpl<>(dtos, pageable, pageProgramme.getTotalElements());
-    }*/
-    public Page<ProgrammeDto> findProgrammeByCriteria(Pageable pageable) {
-        Page<ProgrammeDto> pageProgramme = programmeDao.findAllProgrammeByCriteria(pageable);
-        
-       return pageProgramme;
+        return pageProgramme;
     }
 }

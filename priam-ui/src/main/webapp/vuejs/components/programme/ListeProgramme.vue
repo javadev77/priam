@@ -34,10 +34,11 @@
                   <label class="control-label pull-right">Date de création</label>
                 </div>
                 <div class="col-sm-2">
-                  <input homer-date-picker="" class="form-control from" type="text" size="10" placeholder="Début" name="exploitDateFrom" ng-model="$parent.ngModel.exploitDateFrom" maxlength="10" pattern="^[0-9]{2}/[0-9]{2}/[0-9]{4}$" id="dp1497016925899">
+                  <date-picker @update-date="updateDateDebutCreation" date-format="dd/mm/yy" place-holder="Début" v-once></date-picker>
+
                 </div>
                 <div class="col-sm-2">
-                  <input homer-date-picker="" class="form-control from" type="text" size="10" placeholder="Fin" name="exploitDateFrom" ng-model="$parent.ngModel.exploitDateFrom" maxlength="10" pattern="^[0-9]{2}/[0-9]{2}/[0-9]{4}$" id="dp1497016925899">
+                  <date-picker @update-date="updateDateFinCreation" date-format="dd/mm/yy" place-holder="Fin" v-once></date-picker>
                 </div>
 
                 <div class="col-sm-2">
@@ -84,7 +85,6 @@
           </div>
         </div>
       </div>
-
       <div class="form-horizontal">
         <div class="col-sm-2">
           <label class="control-label pull-right">Statut</label>
@@ -92,7 +92,7 @@
         <div class="col-sm-12">
           <template v-for="item in statut">
             <label class="checkbox checkbox-inline" :class="{'checked' : isChecked(item.code)}">
-              <input type="checkbox" v-model="inputChgtCriteria.statutCode" :value="item.code">{{item.libelle}}
+              <input type="checkbox" v-model="critereRechercheData.statutCode" :value="item.code">{{item.libelle}}
               <span class="icons"><span class="first-icon fui-checkbox-unchecked"></span><span class="second-icon fui-checkbox-checked"></span></span>
             </label>
           </template>
@@ -101,7 +101,7 @@
 
       <div class="row formula-buttons">
         <button class="btn btn-default btn-primary pull-right" type="button" @click="retablir()">Rétablir</button>
-        <button class="btn btn-default btn-primary pull-right" type="button" @click="rechercher()">Rechercher</button>
+        <button class="btn btn-default btn-primary pull-right" type="button" @click="rechercherProgrammes()">Rechercher</button>
       </div>
     </div>
 
@@ -153,6 +153,7 @@
   import ModifierProgramme from './ModifierProgramme.vue';
   import AjouterProgramme from './ajouterProgramme.vue';
   import vSelect from '../common/Select.vue';
+  import DatePicker from '../common/DatePicker.vue';
 
   export default {
 
@@ -176,6 +177,8 @@
               size : 25
             },
 
+            date : null,
+
             familleSelected : {'id' : 'ALL', 'value' : 'Toutes'},
             typeUtilisationSelected : {'id' : 'ALL', 'value' : 'Tous'},
             rionTheoriqueSelected : {'id' : 'ALL', 'value' : 'Toutes'},
@@ -183,15 +186,16 @@
             typeRepartSelected : {'id' : 'ALL', 'value' : 'Tous'},
 
             critereRechercheData : {
-                numProg : '',
-                famille : '',
-                typeUtilisation: '',
-                nom : '',
-                rionTheorique : '',
-                rionPaiement : '',
-                typeRepart : '',
-                dateCreationFrom : '',
-                dataCreationTo : ''
+                numProg : null,
+                famille : null,
+                typeUtilisation: null,
+                nom : null,
+                rionTheorique : null,
+                rionPaiement : null,
+                typeRepart : null,
+                dateCreationDebut : null,
+                dateCreationFin : null,
+                statutCode : ['EN_COURS', 'AFFECTE', 'CREE', 'VALIDE', 'MISE_EN_REPART']
             },
 
             priamGrid : {
@@ -250,9 +254,9 @@
                   cell : {
                     toText : function(cellValue) {
                       var result  = getters.typeRepart.find(function (element) {
-                        return element.code === cellValue;
+                        return element.id === cellValue;
                       });
-                      return result !== undefined && result.libelle;
+                      return result !== undefined && result.value;
                     }
                   }
                 },
@@ -342,7 +346,7 @@
 
       created() {
         const customActions = {
-          searchProgramme : {method : 'GET', url :'app/rest/programme/search?page={page}&size={size}'}
+          searchProgramme : {method : 'POST', url :'app/rest/programme/search?page={page}&size={size}'}
         }
         this.resource= this.$resource('', {}, customActions);
 
@@ -367,7 +371,16 @@
         },
 
         typeRepartOptions() {
-            return [{id : 'ALL', value: 'Tous'}]
+            return this.$store.getters.typeRepart;
+        },
+
+        statut() {
+            var statutProgramme = this.$store.getters.statutProgramme.sort(function (a, b) {
+              return a.orderAff > b.orderAff;
+            });
+
+            return statutProgramme;
+
         }
       },
 
@@ -396,7 +409,7 @@
 
           launchRequest(pageNum, pageSize, sort, dir) {
             this.resource.searchProgramme({page : pageNum - 1, size : pageSize,
-              sort : sort, dir: dir}, this.inputChgtCriteria)
+              sort : sort, dir: dir}, this.critereRechercheData)
               .then(response => {
                 return response.json();
               })
@@ -432,17 +445,40 @@
           },
 
           rechercherProgrammes() {
-            this.launchRequest(this.defaultPageable.page, this.defaultPageable.size,
-              this.defaultPageable.sort, this.defaultPageable.dir);
+              this.critereRechercheData.typeUtilisation = this.typeUtilisationSelected !== undefined ? this.typeUtilisationSelected.id : null;
+              this.critereRechercheData.famille = this.familleSelected !== undefined ? this.familleSelected.id : null;
+              this.critereRechercheData.rionTheorique= this.rionTheoriqueSelected !== undefined ? this.rionTheoriqueSelected.id : null;
+              this.critereRechercheData.rionPaiement= this.rionPaiementSelected !== undefined ? this.rionPaiementSelected.id : null;
+              this.critereRechercheData.typeRepart = this.typeRepartSelected !== undefined ? this.typeRepartSelected.id : null;
+
+              this.launchRequest(this.defaultPageable.page, this.defaultPageable.size,
+                                 this.defaultPageable.sort, this.defaultPageable.dir);
 
           },
 
-        loadTypeUtilisation(val) {
-            this.familleSelected = val;
-            this.typeUtilisationSelected = {'id' : 'ALL', 'value': 'Tous'};
-            this.$store.dispatch('loadTypeUtilisation', val);
+          loadTypeUtilisation(val) {
+              this.familleSelected = val;
+              this.typeUtilisationSelected = {'id' : 'ALL', 'value': 'Tous'};
+              this.$store.dispatch('loadTypeUtilisation', val);
 
+          },
+
+          updateDateDebutCreation(date) {
+              this.critereRechercheData.dateCreationDebut = date;
+          },
+
+          updateDateFinCreation(date) {
+              this.critereRechercheData.dateCreationFin = date;
+          },
+
+          isChecked (code) {
+            var result = this.critereRechercheData.statutCode.find(function (element) {
+              return element === code;
+            });
+
+            return result !== undefined && result;
           }
+
 
       },
 
@@ -451,7 +487,8 @@
           ecranModal : EcranModal,
           modifierProgramme : ModifierProgramme,
           ajouterProgramme : AjouterProgramme,
-          vSelect : vSelect
+          vSelect : vSelect,
+          datePicker : DatePicker
       }
 
   }

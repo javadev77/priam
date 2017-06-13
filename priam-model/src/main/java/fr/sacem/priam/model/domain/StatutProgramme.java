@@ -8,5 +8,7 @@ public enum StatutProgramme {
     VALIDE,
     ABANDONNE,
     AFFECTE,
-    CREE
+    CREE,
+    MISE_EN_REPART,
+    REPARTI
 }

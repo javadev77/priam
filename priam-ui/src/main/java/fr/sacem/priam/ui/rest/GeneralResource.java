@@ -120,15 +120,14 @@ public class GeneralResource {
     @RequestMapping(value = "/rions",
       method = RequestMethod.GET,
       produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Integer>[] getRions(Locale locale) {
+    public Map<String, String>[] getRions(Locale locale) {
       List<Rion> rions = rionDao.findAfterRion(639);
-      List<Map<String, Integer>> result = new ArrayList<>(rions.size());
+      List<Map<String, String>> result = new ArrayList<>(rions.size());
       rions.forEach(rion -> {
     
-        Map<String, Integer> map;
-        map = new HashMap<>();
-        map.put("id", rion.getRion());
-        map.put("value", rion.getRion());
+        Map<String, String> map = new HashMap<>();
+        map.put("id", String.valueOf(rion.getRion()));
+        map.put("value", String.valueOf(rion.getRion()));
     
         result.add(map);
       });
