@@ -10,21 +10,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+
 /**
  * Created by benmerzoukah on 06/06/2017.
  */
 @RestController
 @RequestMapping("/app/rest/programme")
 public class ProgrammeResource {
-  
+
     @Autowired
     private ProgrammeService programmeService;
-  
+
     @RequestMapping(value = "/search",
       method = RequestMethod.GET,
       produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<ProgrammeDto> rechercheProgramme(Pageable pageable) {
-    
+
         return programmeService.findProgrammeByCriteria(pageable);
     }
+
 }
