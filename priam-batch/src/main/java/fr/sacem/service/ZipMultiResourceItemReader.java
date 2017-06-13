@@ -101,6 +101,8 @@ public class ZipMultiResourceItemReader<T> extends MultiResourceItemReader<T> {
                                 Fichier fichier = fichierService.findByName(nomFichier);
                                 JobParameter jobParameterNomDuFichier = new JobParameter(nomFichier);
                                 this.stepExecution.getExecutionContext().put("nomFichier", jobParameterNomDuFichier);
+                                JobParameter jobParameterIdFichier = new JobParameter(fichier.getId());
+                                this.stepExecution.getExecutionContext().put("idFichier", jobParameterIdFichier);
                             }
                         }
                     }

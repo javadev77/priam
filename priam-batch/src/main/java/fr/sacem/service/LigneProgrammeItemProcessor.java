@@ -24,10 +24,13 @@ public class LigneProgrammeItemProcessor implements ItemProcessor<LigneProgramme
 
     @Override
     public LigneProgramme process(final LigneProgramme ligneProgramme) throws Exception {
-        JobParameter parameter = (JobParameter) executionContext.get("nomFichier");
-        String nomFichier = (String) parameter.getValue();
-        Fichier fichier = fichierService.findByName(nomFichier);
-        ligneProgramme.setIdFichier(fichier.getId());
+        JobParameter parameter_nom_fichier = (JobParameter) executionContext.get("nomFichier");
+        JobParameter parameter_id_fichier=(JobParameter) executionContext.get("idFichier");
+        Long idFichier = Long.valueOf(parameter_id_fichier.getValue().toString());
+        String nomFichier=(String) parameter_nom_fichier.getValue();
+
+        // recupération de Id fichier , Id fichier est obtenu apres la creation du fichier
+        ligneProgramme.setIdFichier(idFichier);
         log.info("Fichier : < " + nomFichier + " > Traitement de la ligne_programme id12 =(" + ligneProgramme.getIde12() + ")");
 
         return ligneProgramme;

@@ -78,7 +78,6 @@ public class ZipFileJobConfigurationTest {
                     0, step.getReadCount());
         }
     }
-     @Ignore
     @Test
     public void launchJobOneArchiveAvecDixElement() throws Exception {
         // Job parameters
