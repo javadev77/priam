@@ -40,7 +40,7 @@ public class ProgrammeResource {
     public Page<ProgrammeDto> rechercheProgramme(@RequestBody ProgrammeCritereRecherche input, Pageable pageable) {
         logger.info("input criteria : " + input);
         List<StatutProgramme> status = null;
-        if(input.getStatutCode().isEmpty()) {
+        if(input.getStatutCode() == null || input.getStatutCode().isEmpty()) {
           status = Arrays.asList(StatutProgramme.values());
         } else {
           status = Lists.transform(input.getStatutCode(), code -> StatutProgramme.valueOf(code));
@@ -55,19 +55,16 @@ public class ProgrammeResource {
             criteria.setFamille(codeFamille);
         }
     
-        String codeTypeUtil = null;
-        if(!"ALL".equals(input.getTypeUtilisation())) {
-            codeTypeUtil = input.getTypeUtilisation();
+        String codeTypeUtil = input.getTypeUtilisation();
+        if(codeTypeUtil !=null && !"ALL".equals(codeTypeUtil)) {
             criteria.setTypeUtilisation(codeTypeUtil);
         }
-        
   
         criteria.setNumProg(Strings.emptyToNull(input.getNumProg()));
         criteria.setNom(Strings.emptyToNull(input.getNom()));
         
-        String codeTypeRepart = null;
-        if(!"ALL".equals(input.getTypeRepart())) {
-            codeTypeRepart = input.getTypeRepart();
+        String codeTypeRepart = input.getTypeRepart();
+        if(codeTypeRepart != null && !"ALL".equals(codeTypeRepart)) {
             criteria.setTypeRepart(TypeRepart.valueOf(codeTypeRepart));
         }
   
@@ -80,7 +77,9 @@ public class ProgrammeResource {
         if(rionPaiement != null && !"ALL".equals(rionPaiement)) {
             criteria.setRionPaiement(Integer.valueOf(rionPaiement));
         }
-        
+  
+        criteria.setDateCreationDebut(input.getDateCreationDebut());
+        criteria.setDateCreationFin(input.getDateCreationFin());
   
         return programmeService.findProgrammeByCriteria(criteria, pageable);
     }

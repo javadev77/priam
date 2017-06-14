@@ -60,16 +60,29 @@
         <button class="btn btn-default btn-primary pull-right" type="button" @click="rechercher()">Rechercher</button>
       </div>
     </div>
-
-    <priam-grid
-      :data="priamGrid.gridData"
-      :columns="priamGrid.gridColumns"
-      noResultText="Aucun résultat."
-      :filter-key="priamGrid.searchQuery"
-      @cellClick="onCellClick"
-      @load-page="loadPage"
-      @on-sort="onSort">
-    </priam-grid>
+    <div class="container-fluid">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h5 class="panel-title">
+            <a>Résultats</a>
+            <span class="pull-left collapsible-icon bg-ico-tablerow"></span>
+          </h5>
+        </div>
+        <div class="panel-collapse">
+          <div class="result-panel-body panel-body">
+            <priam-grid
+              :data="priamGrid.gridData"
+              :columns="priamGrid.gridColumns"
+              noResultText="Aucun résultat."
+              :filter-key="priamGrid.searchQuery"
+              @cellClick="onCellClick"
+              @load-page="loadPage"
+              @on-sort="onSort">
+            </priam-grid>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <modal v-if="showModal">
       <label class="homer-prompt-q control-label" slot="body">
