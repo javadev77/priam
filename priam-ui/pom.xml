@@ -114,6 +114,15 @@
 
     <dependency>
       <groupId>fr.sacem.priam</groupId>
+      <artifactId>priam-model</artifactId>
+      <type>test-jar</type>
+      <version>1.0-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+
+
+    <dependency>
+      <groupId>fr.sacem.priam</groupId>
       <artifactId>priam-services</artifactId>
       <version>1.0-SNAPSHOT</version>
       <type>jar</type>

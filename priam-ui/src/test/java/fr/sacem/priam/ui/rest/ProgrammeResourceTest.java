@@ -1,7 +1,6 @@
 package fr.sacem.priam.ui.rest;
 
 import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
-import fr.sacem.priam.ui.PriamWebApp;
 import fr.sacem.priam.ui.rest.dto.ProgrammeCritereRecherche;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,7 +31,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
  * Created by benmerzoukah on 14/06/2017.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = PriamWebApp.class)
+@SpringBootTest(classes = PriamWebAppTest.class)
 @WebAppConfiguration
 public class ProgrammeResourceTest {
     private MockMvc mockMvc;
@@ -90,15 +89,17 @@ public class ProgrammeResourceTest {
     @Test
     public void search_programmes_by_rion_theorique() throws Exception {
         ProgrammeCritereRecherche critereRecherche = new ProgrammeCritereRecherche();
-        critereRecherche.setRionTheorique("639");
+        critereRecherche.setRionTheorique("619");
         mockMvc.perform(post("/app/rest/programme/search")
                 .content(this.json(critereRecherche))
                 .contentType(contentType))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content", hasSize(3)))
-                .andExpect(jsonPath("$.content[0].rionTheorique", is(639)))
-                .andExpect(jsonPath("$.content[1].rionTheorique", is(639)))
-                .andExpect(jsonPath("$.content[2].rionTheorique", is(639)));
+                .andExpect(jsonPath("$.content", hasSize(5)))
+                .andExpect(jsonPath("$.content[0].rionTheorique", is(619)))
+                .andExpect(jsonPath("$.content[1].rionTheorique", is(619)))
+                .andExpect(jsonPath("$.content[2].rionTheorique", is(619)))
+                .andExpect(jsonPath("$.content[3].rionTheorique", is(619)))
+                .andExpect(jsonPath("$.content[4].rionTheorique", is(619)));
     }
     
     
