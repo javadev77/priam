@@ -1,8 +1,13 @@
-package fr.sacem.priam.model.fr.sacem.priam.model.dao.jpa;
+package fr.sacem.priam.model.dao.jpa;
 
+<<<<<<< HEAD:priam-model/src/test/java/fr/sacem/priam/model/fr/sacem/priam/model/dao/jpa/ProgrammeDaoTest.java
 import fr.sacem.priam.model.JpaConfigurationTest;
 import fr.sacem.priam.model.dao.jpa.*;
 import fr.sacem.priam.model.domain.*;
+=======
+import fr.sacem.priam.model.dao.JpaConfigurationTest;
+import fr.sacem.priam.model.domain.StatutProgramme;
+>>>>>>> 6a915508fd20c04960c6c69f469b4198d26bbb59:priam-model/src/test/java/fr/sacem/priam/model/dao/jpa/ProgrammeViewDaoTest.java
 import fr.sacem.priam.model.domain.criteria.ProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import org.junit.Test;
@@ -29,7 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes={JpaConfigurationTest.class})
-public class ProgrammeDaoTest {
+public class ProgrammeViewDaoTest {
     
     public static final Pageable PAGEABLE = new Pageable() {
         @Override
@@ -145,13 +150,11 @@ public class ProgrammeDaoTest {
     @Test
     public void search_programme_by_date_creation() throws ParseException {
         ProgrammeCriteria criteria = new ProgrammeCriteria();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     
-        Date date = sdf.parse("2017-06-13T00:00:00.000");
-        criteria.setDateCreationDebut(
-                date);
-        criteria.setDateCreationFin(
-                    sdf.parse("2017-06-13T00:00:00.000"));
+        Date date = sdf.parse("2017-06-14");
+        criteria.setDateCreationDebut( date);
+        criteria.setDateCreationFin(date);
         criteria.setNumProg("PR170001");
     
         criteria.setStatut(Arrays.asList(StatutProgramme.values()));
@@ -162,7 +165,7 @@ public class ProgrammeDaoTest {
         assertThat(all.getContent()).isNotEmpty().hasSize(1);
         all.getContent().forEach(elem -> {
             assertThat(elem.getNumProg()).isEqualTo("PR170001");
-            assertThat(sdf.format(elem.getDateCreation())).isEqualTo("2017-06-13T00:00:00.000");
+            assertThat(sdf.format(elem.getDateCreation())).isEqualTo("2017-06-14");
         });
         
     }

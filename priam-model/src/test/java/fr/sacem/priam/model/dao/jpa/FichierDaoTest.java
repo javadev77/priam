@@ -1,8 +1,6 @@
-package fr.sacem.priam.model.fr.sacem.priam.model.dao.jpa;
+package fr.sacem.priam.model.dao.jpa;
 
-import fr.sacem.priam.model.JpaConfigurationTest;
-import fr.sacem.priam.model.dao.jpa.FichierDao;
-import fr.sacem.priam.model.dao.jpa.TypeUtilisationDao;
+import fr.sacem.priam.model.dao.JpaConfigurationTest;
 import fr.sacem.priam.model.domain.Fichier;
 import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.dto.FileDto;

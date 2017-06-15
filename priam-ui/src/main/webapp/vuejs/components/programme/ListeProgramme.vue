@@ -26,7 +26,7 @@
                 <div class="col-sm-2">
                   <label class="control-label pull-right">Famille</label>
                 </div>
-                <div class="col-sm-3">
+                <div class="col-sm-5">
                   <v-select :searchable="false" label="value" v-model="familleSelected" :options="familleOptions" :on-change="loadTypeUtilisation">
                   </v-select>
                 </div>
@@ -34,11 +34,11 @@
                   <label class="control-label pull-right">Date de création</label>
                 </div>
                 <div class="col-sm-2">
-                  <date-picker @update-date="updateDateDebutCreation" date-format="dd/mm/yy" place-holder="Début" v-once></date-picker>
+                  <date-picker @update-date="updateDateDebutCreation" date-format="dd/mm/yy" place-holder="De" v-once></date-picker>
 
                 </div>
                 <div class="col-sm-2">
-                  <date-picker @update-date="updateDateFinCreation" date-format="dd/mm/yy" place-holder="Fin" v-once></date-picker>
+                  <date-picker @update-date="updateDateFinCreation" date-format="dd/mm/yy" place-holder="A" v-once></date-picker>
                 </div>
 
                 <div class="col-sm-2">
@@ -61,7 +61,7 @@
                 <div class="col-sm-2">
                   <label class="control-label pull-right">Type d'utilisation</label>
                 </div>
-                <div class="col-sm-3">
+                <div class="col-sm-5">
                   <v-select :searchable="false" label="value" v-model="typeUtilisationSelected" :options="typeUtilisationOptions">
                   </v-select>
                 </div>
@@ -346,7 +346,7 @@
 
       created() {
         const customActions = {
-          searchProgramme : {method : 'POST', url :'app/rest/programme/search?page={page}&size={size}'}
+          searchProgramme : {method : 'POST', url :'app/rest/programme/search?page={page}&size={size}&sort={sort},{dir}'}
         }
         this.resource= this.$resource('', {}, customActions);
 

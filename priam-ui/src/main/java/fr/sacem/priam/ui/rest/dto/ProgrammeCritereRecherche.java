@@ -20,7 +20,7 @@ public class ProgrammeCritereRecherche {
     private Date dateCreationDebut;
     private Date dateCreationFin;
   
-    ProgrammeCritereRecherche() {
+    public ProgrammeCritereRecherche() {
     
     }
   

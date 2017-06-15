@@ -36,70 +36,71 @@ public class ProgrammeResource {
     consumes = MediaType.APPLICATION_JSON_VALUE,
     produces = MediaType.APPLICATION_JSON_VALUE)
   public Page<ProgrammeDto> rechercheProgramme(@RequestBody ProgrammeCritereRecherche input, Pageable pageable) {
-    logger.info("input criteria : " + input);
-    List<StatutProgramme> status = null;
-    if (input.getStatutCode().isEmpty()) {
-      status = Arrays.asList(StatutProgramme.values());
-    } else {
-      status = Lists.transform(input.getStatutCode(), code -> StatutProgramme.valueOf(code));
+        logger.info("input criteria : " + input);
+        List<StatutProgramme> status = null;
+        if (input.getStatutCode() == null || input.getStatutCode().isEmpty()) {
+          status = Arrays.asList(StatutProgramme.values());
+        } else {
+          status = Lists.transform(input.getStatutCode(), code -> StatutProgramme.valueOf(code));
+        }
+
+        ProgrammeCriteria criteria = new ProgrammeCriteria();
+        criteria.setStatut(status);
+
+        String codeFamille = null;
+        if (!"ALL".equals(input.getFamille())) {
+          codeFamille = input.getFamille();
+          criteria.setFamille(codeFamille);
+        }
+
+        String codeTypeUtil = null;
+        if (!"ALL".equals(input.getTypeUtilisation())) {
+          codeTypeUtil = input.getTypeUtilisation();
+          criteria.setTypeUtilisation(codeTypeUtil);
+        }
+
+
+        criteria.setNumProg(Strings.emptyToNull(input.getNumProg()));
+        criteria.setNom(Strings.emptyToNull(input.getNom()));
+
+        String codeTypeRepart = null;
+        if (!"ALL".equals(input.getTypeRepart())) {
+          codeTypeRepart = input.getTypeRepart();
+          criteria.setTypeRepart(TypeRepart.valueOf(codeTypeRepart));
+        }
+
+        String rionTheorique = input.getRionTheorique();
+        if (rionTheorique != null && !"ALL".equals(rionTheorique)) {
+          criteria.setRionTheorique(Integer.valueOf(rionTheorique));
+        }
+
+        String rionPaiement = input.getRionPaiement();
+        if (rionPaiement != null && !"ALL".equals(rionPaiement)) {
+          criteria.setRionPaiement(Integer.valueOf(rionPaiement));
+        }
+
+
+        return programmeService.findProgrammeByCriteria(criteria, pageable);
+      }
+
+      @RequestMapping(value = "programme/{nom}",
+        method = RequestMethod.GET)
+      public Boolean getProgrammeByNom (@PathVariable("nom") String nom){
+        Boolean resultat = false;
+        List<Programme> programmes = programmeService.serachProgrammeByNom(nom);
+        if (programmes.size() <= 0)
+          resultat = false;
+        else if (programmes.size() > 1)
+          resultat = true;
+        return resultat;
+
+      }
+
+      @RequestMapping(value = "programme/",
+        method = RequestMethod.POST,
+        consumes = MediaType.APPLICATION_JSON_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+      public Programme save (@RequestBody ProgrammeDto programmeDto){
+        return programmeService.addProgramme(programmeDto);
+      }
     }
-
-    ProgrammeCriteria criteria = new ProgrammeCriteria();
-    criteria.setStatut(status);
-
-    String codeFamille = null;
-    if (!"ALL".equals(input.getFamille())) {
-      codeFamille = input.getFamille();
-      criteria.setFamille(codeFamille);
-    }
-
-    String codeTypeUtil = null;
-    if (!"ALL".equals(input.getTypeUtilisation())) {
-      codeTypeUtil = input.getTypeUtilisation();
-      criteria.setTypeUtilisation(codeTypeUtil);
-    }
-
-
-    criteria.setNumProg(Strings.emptyToNull(input.getNumProg()));
-    criteria.setNom(Strings.emptyToNull(input.getNom()));
-
-    String codeTypeRepart = null;
-    if (!"ALL".equals(input.getTypeRepart())) {
-      codeTypeRepart = input.getTypeRepart();
-      criteria.setTypeRepart(TypeRepart.valueOf(codeTypeRepart));
-    }
-
-    String rionTheorique = input.getRionTheorique();
-    if (rionTheorique != null && !"ALL".equals(rionTheorique)) {
-      criteria.setRionTheorique(Integer.valueOf(rionTheorique));
-    }
-
-    String rionPaiement = input.getRionPaiement();
-    if (rionPaiement != null && !"ALL".equals(rionPaiement)) {
-      criteria.setRionPaiement(Integer.valueOf(rionPaiement));
-    }
-
-
-    return programmeService.findProgrammeByCriteria(criteria, pageable);
-  }
-
-  @RequestMapping(value = "programme/{nom}",
-    method = RequestMethod.GET)
-  public Boolean getProgrammeByNom(@PathVariable("nom") String nom) {
-    Boolean resultat = false;
-    List<Programme> programmes =programmeService.serachProgrammeByNom(nom);
-    if(programmes.size()<=0)
-      resultat= false;
-    else if(programmes.size()>1)
-      resultat= true;
-    return resultat;
-
-  }
-  @RequestMapping(value = "programme/",
-    method = RequestMethod.POST,
-    consumes = MediaType.APPLICATION_JSON_VALUE,
-    produces = MediaType.APPLICATION_JSON_VALUE)
-  public Programme save(@RequestBody ProgrammeDto programmeDto){
-    return programmeService.addProgramme(programmeDto);
-  }
-}

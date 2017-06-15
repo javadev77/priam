@@ -71,13 +71,13 @@
     display: block;
     padding: 0;
     background-color: #fff;
-    border: 2px solid rgba(60, 60, 60, .26);
+    border: 1px solid rgba(60, 60, 60, .26);
     border-radius: 4px;
     white-space: normal;
     transition: border-radius .25s;
     width: 100%;
     visibility: visible;
-    height: 25px!important;
+    height: 20px!important;
 
   }
 

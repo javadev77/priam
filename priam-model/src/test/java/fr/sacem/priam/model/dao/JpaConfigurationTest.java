@@ -1,4 +1,4 @@
-package fr.sacem.priam.model;
+package fr.sacem.priam.model.dao;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -40,14 +40,14 @@ public class JpaConfigurationTest {
     public DataSource dataSource(){
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("org.h2.Driver");
-        dataSource.setUrl("jdbc:h2:mem:priam;MODE=MySQL;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS PRIAM_APP\\;RUNSCRIPT FROM './target/test-classes/scripts/init-schema.sql'\\;RUNSCRIPT FROM './target/test-classes/scripts/data.sql'");
+        dataSource.setUrl("jdbc:h2:mem:priam;MODE=MySQL;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS PRIAM_APP\\;RUNSCRIPT FROM './target/test-classes/scripts/init-schema_test.sql'\\;RUNSCRIPT FROM './target/test-classes/scripts/data_test.sql'");
         dataSource.setUsername("sa");
         dataSource.setPassword("sa");
     
         EmbeddedDatabase embeddedDatabase = new EmbeddedDatabaseBuilder()
                 .setType(EmbeddedDatabaseType.H2)
                 .setName("priam")
-                .addScript("scripts/init-schema.sql").addScript("scripts/data.sql")
+                .addScript("scripts/init-schema_test.sql").addScript("scripts/data_test.sql")
                 .build();
         return embeddedDatabase;
     }
@@ -70,7 +70,7 @@ public class JpaConfigurationTest {
         properties.setProperty("hibernate.hbm2ddl.auto", "update");
         properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
         properties.setProperty("hibernate.show_sql", "true");
-        properties.setProperty("javax.persistence.sql-load-script-source", "classpath:init-schema.sql");
+        properties.setProperty("javax.persistence.sql-load-script-source", "classpath:init-schema_test.sql");
         return properties;
     }
     

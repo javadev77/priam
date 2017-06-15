@@ -1,7 +1,6 @@
-package fr.sacem.priam.model.fr.sacem.priam.model.dao.jpa;
+package fr.sacem.priam.model.dao.jpa;
 
-import fr.sacem.priam.model.JpaConfigurationTest;
-import fr.sacem.priam.model.dao.jpa.FamilleDao;
+import fr.sacem.priam.model.dao.JpaConfigurationTest;
 import fr.sacem.priam.model.domain.Famille;
 import org.junit.Test;
 import org.junit.runner.RunWith;
