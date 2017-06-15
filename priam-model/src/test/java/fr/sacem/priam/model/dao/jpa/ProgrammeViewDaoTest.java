@@ -139,9 +139,9 @@ public class ProgrammeViewDaoTest {
         ProgrammeCriteria criteria = new ProgrammeCriteria();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     
-        Date date = sdf.parse("2017-06-14");
-        criteria.setDateCreationDebut( date);
-        criteria.setDateCreationFin(date);
+        Date currentDate = new Date();
+        criteria.setDateCreationDebut(currentDate);
+        criteria.setDateCreationFin(currentDate);
         criteria.setNumProg("PR170001");
     
         criteria.setStatut(Arrays.asList(StatutProgramme.values()));
@@ -152,7 +152,7 @@ public class ProgrammeViewDaoTest {
         assertThat(all.getContent()).isNotEmpty().hasSize(1);
         all.getContent().forEach(elem -> {
             assertThat(elem.getNumProg()).isEqualTo("PR170001");
-            assertThat(sdf.format(elem.getDateCreation())).isEqualTo("2017-06-14");
+            assertThat(sdf.format(elem.getDateCreation())).isEqualTo(sdf.format(currentDate));
         });
         
     }

@@ -41,9 +41,9 @@ public class ProgrammeResource {
         logger.info("input criteria : " + input);
         List<StatutProgramme> status = null;
         if(input.getStatutCode() == null || input.getStatutCode().isEmpty()) {
-          status = Arrays.asList(StatutProgramme.values());
+            status = Arrays.asList(StatutProgramme.values());
         } else {
-          status = Lists.transform(input.getStatutCode(), code -> StatutProgramme.valueOf(code));
+            status = Lists.transform(input.getStatutCode(), code -> StatutProgramme.valueOf(code));
         }
         
         ProgrammeCriteria criteria = new ProgrammeCriteria();
