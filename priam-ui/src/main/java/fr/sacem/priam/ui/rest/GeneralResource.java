@@ -4,9 +4,11 @@ package fr.sacem.priam.ui.rest;
 import fr.sacem.priam.model.dao.jpa.FamilleDao;
 import fr.sacem.priam.model.dao.jpa.LibelleFamilleDao;
 import fr.sacem.priam.model.dao.jpa.LibelleTypeUtilisationDao;
+import fr.sacem.priam.model.dao.jpa.RionDao;
 import fr.sacem.priam.model.domain.Famille;
 import fr.sacem.priam.model.domain.LibelleFamille;
 import fr.sacem.priam.model.domain.LibelleTypeUtilisation;
+import fr.sacem.priam.model.domain.Rion;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +39,10 @@ public class GeneralResource {
     
     @Autowired
     FamilleDao familleDao;
+  
+    @Autowired
+    RionDao rionDao;
+  
   
   
     @RequestMapping(value = "/libellefamille",
@@ -109,6 +115,24 @@ public class GeneralResource {
           });
         
         return result.toArray(new Map[0]);
+    }
+  
+    @RequestMapping(value = "/rions",
+      method = RequestMethod.GET,
+      produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, String>[] getRions(Locale locale) {
+      List<Rion> rions = rionDao.findAfterRion(639);
+      List<Map<String, String>> result = new ArrayList<>(rions.size());
+      rions.forEach(rion -> {
+    
+        Map<String, String> map = new HashMap<>();
+        map.put("id", String.valueOf(rion.getRion()));
+        map.put("value", String.valueOf(rion.getRion()));
+    
+        result.add(map);
+      });
+      
+      return result.toArray(new Map[0]);
     }
   
 }

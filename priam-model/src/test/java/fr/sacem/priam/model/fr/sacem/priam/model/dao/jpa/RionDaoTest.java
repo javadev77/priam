@@ -14,18 +14,31 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Created by fandis on 13/06/2017.
+ * Created by benmerzoukah on 09/05/2017.
  */
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes={JpaConfigurationTest.class})
 public class RionDaoTest {
-
+    
     @Autowired
     private RionDao rionDao;
+    
+    
     @Test
-    public void should_return_all_Rion() {
-        List<Rion> allRions = rionDao.getAllRions();
-        assertThat(allRions).isNotNull().isNotEmpty();
-       // assertThat(allRions).extracting("rion").containsExactly("COPIEPRIV", "FDSVAL", "CMS");
+    public void should_return_all_rions() {
+        List<Rion> all = rionDao.findAll();
+    
+        assertThat(all).isNotNull().isNotEmpty();
+        assertThat(all).extracting("rion").contains(619, 600, 629, 630, 639);
     }
+    
+    @Test
+    public void should_return_rions_after_639() {
+        List<Rion> all = rionDao.findAfterRion(639);
+    
+        assertThat(all).isNotNull().isNotEmpty();
+        assertThat(all).extracting("rion").doesNotContain(637, 638);
+    }
+
 }

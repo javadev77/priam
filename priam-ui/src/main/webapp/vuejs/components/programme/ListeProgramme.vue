@@ -1,15 +1,108 @@
 <template>
   <div>
     <div class="container-fluid sacem-formula">
-<<<<<<< Updated upstream
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h5 class="panel-title" @click="isCollapsed = !isCollapsed">
+            <!--<strong>Critères de Recherche</strong>-->
+            <a>Critères de recherche</a>
+            <span class="pull-left collapsible-icon formula-criteria-search"></span>
+            <span class="pull-right fa" :class="{'fui-triangle-up' : isCollapsed,  'fui-triangle-down' : !isCollapsed}"></span>
+          </h5>
+
+
+        </div>
+        <div class="panel-collapse" :class="{collapse : isCollapsed}">
+          <div class="panel-body">
+            <form class="form-horizontal" role="form">
+              <div class="row">
+                <div class="col-sm-2">
+                  <label class="control-label pull-right">N° programme</label>
+                </div>
+                <div class="col-sm-3">
+                  <input type="text" class="form-control" v-model="critereRechercheData.numProg">
+                </div>
+                <div class="col-sm-2">
+                  <label class="control-label pull-right">Famille</label>
+                </div>
+                <div class="col-sm-3">
+                  <v-select :searchable="false" label="value" v-model="familleSelected" :options="familleOptions" :on-change="loadTypeUtilisation">
+                  </v-select>
+                </div>
+                <div class="col-sm-2">
+                  <label class="control-label pull-right">Date de création</label>
+                </div>
+                <div class="col-sm-2">
+                  <date-picker @update-date="updateDateDebutCreation" date-format="dd/mm/yy" place-holder="Début" v-once></date-picker>
+
+                </div>
+                <div class="col-sm-2">
+                  <date-picker @update-date="updateDateFinCreation" date-format="dd/mm/yy" place-holder="Fin" v-once></date-picker>
+                </div>
+
+                <div class="col-sm-2">
+                  <label class="control-label pull-right">Rion théorique</label>
+                </div>
+                <div class="col-sm-3">
+                  <v-select :searchable="false" label="value" v-model="rionTheoriqueSelected" :options="rionTheoriqueOptions">
+                  </v-select>
+                </div>
+              </div>
+
+              <!-- 2 eme ligne du form -->
+              <div class="row">
+                <div class="col-sm-2">
+                  <label class="control-label pull-right">Nom</label>
+                </div>
+                <div class="col-sm-3">
+                  <input type="text" class="form-control" v-model="critereRechercheData.nom">
+                </div>
+                <div class="col-sm-2">
+                  <label class="control-label pull-right">Type d'utilisation</label>
+                </div>
+                <div class="col-sm-3">
+                  <v-select :searchable="false" label="value" v-model="typeUtilisationSelected" :options="typeUtilisationOptions">
+                  </v-select>
+                </div>
+                <div class="col-sm-2">
+                  <label class="control-label pull-right">Type répartition</label>
+                </div>
+                <div class="col-sm-4">
+                  <v-select :searchable="false" label="value" v-model="typeRepartSelected" :options="typeRepartOptions">
+                  </v-select>
+                </div>
+                <div class="col-sm-2">
+                  <label class="control-label pull-right">Rion de paiement</label>
+                </div>
+                <div class="col-sm-3">
+                  <v-select :searchable="false" label="value" v-model="rionPaiementSelected" :options="rionPaiementOptions">
+                  </v-select>
+                </div>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="form-horizontal">
+        <div class="col-sm-2">
+          <label class="control-label pull-right">Statut</label>
+        </div>
+        <div class="col-sm-12">
+          <template v-for="item in statut">
+            <label class="checkbox checkbox-inline" :class="{'checked' : isChecked(item.code)}">
+              <input type="checkbox" v-model="critereRechercheData.statutCode" :value="item.code">{{item.libelle}}
+              <span class="icons"><span class="first-icon fui-checkbox-unchecked"></span><span class="second-icon fui-checkbox-checked"></span></span>
+            </label>
+          </template>
+        </div>
+      </div>
+
       <div class="row formula-buttons">
         <button class="btn btn-default btn-primary pull-right" type="button" @click="retablir()">Rétablir</button>
         <button class="btn btn-default btn-primary pull-right" type="button" @click="rechercherProgrammes()">Rechercher</button>
       </div>
-=======
-      <ajouter-programme></ajouter-programme>
-
->>>>>>> Stashed changes
     </div>
 
     <div class="container-fluid">
@@ -56,8 +149,12 @@
 <script>
 
   import Grid from '../common/Grid.vue';
+  import EcranModal from '../common/EcranModal.vue';
+  import ModifierProgramme from './ModifierProgramme.vue';
+  import AjouterProgramme from './ajouterProgramme.vue';
+  import vSelect from '../common/Select.vue';
+  import DatePicker from '../common/DatePicker.vue';
 
-  import AjouterProgramme from  './ajouterProgramme.vue';
   export default {
 
       data() {
@@ -67,8 +164,10 @@
 
 
         return {
+            isCollapsed : false,
             showEcranModal : false,
             ecranAjouterProgramme : false,
+
             resource : {},
 
             defaultPageable : {
@@ -76,6 +175,27 @@
               sort : 'dateCreation',
               dir : 'desc',
               size : 25
+            },
+
+            date : null,
+
+            familleSelected : {'id' : 'ALL', 'value' : 'Toutes'},
+            typeUtilisationSelected : {'id' : 'ALL', 'value' : 'Tous'},
+            rionTheoriqueSelected : {'id' : 'ALL', 'value' : 'Toutes'},
+            rionPaiementSelected : {'id' : 'ALL', 'value' : 'Toutes'},
+            typeRepartSelected : {'id' : 'ALL', 'value' : 'Tous'},
+
+            critereRechercheData : {
+                numProg : null,
+                famille : null,
+                typeUtilisation: null,
+                nom : null,
+                rionTheorique : null,
+                rionPaiement : null,
+                typeRepart : null,
+                dateCreationDebut : null,
+                dateCreationFin : null,
+                statutCode : ['EN_COURS', 'AFFECTE', 'CREE', 'VALIDE', 'MISE_EN_REPART']
             },
 
             priamGrid : {
@@ -134,9 +254,9 @@
                   cell : {
                     toText : function(cellValue) {
                       var result  = getters.typeRepart.find(function (element) {
-                        return element.code === cellValue;
+                        return element.id === cellValue;
                       });
-                      return result !== undefined && result.libelle;
+                      return result !== undefined && result.value;
                     }
                   }
                 },
@@ -150,7 +270,7 @@
                   id :  'fichiers',
                   name :   "Fichiers",
                   sortable : true,
-                  type : 'clickable-link'
+                  type : 'numeric-link'
                 },
                 {
                   id :  'statut',
@@ -224,14 +344,44 @@
           }
       },
 
-
       created() {
         const customActions = {
-          searchProgramme : {method : 'GET', url :'app/rest/programme/search?page={page}&size={size}'}
+          searchProgramme : {method : 'POST', url :'app/rest/programme/search?page={page}&size={size}'}
         }
         this.resource= this.$resource('', {}, customActions);
 
         this.rechercherProgrammes();
+      },
+
+      computed : {
+        familleOptions() {
+          return this.$store.getters.familleOptions;
+        },
+
+        typeUtilisationOptions() {
+          return this.$store.getters.typeUtilisationOptions;
+        },
+
+        rionTheoriqueOptions() {
+            return this.$store.getters.rions;
+        },
+
+        rionPaiementOptions() {
+          return this.$store.getters.rions;
+        },
+
+        typeRepartOptions() {
+            return this.$store.getters.typeRepart;
+        },
+
+        statut() {
+            var statutProgramme = this.$store.getters.statutProgramme.sort(function (a, b) {
+              return a.orderAff > b.orderAff;
+            });
+
+            return statutProgramme;
+
+        }
       },
 
 
@@ -259,7 +409,7 @@
 
           launchRequest(pageNum, pageSize, sort, dir) {
             this.resource.searchProgramme({page : pageNum - 1, size : pageSize,
-              sort : sort, dir: dir}, this.inputChgtCriteria)
+              sort : sort, dir: dir}, this.critereRechercheData)
               .then(response => {
                 return response.json();
               })
@@ -295,19 +445,52 @@
           },
 
           rechercherProgrammes() {
-            this.launchRequest(this.defaultPageable.page, this.defaultPageable.size,
-              this.defaultPageable.sort, this.defaultPageable.dir);
+              this.critereRechercheData.typeUtilisation = this.typeUtilisationSelected !== undefined ? this.typeUtilisationSelected.id : null;
+              this.critereRechercheData.famille = this.familleSelected !== undefined ? this.familleSelected.id : null;
+              this.critereRechercheData.rionTheorique= this.rionTheoriqueSelected !== undefined ? this.rionTheoriqueSelected.id : null;
+              this.critereRechercheData.rionPaiement= this.rionPaiementSelected !== undefined ? this.rionPaiementSelected.id : null;
+              this.critereRechercheData.typeRepart = this.typeRepartSelected !== undefined ? this.typeRepartSelected.id : null;
 
+              this.launchRequest(this.defaultPageable.page, this.defaultPageable.size,
+                                 this.defaultPageable.sort, this.defaultPageable.dir);
+
+          },
+
+          loadTypeUtilisation(val) {
+              this.familleSelected = val;
+              this.typeUtilisationSelected = {'id' : 'ALL', 'value': 'Tous'};
+              this.$store.dispatch('loadTypeUtilisation', val);
+
+          },
+
+          updateDateDebutCreation(date) {
+              this.critereRechercheData.dateCreationDebut = date;
+          },
+
+          updateDateFinCreation(date) {
+              this.critereRechercheData.dateCreationFin = date;
+          },
+
+          isChecked (code) {
+            var result = this.critereRechercheData.statutCode.find(function (element) {
+              return element === code;
+            });
+
+            return result !== undefined && result;
           }
+
 
       },
 
       components : {
-        priamGrid: Grid,
-        ecranModal: EcranModal,
-        modifierProgramme: ModifierProgramme,
-        ajouterProgramme: AjouterProgramme
+          priamGrid : Grid,
+          ecranModal : EcranModal,
+          modifierProgramme : ModifierProgramme,
+          ajouterProgramme : AjouterProgramme,
+          vSelect : vSelect,
+          datePicker : DatePicker
       }
+
   }
 
 </script>

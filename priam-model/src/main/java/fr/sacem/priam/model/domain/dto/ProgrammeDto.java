@@ -2,7 +2,7 @@ package fr.sacem.priam.model.domain.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import fr.sacem.priam.model.domain.*;
-import fr.sacem.priam.model.util.CustomDateSerializer;
+import fr.sacem.priam.model.util.SimpleDateSerializer;
 
 import java.util.Date;
 
@@ -16,7 +16,7 @@ public class ProgrammeDto {
     private String typeUtilisation;
     private Integer rionTheorique;
     
-    @JsonSerialize(using = CustomDateSerializer.class)
+    @JsonSerialize(using = SimpleDateSerializer.class)
     private Date dateCreation;
     private TypeRepart typeRepart;
     private StatutProgramme statut;
