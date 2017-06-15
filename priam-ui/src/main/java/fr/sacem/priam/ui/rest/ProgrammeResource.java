@@ -49,23 +49,22 @@ public class ProgrammeResource {
         criteria.setStatut(status);
 
         String codeFamille = null;
-        if (!"ALL".equals(input.getFamille())) {
+        if (codeFamille != null && !"ALL".equals(input.getFamille())) {
           codeFamille = input.getFamille();
           criteria.setFamille(codeFamille);
         }
 
         String codeTypeUtil = null;
-        if (!"ALL".equals(input.getTypeUtilisation())) {
+        if (codeTypeUtil != null && !"ALL".equals(input.getTypeUtilisation())) {
           codeTypeUtil = input.getTypeUtilisation();
           criteria.setTypeUtilisation(codeTypeUtil);
         }
-
 
         criteria.setNumProg(Strings.emptyToNull(input.getNumProg()));
         criteria.setNom(Strings.emptyToNull(input.getNom()));
 
         String codeTypeRepart = null;
-        if (!"ALL".equals(input.getTypeRepart())) {
+        if (codeTypeRepart != null && !"ALL".equals(input.getTypeRepart())) {
           codeTypeRepart = input.getTypeRepart();
           criteria.setTypeRepart(TypeRepart.valueOf(codeTypeRepart));
         }
@@ -79,7 +78,9 @@ public class ProgrammeResource {
         if (rionPaiement != null && !"ALL".equals(rionPaiement)) {
           criteria.setRionPaiement(Integer.valueOf(rionPaiement));
         }
-
+        
+        criteria.setDateCreationDebut(input.getDateCreationDebut());
+        criteria.setDateCreationFin(input.getDateCreationFin());
 
         return programmeService.findProgrammeByCriteria(criteria, pageable);
       }

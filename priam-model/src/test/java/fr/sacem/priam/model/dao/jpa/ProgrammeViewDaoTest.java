@@ -1,13 +1,8 @@
 package fr.sacem.priam.model.dao.jpa;
 
-<<<<<<< HEAD:priam-model/src/test/java/fr/sacem/priam/model/fr/sacem/priam/model/dao/jpa/ProgrammeDaoTest.java
-import fr.sacem.priam.model.JpaConfigurationTest;
-import fr.sacem.priam.model.dao.jpa.*;
-import fr.sacem.priam.model.domain.*;
-=======
+
 import fr.sacem.priam.model.dao.JpaConfigurationTest;
-import fr.sacem.priam.model.domain.StatutProgramme;
->>>>>>> 6a915508fd20c04960c6c69f469b4198d26bbb59:priam-model/src/test/java/fr/sacem/priam/model/dao/jpa/ProgrammeViewDaoTest.java
+import fr.sacem.priam.model.domain.*;
 import fr.sacem.priam.model.domain.criteria.ProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import org.junit.Test;
