@@ -91,7 +91,11 @@
             <artifactId>priam-common</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.modelmapper</groupId>
+            <artifactId>modelmapper</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
     </dependencies>
 

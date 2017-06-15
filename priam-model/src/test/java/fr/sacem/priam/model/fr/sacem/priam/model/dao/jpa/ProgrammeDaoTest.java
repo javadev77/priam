@@ -1,14 +1,14 @@
 package fr.sacem.priam.model.fr.sacem.priam.model.dao.jpa;
 
 import fr.sacem.priam.model.JpaConfigurationTest;
-import fr.sacem.priam.model.dao.jpa.FichierDao;
-import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
-import fr.sacem.priam.model.domain.StatutProgramme;
+import fr.sacem.priam.model.dao.jpa.*;
+import fr.sacem.priam.model.domain.*;
 import fr.sacem.priam.model.domain.criteria.ProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -19,6 +19,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -74,9 +75,15 @@ public class ProgrammeDaoTest {
     
     @Autowired
     private ProgrammeViewDao programmeViewDao;
-    
     @Autowired
-    private FichierDao fichierDao;
+    private ProgrammeDao programmeDao;
+    @Autowired
+    private RionDao rionDao;
+    @Autowired
+    private TypeUtilisationDao typeUtilisationDao;
+    @Autowired
+    private FamilleDao familleDao;
+
     
     
     @Test
@@ -106,7 +113,7 @@ public class ProgrammeDaoTest {
         Page<ProgrammeDto> all = programmeViewDao.findAllProgrammeByCriteria(criteria.getNumProg(), criteria.getNom(), criteria.getStatut(), criteria.getDateCreationDebut(), criteria.getDateCreationFin(), criteria.getFamille(), criteria.getTypeUtilisation(), criteria.getRionTheorique(), criteria.getRionPaiement(), criteria.getTypeRepart(), PAGEABLE);
         
         assertThat(all).isNotNull();
-        assertThat(all.getContent()).extracting("fichiers").isEqualTo(Arrays.asList(0L, 0L, 0L, 0L, 3L));
+        assertThat(all.getContent()).extracting("fichiers").isEqualTo(Arrays.asList(0L,0L,0L, 0L, 0L, 3L));
     
     }
     
@@ -135,7 +142,6 @@ public class ProgrammeDaoTest {
         assertThat(all.getContent()).extracting("nom").contains("Programme 01");
         
     }
-    
     @Test
     public void search_programme_by_date_creation() throws ParseException {
         ProgrammeCriteria criteria = new ProgrammeCriteria();
@@ -159,5 +165,42 @@ public class ProgrammeDaoTest {
             assertThat(sdf.format(elem.getDateCreation())).isEqualTo("2017-06-13T00:00:00.000");
         });
         
+    }
+    @Test
+    public void search_progremme_by_nom_without_criteria(){
+        Programme programmeSearcher =new Programme();
+        programmeSearcher.setNom("Programme 01");
+        Example example = Example.of(programmeSearcher);
+        List<Programme> resultat= programmeDao.findAll(example);
+        assertThat(resultat).isNotNull();
+        assertThat(resultat.size()).isEqualTo(2);
+
+    }
+    @Test
+    public void add_programme(){
+        java.util.Date date = new java.util.Date();
+        Famille famille = new Famille();
+        famille.setCode("monCdeFam1");
+        famille.setDateDebut(date);
+        familleDao.save(famille);
+        TypeUtilisation typeUtilisation = new TypeUtilisation();
+        typeUtilisation.setCode("cdeTyUt1");
+        typeUtilisation.setCodeFamille("monCdeFam1");
+        typeUtilisation.setDateDebut(date);
+        typeUtilisationDao.save(typeUtilisation);
+        Rion rionPaiement = new Rion();
+        rionPaiement.setRion(998);
+        rionDao.save(rionPaiement);
+        Rion rionTheorique = new Rion();
+        rionTheorique.setRion(999);
+        rionDao.save(rionTheorique);
+        Programme programme = new Programme();
+        programme.setNumProg("myNum1");
+        programme.setNom("mon programme 1");
+        programme.setTypeUtilisation(typeUtilisation);
+        programme.setFamille(famille);
+        programme.setRionPaiement(rionPaiement);
+        programme.setRionTheorique(rionTheorique);
+        programmeDao.save(programme);
     }
 }

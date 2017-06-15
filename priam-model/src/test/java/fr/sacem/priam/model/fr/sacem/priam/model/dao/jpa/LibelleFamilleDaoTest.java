@@ -28,7 +28,6 @@ public class LibelleFamilleDaoTest {
     @Test
     public void should_return_all_famille_FR() {
         List<LibelleFamille> all = libelleFamilleDao.findByLang("FR");
-    
         assertThat(all).isNotNull().isNotEmpty();
         assertThat(all).extracting("code").containsExactly("COPIEPRIV", "FDSVAL", "CMS");
     }
@@ -36,7 +35,6 @@ public class LibelleFamilleDaoTest {
     @Test
     public void should_return_empty_famille_when_null() {
         List<LibelleFamille> all = libelleFamilleDao.findByLang(null);
-        
         assertThat(all).isNotNull().isEmpty();
     }
 

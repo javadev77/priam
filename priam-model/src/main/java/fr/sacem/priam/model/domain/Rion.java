@@ -138,5 +138,8 @@ public class Rion {
     public int hashCode() {
         return (int) (rion ^ (rion >>> 32));
     }
+
+    public Rion() {
+    }
 }
 

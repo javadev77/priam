@@ -8,8 +8,9 @@ import { fetchInitData } from './store/actions';
 import store from './store/store';
 import './directives/form-elements'
 import './utils/Arrays'
+import VeeValidate from 'vee-validate';
 
-
+Vue.use(VeeValidate);
 Vue.use(VueRouter);
 Vue.use(VueResource);
 
