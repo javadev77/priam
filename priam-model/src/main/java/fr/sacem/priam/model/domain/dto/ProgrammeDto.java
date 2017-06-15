@@ -129,4 +129,7 @@ public class ProgrammeDto {
     public void setFichiers(Long fichiers) {
         this.fichiers = fichiers;
     }
+
+    public ProgrammeDto() {
+    }
 }

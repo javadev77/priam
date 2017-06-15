@@ -1,6 +1,7 @@
 package fr.sacem.priam.model.config;
 
 import org.apache.commons.lang3.StringUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
@@ -96,5 +97,8 @@ public class JpaConfiguration {
         }
         return properties;
     }
-    
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
+    }
 }

@@ -101,6 +101,11 @@
             <version>1.6.1</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>0.7.9</version>
+        </dependency>
     </dependencies>
 
 
@@ -179,7 +184,6 @@
                     <packagingExcludes>WEB-INF/lib/tomcat-*.jar</packagingExcludes>
                 </configuration>
             </plugin>
-
         </plugins>
 
     </build>
@@ -196,5 +200,4 @@
             <url>http://repository.sacem.fr:8081/nexus/content/repositories/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
-
 </project>

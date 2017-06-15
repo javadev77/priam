@@ -89,6 +89,12 @@ const getters = {
     var options = state.rions.slice();
     options.unshift({id : 'ALL', value: 'Toutes'});
     return options;
+  },
+
+  rionsAddProg : state => {
+    var options = state.rions.slice();
+    options.unshift({id : 'VIDE', value: null});
+    return options;
   }
 
 

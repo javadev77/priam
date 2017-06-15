@@ -40,5 +40,5 @@ public interface ProgrammeViewDao extends JpaRepository<ProgrammeView, String> {
                                                   @Param("dateCreationFin") Date dateCreationFin, @Param("famille") String famille,
                                                   @Param("typeUtilisation") String typeUtilisation, @Param("rionTheorique") Integer rionTheorique,
                                                   @Param("rionPaiement") Integer rionPaiement, @Param("typeRepart") TypeRepart typeRepart, Pageable pageable);
-    
+
 }

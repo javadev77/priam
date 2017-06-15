@@ -167,7 +167,6 @@
       <artifactId>json-path-assert</artifactId>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
 
   <build>
