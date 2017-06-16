@@ -10,9 +10,9 @@
         <!--@input="updateValue($event.target.value)"-->
             <span>
                 - Résultats par page
-              <select :value="pageSize" @change="pageSizeChanged($event.target.value)">
+              <select :value="itemsPerPage" @change="pageSizeChanged($event.target.value)">
                 <template v-for="s in sizes">
-                  <option v-if="s === pageSize" selected> {{ s }}</option>
+                  <option v-if="s === itemsPerPage" selected> {{ s }}</option>
                   <option v-else> {{ s }}</option>
                 </template>
               </select>
@@ -90,9 +90,9 @@
         if (this.totalPages) {
           return this.totalPages
         } else {
-          return this.totalItems % this.pageSize === 0
-            ? this.totalItems / this.pageSize
-            : Math.floor(this.totalItems / this.pageSize) + 1
+          return this.totalItems % this.itemsPerPage === 0
+            ? this.totalItems / this.itemsPerPage
+            : Math.floor(this.totalItems / this.itemsPerPage) + 1
         }
       },
       pages () {
@@ -139,7 +139,7 @@
     },
 
     mounted() {
-      this.pageSize = this.itemsPerPage;
+
     },
 
     methods: {
@@ -158,7 +158,7 @@
 
         if (!this.disabled && this.currentPage !== page && page > 0 && page <= this.totalPages) {
           this.currentPage = page;
-          this.$emit('page-changed', page, Number.parseInt(this.pageSize));
+          this.$emit('page-changed', page, Number.parseInt(this.itemsPerPage));
         }
         console.log("currentPage=" + this.currentPage);
       },
@@ -168,9 +168,9 @@
       },
 
       pageSizeChanged(value) {
-        this.pageSize = Number.parseInt(value);
-        console.log("pageSizeChanged" + this.pageSize);
-        this.$emit('page-size-changed', Number.parseInt(this.pageSize));
+        this.itemsPerPage = Number.parseInt(value);
+        console.log("pageSizeChanged" + this.itemsPerPage);
+        this.$emit('page-size-changed', Number.parseInt(this.itemsPerPage));
       }
 
 

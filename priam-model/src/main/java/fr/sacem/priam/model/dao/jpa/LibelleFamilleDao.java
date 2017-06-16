@@ -20,7 +20,7 @@ public interface LibelleFamilleDao extends JpaRepository<LibelleFamille, Libelle
     
     @Cacheable("familles")
     @Query("SELECT libFam FROM LibelleFamille libFam " +
-            "WHERE libFam.famille.dateDebut is not null " +
+            "WHERE (libFam.famille.dateDebut is not null AND libFam.famille.dateDebut <= CURRENT_DATE) " +
             "AND (libFam.famille.dateFin is null OR libFam.famille.dateFin >= CURRENT_DATE)" +
             "AND libFam.lang = :lang")
     List<LibelleFamille> findByLang(@Param("lang") String lang);

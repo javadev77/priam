@@ -5,7 +5,7 @@
       <div class="panel-heading">
         <h5 class="panel-title">
           <a>Modifier un programme</a>
-          <span class="pull-left collapsible-icon formula-criteria-search"></span>
+          <span class="pull-left collapsible-icon bg-ico-editer-courrier"></span>
         </h5>
 
 

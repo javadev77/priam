@@ -20,7 +20,7 @@ public interface RionDao extends JpaRepository<Rion, Integer> {
     @Cacheable("rions")
     @Query("SELECT r FROM Rion r " +
             "WHERE r.rion >= :rion " +
-            "AND (rion.datcre is null OR rion.datcre >= CURRENT_DATE)" +
+            "AND (rion.datcre is not null AND rion.datcre <= CURRENT_DATE)" +
             "AND (rion.datrglmt is null OR rion.datrglmt >= CURRENT_DATE)")
     List<Rion> findAfterRion(@Param("rion") Integer rion);
     

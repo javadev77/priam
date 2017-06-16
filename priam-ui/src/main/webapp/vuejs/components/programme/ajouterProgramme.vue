@@ -5,7 +5,7 @@
         <h5 class="panel-title">
           <!--<strong>Critères de Recherche</strong>-->
           <a>Création programme</a>
-          <span class="pull-left collapsible-icon formula-criteria-search"></span>
+          <span class="pull-left collapsible-icon bg-ico-editer-courrier"></span>
         </h5>
       </div>
       <div class="panel-collapse">
