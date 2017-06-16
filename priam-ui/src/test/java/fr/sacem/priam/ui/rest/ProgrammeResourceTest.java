@@ -119,6 +119,25 @@ public class ProgrammeResourceTest {
           .andExpect(jsonPath("$.content[4].famille", is(copiepriv)));
     }
   
+  
+    @Test
+    public void search_programmes_by_type_utilisation() throws Exception {
+        ProgrammeCritereRecherche critereRecherche = new ProgrammeCritereRecherche();
+        
+        String typeUtil = "CPRIVAUDPL";
+        critereRecherche.setTypeUtilisation(typeUtil);
+        
+        mockMvc.perform(post(APP_REST_PROGRAMME_SEARCH)
+          .content(this.json(critereRecherche))
+          .contentType(contentType))
+          .andExpect(status().isOk())
+          .andExpect(jsonPath("$.content[0].typeUtilisation", is(typeUtil)))
+          .andExpect(jsonPath("$.content[1].typeUtilisation", is(typeUtil)))
+          .andExpect(jsonPath("$.content[2].typeUtilisation", is(typeUtil)))
+          .andExpect(jsonPath("$.content[3].typeUtilisation", is(typeUtil)))
+          .andExpect(jsonPath("$.content[4].typeUtilisation", is(typeUtil)));
+    }
+  
     
     protected String json(Object o) throws IOException {
         MockHttpOutputMessage mockHttpOutputMessage = new MockHttpOutputMessage();

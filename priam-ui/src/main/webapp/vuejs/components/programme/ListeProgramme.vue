@@ -195,7 +195,7 @@
                 typeRepart : null,
                 dateCreationDebut : null,
                 dateCreationFin : null,
-                statutCode : ['EN_COURS', 'CREE', 'VALIDE', 'MISE_EN_REPART']
+                statutCode : ['EN_COURS', 'AFFECTE', 'CREE', 'VALIDE', 'MISE_EN_REPART']
             },
 
             priamGrid : {

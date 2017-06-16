@@ -9,6 +9,6 @@ public enum StatutProgramme {
     ABANDONNE,
     AFFECTE,
     CREE,
-    MISE_EN_REPART,
+    MIS_EN_REPART,
     REPARTI
 }
