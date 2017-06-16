@@ -16,17 +16,16 @@
                  <div class="col-sm-2">
                    <span class="pull-right" for="nomProgramme">Nom programme</span>
                  </div>
-                 <div class="col-sm-3" :class="{'has-error': errors.has('nomProgramme') }">
-                   <input name="nomProgramme" v-model="programmeData.nomProgramme" v-validate="'required|max:20'" class="form-control" :class="{'has-error': errors.has('nomProgramme') }"  type="text" >
-                   <i v-show="errors.has('nomProgramme')" class="fa fa-warning"></i>
-                   <label v-show="errors.has('nomProgramme')" :class="{'has-error': errors.has('nomProgramme') }">{{ errors.first('nomProgramme') }}</label>
+                 <div class="col-sm-3" :class="{'has-error': errors.has('nom') }">
+                   <input name="nomProgramme" v-model="programmeData.nom" v-validate="'required|max:20'" class="form-control" :class="{'has-error': errors.has('nom') }"  type="text" >
+                   <i v-show="errors.has('nom')" class="fa fa-warning"></i>
+                   <label v-show="errors.has('nom')" :class="{'has-error': errors.has('nom') }">{{ errors.first('nomProgramme') }}</label>
                  </div>
               <div class="col-sm-2">
                 <label class="control-label pull-right">Rion théorique</label>
               </div>
               <div class="col-sm-3">
-                <v-select :searchable="false" label="value" v-model="rionTheoriqueSelected"
-                          :options="rionTheoriqueOptions">
+                <v-select :searchable="false" label="value" v-model="rionTheoriqueSelected" :options="rionTheoriqueOptions">
                 </v-select>
               </div>
               <div class="col-sm-2">
@@ -72,7 +71,7 @@
                 <div class="row formula-buttons">
                 <button class="btn btn-default btn-primary pull-right" type="button" @click="$emit('cancel')">Annuler</button>
                 <button class="btn btn-default btn-primary pull-right" type="submit" @click="verifierLeProgramme" name="button" >Valider</button>
-                  <button class="btn btn-default btn-primary pull-right" type="button" @click="verifierLeProgramme" name="button" >ajax</button>
+                  <button class="btn btn-default btn-primary pull-right" type="button" @click="ajouterUnProgramme()" name="button" >ajax</button>
                 </div>
                 </div>
             </div>
@@ -91,6 +90,7 @@
                 <p>Type d'utilisation:{{programmeData.typeUtilisation}}</p>
                 <p>Rion théorique:{{programmeData.rionTheorique}} </p>
                 <p>type répartition{{programmeData.typeRepartition}}</p>
+                <p>reponse : {{mareponse}}</p>
               </div>
             </div>
           </div>
@@ -106,16 +106,21 @@
   export default {
     data(){
       return {
+        programmeExist : false,
         resources:{},
         resource: '',
         nomProgramme : '',
-        reponse : '',
+        rionTheoriqueSelected: {'id': 'VIDE', 'value': ''},
+        famille: {'id': 'ALL', 'value': 'Toutes'},
+        typeUtilisation: {'id': 'ALL', 'value': 'Tous'},
+
         programmeData: {
-          nomProgramme: '',
-          rionTheoriqueSelected: {'id': 'VIDE', 'value': ''},
-          famille: {'id': 'ALL', 'value': 'Toutes'},
-          typeUtilisation: {'id': 'ALL', 'value': 'Tous'},
-          typeRepartition: 'Oeuvre'
+          nom: '',
+          numProg : '',
+          famille : '',
+          typeUtilisation : '',
+          rionTheorique :'',
+          typeRepart: 'Oeuvre'
 
         },
         formSubmitted: false
@@ -154,10 +159,35 @@
       },
       verifierLeProgramme(){
 
-        this.resource.searchProgramme({nom : 'munProg1'}).then(response => {
-          reponse=response.body;
-          alert("la reponse "+ reponse);
+        this.resource.searchProgramme({nom : programmeData.nomProgramme}).then(response => {
+          this.programmeExist = response.body;
+          if (this.programmeExist) {
+            var confirmation = confirm("Attention un programme avec le même nom est déjà existant. Voulez-vous continuer?");
+            if (confirmation == true) {
+              alert("ajouter programme");
+              return true;
+            } else {
+              alert("ne pas ajouter le programme");
+              return false;
+            }
+          }
         });
+      },
+      ajouterUnProgramme(){
+        if(this.verifierLeProgramme()){
+          this.programmeData.numProg=this.programmeData.nom;
+          this.programmeData.typeUtilisation=rionTheoriqueSelected.id;
+          alert(this.programmeData.typeUtilisation);
+          this.programmeData.famille=famille.id;
+          alert(this.programmeData.famille);
+          resource.addProgramme(this.programmeData).then(response => {
+            alert("ajout ok");
+          }, response => {
+            // error
+            alert("ajout ok");
+          });
+        }
+
       }
 
     },

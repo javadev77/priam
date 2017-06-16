@@ -58,7 +58,7 @@ public class ProgrammeService {
     @Transactional
     public List<Programme> serachProgrammeByNom(String nom){
         List<Programme> resultat= new ArrayList<>();
-        if(nom!=null || nom !=""){
+        if(nom!=null && !nom.equals("")){
             Programme programmeSearcher =new Programme();
             programmeSearcher.setNom(nom);
             Example example = Example.of(programmeSearcher);

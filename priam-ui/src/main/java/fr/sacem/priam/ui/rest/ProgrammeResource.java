@@ -78,7 +78,7 @@ public class ProgrammeResource {
         if (rionPaiement != null && !"ALL".equals(rionPaiement)) {
           criteria.setRionPaiement(Integer.valueOf(rionPaiement));
         }
-        
+
         criteria.setDateCreationDebut(input.getDateCreationDebut());
         criteria.setDateCreationFin(input.getDateCreationFin());
 
@@ -90,9 +90,9 @@ public class ProgrammeResource {
       public Boolean getProgrammeByNom (@PathVariable("nom") String nom){
         Boolean resultat = false;
         List<Programme> programmes = programmeService.serachProgrammeByNom(nom);
-        if (programmes.size() <= 0)
+        if (programmes.size() < 1)
           resultat = false;
-        else if (programmes.size() > 1)
+        else if (programmes.size() >= 1)
           resultat = true;
         return resultat;
 
