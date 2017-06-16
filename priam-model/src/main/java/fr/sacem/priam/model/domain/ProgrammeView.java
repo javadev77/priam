@@ -56,7 +56,7 @@ public class ProgrammeView {
     }
     
     @Column(name = "DATE_CREATION")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getDateCreation() {
         return dateCreation;
     }

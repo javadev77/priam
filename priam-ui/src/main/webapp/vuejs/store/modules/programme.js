@@ -50,8 +50,8 @@ const state = {
       "checked" : false
     },
     {
-      "code": "MISE_EN_REPART",
-      "libelle": 'Mise en répartition',
+      "code": "MIS_EN_REPART",
+      "libelle": 'Mis en répartition',
       "orderAff" : 5,
       "checked" : false
     },

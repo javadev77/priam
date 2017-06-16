@@ -27,7 +27,7 @@ const state = {
       "code": "AFFECTE",
       "libelle": 'Affecté',
       "color"  : 'grey',
-      "checked" : true
+      "checked" : false
     },
     {
       "code": "ABANDONNE",

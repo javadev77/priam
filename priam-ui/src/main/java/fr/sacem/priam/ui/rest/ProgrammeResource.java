@@ -48,24 +48,21 @@ public class ProgrammeResource {
         ProgrammeCriteria criteria = new ProgrammeCriteria();
         criteria.setStatut(status);
 
-        String codeFamille = null;
-        if (codeFamille != null && !"ALL".equals(input.getFamille())) {
-          codeFamille = input.getFamille();
+        String codeFamille = input.getFamille();
+        if (codeFamille != null && !"ALL".equals(codeFamille)) {
           criteria.setFamille(codeFamille);
         }
 
-        String codeTypeUtil = null;
-        if (codeTypeUtil != null && !"ALL".equals(input.getTypeUtilisation())) {
-          codeTypeUtil = input.getTypeUtilisation();
+        String codeTypeUtil = input.getTypeUtilisation();
+        if (codeTypeUtil != null && !"ALL".equals(codeTypeUtil)) {
           criteria.setTypeUtilisation(codeTypeUtil);
         }
 
         criteria.setNumProg(Strings.emptyToNull(input.getNumProg()));
         criteria.setNom(Strings.emptyToNull(input.getNom()));
 
-        String codeTypeRepart = null;
-        if (codeTypeRepart != null && !"ALL".equals(input.getTypeRepart())) {
-          codeTypeRepart = input.getTypeRepart();
+        String codeTypeRepart = input.getTypeRepart();
+        if (codeTypeRepart != null && !"ALL".equals(codeTypeRepart)) {
           criteria.setTypeRepart(TypeRepart.valueOf(codeTypeRepart));
         }
 
