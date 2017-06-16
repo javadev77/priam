@@ -69,20 +69,15 @@
                     v-model="programmeData.typeRepartition"
                     disabled> Ayant droit
                 </label>
-                <button class="btn btn-default btn-primary pull-right" type="submit" name="button" >Valider</button>
-              </div>
+                <div class="row formula-buttons">
+                <button class="btn btn-default btn-primary pull-right" type="button" @click="$emit('cancel')">Annuler</button>
+                <button class="btn btn-default btn-primary pull-right" type="submit" @click="verifierLeProgramme" name="button" >Valider</button>
+                  <button class="btn btn-default btn-primary pull-right" type="button" @click="verifierLeProgramme" name="button" >ajax</button>
+                </div>
+                </div>
             </div>
           </form>
         </div>
-
-
-        <div class="row formula-buttons">
-          <!--<button class="btn btn-default btn-primary pull-right" type="button" @click="$emit('cancel')">Annuler</button>-->
-          <!--<button class="btn btn-default btn-primary pull-right" type="button" @click="$emit('valider')">Valider</button>-->
-
-          <button class="btn btn-default btn-primary pull-right" type="submit" name="button" >Valider</button>
-        </div>
-
         <hr>
         <div class="row">
           <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
@@ -111,7 +106,10 @@
   export default {
     data(){
       return {
+        resources:{},
+        resource: '',
         nomProgramme : '',
+        reponse : '',
         programmeData: {
           nomProgramme: '',
           rionTheoriqueSelected: {'id': 'VIDE', 'value': ''},
@@ -153,10 +151,25 @@
           // eslint-disable-next-line
           alert('Correct them errors!');
         });
+      },
+      verifierLeProgramme(){
+
+        this.resource.searchProgramme({nom : 'munProg1'}).then(response => {
+          reponse=response.body;
+          alert("la reponse "+ reponse);
+        });
       }
+
     },
     components: {
       vSelect: vSelect
+    },
+    created(){
+      const customActions = {
+        searchProgramme : {method : 'GET', url :'app/rest/programme/{nom}'},
+        addProgramme : {method: 'POST', url : 'app/rest/programme/'},
+      }
+      this.resource= this.$resource('', {}, customActions);
     }
   }
 </script>
