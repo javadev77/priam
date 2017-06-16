@@ -32,36 +32,6 @@
               </thead>
               <tbody>
               <tr v-for="entry in filteredData">
-                <!--<template v-for="(value,key) in columns">
-                    <td v-if="key === 'statut'" v-status-color="statusColor(entry[key])" class="columnCenter">
-                      {{ getStatutLibelleByKey(entry[key]) }}
-                    </td>
-                    <td class="columnCenter" v-else-if="key === 'dateDebutChgt'">
-                      {{entry[key]}}
-                    </td>
-                    <td class="columnCenter" v-else-if="key === 'dateFinChgt'">
-                      {{entry[key]}}
-                    </td>
-                    <td v-else-if="key === 'famille'">
-                      {{ libelleFamilleByKey(entry[key]) }}
-                    </td>
-                    <td v-else-if="key === 'typeUtilisation'">
-                      {{ libelleTypeUtilisationByKey(entry[key]) }}
-                    </td>
-                    <td v-else-if="isToShowActions(key, entry['statut'])" class="columnCenter">
-                        <a @click="showPopupSupprimer(entry)">
-                          <span class="glyphicon glyphicon-trash" aria-hidden="true" ></span>
-                        </a>
-                    </td>
-
-                    <td v-else-if="key === 'nbLignes'" class="columnRight">
-                      {{entry[key]}}
-                    </td>
-                    <td v-else>
-                      {{entry[key]}}
-                    </td>
-                </template>-->
-
                 <template v-for="entryColumn in columns">
                   <template v-if="entryColumn.type === 'date'">
                     <td class="columnCenter">
@@ -160,7 +130,6 @@
         }*/
       }
     },
-
     computed : {
 
       sortAsc() {
@@ -208,7 +177,6 @@
     mounted() {
         console.log(this.data.sort);
         this.sort = this.data.sort[0];
-
     },
 
     filters: {

@@ -23,6 +23,9 @@ public class Rion {
     private Date datmaj;
     private String usermaj;
     
+    public Rion() {
+    }
+    
     @Id
     @Column(name = "RION", insertable = false, updatable = false)
     public Integer getRion() {
@@ -123,6 +126,7 @@ public class Rion {
         this.usermaj = usermaj;
     }
     
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -138,8 +142,6 @@ public class Rion {
     public int hashCode() {
         return (int) (rion ^ (rion >>> 32));
     }
-
-    public Rion() {
-    }
+    
 }
 

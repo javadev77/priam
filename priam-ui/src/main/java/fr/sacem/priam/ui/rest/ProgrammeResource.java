@@ -38,33 +38,33 @@ public class ProgrammeResource {
   public Page<ProgrammeDto> rechercheProgramme(@RequestBody ProgrammeCritereRecherche input, Pageable pageable) {
         logger.info("input criteria : " + input);
         List<StatutProgramme> status = null;
-        if (input.getStatutCode() == null || input.getStatutCode().isEmpty()) {
-          status = Arrays.asList(StatutProgramme.values());
+
+        if(input.getStatutCode() == null || input.getStatutCode().isEmpty()) {
+            status = Arrays.asList(StatutProgramme.values());
         } else {
-          status = Lists.transform(input.getStatutCode(), code -> StatutProgramme.valueOf(code));
+            status = Lists.transform(input.getStatutCode(), code -> StatutProgramme.valueOf(code));
         }
 
         ProgrammeCriteria criteria = new ProgrammeCriteria();
         criteria.setStatut(status);
 
         String codeFamille = null;
-        if (!"ALL".equals(input.getFamille())) {
+        if (codeFamille != null && !"ALL".equals(input.getFamille())) {
           codeFamille = input.getFamille();
           criteria.setFamille(codeFamille);
         }
 
         String codeTypeUtil = null;
-        if (!"ALL".equals(input.getTypeUtilisation())) {
+        if (codeTypeUtil != null && !"ALL".equals(input.getTypeUtilisation())) {
           codeTypeUtil = input.getTypeUtilisation();
           criteria.setTypeUtilisation(codeTypeUtil);
         }
-
 
         criteria.setNumProg(Strings.emptyToNull(input.getNumProg()));
         criteria.setNom(Strings.emptyToNull(input.getNom()));
 
         String codeTypeRepart = null;
-        if (!"ALL".equals(input.getTypeRepart())) {
+        if (codeTypeRepart != null && !"ALL".equals(input.getTypeRepart())) {
           codeTypeRepart = input.getTypeRepart();
           criteria.setTypeRepart(TypeRepart.valueOf(codeTypeRepart));
         }
@@ -78,7 +78,9 @@ public class ProgrammeResource {
         if (rionPaiement != null && !"ALL".equals(rionPaiement)) {
           criteria.setRionPaiement(Integer.valueOf(rionPaiement));
         }
-
+        
+        criteria.setDateCreationDebut(input.getDateCreationDebut());
+        criteria.setDateCreationFin(input.getDateCreationFin());
 
         return programmeService.findProgrammeByCriteria(criteria, pageable);
       }

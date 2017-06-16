@@ -20,7 +20,7 @@ public interface LibelleTypeUtilisationDao extends JpaRepository<LibelleTypeUtil
     
     @Cacheable("typeUtilisation")
     @Query("SELECT lib FROM LibelleTypeUtilisation lib " +
-            "WHERE lib.typeUtilisation.dateDebut is not null " +
+            "WHERE(lib.typeUtilisation.dateDebut is not null AND lib.typeUtilisation.dateDebut <= CURRENT_DATE) " +
             "AND (lib.typeUtilisation.dateFin is null OR lib.typeUtilisation.dateFin >= CURRENT_DATE)" +
             "AND lib.lang = :lang")
     List<LibelleTypeUtilisation> findByLang(@Param("lang") String lang);
@@ -29,7 +29,7 @@ public interface LibelleTypeUtilisationDao extends JpaRepository<LibelleTypeUtil
     @Query("SELECT lib " +
            "FROM LibelleTypeUtilisation AS lib " +
            "WHERE lib.code in (:codes) " +
-           "AND lib.typeUtilisation.dateDebut is not null " +
+           "AND (lib.typeUtilisation.dateDebut is not null AND lib.typeUtilisation.dateDebut <= CURRENT_DATE) " +
            "AND (lib.typeUtilisation.dateFin is null OR lib.typeUtilisation.dateFin >= CURRENT_DATE) " +
            "AND  lib.lang = :lang")
     List<LibelleTypeUtilisation> findByCodeAndLang(@Param("codes") List<String> codes,@Param("lang") String lang);

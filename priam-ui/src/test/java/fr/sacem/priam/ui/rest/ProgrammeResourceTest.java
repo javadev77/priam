@@ -34,13 +34,12 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 @SpringBootTest(classes = PriamWebAppTest.class)
 @WebAppConfiguration
 public class ProgrammeResourceTest {
+    public static final String APP_REST_PROGRAMME_SEARCH = "/app/rest/programme/search";
     private MockMvc mockMvc;
     private HttpMessageConverter mappingJackson2HttpMessageConverter;
-  
     private MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(),
                                                   MediaType.APPLICATION_JSON.getSubtype(),
                                                   Charset.forName("utf8"));
-    
     @Autowired
     private WebApplicationContext webApplicationContext;
     
@@ -49,15 +48,14 @@ public class ProgrammeResourceTest {
   
   
     @Autowired
-    void setConverters(HttpMessageConverter<?>[] converters) {
+    public void setConverters(HttpMessageConverter<?>[] converters) {
       
-      this.mappingJackson2HttpMessageConverter = Arrays.asList(converters).stream()
-        .filter(hmc -> hmc instanceof MappingJackson2HttpMessageConverter)
-        .findAny()
-        .orElse(null);
-      
-      assertNotNull("the JSON message converter must not be null",
-        this.mappingJackson2HttpMessageConverter);
+        this.mappingJackson2HttpMessageConverter = Arrays.asList(converters).stream()
+                    .filter(hmc -> hmc instanceof MappingJackson2HttpMessageConverter)
+                    .findAny()
+                    .orElse(null);
+        
+        assertNotNull("the JSON message converter must not be null", this.mappingJackson2HttpMessageConverter);
     }
     
     @Before
@@ -67,7 +65,7 @@ public class ProgrammeResourceTest {
   
     @Test
     public void search_programmes() throws Exception {
-        mockMvc.perform(post("/app/rest/programme/search")
+        mockMvc.perform(post(APP_REST_PROGRAMME_SEARCH)
                .content(this.json(new ProgrammeCritereRecherche()))
                .contentType(contentType))
                .andExpect(status().isOk())
@@ -77,31 +75,50 @@ public class ProgrammeResourceTest {
     @Test
     public void search_programmes_by_numProg() throws Exception {
         ProgrammeCritereRecherche critereRecherche = new ProgrammeCritereRecherche();
-        critereRecherche.setNumProg("PR170001");
-        mockMvc.perform(post("/app/rest/programme/search")
+        String pr170001 = "PR170001";
+        critereRecherche.setNumProg(pr170001);
+        mockMvc.perform(post(APP_REST_PROGRAMME_SEARCH)
                .content(this.json(critereRecherche))
                .contentType(contentType))
                .andExpect(status().isOk())
                .andExpect(jsonPath("$.content", hasSize(1)))
-               .andExpect(jsonPath("$.content[0].numProg", is("PR170001")));
+               .andExpect(jsonPath("$.content[0].numProg", is(pr170001)));
     }
   
     @Test
     public void search_programmes_by_rion_theorique() throws Exception {
         ProgrammeCritereRecherche critereRecherche = new ProgrammeCritereRecherche();
         critereRecherche.setRionTheorique("619");
-        mockMvc.perform(post("/app/rest/programme/search")
+        int expectedRion = 619;
+        mockMvc.perform(post(APP_REST_PROGRAMME_SEARCH)
                 .content(this.json(critereRecherche))
                 .contentType(contentType))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content", hasSize(5)))
-                .andExpect(jsonPath("$.content[0].rionTheorique", is(619)))
-                .andExpect(jsonPath("$.content[1].rionTheorique", is(619)))
-                .andExpect(jsonPath("$.content[2].rionTheorique", is(619)))
-                .andExpect(jsonPath("$.content[3].rionTheorique", is(619)))
-                .andExpect(jsonPath("$.content[4].rionTheorique", is(619)));
+                .andExpect(jsonPath("$.content[0].rionTheorique", is(expectedRion)))
+                .andExpect(jsonPath("$.content[1].rionTheorique", is(expectedRion)))
+                .andExpect(jsonPath("$.content[2].rionTheorique", is(expectedRion)))
+                .andExpect(jsonPath("$.content[3].rionTheorique", is(expectedRion)))
+                .andExpect(jsonPath("$.content[4].rionTheorique", is(expectedRion)));
     }
-    
+  
+    @Test
+    public void search_programmes_by_famille() throws Exception {
+        ProgrammeCritereRecherche critereRecherche = new ProgrammeCritereRecherche();
+  
+        String copiepriv = "COPIEPRIV";
+        critereRecherche.setFamille(copiepriv);
+        
+        mockMvc.perform(post(APP_REST_PROGRAMME_SEARCH)
+          .content(this.json(critereRecherche))
+          .contentType(contentType))
+          .andExpect(status().isOk())
+          .andExpect(jsonPath("$.content[0].famille", is(copiepriv)))
+          .andExpect(jsonPath("$.content[1].famille", is(copiepriv)))
+          .andExpect(jsonPath("$.content[2].famille", is(copiepriv)))
+          .andExpect(jsonPath("$.content[3].famille", is(copiepriv)))
+          .andExpect(jsonPath("$.content[4].famille", is(copiepriv)));
+    }
+  
     
     protected String json(Object o) throws IOException {
         MockHttpOutputMessage mockHttpOutputMessage = new MockHttpOutputMessage();

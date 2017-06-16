@@ -10,8 +10,11 @@
         <!--@input="updateValue($event.target.value)"-->
             <span>
                 - Résultats par page
-              <select v-model="itemsPerPage" @change="pageSizeChanged()">
-                <option v-for="s in sizes"> {{ s }}</option>
+              <select :value="itemsPerPage" @change="pageSizeChanged($event.target.value)">
+                <template v-for="s in sizes">
+                  <option v-if="s === itemsPerPage" selected> {{ s }}</option>
+                  <option v-else> {{ s }}</option>
+                </template>
               </select>
             </span>
       </div>
@@ -135,8 +138,8 @@
       }
     },
 
-    created() {
-      this.pageSize = this.itemsPerPage;
+    mounted() {
+
     },
 
     methods: {
@@ -164,8 +167,9 @@
         return this.currentPage === pageNum ? 'active' : ''
       },
 
-      pageSizeChanged() {
-        console.log("pageSizeChanged" + this.itemsPerPage)
+      pageSizeChanged(value) {
+        this.itemsPerPage = Number.parseInt(value);
+        console.log("pageSizeChanged" + this.itemsPerPage);
         this.$emit('page-size-changed', Number.parseInt(this.itemsPerPage));
       }
 

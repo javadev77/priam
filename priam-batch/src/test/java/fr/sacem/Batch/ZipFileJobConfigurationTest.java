@@ -78,7 +78,7 @@ public class ZipFileJobConfigurationTest {
                     0, step.getReadCount());
         }
     }
-    @Test
+    @Test @Ignore
     public void launchJobOneArchiveAvecDixElement() throws Exception {
         // Job parameters
         Map<String, JobParameter> jobParametersMap = new HashMap<String, JobParameter>();
