@@ -102,6 +102,7 @@
       <div class="row formula-buttons">
         <button class="btn btn-default btn-primary pull-right" type="button" @click="retablir()">Rétablir</button>
         <button class="btn btn-default btn-primary pull-right" type="button" @click="rechercherProgrammes()">Rechercher</button>
+        <button class="btn btn-default btn-primary pull-right" type="button" @click="testCallRest()">Test Call</button>
       </div>
     </div>
 
@@ -346,7 +347,8 @@
 
       created() {
         const customActions = {
-          searchProgramme : {method : 'POST', url :'app/rest/programme/search?page={page}&size={size}&sort={sort},{dir}'}
+          searchProgramme : {method : 'POST', url :'app/rest/programme/search?page={page}&size={size}&sort={sort},{dir}'},
+          getData: {method: 'GET', url : '{node}.json'}
         }
         this.resource= this.$resource('', {}, customActions);
 
@@ -477,6 +479,20 @@
             });
 
             return result !== undefined && result;
+          },
+
+          testCallRest() {
+            this.resource.getData({node: 'data'})
+              .then(response => {
+                return response.json();
+              })
+              .then(data => {
+                const resultArray = [];
+                for (let key in data) {
+                  resultArray.push(data[key]);
+                }
+                //this.users = resultArray;
+              });
           }
 
 
