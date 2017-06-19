@@ -25,7 +25,7 @@
     </div>
     <div class="submenu">
       <template v-for="menu in menus" v-if="menu.items">
-      <ul   :class="subMenuClass(menu)">
+      <ul  :class="subMenuClass(menu)">
           <!--ng-class="(\menu-\ + menu.id + \-items\) + \ \ + ($isActive(menu) ? \visible\ : \hidden\)"-->
         <!--<li v-for="item in menu.items"
             ng-class="(\item-\ + item.id) + \ \ + ($isActive(menu, item) ? \active\ : \\)">
@@ -103,7 +103,10 @@
           },
 
           isActive(menu, item) {
+              console.log("activatedMenu=" + this.activatedMenu.id)
+             console.log("menu=" + menu.id)
               var isActiveMenu = this.activatedMenu && menu && this.activatedMenu.id === menu.id;
+              console.log("isActiveMenu=" + isActiveMenu)
               if (isActiveMenu && item !== undefined )  {
                 var isActive = this.activatedSubMenu && item && this.activatedSubMenu.id === item.id;
                 return isActive;

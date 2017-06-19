@@ -75,7 +75,7 @@ public class ProgrammeResource {
         if (rionPaiement != null && !"ALL".equals(rionPaiement)) {
           criteria.setRionPaiement(Integer.valueOf(rionPaiement));
         }
-        
+    
         criteria.setDateCreationDebut(input.getDateCreationDebut());
         criteria.setDateCreationFin(input.getDateCreationFin());
 
