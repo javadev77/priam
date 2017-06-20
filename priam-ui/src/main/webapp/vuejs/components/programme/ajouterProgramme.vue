@@ -11,15 +11,15 @@
       <div class="panel-collapse">
         <div class="panel-body">
           <form @submit.prevent="validateBeforeSubmit" class="form-horizontal" role="form">
-            <div class="row">
+            <div class="row espacement">
 
                  <div class="col-sm-2">
                    <span class="pull-right" for="nomProgramme">Nom programme</span>
                  </div>
                  <div class="col-sm-3" :class="{'has-error': errors.has('nom') }">
-                   <input name="nomProgramme" v-model="programmeData.nom" v-validate="'required|max:20'" class="form-control" :class="{'has-error': errors.has('nom') }"  type="text" >
+                   <input name="nomProgramme" v-model="nom" v-validate="'required|max:20'" class="form-control" :class="{'has-error': errors.has('nom') }"  type="text" >
                    <i v-show="errors.has('nom')" class="fa fa-warning"></i>
-                   <label v-show="errors.has('nom')" :class="{'has-error': errors.has('nom') }">{{ errors.first('nomProgramme') }}</label>
+                   <label v-show="errors.has('nom')" :class="{'has-error': errors.has('nom') }">{{ errors.first('nom') }}</label>
                  </div>
               <div class="col-sm-2">
                 <label class="control-label pull-right">Rion théorique</label>
@@ -32,7 +32,7 @@
                 <label class="control-label pull-right">Famille</label>
               </div>
               <div class="col-sm-2">
-                <v-select :searchable="false" label="value" v-model="programmeData.famille" :options="familleOptions"
+                <v-select :searchable="false" label="value" v-model="familleSelected" :options="familleOptions"
                           :on-change="loadTypeUtilisation">
                 </v-select>
               </div>
@@ -40,61 +40,47 @@
                 <label class="control-label pull-right">Type d'utilisation</label>
               </div>
               <div class="col-sm-3">
-                <v-select :searchable="false" label="value" v-model="programmeData.typeUtilisation"
+                <v-select :searchable="false" label="value" v-model="typeUtilisationSelected"
                           :options="typeUtilisationOptions">
                 </v-select>
               </div>
             </div>
-            <div class="row">
+            <div class="row espacement">
               <div class="col-md-2">
-                <label class="control-label pull right">Type répartition</label>
+                <label class="pull-right">Type de répartition</label>
               </div>
-              <div class="col-md-3">
-                <label class="control-label pull right" for="TypeRepartitionOeuvre">
+              <div class="col-md-2">
+                <label class="radio radio-inline checked" for="TypeRepartitionOeuvre">
                   <input
                     type="radio"
                     id="TypeRepartitionOeuvre"
-                    value="Oeuvre"
-                    v-model="programmeData.typeRepartition"
+                    value="OEUVRE"
+                    v-model="typeRepart"
                     disabled> Oeuvre
+                  <span class="icons"><span class="first-icon fui-radio-unchecked"></span><span class="second-icon fui-radio-checked"></span></span>
                 </label>
               </div>
               <div class="col-md-3">
-                <label class="control-label pull right" for="TypeRepartitionOeuvreAyantDroit">
+                <label class="radio radio-inline" for="TypeRepartitionOeuvreAyantDroit">
                   <input
                     type="radio"
                     id="TypeRepartitionOeuvreAyantDroit"
                     value="Ayant droit"
-                    v-model="programmeData.typeRepartition"
+                    v-model="typeRepart"
                     disabled> Ayant droit
+                  <span class="icons"><span class="first-icon fui-radio-unchecked"></span><span class="second-icon fui-radio-checked"></span></span>
                 </label>
-                <div class="row formula-buttons">
-                <button class="btn btn-default btn-primary pull-right" type="button" @click="$emit('cancel')">Annuler</button>
-                <button class="btn btn-default btn-primary pull-right" type="submit" @click="verifierLeProgramme" name="button" >Valider</button>
-                  <button class="btn btn-default btn-primary pull-right" type="button" @click="ajouterUnProgramme()" name="button" >ajax</button>
-                </div>
-                </div>
+              </div>
+
             </div>
+
           </form>
         </div>
-        <hr>
-        <div class="row">
-          <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
-            <div class="panel panel-default">
-              <div class="panel-heading">
-                <h4>Your Data</h4>
-              </div>
-              <div class="panel-body">
-                <p>Nom programme:{{programmeData.nomProgramme}}</p>
-                <p>famille:{{programmeData.famille}}</p>
-                <p>Type d'utilisation:{{programmeData.typeUtilisation}}</p>
-                <p>Rion théorique:{{programmeData.rionTheorique}} </p>
-                <p>type répartition{{programmeData.typeRepartition}}</p>
-                <p>reponse : {{mareponse}}</p>
-              </div>
-            </div>
-          </div>
-        </div>
+
+      </div>
+      <div class="row espacement">
+        <button class="btn btn-default btn-primary pull-right" type="button" @click="$emit('cancel')">Annuler</button>
+        <button class="btn btn-default btn-primary pull-right" type="button" @click="ajouterUnProgramme()" name="button" >Créer</button>
       </div>
     </div>
   </div>
@@ -109,19 +95,18 @@
         programmeExist : false,
         resources:{},
         resource: '',
-        nomProgramme : '',
-        rionTheoriqueSelected: {'id': 'VIDE', 'value': ''},
-        famille: {'id': 'ALL', 'value': 'Toutes'},
-        typeUtilisation: {'id': 'ALL', 'value': 'Tous'},
-
+        nom : '',
+        rionTheoriqueSelected : null,
+        familleSelected: null,
+        typeUtilisationSelected: null,
+        typeRepart:'OEUVRE',
         programmeData: {
           nom: '',
           numProg : '',
           famille : '',
+          typeRepart: 'OEUVRE',
           typeUtilisation : '',
           rionTheorique :'',
-          typeRepart: 'Oeuvre'
-
         },
         formSubmitted: false
 
@@ -129,24 +114,22 @@
     },
     computed: {
       familleOptions() {
-        return this.$store.getters.familleOptions;
+        return this.$store.getters.familleOptionsVide;
       },
 
       typeUtilisationOptions() {
-        return this.$store.getters.typeUtilisationOptions;
+        return this.$store.getters.typeUtilisationOptionsVide;
       },
-      familleTypeUtilMap() {
-        return this.$store.getters.familleTypeUtilMap;
-      },
+
       rionTheoriqueOptions() {
         return this.$store.getters.rionsAddProg;
       },
     },
     methods: {
       loadTypeUtilisation(val) {
-        this.programmeData.famille = val;
-        this.programmeData.typeUtilisation = {'id': 'ALL', 'value': 'Tous'};
-        this.$store.dispatch('loadTypeUtilisation', val);
+        this.familleSelected = val;
+        this.$store.dispatch('loadTypeUtilisationVide', val);
+        this.typeUtilisationSelected =  this.$store.getters.typeUtilisationOptionsVide[0];
       },
       validateBeforeSubmit() {
         this.$validator.validateAll().then(() => {
@@ -159,7 +142,8 @@
       },
       verifierLeProgramme(){
 
-        this.resource.searchProgramme({nom : programmeData.nomProgramme}).then(response => {
+        this.resource.searchProgramme({nom : this.nom}).then(response => {
+            console.log(response.body);
           this.programmeExist = response.body;
           if (this.programmeExist) {
             var confirmation = confirm("Attention un programme avec le même nom est déjà existant. Voulez-vous continuer?");
@@ -174,19 +158,21 @@
         });
       },
       ajouterUnProgramme(){
-        if(this.verifierLeProgramme()){
-          this.programmeData.numProg=this.programmeData.nom;
-          this.programmeData.typeUtilisation=rionTheoriqueSelected.id;
-          alert(this.programmeData.typeUtilisation);
-          this.programmeData.famille=famille.id;
-          alert(this.programmeData.famille);
-          resource.addProgramme(this.programmeData).then(response => {
+        //if(this.verifierLeProgramme()){
+          this.programmeData.numProg=this.nom;
+          this.programmeData.nom=this.nom;
+          this.programmeData.typeUtilisation=this.typeUtilisationSelected.id;
+          this.programmeData.famille=this.familleSelected.id;
+          this.programmeData.typeRepart=this.typeRepart;
+          this.programmeData.rionTheorique=this.rionTheoriqueSelected.id;
+          this.resource.addProgramme(this.programmeData).then(response => {
             alert("ajout ok");
+            this.$emit('close');
           }, response => {
-            // error
-            alert("ajout ok");
+            alert("Erreur technique lors de l'ajout du programme !! ");
+            this.$emit('close');
           });
-        }
+        //}
 
       }
 
@@ -205,9 +191,8 @@
 </script>
 <style>
   .espacement {
-    height: 100px;
-    margin-top: 20px;
-    margin-left: 40px;
+    height: 30px;
+    margin-top: 10px;
   }
 
   body {

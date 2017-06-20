@@ -93,7 +93,7 @@ const getters = {
 
   rionsAddProg : state => {
     var options = state.rions.slice();
-    options.unshift({id : 'VIDE', value: null});
+
     return options;
   }
 

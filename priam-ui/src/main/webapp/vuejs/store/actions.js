@@ -16,6 +16,7 @@ export const fetchInitData = ({commit}) => {
       .then(response => response.json())
       .then(data => {
         if (data) {
+
           commit('SET_LIBELLE_FAMILLE', data);
         }
       });

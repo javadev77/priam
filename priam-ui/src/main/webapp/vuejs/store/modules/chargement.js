@@ -2,7 +2,9 @@ const state = {
   famille: [],
   typeUtilisation : [],
   familleOptions  : [],
+  familleOptions_vide : [],
   typeUtilisationOptions : [],
+  typeUtilisationOptions_vide : [],
   familleTypeUtilMap : {},
   statut : [
     {
@@ -44,10 +46,13 @@ const mutations = {
       state.famille = famille;
       state.familleOptions=famille.slice();
       state.familleOptions.unshift({'id' :'ALL', "value" : "Toutes"});
+
+      state.familleOptions_vide=famille.slice();
   },
 
   'SET_LIBELLE_TYPE_UTILSATION' (state, typeUtilisation) {
-      state.typeUtilisation = typeUtilisation;
+      state.typeUtilisation = typeUtilisation.slice();
+      state.typeUtilisationOptions_vide = typeUtilisation.slice();
       state.typeUtilisationOptions = [{'id' :'ALL', "value" : "Tous"}];
   },
 
@@ -63,6 +68,14 @@ const mutations = {
 
     } else {
         state.typeUtilisationOptions = [{'id' :'ALL', "value" : "Tous"}];
+    }
+
+  },
+
+  'CHANGE_TYPE_UTILSATION_LIST_VIDE' (state, familleCode) {
+    if(familleCode != null) {
+      state.typeUtilisationOptions_vide = state.familleTypeUtilMap[familleCode.id].slice();
+
     }
 
   },
@@ -89,6 +102,10 @@ const actions = {
     commit('CHANGE_TYPE_UTILSATION_LIST', familleCode);
   },
 
+  loadTypeUtilisationVide : ({commit}, familleCode) => {
+    commit('CHANGE_TYPE_UTILSATION_LIST_VIDE', familleCode);
+  },
+
   changeStatut : ({commit}, statutCode) => {
     commit('CHANGE_STATUT_VALUE', statutCode);
   }
@@ -99,12 +116,20 @@ const getters = {
     return state.familleOptions;
   },
 
+  familleOptionsVide: state => {
+    return state.familleOptions_vide;
+  },
+
   famille: state => {
     return state.famille;
   },
 
   typeUtilisationOptions: state => {
     return state.typeUtilisationOptions;
+  },
+
+  typeUtilisationOptionsVide: state => {
+    return state.typeUtilisationOptions_vide;
   },
 
   typeUtilisation: state => {
