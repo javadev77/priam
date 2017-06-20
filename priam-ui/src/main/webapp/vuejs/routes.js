@@ -4,7 +4,7 @@ import Affectation from './components/affectation/Affectation.vue';
 import ListeProgramme from './components/programme/ListeProgramme.vue';
 
 export const routes = [
-    { path: '/', name :'home', component: Affectation },
+    { path: '/', redirect: '/programme' },
     { path: '/chargement', name :'chargement', component: Chargement },
     { path: '/programme', name: 'programme', component: ListeProgramme,
       children: [

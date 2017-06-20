@@ -240,6 +240,7 @@
                     <packagingExcludes>WEB-INF/lib/tomcat-*.jar</packagingExcludes>
                 </configuration>
             </plugin>
+
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -271,6 +272,7 @@
                         </goals>
 
                         <configuration>
+                            <append>true</append>
                             <dataFile>${project.basedir}/target/jacoco.exec</dataFile>
                             <outputDirectory>${project.basedir}/target/coverage-reports</outputDirectory>
                         </configuration>

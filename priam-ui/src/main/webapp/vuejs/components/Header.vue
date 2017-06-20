@@ -10,7 +10,7 @@
               </a>
             </div>
 
-             <two-lines-menu :menus="menus" :activeMenu="activeMenu" :activeSubMenu="activeSubMenu"></two-lines-menu>
+             <two-lines-menu :menus="menus" :activeMenu="currentActiveMenu" :activeSubMenu="currentSubMenu"></two-lines-menu>
             <!--<div class="nav navbar-nav">
               <ul class="nav navbar-nav">
                     <router-link to="/chargement" activeClass="active" tag="li"><a>Chargement</a></router-link>
@@ -77,12 +77,12 @@
           },
 
         ],
-        /*activeMenu :  {
-          id : 'Programme'
+       currentActiveMenu :  {
+          id : 'programme'
         },
-        activeSubMenu :  {
+        currentSubMenu :  {
           id : 'ListePrg'
-        },*/
+        },
 
         isDropdownOpen: false
       }

@@ -1,9 +1,9 @@
 <template>
   <div class="container-fluid">
-        <temeplate v-if="emptyResult">
+        <template v-if="emptyResult">
           <div class="row text-center ng-binding"  v-html="this.noResultText">
           </div>
-        </temeplate>
+        </template>
     <template v-else>
           <paginator :current-page="this.data.number"
                      :total-pages="this.data.totalPages"
@@ -61,17 +61,30 @@
                   </template>
                   <template v-else-if="entryColumn.type === 'clickable-icons'">
                     <td class="columnCenter">
-                        <template v-for="elem in entryColumn.cell.cellTemplate(entry)">
-                          <a v-html="elem.template" @click="emitIconCellClick(elem.event, entry, entryColumn)">
-                          </a>
-                        </template>
+
+                         <ul class="iconList">
+                           <template v-for="elem in entryColumn.cell.cellTemplate(entry)">
+                              <li>
+                               <a v-html="elem.template" @click="emitIconCellClick(elem.event, entry, entryColumn)">
+                               </a>
+                              </li>
+                           </template>
+
+                         </ul>
+
                     </td>
                   </template>
                   <template v-else-if="entryColumn.type === 'numeric-link'">
                     <td class="columnRight">
-                      <a @click="emitCellClick(entry, entryColumn)">
+                      <template v-if="entryColumn.cell.toText(entry).isLink" >
+                        <a @click="emitCellClick(entry, entryColumn)">
+                          {{ entry[entryColumn.id] }}
+                        </a>
+                      </template>
+                      <template v-else>
                         {{ entry[entryColumn.id] }}
-                      </a>
+                      </template>
+
                     </td>
                   </template>
                   <template  v-else>
@@ -181,7 +194,7 @@
 
     filters: {
       capitalize(str) {
-        return str.charAt(0).toUpperCase() + str.slice(1)
+          return str.charAt(0).toUpperCase() + str.slice(1)
       }
     },
 
@@ -189,7 +202,8 @@
     methods: {
 
       emitCellClick(entry, column) {
-        this.$emit('cellClick', entry, column);
+         console.log("CellClick")
+         this.$emit('cellClick', entry, column);
       },
 
       emitIconCellClick(event, entry, column) {
@@ -198,10 +212,6 @@
 
 
       sortBy(entryColumn) {
-          //this.sortKey = key;
-          //this.sortOrders[key] = this.sortOrders[key] * -1;
-        //sort[0].property = entryColumn.id;
-        //sort[0].property
         let sortProp = entryColumn.id;
         let isAsc = false;
         if(sortProp === this.sort.property ) {
@@ -288,5 +298,24 @@
   .table-striped > tbody > tr:nth-child(even) > td.statusColor.red {
     color: black;
     background-color: red;
+  }
+
+  .iconList {
+    margin: auto;
+    padding: 0px;
+    width: 50px;
+  }
+
+  .iconList li {
+    display: inline;
+    list-style: none; /* pour enlever les puces sur IE7 */
+    margin: 5px;
+  }
+
+  .iconList li a {
+    display: inline-block;
+    padding: 5px 5px;
+    text-decoration: none;
+    width: 10px;
   }
 </style>

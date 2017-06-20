@@ -34,11 +34,11 @@
                   <label class="control-label pull-right">Date de création</label>
                 </div>
                 <div class="col-sm-2">
-                  <date-picker @update-date="updateDateDebutCreation" date-format="dd/mm/yy" place-holder="De" v-once></date-picker>
+                  <date-picker @update-date="updateDateDebutCreation" date-format="dd/mm/yy" :zeroHour="true" place-holder="De" v-once></date-picker>
 
                 </div>
                 <div class="col-sm-2">
-                  <date-picker @update-date="updateDateFinCreation" date-format="dd/mm/yy" place-holder="A" v-once></date-picker>
+                  <date-picker @update-date="updateDateFinCreation" date-format="dd/mm/yy" :zeroHour="false" place-holder="A" v-once></date-picker>
                 </div>
 
                 <div class="col-sm-2">
@@ -154,6 +154,7 @@
   import AjouterProgramme from './ajouterProgramme.vue';
   import vSelect from '../common/Select.vue';
   import DatePicker from '../common/DatePicker.vue';
+  import {DateUtils} from '../../utils/DateUtils'
 
   export default {
 
@@ -195,14 +196,14 @@
                 typeRepart : null,
                 dateCreationDebut : null,
                 dateCreationFin : null,
-                statutCode : ['EN_COURS', 'AFFECTE', 'CREE', 'VALIDE', 'MISE_EN_REPART']
+                statutCode : ['EN_COURS', 'AFFECTE', 'CREE', 'VALIDE', 'MIS_EN_REPART']
             },
 
             priamGrid : {
               gridColumns : [
                 {
                   id :  'numProg',
-                  name :   'N° Programme',
+                  name :   'N° programme',
                   sortable : true,
                   type : 'long-text'
                 },
@@ -270,7 +271,21 @@
                   id :  'fichiers',
                   name :   "Fichiers",
                   sortable : true,
-                  type : 'numeric-link'
+                  type : 'numeric-link',
+                  cell : {
+                    toText : function(entry) {
+                        console.log("entry"  + entry.statut)
+                      var result  = getters.statutProgramme.find(function (element) {
+                        return element.code === entry.statut;
+                      });
+                      if(result.code === 'ABANDONNE') {
+                          return {value : entry.fichiers, isLink : false}
+                      } else {
+                        return {value : entry.fichiers, isLink : true}
+                      }
+
+                    }
+                  }
                 },
                 {
                   id :  'statut',
@@ -317,19 +332,24 @@
                   type : 'clickable-icons',
                   cell : {
                     cellTemplate: function (cellValue) {
-                      var tempalteTrash = '<span class="glyphicon glyphicon-trash" aria-hidden="true" style="padding-left: 5px;"></span>';
-                      var tempalteUpdate = '<span class="glyphicon glyphicon-pencil" aria-hidden="true" style="padding-left: 5px;"></span>';
+                      var tempalteTrash = '<span class="glyphicon glyphicon-trash" aria-hidden="true" style="padding-left: 0px;"></span>';
+                      var tempalteUpdate = '<span class="glyphicon glyphicon-pencil" aria-hidden="true" style="padding-left: 0px;"></span>';
                       var statusCode = cellValue.statut;
 
                       var tempalte = [];
+                      if(statusCode !== undefined && ('CREE' === statusCode || 'AFFECTE' === statusCode
+                        || 'EN_COURS' === statusCode || 'VALIDE' === statusCode) ) {
+                        tempalte.push({event : 'update-programme', template : tempalteUpdate});
+                      }
+
                       if(statusCode !== undefined && 'CREE' === statusCode) {
                             tempalte.push({event : 'delete-programme', template : tempalteTrash});
                       }
 
-                      if(statusCode !== undefined && ('CREE' === statusCode || 'AFFECTE' === statusCode
-                                                      || 'EN_COURS' === statusCode || 'VALIDE' === statusCode) ) {
-                        tempalte.push({event : 'update-programme', template : tempalteUpdate});
+                      if(tempalte.length == 1) {
+                        tempalte.push({event : 'no', template : '<span aria-hidden="true" style="padding-left: 0px;"></span>'});
                       }
+
 
                       return tempalte;
                     }
@@ -450,6 +470,8 @@
               this.critereRechercheData.rionTheorique= this.rionTheoriqueSelected !== undefined ? this.rionTheoriqueSelected.id : null;
               this.critereRechercheData.rionPaiement= this.rionPaiementSelected !== undefined ? this.rionPaiementSelected.id : null;
               this.critereRechercheData.typeRepart = this.typeRepartSelected !== undefined ? this.typeRepartSelected.id : null;
+              //this.critereRechercheData.dateCreationDebut = DateUtils.stringToDateZeroHour(this.critereRechercheData.dateCreationDebut);
+              //this.critereRechercheData.dateCreationFin = DateUtils.stringToDate24Hour(this.critereRechercheData.dateCreationFin);
 
               this.launchRequest(this.defaultPageable.page, this.defaultPageable.size,
                                  this.defaultPageable.sort, this.defaultPageable.dir);
@@ -464,6 +486,7 @@
           },
 
           updateDateDebutCreation(date) {
+              console.log("dateCreationDebut="+date)
               this.critereRechercheData.dateCreationDebut = date;
           },
 

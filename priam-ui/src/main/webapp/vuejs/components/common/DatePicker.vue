@@ -7,17 +7,19 @@
 
   export default {
 
-      props : ['dateFormat', 'placeHolder'],
+      props : ['dateFormat', 'placeHolder', 'zeroHour'],
 
       data() {
 
           return {
-              dateValue : ''
+              dateValue : '',
+              isZeroHour : false
           }
 
       },
 
       mounted() {
+          this.isZeroHour =  this.zeroHour;
           this.initDatePicker();
           var self = this;
           var element = $(this.$el);
@@ -131,24 +133,23 @@
 
             $.datepicker.setDefaults($.datepicker.regional.fr);
 
-              // Initialize Highcharts default values
-              /*Highcharts.setOptions({
-                credits: {enabled: false},
-                title: {text: null},
-                subtitle: {text: null}
-              });*/
           },
 
           stringToDate(str) {
-              /*if (typeof str === 'string' && str.length >= 11) {
-                //format like "2015-10-04T00:00:00.000+0000"
-                str = moment(str).format('yyyy-MM-dd');
-              }*/
-              var date = moment(str, 'dd/mm/yyyy');
-              console.log("str="+date);
+              console.log("str="+str);
               if (typeof str === 'string' && str.length > 3 && str.length < 11) {
                   var parts = str.split("/");
-                  return new Date(Date.UTC(parts[2], parts[1] - 1, parts[0], 0, 0, 0, 0));
+                  console.log("isZeroHour="+ this.isZeroHour);
+                  var date = null;
+                  if(this.isZeroHour) {
+                    date =  new Date(Date.UTC(parts[2], parts[1] - 1, parts[0], 0, 0, 0, 0));
+                  } else {
+                    console.log('dfdf');
+                    date =  new Date(Date.UTC(parts[2], parts[1] - 1, parts[0], 23, 59, 59, 999));
+                  }
+
+                  return date;
+
               }
               return null;
           }

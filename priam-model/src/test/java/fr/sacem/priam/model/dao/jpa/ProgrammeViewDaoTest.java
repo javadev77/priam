@@ -5,6 +5,7 @@ import fr.sacem.priam.model.dao.JpaConfigurationTest;
 import fr.sacem.priam.model.domain.*;
 import fr.sacem.priam.model.domain.criteria.ProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -84,6 +85,14 @@ public class ProgrammeViewDaoTest {
     private TypeUtilisationDao typeUtilisationDao;
     @Autowired
     private FamilleDao familleDao;
+    
+    @Before
+    public void setup() {
+        /*Programme pr = new Programme();
+        pr.setNumProg("PR179990");
+        pr.setDateCreation(new Date());
+        programmeDao.save(pr);*/
+    }
 
     
     
@@ -143,16 +152,16 @@ public class ProgrammeViewDaoTest {
         assertThat(all.getContent()).extracting("nom").contains("Programme 01");
         
     }
-     @Ignore
-    @Test
+
+    @Test @Ignore
     public void search_programme_by_date_creation() throws ParseException {
         ProgrammeCriteria criteria = new ProgrammeCriteria();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     
         Date currentDate = new Date();
         criteria.setDateCreationDebut(currentDate);
-        criteria.setDateCreationFin(currentDate);
-        criteria.setNumProg("PR170001");
+        criteria.setDateCreationFin(sdf.parse("2017-06-20"));
+        criteria.setNumProg("PR170008");
     
         criteria.setStatut(Arrays.asList(StatutProgramme.values()));
         
