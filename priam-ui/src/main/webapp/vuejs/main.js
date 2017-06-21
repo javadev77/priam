@@ -15,7 +15,7 @@ Vue.use(VueRouter);
 Vue.use(VueResource);
 
 if(process.env.DEBUG_MODE) {
-  Vue.http.options.root="http://localhost:8090/priam"
+  Vue.http.options.root="http://localhost:8083/priam"
 } else {
   Vue.http.options.root="/priam"
 }

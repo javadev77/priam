@@ -138,7 +138,7 @@
           <ajouter-programme slot="body"  @cancel="close"></ajouter-programme>
         </template>
         <template v-else>
-          <modifier-programme slot="body" @cancel="close">
+          <modifier-programme :programme="selectedProgramme" slot="body" @cancel="close">
           </modifier-programme>
         </template>
     </ecran-modal>
@@ -177,6 +177,8 @@
               dir : 'desc',
               size : 25
             },
+
+            selectedProgramme : null,
 
             date : null,
 
@@ -305,14 +307,17 @@
                   id :  'repartition',
                   name :   "Répartition",
                   sortable : false,
-                  type : 'clickable-icon',
+                  type : 'clickable-icons',
                   cell : {
                     cellTemplate: function (cellValue) {
-                      var tempalte = '<a><span class="glyphicon glyphicon-log-in" aria-hidden="true" ></span></a>';
+                      var tempalteRepartABlanc = '<img src="static/images/iconescontextes/transfertgestionnaire.gif" width="20px"/>';
+                      var tempalteMiseEnRepart = '<span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>';
                       var statusCode = cellValue.statut;
-
+                      var template = [];
                       if(statusCode !== undefined && 'VALIDE' === statusCode) {
-                        return tempalte;
+                        template.push({event : 'nop', template : tempalteMiseEnRepart});
+                        template.push({event : 'nop', template : tempalteRepartABlanc});
+                        return template;
                       }
                       return '';
                     }
@@ -453,6 +458,16 @@
 
           onUpdateProgramme(row, column) {
             console.log("onUpdateProgramme()");
+             this.selectedProgramme = row;
+
+            this.selectedProgramme.famille = this.$store.getters.famille.find(function (element) {
+              return element.id === row.famille;
+            });
+
+            this.selectedProgramme.typeUtilisation = this.$store.getters.typeUtilisation.find(function (element) {
+              return element.id === row.typeUtilisation;
+            });
+
             this.ecranAjouterProgramme = false;
             this.showEcranModal = true;
           },

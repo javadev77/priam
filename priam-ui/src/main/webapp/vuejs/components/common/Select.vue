@@ -347,38 +347,75 @@
 
 <template>
   <div class="dropdown v-select" :class="dropdownClasses">
-    <div ref="toggle" @mousedown.prevent="toggleDropdown" class="dropdown-toggle">
-        <span ref="toggle2" class="selected-tag" v-for="option in valueAsArray" v-bind:key="option.index">
+    <template v-if="disabled">
+      <div ref="toggle" class="dropdown-toggle">
+         <span ref="toggle2" class="selected-tag" v-for="option in valueAsArray" v-bind:key="option.index">
           {{ getOptionLabel(option) }}
           <button v-if="multiple" @click="deselect(option)" type="button" class="close">
             <span aria-hidden="true">&times;</span>
           </button>
         </span>
 
-      <input
-        ref="search"
-        v-model="search"
-        @keydown.delete="maybeDeleteValue"
-        @keyup.esc="onEscape"
-        @keydown.up.prevent="typeAheadUp"
-        @keydown.down.prevent="typeAheadDown"
-        @keyup.enter.prevent="typeAheadSelect"
-        @blur="onSearchBlur"
-        @focus="onSearchFocus"
-        type="search"
-        class="form-control"
-        :placeholder="searchPlaceholder"
-        :readonly="!searchable"
-        :style="{ width: isValueEmpty ? '100%' : 'auto' }"
-        :id="inputId"
-      >
+        <input
+          ref="search"
+          v-model="search"
+          @keydown.delete="maybeDeleteValue"
+          @keyup.esc="onEscape"
+          @keydown.up.prevent="typeAheadUp"
+          @keydown.down.prevent="typeAheadDown"
+          @keyup.enter.prevent="typeAheadSelect"
+          @blur="onSearchBlur"
+          @focus="onSearchFocus"
+          type="search"
+          class="form-control"
+          :placeholder="searchPlaceholder"
+          :readonly="!searchable"
+          :style="{ width: isValueEmpty ? '100%' : 'auto' }"
+          :id="inputId"
+        >
 
-      <i v-if="!noDrop" ref="openIndicator" role="presentation" class="open-indicator"></i>
+        <i v-if="!noDrop" ref="openIndicator" role="presentation" class="open-indicator"></i>
 
-      <slot name="spinner">
-        <div class="spinner" v-show="mutableLoading">Loading...</div>
-      </slot>
-    </div>
+        <slot name="spinner">
+          <div class="spinner" v-show="mutableLoading">Loading...</div>
+        </slot>
+      </div>
+    </template>
+    <template v-else>
+      <div ref="toggle" @mousedown.prevent="toggleDropdown" class="dropdown-toggle">
+         <span ref="toggle2" class="selected-tag" v-for="option in valueAsArray" v-bind:key="option.index">
+          {{ getOptionLabel(option) }}
+          <button v-if="multiple" @click="deselect(option)" type="button" class="close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </span>
+
+        <input
+          ref="search"
+          v-model="search"
+          @keydown.delete="maybeDeleteValue"
+          @keyup.esc="onEscape"
+          @keydown.up.prevent="typeAheadUp"
+          @keydown.down.prevent="typeAheadDown"
+          @keyup.enter.prevent="typeAheadSelect"
+          @blur="onSearchBlur"
+          @focus="onSearchFocus"
+          type="search"
+          class="form-control"
+          :placeholder="searchPlaceholder"
+          :readonly="!searchable"
+          :style="{ width: isValueEmpty ? '100%' : 'auto' }"
+          :id="inputId"
+        >
+
+        <i v-if="!noDrop" ref="openIndicator" role="presentation" class="open-indicator"></i>
+
+        <slot name="spinner">
+          <div class="spinner" v-show="mutableLoading">Loading...</div>
+        </slot>
+      </div>
+    </template>
+
 
     <transition :name="transition">
       <ul ref="dropdownMenu" v-if="dropdownOpen" class="dropdown-menu" :style="{ 'max-height': maxHeight }">
@@ -402,6 +439,11 @@
   export default {
     mixins: [pointerScroll, typeAheadPointer, ajax],
     props: {
+
+        disabled: {
+          type : Boolean,
+          default : true,
+        },
       /**
        * Contains the currently selected value. Very similar to a
        * `value` attribute on an <input>. You can listen for changes
