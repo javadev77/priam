@@ -138,7 +138,7 @@
           <ajouter-programme slot="body"  @cancel="close"></ajouter-programme>
         </template>
         <template v-else>
-          <modifier-programme :numProg="selectedProgramme.numProg" slot="body" @cancel="close">
+          <modifier-programme :numProg="selectedProgramme.numProg" slot="body" @cancel="close" @validate="onValidateEcranModal">
           </modifier-programme>
         </template>
     </ecran-modal>
@@ -412,6 +412,27 @@
 
       methods : {
 
+          retablir() {
+              this.critereRechercheData.numProg = null;
+              this.critereRechercheData.famille = null;
+              this.critereRechercheData.typeUtilisation = null;
+              this.critereRechercheData.nom = null;
+              this.critereRechercheData.rionTheorique = null;
+              this.critereRechercheData.rionPaiement =  null;
+              this.critereRechercheData.typeRepart = null;
+              this.critereRechercheData.dateCreationDebut = null;
+              this.critereRechercheData.dateCreationFin = null;
+              this.critereRechercheData.statutCode = ['EN_COURS', 'AFFECTE', 'CREE', 'VALIDE', 'MIS_EN_REPART'];
+
+              this.familleSelected = {'id' : 'ALL', 'value' : 'Toutes'};
+              this.typeUtilisationSelected = {'id' : 'ALL', 'value' : 'Tous'};
+              this.rionTheoriqueSelected = {'id' : 'ALL', 'value' : 'Toutes'};
+              this.rionPaiementSelected = {'id' : 'ALL', 'value' : 'Toutes'};
+              this.typeRepartSelected = {'id' : 'ALL', 'value' : 'Tous'};
+
+              this.rechercherProgrammes();
+          },
+
           onSort(currentPage, pageSize, sort) {
 
             this.launchRequest(currentPage, pageSize,
@@ -507,6 +528,11 @@
             });
 
             return result !== undefined && result;
+          },
+
+          onValidateEcranModal() {
+              this.close();
+              this.rechercherProgrammes();
           }
 
 

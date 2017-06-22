@@ -96,7 +96,7 @@
       </div>
       <div class="row espacement">
         <button class="btn btn-default btn-primary pull-right" type="button" @click="$emit('cancel')">Annuler</button>
-        <button class="btn btn-default btn-primary pull-right" type="button" @click="ajouterUnProgramme()" name="button" >Créer</button>
+        <button class="btn btn-default btn-primary pull-right" type="button" @click="modifierProgramme()" name="button" >Modifier</button>
       </div>
     </div>
   </div>
@@ -155,7 +155,7 @@
       },
 
       isNonModifiable() {
-          return this.programmeToModify !== undefined &&  (this.programmeToModify.statut === 'VALIDE' || this.programmeToModify.statut === 'EN_COURS' || this.programmeToModify.statut === 'AFFECTE')
+          return this.programmeToModify !== undefined && this.programmeToModify !== null && (this.programmeToModify.statut === 'VALIDE' || this.programmeToModify.statut === 'EN_COURS' || this.programmeToModify.statut === 'AFFECTE')
       }
     },
 
@@ -196,20 +196,20 @@
         });
       },
 
-      ajouterUnProgramme(){
+      modifierProgramme(){
         //if(this.verifierLeProgramme()){
-        this.programmeData.numProg=this.nom;
+        this.programmeData.numProg=this.numProgramme;
         this.programmeData.nom=this.nom;
         this.programmeData.typeUtilisation=this.typeUtilisationSelected.id;
         this.programmeData.famille=this.familleSelected.id;
         this.programmeData.typeRepart=this.typeRepart;
         this.programmeData.rionTheorique=this.rionTheoriqueSelected.id;
-        this.resource.addProgramme(this.programmeData).then(response => {
-          alert("ajout ok");
-          this.$emit('close');
+        this.resource.updateProgramme({numProg : this.programmeData.numProg}, this.programmeData).then(response => {
+          alert("modification ok");
+          this.$emit('validate');
         }, response => {
-          alert("Erreur technique lors de l'ajout du programme !! ");
-          this.$emit('close');
+          alert("Erreur technique lors de la modification du programme !! ");
+          this.$emit('cancel');
         });
         //}
 
@@ -251,7 +251,8 @@
       const customActions = {
           searchProgramme : {method : 'GET', url :'app/rest/programme/{nom}'},
           addProgramme : {method: 'POST', url : 'app/rest/programme/'},
-          findByNumProg : {method : 'GET', url : 'app/rest/programme/{numProg}'}
+          findByNumProg : {method : 'GET', url : 'app/rest/programme/{numProg}'},
+          updateProgramme : {method: 'PUT', url : 'app/rest/programme/{numProg}'},
       }
       this.resource= this.$resource('', {}, customActions);
 

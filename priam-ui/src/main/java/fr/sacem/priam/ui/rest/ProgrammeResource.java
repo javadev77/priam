@@ -112,5 +112,13 @@ public class ProgrammeResource {
       public ProgrammeDto findByNumProg(@PathVariable("numProg") String numProg) {
          return  programmeViewDao.findByNumProg(numProg);
       }
+  
+      @RequestMapping(value = "programme/{numProg}",
+        method = RequestMethod.PUT,
+        consumes = MediaType.APPLICATION_JSON_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+      public Programme updateProgramme(@RequestBody ProgrammeDto programmeDto){
+        return programmeService.updateProgramme(programmeDto);
+      }
       
 }
