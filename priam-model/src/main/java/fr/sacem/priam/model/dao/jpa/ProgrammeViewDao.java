@@ -40,5 +40,13 @@ public interface ProgrammeViewDao extends JpaRepository<ProgrammeView, String> {
                                                   @Param("dateCreationFin") Date dateCreationFin, @Param("famille") String famille,
                                                   @Param("typeUtilisation") String typeUtilisation, @Param("rionTheorique") Integer rionTheorique,
                                                   @Param("rionPaiement") Integer rionPaiement, @Param("typeRepart") TypeRepart typeRepart, Pageable pageable);
+    
+    
+    @Transactional(readOnly = true)
+    @Query(value = "SELECT new fr.sacem.priam.model.domain.dto.ProgrammeDto(pr.numProg, pr.nom, pr.famille, pr.typeUtilisation, " +
+        "pr.rionTheorique, pr.dateCreation, pr.typeRepart, pr.statut, pr.rionPaiement, pr.fichiers) " +
+        "FROM ProgrammeView AS pr " +
+        "WHERE (pr.numProg = :numProg) ")
+    ProgrammeDto findByNumProg(@Param("numProg") String numProg);
 
 }

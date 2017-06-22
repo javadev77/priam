@@ -17,7 +17,7 @@
                 <span class="pull-right" >N° programme</span>
               </div>
               <div class="col-sm-3">
-               {{ programme.numProg }}
+               {{ numProgramme }}
               </div>
             </div>
 
@@ -54,7 +54,7 @@
               <div class="col-sm-2">
                 <label class="control-label pull-right">Type d'utilisation</label>
               </div>
-              <div class="col-sm-3">
+              <div class="col-sm-5">
                 <v-select :searchable="false" label="value" v-model="typeUtilisationSelected"
                           :disabled="isNonModifiable"
                           :options="typeUtilisationOptions">
@@ -66,7 +66,7 @@
                 <label class="pull-right">Type de répartition</label>
               </div>
               <div class="col-md-2">
-                <label class="radio radio-inline checked" for="TypeRepartitionOeuvre">
+                <label class="radio radio-inline checked disabled" for="TypeRepartitionOeuvre">
                   <input
                     type="radio"
                     id="TypeRepartitionOeuvre"
@@ -77,7 +77,7 @@
                 </label>
               </div>
               <div class="col-md-3">
-                <label class="radio radio-inline" for="TypeRepartitionOeuvreAyantDroit">
+                <label class="radio radio-inline disabled">
                   <input
                     type="radio"
                     id="TypeRepartitionOeuvreAyantDroit"
@@ -109,23 +109,25 @@
 
     props : {
 
-        programme : {
-            type : Object,
-            default : null
+        numProg : {
+            type : String,
+            default : ''
         }
 
     },
 
     data(){
       return {
+        programmeToModify: null,
         programmeExist : false,
         resources:{},
-        resource: '',
-        nom :  this.programme.nom,
-        rionTheoriqueSelected : this.programme.rionTheorique,
-        familleSelected:  this.programme.famille,
-        typeUtilisationSelected:  this.programme.typeUtilisation,
+        numProgramme :'',
+        nom :  '',
+        rionTheoriqueSelected : null,
+        familleSelected:  null,
+        typeUtilisationSelected:  null,
         typeRepart: 'OEUVRE',
+
         programmeData: {
           nom: '',
           numProg : '',
@@ -134,6 +136,7 @@
           typeUtilisation : '',
           rionTheorique :'',
         },
+
         formSubmitted: false
 
       }
@@ -152,15 +155,19 @@
       },
 
       isNonModifiable() {
-          return this.programme !== undefined &&  (this.programme.statut === 'VALIDE' || this.programme.statut === 'EN_COURS' || this.programme.statut === 'AFFECTE')
+          return this.programmeToModify !== undefined &&  (this.programmeToModify.statut === 'VALIDE' || this.programmeToModify.statut === 'EN_COURS' || this.programmeToModify.statut === 'AFFECTE')
       }
     },
+
+
     methods: {
+
       loadTypeUtilisation(val) {
         this.familleSelected = val;
         this.$store.dispatch('loadTypeUtilisationVide', val);
         this.typeUtilisationSelected =  this.$store.getters.typeUtilisationOptionsVide[0];
       },
+
       validateBeforeSubmit() {
         this.$validator.validateAll().then(() => {
           // eslint-disable-next-line
@@ -170,6 +177,7 @@
           alert('Correct them errors!');
         });
       },
+
       verifierLeProgramme(){
 
         this.resource.searchProgramme({nom : this.nom}).then(response => {
@@ -187,6 +195,7 @@
           }
         });
       },
+
       ajouterUnProgramme(){
         //if(this.verifierLeProgramme()){
         this.programmeData.numProg=this.nom;
@@ -204,18 +213,60 @@
         });
         //}
 
+      },
+
+      initData() {
+          if(this.programmeToModify !== undefined && this.programmeToModify !== null) {
+
+            this.numProgramme = this.programmeToModify.numProg;
+            this.nom = this.programmeToModify.nom;
+
+            var familleCode = this.programmeToModify.famille;
+            this.familleSelected = this.$store.getters.famille.find(function (element) {
+              return element.id === familleCode;
+            });
+
+            var typeUtilCode = this.programmeToModify.typeUtilisation;
+            this.typeUtilisation = this.$store.getters.typeUtilisation.find(function (element) {
+              return element.id === typeUtilCode;
+            });
+
+            var rionTheoriqueCode = this.programmeToModify.rionTheorique;
+            console.log('rionTheoriqueCode=' + rionTheoriqueCode)
+            this.rionTheoriqueSelected = this.$store.getters.rionsAddProg.find(function (element) {
+              return Number.parseInt(element.id) === rionTheoriqueCode;
+            });
+
+            console.log('rionTheoriqueSelected=' + this.rionTheoriqueSelected)
+          }
+
       }
 
     },
     components: {
       vSelect: vSelect
     },
+
     created(){
       const customActions = {
-        searchProgramme : {method : 'GET', url :'app/rest/programme/{nom}'},
-        addProgramme : {method: 'POST', url : 'app/rest/programme/'},
+          searchProgramme : {method : 'GET', url :'app/rest/programme/{nom}'},
+          addProgramme : {method: 'POST', url : 'app/rest/programme/'},
+          findByNumProg : {method : 'GET', url : 'app/rest/programme/{numProg}'}
       }
       this.resource= this.$resource('', {}, customActions);
+
+      this.resource.findByNumProg({numProg:  this.numProg})
+        .then(response => {
+          return response.json();
+        })
+        .then(data => {
+          this.programmeToModify = data;
+          this.initData();
+        });
+
+
+
+
     }
   }
 </script>

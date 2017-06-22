@@ -13,43 +13,50 @@
           <form @submit.prevent="validateBeforeSubmit" class="form-horizontal" role="form">
             <div class="row espacement">
 
-                 <div class="col-sm-2">
-                   <span class="pull-right" for="nomProgramme">Nom programme</span>
+                 <div class="col-sm-2" :class="{'has-error': errors.has('nom') }">
+                 <span class="pull-right" for="nom">Nom programme</span>
                  </div>
-                 <div class="col-sm-3" :class="{'has-error': errors.has('nom') }">
-                   <input name="nomProgramme" v-model="nom" v-validate="'required|max:20'" class="form-control" :class="{'has-error': errors.has('nom') }"  type="text" >
-                   <i v-show="errors.has('nom')" class="fa fa-warning"></i>
-                   <label v-show="errors.has('nom')" :class="{'has-error': errors.has('nom') }">{{ errors.first('nom') }}</label>
+                 <div class="col-sm-3" >
+                   <input name="nom" v-model="nom" v-validate="'required|max:20'" class="form-control" :class="{'has-error': errors.has('nom') }"  type="text" >
                  </div>
-              <div class="col-sm-2">
+
+              <!-- Rion théorique -->
+              <div class="col-sm-2" :class="{'has-error': errors.has('rionTheoriqueSelected') }">
                 <label class="control-label pull-right">Rion théorique</label>
               </div>
-              <div class="col-sm-3">
-                <v-select :searchable="false" label="value" v-model="rionTheoriqueSelected" :options="rionTheoriqueOptions">
+              <div class="col-sm-3" >
+                <v-select name="rionTheoriqueSelected" v-validate="'required'" :searchable="false" label="value" v-model="rionTheoriqueSelected" :options="rionTheoriqueOptions" :classValidate="{'has-error': errors.has('rionTheoriqueSelected') }">
                 </v-select>
+
               </div>
-              <div class="col-sm-2">
+              <!-- Famille -->
+              <div class="col-sm-2" :class="{'has-error': errors.has('familleSelected') }">
                 <label class="control-label pull-right">Famille</label>
               </div>
               <div class="col-sm-2">
-                <v-select :searchable="false" label="value" v-model="familleSelected" :options="familleOptions"
-                          :on-change="loadTypeUtilisation">
+                <v-select name="familleSelected" v-validate="'required'" :searchable="false" label="value" v-model="familleSelected" :options="familleOptions"
+                          :on-change="loadTypeUtilisation" :classValidate="{'has-error': errors.has('familleSelected') }">
                 </v-select>
+
               </div>
-              <div class="col-sm-2">
+
+              <!-- Type d'utilisation -->
+              <div class="col-sm-2" :class="{'has-error': errors.has('typeUtilisationSelected') }">
                 <label class="control-label pull-right">Type d'utilisation</label>
               </div>
-              <div class="col-sm-3">
-                <v-select :searchable="false" label="value" v-model="typeUtilisationSelected"
-                          :options="typeUtilisationOptions">
+              <div class="col-sm-3" >
+                <v-select name="typeUtilisationSelected" v-validate="'required'" :searchable="false" label="value" v-model="typeUtilisationSelected"
+                          :options="typeUtilisationOptions" :classValidate="{'has-error': errors.has('typeUtilisationSelected') }">
                 </v-select>
+
               </div>
             </div>
+            <!-- Type de répartition -->
             <div class="row espacement">
-              <div class="col-md-2">
+              <div class="col-sm-2">
                 <label class="pull-right">Type de répartition</label>
               </div>
-              <div class="col-md-2">
+              <div class="col-sm-2">
                 <label class="radio radio-inline checked" for="TypeRepartitionOeuvre">
                   <input
                     type="radio"
@@ -73,14 +80,33 @@
               </div>
 
             </div>
-
+            <div class="row" v-if="errors.count()!=0">
+              <ul>
+                <li v-if="errors.has('nom')">
+                  <i v-show="errors.has('nom')" class="fa fa-warning"></i>
+                  <label v-show="errors.has('nom')" :class="{'has-error': errors.has('nom') }">{{ errors.first('nom') }}</label>
+                </li>
+                <li v-if="errors.has('rionTheoriqueSelected')">
+                  <i v-show="errors.has('rionTheoriqueSelected')" class="fa fa-warning"></i>
+                  <label v-show="errors.has('rionTheoriqueSelected')" :class="{'has-error': errors.has('rionTheoriqueSelected') }">{{ errors.first('rionTheoriqueSelected') }}</label>
+                </li>
+                <li v-if="errors.has('familleSelected')">
+                  <i v-show="errors.has('familleSelected')" class="fa fa-warning"></i>
+                  <label v-show="errors.has('familleSelected')" :class="{'has-error': errors.has('familleSelected') }">{{ errors.first('familleSelected') }}</label>
+                </li>
+                <li v-if="errors.has('typeUtilisationSelected')">
+                  <i v-show="errors.has('typeUtilisationSelected')" class="fa fa-warning"></i>
+                  <label v-show="errors.has('typeUtilisationSelected')" :class="{'has-error': errors.has('typeUtilisationSelected') }">{{ errors.first('typeUtilisationSelected') }}</label>
+                </li>
+              </ul>
+            </div>
           </form>
         </div>
 
       </div>
       <div class="row espacement">
         <button class="btn btn-default btn-primary pull-right" type="button" @click="$emit('cancel')">Annuler</button>
-        <button class="btn btn-default btn-primary pull-right" type="button" @click="ajouterUnProgramme()" name="button" >Créer</button>
+        <button class="btn btn-default btn-primary pull-right" type="submit" @click="validateBeforeSubmit()" name="button" >Créer</button>
       </div>
     </div>
   </div>
@@ -134,13 +160,13 @@
       validateBeforeSubmit() {
         this.$validator.validateAll().then(() => {
           // eslint-disable-next-line
-          alert('From Submitted!');
+          this.verifierEtAjouterLeProgramme();
         }).catch(() => {
           // eslint-disable-next-line
           alert('Correct them errors!');
         });
       },
-      verifierLeProgramme(){
+      verifierEtAjouterLeProgramme(){
 
         this.resource.searchProgramme({nom : this.nom}).then(response => {
             console.log(response.body);
@@ -148,17 +174,17 @@
           if (this.programmeExist) {
             var confirmation = confirm("Attention un programme avec le même nom est déjà existant. Voulez-vous continuer?");
             if (confirmation == true) {
-              alert("ajouter programme");
+              this.ajouterUnProgramme();
+              this.console.log("Confirmation d'ajout de programme OK");
               return true;
             } else {
-              alert("ne pas ajouter le programme");
+              this.console.log("Confirmation d'ajout de programme KO");
               return false;
             }
           }
         });
       },
       ajouterUnProgramme(){
-        //if(this.verifierLeProgramme()){
           this.programmeData.numProg=this.nom;
           this.programmeData.nom=this.nom;
           this.programmeData.typeUtilisation=this.typeUtilisationSelected.id;

@@ -2,6 +2,7 @@ package fr.sacem.priam.ui.rest;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
 import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.StatutProgramme;
 import fr.sacem.priam.model.domain.TypeRepart;
@@ -26,16 +27,19 @@ import java.util.List;
 @RestController
 @RequestMapping("/app/rest/")
 public class ProgrammeResource {
-  private static Logger logger = LoggerFactory.getLogger(ProgrammeResource.class);
+    private static Logger logger = LoggerFactory.getLogger(ProgrammeResource.class);
+  
+    @Autowired
+    private ProgrammeService programmeService;
+    
+    @Autowired
+    private ProgrammeViewDao programmeViewDao;
 
-  @Autowired
-  private ProgrammeService programmeService;
-
-  @RequestMapping(value = "programme/search",
-    method = RequestMethod.POST,
-    consumes = MediaType.APPLICATION_JSON_VALUE,
-    produces = MediaType.APPLICATION_JSON_VALUE)
-  public Page<ProgrammeDto> rechercheProgramme(@RequestBody ProgrammeCritereRecherche input, Pageable pageable) {
+    @RequestMapping(value = "programme/search",
+      method = RequestMethod.POST,
+      consumes = MediaType.APPLICATION_JSON_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<ProgrammeDto> rechercheProgramme(@RequestBody ProgrammeCritereRecherche input, Pageable pageable) {
         logger.info("input criteria : " + input);
         List<StatutProgramme> status = null;
 
@@ -95,10 +99,18 @@ public class ProgrammeResource {
       }
 
       @RequestMapping(value = "programme/",
-        method = RequestMethod.POST,
-        consumes = MediaType.APPLICATION_JSON_VALUE,
-        produces = MediaType.APPLICATION_JSON_VALUE)
+                      method = RequestMethod.POST,
+                      consumes = MediaType.APPLICATION_JSON_VALUE,
+                      produces = MediaType.APPLICATION_JSON_VALUE)
       public Programme save (@RequestBody ProgrammeDto programmeDto){
         return programmeService.addProgramme(programmeDto);
       }
-    }
+  
+      @RequestMapping(value = "programme/{numProg}",
+                      method = RequestMethod.GET,
+                      produces = MediaType.APPLICATION_JSON_VALUE)
+      public ProgrammeDto findByNumProg(@PathVariable("numProg") String numProg) {
+         return  programmeViewDao.findByNumProg(numProg);
+      }
+      
+}

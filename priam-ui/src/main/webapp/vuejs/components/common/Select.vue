@@ -343,6 +343,23 @@
   .fade-leave-to {
     opacity: 0;
   }
+
+  .dropdown-toggle .has-error {
+   /* -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    display: block;
+    padding: 0;
+    background-color: #fff;
+    border: 1px solid #e74c3c;
+    border-radius: 4px;
+    white-space: normal;
+    transition: border-radius .25s;
+    width: 100%;
+    visibility: visible;
+    height: 20px!important;*/
+    border: 1px solid #e74c3c;
+  }
 </style>
 
 <template>
@@ -442,8 +459,12 @@
 
         disabled: {
           type : Boolean,
-          default : true,
+          default : false,
         },
+
+
+
+        name : '',
       /**
        * Contains the currently selected value. Very similar to a
        * `value` attribute on an <input>. You can listen for changes
@@ -860,6 +881,7 @@
       }
     },
     computed: {
+
       /**
        * Classes to be output on .dropdown
        * @return {Object}
@@ -871,7 +893,8 @@
           searching: this.searching,
           searchable: this.searchable,
           unsearchable: !this.searchable,
-          loading: this.mutableLoading
+          loading: this.mutableLoading,
+          'has-error' : this.classValidate
         }
       },
       /**

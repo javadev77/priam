@@ -138,7 +138,7 @@
           <ajouter-programme slot="body"  @cancel="close"></ajouter-programme>
         </template>
         <template v-else>
-          <modifier-programme :programme="selectedProgramme" slot="body" @cancel="close">
+          <modifier-programme :numProg="selectedProgramme.numProg" slot="body" @cancel="close">
           </modifier-programme>
         </template>
     </ecran-modal>
@@ -459,14 +459,6 @@
           onUpdateProgramme(row, column) {
             console.log("onUpdateProgramme()");
              this.selectedProgramme = row;
-
-            this.selectedProgramme.famille = this.$store.getters.famille.find(function (element) {
-              return element.id === row.famille;
-            });
-
-            this.selectedProgramme.typeUtilisation = this.$store.getters.typeUtilisation.find(function (element) {
-              return element.id === row.typeUtilisation;
-            });
 
             this.ecranAjouterProgramme = false;
             this.showEcranModal = true;
