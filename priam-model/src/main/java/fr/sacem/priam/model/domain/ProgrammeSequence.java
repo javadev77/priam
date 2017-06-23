@@ -13,7 +13,6 @@ import javax.persistence.*;
 @Table(name = "PRIAM_PROGRAMME_SEQUENCE")
 public class ProgrammeSequence {
     @EmbeddedId
-    @NotNull
     private ProgrammeKey programmeKey;
 
     public ProgrammeKey getProgrammeKey() {
