@@ -10,9 +10,22 @@ import './directives/form-elements'
 import './utils/Arrays'
 import VeeValidate from 'vee-validate';
 
-Vue.use(VeeValidate);
+Vue.use(VeeValidate, {
+  locale: 'fr',
+  dictionary: {
+    fr: {
+      messages: {
+        required : (e) => "Le champ '" + e + "' est obligatoire et non renseigné.",
+        max: (e) => e + " ne peut pas contenir plus de " + n[0] + " caractères."
+      },
+    }
+  }
+});
+
 Vue.use(VueRouter);
 Vue.use(VueResource);
+
+
 
 if(process.env.DEBUG_MODE) {
   Vue.http.options.root="http://localhost:8083/priam"

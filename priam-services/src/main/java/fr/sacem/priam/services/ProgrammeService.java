@@ -1,8 +1,16 @@
 package fr.sacem.priam.services;
 
+import fr.sacem.priam.model.dao.jpa.ParamAppliDao;
 import fr.sacem.priam.model.dao.jpa.ProgrammeDao;
 import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
+
 import fr.sacem.priam.model.domain.*;
+
+import fr.sacem.priam.model.domain.ParamAppli;
+import fr.sacem.priam.model.domain.Programme;
+import fr.sacem.priam.model.domain.ProgrammeSequence;
+import fr.sacem.priam.model.domain.StatutProgramme;
+
 import fr.sacem.priam.model.domain.criteria.ProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.model.util.MapperConfiguration;
@@ -15,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -29,6 +38,8 @@ public class ProgrammeService {
     ProgrammeViewDao programmeViewDao;
     @Autowired
     ProgrammeDao programmeDao;
+    @Autowired
+    ParamAppliDao paramAppliDao;
     private static final Logger LOG = LoggerFactory.getLogger(ProgrammeService.class);
 
     @Transactional
@@ -44,8 +55,16 @@ public class ProgrammeService {
     @Transactional
     public Programme addProgramme(ProgrammeDto programmeDto){
         MapperConfiguration mapperConfiguration =new MapperConfiguration();
-        //Programme savedProgramme=new Programme();
-
+        ParamAppli paramAppli= paramAppliDao.findOne(1l);
+        ProgrammeSequence programmeSequence = new ProgrammeSequence();
+        LocalDate today = LocalDate.now();
+        if(Long.getLong(paramAppli.getVal())<today.getYear()){
+         //update la sequence
+            //appdate la table paramAppli
+        }
+        //ajouter une ligne dans la table ProgrammeSequence
+        //recuperer la derniere ligne ajouter dans la tavle Programme Sequence
+        //construire le Id du programme
         Programme mappedProgramme=mapperConfiguration.convertProgrammeDtoToProgramme(programmeDto);
         mappedProgramme.setDateCreation(new Date());
         mappedProgramme.setStatut(StatutProgramme.CREE);

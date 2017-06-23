@@ -3,7 +3,6 @@
     <div class="panel panel-default">
       <div class="panel-heading">
         <h5 class="panel-title">
-          <!--<strong>Critères de Recherche</strong>-->
           <a>Modification programme</a>
           <span class="pull-left collapsible-icon bg-ico-editer-courrier"></span>
         </h5>
@@ -11,61 +10,98 @@
       <div class="panel-collapse">
         <div class="panel-body">
           <form @submit.prevent="validateBeforeSubmit" class="form-horizontal" role="form">
+            <div class="row" v-if="errors.count()!=0">
+              <ul style="list-style: none">
+                <li v-if="errors.has('Nom programme')">
+                  <i v-show="errors.has('Nom programme')" class="fa fa-warning"></i>
+                  <label v-show="errors.has('Nom programme')" :class="{'has-error': errors.has('Nom programme') }">{{ errors.first('Nom programme') }}</label>
+                </li>
+                <li v-if="errors.has('Rion theorique')">
+                  <i v-show="errors.has('Rion theorique')" class="fa fa-warning"></i>
+                  <label v-show="errors.has('Rion theorique')" :class="{'has-error': errors.has('Rion theorique') }">{{ errors.first('Rion theorique') }}</label>
+                </li>
+                <li v-if="errors.has('Famille')">
+                  <i v-show="errors.has('Famille')" class="fa fa-warning"></i>
+                  <label v-show="errors.has('Famille')" :class="{'has-error': errors.has('Famille') }">{{ errors.first('Famille') }}</label>
+                </li>
+                <li v-if="errors.has('Type utilisation')">
+                  <i v-show="errors.has('Type utilisation')" class="fa fa-warning"></i>
+                  <label v-show="errors.has('Type utilisation')" :class="{'has-error': errors.has('Type utilisation') }">{{ errors.first('Type utilisation') }}</label>
+                </li>
+              </ul>
+            </div>
 
             <div class="row espacement">
+              <!-- Numero programme -->
               <div class="col-sm-2">
                 <span class="pull-right" >N° programme</span>
               </div>
               <div class="col-sm-3">
-               {{ numProgramme }}
+                <strong>{{ numProgramme }}</strong>
               </div>
             </div>
-
-            <div class="row espacement">
-
-              <div class="col-sm-2">
-                <span class="pull-right" for="nomProgramme">Nom programme</span>
+              <div class="row espacement">
+              <!-- Nom programme -->
+              <div class="col-sm-2" :class="{'has-error': errors.has('Nom programme') }">
+                <span class="pull-right" for="nom">Nom programme</span>
               </div>
-              <div class="col-sm-3" :class="{'has-error': errors.has('nom') }">
-                <input name="nomProgramme" v-model="nom" v-validate="'required|max:20'" class="form-control" :class="{'has-error': errors.has('nom') }"  type="text" >
-                <i v-show="errors.has('nom')" class="fa fa-warning"></i>
-                <label v-show="errors.has('nom')" :class="{'has-error': errors.has('nom') }">{{ errors.first('nom') }}</label>
+              <div class="col-sm-3" >
+                <input maxlength="20" name="Nom programme" v-model="nom" v-validate="'required|max:20'" class="form-control" :class="{'has-error': errors.has('Nom programme') }"  type="text" >
               </div>
-              <div class="col-sm-2">
+
+              <!-- Rion théorique -->
+              <div class="col-sm-2" :class="{'has-error': errors.has('Rion theorique') }">
                 <label class="control-label pull-right">Rion théorique</label>
               </div>
-              <div class="col-sm-3">
-                <v-select :searchable="false" label="value"
+              <div class="col-sm-3" >
+                <v-select name="Rion theorique"
+                          v-validate="'required'"
+                          :searchable="false"
+                          label="value"
                           v-model="rionTheoriqueSelected"
                           :options="rionTheoriqueOptions"
                           :disabled="isNonModifiable">
                 </v-select>
+
               </div>
-              <div class="col-sm-2">
+              <!-- Famille -->
+              <div class="col-sm-2" :class="{'has-error': errors.has('Famille') }">
                 <label class="control-label pull-right">Famille</label>
               </div>
               <div class="col-sm-2">
-                <v-select :searchable="false" label="value" v-model="familleSelected" :options="familleOptions"
+                <v-select name="Famille"
+                          v-validate="'required'"
+                          :searchable="false" label="value"
+                          v-model="familleSelected"
+                          :options="familleOptions"
                           :on-change="loadTypeUtilisation"
-                          :disabled="isNonModifiable"
-                >
+                          :disabled="isNonModifiable">
                 </v-select>
+
               </div>
-              <div class="col-sm-2">
+
+              <!-- Type d'utilisation -->
+              <div class="col-sm-2" :class="{'has-error': errors.has('Type utilisation') }">
                 <label class="control-label pull-right">Type d'utilisation</label>
               </div>
-              <div class="col-sm-5">
-                <v-select :searchable="false" label="value" v-model="typeUtilisationSelected"
-                          :disabled="isNonModifiable"
-                          :options="typeUtilisationOptions">
+              <div class="col-sm-3" >
+                <v-select name="Type utilisation"
+                          v-validate="'required'"
+                          :searchable="false"
+                          label="value"
+                          v-model="typeUtilisationSelected"
+                          :options="typeUtilisationOptions"
+                          :disabled="isNonModifiable">
                 </v-select>
+
               </div>
             </div>
+            <!-- Type de répartition -->
             <div class="row espacement">
-              <div class="col-md-2">
+              <div class="col-sm-2">
                 <label class="pull-right">Type de répartition</label>
               </div>
-              <div class="col-md-2">
+              <div class="col-sm-2">
                 <label class="radio radio-inline checked disabled" for="TypeRepartitionOeuvre">
                   <input
                     type="radio"
@@ -76,7 +112,7 @@
                   <span class="icons"><span class="first-icon fui-radio-unchecked"></span><span class="second-icon fui-radio-checked"></span></span>
                 </label>
               </div>
-              <div class="col-md-3">
+              <div class="col-sm-3">
                 <label class="radio radio-inline disabled">
                   <input
                     type="radio"
@@ -87,16 +123,15 @@
                   <span class="icons"><span class="first-icon fui-radio-unchecked"></span><span class="second-icon fui-radio-checked"></span></span>
                 </label>
               </div>
-
             </div>
-
           </form>
         </div>
+
 
       </div>
       <div class="row espacement">
         <button class="btn btn-default btn-primary pull-right" type="button" @click="$emit('cancel')">Annuler</button>
-        <button class="btn btn-default btn-primary pull-right" type="button" @click="modifierProgramme()" name="button" >Modifier</button>
+        <button class="btn btn-default btn-primary pull-right" type="button" @click="validateBeforeSubmit">Modifier</button>
       </div>
     </div>
   </div>
@@ -104,6 +139,7 @@
 </template>
 <script>
   import vSelect from '../common/Select.vue';
+  import messagesfr from 'vee-validate/dist/locale/fr';
 
   export default {
 
@@ -163,37 +199,63 @@
     methods: {
 
       loadTypeUtilisation(val) {
+        console.log('loadTypeUtilisation=' + val)
         this.familleSelected = val;
         this.$store.dispatch('loadTypeUtilisationVide', val);
-        this.typeUtilisationSelected =  this.$store.getters.typeUtilisationOptionsVide[0];
+
+        if(this.typeUtilisationSelected == null) {
+          var typeUtilCode = this.programmeToModify.typeUtilisation;
+          this.typeUtilisationSelected  = this.$store.getters.typeUtilisation.find(function (element) {
+            return element.id === typeUtilCode;
+          });
+
+        } else {
+          this.typeUtilisationSelected =  this.$store.getters.typeUtilisationOptionsVide[0];
+        }
+
+
       },
 
       validateBeforeSubmit() {
+        console.log("validateBeforeSubmit()")
         this.$validator.validateAll().then(() => {
-          // eslint-disable-next-line
-          alert('From Submitted!');
+            console.log("All is ok")
+
+          this.verifierEtModifierLeProgramme();
         }).catch(() => {
           // eslint-disable-next-line
-          alert('Correct them errors!');
+          console.log('Correct them errors!');
         });
       },
 
-      verifierLeProgramme(){
+      verifierEtModifierLeProgramme() {
 
-        this.resource.searchProgramme({nom : this.nom}).then(response => {
-          console.log(response.body);
-          this.programmeExist = response.body;
-          if (this.programmeExist) {
-            var confirmation = confirm("Attention un programme avec le même nom est déjà existant. Voulez-vous continuer?");
-            if (confirmation == true) {
-              alert("ajouter programme");
-              return true;
-            } else {
-              alert("ne pas ajouter le programme");
-              return false;
-            }
-          }
-        });
+        if(this.programmeToModify.nom !== this.nom) {
+          this.resource.searchProgramme({nom: this.nom})
+            .then(response => {
+              return response.json();
+            })
+            .then(data => {
+              this.programmeExist = data;
+              if (this.programmeExist) {
+                var confirmation = confirm("Attention un programme avec le même nom est déjà existant. Voulez-vous continuer?");
+                if (confirmation == true) {
+                  this.modifierProgramme();
+                  console.log("Confirmation de modification de programme OK");
+                  return true;
+                } else {
+                  console.log("Confirmation de modification de programme KO");
+                  return false;
+                }
+              } else {
+                this.modifierProgramme();
+              }
+
+
+            });
+        } else {
+          this.modifierProgramme();
+        }
       },
 
       modifierProgramme(){
@@ -204,13 +266,18 @@
         this.programmeData.famille=this.familleSelected.id;
         this.programmeData.typeRepart=this.typeRepart;
         this.programmeData.rionTheorique=this.rionTheoriqueSelected.id;
-        this.resource.updateProgramme({numProg : this.programmeData.numProg}, this.programmeData).then(response => {
-          alert("modification ok");
-          this.$emit('validate');
-        }, response => {
-          alert("Erreur technique lors de la modification du programme !! ");
-          this.$emit('cancel');
-        });
+        this.resource.updateProgramme(this.programmeData)
+            .then(response => {
+              return response.json();
+            })
+            .then(data => {
+              console.log("modification ok");
+              this.$emit('validate');
+            })
+            .catch(response => {
+                  alert("Erreur technique lors de la modification du programme !! ");
+                  this.$emit('cancel');
+            });
         //}
 
       },
@@ -226,10 +293,11 @@
               return element.id === familleCode;
             });
 
-            var typeUtilCode = this.programmeToModify.typeUtilisation;
-            this.typeUtilisation = this.$store.getters.typeUtilisation.find(function (element) {
+            /*var typeUtilCode = this.programmeToModify.typeUtilisation;
+            this.typeUtilisationSelected = this.$store.getters.typeUtilisation.find(function (element) {
               return element.id === typeUtilCode;
             });
+            console.log("typeUtilisationSelected=" + this.typeUtilisationSelected.value);*/
 
             var rionTheoriqueCode = this.programmeToModify.rionTheorique;
             console.log('rionTheoriqueCode=' + rionTheoriqueCode)
@@ -249,12 +317,12 @@
 
     created(){
       const customActions = {
-          searchProgramme : {method : 'GET', url :'app/rest/programme/{nom}'},
-          addProgramme : {method: 'POST', url : 'app/rest/programme/'},
-          findByNumProg : {method : 'GET', url : 'app/rest/programme/{numProg}'},
-          updateProgramme : {method: 'PUT', url : 'app/rest/programme/{numProg}'},
+          searchProgramme : {method : 'GET', url :'app/rest/programme/nom/{nom}'},
+          findByNumProg : {method : 'GET', url : 'app/rest/programme/numProg/{numProg}'},
+          updateProgramme : {method: 'PUT', url : 'app/rest/programme/'},
       }
       this.resource= this.$resource('', {}, customActions);
+
 
       this.resource.findByNumProg({numProg:  this.numProg})
         .then(response => {

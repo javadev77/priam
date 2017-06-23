@@ -6,7 +6,6 @@ import fr.sacem.priam.model.domain.*;
 import fr.sacem.priam.model.domain.criteria.ProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -153,28 +152,50 @@ public class ProgrammeViewDaoTest {
         
     }
 
-    @Test @Ignore
-    public void search_programme_by_date_creation() throws ParseException {
+    @Test
+    public void search_programme_by_date_creation_from() throws ParseException {
         ProgrammeCriteria criteria = new ProgrammeCriteria();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-    
-        Date currentDate = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        SimpleDateFormat yyyyMMdd = new SimpleDateFormat("yyyy-MM-dd");
+        
+        Date currentDate = sdf.parse("2017-06-23T00:00:00");
         criteria.setDateCreationDebut(currentDate);
-        criteria.setDateCreationFin(sdf.parse("2017-06-20"));
-        criteria.setNumProg("PR170008");
     
         criteria.setStatut(Arrays.asList(StatutProgramme.values()));
         
         Page<ProgrammeDto> all = programmeViewDao.findAllProgrammeByCriteria(criteria.getNumProg(), criteria.getNom(), criteria.getStatut(), criteria.getDateCreationDebut(), criteria.getDateCreationFin(), criteria.getFamille(), criteria.getTypeUtilisation(), criteria.getRionTheorique(), criteria.getRionPaiement(), criteria.getTypeRepart(), PAGEABLE);
         
         assertThat(all).isNotNull();
-        assertThat(all.getContent()).isNotEmpty().hasSize(1);
+        assertThat(all.getContent()).isNotEmpty();
         all.getContent().forEach(elem -> {
-            assertThat(elem.getNumProg()).isEqualTo("PR170001");
-            assertThat(sdf.format(elem.getDateCreation())).isEqualTo(sdf.format(currentDate));
+            assertThat(yyyyMMdd.format(elem.getDateCreation())).isEqualTo(yyyyMMdd.format(currentDate));
         });
         
     }
+    
+    @Test
+    public void search_programme_by_date_creation_to() throws ParseException {
+        ProgrammeCriteria criteria = new ProgrammeCriteria();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+    
+        SimpleDateFormat yyyyMMdd = new SimpleDateFormat("yyyy-MM-dd");
+        
+        Date currentDate = sdf.parse("2017-06-23T23:59:59");
+        criteria.setDateCreationFin(currentDate);
+        
+        
+        criteria.setStatut(Arrays.asList(StatutProgramme.values()));
+        
+        Page<ProgrammeDto> all = programmeViewDao.findAllProgrammeByCriteria(criteria.getNumProg(), criteria.getNom(), criteria.getStatut(), criteria.getDateCreationDebut(), criteria.getDateCreationFin(), criteria.getFamille(), criteria.getTypeUtilisation(), criteria.getRionTheorique(), criteria.getRionPaiement(), criteria.getTypeRepart(), PAGEABLE);
+        
+        assertThat(all).isNotNull();
+        assertThat(all.getContent()).isNotEmpty();
+        all.getContent().forEach(elem -> {
+            assertThat(yyyyMMdd.format(elem.getDateCreation())).isEqualTo(yyyyMMdd.format(currentDate));
+        });
+        
+    }
+    
     @Test
     public void search_progremme_by_nom_without_criteria(){
         Programme programmeSearcher =new Programme();
@@ -211,5 +232,13 @@ public class ProgrammeViewDaoTest {
         programme.setRionPaiement(rionPaiement);
         programme.setRionTheorique(rionTheorique);
         programmeDao.save(programme);
+    }
+    
+    @Test
+    public void find_by_numprog() {
+        ProgrammeDto pr170001 = programmeViewDao.findByNumProg("PR170001");
+        
+        assertThat(pr170001).isNotNull();
+        assertThat(pr170001.getNumProg()).isEqualTo("PR170001");
     }
 }

@@ -531,6 +531,7 @@
           },
 
           onValidateEcranModal() {
+              console.log('onValidateEcranModal()')
               this.close();
               this.rechercherProgrammes();
           }

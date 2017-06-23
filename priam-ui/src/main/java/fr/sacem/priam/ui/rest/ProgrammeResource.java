@@ -85,9 +85,10 @@ public class ProgrammeResource {
         return programmeService.findProgrammeByCriteria(criteria, pageable);
       }
 
-      @RequestMapping(value = "programme/{nom}",
-        method = RequestMethod.GET)
-      public Boolean getProgrammeByNom (@PathVariable("nom") String nom){
+      @RequestMapping(value = "programme/nom/{nom}",
+                 method = RequestMethod.GET,
+                produces = MediaType.APPLICATION_JSON_VALUE)
+      public Boolean getProgrammeByNom(@PathVariable("nom") String nom){
         Boolean resultat = false;
         List<Programme> programmes = programmeService.serachProgrammeByNom(nom);
         if (programmes.size() < 1)
@@ -106,14 +107,14 @@ public class ProgrammeResource {
         return programmeService.addProgramme(programmeDto);
       }
   
-      @RequestMapping(value = "programme/{numProg}",
+      @RequestMapping(value = "programme/numProg/{numProg}",
                       method = RequestMethod.GET,
                       produces = MediaType.APPLICATION_JSON_VALUE)
       public ProgrammeDto findByNumProg(@PathVariable("numProg") String numProg) {
          return  programmeViewDao.findByNumProg(numProg);
       }
   
-      @RequestMapping(value = "programme/{numProg}",
+      @RequestMapping(value = "programme/",
         method = RequestMethod.PUT,
         consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE)

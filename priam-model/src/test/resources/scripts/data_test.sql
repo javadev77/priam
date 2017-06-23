@@ -21,7 +21,10 @@ INSERT INTO PRIAM_STATUT
 INSERT INTO PRIAM_STATUT
 (CODE, LIBELLE) VALUES
 ('ABANDONNE', 'Abandonné');
-
+INSERT INTO PRIAM_PROGRAMME_SEQUENCE(PREFIX,ANNEE) VALUES ('BR','2017');
+INSERT INTO PRIAM_PROGRAMME_SEQUENCE(PREFIX,ANNEE) VALUES ('BR','2017');
+INSERT INTO PRIAM_PARAMAPPLI(CDEPARAM,LIBSTAT,VAL)
+VALUES ('ANNEE_SEQ_PROGRAMME','année en cours utilisé pour generer id programme','2017');
 -- ---------------------------------------------------
 -- ------ TABLE PRIAM_LIBFAMITYPUTIL --------------
 -- -------------------------------------------------
