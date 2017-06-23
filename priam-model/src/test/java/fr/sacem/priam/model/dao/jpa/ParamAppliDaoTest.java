@@ -1,7 +1,7 @@
 package fr.sacem.priam.model.dao.jpa;
 
 import fr.sacem.priam.model.dao.JpaConfigurationTest;
-import fr.sacem.priam.model.domain.Famille;
+import fr.sacem.priam.model.domain.ParamAppli;
 import fr.sacem.priam.model.domain.ProgrammeKey;
 import fr.sacem.priam.model.domain.ProgrammeSequence;
 import org.junit.Test;
@@ -20,29 +20,32 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes={JpaConfigurationTest.class})
-public class ProgrammeSequenceDaoTest {
+public class ParamAppliDaoTest {
 
     @Autowired
-    private ProgrammeSequnceDao programmeSequnceDao;
+    private ParamAppliDao paramAppliDao;
 
 
 
     @Test
     @Transactional
-    public  void add_programme_sequence(){
-        ProgrammeSequence programmeSequence =new ProgrammeSequence();
-        programmeSequence.setProgrammeKey(new ProgrammeKey("FR","2017"));
-        ProgrammeSequence programmeSequence1 =programmeSequnceDao.save(programmeSequence);
-        assertThat(programmeSequence1).isNotNull();
-        assertThat(programmeSequence1.getProgrammeKey().getPrefix()).isEqualTo("FR");
+    public  void add_param_appli(){
+        ParamAppli paramAppli =new ParamAppli();
+        paramAppli.setCdeParam("ANNEE");
+        paramAppli.setId(1l);
+        paramAppli.setLibStat("mon message");
+        paramAppli.setVal("2018");
+        ParamAppli paramAppli1 = paramAppliDao.save(paramAppli);
+        assertThat(paramAppli1).isNotNull();
+        assertThat(paramAppli1.getVal()).isEqualTo("2018");
     }
     @Test
     @Transactional
-    public void should_return_all_programme_sequence() {
+    public void should_return_all_param_appli() {
 
-        List<ProgrammeSequence> all = programmeSequnceDao.findAll();
+        List<ParamAppli> all = paramAppliDao.findAll();
 
         assertThat(all).isNotNull().isNotEmpty();
-        assertThat(all.size()).isEqualTo(2);
+        assertThat(all.size()).isEqualTo(1);
     }
 }
