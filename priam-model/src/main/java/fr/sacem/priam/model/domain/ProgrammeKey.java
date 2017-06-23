@@ -14,12 +14,12 @@ public class ProgrammeKey implements Serializable {
     @Column(name = "ANNEE")
     private String annee;
     @Column(name = "CODESEQUENCE")
-    private Integer codeSequence;
-    public Integer getCodeSequence() {
+    private Long codeSequence;
+    public Long getCodeSequence() {
         return codeSequence;
     }
 
-    public void setCodeSequence(Integer codeSequence) {
+    public void setCodeSequence(Long codeSequence) {
         this.codeSequence = codeSequence;
     }
 
@@ -39,9 +39,10 @@ public class ProgrammeKey implements Serializable {
         this.annee = annee;
     }
 
-    public ProgrammeKey(String prefix, String annee) {
+    public ProgrammeKey(String prefix, String annee,Long codeSequence) {
         this.prefix = prefix;
         this.annee = annee;
+        this.codeSequence=codeSequence;
     }
 
     public ProgrammeKey() {

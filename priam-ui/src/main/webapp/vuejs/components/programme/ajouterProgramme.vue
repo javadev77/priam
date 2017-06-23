@@ -14,37 +14,37 @@
               <ul style="list-style: none">
                 <li v-if="errors.has('Nom programme')">
                   <i v-show="errors.has('Nom programme')" class="fa fa-warning"></i>
-                  <label v-show="errors.has('Nom programme')" :class="{'has-error': errors.has('Nom programme') }">{{ errors.first('Nom programme') }}</label>
+                  <label v-show="errors.has('Nom programme')" class="control-label" :class="{'has-error': errors.has('Nom programme') }">{{ errors.first('Nom programme') }}</label>
                 </li>
-                <li v-if="errors.has('Rion theorique')">
-                  <i v-show="errors.has('Rion theorique')" class="fa fa-warning"></i>
-                  <label v-show="errors.has('Rion theorique')" :class="{'has-error': errors.has('Rion theorique') }">{{ errors.first('Rion theorique') }}</label>
+                <li v-if="errors.has('rion.theorique')">
+                  <i v-show="errors.has('rion.theorique')" class="fa fa-warning"></i>
+                  <label v-show="errors.has('rion.theorique')" :class="{'has-error': errors.has('rion.theorique') }">{{ errors.first('rion.theorique') }}</label>
                 </li>
                 <li v-if="errors.has('Famille')">
                   <i v-show="errors.has('Famille')" class="fa fa-warning"></i>
                   <label v-show="errors.has('Famille')" :class="{'has-error': errors.has('Famille') }">{{ errors.first('Famille') }}</label>
                 </li>
-                <li v-if="errors.has('Type utilisation')">
-                  <i v-show="errors.has('Type utilisation')" class="fa fa-warning"></i>
-                  <label v-show="errors.has('Type utilisation')" :class="{'has-error': errors.has('Type utilisation') }">{{ errors.first('Type utilisation') }}</label>
+                <li v-if="errors.has('typeUtilisation')">
+                  <i v-show="errors.has('typeUtilisation')" class="fa fa-warning"></i>
+                  <label v-show="errors.has('typeUtilisation')" :class="{'has-error': errors.has('typeUtilisation') }">{{ errors.first('typeUtilisation') }}</label>
                 </li>
               </ul>
             </div>
             <div class="row espacement">
 
                  <div class="col-sm-2" :class="{'has-error': errors.has('Nom programme') }">
-                 <span class="pull-right" for="nom">Nom programme</span>
+                    <label class="control-label pull-right">Nom programme</label>
                  </div>
                  <div class="col-sm-3" >
                    <input maxlength="20" name="Nom programme" v-model="nom" v-validate="'required|max:20'" class="form-control" :class="{'has-error': errors.has('Nom programme') }"  type="text" >
                  </div>
 
               <!-- Rion théorique -->
-              <div class="col-sm-2" :class="{'has-error': errors.has('Rion theorique') }">
+              <div class="col-sm-2" :class="{'has-error': errors.has('rion.theorique') }">
                 <label class="control-label pull-right">Rion théorique</label>
               </div>
               <div class="col-sm-3" >
-                <v-select name="Rion theorique" v-validate="'required'" :searchable="false" label="value" v-model="rionTheoriqueSelected" :options="rionTheoriqueOptions" :classValidate="{'has-error': errors.has('Rion theorique') }">
+                <v-select name="rion.theorique" v-validate="'required'" :searchable="false" label="value" v-model="rionTheoriqueSelected" :options="rionTheoriqueOptions" :classValidate="{'has-error': errors.has('Rion theorique') }">
                 </v-select>
 
               </div>
@@ -60,12 +60,12 @@
               </div>
 
               <!-- Type d'utilisation -->
-              <div class="col-sm-2" :class="{'has-error': errors.has('Type utilisation') }">
+              <div class="col-sm-2" :class="{'has-error': errors.has('typeUtilisation') }">
                 <label class="control-label pull-right">Type d'utilisation</label>
               </div>
               <div class="col-sm-3" >
-                <v-select name="Type utilisation" v-validate="'required'" :searchable="false" label="value" v-model="typeUtilisationSelected"
-                          :options="typeUtilisationOptions" :classValidate="{'has-error': errors.has('Type utilisation') }">
+                <v-select name="typeUtilisation" v-validate="'required'" :searchable="false" label="value" v-model="typeUtilisationSelected"
+                          :options="typeUtilisationOptions" :classValidate="{'has-error': errors.has('typeUtilisation') }">
                 </v-select>
 
               </div>

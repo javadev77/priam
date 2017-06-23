@@ -135,7 +135,7 @@
 
     <ecran-modal v-if="showEcranModal">
         <template v-if="ecranAjouterProgramme">
-          <ajouter-programme slot="body"  @cancel="close"></ajouter-programme>
+          <ajouter-programme slot="body"  @cancel="close" @validate="onValidateEcranModal"></ajouter-programme>
         </template>
         <template v-else>
           <modifier-programme :numProg="selectedProgramme.numProg" slot="body" @cancel="close" @validate="onValidateEcranModal">

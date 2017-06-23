@@ -18,6 +18,11 @@ Vue.use(VeeValidate, {
         required : (e) => "Le champ '" + e + "' est obligatoire et non renseigné.",
         max: (e) => e + " ne peut pas contenir plus de " + n[0] + " caractères."
       },
+
+      attributes : {
+        'rion.theorique' : 'Rion théorique',
+        'typeUtilisation' : "Type d'utilisation"
+      }
     }
   }
 });
