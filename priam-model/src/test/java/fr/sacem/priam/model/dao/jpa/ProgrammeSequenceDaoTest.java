@@ -58,7 +58,7 @@ public class ProgrammeSequenceDaoTest {
         programmeSequence3.setProgrammeKey(new ProgrammeKey("FR","2020",8l));
         programmeSequnceDao.save(programmeSequence3);
         String max=programmeSequnceDao.getLastElement("2020");
-        assertThat(max).isEqualTo(8);
+        assertThat(max).isEqualTo("8");
 
     }
 }

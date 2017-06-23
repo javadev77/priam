@@ -2,7 +2,6 @@ package fr.sacem.priam.model.domain;
 
 
 
-import com.sun.istack.internal.NotNull;
 
 import javax.persistence.*;
 

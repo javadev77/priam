@@ -25,6 +25,8 @@ INSERT INTO PRIAM_PROGRAMME_SEQUENCE(PREFIX,ANNEE,CODESEQUENCE) VALUES ('BR','20
 INSERT INTO PRIAM_PROGRAMME_SEQUENCE(PREFIX,ANNEE,CODESEQUENCE) VALUES ('BR','2017',2);
 INSERT INTO PRIAM_PARAMAPPLI(CDEPARAM,LIBSTAT,VAL)
 VALUES ('ANNEE_SEQ_PROGRAMME','année en cours utilisé pour generer id programme','2017');
+VALUES ('PREFIX','prefix','BR');
+
 -- ---------------------------------------------------
 -- ------ TABLE PRIAM_LIBFAMITYPUTIL --------------
 -- -------------------------------------------------
