@@ -8,6 +8,7 @@ import fr.sacem.priam.model.domain.*;
 import fr.sacem.priam.model.domain.criteria.ProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.model.util.MapperConfiguration;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +52,7 @@ public class ProgrammeService {
     @Transactional
     public Programme addProgramme(ProgrammeDto programmeDto){
         MapperConfiguration mapperConfiguration =new MapperConfiguration();
-        //ParamAppli paramAppli= paramAppliDao.findOne(1l);
+        ParamAppli paramAppli= paramAppliDao.findOne(1l);
         ProgrammeSequence programmeSequence = new ProgrammeSequence();
         ProgrammeKey programmeKey =new ProgrammeKey();
         LocalDate today = LocalDate.now();
@@ -60,12 +61,14 @@ public class ProgrammeService {
         //cas de la base vide
         if(max_value==null)
             max_value="0";
+        Long max_value_to_add=Long.valueOf(max_value)+1;
+        String formated_max_value_to_add =StringUtils.leftPad(max_value_to_add.toString(),4,"0");
         programmeKey.setAnnee(year);
-        programmeKey.setCodeSequence(Long.valueOf(max_value)+1);
+        programmeKey.setCodeSequence(max_value_to_add);
         programmeKey.setPrefix("PR");
         programmeSequence.setProgrammeKey(programmeKey);
         programmeSequnceDao.save(programmeSequence);
-        programmeDto.setNumProg(programmeKey.getPrefix()+programmeKey.getAnnee()+String.valueOf(programmeKey.getCodeSequence()));
+        programmeDto.setNumProg(programmeKey.getPrefix()+programmeKey.getAnnee()+formated_max_value_to_add);
        // if(Long.getLong(paramAppli.getVal())<today.getYear()){
          //update la sequence
             //appdate la table paramAppli
