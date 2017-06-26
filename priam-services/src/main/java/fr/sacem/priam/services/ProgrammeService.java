@@ -61,13 +61,17 @@ public class ProgrammeService {
     @Transactional
     public Programme addProgramme(ProgrammeDto programmeDto){
         MapperConfiguration mapperConfiguration =new MapperConfiguration();
-        ParamAppli paramAppli= paramAppliDao.getParam("annee_en_cours");
+        ParamAppli paramAppli= paramAppliDao.getParam("ANNEE_SEQ_PROGRAMME");
         ProgrammeSequence programmeSequence = new ProgrammeSequence();
         ProgrammeKey programmeKey =new ProgrammeKey();
         LocalDate today = LocalDate.now();
         String year=String.valueOf(today.getYear()).substring(2,4);
         String max_value=programmeSequnceDao.getLastElement(year);
-        //cas de la base vide
+        if(Long.valueOf(year)>Long.valueOf(paramAppli.getVal())){
+            max_value="0";
+            paramAppli.setVal(year);
+            paramAppliDao.saveAndFlush(paramAppli);
+        }
         if(max_value==null)
             max_value="0";
         Long max_value_to_add=Long.valueOf(max_value)+1;

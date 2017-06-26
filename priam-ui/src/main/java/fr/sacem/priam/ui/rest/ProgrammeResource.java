@@ -28,10 +28,10 @@ import java.util.List;
 @RequestMapping("/app/rest/")
 public class ProgrammeResource {
     private static Logger logger = LoggerFactory.getLogger(ProgrammeResource.class);
-  
+
     @Autowired
     private ProgrammeService programmeService;
-    
+
     @Autowired
     private ProgrammeViewDao programmeViewDao;
 
@@ -84,7 +84,6 @@ public class ProgrammeResource {
 
         return programmeService.findProgrammeByCriteria(criteria, pageable);
       }
-
       @RequestMapping(value = "programme/nom/{nom}",
                  method = RequestMethod.GET,
                 produces = MediaType.APPLICATION_JSON_VALUE)
@@ -106,14 +105,14 @@ public class ProgrammeResource {
       public Programme save (@RequestBody ProgrammeDto programmeDto){
         return programmeService.addProgramme(programmeDto);
       }
-  
+
       @RequestMapping(value = "programme/numProg/{numProg}",
                       method = RequestMethod.GET,
                       produces = MediaType.APPLICATION_JSON_VALUE)
       public ProgrammeDto findByNumProg(@PathVariable("numProg") String numProg) {
          return  programmeViewDao.findByNumProg(numProg);
       }
-  
+
       @RequestMapping(value = "programme/",
         method = RequestMethod.PUT,
         consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -121,5 +120,5 @@ public class ProgrammeResource {
       public Programme updateProgramme(@RequestBody ProgrammeDto programmeDto){
         return programmeService.updateProgramme(programmeDto);
       }
-      
+
 }
