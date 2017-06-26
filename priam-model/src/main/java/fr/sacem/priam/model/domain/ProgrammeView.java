@@ -19,6 +19,9 @@ public class ProgrammeView {
     private StatutProgramme statut;
     private Integer rionPaiement;
     private Long fichiers;
+    private String usercre;
+    private Date datmaj;
+    private String usermaj;
     
     public ProgrammeView() {
     }
@@ -77,6 +80,22 @@ public class ProgrammeView {
         return fichiers;
     }
     
+    @Column(name = "DATMAJ")
+    @Temporal(TemporalType.TIMESTAMP)
+    public Date getDatmaj() {
+        return datmaj;
+    }
+    
+    @Column(name = "USERCRE")
+    public String getUsercre() {
+        return usercre;
+    }
+    
+    @Column(name = "USERMAJ")
+    public String getUsermaj() {
+        return usermaj;
+    }
+    
     public void setNumProg(String numProg) {
         this.numProg = numProg;
     }
@@ -115,5 +134,17 @@ public class ProgrammeView {
     
     public void setFichiers(Long fichiers) {
         this.fichiers = fichiers;
+    }
+    
+    public void setDatmaj(Date datmaj) {
+        this.datmaj = datmaj;
+    }
+    
+    public void setUsercre(String usercre) {
+        this.usercre = usercre;
+    }
+    
+    public void setUsermaj(String usermaj) {
+        this.usermaj = usermaj;
     }
 }

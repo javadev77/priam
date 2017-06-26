@@ -70,10 +70,10 @@
 
               </div>
             </div>
-            <!-- Type de répartition -->
+            <!-- Mode de répartition -->
             <div class="row espacement">
               <div class="col-sm-2">
-                <label class="pull-right">Type de répartition</label>
+                <label class="pull-right">Mode de répartition</label>
               </div>
               <div class="col-sm-2">
                 <label class="radio radio-inline checked disabled" for="TypeRepartitionOeuvre">

@@ -3,7 +3,6 @@ package fr.sacem.priam.ui.rest;
 import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
 import fr.sacem.priam.ui.rest.dto.ProgrammeCritereRecherche;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +24,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
@@ -63,7 +63,7 @@ public class ProgrammeResourceTest {
     public void setup() throws Exception {
         this.mockMvc = webAppContextSetup(webApplicationContext).build();
     }
-  @Ignore
+  
     @Test
     public void search_programmes() throws Exception {
         mockMvc.perform(post(APP_REST_PROGRAMME_SEARCH)
@@ -102,7 +102,7 @@ public class ProgrammeResourceTest {
                 .andExpect(jsonPath("$.content[4].rionTheorique", is(expectedRion)));
     }
     
-    @Ignore
+    
     @Test
     public void search_programmes_by_famille() throws Exception {
         ProgrammeCritereRecherche critereRecherche = new ProgrammeCritereRecherche();
@@ -139,8 +139,19 @@ public class ProgrammeResourceTest {
           .andExpect(jsonPath("$.content[3].typeUtilisation", is(typeUtil)))
           .andExpect(jsonPath("$.content[4].typeUtilisation", is(typeUtil)));
     }
-
-
+    
+    @Test
+    public void find_programme_by_numProg() throws Exception {
+      
+      mockMvc.perform(
+                    get("/app/rest/programme/numProg/PR170001")
+                  .contentType(contentType))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.numProg", is("PR170001")));
+       
+    }
+    
+  
     protected String json(Object o) throws IOException {
         MockHttpOutputMessage mockHttpOutputMessage = new MockHttpOutputMessage();
         this.mappingJackson2HttpMessageConverter.write(o, MediaType.APPLICATION_JSON, mockHttpOutputMessage);

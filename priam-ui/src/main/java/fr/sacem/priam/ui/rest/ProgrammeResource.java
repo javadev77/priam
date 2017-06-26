@@ -36,9 +36,9 @@ public class ProgrammeResource {
     private ProgrammeViewDao programmeViewDao;
 
     @RequestMapping(value = "programme/search",
-      method = RequestMethod.POST,
-      consumes = MediaType.APPLICATION_JSON_VALUE,
-      produces = MediaType.APPLICATION_JSON_VALUE)
+                    method = RequestMethod.POST,
+                    consumes = MediaType.APPLICATION_JSON_VALUE,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<ProgrammeDto> rechercheProgramme(@RequestBody ProgrammeCritereRecherche input, Pageable pageable) {
         logger.info("input criteria : " + input);
         List<StatutProgramme> status = null;
@@ -83,11 +83,13 @@ public class ProgrammeResource {
         criteria.setDateCreationFin(input.getDateCreationFin());
 
         return programmeService.findProgrammeByCriteria(criteria, pageable);
-      }
-      @RequestMapping(value = "programme/nom/{nom}",
-                 method = RequestMethod.GET,
-                produces = MediaType.APPLICATION_JSON_VALUE)
-      public Boolean getProgrammeByNom(@PathVariable("nom") String nom){
+    }
+     
+     
+     @RequestMapping(value = "programme/nom/{nom}",
+                     method = RequestMethod.GET,
+                     produces = MediaType.APPLICATION_JSON_VALUE)
+     public Boolean getProgrammeByNom(@PathVariable("nom") String nom){
         Boolean resultat = false;
         List<Programme> programmes = programmeService.serachProgrammeByNom(nom);
         if (programmes.size() < 1)
@@ -96,29 +98,31 @@ public class ProgrammeResource {
           resultat = true;
         return resultat;
 
-      }
+     }
 
-      @RequestMapping(value = "programme/",
-                      method = RequestMethod.POST,
-                      consumes = MediaType.APPLICATION_JSON_VALUE,
-                      produces = MediaType.APPLICATION_JSON_VALUE)
-      public Programme save (@RequestBody ProgrammeDto programmeDto){
+     @RequestMapping(value = "programme/",
+                     method = RequestMethod.POST,
+                     consumes = MediaType.APPLICATION_JSON_VALUE,
+                     produces = MediaType.APPLICATION_JSON_VALUE)
+     public Programme save (@RequestBody ProgrammeDto programmeDto){
         return programmeService.addProgramme(programmeDto);
-      }
+     }
 
-      @RequestMapping(value = "programme/numProg/{numProg}",
-                      method = RequestMethod.GET,
-                      produces = MediaType.APPLICATION_JSON_VALUE)
-      public ProgrammeDto findByNumProg(@PathVariable("numProg") String numProg) {
-         return  programmeViewDao.findByNumProg(numProg);
-      }
+     @RequestMapping(value = "programme/numProg/{numProg}",
+                     method = RequestMethod.GET,
+                     produces = MediaType.APPLICATION_JSON_VALUE)
+     public ProgrammeDto findByNumProg(@PathVariable("numProg") String numProg) {
+        
+          return  programmeViewDao.findByNumProg(numProg);
+     }
 
-      @RequestMapping(value = "programme/",
-        method = RequestMethod.PUT,
-        consumes = MediaType.APPLICATION_JSON_VALUE,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-      public Programme updateProgramme(@RequestBody ProgrammeDto programmeDto){
-        return programmeService.updateProgramme(programmeDto);
-      }
+     @RequestMapping(value = "programme/",
+                     method = RequestMethod.PUT,
+                     consumes = MediaType.APPLICATION_JSON_VALUE,
+                     produces = MediaType.APPLICATION_JSON_VALUE)
+     public Programme updateProgramme(@RequestBody ProgrammeDto programmeDto){
+        
+          return programmeService.updateProgramme(programmeDto);
+     }
 
 }

@@ -20,5 +20,6 @@ export const routes = [
         }
       ]
     },
-    { path: '/parametrage', name: 'parametrage', component: Affectation }
+    { path: '/parametrage', name: 'parametrage', component: Chargement },
+    { path: '/affectation/:numProg', name: 'affectation', component: Affectation }
 ];

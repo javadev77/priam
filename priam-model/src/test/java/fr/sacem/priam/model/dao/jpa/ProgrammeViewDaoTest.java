@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -30,6 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes={JpaConfigurationTest.class})
+@Transactional
 public class ProgrammeViewDaoTest {
     
     public static final Pageable PAGEABLE = new Pageable() {
@@ -96,6 +98,7 @@ public class ProgrammeViewDaoTest {
     
     
     @Test
+    @Transactional
     public void should_find_programmes_rion_619() {
         ProgrammeCriteria criteria = new ProgrammeCriteria();
         criteria.setStatut(Arrays.asList(StatutProgramme.values()));
@@ -158,7 +161,7 @@ public class ProgrammeViewDaoTest {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         SimpleDateFormat yyyyMMdd = new SimpleDateFormat("yyyy-MM-dd");
         
-        Date currentDate = sdf.parse("2017-06-23T00:00:00");
+        Date currentDate = sdf.parse(new SimpleDateFormat("yyyy-MM-dd'T'00:00:00").format(new Date()));
         criteria.setDateCreationDebut(currentDate);
     
         criteria.setStatut(Arrays.asList(StatutProgramme.values()));
@@ -179,8 +182,8 @@ public class ProgrammeViewDaoTest {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
     
         SimpleDateFormat yyyyMMdd = new SimpleDateFormat("yyyy-MM-dd");
-        
-        Date currentDate = sdf.parse("2017-06-23T23:59:59");
+    
+        Date currentDate = sdf.parse(new SimpleDateFormat("yyyy-MM-dd'T'23:59:59").format(new Date()));
         criteria.setDateCreationFin(currentDate);
         
         
@@ -234,7 +237,7 @@ public class ProgrammeViewDaoTest {
         programmeDao.save(programme);
     }
     
-    @Test
+    @Test @Transactional
     public void find_by_numprog() {
         ProgrammeDto pr170001 = programmeViewDao.findByNumProg("PR170001");
         

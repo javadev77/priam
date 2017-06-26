@@ -66,7 +66,7 @@
                   </v-select>
                 </div>
                 <div class="col-sm-2">
-                  <label class="control-label pull-right">Type répartition</label>
+                  <label class="control-label pull-right">Mode répartition</label>
                 </div>
                 <div class="col-sm-4">
                   <v-select :searchable="false" label="value" v-model="typeRepartSelected" :options="typeRepartOptions">
@@ -252,7 +252,7 @@
                 },
                 {
                   id :  'typeRepart',
-                  name :   "Type répartition",
+                  name :   "Mode répartition",
                   sortable : true,
                   type : 'code-value',
                   cell : {
@@ -277,7 +277,7 @@
                   type : 'numeric-link',
                   cell : {
                     toText : function(entry) {
-                        console.log("entry"  + entry.statut)
+                      console.log("entry"  + entry.statut)
                       var result  = getters.statutProgramme.find(function (element) {
                         return element.code === entry.statut;
                       });
@@ -491,6 +491,11 @@
           },
 
           onCellClick(row, column) {
+              console.log("Clicked row row=" + row.numProg + ", column="+column.id )
+              if(column.id !== undefined && column.id === 'fichiers') {
+                  //redirect to Affectation.vue
+                this.$router.push({ name: 'affectation', params: { numProg: row.numProg }});
+              }
           },
 
           rechercherProgrammes() {

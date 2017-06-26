@@ -45,7 +45,7 @@ const state = {
     },
     {
       "code": "CREE",
-      "libelle": 'Crée',
+      "libelle": 'Créé',
       "orderAff" : 1,
       "checked" : false
     },
@@ -95,7 +95,13 @@ const getters = {
     var options = state.rions.slice();
 
     return options;
+  },
+
+  modeRepartition : state => {
+    return state.typeRepart;
   }
+
+
 
 
 };

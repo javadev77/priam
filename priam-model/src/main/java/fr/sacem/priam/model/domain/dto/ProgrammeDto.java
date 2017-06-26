@@ -22,22 +22,31 @@ public class ProgrammeDto {
     private StatutProgramme statut;
     private Integer rionPaiement;
     private Long fichiers;
+    private String usercre;
+    private Date datmaj;
+    private String usermaj;
     
   
-  public ProgrammeDto(String numProg, String nom, Famille famille, TypeUtilisation typeUtilisation, Rion rionTheorique, Date dateCreation, TypeRepart typeRepart, StatutProgramme statut, Rion rionPaiement, Long nbFichiers) {
-    this.numProg = numProg;
-    this.nom = nom;
-    this.famille = famille != null ? famille.getCode() : "";
-    this.typeUtilisation = typeUtilisation!=null ? typeUtilisation.getCode() : "";
-    this.rionTheorique = rionTheorique!=null ? rionTheorique.getRion() : null;
-    this.dateCreation = dateCreation;
-    this.typeRepart = typeRepart;
-    this.statut = statut;
-    this.rionPaiement = rionPaiement != null ? rionPaiement.getRion(): null;
-    this.fichiers = nbFichiers;
-  }
+    public ProgrammeDto(String numProg, String nom, Famille famille, TypeUtilisation typeUtilisation, Rion rionTheorique,
+                      Date dateCreation, TypeRepart typeRepart, StatutProgramme statut, Rion rionPaiement, Long nbFichiers,
+                      String usercre, Date datmaj, String usermaj) {
+        this.numProg = numProg;
+        this.nom = nom;
+        this.famille = famille != null ? famille.getCode() : "";
+        this.typeUtilisation = typeUtilisation!=null ? typeUtilisation.getCode() : "";
+        this.rionTheorique = rionTheorique!=null ? rionTheorique.getRion() : null;
+        this.dateCreation = dateCreation;
+        this.typeRepart = typeRepart;
+        this.statut = statut;
+        this.rionPaiement = rionPaiement != null ? rionPaiement.getRion(): null;
+        this.fichiers = nbFichiers;
+        this.usercre = usercre;
+        this.datmaj = datmaj;
+        this.usermaj = usermaj;
+    }
     
-    public ProgrammeDto(String numProg, String nom, String famille, String typeUtilisation, Integer rionTheorique, Date dateCreation, TypeRepart typeRepart, StatutProgramme statut, Integer rionPaiement, Long fichiers) {
+    public ProgrammeDto(String numProg, String nom, String famille, String typeUtilisation, Integer rionTheorique, Date dateCreation, TypeRepart typeRepart,
+                        StatutProgramme statut, Integer rionPaiement, Long fichiers, String usercre, Date datmaj, String usermaj) {
         this.numProg = numProg;
         this.nom = nom;
         this.famille = famille;
@@ -48,6 +57,9 @@ public class ProgrammeDto {
         this.statut = statut;
         this.rionPaiement = rionPaiement;
         this.fichiers = fichiers;
+        this.usercre = usercre;
+        this.datmaj = datmaj;
+        this.usermaj = usermaj;
     }
     
     public String getNumProg() {
@@ -129,7 +141,31 @@ public class ProgrammeDto {
     public void setFichiers(Long fichiers) {
         this.fichiers = fichiers;
     }
-
+    
+    public String getUsercre() {
+        return usercre;
+    }
+    
+    public void setUsercre(String usercre) {
+        this.usercre = usercre;
+    }
+    
+    public Date getDatmaj() {
+        return datmaj;
+    }
+    
+    public void setDatmaj(Date datmaj) {
+        this.datmaj = datmaj;
+    }
+    
+    public String getUsermaj() {
+        return usermaj;
+    }
+    
+    public void setUsermaj(String usermaj) {
+        this.usermaj = usermaj;
+    }
+    
     public ProgrammeDto() {
     }
 }
