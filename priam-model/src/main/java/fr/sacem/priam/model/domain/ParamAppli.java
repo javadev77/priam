@@ -1,5 +1,6 @@
 package fr.sacem.priam.model.domain;
 
+
 import javax.persistence.*;
 
 /**
@@ -10,9 +11,6 @@ import javax.persistence.*;
 public class ParamAppli {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
-    private Long id;
     @Column(name = "CDEPARAM")
     private String cdeParam;
     @Column(name = "LIBSTAT")
@@ -20,13 +18,7 @@ public class ParamAppli {
     @Column(name = "VAL")
     private String val;
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getCdeParam() {
         return cdeParam;

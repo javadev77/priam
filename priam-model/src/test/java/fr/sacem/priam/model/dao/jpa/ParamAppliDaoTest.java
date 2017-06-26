@@ -32,7 +32,6 @@ public class ParamAppliDaoTest {
     public  void add_param_appli(){
         ParamAppli paramAppli =new ParamAppli();
         paramAppli.setCdeParam("ANNEE");
-        paramAppli.setId(1l);
         paramAppli.setLibStat("mon message");
         paramAppli.setVal("2018");
         ParamAppli paramAppli1 = paramAppliDao.save(paramAppli);

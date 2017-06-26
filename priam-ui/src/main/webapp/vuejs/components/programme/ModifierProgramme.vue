@@ -134,12 +134,23 @@
         <button class="btn btn-default btn-primary pull-right" type="button" @click="validateBeforeSubmit">Modifier</button>
       </div>
     </div>
+
+    <modal v-if="showModal">
+      <label class="homer-prompt-q control-label" slot="body">
+        Attention un programme avec le même nom est déjà existant. Voulez-vous continuer ?
+      </label>
+      <template slot="footer">
+        <button class="btn btn-default btn-primary pull-right no" @click="noContinue">Non</button>
+        <button class="btn btn-default btn-primary pull-right yes" @click="yesContinue">Oui</button>
+      </template>
+    </modal>
   </div>
 
 </template>
 <script>
   import vSelect from '../common/Select.vue';
   import messagesfr from 'vee-validate/dist/locale/fr';
+  import Modal from '../common/Modal.vue';
 
   export default {
 
@@ -154,6 +165,7 @@
 
     data(){
       return {
+        showModal: false,
         programmeToModify: null,
         programmeExist : false,
         resources:{},
@@ -238,7 +250,7 @@
             .then(data => {
               this.programmeExist = data;
               if (this.programmeExist) {
-                var confirmation = confirm("Attention un programme avec le même nom est déjà existant. Voulez-vous continuer?");
+                /*var confirmation = confirm("Attention un programme avec le même nom est déjà existant. Voulez-vous continuer?");
                 if (confirmation == true) {
                   this.modifierProgramme();
                   console.log("Confirmation de modification de programme OK");
@@ -246,7 +258,8 @@
                 } else {
                   console.log("Confirmation de modification de programme KO");
                   return false;
-                }
+                }*/
+                this.showModal = true;
               } else {
                 this.modifierProgramme();
               }
@@ -282,6 +295,17 @@
 
       },
 
+      noContinue() {
+        this.showModal = false;
+        this.$emit('cancel');
+      },
+
+      yesContinue() {
+        this.modifierProgramme();
+        this.showModal = false;
+      },
+
+
       initData() {
           if(this.programmeToModify !== undefined && this.programmeToModify !== null) {
 
@@ -312,7 +336,8 @@
 
     },
     components: {
-      vSelect: vSelect
+      vSelect: vSelect,
+      modal : Modal
     },
 
     created(){

@@ -143,7 +143,11 @@
       },
 
       typeUtilisationOptions() {
-        return this.$store.getters.typeUtilisationOptionsVide;
+        if(this.familleSelected === null) {
+            return []
+        } else {
+           return this.$store.getters.typeUtilisationOptionsVide;
+        }
       },
 
       rionTheoriqueOptions() {
@@ -167,24 +171,51 @@
       },
       verifierEtAjouterLeProgramme(){
 
+        var confirNom = true;
+        var confirRionFam = true;
         this.resource.searchProgramme({nom : this.nom}).then(response => {
             console.log(response.body);
           this.programmeExist = response.body;
           if (this.programmeExist) {
-            var confirmation = confirm("Attention un programme avec le même nom est déjà existant. Voulez-vous continuer?");
-            if (confirmation == true) {
+            confirNom = confirm("Attention un programme avec le même nom est déjà existant. Voulez-vous continuer?");
+            /*if (confirmation == true) {
               this.ajouterUnProgramme();
               this.console.log("Confirmation d'ajout de programme OK");
               return true;
             } else {
               this.console.log("Confirmation d'ajout de programme KO");
               return false;
-            }
+            }*/
           } else {
-            this.ajouterUnProgramme();
+            //this.ajouterUnProgramme();
           }
         });
+        var critereRechercheData = {};
+        critereRechercheData.typeUtilisation = this.typeUtilisationSelected !== undefined ? this.typeUtilisationSelected.id : null;
+        critereRechercheData.famille = this.familleSelected !== undefined ? this.familleSelected.id : null;
+        critereRechercheData.rionTheorique= this.rionTheoriqueSelected !== undefined ? this.rionTheoriqueSelected.id : null;
+
+        this.resource.searchAllProgramme(critereRechercheData)
+          .then(response => {
+            return response.json();
+          })
+          .then(data => {
+            var listeProg = data.content;
+            if(listeProg.length > 0) {
+              confirRionFam = confirm("Attention le programme " + listeProg[0].nom  + " a le même Rion, Famille et Type d'utilisation que celui que vous voulez créer. Voulez-vous continuer?");
+            }
+          });
+
+
+        if(confirNom || confirRionFam) {
+            this.ajouterUnProgramme();
+            this.console.log("Confirmation d'ajout de programme OK");
+        } else {
+          this.console.log("Confirmation d'ajout de programme KO");
+        }
+
       },
+
       ajouterUnProgramme(){
           this.programmeData.numProg=this.nom;
           this.programmeData.nom=this.nom;
@@ -211,6 +242,7 @@
       const customActions = {
         searchProgramme : {method : 'GET', url :'app/rest/programme/nom/{nom}'},
         addProgramme : {method: 'POST', url : 'app/rest/programme/'},
+        searchAllProgramme : {method : 'POST', url :'app/rest/programme/search?page={page}&size={size}&sort={sort},{dir}'}
       }
       this.resource= this.$resource('', {}, customActions);
 

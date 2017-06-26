@@ -61,7 +61,7 @@ public class ProgrammeService {
     @Transactional
     public Programme addProgramme(ProgrammeDto programmeDto){
         MapperConfiguration mapperConfiguration =new MapperConfiguration();
-        ParamAppli paramAppli= paramAppliDao.findOne(1l);
+        ParamAppli paramAppli= paramAppliDao.getParam("annee_en_cours");
         ProgrammeSequence programmeSequence = new ProgrammeSequence();
         ProgrammeKey programmeKey =new ProgrammeKey();
         LocalDate today = LocalDate.now();
