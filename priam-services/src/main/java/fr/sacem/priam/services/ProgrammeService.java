@@ -4,7 +4,16 @@ import fr.sacem.priam.model.dao.jpa.ParamAppliDao;
 import fr.sacem.priam.model.dao.jpa.ProgrammeDao;
 import fr.sacem.priam.model.dao.jpa.ProgrammeSequnceDao;
 import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
+
+
 import fr.sacem.priam.model.domain.*;
+
+import fr.sacem.priam.model.domain.ParamAppli;
+import fr.sacem.priam.model.domain.Programme;
+import fr.sacem.priam.model.domain.ProgrammeSequence;
+import fr.sacem.priam.model.domain.StatutProgramme;
+
+
 import fr.sacem.priam.model.domain.criteria.ProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.model.util.MapperConfiguration;
@@ -102,5 +111,30 @@ public class ProgrammeService {
         }
         return resultat;
     }
-
+    
+    @Transactional
+	public Programme updateProgramme(ProgrammeDto programmeDto) {
+        Programme programme = programmeDao.findOne(programmeDto.getNumProg());
+    
+        programme.setNom(programmeDto.getNom());
+        
+        Famille famille = new Famille();
+        famille.setCode(programmeDto.getFamille());
+        programme.setFamille(famille);
+    
+        TypeUtilisation typeUtilisation = new TypeUtilisation();
+        typeUtilisation.setCode(programmeDto.getTypeUtilisation());
+        typeUtilisation.setCodeFamille(programmeDto.getFamille());
+        programme.setTypeUtilisation(typeUtilisation);
+        
+        Rion rion = new Rion();
+        rion.setRion(programmeDto.getRionTheorique());
+        programme.setRionTheorique(rion);
+        
+        programme.setTypeRepart(programmeDto.getTypeRepart());
+        programme.setDateModfication(new Date());
+        
+        return programmeDao.save(programme);
+        
+	}
 }

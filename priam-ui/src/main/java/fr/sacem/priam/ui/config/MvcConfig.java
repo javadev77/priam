@@ -51,7 +51,9 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
     public void addCorsMappings(CorsRegistry registry) {
         //TODO Ajouter un check en fonction du mode de l'application
         if("dev".equalsIgnoreCase(webappMode)) {
-            registry.addMapping("/app/rest/**").allowedOrigins(vuejsDevServerUrl);
+            registry.addMapping("/app/rest/**")
+                    .allowedMethods("PUT", "DELETE", "GET", "POST")
+                    .allowedOrigins(vuejsDevServerUrl);
         }
         
     }

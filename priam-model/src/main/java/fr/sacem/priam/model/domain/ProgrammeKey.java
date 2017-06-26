@@ -1,7 +1,5 @@
 package fr.sacem.priam.model.domain;
 
-import org.springframework.data.annotation.Id;
-
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.io.Serializable;

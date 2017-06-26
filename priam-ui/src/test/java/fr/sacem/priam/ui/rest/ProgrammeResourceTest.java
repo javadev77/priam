@@ -101,7 +101,8 @@ public class ProgrammeResourceTest {
                 .andExpect(jsonPath("$.content[3].rionTheorique", is(expectedRion)))
                 .andExpect(jsonPath("$.content[4].rionTheorique", is(expectedRion)));
     }
-@Ignore
+    
+    @Ignore
     @Test
     public void search_programmes_by_famille() throws Exception {
         ProgrammeCritereRecherche critereRecherche = new ProgrammeCritereRecherche();

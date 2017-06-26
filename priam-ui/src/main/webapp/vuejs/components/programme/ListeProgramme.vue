@@ -135,10 +135,10 @@
 
     <ecran-modal v-if="showEcranModal">
         <template v-if="ecranAjouterProgramme">
-          <ajouter-programme slot="body"  @cancel="close"></ajouter-programme>
+          <ajouter-programme slot="body"  @cancel="close" @validate="onValidateEcranModal"></ajouter-programme>
         </template>
         <template v-else>
-          <modifier-programme slot="body" @cancel="close">
+          <modifier-programme :numProg="selectedProgramme.numProg" slot="body" @cancel="close" @validate="onValidateEcranModal">
           </modifier-programme>
         </template>
     </ecran-modal>
@@ -177,6 +177,8 @@
               dir : 'desc',
               size : 25
             },
+
+            selectedProgramme : null,
 
             date : null,
 
@@ -305,14 +307,17 @@
                   id :  'repartition',
                   name :   "Répartition",
                   sortable : false,
-                  type : 'clickable-icon',
+                  type : 'clickable-icons',
                   cell : {
                     cellTemplate: function (cellValue) {
-                      var tempalte = '<a><span class="glyphicon glyphicon-log-in" aria-hidden="true" ></span></a>';
+                      var tempalteRepartABlanc = '<img src="static/images/iconescontextes/transfertgestionnaire.gif" width="20px"/>';
+                      var tempalteMiseEnRepart = '<span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>';
                       var statusCode = cellValue.statut;
-
+                      var template = [];
                       if(statusCode !== undefined && 'VALIDE' === statusCode) {
-                        return tempalte;
+                        template.push({event : 'nop', template : tempalteMiseEnRepart});
+                        template.push({event : 'nop', template : tempalteRepartABlanc});
+                        return template;
                       }
                       return '';
                     }
@@ -407,6 +412,27 @@
 
       methods : {
 
+          retablir() {
+              this.critereRechercheData.numProg = null;
+              this.critereRechercheData.famille = null;
+              this.critereRechercheData.typeUtilisation = null;
+              this.critereRechercheData.nom = null;
+              this.critereRechercheData.rionTheorique = null;
+              this.critereRechercheData.rionPaiement =  null;
+              this.critereRechercheData.typeRepart = null;
+              this.critereRechercheData.dateCreationDebut = null;
+              this.critereRechercheData.dateCreationFin = null;
+              this.critereRechercheData.statutCode = ['EN_COURS', 'AFFECTE', 'CREE', 'VALIDE', 'MIS_EN_REPART'];
+
+              this.familleSelected = {'id' : 'ALL', 'value' : 'Toutes'};
+              this.typeUtilisationSelected = {'id' : 'ALL', 'value' : 'Tous'};
+              this.rionTheoriqueSelected = {'id' : 'ALL', 'value' : 'Toutes'};
+              this.rionPaiementSelected = {'id' : 'ALL', 'value' : 'Toutes'};
+              this.typeRepartSelected = {'id' : 'ALL', 'value' : 'Tous'};
+
+              this.rechercherProgrammes();
+          },
+
           onSort(currentPage, pageSize, sort) {
 
             this.launchRequest(currentPage, pageSize,
@@ -453,6 +479,8 @@
 
           onUpdateProgramme(row, column) {
             console.log("onUpdateProgramme()");
+             this.selectedProgramme = row;
+
             this.ecranAjouterProgramme = false;
             this.showEcranModal = true;
           },
@@ -500,6 +528,12 @@
             });
 
             return result !== undefined && result;
+          },
+
+          onValidateEcranModal() {
+              console.log('onValidateEcranModal()')
+              this.close();
+              this.rechercherProgrammes();
           }
 
 

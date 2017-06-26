@@ -9,3 +9,4 @@ target/
 yarn.lock
 .idea/
 tmp/
+dist/

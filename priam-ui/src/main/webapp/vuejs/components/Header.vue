@@ -6,7 +6,7 @@
             </div>-->
             <div class="navbar-header">
               <a class="navbar-brand logo" href="#/">
-                <img src="static/images/logo-priam.png  " width="100px" height="40px" alt="PRIAM"/>
+                <img src="../assets/Logo_Priam.png" width="100px" height="40px" alt="PRIAM"/>
               </a>
             </div>
 

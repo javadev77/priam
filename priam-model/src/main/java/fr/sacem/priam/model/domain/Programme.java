@@ -17,6 +17,7 @@ public class Programme {
     private TypeUtilisation typeUtilisation;
     private TypeRepart typeRepart;
     private Date dateCreation;
+    private Date dateModfication;
     private StatutProgramme statut;
     private Rion rionPaiement;
     private List<Fichier> fichiers;
@@ -57,6 +58,12 @@ public class Programme {
     @Enumerated(EnumType.STRING)
     public TypeRepart getTypeRepart() {
         return typeRepart;
+    }
+    
+    @Column(name = "DATMAJ")
+    @Temporal(TemporalType.TIMESTAMP)
+    public Date getDateModfication() {
+        return dateModfication;
     }
     
     @Column(name = "DATE_CREATION")
@@ -120,5 +127,9 @@ public class Programme {
     
     public void setFichiers(List<Fichier> fichiers) {
         this.fichiers = fichiers;
+    }
+    
+    public void setDateModfication(Date dateModfication) {
+        this.dateModfication = dateModfication;
     }
 }

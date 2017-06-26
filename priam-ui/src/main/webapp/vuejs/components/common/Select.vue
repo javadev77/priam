@@ -344,58 +344,62 @@
     opacity: 0;
   }
 
-  .dropdown-toggle .has-error {
-   /* -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    display: block;
-    padding: 0;
-    background-color: #fff;
-    border: 1px solid #e74c3c;
-    border-radius: 4px;
-    white-space: normal;
-    transition: border-radius .25s;
-    width: 100%;
-    visibility: visible;
-    height: 20px!important;*/
-    border: 1px solid #e74c3c;
+  .v-select .dropdown-toggle-disabled,
+  .dropdown-toggle-disabled:hover,
+  .dropdown-toggle-disabled:focus,
+  .dropdown-toggle-disabled:active {
+    background-color: #f4f6f6;
+    border-color: #d5dbdb;
+    opacity: 0.8;
+    filter: alpha(opacity=80);
   }
+
 </style>
 
 <template>
   <div class="dropdown v-select" :class="dropdownClasses">
-    <div ref="toggle" @mousedown.prevent="toggleDropdown" class="dropdown-toggle has-error" >
+    <template v-if="disabled">
+      <div ref="toggle" class="dropdown-toggle dropdown-toggle-disabled">
+        <span ref="toggle2" class="selected-tag" v-for="option in valueAsArray" v-bind:key="option.index">
+          {{ getOptionLabel(option) }}
+        </span>
+        <i role="presentation" class="open-indicator"></i>
+      </div>
+    </template>
+    <template v-else>
+      <div ref="toggle" @mousedown.prevent="toggleDropdown" class="dropdown-toggle">
         <span ref="toggle2" class="selected-tag" v-for="option in valueAsArray" v-bind:key="option.index">
           {{ getOptionLabel(option) }}
           <button v-if="multiple" @click="deselect(option)" type="button" class="close">
             <span aria-hidden="true">&times;</span>
           </button>
         </span>
+        <input
+          ref="search"
+          v-model="search"
+          @keydown.delete="maybeDeleteValue"
+          @keyup.esc="onEscape"
+          @keydown.up.prevent="typeAheadUp"
+          @keydown.down.prevent="typeAheadDown"
+          @keyup.enter.prevent="typeAheadSelect"
+          @blur="onSearchBlur"
+          @focus="onSearchFocus"
+          type="search"
+          class="form-control"
+          :placeholder="searchPlaceholder"
+          :readonly="!searchable"
+          :style="{ width: isValueEmpty ? '100%' : 'auto' }"
+          :id="inputId"
+        >
 
-      <input
-        ref="search"
-        v-model="search"
-        @keydown.delete="maybeDeleteValue"
-        @keyup.esc="onEscape"
-        @keydown.up.prevent="typeAheadUp"
-        @keydown.down.prevent="typeAheadDown"
-        @keyup.enter.prevent="typeAheadSelect"
-        @blur="onSearchBlur"
-        @focus="onSearchFocus"
-        type="search"
-        class="form-control"
-        :placeholder="searchPlaceholder"
-        :readonly="!searchable"
-        :style="{ width: isValueEmpty ? '100%' : 'auto' }"
-        :id="inputId"
-      >
+        <i v-if="!noDrop" ref="openIndicator" role="presentation" class="open-indicator"></i>
 
-      <i v-if="!noDrop" ref="openIndicator" role="presentation" class="open-indicator"></i>
+        <slot name="spinner">
+          <div class="spinner" v-show="mutableLoading">Loading...</div>
+        </slot>
+      </div>
+    </template>
 
-      <slot name="spinner">
-        <div class="spinner" v-show="mutableLoading">Loading...</div>
-      </slot>
-    </div>
 
     <transition :name="transition">
       <ul ref="dropdownMenu" v-if="dropdownOpen" class="dropdown-menu" :style="{ 'max-height': maxHeight }">
@@ -405,7 +409,7 @@
             </a>
         </li>
         <li v-if="!filteredOptions.length" class="no-options">
-          <slot name="no-options">Sorry, no matching options.</slot>
+          <!--<slot name="no-options">Sorry, no matching options.</slot>-->
         </li>
       </ul>
     </transition>
@@ -420,7 +424,12 @@
     mixins: [pointerScroll, typeAheadPointer, ajax],
     props: {
 
-        classValidate  : '',
+        disabled: {
+          type : Boolean,
+          default : false,
+        },
+
+
 
         name : '',
       /**

@@ -2,8 +2,10 @@ package fr.sacem.priam.model.domain;
 
 
 
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
-import javax.persistence.*;
 
 /**
  * Created by fandis on 22/06/2017.

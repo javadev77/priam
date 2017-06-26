@@ -8,22 +8,32 @@ import { fetchInitData } from './store/actions';
 import store from './store/store';
 import './directives/form-elements'
 import './utils/Arrays'
-import VeeValidate ,{Validator} from 'vee-validate';
-import messagesFr from './strings/validator/fr.js';
+import VeeValidate from 'vee-validate';
 
 Vue.use(VeeValidate, {
   locale: 'fr',
   dictionary: {
-    fr: { messages: messagesFr, attributes: messagesFr }
+    fr: {
+      messages: {
+        required : (e) => "Le champ '" + e + "' est obligatoire et non renseigné.",
+        max: (e) => e + " ne peut pas contenir plus de " + n[0] + " caractères."
+      },
+
+      attributes : {
+        'rion.theorique' : 'Rion théorique',
+        'typeUtilisation' : "Type d'utilisation"
+      }
+    }
   }
 });
+
 Vue.use(VueRouter);
 Vue.use(VueResource);
 
 
 
 if(process.env.DEBUG_MODE) {
-  Vue.http.options.root="http://localhost:8090/priam"
+  Vue.http.options.root="http://localhost:8083/priam"
 } else {
   Vue.http.options.root="/priam"
 }
@@ -32,14 +42,7 @@ if(process.env.DEBUG_MODE) {
 const router = new VueRouter({
   routes
 });
-const dictionary = {
 
-  fr: {
-    messages: {
-      required: () => 'ffffffffffff'
-    }
-  }
-};
 new Vue({
   el: '#app',
   router,

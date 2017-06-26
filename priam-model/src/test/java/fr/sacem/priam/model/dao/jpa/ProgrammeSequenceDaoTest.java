@@ -1,7 +1,6 @@
 package fr.sacem.priam.model.dao.jpa;
 
 import fr.sacem.priam.model.dao.JpaConfigurationTest;
-import fr.sacem.priam.model.domain.Famille;
 import fr.sacem.priam.model.domain.ProgrammeKey;
 import fr.sacem.priam.model.domain.ProgrammeSequence;
 import org.junit.Test;
