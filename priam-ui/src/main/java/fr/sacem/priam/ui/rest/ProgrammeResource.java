@@ -81,16 +81,16 @@ public class ProgrammeResource {
         return programmeService.findProgrammeByCriteria(criteria, pageable);
       }
 
-      @RequestMapping(value = "programme/{nom}",
-        method = RequestMethod.GET)
-      public Boolean getProgrammeByNom (@PathVariable("nom") String nom){
-        Boolean resultat = false;
-        List<Programme> programmes = programmeService.serachProgrammeByNom(nom);
-        if (programmes.size() < 1)
-          resultat = false;
-        else if (programmes.size() >= 1)
-          resultat = true;
-        return resultat;
+          @RequestMapping(value = "programme/{nom}",
+          method = RequestMethod.GET)
+        public Boolean getProgrammeByNom (@PathVariable("nom") String nom){
+          Boolean resultat = false;
+          List<Programme> programmes = programmeService.serachProgrammeByNom(nom);
+          if (programmes.size() < 1)
+            resultat = false;
+          else if (programmes.size() >= 1)
+            resultat = true;
+          return resultat;
 
       }
 
