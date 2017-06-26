@@ -108,6 +108,18 @@
         <button class="btn btn-default btn-primary pull-right" type="submit" @click="validateBeforeSubmit()" name="button" >Créer</button>
       </div>
     </div>
+
+<!--
+    <modal v-if="showModalMemeNom">
+      <label class="homer-prompt-q control-label" slot="body">
+        Attention un programme avec le même nom est déjà existant. Voulez-vous continuer ?
+      </label>
+      <template slot="footer">
+        <button class="btn btn-default btn-primary pull-right no" @click="noContinue">Non</button>
+        <button class="btn btn-default btn-primary pull-right yes" @click="yesContinue">Oui</button>
+      </template>
+    </modal>
+-->
   </div>
 
 </template>

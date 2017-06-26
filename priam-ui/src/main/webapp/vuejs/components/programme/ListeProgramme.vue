@@ -119,6 +119,7 @@
               <button style="width: 160px;" class="btn btn-primary pull-right" type="button" @click="openEcranAjouterProgramme()">Créer un programme </button>
             </div>
             <priam-grid
+              v-if="this.priamGrid.gridData.content"
               :data="priamGrid.gridData"
               :columns="priamGrid.gridColumns"
               noResultText="Aucun résultat."
@@ -174,7 +175,7 @@
             defaultPageable : {
               page : 1,
               sort : 'dateCreation',
-              dir : 'desc',
+              dir : 'DESC',
               size : 25
             },
 

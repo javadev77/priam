@@ -22,7 +22,7 @@
                     <span>{{ entry.name }}</span>
                     <span v-if="entry.sortable"
                           class="fui"
-                          :class="{'fui-triangle-down':!sortAsc,
+                          :class="{'fui-triangle-down': !sortAsc,
                                   'fui-triangle-up': sortAsc,
                                   'sorted' : entry.id === sortProp}">
                     </span>
@@ -146,14 +146,13 @@
     computed : {
 
       sortAsc() {
-
-          return this.sort && this.sort != null && this.sort.ascending === true;
+          return this.sort !== undefined && this.sort !== null && this.sort.ascending;
       },
 
       sortProp() {
         if(this.sort !== undefined && this.sort!= null) {
             console.log("property" + this.sort.property)
-          return this.sort.property;
+            return this.sort.property;
         }
         return '';
       },
@@ -187,9 +186,9 @@
 
     },
 
-    mounted() {
+    created() {
         console.log(this.data.sort);
-        this.sort = this.data.sort[0];
+        this.sort = this.data.sort !== undefined ? this.data.sort[0] : undefined;
     },
 
     filters: {
@@ -224,6 +223,8 @@
         this.sort.property = sortProp;
         this.sort.direction = isAsc ? 'ASC' : 'DESC';
 
+
+        console.log(this.sort);
         this.$emit('on-sort', this.currentPage, this.pageSize, this.sort);
       },
 
