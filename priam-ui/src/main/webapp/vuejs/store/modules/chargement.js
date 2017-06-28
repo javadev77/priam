@@ -137,7 +137,7 @@ const getters = {
   },
 
   statut: state => {
-    return state.statut;
+    return state.statut.slice();
   },
 
   familleTypeUtilMap: state => {

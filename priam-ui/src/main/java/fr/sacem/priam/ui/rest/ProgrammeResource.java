@@ -124,5 +124,18 @@ public class ProgrammeResource {
         
           return programmeService.updateProgramme(programmeDto);
      }
+  
+     @RequestMapping(value = "programme/abandon",
+                      method = RequestMethod.PUT,
+                      consumes = MediaType.APPLICATION_JSON_VALUE,
+                      produces = MediaType.APPLICATION_JSON_VALUE)
+      
+     public Programme abandonnerProgramme(@RequestBody ProgrammeDto programmeDto) {
+          if(programmeDto != null) {
+              return programmeService.abandonnerProgramme(programmeDto);
+          }
+          return null;
+     }
+  
 
 }

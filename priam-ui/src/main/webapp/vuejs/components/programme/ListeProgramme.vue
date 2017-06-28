@@ -115,17 +115,17 @@
         </div>
         <div class="panel-collapse">
           <div class="result-panel-body panel-body">
-            <div>
+            <div class="row">
               <button style="width: 160px;" class="btn btn-primary pull-right" type="button" @click="openEcranAjouterProgramme()">Créer un programme </button>
             </div>
             <priam-grid
-              v-if="this.priamGrid.gridData.content"
+              v-if="priamGrid.gridData.content"
               :data="priamGrid.gridData"
               :columns="priamGrid.gridColumns"
               noResultText="Aucun résultat."
               @cellClick="onCellClick"
               @update-programme="onUpdateProgramme"
-              @delete-programme="onDeleteProgramme"
+              @abondon-programme="onAbondonProgramme"
               @load-page="loadPage"
               @on-sort="onSort">
             </priam-grid>
@@ -144,6 +144,16 @@
         </template>
     </ecran-modal>
 
+    <modal v-if="showPopupAbandon">
+      <label class="homer-prompt-q control-label" slot="body">
+        Etes-vous sûr de vouloir abandonner ce programme ?
+      </label>
+      <template slot="footer">
+        <button class="btn btn-default btn-primary pull-right no" @click="showPopupAbandon = false">Non</button>
+        <button class="btn btn-default btn-primary pull-right yes" @click="abandonnerProgramme">Oui</button>
+      </template>
+    </modal>
+
   </div>
 </template>
 
@@ -156,6 +166,7 @@
   import vSelect from '../common/Select.vue';
   import DatePicker from '../common/DatePicker.vue';
   import {DateUtils} from '../../utils/DateUtils'
+  import Modal from '../common/Modal.vue';
 
   export default {
 
@@ -168,6 +179,7 @@
         return {
             isCollapsed : false,
             showEcranModal : false,
+            showPopupAbandon : false,
             ecranAjouterProgramme : false,
 
             resource : {},
@@ -349,7 +361,7 @@
                       }
 
                       if(statusCode !== undefined && 'CREE' === statusCode) {
-                            tempalte.push({event : 'delete-programme', template : tempalteTrash});
+                            tempalte.push({event : 'abondon-programme', template : tempalteTrash});
                       }
 
                       if(tempalte.length == 1) {
@@ -362,9 +374,9 @@
                   }
                 }
               ],
-              gridData : {"content":[{"numProg":"PR170001","nom":"Programme 01","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","rionTheorique":619,"dateCreation":"06/06/2017 00:00","typeRepart":"OEUVRE","statut":"EN_COURS","rionPaiement":null,"fichiers":4},{"numProg":"PR170003","nom":"Programme 03","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","rionTheorique":619,"dateCreation":"06/06/2017 00:00","typeRepart":"OEUVRE","statut":"EN_COURS","rionPaiement":null,"fichiers":0},{"numProg":"PR170005","nom":"Programme 05","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","rionTheorique":619,"dateCreation":"06/06/2017 00:00","typeRepart":"OEUVRE","statut":"EN_COURS","rionPaiement":null,"fichiers":0},{"numProg":"PR170002","nom":"Programme 02","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","rionTheorique":619,"dateCreation":"06/06/2017 00:00","typeRepart":"OEUVRE","statut":"EN_COURS","rionPaiement":null,"fichiers":0},{"numProg":"PR170004","nom":"Programme 04","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","rionTheorique":619,"dateCreation":"06/06/2017 00:00","typeRepart":"OEUVRE","statut":"EN_COURS","rionPaiement":null,"fichiers":0}],"totalPages":1,"totalElements":5,"last":true,"size":25,"number":0,"sort":[{"direction":"ASC","property":"dateCreation","ignoreCase":false,"nullHandling":"NATIVE","ascending":true,"descending":false}],"numberOfElements":5,"first":true},
+              //gridData : {"content":[{"numProg":"PR170001","nom":"Programme 01","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","rionTheorique":619,"dateCreation":"06/06/2017 00:00","typeRepart":"OEUVRE","statut":"EN_COURS","rionPaiement":null,"fichiers":4},{"numProg":"PR170003","nom":"Programme 03","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","rionTheorique":619,"dateCreation":"06/06/2017 00:00","typeRepart":"OEUVRE","statut":"EN_COURS","rionPaiement":null,"fichiers":0},{"numProg":"PR170005","nom":"Programme 05","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","rionTheorique":619,"dateCreation":"06/06/2017 00:00","typeRepart":"OEUVRE","statut":"EN_COURS","rionPaiement":null,"fichiers":0},{"numProg":"PR170002","nom":"Programme 02","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","rionTheorique":619,"dateCreation":"06/06/2017 00:00","typeRepart":"OEUVRE","statut":"EN_COURS","rionPaiement":null,"fichiers":0},{"numProg":"PR170004","nom":"Programme 04","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","rionTheorique":619,"dateCreation":"06/06/2017 00:00","typeRepart":"OEUVRE","statut":"EN_COURS","rionPaiement":null,"fichiers":0}],"totalPages":1,"totalElements":5,"last":true,"size":25,"number":0,"sort":[{"direction":"ASC","property":"dateCreation","ignoreCase":false,"nullHandling":"NATIVE","ascending":true,"descending":false}],"numberOfElements":5,"first":true},
               //gridData : {"content":[],"totalElements":0,"totalPages":1,"last":true,"numberOfElements":25,"sort":null,"first":true,"size":25,"number":1},
-              //gridData : {},
+              gridData : {},
               searchQuery : ''
             }
           }
@@ -372,7 +384,8 @@
 
       created() {
         const customActions = {
-          searchProgramme : {method : 'POST', url :'app/rest/programme/search?page={page}&size={size}&sort={sort},{dir}'}
+            searchProgramme : {method : 'POST', url :'app/rest/programme/search?page={page}&size={size}&sort={sort},{dir}'},
+            abandonnerProgramme : {method : 'PUT', url :'app/rest/programme/abandon'}
         }
         this.resource= this.$resource('', {}, customActions);
 
@@ -402,8 +415,15 @@
 
         statut() {
             var statutProgramme = this.$store.getters.statutProgramme.sort(function (a, b) {
-              return a.orderAff > b.orderAff;
+              if (a.orderAff < b.orderAff)
+                return -1;
+              if (a.orderAff > b.orderAff )
+                return 1;
+              // a doit être égal à b
+              return 0;
             });
+
+            console.log(statutProgramme)
 
             return statutProgramme;
 
@@ -486,8 +506,11 @@
             this.showEcranModal = true;
           },
 
-          onDeleteProgramme(row, column) {
-            console.log("onDeleteProgramme()");
+          onAbondonProgramme(row, column) {
+              console.log("onAbondonProgramme()");
+              this.showPopupAbandon = true;
+              this.selectedProgramme = row;
+
           },
 
           onCellClick(row, column) {
@@ -540,6 +563,21 @@
               console.log('onValidateEcranModal()')
               this.close();
               this.rechercherProgrammes();
+          },
+
+          abandonnerProgramme() {
+            this.showPopupAbandon = false;
+            console.log('Abandonner le programme selectionne : ' + this.selectedProgramme.numProg);
+            this.resource.abandonnerProgramme({numProg : this.selectedProgramme.numProg})
+              .then(response => {
+                return response.json();
+              })
+              .then(data => {
+                console.log('data = ' + data);
+                this.selectedProgramme.statut = data.statut;
+
+              });
+
           }
 
 
@@ -551,7 +589,8 @@
           modifierProgramme : ModifierProgramme,
           ajouterProgramme : AjouterProgramme,
           vSelect : vSelect,
-          datePicker : DatePicker
+          datePicker : DatePicker,
+          modal: Modal
       }
 
   }

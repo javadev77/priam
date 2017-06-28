@@ -138,4 +138,12 @@ public class ProgrammeService {
         return programmeDao.save(programme);
         
 	}
+ 
+	@Transactional
+    public Programme abandonnerProgramme(ProgrammeDto programmeDto) {
+        Programme programme = programmeDao.findOne(programmeDto.getNumProg());
+        programme.setStatut(StatutProgramme.ABANDONNE);
+        
+        return programmeDao.save(programme);
+    }
 }

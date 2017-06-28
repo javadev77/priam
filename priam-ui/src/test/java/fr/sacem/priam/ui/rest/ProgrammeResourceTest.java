@@ -1,6 +1,8 @@
 package fr.sacem.priam.ui.rest;
 
+import fr.sacem.priam.model.dao.jpa.ProgrammeDao;
 import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
+import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.ui.rest.dto.ProgrammeCritereRecherche;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,6 +16,7 @@ import org.springframework.mock.http.MockHttpOutputMessage;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.io.IOException;
@@ -23,8 +26,8 @@ import java.util.Arrays;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNotNull;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
@@ -46,6 +49,9 @@ public class ProgrammeResourceTest {
 
     @Autowired
     private ProgrammeViewDao programmeViewDao;
+  
+    @Autowired
+    private ProgrammeDao programmeDao;
 
 
     @Autowired
@@ -150,13 +156,33 @@ public class ProgrammeResourceTest {
         .andExpect(jsonPath("$.numProg", is("PR170001")));
        
     }
-    
   
-    protected String json(Object o) throws IOException {
+    @Test
+    @Transactional
+    public void add_programme() throws Exception {
+      mockMvc.perform(
+            post("/app/rest/programme/")
+            .content(this.json(createProgrammeDto("Test01", "COPIEPRIV")))
+            .contentType(contentType))
+          .andExpect(status().isOk())
+          .andExpect(jsonPath("$.famille.code", is("COPIEPRIV")))
+          .andExpect(jsonPath("$.nom", is("Test01")));
+      
+    }
+  
+  protected String json(Object o) throws IOException {
         MockHttpOutputMessage mockHttpOutputMessage = new MockHttpOutputMessage();
         this.mappingJackson2HttpMessageConverter.write(o, MediaType.APPLICATION_JSON, mockHttpOutputMessage);
 
         return mockHttpOutputMessage.getBodyAsString();
     }
+  
+  private ProgrammeDto createProgrammeDto(String nom, String famille) {
+      ProgrammeDto dto = new ProgrammeDto();
+      dto.setNom(nom);
+      dto.setFamille(famille);
+      
+      return dto;
+  }
 
 }

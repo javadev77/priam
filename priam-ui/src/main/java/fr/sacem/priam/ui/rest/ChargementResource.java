@@ -48,27 +48,56 @@ public class ChargementResource {
                     consumes = MediaType.APPLICATION_JSON_VALUE,
                     produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<FileDto> rechercheFichiers(@RequestBody InputChgtCriteria input, Pageable pageable) {
-        List<Status> status = null;
-        if(input.getStatutCode().isEmpty()) {
-            status = Arrays.asList(Status.values());
-        } else {
-            status = Lists.transform(input.getStatutCode(), code -> Status.valueOf(code));
-        }
+        List<Status> status = statusCriterion(input);
   
-        String codeFamille = null;
-        if(!"ALL".equals(input.getFamilleCode())) {
-            codeFamille = input.getFamilleCode();
-        }
+        String codeFamille = familleCriterion(input);
   
-        String codeTypeUtil = null;
-        if(!"ALL".equals(input.getTypeUtilisationCode())) {
-          codeTypeUtil = input.getTypeUtilisationCode();
-        }
-        //Pageable realPageable = PagingUtil.parenthesisEncapsulation(pageable);
+        String codeTypeUtil = typeUtilisationCriterion(input);
+        
         return fichierDao.findAllFichiersByCriteria(codeFamille, codeTypeUtil, status,pageable);
     }
+  
+  private String familleCriterion(@RequestBody InputChgtCriteria input) {
+    String codeFamille = null;
+    if(!"ALL".equals(input.getFamilleCode())) {
+        codeFamille = input.getFamilleCode();
+    }
+    return codeFamille;
+  }
+  
+    @RequestMapping(value = "/allFichiers",
+                    method = RequestMethod.POST,
+                    consumes = MediaType.APPLICATION_JSON_VALUE,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<FileDto> findAllFichiers(@RequestBody InputChgtCriteria input) {
+  
+        List<Status> status = statusCriterion(input);
+        String codeFamille = familleCriterion(input);
+        String codeTypeUtil = typeUtilisationCriterion(input);
+        
+        return fichierDao.findAllFichiersByCriteria(codeFamille, codeTypeUtil, status);
     
-    @RequestMapping(value = "/deleteFichier/{fileId}",
+    }
+  
+  private String typeUtilisationCriterion(@RequestBody InputChgtCriteria input) {
+    String codeTypeUtil = null;
+    if(!"ALL".equals(input.getTypeUtilisationCode())) {
+      codeTypeUtil = input.getTypeUtilisationCode();
+    }
+    return codeTypeUtil;
+  }
+  
+  private List<Status> statusCriterion(@RequestBody InputChgtCriteria input) {
+    List<Status> status = null;
+    if(input.getStatutCode().isEmpty()) {
+      status = Arrays.asList(Status.values());
+    } else {
+      status = Lists.transform(input.getStatutCode(), code -> Status.valueOf(code));
+    }
+    return status;
+  }
+  
+  @RequestMapping(value = "/deleteFichier/{fileId}",
                     method = RequestMethod.GET,
                     produces = MediaType.APPLICATION_JSON_VALUE)
     public FileDto deleteDonneesFichiers(@PathVariable("fileId") Long fileId) {
