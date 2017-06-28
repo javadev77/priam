@@ -97,10 +97,12 @@ public class ChargementResource {
     return status;
   }
   
-  @RequestMapping(value = "/deleteFichier/{fileId}",
-                    method = RequestMethod.GET,
+  @RequestMapping(value = "/deleteFichier",
+                    method = RequestMethod.PUT,
+                    consumes = MediaType.APPLICATION_JSON_VALUE,
                     produces = MediaType.APPLICATION_JSON_VALUE)
-    public FileDto deleteDonneesFichiers(@PathVariable("fileId") Long fileId) {
+    public FileDto deleteDonneesFichiers(@RequestBody FileDto fileDtoBody) {
+        Long fileId = fileDtoBody.getId();
         fichierService.deleteDonneesFichiers(fileId);
         FileDto fileDto = fichierDao.findById(fileId);
         logger.info("File = " + fileDto.getNomFichier());
