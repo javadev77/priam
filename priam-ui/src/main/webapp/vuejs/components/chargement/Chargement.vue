@@ -264,7 +264,7 @@
     created() {
       const customActions = {
         search : {method : 'POST', url :'app/rest/chargement/search?page={page}&size={size}&sort={sort},{dir}'},
-        deleteFichier : {method : 'GET', url :'app/rest/chargement/deleteFichier{/fileId}'}
+        deleteFichier : {method : 'PUT', url :'app/rest/chargement/deleteFichier'}
       }
       this.resource= this.$resource('', {}, customActions);
 
@@ -328,12 +328,11 @@
       supprimerDonneesFichier() {
         this.showModal = false;
         console.log('Supprimer le fichier selectionne : ' + this.selectedEntry.id);
-        this.resource.deleteFichier({fileId : this.selectedEntry.id})
+        this.resource.deleteFichier({id : this.selectedEntry.id})
           .then(response => {
             return response.json();
           })
           .then(data => {
-            //this.priamGrid.gridData = data;
             console.log('data = ' + data);
 
             this.selectedEntry.statut = data.statut;
