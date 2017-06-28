@@ -27,7 +27,7 @@ module.exports = {
     },
 
     getModeRepartitionByCode(modeRepartCode) {
-      var result  = this.$store.getters.typeRepart.find(function (element) {
+      var result  = this.$store.getters.modeRepartition.find(function (element) {
         return element.id === modeRepartCode;
       });
       return result !== undefined && result.value;
