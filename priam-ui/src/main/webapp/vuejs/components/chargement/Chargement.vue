@@ -71,7 +71,8 @@
         <div class="panel-collapse">
           <div class="result-panel-body panel-body">
             <priam-grid
-              v-if="this.priamGrid.gridData.content"
+
+              v-if="priamGrid.gridData.content"
               :data="priamGrid.gridData"
               :columns="priamGrid.gridColumns"
               noResultText="Aucun résultat."

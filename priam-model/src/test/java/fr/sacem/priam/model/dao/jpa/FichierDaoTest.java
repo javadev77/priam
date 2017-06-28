@@ -1,7 +1,6 @@
 package fr.sacem.priam.model.dao.jpa;
 
 import fr.sacem.priam.model.dao.JpaConfigurationTest;
-import fr.sacem.priam.model.domain.Fichier;
 import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.dto.FileDto;
 import org.junit.Test;
@@ -76,10 +75,13 @@ public class FichierDaoTest {
     
     @Test
     public void should_find_all_fichiers() {
+        List<Status> status = Arrays.asList(Status.values());
+        List<FileDto> all = fichierDao.findAllFichiersByCriteria(null, null, status);
     
-        List<Fichier> all = fichierDao.findAll();
-    
-        assertThat(all).isNotNull().isNotEmpty();
+        assertThat(all)
+            .isNotNull()
+            .isNotEmpty()
+            .hasSize(fichierDao.findAll().size());
     }
     
     @Test

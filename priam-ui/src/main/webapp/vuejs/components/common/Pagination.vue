@@ -3,7 +3,8 @@
     <div class="col-sm-24">
       <div class="results pull-left">
         {{ totalItems || 0 }} résultat{{ totalItems > 1 ? 's' : '' }}
-        - Page <input style="width: 20px; height: 20px;" :value="currentPage"
+        - Page <input
+                      style="width: 20px; height: 20px;" :value="currentPage"
                       type="number"
                       ref="input"
                       @keyup.enter="gotoInputPage($event.target.value)"> / {{ totalPages }}
@@ -11,10 +12,9 @@
             <span>
                 - Résultats par page
               <select :value="itemsPerPage" @change="pageSizeChanged($event.target.value)">
-                <template v-for="s in sizes">
-                  <option v-if="s === itemsPerPage" selected> {{ s }}</option>
-                  <option v-else> {{ s }}</option>
-                </template>
+                <option v-for="s in sizes" :value="s">
+                  {{ s }}
+                </option>
               </select>
             </span>
       </div>

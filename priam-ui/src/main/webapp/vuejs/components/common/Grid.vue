@@ -130,7 +130,7 @@
         isCollapsed: false,
         sortKey: '',
         sortOrders: sortOrders,
-        sort : {},
+        sort : [],
         currentPage : 1,
         pageSize : 25
 
@@ -146,11 +146,12 @@
     computed : {
 
       sortAsc() {
+          console.log("this.sort.ascending="+this.sort.ascending)
           return this.sort !== undefined && this.sort !== null && this.sort.ascending;
       },
 
       sortProp() {
-        if(this.sort !== undefined && this.sort!= null) {
+        if(this.sort !== undefined && this.sort!== null) {
             console.log("property" + this.sort.property)
             return this.sort.property;
         }
@@ -186,8 +187,8 @@
 
     },
 
-    created() {
-        console.log(this.data.sort);
+    mounted() {
+        console.log("this.data.sort="  + this.data.sort);
         this.sort = this.data.sort !== undefined ? this.data.sort[0] : undefined;
     },
 
@@ -211,6 +212,7 @@
 
 
       sortBy(entryColumn) {
+        console.log("sortBy");
         let sortProp = entryColumn.id;
         let isAsc = false;
         if(sortProp === this.sort.property ) {
@@ -224,7 +226,7 @@
         this.sort.direction = isAsc ? 'ASC' : 'DESC';
 
 
-        console.log(this.sort);
+
         this.$emit('on-sort', this.currentPage, this.pageSize, this.sort);
       },
 

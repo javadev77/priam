@@ -21,5 +21,5 @@ export const routes = [
       ]
     },
     { path: '/parametrage', name: 'parametrage', component: Chargement },
-    { path: '/affectation/:numProg', name: 'affectation', component: Affectation }
+    { path: '/programme/affectation/:numProg', name: 'affectation', component: Affectation }
 ];
