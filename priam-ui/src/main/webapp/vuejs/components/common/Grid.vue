@@ -21,7 +21,7 @@
                 <template v-for="entry in columns">
                   <template v-if="entry.type === 'checkbox'">
                     <th>
-                        <input type="checkbox" v-model="allChecked" @click="emitAllCheckbox" />
+                        <input :disabled="entry.cell.isDisabled()" type="checkbox" v-model="allChecked" @click="emitAllCheckbox" />
                     </th>
                   </template>
                   <template v-else>
@@ -110,7 +110,7 @@
                   </template>
                   <template v-else-if="entryColumn.type === 'checkbox'">
                     <td class="columnCenter">
-                      <input type="checkbox" ref="checkbox" :value="entryColumn.cell.toText(entry)" @click="emitCheckbox(entry)" />
+                      <input :disabled="entryColumn.cell.isDisabled()" type="checkbox" ref="checkbox" :value="entryColumn.cell.toText(entry)" @click="emitCheckbox(entry)" />
                     </td>
                   </template>
                   <template  v-else>

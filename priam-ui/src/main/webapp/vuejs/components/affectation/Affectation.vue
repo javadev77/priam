@@ -179,7 +179,12 @@
         </div>
       </div>
   </div>
-
+    <div class="row formula-buttons">
+      <button v-if="showButtonEnregistrer" class="btn btn-default btn-primary pull-right" type="button" @click="enregister()">Enregister</button>
+      <button v-if="showButtonEditer" class="btn btn-default btn-primary pull-right" type="button" @click="editer()">Editer</button>
+      <button v-if="showButtonToutDesactiver" class="btn btn-default btn-primary pull-right" type="button" @click="toutDesactiver()">Tout désactiver</button>
+      <button v-if="showButtonAnnuler" class="btn btn-default btn-primary pull-right" type="button" @click="annuler()">Annuler</button>
+    </div>
   </div>
 </template>
 
@@ -209,6 +214,13 @@
               typeUtilisationCode : '',
               statutCode         : []
             },
+
+            tableauSelectionnable : true,
+
+            showButtonEnregistrer : false,
+            showButtonToutDesactiver : false,
+            showButtonEditer : false,
+            showButtonAnnuler : false,
 
             fichiersChecked : [],
 
@@ -274,7 +286,15 @@
                   type : 'checkbox',
                   cell : {
                     toText: function (entry) {
-                     return entry.id;
+                      return entry.id;
+                    } ,
+
+                    isDisabled : function() {
+                        console.log("$this.isStatusProgrammeAffecte()=" + $this.isStatusProgrammeAffecte())
+                        if(!$this.isTableauSelectionnable()) {
+                            return true;
+                        }
+                        return false;
                     }
                   }
                 }
@@ -305,10 +325,17 @@
             .then(data => {
               this.programmeInfo = data;
               this.initData();
+              this.rechercher();
           });
+
+
       },
 
       computed : {
+        isStatusProgrammeCree(){
+            return this.programmeInfo.statut === 'CREE';
+        },
+
         familleOptions() {
           return this.$store.getters.familleOptions;
         },
@@ -351,6 +378,30 @@
 
       methods : {
 
+        isStatusProgrammeAffecte(){
+          return this.programmeInfo.statut === 'AFFECTE';
+        },
+
+        isTableauSelectionnable() {
+            return this.tableauSelectionnable;
+        },
+
+        editer() {
+            this.tableauSelectionnable = true;
+            this.showButtonEnregistrer = true;
+            this.showButtonToutDesactiver = true;
+            this.showButtonEditer = false;
+            this.showButtonAnnuler = true;
+        },
+
+        annuler() {
+
+            this.showButtonEditer = true;
+            this.showButtonToutDesactiver = true;
+            this.tableauSelectionnable = false;
+            this.showButtonAnnuler = false;
+        },
+
         statutFichier() {
           var filtredStatut = this.$store.getters.statut
             .filter(elem => {
@@ -383,17 +434,24 @@
 
                 this.familleSelected = this.getFamilleByCode(this.programmeInfo.famille);
                 this.statutSelected = { id : 'ALL', value : 'Tous'};
+                this.tableauSelectionnable = true;
+                this.showButtonEnregistrer = true;
 
             } else {
-                this.familleSelected = {id : 'ALL', value : 'Toutes'}
+                this.familleSelected = {id : 'ALL', value : 'Toutes'};
+                this.typeUtilisationSelected = {id : 'ALL', value : 'Tous'};
                 let statutFichier = this.getStatutFichierByCode('AFFECTE');
                 this.statutSelected = { id : statutFichier.code, value : statutFichier.libelle};
+                this.tableauSelectionnable = false;
+                this.showButtonEditer = true;
             }
 
         },
 
         rechercher() {
+          console.log("this.typeUtilisationSelected="+this.typeUtilisationSelected);
           this.inputChgtCriteria.typeUtilisationCode = this.typeUtilisationSelected.id;
+
           this.inputChgtCriteria.familleCode = this.familleSelected.id;
           let statusCode = this.statutSelected.id;
           if(statusCode === 'ALL') {
