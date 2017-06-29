@@ -4,12 +4,16 @@ import fr.sacem.priam.model.dao.JpaConfigurationTest;
 import fr.sacem.priam.model.dao.jpa.ProgrammeSequnceDao;
 import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.StatutProgramme;
+import fr.sacem.priam.model.domain.criteria.ProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,14 +35,64 @@ public class ProgrammeServiceTest {
 	@Autowired
 	ProgrammeSequnceDao programmeSequnceDao;
 	
+	private static final Pageable pageable = new Pageable() {
+		
+		@Override
+		public int getPageNumber() {
+			return 0;
+		}
+		
+		@Override
+		public int getPageSize() {
+			return 5;
+		}
+		
+		@Override
+		public int getOffset() {
+			return 0;
+		}
+		
+		@Override
+		public Sort getSort() {
+			return null;
+		}
+		
+		@Override
+		public Pageable next() {
+			return null;
+		}
+		
+		@Override
+		public Pageable previousOrFirst() {
+			return null;
+		}
+		
+		@Override
+		public Pageable first() {
+			return null;
+		}
+		
+		@Override
+		public boolean hasPrevious() {
+			return false;
+		}
+	};
+	
 	@Before
 	public void setUp() throws Exception {
 	}
 	
 	@Test
-	public void findProgrammeByCriteria() throws Exception {
+	public void findProgrammeByCriteria_num_prog() throws Exception {
 		
-		//Page<ProgrammeDto> programmeByCriteria = programmeService.findProgrammeByCriteria();
+		ProgrammeCriteria criteria = new ProgrammeCriteria();
+		criteria.setNumProg("PR170001");
+		
+		Page<ProgrammeDto> programmeByCriteria = programmeService.findProgrammeByCriteria(criteria, pageable);
+		
+		assertThat(programmeByCriteria).isNotNull().isNotEmpty();
+		assertThat(programmeByCriteria.getSize()).isEqualTo(pageable.getPageSize());
+		assertThat(programmeByCriteria.getContent()).isNotEmpty().extracting("numProg").contains("PR170001");
 	}
 	
 	@Test

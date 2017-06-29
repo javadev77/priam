@@ -86,6 +86,11 @@
       </div>
     </div>
 
+    <p>Selected: {{ selected }}</p>
+    <select2 :options="options" v-model="selected">
+      <option disabled value="0">Select one</option>
+    </select2>
+
     <modal v-if="showModal">
       <label class="homer-prompt-q control-label" slot="body">
         Etes-vous sûr de vouloir supprimer les données liées à ce fichier ?
@@ -105,6 +110,7 @@
   import Grid from '../common/Grid.vue';
   import vSelect from '../common/Select.vue';
   import Modal from '../common/Modal.vue';
+  import select2 from '../common/Select2.vue';
 
   export default {
 
@@ -114,10 +120,15 @@
       var getters = this.$store.getters;
 
       return {
+        selected : 2,
         showModal : false,
         entrySelected : {},
         selected: '',
-        options: [{"id":"CMS","value":"CMS"},{"id":"COPIEPRIV","value":"Copie Privée"},{"id":"FDSVAL","value":"Valorisation"}],
+        //options: [{"id":"CMS","value":"CMS"},{"id":"COPIEPRIV","value":"Copie Privée"},{"id":"FDSVAL","value":"Valorisation"}],
+        options: [
+          { id: 1, text: 'Hello' },
+          { id: 2, text: 'World' }
+        ],
         isCollapsed: false,
         critereInit : {},
 
@@ -391,9 +402,10 @@
     },
 
     components : {
-      priamGrid : Grid,
-      vSelect : vSelect,
-      modal : Modal
+        priamGrid : Grid,
+        vSelect : vSelect,
+        modal : Modal,
+        select2: select2
     }
 
   }
