@@ -5,7 +5,8 @@
           </div>
         </template>
     <template v-else>
-          <paginator :current-page="this.data.number"
+          <paginator v-if="isPaginable"
+                      :current-page="this.data.number"
                      :total-pages="this.data.totalPages"
                      :total-items="this.data.totalElements"
                      :itemsPerPage="this.data.size"
@@ -17,17 +18,27 @@
           <table class="table-responsive table-drop table-bordered table-striped table-hover resultsTable">
               <thead>
               <tr>
-                <th v-for="entry in columns">
-                  <a @click="sortBy(entry)">
-                    <span>{{ entry.name }}</span>
-                    <span v-if="entry.sortable"
-                          class="fui"
-                          :class="{'fui-triangle-down': !sortAsc,
+                <template v-for="entry in columns">
+                  <template v-if="entry.type === 'checkbox'">
+                    <th>
+                        <input type="checkbox" v-model="allChecked" @click="emitAllCheckbox" />
+                    </th>
+                  </template>
+                  <template v-else>
+                    <th>
+                      <a  @click="sortBy(entry)">
+                        <span>{{ entry.name }}</span>
+                        <span v-if="entry.sortable"
+                              class="fui"
+                              :class="{'fui-triangle-down': !sortAsc,
                                   'fui-triangle-up': sortAsc,
                                   'sorted' : entry.id === sortProp}">
                     </span>
-                  </a>
-                </th>
+                      </a>
+                    </th>
+                  </template>
+                </template>
+
               </tr>
               </thead>
               <tbody>
@@ -87,6 +98,11 @@
 
                     </td>
                   </template>
+                  <template v-else-if="entryColumn.type === 'checkbox'">
+                    <td class="columnCenter">
+                      <input type="checkbox" ref="checkbox" :value="entryColumn.cell.toText(entry)" @click="emitCheckbox(entry)" />
+                    </td>
+                  </template>
                   <template  v-else>
                     <td>
                       {{ entry[entryColumn.id] }}
@@ -99,7 +115,8 @@
               </tbody>
           </table>
 
-          <paginator :current-page="this.data.number"
+          <paginator  v-if="isPaginable"
+                      :current-page="this.data.number"
                      :total-pages="this.data.totalPages"
                      :total-items="this.data.totalElements"
                      :itemsPerPage="this.data.size"
@@ -117,7 +134,24 @@
 
   export default {
 
-    props : ['data', 'columns', 'filterKey', 'noResultText'],
+    props : {
+      data : {
+          type : Object
+      },
+      columns : {
+          type : Array
+      },
+      filterKey : {
+          type : String
+      },
+      noResultText : {
+          type : String
+      },
+      isPaginable :{
+          type  :  Boolean,
+          default : true
+      }
+    },
 
     data() {
       var sortOrders = {}
@@ -127,6 +161,9 @@
         }
 
       return {
+        selected : [],
+        checkedCurrentEntry : new Map(),
+        allChecked: false,
         isCollapsed: false,
         sortKey: '',
         sortOrders: sortOrders,
@@ -159,7 +196,7 @@
       },
 
       emptyResult() {
-        return this.data.content !== undefined  && this.data.content.length === 0 && this.data.totalElements === 0;
+        return this.data.content !== undefined  && this.data.content.length === 0;
       },
 
       filteredData() {
@@ -189,7 +226,10 @@
 
     mounted() {
         console.log("this.data.sort="  + this.data.sort);
-        this.sort = this.data.sort !== undefined ? this.data.sort[0] : undefined;
+        if(this.isPaginable) {
+          this.sort = this.data.sort !== undefined ? this.data.sort[0] : undefined;
+        }
+
     },
 
     filters: {
@@ -208,6 +248,47 @@
 
       emitIconCellClick(event, entry, column) {
         this.$emit(event, entry, column);
+      },
+
+      emitCheckbox(entry) {
+        let key = Number.parseInt(entry.id);
+        console.log("emitCheckbox="+key)
+          if(this.allChecked) {
+              this.allChecked = false;
+
+          }
+          console.log("this.checkedCurrentEntry.get(key)="+this.checkedCurrentEntry.get(key))
+          this.checkedCurrentEntry.set(key, !this.checkedCurrentEntry.get(key));
+
+          this.$emit('entry-checked', this.checkedCurrentEntry.get(key), entry);
+
+      },
+
+      emitAllCheckbox() {
+        console.log("emitAllCheckbox=" +  this.allChecked)
+
+        console.log("this.$refs.checkbox=" +  this.$refs.checkbox);
+        var entries = [];
+        for(var i in this.$refs.checkbox) {
+          let elem = this.$refs.checkbox[i];
+          console.log("elem=" +  elem.checked);
+          let key = Number.parseInt(elem.value);
+          if(this.allChecked) {
+            elem.checked =  1;
+
+            entries.push(key);
+            this.checkedCurrentEntry.set(key, true);
+          } else {
+            elem.checked = 0;
+            this.checkedCurrentEntry.set(key, false);
+          }
+
+        }
+
+        console.log("entries checked=" +  entries);
+
+        this.$emit('all-checked', this.allChecked, entries);
+
       },
 
 

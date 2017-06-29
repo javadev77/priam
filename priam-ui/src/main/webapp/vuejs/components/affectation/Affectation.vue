@@ -149,7 +149,32 @@
       <button class="btn btn-default btn-primary pull-right" type="button" @click="retablir()">Rétablir</button>
       <button class="btn btn-default btn-primary pull-right" type="button" @click="rechercher()">Rechercher</button>
     </div>
+    <div class="container-fluid">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h5 class="panel-title">
+            <a>Résultats</a>
+            <span class="pull-left collapsible-icon bg-ico-tablerow"></span>
+          </h5>
+        </div>
+        <div class="panel-collapse">
+          <div class="result-panel-body panel-body">
+            <priam-grid
 
+              v-if="priamGrid.gridData.content"
+              :isPaginable="false"
+              :data="priamGrid.gridData"
+              :columns="priamGrid.gridColumns"
+              noResultText="Aucun résultat."
+              :filter-key="priamGrid.searchQuery"
+              @entry-checked="onEntryChecked"
+              @all-checked="onAllChecked"
+              >
+            </priam-grid>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
 </template>
@@ -158,12 +183,15 @@
 
   import chargementMixins from '../../mixins/chargementMixin'
   import vSelect from '../common/Select.vue';
+  import Grid from '../common/Grid.vue';
 
   export default {
 
       mixins: [chargementMixins],
 
       data() {
+        var $this =this;
+        var getters = this.$store.getters;
           return {
             isCollapsed : false,
             resource: {},
@@ -176,6 +204,84 @@
               familleCode : '',
               typeUtilisationCode : '',
               statutCode         : []
+            },
+
+            fichiersChecked : [],
+
+            priamGrid : {
+              gridColumns : [
+                {
+                  id :  'nomFichier',
+                  name :   'Fichier',
+                  sortable : true,
+                  type : 'long-text'
+                },
+                {
+                  id :  'famille',
+                  name :   'Famille',
+                  sortable : true,
+                  type : 'code-value',
+                  cell : {
+                    toText : function(cellValue) {
+                      var result  =  getters.famille.find(function (element) {
+                        return element.id === cellValue;
+                      });
+                      return result !== undefined && result.value;
+                    }
+                  }
+                },
+                {
+                  id :  'typeUtilisation',
+                  name :   "Type d'utilisation",
+                  sortable : true,
+                  type : 'code-value',
+                  cell : {
+                    toText : function(cellValue) {
+                      var result  = getters.typeUtilisation.find(function (element) {
+                        return element.id === cellValue;
+                      });
+                      return result !== undefined && result.value;
+                    }
+                  }
+                },
+
+                {
+                  id :  'dateFinChargt',
+                  name :   "Fin chargement",
+                  sortable : true,
+                  type : 'date'
+                },
+                {
+                  id :  'statut',
+                  name :   "Statut",
+                  sortable : true,
+                  type : 'code-value-hightlight',
+                  cell : {
+                    cellTemplate : function (entry) {
+                      let element = $this.getStatutFichierByCode(entry.statut);
+                      var template = '<div style="padding-left : 2px; color : #fff; background-color: ' + element.color + '">' +
+                        element.libelle +
+                        '</div>'
+                      return template;
+                    }
+                  }
+                },
+                {
+                  id :  'action',
+                  name :   "Actions",
+                  sortable : false,
+                  type : 'checkbox',
+                  cell : {
+                    toText: function (entry) {
+                     return entry.id;
+                    }
+                  }
+                }
+              ],
+              //gridData : {"content":[{"id":254,"nomFichier":"FF_PENEF_EXTRANA_EXTCPRIVCPRIVAUDPL_201704061020001.csv","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"02/06/2017 16:17","dateFinChargt":null,"nbLignes":87933,"statut":"EN_COURS"},{"id":12,"nomFichier":"Fichier 15","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"24/05/2017 16:00","dateFinChargt":"24/05/2017 22:57","nbLignes":150780,"statut":"AFFECTE"},{"id":11,"nomFichier":"Fichier 13","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"04/05/2017 18:15","dateFinChargt":"04/05/2017 22:57","nbLignes":15000,"statut":"CHARGEMENT_KO"},{"id":10,"nomFichier":"Fichier 12","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"02/05/2017 18:15","dateFinChargt":"01/05/2017 18:50","nbLignes":15000,"statut":"CHARGEMENT_KO"},{"id":6,"nomFichier":"Fichier 06","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"02/05/2017 18:15","dateFinChargt":null,"nbLignes":15000,"statut":"EN_COURS"},{"id":5,"nomFichier":"Fichier 05","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"01/05/2017 17:10","dateFinChargt":null,"nbLignes":7451,"statut":"EN_COURS"},{"id":9,"nomFichier":"Fichier 11","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"01/05/2017 17:10","dateFinChargt":"02/05/2017 01:10","nbLignes":45789,"statut":"CHARGEMENT_OK"},{"id":8,"nomFichier":"Fichier 09","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"01/04/2017 17:15","dateFinChargt":"01/04/2017 22:10","nbLignes":22000,"statut":"CHARGEMENT_OK"},{"id":4,"nomFichier":"Fichier 04","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"01/04/2017 17:15","dateFinChargt":null,"nbLignes":1478,"statut":"EN_COURS"},{"id":1,"nomFichier":"Fichier 01","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"04/02/2017 17:15","dateFinChargt":null,"nbLignes":3000,"statut":"EN_COURS"},{"id":2,"nomFichier":"Fichier 02","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"03/02/2017 17:15","dateFinChargt":null,"nbLignes":9500,"statut":"EN_COURS"},{"id":3,"nomFichier":"Fichier 03","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"01/02/2017 17:15","dateFinChargt":null,"nbLignes":6500,"statut":"EN_COURS"},{"id":7,"nomFichier":"Fichier 08","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"01/02/2017 17:15","dateFinChargt":null,"nbLignes":6500,"statut":"EN_COURS"}],"last":true,"totalPages":1,"totalElements":13,"size":25,"number":0,"sort":[{"direction":"DESC","property":"dateDebutChargt","ignoreCase":false,"nullHandling":"NATIVE","ascending":false,"descending":true}],"first":true,"numberOfElements":13},
+              gridData : {"content":[]},
+              //gridData : {},
+              searchQuery : ''
             }
 
           }
@@ -223,6 +329,22 @@
           console.log("tab="+options);
 
           return options;
+        },
+        selectAll: {
+          get: function () {
+            return this.gridData.ligneSelected ? this.selected.length == this.users.length : false;
+          },
+          set: function (value) {
+            var selected = [];
+
+            if (value) {
+              this.users.forEach(function (user) {
+                selected.push(user.id);
+              });
+            }
+
+            this.selected = selected;
+          }
         }
       },
 
@@ -289,7 +411,7 @@
             })
             .then(data => {
               console.log(data);
-              //this.priamGrid.gridData = data;
+              this.priamGrid.gridData.content = data;
               //this.priamGrid.gridData.number = data.number + 1;
 
             });
@@ -298,13 +420,50 @@
 
         retablir() {
 
+        },
+
+        onEntryChecked(isChecked, entryChecked) {
+            console.log('isChecked='+isChecked);
+            console.log('entryChecked='+entryChecked.id);
+            if(isChecked) {
+                var found = this.fichiersChecked.find( elem => {
+                   return  elem === entryChecked.id;
+                });
+                if(found !== undefined && found) {
+
+                } else {
+                  this.fichiersChecked.push(entryChecked.id);
+                }
+
+            } else {
+              console.log('this.fichiersChecked='+this.fichiersChecked);
+              let number = this.fichiersChecked.indexOf(entryChecked.id);
+              console.log('indexOf='+number);
+              this.fichiersChecked.splice(number, 1);
+            }
+          console.log('this.fichiersChecked='+this.fichiersChecked);
+        },
+
+        onAllChecked(allChecked, entries) {
+            console.log("entries checked=" +  entries);
+            this.fichiersChecked = [];
+            if(allChecked) {
+                for(var i in entries) {
+                  this.fichiersChecked.push(entries[i]);
+                }
+            } else {
+              this.fichiersChecked = [];
+            }
+
+          console.log('this.fichiersChecked='+this.fichiersChecked);
         }
 
 
       },
 
       components : {
-        vSelect : vSelect
+        vSelect : vSelect,
+        priamGrid : Grid
       }
 
 
