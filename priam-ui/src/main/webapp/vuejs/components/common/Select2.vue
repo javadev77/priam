@@ -1,5 +1,5 @@
 <template>
-  <select>
+  <select >
     <slot></slot>
   </select>
 </template>
@@ -21,6 +21,7 @@
         .on('change', function () {
           vm.$emit('input', this.value)
         })
+
     },
     watch: {
       value: function (value) {

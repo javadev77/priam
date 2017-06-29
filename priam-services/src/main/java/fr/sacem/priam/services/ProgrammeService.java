@@ -89,12 +89,15 @@ public class ProgrammeService {
         //ajouter une ligne dans la table ProgrammeSequence
         //recuperer la derniere ligne ajouter dans la tavle Programme Sequence
         //construire le Id du programme
-        Programme mappedProgramme=mapperConfiguration.convertProgrammeDtoToProgramme(programmeDto);
+        Programme mappedProgramme = mapperConfiguration.convertProgrammeDtoToProgramme(programmeDto);
+        mappedProgramme.setUsercre("GUEST"); // TODO : HABIB - A changer qaund le module SSO sera intégré
         mappedProgramme.setDateCreation(new Date());
         mappedProgramme.setStatut(StatutProgramme.CREE);
+        
         if(mappedProgramme !=null) {
             mappedProgramme=programmeDao.save(mappedProgramme);
         }
+       
         return mappedProgramme;
     }
     

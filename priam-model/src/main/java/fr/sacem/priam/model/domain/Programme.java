@@ -21,6 +21,7 @@ public class Programme {
     private StatutProgramme statut;
     private Rion rionPaiement;
     private List<Fichier> fichiers;
+    private String usercre;
     
     public Programme() {
     }
@@ -87,6 +88,15 @@ public class Programme {
     @OneToMany(mappedBy = "programme")
     public List<Fichier> getFichiers() {
         return fichiers;
+    }
+    
+    @Column(name = "USERCRE")
+    public String getUsercre() {
+        return usercre;
+    }
+    
+    public void setUsercre(String usercre) {
+        this.usercre = usercre;
     }
     
     public void setNumProg(String numProg) {

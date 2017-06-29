@@ -26,14 +26,24 @@
                   </template>
                   <template v-else>
                     <th>
-                      <a  @click="sortBy(entry)">
+                      <a v-if="!isLocalSort" @click="serverSortBy(entry)">
                         <span>{{ entry.name }}</span>
                         <span v-if="entry.sortable"
                               class="fui"
                               :class="{'fui-triangle-down': !sortAsc,
                                   'fui-triangle-up': sortAsc,
                                   'sorted' : entry.id === sortProp}">
-                    </span>
+                        </span>
+                      </a>
+                      <a v-else @click="sortBy(entry.id)">
+                        <span>{{ entry.name }}</span>
+                        <span v-if="entry.sortable"
+                              class="fui"
+                              :class="{'fui-triangle-down': sortOrders[entry.id] <= 0,
+                                  'fui-triangle-up': sortOrders[entry.id] > 0,
+                                  'sorted' : entry.id === sortKey}"
+                              >
+                        </span>
                       </a>
                     </th>
                   </template>
@@ -150,15 +160,23 @@
       isPaginable :{
           type  :  Boolean,
           default : true
+      },
+
+      isLocalSort : {
+          type : Boolean,
+          default : false
       }
     },
 
     data() {
       var sortOrders = {}
 
-        for(let entry in this.columns) {
+        for(let i in this.columns) {
+          let entry = this.columns[i];
           sortOrders[entry.id] = 1;
         }
+
+
 
       return {
         selected : [],
@@ -211,14 +229,14 @@
               return String(row[key]).toLowerCase().indexOf(filterKey) > -1
             })
           })
-        }
+        }*/
         if (sortKey) {
           data = data.slice().sort(function (a, b) {
             a = a[sortKey]
             b = b[sortKey]
             return (a === b ? 0 : a > b ? 1 : -1) * order
           })
-        }*/
+        }
         return data
       }
 
@@ -292,8 +310,8 @@
       },
 
 
-      sortBy(entryColumn) {
-        console.log("sortBy");
+      serverSortBy(entryColumn) {
+        console.log("serverSortBy");
         let sortProp = entryColumn.id;
         let isAsc = false;
         if(sortProp === this.sort.property ) {
@@ -309,6 +327,13 @@
 
 
         this.$emit('on-sort', this.currentPage, this.pageSize, this.sort);
+      },
+
+      sortBy(key) {
+        this.sortKey = key;
+        this.sortOrders[key] = this.sortOrders[key] * -1;
+        console.log("[key] = " + key);
+        console.log("this.sortOrders[key] = " + this.sortOrders[key]);
       },
 
       pageOneChanged (pageNum, pageSize) {

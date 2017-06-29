@@ -1,109 +1,110 @@
 <template>
-  <div class="container-fluid sacem-formula">
+  <div class="container-fluid">
+    <div class="container-fluid sacem-formula">
 
-    <!--En tete Panel-->
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h5 class="panel-title"  @click="isCollapsed = !isCollapsed">
-          <a>Programme</a>
-          <span class="pull-left collapsible-icon"><img src="static/images/iconescontextes/btninformation.gif" alt=""/></span>
-          <span class="pull-right fa" :class="{'fui-triangle-up' : isCollapsed,  'fui-triangle-down' : !isCollapsed}"></span>
-        </h5>
-      </div>
+      <!--En tete Panel-->
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h5 class="panel-title"  @click="isCollapsed = !isCollapsed">
+            <a>Programme</a>
+            <span class="pull-left collapsible-icon"><img src="static/images/iconescontextes/btninformation.gif" alt=""/></span>
+            <span class="pull-right fa" :class="{'fui-triangle-up' : isCollapsed,  'fui-triangle-down' : !isCollapsed}"></span>
+          </h5>
+        </div>
 
-      <!--Body Panel-->
-      <div class="panel-collapse" :class="{collapse : isCollapsed}">
-        <div class="panel-body">
-          <div class="row">
+        <!--Body Panel-->
+        <div class="panel-collapse" :class="{collapse : isCollapsed}">
+          <div class="panel-body">
+            <div class="row">
 
-            <div class="col-sm-2">
-              <span class="pull-right">N° programme</span>
-            </div>
-            <div class="col-sm-2">
-              <strong>{{ programmeInfo.numProg }}</strong>
-            </div>
+              <div class="col-sm-2">
+                <span class="pull-right blueText">N° programme</span>
+              </div>
+              <div class="col-sm-2">
+                {{ programmeInfo.numProg }}
+              </div>
 
-            <div class="col-sm-2">
-              <span class="pull-right">Statut</span>
-            </div>
-            <div class="col-sm-2">
-              <strong>{{ getStatutProgrammeByCode(programmeInfo.statut) !== undefined ? getStatutProgrammeByCode(programmeInfo.statut).libelle : '' }}</strong>
-            </div>
+              <div class="col-sm-2">
+                <span class="pull-right blueText">Statut</span>
+              </div>
+              <div class="col-sm-2">
+                {{ getStatutProgrammeByCode(programmeInfo.statut) !== undefined ? getStatutProgrammeByCode(programmeInfo.statut).libelle : '' }}
+              </div>
 
-            <div class="col-sm-2">
-              <span class="pull-right">Famille</span>
-            </div>
-            <div class="col-sm-3">
-              <strong>{{ getFamilleByCode(programmeInfo.famille) !== undefined ? getFamilleByCode(programmeInfo.famille).value : '' }}</strong>
-            </div>
+              <div class="col-sm-2">
+                <span class="pull-right blueText">Famille</span>
+              </div>
+              <div class="col-sm-3">
+                {{ getFamilleByCode(programmeInfo.famille) !== undefined ? getFamilleByCode(programmeInfo.famille).value : '' }}
+              </div>
 
-            <div class="col-sm-2">
-              <span class="pull-right">Nb fichiers affectés</span>
-            </div>
-            <div class="col-sm-2">
-              <strong>{{ programmeInfo.fichiers }}</strong>
-            </div>
+              <div class="col-sm-2">
+                <span class="pull-right blueText">Nb fichiers affectés</span>
+              </div>
+              <div class="col-sm-2">
+                {{ programmeInfo.fichiers }}
+              </div>
 
-            <div class="col-sm-2">
-              <span class="pull-right">Créé par</span>
-            </div>
-            <div class="col-sm-2">
-              <strong>{{ programmeInfo.usercre }}</strong>
-            </div>
-          </div>
-
-          <br/>
-          <!-- 2 eme ligne -->
-          <div class="row">
-
-            <div class="col-sm-2">
-              <span class="pull-right">Nom</span>
-            </div>
-            <div class="col-sm-2">
-              <strong>{{ programmeInfo.nom }}</strong>
+              <div class="col-sm-2">
+                <span class="pull-right blueText">Créé par</span>
+              </div>
+              <div class="col-sm-2">
+                {{ programmeInfo.usercre }}
+              </div>
             </div>
 
-            <div class="col-sm-2">
-              <span class="pull-right">Rion théorique</span>
-            </div>
-            <div class="col-sm-2">
-              <strong>{{ programmeInfo.rionTheorique }}</strong>
-            </div>
+            <br/>
+            <!-- 2 eme ligne -->
+            <div class="row">
 
-            <div class="col-sm-2">
-              <span class="pull-right">Type d'utilisation</span>
-            </div>
-            <div class="col-sm-3">
-              <strong>{{ getTypeUtilisationByCode(programmeInfo.typeUtilisation) !== undefined ? getTypeUtilisationByCode(programmeInfo.typeUtilisation).value : '' }}</strong>
-            </div>
+              <div class="col-sm-2">
+                <span class="pull-right blueText">Nom</span>
+              </div>
+              <div class="col-sm-2">
+                {{ programmeInfo.nom }}
+              </div>
 
-            <div class="col-sm-2">
-              <span class="pull-right">Mode répartition</span>
-            </div>
-            <div class="col-sm-2">
-              <strong>{{ getModeRepartitionByCode(programmeInfo.typeRepart) !== undefined ?  getModeRepartitionByCode(programmeInfo.typeRepart).value : '' }}</strong>
-            </div>
+              <div class="col-sm-2">
+                <span class="pull-right blueText">Rion théorique</span>
+              </div>
+              <div class="col-sm-2">
+                {{ programmeInfo.rionTheorique }}
+              </div>
 
-            <div class="col-sm-2">
-              <span class="pull-right">Date création</span>
-            </div>
-            <div class="col-sm-2">
-              <strong>{{ programmeInfo.dateCreation }}</strong>
+              <div class="col-sm-2">
+                <span class="pull-right blueText">Type d'utilisation</span>
+              </div>
+              <div class="col-sm-3">
+                {{ getTypeUtilisationByCode(programmeInfo.typeUtilisation) !== undefined ? getTypeUtilisationByCode(programmeInfo.typeUtilisation).value : '' }}
+              </div>
+
+              <div class="col-sm-2">
+                <span class="pull-right blueText">Mode répartition</span>
+              </div>
+              <div class="col-sm-2">
+                {{ getModeRepartitionByCode(programmeInfo.typeRepart) !== undefined ?  getModeRepartitionByCode(programmeInfo.typeRepart).value : '' }}
+              </div>
+
+              <div class="col-sm-2">
+                <span class="pull-right blueText">Date création</span>
+              </div>
+              <div class="col-sm-2">
+                {{ programmeInfo.dateCreation }}
+              </div>
             </div>
           </div>
         </div>
+
       </div>
+  </div>
 
-    </div>
-
-
-
+  <div class="container-fluid sacem-formula">
     <div class="panel panel-default">
       <div class="panel-heading">
         <h5 class="panel-title">
           <a>Critères de recherche</a>
           <span class="pull-left collapsible-icon formula-criteria-search"></span>
-          <span class="pull-right"></span>
+          <span class="pull-right blueText"></span>
         </h5>
 
 
@@ -113,7 +114,7 @@
           <form class="form-horizontal" role="form">
             <div class="row">
               <div class="col-sm-2">
-                <label class="control-label pull-right">Famille</label>
+                <label class="control-label pull-right blueText">Famille</label>
               </div>
               <div class="col-sm-2">
 
@@ -122,7 +123,7 @@
               </div>
 
               <div class="col-sm-2">
-                <label class="control-label pull-right">Type d'utilisation</label>
+                <label class="control-label pull-right blueText">Type d'utilisation</label>
               </div>
               <div class="col-sm-4">
                 <v-select :searchable="false" label="value" v-model="typeUtilisationSelected" :options="typeUtilisationOptions">
@@ -130,7 +131,7 @@
               </div>
 
               <div class="col-sm-2">
-                <label class="control-label pull-right">Statut</label>
+                <label class="control-label pull-right blueText">Statut</label>
               </div>
               <div class="col-sm-2">
                 <v-select :searchable="false" label="value" v-model="statutSelected" :options="statutAffectationOptions">
@@ -149,7 +150,9 @@
       <button class="btn btn-default btn-primary pull-right" type="button" @click="retablir()">Rétablir</button>
       <button class="btn btn-default btn-primary pull-right" type="button" @click="rechercher()">Rechercher</button>
     </div>
-    <div class="container-fluid">
+  </div>
+
+  <div class="container-fluid">
       <div class="panel panel-default">
         <div class="panel-heading">
           <h5 class="panel-title">
@@ -163,6 +166,7 @@
 
               v-if="priamGrid.gridData.content"
               :isPaginable="false"
+              :isLocalSort="true"
               :data="priamGrid.gridData"
               :columns="priamGrid.gridColumns"
               noResultText="Aucun résultat."
@@ -174,9 +178,9 @@
           </div>
         </div>
       </div>
-    </div>
   </div>
 
+  </div>
 </template>
 
 <script>
@@ -255,14 +259,11 @@
                   id :  'statut',
                   name :   "Statut",
                   sortable : true,
-                  type : 'code-value-hightlight',
+                  type : 'code-value',
                   cell : {
-                    cellTemplate : function (entry) {
-                      let element = $this.getStatutFichierByCode(entry.statut);
-                      var template = '<div style="padding-left : 2px; color : #fff; background-color: ' + element.color + '">' +
-                        element.libelle +
-                        '</div>'
-                      return template;
+                    toText : function (cellValue) {
+                      let element = $this.getStatutFichierByCode(cellValue);
+                      return element !== undefined && element.libelle;
                     }
                   }
                 },
@@ -279,7 +280,7 @@
                 }
               ],
               //gridData : {"content":[{"id":254,"nomFichier":"FF_PENEF_EXTRANA_EXTCPRIVCPRIVAUDPL_201704061020001.csv","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"02/06/2017 16:17","dateFinChargt":null,"nbLignes":87933,"statut":"EN_COURS"},{"id":12,"nomFichier":"Fichier 15","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"24/05/2017 16:00","dateFinChargt":"24/05/2017 22:57","nbLignes":150780,"statut":"AFFECTE"},{"id":11,"nomFichier":"Fichier 13","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"04/05/2017 18:15","dateFinChargt":"04/05/2017 22:57","nbLignes":15000,"statut":"CHARGEMENT_KO"},{"id":10,"nomFichier":"Fichier 12","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"02/05/2017 18:15","dateFinChargt":"01/05/2017 18:50","nbLignes":15000,"statut":"CHARGEMENT_KO"},{"id":6,"nomFichier":"Fichier 06","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"02/05/2017 18:15","dateFinChargt":null,"nbLignes":15000,"statut":"EN_COURS"},{"id":5,"nomFichier":"Fichier 05","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"01/05/2017 17:10","dateFinChargt":null,"nbLignes":7451,"statut":"EN_COURS"},{"id":9,"nomFichier":"Fichier 11","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"01/05/2017 17:10","dateFinChargt":"02/05/2017 01:10","nbLignes":45789,"statut":"CHARGEMENT_OK"},{"id":8,"nomFichier":"Fichier 09","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"01/04/2017 17:15","dateFinChargt":"01/04/2017 22:10","nbLignes":22000,"statut":"CHARGEMENT_OK"},{"id":4,"nomFichier":"Fichier 04","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"01/04/2017 17:15","dateFinChargt":null,"nbLignes":1478,"statut":"EN_COURS"},{"id":1,"nomFichier":"Fichier 01","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"04/02/2017 17:15","dateFinChargt":null,"nbLignes":3000,"statut":"EN_COURS"},{"id":2,"nomFichier":"Fichier 02","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"03/02/2017 17:15","dateFinChargt":null,"nbLignes":9500,"statut":"EN_COURS"},{"id":3,"nomFichier":"Fichier 03","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"01/02/2017 17:15","dateFinChargt":null,"nbLignes":6500,"statut":"EN_COURS"},{"id":7,"nomFichier":"Fichier 08","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"01/02/2017 17:15","dateFinChargt":null,"nbLignes":6500,"statut":"EN_COURS"}],"last":true,"totalPages":1,"totalElements":13,"size":25,"number":0,"sort":[{"direction":"DESC","property":"dateDebutChargt","ignoreCase":false,"nullHandling":"NATIVE","ascending":false,"descending":true}],"first":true,"numberOfElements":13},
-              gridData : {"content":[]},
+              gridData : {"content" :[] },
               //gridData : {},
               searchQuery : ''
             }
@@ -469,3 +470,10 @@
 
   }
 </script>
+<style>
+
+  .blueText {
+     color: #799BC4;
+  }
+
+</style>
