@@ -59,9 +59,9 @@
                       <template v-if="entryColumn.cell">
                         {{ entryColumn.cell.toText(entry) }}
                       </template>
-                      <tempalte v-else>
+                      <template v-else>
                         {{ entry[entryColumn.id] }}
-                      </tempalte>
+                      </template>
 
                     </td>
                   </template>
@@ -248,7 +248,7 @@
 
     },
 
-    mounted() {
+    created() {
         console.log("this.data.sort="  + this.data.sort[0]);
 
         this.sort = this.data.sort !== undefined ? this.data.sort[0] : undefined;
