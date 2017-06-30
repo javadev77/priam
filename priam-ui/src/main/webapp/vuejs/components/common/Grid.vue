@@ -6,7 +6,7 @@
         </template>
     <template v-else>
           <paginator v-if="isPaginable"
-                      :current-page="this.data.number"
+                     :current-page="this.data.number"
                      :total-pages="this.data.totalPages"
                      :total-items="this.data.totalElements"
                      :itemsPerPage="this.data.size"
@@ -39,7 +39,7 @@
                         <span>{{ entry.name }}</span>
                         <span v-if="entry.sortable"
                               class="fui"
-                              :class="{'fui-triangle-down': sortOrders[entry.id] <= 0,
+                              :class="{'fui-triangle-down': sortOrders[entry.id] < 0,
                                   'fui-triangle-up': sortOrders[entry.id] > 0,
                                   'sorted' : entry.id === sortKey}"
                               >
@@ -179,7 +179,7 @@
 
         for(let i in this.columns) {
           let entry = this.columns[i];
-          sortOrders[entry.id] = 1;
+          sortOrders[entry.id] = -1;
         }
 
 
@@ -249,9 +249,12 @@
     },
 
     mounted() {
-        console.log("this.data.sort="  + this.data.sort);
-        if(this.isPaginable) {
-          this.sort = this.data.sort !== undefined ? this.data.sort[0] : undefined;
+        console.log("this.data.sort="  + this.data.sort[0]);
+
+        this.sort = this.data.sort !== undefined ? this.data.sort[0] : undefined;
+
+        if(this.isLocalSort) {
+            this.sortKey = this.sort.property;
         }
 
     },
