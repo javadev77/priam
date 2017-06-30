@@ -161,7 +161,8 @@
           </h5>
         </div>
         <div class="panel-collapse">
-          <div class="result-panel-body panel-body">
+          <div class="result-panel-body panel-body" style="height:600px; overflow-y:scroll;">
+
             <priam-grid
 
               v-if="priamGrid.gridData.content"
@@ -343,7 +344,6 @@
 
 
       },
-
       computed : {
         isStatusProgrammeCree(){
             return this.programmeInfo.statut === 'CREE';
@@ -410,9 +410,10 @@
         annuler() {
 
             this.showButtonEditer = true;
-            this.showButtonToutDesactiver = true;
+            this.showButtonToutDesactiver = false;
             this.tableauSelectionnable = false;
             this.showButtonAnnuler = false;
+            this.showButtonEnregistrer = false;
         },
 
         statutFichier() {
@@ -458,7 +459,13 @@
                 this.tableauSelectionnable = false;
                 this.showButtonEditer = true;
             }
-
+          if(this.programmeInfo.statut === 'EN_COURS' || this.programmeInfo.statut === 'ABANDONNE' || this.programmeInfo.statut === 'MIS_EN_REPART' ||this.programmeInfo.statut ==='REPARTI'){
+            this.showButtonEditer = false;
+            this.showButtonToutDesactiver = false;
+            this.tableauSelectionnable = false;
+            this.showButtonAnnuler = false;
+            this.showButtonEnregistrer = false;
+          }
         },
 
         rechercher() {
