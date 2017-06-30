@@ -86,10 +86,10 @@
       </div>
     </div>
 
-    <p>Selected: {{ selected }}</p>
+    <!--<p>Selected: {{ selected }}</p>
     <select2 :options="options" v-model="selected">
       <option disabled value="0">Select one</option>
-    </select2>
+    </select2>-->
 
     <modal v-if="showModal">
       <label class="homer-prompt-q control-label" slot="body">
@@ -111,6 +111,7 @@
   import vSelect from '../common/Select.vue';
   import Modal from '../common/Modal.vue';
   import select2 from '../common/Select2.vue';
+  import moment from 'moment';
 
   export default {
 
@@ -196,7 +197,18 @@
               id :  'dateFinChargt',
               name :   "Fin chargement",
               sortable : true,
-              type : 'date'
+              type : 'date',
+              cell : {
+                toText : function (entry) {
+                  if(entry.dateFinChargt !== null) {
+                    var m = moment(entry.dateFinChargt);
+                    return m.format("DD/MM/YYYY HH:mm");
+
+                  } else {
+                    return '';
+                  }
+                }
+              }
             },
             {
               id :  'nbLignes',

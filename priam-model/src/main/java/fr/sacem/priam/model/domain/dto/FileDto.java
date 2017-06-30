@@ -18,8 +18,9 @@ public class FileDto {
 	@JsonSerialize(using = CustomDateSerializer.class)
 	private Date dateDebutChargt;
 	
-	@JsonSerialize(using = CustomDateSerializer.class)
+	//@JsonSerialize(using = CustomDateSerializer.class)
 	private Date dateFinChargt;
+	
 	
 	private Long nbLignes;
 	private Status statut;

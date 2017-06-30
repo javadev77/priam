@@ -56,7 +56,13 @@
                 <template v-for="entryColumn in columns">
                   <template v-if="entryColumn.type === 'date'">
                     <td class="columnCenter">
-                      {{ entry[entryColumn.id] }}
+                      <template v-if="entryColumn.cell">
+                        {{ entryColumn.cell.toText(entry) }}
+                      </template>
+                      <tempalte v-else>
+                        {{ entry[entryColumn.id] }}
+                      </tempalte>
+
                     </td>
                   </template>
                   <template v-else-if="entryColumn.type === 'numeric'">

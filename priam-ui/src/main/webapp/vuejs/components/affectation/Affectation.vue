@@ -116,13 +116,13 @@
               <div class="col-sm-2">
                 <label class="control-label pull-right blueText">Famille</label>
               </div>
-              <div class="col-sm-2">
+              <div class="col-sm-3">
 
                 <v-select :searchable="false" label="value" v-model="familleSelected" :options="familleOptions" :on-change="loadTypeUtilisation">
                 </v-select>
               </div>
 
-              <div class="col-sm-2">
+              <div class="col-sm-3">
                 <label class="control-label pull-right blueText">Type d'utilisation</label>
               </div>
               <div class="col-sm-4">
@@ -130,7 +130,7 @@
                 </v-select>
               </div>
 
-              <div class="col-sm-2">
+              <div class="col-sm-3">
                 <label class="control-label pull-right blueText">Statut</label>
               </div>
               <div class="col-sm-2">
@@ -194,6 +194,7 @@
   import chargementMixins from '../../mixins/chargementMixin'
   import vSelect from '../common/Select.vue';
   import Grid from '../common/Grid.vue';
+  import moment from 'moment';
 
   export default {
 
@@ -213,7 +214,8 @@
             inputChgtCriteria : {
               familleCode : '',
               typeUtilisationCode : '',
-              statutCode         : []
+              statutCode         : [],
+              numProg : null
             },
 
             tableauSelectionnable : true,
@@ -266,7 +268,18 @@
                   id :  'dateFinChargt',
                   name :   "Fin chargement",
                   sortable : true,
-                  type : 'date'
+                  type : 'date',
+                  cell : {
+                    toText : function (entry) {
+                        if(entry.dateFinChargt !== null) {
+                            var m = moment(entry.dateFinChargt);
+                            return m.format("DD/MM/YYYY HH:mm");
+
+                        } else {
+                            return '';
+                        }
+                    }
+                  }
                 },
                 {
                   id :  'statut',
@@ -456,7 +469,13 @@
         },
 
         rechercher() {
-          console.log("this.typeUtilisationSelected="+this.typeUtilisationSelected);
+
+          if(this.programmeInfo.statut === 'AFFECTE') {
+             this.inputChgtCriteria.numProg = this.programmeInfo.numProg;
+          } else {
+             this.inputChgtCriteria.numProg = null;
+          }
+
           this.inputChgtCriteria.typeUtilisationCode = this.typeUtilisationSelected.id;
 
           this.inputChgtCriteria.familleCode = this.familleSelected.id;
@@ -478,7 +497,6 @@
             .then(data => {
               console.log(data);
               this.priamGrid.gridData.content = data;
-              //this.priamGrid.gridData.number = data.number + 1;
 
             });
 

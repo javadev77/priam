@@ -76,7 +76,7 @@ public class FichierDaoTest {
     @Test
     public void should_find_all_fichiers() {
         List<Status> status = Arrays.asList(Status.values());
-        List<FileDto> all = fichierDao.findAllFichiersByCriteria(null, null, status);
+        List<FileDto> all = fichierDao.findFichiersAffectes(null, null, status, null);
     
         assertThat(all)
             .isNotNull()
