@@ -6,6 +6,7 @@ import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.dto.FileDto;
 import fr.sacem.priam.services.FichierService;
+import fr.sacem.priam.ui.rest.dto.AffectationCriteria;
 import fr.sacem.priam.ui.rest.dto.ChargementCritereRecherche;
 import fr.sacem.priam.ui.rest.dto.InputChgtCriteria;
 import org.slf4j.Logger;
@@ -69,13 +70,15 @@ public class ChargementResource {
                     method = RequestMethod.POST,
                     consumes = MediaType.APPLICATION_JSON_VALUE,
                     produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<FileDto> findAllFichiers(@RequestBody InputChgtCriteria input) {
-  
+    public List<FileDto> findFichiersAffectes(@RequestBody AffectationCriteria input) {
+        logger.info("findFichiersAffectes() - numProg=[" + input.getNumProg() + "]");
         List<Status> status = statusCriterion(input);
         String codeFamille = familleCriterion(input);
         String codeTypeUtil = typeUtilisationCriterion(input);
+  
+        String numProg = input.getNumProg();
         
-        return fichierDao.findAllFichiersByCriteria(codeFamille, codeTypeUtil, status);
+        return fichierDao.findFichiersAffectes(codeFamille, codeTypeUtil, status, numProg);
     
     }
   
