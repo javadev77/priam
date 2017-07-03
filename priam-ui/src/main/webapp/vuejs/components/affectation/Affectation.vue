@@ -202,6 +202,13 @@
         var $this =this;
         var getters = this.$store.getters;
           return {
+            fichiersToProgramme: {
+                numProg,
+                fichiers:[{
+                    id,
+                    nom
+                }]
+            },
             isCollapsed : false,
             resource: {},
             programmeInfo : {},
@@ -326,7 +333,9 @@
           console.log("router params numProg = " + this.$route.params.numProg)
           const customActions = {
               findByNumProg : {method : 'GET', url : 'app/rest/programme/numProg/{numProg}'},
-              findAllFichiers : {method : 'POST', url :'app/rest/chargement/allFichiers'}
+              findAllFichiers : {method : 'POST', url :'app/rest/chargement/allFichiers'},
+              affectationProgramme : {method: 'POST', url : 'app/rest/programme/affectation'},
+
           }
           this.resource= this.$resource('', {}, customActions);
 
@@ -341,6 +350,8 @@
           });
 
       },
+
+
 
       mounted() {
         this.initData();
@@ -412,7 +423,7 @@
 
           var controle=this.controlerFamilleEtTypeUtilisation();
           if(controle){
-
+            this.affecterFichiersAuProgramme();
           }
         },
         //PRIAM-108(régle:T10)
@@ -583,8 +594,25 @@
             }
 
           console.log('this.fichiersChecked='+this.fichiersChecked);
+        },
+      affecterFichiersAuProgramme(){
+        this.fichiersToProgramme.numProg = this.programmeInfo.numProg;
+        for(idFichier in this.fichiersChecked){
+            if(f !==null){
+              this.fichiersToProgramme.fichiers.push({id:idFichier});
+            }
+
         }
 
+        console.log(fichiersToProgramme.fichiers);
+        this.resource.affectationProgramme(this.fichiersToProgramme).then(response => {
+          console.log("affacration ok");
+          this.$emit('validate');
+        }, response => {
+          alert("Erreur technique lors de l'affectation des fichiers au programme !! ");
+          this.$emit('cancel');
+        });
+      }
 
       },
 
