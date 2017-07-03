@@ -345,10 +345,6 @@
 
       },
       computed : {
-        isStatusProgrammeCree(){
-            return this.programmeInfo.statut === 'CREE';
-        },
-
         familleOptions() {
           return this.$store.getters.familleOptions;
         },
@@ -390,7 +386,50 @@
       },
 
       methods : {
+        //PRIAM-108(régle:T07)
+        toutDesactiver(){
+          var confirmation =confirm("Etes-vous sûr de voir désaffecter tous les fichiers de ce programme?");
+          if(confirmation){
 
+            //Régles métier
+
+
+
+            //Tous les fichiers sont désaffectés du programme
+            //Statut des fichiers = "Chargement OK"
+            //Statut programme = "Créé"
+
+            //régles javascript
+
+            //Afficher l'écran "Liste programmes"
+            //Non: Revenir à l'écran affectation en mode non éditable
+          }
+        },
+        enregister(){
+
+          var controle=this.controlerFamilleEtTypeUtilisation();
+          if(controle){
+
+          }
+        },
+        //PRIAM-108(régle:T10)
+        controlerFamilleEtTypeUtilisation(){
+          var familleProgramme=this.familleSelected.id;
+          var typeUtilisationProgramme=this.typeUtilisationSelected.id;
+          var confirmation=false;
+          for(var i in this.priamGrid.gridData.content){
+              var entry = this.priamGrid.gridData.content[i];
+            if(entry.typeUtilisation !== typeUtilisationProgramme || entry.famille !== familleProgramme){
+                confirmation=confirm("Etes-vous sûr de vouloir affecter au programme un fichier qui n'a pas les mêmes famille / type d'utilisation ?");
+                if(confirmation){
+                     return true;
+                }else{
+                     return false;
+                }
+            }
+          }
+          return false;
+        },
         isStatusProgrammeAffecte(){
           return this.programmeInfo.statut === 'AFFECTE';
         },
