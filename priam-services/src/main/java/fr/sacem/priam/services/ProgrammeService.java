@@ -136,7 +136,8 @@ public class ProgrammeService {
         programme.setRionTheorique(rion);
         
         programme.setTypeRepart(programmeDto.getTypeRepart());
-        programme.setDateModfication(new Date());
+        programme.setDatmaj(new Date());
+        programme.setUsermaj("GUEST"); //TODO HABIB => A implementer lors  la mise en place du SSO SACEM
         
         return programmeDao.save(programme);
         
