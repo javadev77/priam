@@ -164,8 +164,6 @@
           <div class="result-panel-body panel-body" style="height:600px; overflow-y:scroll;">
 
             <priam-grid
-
-              v-if="priamGrid.gridData.content"
               :isPaginable="false"
               :isLocalSort="true"
               :data="priamGrid.gridData"
@@ -314,7 +312,8 @@
                 }
               ],
               //gridData : {"content":[{"id":254,"nomFichier":"FF_PENEF_EXTRANA_EXTCPRIVCPRIVAUDPL_201704061020001.csv","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"02/06/2017 16:17","dateFinChargt":null,"nbLignes":87933,"statut":"EN_COURS"},{"id":12,"nomFichier":"Fichier 15","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"24/05/2017 16:00","dateFinChargt":"24/05/2017 22:57","nbLignes":150780,"statut":"AFFECTE"},{"id":11,"nomFichier":"Fichier 13","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"04/05/2017 18:15","dateFinChargt":"04/05/2017 22:57","nbLignes":15000,"statut":"CHARGEMENT_KO"},{"id":10,"nomFichier":"Fichier 12","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"02/05/2017 18:15","dateFinChargt":"01/05/2017 18:50","nbLignes":15000,"statut":"CHARGEMENT_KO"},{"id":6,"nomFichier":"Fichier 06","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"02/05/2017 18:15","dateFinChargt":null,"nbLignes":15000,"statut":"EN_COURS"},{"id":5,"nomFichier":"Fichier 05","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"01/05/2017 17:10","dateFinChargt":null,"nbLignes":7451,"statut":"EN_COURS"},{"id":9,"nomFichier":"Fichier 11","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"01/05/2017 17:10","dateFinChargt":"02/05/2017 01:10","nbLignes":45789,"statut":"CHARGEMENT_OK"},{"id":8,"nomFichier":"Fichier 09","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"01/04/2017 17:15","dateFinChargt":"01/04/2017 22:10","nbLignes":22000,"statut":"CHARGEMENT_OK"},{"id":4,"nomFichier":"Fichier 04","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"01/04/2017 17:15","dateFinChargt":null,"nbLignes":1478,"statut":"EN_COURS"},{"id":1,"nomFichier":"Fichier 01","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"04/02/2017 17:15","dateFinChargt":null,"nbLignes":3000,"statut":"EN_COURS"},{"id":2,"nomFichier":"Fichier 02","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"03/02/2017 17:15","dateFinChargt":null,"nbLignes":9500,"statut":"EN_COURS"},{"id":3,"nomFichier":"Fichier 03","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"01/02/2017 17:15","dateFinChargt":null,"nbLignes":6500,"statut":"EN_COURS"},{"id":7,"nomFichier":"Fichier 08","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"01/02/2017 17:15","dateFinChargt":null,"nbLignes":6500,"statut":"EN_COURS"}],"last":true,"totalPages":1,"totalElements":13,"size":25,"number":0,"sort":[{"direction":"DESC","property":"dateDebutChargt","ignoreCase":false,"nullHandling":"NATIVE","ascending":false,"descending":true}],"first":true,"numberOfElements":13},
-              gridData : {"content" :[] },
+              gridData : {"content" :[],
+                          "sort" : [{"direction":"DESC","property":"dateFinChargt","ignoreCase":false,"nullHandling":"NATIVE","ascending":false,"descending":true}] },
               //gridData : {},
               searchQuery : ''
             }
@@ -323,7 +322,7 @@
       },
 
 
-      mounted() {
+      created() {
           console.log("router params numProg = " + this.$route.params.numProg)
           const customActions = {
               findByNumProg : {method : 'GET', url : 'app/rest/programme/numProg/{numProg}'},
@@ -338,12 +337,16 @@
             })
             .then(data => {
               this.programmeInfo = data;
-              this.initData();
-              this.rechercher();
+
           });
 
-
       },
+
+      mounted() {
+        this.initData();
+        this.rechercher();
+      },
+
       computed : {
         familleOptions() {
           return this.$store.getters.familleOptions;
@@ -466,11 +469,9 @@
 
 
         loadTypeUtilisation(val) {
-          //if(this.familleSelected !== val ) {
-              this.familleSelected = val;
-              this.$store.dispatch('loadTypeUtilisation', val);
-              //this.typeUtilisationSelected = {'id' : 'ALL', 'value': 'Tous'};
-          //}
+
+          this.familleSelected = val;
+          this.$store.dispatch('loadTypeUtilisation', val);
 
           if(this.typeUtilisationSelected == null && this.programmeInfo.statut === 'CREE') {
             this.typeUtilisationSelected = this.getTypeUtilisationByCode(this.programmeInfo.typeUtilisation);
@@ -479,10 +480,12 @@
             this.typeUtilisationSelected = {id : 'ALL', value: 'Tous'};
           }
 
+          console.log("loadTypeUtilisation() ==> this.typeUtilisationSelected=" +  this.typeUtilisationSelected)
+
         },
 
         initData() {
-            console.log("this.programmeInfo="+this.programmeInfo.statut)
+            console.log("initData() ==> this.programmeInfo="+this.programmeInfo.statut)
             if(this.programmeInfo !== null && this.programmeInfo.statut === 'CREE') {
 
                 this.familleSelected = this.getFamilleByCode(this.programmeInfo.famille);
@@ -508,7 +511,7 @@
         },
 
         rechercher() {
-
+          console.log("rechercher() ==> this.typeUtilisationSelected="+this.typeUtilisationSelected)
           if(this.programmeInfo.statut === 'AFFECTE') {
              this.inputChgtCriteria.numProg = this.programmeInfo.numProg;
           } else {
@@ -516,8 +519,8 @@
           }
 
           this.inputChgtCriteria.typeUtilisationCode = this.typeUtilisationSelected.id;
-
           this.inputChgtCriteria.familleCode = this.familleSelected.id;
+
           let statusCode = this.statutSelected.id;
           if(statusCode === 'ALL') {
             this.inputChgtCriteria.statutCode = this.statutFichier().map(status => {
@@ -536,6 +539,7 @@
             .then(data => {
               console.log(data);
               this.priamGrid.gridData.content = data;
+              this.priamGrid.gridData.sort = [{"direction":"DESC","property":"dateFinChargt","ignoreCase":false,"nullHandling":"NATIVE","ascending":false,"descending":true}];
 
             });
 

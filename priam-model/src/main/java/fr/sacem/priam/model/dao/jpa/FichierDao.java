@@ -54,7 +54,8 @@ public interface FichierDao extends JpaRepository<Fichier, Long> {
         "WHERE f.statut IN (:status) " +
         "AND (:familleCode IS NULL OR fam.code = :familleCode) " +
         "AND (:numProg IS NULL OR f.programme.numProg = :numProg) " +
-        "AND (:typeUtilisationCode IS NULL OR typu.code = :typeUtilisationCode)")
+        "AND (:typeUtilisationCode IS NULL OR typu.code = :typeUtilisationCode) " +
+        "ORDER BY f.dateFinChargt DESC ")
     List<FileDto> findFichiersAffectes(@Param("familleCode") String familleCode, @Param("typeUtilisationCode") String typeUtilisationCode,
                                             @Param("status") List<Status> status, @Param("numProg") String numProg);
 }
