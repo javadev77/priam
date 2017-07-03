@@ -152,38 +152,63 @@
     </div>
   </div>
 
-  <div class="container-fluid">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h5 class="panel-title">
-            <a>Résultats</a>
-            <span class="pull-left collapsible-icon bg-ico-tablerow"></span>
-          </h5>
-        </div>
-        <div class="panel-collapse">
-          <div class="result-panel-body panel-body" style="height:600px; overflow-y:scroll;">
+    <div class="container-fluid">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h5 class="panel-title">
+              <a>Résultats</a>
+              <span class="pull-left collapsible-icon bg-ico-tablerow"></span>
+            </h5>
+          </div>
+          <div class="panel-collapse">
+            <div class="result-panel-body panel-body" style="height:600px; overflow-y:scroll;">
 
-            <priam-grid
-              :isPaginable="false"
-              :isLocalSort="true"
-              :data="priamGrid.gridData"
-              :columns="priamGrid.gridColumns"
-              noResultText="Aucun résultat."
-              :filter-key="priamGrid.searchQuery"
-              @entry-checked="onEntryChecked"
-              @all-checked="onAllChecked"
-              >
-            </priam-grid>
+              <priam-grid
+                :isPaginable="false"
+                :isLocalSort="true"
+                :data="priamGrid.gridData"
+                :columns="priamGrid.gridColumns"
+                noResultText="Aucun résultat."
+                :filter-key="priamGrid.searchQuery"
+                @entry-checked="onEntryChecked"
+                @all-checked="onAllChecked"
+                >
+              </priam-grid>
+            </div>
           </div>
         </div>
-      </div>
-  </div>
+    </div>
     <div class="row formula-buttons">
       <button v-if="showButtonEnregistrer" class="btn btn-default btn-primary pull-right" type="button" @click="enregister()">Enregister</button>
       <button v-if="showButtonEditer" class="btn btn-default btn-primary pull-right" type="button" @click="editer()">Editer</button>
-      <button v-if="showButtonToutDesactiver" class="btn btn-default btn-primary pull-right" type="button" @click="toutDesactiver()">Tout désactiver</button>
+      <button v-if="showButtonToutDesactiver" class="btn btn-default btn-primary pull-right" type="button" @click="showModalDesactiver = true">Tout désactiver</button>
       <button v-if="showButtonAnnuler" class="btn btn-default btn-primary pull-right" type="button" @click="annuler()">Annuler</button>
+      <span v-if="programmeInfo.dataffecte" class="pull-right">
+        Affecté par {{ programmeInfo.useraffecte }} {{ programmeInfo.dataffecte | dateAffectation }}
+      </span>
     </div>
+
+
+    <modal v-if="showModalAffectation">
+      <span class="homer-prompt-q control-label" slot="body">
+        Etes-vous sûr de vouloir affecter au programme un fichier qui n'a pas les mêmes famille / type d'utilisation ?
+      </span>
+      <template slot="footer">
+        <button class="btn btn-default btn-primary pull-right no" @click="showModalAffectation = false">Non</button>
+        <button class="btn btn-default btn-primary pull-right yes" @click="onYesConfirmAffectation">Oui</button>
+      </template>
+    </modal>
+
+    <modal v-if="showModalDesactiver">
+      <span class="homer-prompt-q control-label" slot="body">
+        Etes-vous sûr de voir désaffecter tous les fichiers de ce programme?
+      </span>
+      <template slot="footer">
+        <button class="btn btn-default btn-primary pull-right no" @click="showModalDesactiver = false">Non</button>
+        <button class="btn btn-default btn-primary pull-right yes" @click="toutDesactiver">Oui</button>
+      </template>
+    </modal>
+
   </div>
 </template>
 
@@ -193,6 +218,7 @@
   import vSelect from '../common/Select.vue';
   import Grid from '../common/Grid.vue';
   import moment from 'moment';
+  import Modal from '../common/Modal.vue'
 
   export default {
 
@@ -202,6 +228,7 @@
         var $this =this;
         var getters = this.$store.getters;
           return {
+
             fichiersToProgramme: {
                 numProg,
                 fichiers:[{
@@ -209,6 +236,9 @@
                     nom
                 }]
             },
+
+            showModalAffectation :false,
+            showModalDesactiver : false,
             isCollapsed : false,
             resource: {},
             programmeInfo : {},
@@ -339,23 +369,36 @@
           }
           this.resource= this.$resource('', {}, customActions);
 
-
-          this.resource.findByNumProg({numProg:  this.$route.params.numProg})
-            .then(response => {
-                return response.json();
-            })
-            .then(data => {
-              this.programmeInfo = data;
-
+        this.resource.findByNumProg({numProg:  this.$route.params.numProg})
+          .then(response => {
+            return response.json();
+          })
+          .then(data => {
+            this.programmeInfo = data;
+            this.initData();
           });
+
+
 
       },
 
 
 
       mounted() {
-        this.initData();
-        this.rechercher();
+
+      },
+
+      watch : {
+
+        typeUtilisationSelected : function (val, oldVal) {
+          console.log('typeUtilisationSelected : %s, old: %s', val, oldVal);
+          if(oldVal === null) {
+              //Premier chargement de l'ecran
+            this.rechercher();
+
+          }
+        }
+
       },
 
       computed : {
@@ -381,29 +424,14 @@
 
           return options;
         },
-        selectAll: {
-          get: function () {
-            return this.gridData.ligneSelected ? this.selected.length == this.users.length : false;
-          },
-          set: function (value) {
-            var selected = [];
 
-            if (value) {
-              this.users.forEach(function (user) {
-                selected.push(user.id);
-              });
-            }
-
-            this.selected = selected;
-          }
-        }
       },
 
       methods : {
+
         //PRIAM-108(régle:T07)
         toutDesactiver(){
-          var confirmation =confirm("Etes-vous sûr de voir désaffecter tous les fichiers de ce programme?");
-          if(confirmation){
+
 
             //Régles métier
 
@@ -417,33 +445,42 @@
 
             //Afficher l'écran "Liste programmes"
             //Non: Revenir à l'écran affectation en mode non éditable
-          }
-        },
-        enregister(){
 
-          var controle=this.controlerFamilleEtTypeUtilisation();
-          if(controle){
-            this.affecterFichiersAuProgramme();
-          }
         },
+
+        enregister(){
+          console.log("Start of enregister()")
+          this.controlerFamilleEtTypeUtilisation();
+          console.log("End of enregister()")
+        },
+
+        onYesConfirmAffectation() {
+            this.showModalAffectation = false;
+            //PRIAM-108(T09) Implementer le controle ici
+
+            this.affecterFichiersAuProgramme();
+        },
+
         //PRIAM-108(régle:T10)
         controlerFamilleEtTypeUtilisation(){
-          var familleProgramme=this.familleSelected.id;
-          var typeUtilisationProgramme=this.typeUtilisationSelected.id;
+          var familleProgramme = this.programmeInfo.famille;
+          var typeUtilisationProgramme = this.programmeInfo.typeUtilisation;
           var confirmation=false;
-          for(var i in this.priamGrid.gridData.content){
-              var entry = this.priamGrid.gridData.content[i];
-            if(entry.typeUtilisation !== typeUtilisationProgramme || entry.famille !== familleProgramme){
-                confirmation=confirm("Etes-vous sûr de vouloir affecter au programme un fichier qui n'a pas les mêmes famille / type d'utilisation ?");
-                if(confirmation){
-                     return true;
-                }else{
-                     return false;
-                }
-            }
+
+          //Implementation en utilisant le find()
+          var fichiersChecked = this.fichiersChecked;
+          var result = this.priamGrid.gridData.content.find(function (entry) {
+              var fileId = Number.parseInt(entry.id);
+              return (fichiersChecked.indexOf(fileId) !== -1 && (entry.typeUtilisation !== typeUtilisationProgramme || entry.famille !== familleProgramme));
+          });
+
+          console.log("typeUtilisationProgramme=" + typeUtilisationProgramme)
+          console.log("result=" + result)
+          if(result !== undefined) {
+            this.showModalAffectation = true;
           }
-          return false;
         },
+
         isStatusProgrammeAffecte(){
           return this.programmeInfo.statut === 'AFFECTE';
         },
@@ -485,8 +522,9 @@
           this.$store.dispatch('loadTypeUtilisation', val);
 
           if(this.typeUtilisationSelected == null && this.programmeInfo.statut === 'CREE') {
+              // Premier chargement de l'ecran
             this.typeUtilisationSelected = this.getTypeUtilisationByCode(this.programmeInfo.typeUtilisation);
-
+            //this.rechercher();
           } else {
             this.typeUtilisationSelected = {id : 'ALL', value: 'Tous'};
           }
@@ -512,13 +550,16 @@
                 this.tableauSelectionnable = false;
                 this.showButtonEditer = true;
             }
-          if(this.programmeInfo.statut === 'EN_COURS' || this.programmeInfo.statut === 'ABANDONNE' || this.programmeInfo.statut === 'MIS_EN_REPART' ||this.programmeInfo.statut ==='REPARTI'){
-            this.showButtonEditer = false;
-            this.showButtonToutDesactiver = false;
-            this.tableauSelectionnable = false;
-            this.showButtonAnnuler = false;
-            this.showButtonEnregistrer = false;
+
+            if(this.programmeInfo.statut === 'EN_COURS' || this.programmeInfo.statut === 'ABANDONNE' || this.programmeInfo.statut === 'MIS_EN_REPART' ||this.programmeInfo.statut ==='REPARTI'){
+              this.showButtonEditer = false;
+              this.showButtonToutDesactiver = false;
+              this.tableauSelectionnable = false;
+              this.showButtonAnnuler = false;
+              this.showButtonEnregistrer = false;
           }
+
+          //this.rechercher();
         },
 
         rechercher() {
@@ -618,7 +659,8 @@
 
       components : {
         vSelect : vSelect,
-        priamGrid : Grid
+        priamGrid : Grid,
+        modal: Modal
       }
 
 

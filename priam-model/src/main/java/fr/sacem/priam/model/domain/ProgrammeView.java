@@ -22,6 +22,8 @@ public class ProgrammeView {
     private String usercre;
     private Date datmaj;
     private String usermaj;
+    private String useraffect;
+    private Date dataffect;
     
     public ProgrammeView() {
     }
@@ -96,6 +98,17 @@ public class ProgrammeView {
         return usermaj;
     }
     
+    @Column(name = "USERAFFECT")
+    public String getUseraffect() {
+        return useraffect;
+    }
+    
+    @Column(name = "DATAFFECT")
+    @Temporal(TemporalType.TIMESTAMP)
+    public Date getDataffect() {
+        return dataffect;
+    }
+    
     public void setNumProg(String numProg) {
         this.numProg = numProg;
     }
@@ -146,5 +159,13 @@ public class ProgrammeView {
     
     public void setUsermaj(String usermaj) {
         this.usermaj = usermaj;
+    }
+    
+    public void setDataffect(Date dataffect) {
+        this.dataffect = dataffect;
+    }
+    
+    public void setUseraffect(String useraffect) {
+        this.useraffect = useraffect;
     }
 }
