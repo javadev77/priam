@@ -7,8 +7,10 @@ import { routes } from './routes';
 import { fetchInitData } from './store/actions';
 import store from './store/store';
 import './directives/form-elements'
+import './filters/filters'
 import './utils/Arrays'
 import VeeValidate from 'vee-validate';
+
 
 Vue.use(VeeValidate, {
   locale: 'fr',
