@@ -58,5 +58,22 @@ public interface FichierDao extends JpaRepository<Fichier, Long> {
         "ORDER BY f.dateFinChargt DESC ")
     List<FileDto> findFichiersAffectes(@Param("familleCode") String familleCode, @Param("typeUtilisationCode") String typeUtilisationCode,
                                             @Param("status") List<Status> status, @Param("numProg") String numProg);
+    @Transactional(readOnly =true)
+    @Query("SELECT f " +
+            "FROM Fichier AS f " +
+            "WHERE f.programme.numProg = :numProg " +
+            "AND f.statut=:status")
+    List<Fichier> findFichiersByIdProgramme(@Param("numProg") String numProg,@Param("status") Status status);
+
+
+    @Transactional(readOnly =true)
+    @Modifying(clearAutomatically = true)
+    @Query("UPDATE Fichier f SET f.programme.numProg = NULL, f.statut =:status WHERE f.programme.numProg = :numProg")
+    void clearSelectedFichiers(@Param("numProg") String numProg,@Param("status") Status status);
+
+    @Transactional(readOnly =true)
+    @Modifying(clearAutomatically = true)
+    @Query("UPDATE Fichier f SET f.programme.numProg = :numProg, f.statut =:status  WHERE f.id IN (:idFichiers) ")
+    void updateStatusFichiersAffectes(@Param("numProg") String numProg,@Param("status") Status status,@Param("idFichiers") List<Long> idFichiers);
 }
 

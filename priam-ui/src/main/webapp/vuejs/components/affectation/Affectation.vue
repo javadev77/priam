@@ -236,6 +236,12 @@
         var $this =this;
         var getters = this.$store.getters;
           return {
+
+            fichiersToProgramme: {
+                numProg : '',
+                fichiers : []
+            },
+
             showModalAffectation :false,
             showModalDesactiver : false,
             isCollapsed : false,
@@ -362,7 +368,9 @@
           console.log("router params numProg = " + this.$route.params.numProg)
           const customActions = {
               findByNumProg : {method : 'GET', url : 'app/rest/programme/numProg/{numProg}'},
-              findAllFichiers : {method : 'POST', url :'app/rest/chargement/allFichiers'}
+              findAllFichiers : {method : 'POST', url :'app/rest/chargement/allFichiers'},
+              affectationProgramme : {method: 'POST', url : 'app/rest/programme/affectation'},
+
           }
           this.resource= this.$resource('', {}, customActions);
 
@@ -378,6 +386,8 @@
 
 
       },
+
+
 
       mounted() {
 
@@ -447,12 +457,16 @@
           console.log("Start of enregister()")
           this.controlerFamilleEtTypeUtilisation();
           console.log("End of enregister()")
+          if( !this.showModalAffectation) {
+            this.affecterFichiersAuProgramme();
+          }
         },
 
         onYesConfirmAffectation() {
             this.showModalAffectation = false;
             //PRIAM-108(T09) Implementer le controle ici
 
+            this.affecterFichiersAuProgramme();
         },
 
         //PRIAM-108(régle:T10)
@@ -473,6 +487,7 @@
           if(result !== undefined) {
             this.showModalAffectation = true;
           }
+
         },
 
         isStatusProgrammeAffecte(){
@@ -629,8 +644,28 @@
             }
 
           console.log('this.fichiersChecked='+this.fichiersChecked);
+        },
+
+      affecterFichiersAuProgramme(){
+        this.fichiersToProgramme.numProg = this.programmeInfo.numProg;
+        this.fichiersToProgramme.fichiers=[];
+        for(var i in this.fichiersChecked){
+            var idFichier =this.fichiersChecked[i];
+            if( idFichier !== null || idFichier !== '' ){
+              this.fichiersToProgramme.fichiers.push({id:idFichier});
+            }
+
         }
 
+        console.log("fichiers envoyes" +this.fichiersToProgramme.fichiers);
+        this.resource.affectationProgramme(this.fichiersToProgramme).then(response => {
+          console.log("affacration ok");
+          this.$emit('validate');
+        }, response => {
+          alert("Erreur technique lors de l'affectation des fichiers au programme !! ");
+          this.$emit('cancel');
+        });
+      }
 
       },
 
