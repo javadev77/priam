@@ -1,19 +1,17 @@
 package fr.sacem.priam.model.domain.dto;
 
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import fr.sacem.priam.model.domain.Fichier;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by fandis on 03/07/2017.
  */
 public class AffectationDto {
     private String numProg;
-    private ArrayList<Fichier> fichiers;
+    private ArrayList<Fichier> fichiers= new ArrayList<>();
+
 
     public AffectationDto(String numProg, ArrayList<Fichier> fichiers) {
         this.numProg = numProg;

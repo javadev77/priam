@@ -1,8 +1,10 @@
 package fr.sacem.priam.model.dao.jpa;
 
 import fr.sacem.priam.model.dao.JpaConfigurationTest;
+import fr.sacem.priam.model.domain.Fichier;
 import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.dto.FileDto;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +13,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -72,6 +76,8 @@ public class FichierDaoTest {
     
     @Autowired
     private TypeUtilisationDao typeUtilisationDao;
+    @Autowired
+    private ProgrammeDao programmeDao;
     
     @Test
     public void should_find_all_fichiers() {
@@ -121,5 +127,36 @@ public class FichierDaoTest {
         });
     
     }
+    @Test
+    @Transactional
+    public void clearSelectedFichiersTest(){
+        fichierDao.clearSelectedFichiers("PR170001",Status.AFFECTE);
+        List<Fichier> all = fichierDao.findFichiersByIdProgramme("PR170001",Status.AFFECTE);
 
+        assertThat(all)
+                .hasSize(0);
+    }
+    @Test
+    @Transactional
+    public void updateStatusFichiersAffectesTest(){
+        List<Long> idFichiers= new ArrayList<>();
+        idFichiers.add(125l);
+        idFichiers.add(126l);
+        idFichiers.add(127l);
+        idFichiers.add(128l);
+        fichierDao.updateStatusFichiersAffectes("PR170001",Status.AFFECTE,idFichiers);
+        List<Fichier> all = fichierDao.findFichiersByIdProgramme("PR170001",Status.AFFECTE);
+
+        assertThat(all)
+                .hasSize(4);
+    }
+    @Test
+    @Transactional
+    public void findFichiersByIdProgrammeTest(){
+        List<Fichier> all = fichierDao.findFichiersByIdProgramme("PR170001",Status.AFFECTE);
+        assertThat(all)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(4);
+    }
 }

@@ -3,12 +3,14 @@ package fr.sacem.priam.ui.rest;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
+import fr.sacem.priam.model.domain.Fichier;
 import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.StatutProgramme;
 import fr.sacem.priam.model.domain.TypeRepart;
 import fr.sacem.priam.model.domain.criteria.ProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.AffectationDto;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
+import fr.sacem.priam.services.FichierService;
 import fr.sacem.priam.services.ProgrammeService;
 import fr.sacem.priam.ui.rest.dto.ProgrammeCritereRecherche;
 import org.slf4j.Logger;
@@ -19,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,7 +35,8 @@ public class ProgrammeResource {
 
     @Autowired
     private ProgrammeService programmeService;
-
+    @Autowired
+    private FichierService fichierService;
     @Autowired
     private ProgrammeViewDao programmeViewDao;
 
@@ -143,6 +147,11 @@ public class ProgrammeResource {
     produces = MediaType.APPLICATION_JSON_VALUE)
     public AffectationDto affecterFichiers (@RequestBody AffectationDto affectationDto){
     //return programmeService.addProgramme();
-      return affectationDto;
+    String numProg=affectationDto.getNumProg();
+    ArrayList<Fichier> fichiers=affectationDto.getFichiers();
+    if(numProg!=null || numProg==""){
+      fichierService.majFichiersAffectesAuProgramme(numProg,fichiers);
+    }
+    return affectationDto;
   }
 }

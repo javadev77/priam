@@ -230,11 +230,8 @@
           return {
 
             fichiersToProgramme: {
-                numProg,
-                fichiers:[{
-                    id,
-                    nom
-                }]
+                numProg : '',
+                fichiers : []
             },
 
             showModalAffectation :false,
@@ -452,6 +449,9 @@
           console.log("Start of enregister()")
           this.controlerFamilleEtTypeUtilisation();
           console.log("End of enregister()")
+          if( !this.showModalAffectation) {
+            this.affecterFichiersAuProgramme();
+          }
         },
 
         onYesConfirmAffectation() {
@@ -479,6 +479,7 @@
           if(result !== undefined) {
             this.showModalAffectation = true;
           }
+
         },
 
         isStatusProgrammeAffecte(){
@@ -636,16 +637,19 @@
 
           console.log('this.fichiersChecked='+this.fichiersChecked);
         },
+
       affecterFichiersAuProgramme(){
         this.fichiersToProgramme.numProg = this.programmeInfo.numProg;
-        for(idFichier in this.fichiersChecked){
-            if(f !==null){
+        this.fichiersToProgramme.fichiers=[];
+        for(var i in this.fichiersChecked){
+            var idFichier =this.fichiersChecked[i];
+            if( idFichier !== null || idFichier !== '' ){
               this.fichiersToProgramme.fichiers.push({id:idFichier});
             }
 
         }
 
-        console.log(fichiersToProgramme.fichiers);
+        console.log("fichiers envoyes" +this.fichiersToProgramme.fichiers);
         this.resource.affectationProgramme(this.fichiersToProgramme).then(response => {
           console.log("affacration ok");
           this.$emit('validate');
