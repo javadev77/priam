@@ -147,29 +147,31 @@ public class ProgrammeResource {
                     consumes = MediaType.APPLICATION_JSON_VALUE,
                     produces = MediaType.APPLICATION_JSON_VALUE)
     public AffectationDto affecterFichiers (@RequestBody AffectationDto affectationDto){
-    String numProg=affectationDto.getNumProg();
-    ArrayList<Fichier> fichiers=affectationDto.getFichiers();
-    if(numProg!=null || numProg!=""){
-      fichierService.majFichiersAffectesAuProgramme(numProg,fichiers);
+      //return programmeService.addProgramme();
+      String numProg=affectationDto.getNumProg();
+      ArrayList<Fichier> fichiers=affectationDto.getFichiers();
+      if(!Strings.isNullOrEmpty(numProg)){
+          fichierService.majFichiersAffectesAuProgramme(numProg,fichiers);
+      }
+      return affectationDto;
     }
-    return affectationDto;
-  }
   
+  
+    @RequestMapping(value = "programme/numprog/autocomplete",
+                  method = RequestMethod.GET,
+                  produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<String> getAllNumProgForAutocmplete() {
+        return programmeViewDao.findAllNumProgByCriteria();
+    }
+
     @RequestMapping(value = "programme/toutDesaffecter",
       method = RequestMethod.POST,
       consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void affecterFichiers(@RequestBody String numProg) {
-      if (numProg != null || numProg != "") {
-        System.out.println("numprog " + numProg);
+    public void deaffecterFichiers (@RequestBody String numProg){
+      logger.info("deaffecterFichiers() ==> numProg=" + numProg);
+      if(!Strings.isNullOrEmpty(numProg)){
         programmeService.toutDeaffecter(numProg);
       }
     }
-    
-    
-    @RequestMapping(value = "programme/numprog/autocomplete",
-      method = RequestMethod.GET,
-      produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<String> getAllNumProgForAutocmplete() {
-      return programmeViewDao.findAllNumProgByCriteria();
-    }
+
 }

@@ -4,7 +4,6 @@ import fr.sacem.priam.model.dao.JpaConfigurationTest;
 import fr.sacem.priam.model.domain.Fichier;
 import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.dto.FileDto;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,14 +79,14 @@ public class FichierDaoTest {
     private ProgrammeDao programmeDao;
     
     @Test
-    public void should_find_all_fichiers() {
+    public void should_find_all_fichiers_affectes() {
         List<Status> status = Arrays.asList(Status.values());
         List<FileDto> all = fichierDao.findFichiersAffectes(null, null, status, null);
     
         assertThat(all)
             .isNotNull()
-            .isNotEmpty()
-            .hasSize(fichierDao.findAll().size());
+            .isNotEmpty();
+            
     }
     
     @Test

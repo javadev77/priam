@@ -349,6 +349,16 @@
                             return true;
                         }
                         return false;
+                    },
+
+                    isChecked: function (entry) {
+                      var result = $this.fichiersChecked.find( elem => {
+                        return elem == entry.id;
+                      });
+                      if(result !== undefined) {
+                          return  1;
+                      }
+                      return 0;
                     }
                   }
                 }
@@ -370,7 +380,7 @@
               findByNumProg : {method : 'GET', url : 'app/rest/programme/numProg/{numProg}'},
               findAllFichiers : {method : 'POST', url :'app/rest/chargement/allFichiers'},
               affectationProgramme : {method: 'POST', url : 'app/rest/programme/affectation'},
-              toutDeaffecter : {method: 'POST', url : 'app/rest/programme/toutDesaffecter'},
+              toutDeaffecterProg : {method: 'POST', url : 'app/rest/programme/toutDesaffecter'},
           }
           this.resource= this.$resource('', {}, customActions);
 
@@ -567,7 +577,6 @@
               this.showButtonEnregistrer = false;
           }
 
-          //this.rechercher();
         },
 
         rechercher() {
@@ -597,6 +606,17 @@
               console.log(data);
               this.priamGrid.gridData.content = data;
               this.priamGrid.gridData.sort = [{"direction":"DESC","property":"dateFinChargt","ignoreCase":false,"nullHandling":"NATIVE","ascending":false,"descending":true}];
+
+              this.fichiersChecked = [];
+              var tab = this.priamGrid.gridData.content;
+              for(var i in tab) {
+                if(tab[i].statut === 'AFFECTE') {
+                  this.fichiersChecked.push(tab[i].id);
+                }
+
+              }
+
+              console.log("this.fichiersChecked="+this.fichiersChecked);
 
             });
 
@@ -660,20 +680,24 @@
           alert("Erreur technique lors de l'affectation des fichiers au programme !! ");
           this.$emit('cancel');
         });
-      }
+      },
 
+        toutDeaffecter(){
+          console.log('toutDeaffecter()');
+          var numProgramme =this.programmeInfo.numProg;
+          if(numProgramme!==null || numProgramme!==""){
+            console.log("fichiers envoyes" +this.fichiersToProgramme.fichiers);
+            this.resource.toutDeaffecterProg(numProgramme).then(response => {
+              console.log("Déaffactaation ok");
+              this.showModalDesactiver = false;
+            }, response => {
+              alert("Erreur technique lors de deaffectation des fichiers du programme !! ");
+            });
+          }
+        },
       },
-    toutDeaffecter(){
-      var numProgramme =this.programmeInfo.numProg;
-      if(numProgramme!==null || numProgramme!==""){
-        console.log("fichiers envoyes" +this.fichiersToProgramme.fichiers);
-        this.resource.toutDeaffecter(numProgramme).then(response => {
-          console.log("Déaffactaation ok");
-        }, response => {
-          alert("Erreur technique lors de deaffectation des fichiers du programme !! ");
-        });
-      }
-      },
+
+
 
       components : {
         vSelect : vSelect,
