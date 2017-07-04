@@ -141,17 +141,26 @@ public class ProgrammeResource {
           }
           return null;
      }
-  @RequestMapping(value = "programme/affectation",
-    method = RequestMethod.POST,
-    consumes = MediaType.APPLICATION_JSON_VALUE,
-    produces = MediaType.APPLICATION_JSON_VALUE)
+     
+    @RequestMapping(value = "programme/affectation",
+                    method = RequestMethod.POST,
+                    consumes = MediaType.APPLICATION_JSON_VALUE,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
     public AffectationDto affecterFichiers (@RequestBody AffectationDto affectationDto){
-    //return programmeService.addProgramme();
-    String numProg=affectationDto.getNumProg();
-    ArrayList<Fichier> fichiers=affectationDto.getFichiers();
-    if(numProg!=null || numProg==""){
-      fichierService.majFichiersAffectesAuProgramme(numProg,fichiers);
+      //return programmeService.addProgramme();
+      String numProg=affectationDto.getNumProg();
+      ArrayList<Fichier> fichiers=affectationDto.getFichiers();
+      if(numProg!=null || numProg==""){
+        fichierService.majFichiersAffectesAuProgramme(numProg,fichiers);
+      }
+      return affectationDto;
     }
-    return affectationDto;
-  }
+  
+  
+    @RequestMapping(value = "programme/numprog/autocomplete",
+                  method = RequestMethod.GET,
+                  produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<String> getAllNumProgForAutocmplete() {
+        return programmeViewDao.findAllNumProgByCriteria();
+    }
 }

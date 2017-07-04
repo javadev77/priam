@@ -21,7 +21,7 @@
                   <label class="control-label pull-right">N° programme</label>
                 </div>
                 <div class="col-sm-3">
-                  <input type="text" class="form-control" v-model="critereRechercheData.numProg">
+                  <autocomplete :suggestions="numProgItems" :selection="critereRechercheData.numProg" @selected-value="updateValue"></autocomplete>
                 </div>
                 <div class="col-sm-2">
                   <label class="control-label pull-right">Famille</label>
@@ -167,6 +167,7 @@
   import DatePicker from '../common/DatePicker.vue';
   import {DateUtils} from '../../utils/DateUtils'
   import Modal from '../common/Modal.vue';
+  import Autocomplete from '../common/Autocomplete.vue'
 
   export default {
 
@@ -177,6 +178,7 @@
 
 
         return {
+            numProgItems : [],
             isCollapsed : false,
             showEcranModal : false,
             showPopupAbandon : false,
@@ -202,7 +204,7 @@
             typeRepartSelected : {'id' : 'ALL', 'value' : 'Tous'},
 
             critereRechercheData : {
-                numProg : null,
+                numProg : '',
                 famille : null,
                 typeUtilisation: null,
                 nom : null,
@@ -385,11 +387,20 @@
       created() {
         const customActions = {
             searchProgramme : {method : 'POST', url :'app/rest/programme/search?page={page}&size={size}&sort={sort},{dir}'},
-            abandonnerProgramme : {method : 'PUT', url :'app/rest/programme/abandon'}
+            abandonnerProgramme : {method : 'PUT', url :'app/rest/programme/abandon'},
+            getAllNumProgForAutocmplete : {method : 'GET', url :'app/rest/programme/numprog/autocomplete'}
         }
         this.resource= this.$resource('', {}, customActions);
 
         this.rechercherProgrammes();
+
+        this.resource.getAllNumProgForAutocmplete()
+          .then(response => {
+            return response.json();
+          })
+          .then(data => {
+            this.numProgItems = data;
+          });
       },
 
       computed : {
@@ -432,6 +443,12 @@
 
 
       methods : {
+
+          updateValue(selectedValue) {
+
+            this.critereRechercheData.numProg = selectedValue;
+
+          },
 
           retablir() {
               this.critereRechercheData.numProg = null;
@@ -533,6 +550,7 @@
               this.launchRequest(this.defaultPageable.page, this.defaultPageable.size,
                                  this.defaultPageable.sort, this.defaultPageable.dir);
 
+
           },
 
           loadTypeUtilisation(val) {
@@ -590,7 +608,8 @@
           ajouterProgramme : AjouterProgramme,
           vSelect : vSelect,
           datePicker : DatePicker,
-          modal: Modal
+          modal: Modal,
+          autocomplete : Autocomplete
       }
 
   }
