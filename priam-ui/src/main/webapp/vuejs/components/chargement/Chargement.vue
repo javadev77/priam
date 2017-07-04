@@ -402,6 +402,9 @@
       },
 
       retablir() {
+          this.familleSelected = {'id' : 'ALL', 'value': 'Toutes'};
+          let statutFichier = this.$store.getters.statutFichier;
+          this.inputChgtCriteria.statutCode = [statutFichier['EN_COURS'].code, statutFichier['CHARGEMENT_OK'].code, statutFichier['CHARGEMENT_KO'].code]
 
       },
 

@@ -6,6 +6,30 @@ const state = {
   typeUtilisationOptions : [],
   typeUtilisationOptions_vide : [],
   familleTypeUtilMap : {},
+
+  statutFichier : {
+    EN_COURS: {
+      "code": 'EN_COURS',
+      "libelle": 'En cours'
+    }
+    ,
+
+
+    CHARGEMENT_OK: {
+      "code": 'CHARGEMENT_OK',
+      "libelle": 'Chargement OK'
+    }
+    ,
+
+
+    CHARGEMENT_KO: {
+      "code": 'CHARGEMENT_KO',
+      "libelle": 'Chargement KO'
+    }
+
+
+  },
+
   statut : [
     {
       "code" : 'EN_COURS',
@@ -143,6 +167,11 @@ const getters = {
   familleTypeUtilMap: state => {
     return state.statut;
   },
+
+  statutFichier :state => {
+    return state.statutFichier;
+  }
+
 };
 
 export default {

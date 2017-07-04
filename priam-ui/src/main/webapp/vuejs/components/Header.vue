@@ -78,10 +78,10 @@
 
         ],
        currentActiveMenu :  {
-          id : 'programme'
+          id : ''
         },
         currentSubMenu :  {
-          id : 'ListePrg'
+          id : ''
         },
 
         isDropdownOpen: false
@@ -89,7 +89,14 @@
     },
 
     created()  {
-        console.log("activeMenu"  + this.activeMenu)
+        let currentRoute = this.$route.matched;
+        console.log('currentRoute =  ' + currentRoute[0].name);
+        this.currentActiveMenu.id = currentRoute[0].name;
+        this.currentSubMenu.id = currentRoute[0].children !== undefined ? currentRoute[0].children[0].name : '';
+
+        console.log('currentActiveMenu ' + this.currentActiveMenu.id);
+        console.log('currentSubMenu ' + this.currentSubMenu.id);
+
     },
 
     components :    {
