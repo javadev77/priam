@@ -146,12 +146,21 @@ public class ProgrammeResource {
     consumes = MediaType.APPLICATION_JSON_VALUE,
     produces = MediaType.APPLICATION_JSON_VALUE)
     public AffectationDto affecterFichiers (@RequestBody AffectationDto affectationDto){
-    //return programmeService.addProgramme();
     String numProg=affectationDto.getNumProg();
     ArrayList<Fichier> fichiers=affectationDto.getFichiers();
-    if(numProg!=null || numProg==""){
+    if(numProg!=null || numProg!=""){
       fichierService.majFichiersAffectesAuProgramme(numProg,fichiers);
     }
     return affectationDto;
+  }
+
+  @RequestMapping(value = "programme/toutDesaffecter",
+    method = RequestMethod.POST,
+    consumes = MediaType.APPLICATION_JSON_VALUE)
+  public void affecterFichiers (@RequestBody String numProg){
+    if(numProg !=null || numProg!="") {
+      System.out.println("numprog "+ numProg);
+      programmeService.toutDeaffecter(numProg);
+    }
   }
 }
