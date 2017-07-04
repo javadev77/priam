@@ -1,5 +1,13 @@
 <template>
   <div class="container-fluid">
+    <div class="navbar navbar-default navbar-sm breadcrumb">
+        <div class="titre-page">
+            <span>Programme <span class="glyphicon glyphicon-chevron-right"></span>
+              Liste programmes <span class="glyphicon glyphicon-chevron-right"></span>
+              Affectation
+            </span>
+        </div>
+    </div>
     <div class="container-fluid sacem-formula">
 
       <!--En tete Panel-->
@@ -537,7 +545,6 @@
         initData() {
             console.log("initData() ==> this.programmeInfo="+this.programmeInfo.statut)
             if(this.programmeInfo !== null && this.programmeInfo.statut === 'CREE') {
-
                 this.familleSelected = this.getFamilleByCode(this.programmeInfo.famille);
                 this.statutSelected = { id : 'ALL', value : 'Tous'};
                 this.tableauSelectionnable = true;
@@ -564,12 +571,9 @@
         },
 
         rechercher() {
-          console.log("rechercher() ==> this.typeUtilisationSelected="+this.typeUtilisationSelected)
-          if(this.programmeInfo.statut === 'AFFECTE') {
-             this.inputChgtCriteria.numProg = this.programmeInfo.numProg;
-          } else {
-             this.inputChgtCriteria.numProg = null;
-          }
+          console.log("Begin rechercher()")
+
+          this.inputChgtCriteria.numProg = this.programmeInfo.numProg;
 
           this.inputChgtCriteria.typeUtilisationCode = this.typeUtilisationSelected.id;
           this.inputChgtCriteria.familleCode = this.familleSelected.id;
