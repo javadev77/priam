@@ -92,7 +92,7 @@
         let currentRoute = this.$route.matched;
         console.log('currentRoute =  ' + currentRoute[0].name);
         this.currentActiveMenu.id = currentRoute[0].name;
-        this.currentSubMenu.id = currentRoute[0].children !== undefined ? currentRoute[0].children[0].name : '';
+        this.currentSubMenu.id = currentRoute.length > 1 && currentRoute[1] !== undefined ? currentRoute[1].name : '';
 
         console.log('currentActiveMenu ' + this.currentActiveMenu.id);
         console.log('currentSubMenu ' + this.currentSubMenu.id);

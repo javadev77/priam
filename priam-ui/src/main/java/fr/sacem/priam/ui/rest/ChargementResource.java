@@ -75,7 +75,6 @@ public class ChargementResource {
         List<Status> status = statusCriterion(input);
         String codeFamille = familleCriterion(input);
         String codeTypeUtil = typeUtilisationCriterion(input);
-  
         String numProg = input.getNumProg();
         
         return fichierDao.findFichiersAffectes(codeFamille, codeTypeUtil, status, numProg);
