@@ -116,7 +116,7 @@
                   </template>
                   <template v-else-if="entryColumn.type === 'checkbox'">
                     <td class="columnCenter">
-                      <input :disabled="entryColumn.cell.isDisabled()" type="checkbox" ref="checkbox" :value="entryColumn.cell.toText(entry)" @click="emitCheckbox(entry)" />
+                      <input :disabled="entryColumn.cell.isDisabled()" type="checkbox" ref="checkbox" :value="entryColumn.cell.toText(entry)" :checked="entry==='AFFECTE'" @click="emitCheckbox(entry)" />
                     </td>
                   </template>
                   <template  v-else>

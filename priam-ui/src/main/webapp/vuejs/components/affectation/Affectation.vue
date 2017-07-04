@@ -213,7 +213,7 @@
       </span>
       <template slot="footer">
         <button class="btn btn-default btn-primary pull-right no" @click="showModalDesactiver = false">Non</button>
-        <button class="btn btn-default btn-primary pull-right yes" @click="toutDesactiver">Oui</button>
+        <button class="btn btn-default btn-primary pull-right yes" @click="toutDeaffecter">Oui</button>
       </template>
     </modal>
 
@@ -370,7 +370,7 @@
               findByNumProg : {method : 'GET', url : 'app/rest/programme/numProg/{numProg}'},
               findAllFichiers : {method : 'POST', url :'app/rest/chargement/allFichiers'},
               affectationProgramme : {method: 'POST', url : 'app/rest/programme/affectation'},
-
+              toutDeaffecter : {method: 'POST', url : 'app/rest/programme/toutDesaffecter'},
           }
           this.resource= this.$resource('', {}, customActions);
 
@@ -652,7 +652,6 @@
             }
 
         }
-
         console.log("fichiers envoyes" +this.fichiersToProgramme.fichiers);
         this.resource.affectationProgramme(this.fichiersToProgramme).then(response => {
           console.log("affacration ok");
@@ -663,6 +662,17 @@
         });
       }
 
+      },
+    toutDeaffecter(){
+      var numProgramme =this.programmeInfo.numProg;
+      if(numProgramme!==null || numProgramme!==""){
+        console.log("fichiers envoyes" +this.fichiersToProgramme.fichiers);
+        this.resource.toutDeaffecter(numProgramme).then(response => {
+          console.log("Déaffactaation ok");
+        }, response => {
+          alert("Erreur technique lors de deaffectation des fichiers du programme !! ");
+        });
+      }
       },
 
       components : {

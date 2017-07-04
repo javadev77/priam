@@ -1,9 +1,6 @@
 package fr.sacem.priam.services;
 
-import fr.sacem.priam.model.dao.jpa.ParamAppliDao;
-import fr.sacem.priam.model.dao.jpa.ProgrammeDao;
-import fr.sacem.priam.model.dao.jpa.ProgrammeSequnceDao;
-import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
+import fr.sacem.priam.model.dao.jpa.*;
 
 
 import fr.sacem.priam.model.domain.*;
@@ -42,6 +39,8 @@ public class ProgrammeService {
     ProgrammeViewDao programmeViewDao;
     @Autowired
     ProgrammeDao programmeDao;
+    @Autowired
+    FichierDao fichierDao;
     @Autowired
     ParamAppliDao paramAppliDao;
     @Autowired
@@ -149,5 +148,13 @@ public class ProgrammeService {
         programme.setStatut(StatutProgramme.ABANDONNE);
         
         return programmeDao.save(programme);
+    }
+    @Transactional
+    public void toutDeaffecter(String numProg){
+        LOG.info("Debut :Deaffecter les fichiers lies au programme ("+numProg+")");
+        fichierDao.clearSelectedFichiers(numProg,Status.CHARGEMENT_OK);
+        programmeDao.majProgrammeStatusToCree(numProg,StatutProgramme.CREE);
+        LOG.info("Fin :Deaffecter les fichiers lies au programme ("+numProg+")");
+
     }
 }
