@@ -21,7 +21,13 @@
                 <template v-for="entry in columns">
                   <template v-if="entry.type === 'checkbox'">
                     <th>
-                        <input :disabled="entry.cell.isDisabled()" type="checkbox" v-model="allChecked" @click="emitAllCheckbox" />
+                      <span>
+                        <input
+                          :disabled="entry.cell.isDisabled()"
+                          type="checkbox"
+                          v-model="allChecked"
+                          @click="emitAllCheckbox" />
+                      </span>
                     </th>
                   </template>
                   <template v-else>
@@ -122,6 +128,19 @@
                              :value="entryColumn.cell.toText(entry)"
                              :checked="entryColumn.cell.isChecked(entry)"
                              @click="emitCheckbox(entry)" />
+
+                      <!--<label class="checkbox checkbox-inline" :class="{'checked' : entryColumn.cell.isChecked(entry) == 1}">
+                        <input class="checkbox checkbox-inline"
+                                :disabled="entryColumn.cell.isDisabled()"
+                               type="checkbox"
+                               ref="checkbox"
+                               :value="entryColumn.cell.toText(entry)"
+                               :checked="entryColumn.cell.isChecked(entry)"
+                               @click="emitCheckbox(entry)" />
+
+                        <span class="icons"><span class="first-icon fui-checkbox-unchecked"></span><span class="second-icon fui-checkbox-checked"></span></span>
+                      </label>-->
+
                     </td>
                   </template>
                   <template  v-else>
@@ -187,9 +206,9 @@
           sortOrders[entry.id] = -1;
         }
 
-
-
       return {
+        allCheckedHidden : false,
+        checkedList : [],
         selected : [],
         checkedCurrentEntry : new Map(),
         allChecked: false,
@@ -209,6 +228,7 @@
         }*/
       }
     },
+
     computed : {
 
       sortAsc() {

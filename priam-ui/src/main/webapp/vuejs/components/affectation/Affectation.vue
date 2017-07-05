@@ -189,7 +189,7 @@
     <div class="row formula-buttons">
       <button v-if="showButtonEnregistrer" class="btn btn-default btn-primary pull-right" type="button" @click="enregister()">Enregister</button>
       <button v-if="showButtonEditer" class="btn btn-default btn-primary pull-right" type="button" @click="editer()">Editer</button>
-      <button v-if="showButtonToutDesactiver" class="btn btn-default btn-primary pull-right" type="button" @click="showModalDesactiver = true">Tout désactiver</button>
+      <button v-if="showButtonToutDesactiver" style="width: 160px;"  class="btn btn-default btn-primary pull-right" type="button" @click="showModalDesactiver = true">Tout désactiver</button>
       <button v-if="showButtonAnnuler" class="btn btn-default btn-primary pull-right" type="button" @click="annuler()">Annuler</button>
       <span v-if="programmeInfo.dataffecte" class="pull-right">
         Affecté par {{ programmeInfo.useraffecte }} {{ programmeInfo.dataffecte | dateAffectation }}
@@ -359,6 +359,13 @@
                           return  1;
                       }
                       return 0;
+                    },
+
+                    isAllNotChecked : function () {
+                      if($this.fichiersChecked.length > 1 ) {
+                        return  false;
+                      }
+                      return true;
                     }
                   }
                 }
@@ -379,8 +386,8 @@
           const customActions = {
               findByNumProg : {method : 'GET', url : 'app/rest/programme/numProg/{numProg}'},
               findAllFichiers : {method : 'POST', url :'app/rest/chargement/allFichiers'},
-              affectationProgramme : {method: 'POST', url : 'app/rest/programme/affectation'},
-              toutDeaffecterProg : {method: 'POST', url : 'app/rest/programme/toutDesaffecter'},
+              affectationProgramme : {method: 'PUT', url : 'app/rest/programme/affectation'},
+              toutDeaffecterProg : {method: 'PUT', url : 'app/rest/programme/toutDesaffecter'},
           }
           this.resource= this.$resource('', {}, customActions);
 
@@ -559,17 +566,21 @@
                 this.statutSelected = { id : 'ALL', value : 'Tous'};
                 this.tableauSelectionnable = true;
                 this.showButtonEnregistrer = true;
+                this.showButtonAnnuler = false;
+                this.showButtonToutDesactiver = false;
+                this.showButtonEditer = false;
 
-            } else {
+            } else if (this.programmeInfo.statut === 'AFFECTE') {
                 this.familleSelected = {id : 'ALL', value : 'Toutes'};
                 this.typeUtilisationSelected = {id : 'ALL', value : 'Tous'};
                 let statutFichier = this.getStatutFichierByCode('AFFECTE');
                 this.statutSelected = { id : statutFichier.code, value : statutFichier.libelle};
                 this.tableauSelectionnable = false;
                 this.showButtonEditer = true;
+                this.showButtonEnregistrer = false;
             }
 
-            if(this.programmeInfo.statut === 'EN_COURS' || this.programmeInfo.statut === 'ABANDONNE' || this.programmeInfo.statut === 'MIS_EN_REPART' ||this.programmeInfo.statut ==='REPARTI'){
+            else if(this.programmeInfo.statut === 'EN_COURS' || this.programmeInfo.statut === 'ABANDONNE' || this.programmeInfo.statut === 'MIS_EN_REPART' ||this.programmeInfo.statut ==='REPARTI'){
               this.showButtonEditer = false;
               this.showButtonToutDesactiver = false;
               this.tableauSelectionnable = false;
@@ -673,26 +684,41 @@
 
         }
         console.log("fichiers envoyes" +this.fichiersToProgramme.fichiers);
-        this.resource.affectationProgramme(this.fichiersToProgramme).then(response => {
-          console.log("affacration ok");
-          this.$emit('validate');
-        }, response => {
-          alert("Erreur technique lors de l'affectation des fichiers au programme !! ");
-          this.$emit('cancel');
-        });
+        this.resource.affectationProgramme(this.fichiersToProgramme)
+          .then(response => {
+              return response.json();
+          })
+          .then(data => {
+              console.log("affacration ok");
+              this.programmeInfo = data;
+              this.initData();
+              this.rechercher();
+          })
+          .catch(response => {
+              alert("Erreur technique lors de l'affectation des fichiers au programme !! ");
+          });
       },
 
-        toutDeaffecter(){
+
+      toutDeaffecter(){
           console.log('toutDeaffecter()');
           var numProgramme =this.programmeInfo.numProg;
           if(numProgramme!==null || numProgramme!==""){
             console.log("fichiers envoyes" +this.fichiersToProgramme.fichiers);
-            this.resource.toutDeaffecterProg(numProgramme).then(response => {
-              console.log("Déaffactaation ok");
-              this.showModalDesactiver = false;
-            }, response => {
-              alert("Erreur technique lors de deaffectation des fichiers du programme !! ");
-            });
+            this.resource.toutDeaffecterProg(numProgramme)
+              .then(response => {
+                  return response.json();
+                })
+              .then(data => {
+                console.log("Déaffactaation ok");
+                this.showModalDesactiver = false;
+                this.programmeInfo = data;
+                this.initData();
+                this.rechercher();
+              })
+              .catch(response => {
+                alert("Erreur technique lors de désaffectation des fichiers du programme !! ");
+              });
           }
         },
       },

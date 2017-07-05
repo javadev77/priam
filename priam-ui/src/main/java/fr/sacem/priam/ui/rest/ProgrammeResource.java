@@ -3,10 +3,7 @@ package fr.sacem.priam.ui.rest;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
-import fr.sacem.priam.model.domain.Fichier;
-import fr.sacem.priam.model.domain.Programme;
-import fr.sacem.priam.model.domain.StatutProgramme;
-import fr.sacem.priam.model.domain.TypeRepart;
+import fr.sacem.priam.model.domain.*;
 import fr.sacem.priam.model.domain.criteria.ProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.AffectationDto;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
@@ -143,17 +140,21 @@ public class ProgrammeResource {
      }
      
     @RequestMapping(value = "programme/affectation",
-                    method = RequestMethod.POST,
+                    method = RequestMethod.PUT,
                     consumes = MediaType.APPLICATION_JSON_VALUE,
                     produces = MediaType.APPLICATION_JSON_VALUE)
-    public AffectationDto affecterFichiers (@RequestBody AffectationDto affectationDto){
-      //return programmeService.addProgramme();
-      String numProg=affectationDto.getNumProg();
-      ArrayList<Fichier> fichiers=affectationDto.getFichiers();
-      if(!Strings.isNullOrEmpty(numProg)){
-          fichierService.majFichiersAffectesAuProgramme(numProg,fichiers);
-      }
-      return affectationDto;
+    public ProgrammeDto affecterFichiers (@RequestBody AffectationDto affectationDto) {
+  
+        ProgrammeDto programmeDto = null;
+        String numProg=affectationDto.getNumProg();
+        ArrayList<Fichier> fichiers=affectationDto.getFichiers();
+        
+        if(!Strings.isNullOrEmpty(numProg)){
+            fichierService.majFichiersAffectesAuProgramme(numProg,fichiers);
+            programmeDto = programmeViewDao.findByNumProg(numProg);
+        }
+        
+        return programmeDto;
     }
   
   
@@ -165,13 +166,18 @@ public class ProgrammeResource {
     }
 
     @RequestMapping(value = "programme/toutDesaffecter",
-      method = RequestMethod.POST,
-      consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void deaffecterFichiers (@RequestBody String numProg){
-      logger.info("deaffecterFichiers() ==> numProg=" + numProg);
-      if(!Strings.isNullOrEmpty(numProg)){
-        programmeService.toutDeaffecter(numProg);
-      }
+                    method = RequestMethod.PUT,
+                    consumes = MediaType.APPLICATION_JSON_VALUE,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
+    public ProgrammeDto deaffecterFichiers (@RequestBody String numProg){
+        logger.info("deaffecterFichiers() ==> numProg=" + numProg);
+        ProgrammeDto programmeDto = null;
+        if(!Strings.isNullOrEmpty(numProg)){
+          programmeService.toutDeaffecter(numProg);
+          programmeDto = programmeViewDao.findByNumProg(numProg);
+        }
+        
+        return programmeDto;
     }
 
 }
