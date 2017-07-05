@@ -77,7 +77,7 @@
                     </td>
                   </template>
                   <template v-else-if="entryColumn.type === 'code-value'">
-                    <td>
+                    <td class="columnCenter">
                       {{entryColumn.cell.toText(entry[entryColumn.id])}}
                     </td>
                   </template>
@@ -229,7 +229,19 @@
       }
     },
 
+    watch : {
+
+      allNotChecked : function (newVal) {
+        console.log('watch() => allChecked : newVal : %s',  newVal);
+        this.allChecked = newVal;
+      }
+    },
+
     computed : {
+
+      allNotChecked() {
+        return this.$store.getters.allFichiersChecked;
+      },
 
       sortAsc() {
           console.log("this.sort.ascending="+this.sort.ascending)
@@ -274,13 +286,15 @@
     },
 
     created() {
-        console.log("this.data.sort="  + this.data.sort[0]);
+        console.log("created this.data.sort="  + this.data.sort[0]);
 
         this.sort = this.data.sort !== undefined ? this.data.sort[0] : undefined;
 
         if(this.isLocalSort) {
             this.sortKey = this.sort.property;
         }
+
+        this.allChecked = this.$store.getters.allFichiersChecked;
 
     },
 

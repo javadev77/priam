@@ -191,7 +191,7 @@
       <button v-if="showButtonEditer" class="btn btn-default btn-primary pull-right" type="button" @click="editer()">Editer</button>
       <button v-if="showButtonToutDesactiver" style="width: 160px;"  class="btn btn-default btn-primary pull-right" type="button" @click="showModalDesactiver = true">Tout désactiver</button>
       <button v-if="showButtonAnnuler" class="btn btn-default btn-primary pull-right" type="button" @click="annuler()">Annuler</button>
-      <span v-if="programmeInfo.dataffecte" class="pull-right">
+      <span v-if="isStatusProgrammeAffecte()" class="pull-right">
         Affecté par {{ programmeInfo.useraffecte }} {{ programmeInfo.dataffecte | dateAffectation }}
       </span>
     </div>
@@ -628,6 +628,7 @@
               }
 
               console.log("this.fichiersChecked="+this.fichiersChecked);
+              this.$store.dispatch('toutDesactiver', this.fichiersChecked.length !=0 );
 
             });
 
@@ -670,6 +671,7 @@
               this.fichiersChecked = [];
             }
 
+          this.$store.dispatch('toutDesactiver', true);
           console.log('this.fichiersChecked='+this.fichiersChecked);
         },
 
@@ -715,6 +717,7 @@
                 this.programmeInfo = data;
                 this.initData();
                 this.rechercher();
+                this.$store.dispatch('toutDesactiver', false);
               })
               .catch(response => {
                 alert("Erreur technique lors de désaffectation des fichiers du programme !! ");

@@ -4,6 +4,8 @@
 
 const state = {
 
+  allFichiersChecked : true,
+
   typeRepart : [
     {
       id : 'OEUVRE',
@@ -69,9 +71,17 @@ const mutations = {
   'SET_RIONS' (state, rions) {
     state.rions = rions;
   },
+
+  'TOUT_DESACTIVER'(state, value) {
+    state.allFichiersChecked = value;
+  }
 };
 
 const actions = {
+
+  toutDesactiver : ({commit}, value) => {
+    commit('TOUT_DESACTIVER', value);
+  }
 };
 
 const getters = {
@@ -99,6 +109,10 @@ const getters = {
 
   modeRepartition : state => {
     return state.typeRepart;
+  },
+
+  allFichiersChecked : state => {
+    return state.allFichiersChecked;
   }
 
 
