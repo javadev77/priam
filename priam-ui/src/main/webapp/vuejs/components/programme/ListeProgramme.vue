@@ -21,7 +21,8 @@
                   <label class="control-label pull-right">N° programme</label>
                 </div>
                 <div class="col-sm-3">
-                  <autocomplete :suggestions="numProgItems" :selection="critereRechercheData.numProg" @selected-value="updateValue"></autocomplete>
+                  <!--<autocomplete :suggestions="numProgItems" :selection="critereRechercheData.numProg" @selected-value="updateValue"></autocomplete>-->
+                  <input type="text" class="form-control" v-model="critereRechercheData.numProg">
                 </div>
                 <div class="col-sm-2">
                   <label class="control-label pull-right">Famille</label>
