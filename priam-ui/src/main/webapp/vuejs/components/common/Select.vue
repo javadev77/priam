@@ -374,10 +374,11 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </span>
+        <!--@keydown.delete="maybeDeleteValue"-->
         <input
+          v-if="!searchable"
           ref="search"
           v-model="search"
-          @keydown.delete="maybeDeleteValue"
           @keyup.esc="onEscape"
           @keydown.up.prevent="typeAheadUp"
           @keydown.down.prevent="typeAheadDown"
@@ -387,7 +388,7 @@
           type="search"
           class="form-control"
           :placeholder="searchPlaceholder"
-          :readonly="!searchable"
+          :readonly="true"
           :style="{ width: isValueEmpty ? '100%' : 'auto' }"
           :id="inputId"
         >
@@ -402,14 +403,33 @@
 
 
     <transition :name="transition">
-      <ul ref="dropdownMenu" v-if="dropdownOpen" class="dropdown-menu" :style="{ 'max-height': maxHeight }">
+      <ul ref="dropdownMenu" v-if="dropdownOpen" class="dropdown-menu"
+                           :style="{ 'max-height': maxHeight, 'overflow-y' : searchable ? 'scroll': 'none', width: searchable ? '283px': 'auto' }">
+        <li v-if="searchable" style="padding: 5px;">
+          <input
+            ref="search"
+            v-model="search"
+            @keyup.esc="onEscape"
+            @keydown.up.prevent="typeAheadUp"
+            @keydown.down.prevent="typeAheadDown"
+            @keyup.enter.prevent="typeAheadSelect"
+            @blur="onSearchBlur"
+            @focus="onSearchFocus"
+            type="text"
+            class="form-control"
+            :placeholder="searchPlaceholder"
+            :readonly="!searchable"
+            :style="{ width: '100%'}"
+            :id="inputId"
+          >
+        </li>
         <li v-for="(option, index) in filteredOptions" v-bind:key="index" :class="{ active: isOptionSelected(option), highlight: index === typeAheadPointer }" @mouseover="typeAheadPointer = index">
             <a @mousedown.prevent="select(option)">
               {{ getOptionLabel(option) }}
             </a>
         </li>
         <li v-if="!filteredOptions.length" class="no-options">
-          <!--<slot name="no-options">Sorry, no matching options.</slot>-->
+          <slot v-if="searchable" name="no-options">Aucun résultat trouvé.</slot>
         </li>
       </ul>
     </transition>
@@ -531,6 +551,7 @@
       getOptionLabel: {
         type: Function,
         default(option) {
+          console.log('getOptionLabel() ==> option=' + option);
           if (typeof option === 'object') {
 
             if (this.label && option[this.label]) {
@@ -743,6 +764,7 @@
       toggleDropdown(e) {
         if (e.target === this.$refs.openIndicator || e.target === this.$refs.search || e.target === this.$refs.toggle
           ||  e.target === this.$refs.toggle2[0] || e.target === this.$el) {
+            console.log("this.$refs.search="+this.$refs.search);
           if (this.open) {
             this.$refs.search.blur() // dropdown will close on blur
           } else {
@@ -857,9 +879,11 @@
         return {
           open: this.dropdownOpen,
           single: !this.multiple,
-          searching: this.searching,
+          //searching: this.searching,
+          searching: false,
           searchable: this.searchable,
           unsearchable: !this.searchable,
+          //unsearchable: true,
           loading: this.mutableLoading,
           'has-error' : this.classValidate
         }
@@ -917,7 +941,7 @@
         if (this.taggable && this.search.length && !this.optionExists(this.search)) {
           options.unshift(this.search)
         }
-        return options
+        return options;
       },
       /**
        * Check if there aren't any options selected.

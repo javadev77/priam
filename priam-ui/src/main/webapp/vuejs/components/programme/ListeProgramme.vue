@@ -22,7 +22,9 @@
                 </div>
                 <div class="col-sm-3">
                   <!--<autocomplete :suggestions="numProgItems" :selection="critereRechercheData.numProg" @selected-value="updateValue"></autocomplete>-->
-                  <input type="text" class="form-control" v-model="critereRechercheData.numProg">
+                  <!--<input type="text" class="form-control" v-model="critereRechercheData.numProg">-->
+                  <v-select :searchable="true" v-model="critereRechercheData.numProg" :options="numProgItems">
+                  </v-select>
                 </div>
                 <div class="col-sm-2">
                   <label class="control-label pull-right">Famille</label>
@@ -203,6 +205,7 @@
             rionTheoriqueSelected : {'id' : 'ALL', 'value' : 'Toutes'},
             rionPaiementSelected : {'id' : 'ALL', 'value' : 'Toutes'},
             typeRepartSelected : {'id' : 'ALL', 'value' : 'Tous'},
+            numProgSelected: {id : 'ALL', value : 'Tous'},
 
             critereRechercheData : {
                 numProg : '',
@@ -395,16 +398,34 @@
 
         this.rechercherProgrammes();
 
-        this.resource.getAllNumProgForAutocmplete()
-          .then(response => {
-            return response.json();
-          })
-          .then(data => {
-            this.numProgItems = data;
-          });
+
+        this.getAllNumProgramme();
       },
 
       computed : {
+        numProgOptions() {
+
+            var result = this.numProgItems.map(elem => {
+                console.log("elem="+elem);
+                return {
+                    id : elem,
+                    value : elem
+                }
+            });
+
+            /*var result = [];
+
+          for(var i in this.numProgItems) {
+            //console.log("numProgOptions() ==> " +  result[i].value);
+            result.push({id : this.numProgItems[i], value : this.numProgItems[i]});
+
+          }*/
+          /*result.unshift({id :'ALL', value :'Tous'})*/
+          console.log("result=" +typeof result);
+
+          return result !== undefined ? result : [];
+        },
+
         familleOptions() {
           return this.$store.getters.familleOptions;
         },
@@ -445,7 +466,18 @@
 
       methods : {
 
-          updateValue(selectedValue) {
+        getAllNumProgramme() {
+            this.resource.getAllNumProgForAutocmplete()
+              .then(response => {
+                return response.json();
+              })
+              .then(data => {
+                this.numProgItems = data;
+              });
+        },
+
+
+        updateValue(selectedValue) {
 
             this.critereRechercheData.numProg = selectedValue;
 
@@ -582,6 +614,7 @@
               console.log('onValidateEcranModal()')
               this.close();
               this.rechercherProgrammes();
+              this.getAllNumProgramme();
           },
 
           abandonnerProgramme() {

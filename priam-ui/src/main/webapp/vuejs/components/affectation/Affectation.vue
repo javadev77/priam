@@ -530,6 +530,9 @@
             this.tableauSelectionnable = false;
             this.showButtonAnnuler = false;
             this.showButtonEnregistrer = false;
+
+            this.rechercher();
+
         },
 
         statutFichier() {
