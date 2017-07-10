@@ -168,4 +168,9 @@ public class ProgrammeService {
 		
 		LOG.info("Fin :Deaffecter les fichiers lies au programme (" + numProg + ")");
 	}
+
+	@Transactional
+	public List<String> findAllNomProgByCriteria(){
+		return programmeViewDao.findAllNomProgByCriteria();
+	}
 }

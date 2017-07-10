@@ -138,26 +138,26 @@ public class ProgrammeResource {
           }
           return null;
      }
-     
+
     @RequestMapping(value = "programme/affectation",
                     method = RequestMethod.PUT,
                     consumes = MediaType.APPLICATION_JSON_VALUE,
                     produces = MediaType.APPLICATION_JSON_VALUE)
     public ProgrammeDto affecterFichiers (@RequestBody AffectationDto affectationDto) {
-  
+
         ProgrammeDto programmeDto = null;
         String numProg=affectationDto.getNumProg();
         ArrayList<Fichier> fichiers=affectationDto.getFichiers();
-        
+
         if(!Strings.isNullOrEmpty(numProg)){
             fichierService.majFichiersAffectesAuProgramme(numProg,fichiers);
             programmeDto = programmeViewDao.findByNumProg(numProg);
         }
-        
+
         return programmeDto;
     }
-  
-  
+
+
     @RequestMapping(value = "programme/numprog/autocomplete",
                   method = RequestMethod.GET,
                   produces = MediaType.APPLICATION_JSON_VALUE)
@@ -165,6 +165,13 @@ public class ProgrammeResource {
         return programmeViewDao.findAllNumProgByCriteria();
     }
 
+    @RequestMapping(value = "programme/nomprog/autocomplete",
+    method = RequestMethod.GET,
+    produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<String> getAllNomProgForAutocmplete() {
+    return programmeService.findAllNomProgByCriteria();
+  }
+   
     @RequestMapping(value = "programme/toutDesaffecter",
                     method = RequestMethod.PUT,
                     consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -176,7 +183,7 @@ public class ProgrammeResource {
           programmeService.toutDeaffecter(numProg);
           programmeDto = programmeViewDao.findByNumProg(numProg);
         }
-        
+
         return programmeDto;
     }
 
