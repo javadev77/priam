@@ -1378,7 +1378,7 @@ table tr:nth-child(odd) td.space {
   margin-top: 11px;
 }
 .select2-results {
-  max-height: 200px;
+  max-height: 220px;
   position: relative;
   overflow-x: hidden;
   overflow-y: auto;

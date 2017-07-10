@@ -51,8 +51,10 @@
                   <label class="control-label pull-right">Rion théorique</label>
                 </div>
                 <div class="col-sm-3">
-                  <v-select :searchable="false" label="value" v-model="rionTheoriqueSelected" :options="rionTheoriqueOptions">
-                  </v-select>
+                <!--  <v-select :searchable="false" label="value" v-model="rionTheoriqueSelected" :options="rionTheoriqueOptions">
+                  </v-select>-->
+
+                  <select2 class="form-control" :searchable="false" v-model="rionTheoriqueSelected" :options="rionTheoriqueOptions"></select2>
                 </div>
               </div>
 
@@ -206,7 +208,7 @@
 
             familleSelected : {'id' : 'ALL', 'value' : 'Toutes'},
             typeUtilisationSelected : {'id' : 'ALL', 'value' : 'Tous'},
-            rionTheoriqueSelected : {'id' : 'ALL', 'value' : 'Toutes'},
+            rionTheoriqueSelected :  'ALL',//{'id' : 'ALL', 'value' : 'Toutes'},
             rionPaiementSelected : {'id' : 'ALL', 'value' : 'Toutes'},
             typeRepartSelected : {'id' : 'ALL', 'value' : 'Tous'},
             numProgSelected: 'ALL',
@@ -493,7 +495,7 @@
 
               this.familleSelected = {'id' : 'ALL', 'value' : 'Toutes'};
               this.typeUtilisationSelected = {'id' : 'ALL', 'value' : 'Tous'};
-              this.rionTheoriqueSelected = {'id' : 'ALL', 'value' : 'Toutes'};
+              this.rionTheoriqueSelected = 'ALL';//{'id' : 'ALL', 'value' : 'Toutes'};
               this.rionPaiementSelected = {'id' : 'ALL', 'value' : 'Toutes'};
               this.typeRepartSelected = {'id' : 'ALL', 'value' : 'Tous'};
 
@@ -573,11 +575,9 @@
               console.log(" this.critereRechercheData.numProg = " +  this.critereRechercheData.numProg)
               this.critereRechercheData.typeUtilisation = this.typeUtilisationSelected !== undefined ? this.typeUtilisationSelected.id : null;
               this.critereRechercheData.famille = this.familleSelected !== undefined ? this.familleSelected.id : null;
-              this.critereRechercheData.rionTheorique= this.rionTheoriqueSelected !== undefined ? this.rionTheoriqueSelected.id : null;
+              this.critereRechercheData.rionTheorique= this.rionTheoriqueSelected !== undefined ? this.rionTheoriqueSelected : null;
               this.critereRechercheData.rionPaiement= this.rionPaiementSelected !== undefined ? this.rionPaiementSelected.id : null;
               this.critereRechercheData.typeRepart = this.typeRepartSelected !== undefined ? this.typeRepartSelected.id : null;
-              //this.critereRechercheData.dateCreationDebut = DateUtils.stringToDateZeroHour(this.critereRechercheData.dateCreationDebut);
-              //this.critereRechercheData.dateCreationFin = DateUtils.stringToDate24Hour(this.critereRechercheData.dateCreationFin);
 
               this.launchRequest(this.defaultPageable.page, this.defaultPageable.size,
                                  this.defaultPageable.sort, this.defaultPageable.dir);
