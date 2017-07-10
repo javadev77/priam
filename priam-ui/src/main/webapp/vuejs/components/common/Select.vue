@@ -374,7 +374,7 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </span>
-        <!--@keydown.delete="maybeDeleteValue"-->
+
         <input
           v-if="!searchable"
           ref="search"
@@ -388,7 +388,7 @@
           type="search"
           class="form-control"
           :placeholder="searchPlaceholder"
-          :readonly="true"
+          :readonly="!searchable"
           :style="{ width: isValueEmpty ? '100%' : 'auto' }"
           :id="inputId"
         >
@@ -403,35 +403,35 @@
 
 
     <transition :name="transition">
-      <ul ref="dropdownMenu" v-if="dropdownOpen" class="dropdown-menu"
-                           :style="{ 'max-height': maxHeight, 'overflow-y' : searchable ? 'scroll': 'none', width: searchable ? '283px': 'auto' }">
-        <li v-if="searchable" style="padding: 5px;">
-          <input
-            ref="search"
-            v-model="search"
-            @keyup.esc="onEscape"
-            @keydown.up.prevent="typeAheadUp"
-            @keydown.down.prevent="typeAheadDown"
-            @keyup.enter.prevent="typeAheadSelect"
-            @blur="onSearchBlur"
-            @focus="onSearchFocus"
-            type="text"
-            class="form-control"
-            :placeholder="searchPlaceholder"
-            :readonly="!searchable"
-            :style="{ width: '100%'}"
-            :id="inputId"
-          >
-        </li>
-        <li v-for="(option, index) in filteredOptions" v-bind:key="index" :class="{ active: isOptionSelected(option), highlight: index === typeAheadPointer }" @mouseover="typeAheadPointer = index">
-            <a @mousedown.prevent="select(option)">
-              {{ getOptionLabel(option) }}
-            </a>
-        </li>
-        <li v-if="!filteredOptions.length" class="no-options">
-          <slot v-if="searchable" name="no-options">Aucun résultat trouvé.</slot>
-        </li>
-      </ul>
+        <ul ref="dropdownMenu" v-show="dropdownOpen" class="dropdown-menu"
+                             :style="{ 'max-height': maxHeight, 'overflow-y' : searchable ? 'scroll': 'none', width: searchable ? '283px': 'auto' }">
+          <li style="padding: 5px;" v-if="searchable">
+            <input
+              ref="search"
+              v-model="search"
+              @keyup.esc="onEscape"
+              @keydown.up.prevent="typeAheadUp"
+              @keydown.down.prevent="typeAheadDown"
+              @keyup.enter.prevent="typeAheadSelect"
+              @blur="onSearchBlur"
+              @focus="onSearchFocus"
+              type="text"
+              class="form-control"
+              :placeholder="searchPlaceholder"
+              :readonly="!searchable"
+              :style="{ width: '100%'}"
+              id="inputId"
+            >
+          </li>
+          <li v-for="(option, index) in filteredOptions" v-bind:key="index" :class="{ active: isOptionSelected(option), highlight: index === typeAheadPointer }" @mouseover="typeAheadPointer = index">
+              <a @mousedown.prevent="select(option)">
+                {{ getOptionLabel(option) }}
+              </a>
+          </li>
+          <li v-if="!filteredOptions.length" class="no-options">
+            <slot v-if="searchable" name="no-options">Aucun résultat trouvé.</slot>
+          </li>
+        </ul>
     </transition>
   </div>
 </template>
@@ -481,7 +481,7 @@
        */
       maxHeight: {
         type: String,
-        default: '400px'
+        default: '240px'
       },
       /**
        * Enable/disable filtering the options.
@@ -551,7 +551,6 @@
       getOptionLabel: {
         type: Function,
         default(option) {
-          console.log('getOptionLabel() ==> option=' + option);
           if (typeof option === 'object') {
 
             if (this.label && option[this.label]) {
@@ -762,14 +761,23 @@
        * @return {void}
        */
       toggleDropdown(e) {
+          console.log("toggleDropdown() ==> e.target = " + e.target);
+          for(var i in this.$refs) {
+            console.log("this.$refs = " + this.$refs[i]);
+          }
         if (e.target === this.$refs.openIndicator || e.target === this.$refs.search || e.target === this.$refs.toggle
           ||  e.target === this.$refs.toggle2[0] || e.target === this.$el) {
-            console.log("this.$refs.search="+this.$refs.search);
+
           if (this.open) {
             this.$refs.search.blur() // dropdown will close on blur
+            //this.$emit('toggle:blur');
+
           } else {
-            this.open = true
-            this.$refs.search.focus()
+            this.open = true;
+            console.log("this.$refs.search="+this.$refs.search.type);
+            this.$refs.search.focus();
+            /*this.$refs.toggle.focus();*/
+            this.$emit('search:focus');
           }
         }
       },
@@ -807,6 +815,17 @@
           this.search = ''
         }
       },
+
+      onToggleBlur() {
+        this.open = false;
+        this.$emit('toggle:blur')
+      },
+
+      onToggleFocus() {
+        this.open = true;
+        this.$emit('toggle:focus')
+      },
+
       /**
        * Close the dropdown on blur.
        * @emits  {search:blur}
@@ -825,8 +844,9 @@
        * @return {void}
        */
       onSearchFocus() {
+          console.log("onSearchFocus")
         this.open = true
-        this.$emit('search:focus')
+        this.$emit('search:focus');
       },
       /**
        * Delete the value on Delete keypress when there is no
@@ -881,9 +901,9 @@
           single: !this.multiple,
           //searching: this.searching,
           searching: false,
-          searchable: this.searchable,
-          unsearchable: !this.searchable,
-          //unsearchable: true,
+          //searchable: this.searchable,
+          //unsearchable: !this.searchable,
+          unsearchable: true,
           loading: this.mutableLoading,
           'has-error' : this.classValidate
         }
