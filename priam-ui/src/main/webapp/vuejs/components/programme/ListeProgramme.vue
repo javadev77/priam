@@ -23,8 +23,11 @@
                 <div class="col-sm-3">
                   <!--<autocomplete :suggestions="numProgItems" :selection="critereRechercheData.numProg" @selected-value="updateValue"></autocomplete>-->
                   <!--<input type="text" class="form-control" v-model="critereRechercheData.numProg">-->
-                  <v-select :searchable="true" v-model="critereRechercheData.numProg" :options="numProgItems">
-                  </v-select>
+                 <!-- <v-select :searchable="true" v-model="critereRechercheData.numProg" :options="numProgItems">
+                  </v-select>-->
+
+                  <select2 class="form-control" :options="numProgOptions" v-model="numProgSelected" :searchable="true">
+                  </select2>
                 </div>
                 <div class="col-sm-2">
                   <label class="control-label pull-right">Famille</label>
@@ -171,6 +174,7 @@
   import {DateUtils} from '../../utils/DateUtils'
   import Modal from '../common/Modal.vue';
   import Autocomplete from '../common/Autocomplete.vue'
+  import Select2 from '../common/Select2.vue';
 
   export default {
 
@@ -205,7 +209,7 @@
             rionTheoriqueSelected : {'id' : 'ALL', 'value' : 'Toutes'},
             rionPaiementSelected : {'id' : 'ALL', 'value' : 'Toutes'},
             typeRepartSelected : {'id' : 'ALL', 'value' : 'Tous'},
-            numProgSelected: {id : 'ALL', value : 'Tous'},
+            numProgSelected: 'ALL',
 
             critereRechercheData : {
                 numProg : '',
@@ -413,16 +417,8 @@
                 }
             });
 
-            /*var result = [];
-
-          for(var i in this.numProgItems) {
-            //console.log("numProgOptions() ==> " +  result[i].value);
-            result.push({id : this.numProgItems[i], value : this.numProgItems[i]});
-
-          }*/
-          /*result.unshift({id :'ALL', value :'Tous'})*/
           console.log("result=" +typeof result);
-
+          result.unshift({id : 'ALL', value : 'Tous'});
           return result !== undefined ? result : [];
         },
 
@@ -572,6 +568,9 @@
           },
 
           rechercherProgrammes() {
+
+              this.critereRechercheData.numProg = this.numProgSelected !== undefined && this.numProgSelected !== 'ALL' ? this.numProgSelected : null;
+              console.log(" this.critereRechercheData.numProg = " +  this.critereRechercheData.numProg)
               this.critereRechercheData.typeUtilisation = this.typeUtilisationSelected !== undefined ? this.typeUtilisationSelected.id : null;
               this.critereRechercheData.famille = this.familleSelected !== undefined ? this.familleSelected.id : null;
               this.critereRechercheData.rionTheorique= this.rionTheoriqueSelected !== undefined ? this.rionTheoriqueSelected.id : null;
@@ -643,7 +642,8 @@
           vSelect : vSelect,
           datePicker : DatePicker,
           modal: Modal,
-          autocomplete : Autocomplete
+          autocomplete : Autocomplete,
+          select2 :Select2
       }
 
   }
