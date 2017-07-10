@@ -631,14 +631,14 @@
               this.fichiersChecked = [];
               var tab = this.priamGrid.gridData.content;
               for(var i in tab) {
-                if(tab[i].statut === 'AFFECTE') {
+                if(tab[i] && tab[i].statut == 'AFFECTE') {
                   this.fichiersChecked.push(tab[i].id);
                 }
 
               }
 
-              console.log("this.fichiersChecked="+this.fichiersChecked);
-              this.$store.dispatch('toutDesactiver', this.fichiersChecked.length !=0 );
+              console.log("length this.fichiersChecked=" + this.fichiersChecked.length);
+              this.$store.dispatch('toutDesactiver', this.fichiersChecked.length !=0 && this.priamGrid.gridData.content.length == this.fichiersChecked.length );
 
             });
 
@@ -649,8 +649,9 @@
         },
 
         onEntryChecked(isChecked, entryChecked) {
+            console.log('entryId='+entryChecked.id);
             console.log('isChecked='+isChecked);
-            console.log('entryChecked='+entryChecked.id);
+
             if(isChecked) {
                 var found = this.fichiersChecked.find( elem => {
                    return  elem === entryChecked.id;
@@ -667,35 +668,41 @@
               console.log('indexOf='+number);
               this.fichiersChecked.splice(number, 1);
             }
-          console.log('this.fichiersChecked='+this.fichiersChecked);
+          console.log('onEntryChecked() ==> this.fichiersChecked='+this.fichiersChecked.length);
         },
 
         onAllChecked(allChecked, entries) {
             console.log("entries checked=" +  entries);
             this.fichiersChecked = [];
             if(allChecked) {
-                for(var i in entries) {
+                this.fichiersChecked = entries.slice();
+                /*for(var i in entries) {
+                    console.log("element of entry = " + entries[i]);
                   this.fichiersChecked.push(entries[i]);
-                }
+                }*/
             } else {
               this.fichiersChecked = [];
             }
 
           this.$store.dispatch('toutDesactiver', true);
-          console.log('this.fichiersChecked='+this.fichiersChecked);
+          console.log('onAllChecked() ==> this.fichiersChecked='+this.fichiersChecked.length);
         },
 
       affecterFichiersAuProgramme(){
         this.fichiersToProgramme.numProg = this.programmeInfo.numProg;
         this.fichiersToProgramme.fichiers=[];
-        for(var i in this.fichiersChecked){
-            var idFichier =this.fichiersChecked[i];
+
+        this.fichiersToProgramme.fichiers = this.fichiersChecked.map(function (idFichier) {
+          return {id : idFichier}
+        });
+        /*for(var i in this.fichiersChecked){
+            var idFichier = this.fichiersChecked[i];
             if( idFichier !== null || idFichier !== '' ){
               this.fichiersToProgramme.fichiers.push({id:idFichier});
             }
 
-        }
-        console.log("fichiers envoyes" +this.fichiersToProgramme.fichiers);
+        }*/
+        console.log("fichiers envoyes" +this.fichiersToProgramme.fichiers.length);
         this.resource.affectationProgramme(this.fichiersToProgramme)
           .then(response => {
               return response.json();
