@@ -53,7 +53,6 @@
           vm.$emit('input', this.value);
         });
 
-      //this.refreshSelect2();
 
       if (!this.searchable) {
         this.select2initializer.minimumResultsForSearch = -1 ;
@@ -69,14 +68,9 @@
         console.log("value changed")
         $(this.$el).val(value).trigger('change');
       },
+
       options: function (options) {
-        // update options
-        /*var element = $(this.$el);
-        element.select2('destroy') ;
-        element.select2(this.select2initializer) ;
-        element.select2('container').css('display', 'block');*/
-        //$(this.$el).select2({ data: options })
-        this.refreshSelect2();
+          this.refreshSelect2();
       }
     },
 

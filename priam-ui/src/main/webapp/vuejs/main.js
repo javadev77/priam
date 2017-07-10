@@ -10,6 +10,10 @@ import './directives/form-elements'
 import './filters/filters'
 import './utils/Arrays'
 import VeeValidate from 'vee-validate';
+import vueShortkey from 'vue-shortkey'
+
+
+Vue.use(vueShortkey);
 
 
 Vue.use(VeeValidate, {

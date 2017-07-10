@@ -2,6 +2,9 @@
   <div class="container-fluid">
     <div class="navbar navbar-default navbar-sm breadcrumb">
         <div class="titre-page">
+            <a class="btn-back no-select" @click="goBack()" v-shortkey="['f8']" @shortkey="goBack()" >
+              <span class="glyphicon glyphicon-chevron-left"></span>Retour (F8)
+            </a>
             <span>Programme <span class="glyphicon glyphicon-chevron-right"></span>
               Liste programmes <span class="glyphicon glyphicon-chevron-right"></span>
               Affectation
@@ -187,10 +190,10 @@
         </div>
     </div>
     <div class="row formula-buttons">
+      <button v-if="showButtonToutDesactiver" style="width: 160px;"  class="btn btn-default btn-primary pull-left" type="button" @click="showModalDesactiver = true">Tout désactiver</button>
+      <button v-if="showButtonAnnuler" class="btn btn-default btn-primary pull-right" type="button" @click="annuler()">Annuler</button>
       <button v-if="showButtonEnregistrer" class="btn btn-default btn-primary pull-right" type="button" @click="enregister()">Enregister</button>
       <button v-if="showButtonEditer" class="btn btn-default btn-primary pull-right" type="button" @click="editer()">Editer</button>
-      <button v-if="showButtonToutDesactiver" style="width: 160px;"  class="btn btn-default btn-primary pull-right" type="button" @click="showModalDesactiver = true">Tout désactiver</button>
-      <button v-if="showButtonAnnuler" class="btn btn-default btn-primary pull-right" type="button" @click="annuler()">Annuler</button>
       <span v-if="isStatusProgrammeAffecte()" class="pull-right">
         Affecté par {{ programmeInfo.useraffecte }} {{ programmeInfo.dataffecte | dateAffectation }}
       </span>
@@ -451,6 +454,10 @@
 
       methods : {
 
+        goBack() {
+          this.$router.back();
+        },
+
         //PRIAM-108(régle:T07)
         toutDesactiver(){
 
@@ -695,9 +702,11 @@
           })
           .then(data => {
               console.log("affacration ok");
-              this.programmeInfo = data;
-              this.initData();
-              this.rechercher();
+              //this.programmeInfo = data;
+              //this.initData();
+              //this.rechercher();
+
+              this.$router.push({ name: 'ListePrg'});
           })
           .catch(response => {
               alert("Erreur technique lors de l'affectation des fichiers au programme !! ");
