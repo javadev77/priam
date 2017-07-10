@@ -54,7 +54,8 @@
                 <!--  <v-select :searchable="false" label="value" v-model="rionTheoriqueSelected" :options="rionTheoriqueOptions">
                   </v-select>-->
 
-                  <select2 class="form-control" :searchable="false" v-model="rionTheoriqueSelected" :options="rionTheoriqueOptions"></select2>
+                  <select2 class="form-control" :searchable="false" v-model="rionTheoriqueSelected" :options="rionTheoriqueOptions">
+                  </select2>
                 </div>
               </div>
 
@@ -64,8 +65,13 @@
                   <label class="control-label pull-right">Nom</label>
                 </div>
                 <div class="col-sm-3">
+                <select2 class="form-control" :options="nomProgOptions" v-model="nomProgSelected" :searchable="true">
+                </select2>
+                </div>
+                <!--<div class="col-sm-3">
                   <input type="text" class="form-control" v-model="critereRechercheData.nom">
                 </div>
+                -->
                 <div class="col-sm-2">
                   <label class="control-label pull-right">Type d'utilisation</label>
                 </div>
@@ -188,6 +194,7 @@
 
         return {
             numProgItems : [],
+            nomProgItems : [],
             isCollapsed : false,
             showEcranModal : false,
             showPopupAbandon : false,
@@ -212,6 +219,7 @@
             rionPaiementSelected : {'id' : 'ALL', 'value' : 'Toutes'},
             typeRepartSelected : {'id' : 'ALL', 'value' : 'Tous'},
             numProgSelected: 'ALL',
+            nomProgSelected: 'ALL',
 
             critereRechercheData : {
                 numProg : '',
@@ -398,7 +406,8 @@
         const customActions = {
             searchProgramme : {method : 'POST', url :'app/rest/programme/search?page={page}&size={size}&sort={sort},{dir}'},
             abandonnerProgramme : {method : 'PUT', url :'app/rest/programme/abandon'},
-            getAllNumProgForAutocmplete : {method : 'GET', url :'app/rest/programme/numprog/autocomplete'}
+            getAllNumProgForAutocmplete : {method : 'GET', url :'app/rest/programme/numprog/autocomplete'},
+            getAllNomProgForAutocmplete : {method : 'GET', url :'app/rest/programme/nomprog/autocomplete'}
         }
         this.resource= this.$resource('', {}, customActions);
 
@@ -406,6 +415,7 @@
 
 
         this.getAllNumProgramme();
+        this.getAllNomProgramme();
       },
 
       computed : {
@@ -423,7 +433,18 @@
           result.unshift({id : 'ALL', value : 'Tous'});
           return result !== undefined ? result : [];
         },
-
+        nomProgOptions() {
+          var result = this.nomProgItems.map(elem => {
+            console.log("elem="+elem);
+            return {
+              id : elem,
+              value : elem
+            }
+          });
+          console.log("result=" +typeof result);
+          result.unshift({id : 'ALL', value : 'Tous'});
+          return result !== undefined ? result : [];
+        },
         familleOptions() {
           return this.$store.getters.familleOptions;
         },
@@ -472,6 +493,15 @@
               .then(data => {
                 this.numProgItems = data;
               });
+        },
+        getAllNomProgramme() {
+          this.resource.getAllNomProgForAutocmplete()
+            .then(response => {
+              return response.json();
+            })
+            .then(data => {
+              this.nomProgItems = data;
+            });
         },
 
 
@@ -573,6 +603,7 @@
 
               this.critereRechercheData.numProg = this.numProgSelected !== undefined && this.numProgSelected !== 'ALL' ? this.numProgSelected : null;
               console.log(" this.critereRechercheData.numProg = " +  this.critereRechercheData.numProg)
+              this.critereRechercheData.nom = this.nomProgSelected !== undefined && this.nomProgSelected !== 'ALL' ? this.nomProgSelected : null;
               this.critereRechercheData.typeUtilisation = this.typeUtilisationSelected !== undefined ? this.typeUtilisationSelected.id : null;
               this.critereRechercheData.famille = this.familleSelected !== undefined ? this.familleSelected.id : null;
               this.critereRechercheData.rionTheorique= this.rionTheoriqueSelected !== undefined ? this.rionTheoriqueSelected : null;
@@ -614,6 +645,7 @@
               this.close();
               this.rechercherProgrammes();
               this.getAllNumProgramme();
+              this.getAllNomProgramme();
           },
 
           abandonnerProgramme() {
