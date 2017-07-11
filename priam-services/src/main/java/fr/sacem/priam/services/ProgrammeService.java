@@ -111,7 +111,7 @@ public class ProgrammeService {
 	@Transactional
 	public List<Programme> serachProgrammeByNom(String nom) {
 		List<Programme> resultat = new ArrayList<>();
-		if (nom != null && !nom.equals("")) {
+		if (StringUtils.isNotEmpty(nom)) {
 			Programme programmeSearcher = new Programme();
 			programmeSearcher.setNom(nom);
 			Example example = Example.of(programmeSearcher);
@@ -166,6 +166,7 @@ public class ProgrammeService {
 		programme.setUsermaj(GUEST);
 		programme.setDatmaj(new Date());
 		
+		programmeDao.save(programme);
 		LOG.info("Fin :Deaffecter les fichiers lies au programme (" + numProg + ")");
 	}
 

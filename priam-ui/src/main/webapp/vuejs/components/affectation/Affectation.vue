@@ -570,7 +570,8 @@
         },
 
         initData() {
-            console.log("initData() ==> this.programmeInfo="+this.programmeInfo.statut)
+            console.log("initData() ==> this.programmeInfo="+this.programmeInfo.statut);
+
             if(this.programmeInfo !== null && this.programmeInfo.statut === 'CREE') {
                 this.familleSelected = this.getFamilleByCode(this.programmeInfo.famille);
                 this.statutSelected = { id : 'ALL', value : 'Tous'};
@@ -580,23 +581,26 @@
                 this.showButtonToutDesactiver = false;
                 this.showButtonEditer = false;
 
-            } else if (this.programmeInfo.statut === 'AFFECTE') {
+            } else {
+
                 this.familleSelected = {id : 'ALL', value : 'Toutes'};
                 this.typeUtilisationSelected = {id : 'ALL', value : 'Tous'};
                 let statutFichier = this.getStatutFichierByCode('AFFECTE');
                 this.statutSelected = { id : statutFichier.code, value : statutFichier.libelle};
-                this.tableauSelectionnable = false;
-                this.showButtonEditer = true;
-                this.showButtonEnregistrer = false;
-            }
 
-            else if(this.programmeInfo.statut === 'EN_COURS' || this.programmeInfo.statut === 'ABANDONNE' || this.programmeInfo.statut === 'MIS_EN_REPART' ||this.programmeInfo.statut ==='REPARTI'){
-              this.showButtonEditer = false;
-              this.showButtonToutDesactiver = false;
-              this.tableauSelectionnable = false;
-              this.showButtonAnnuler = false;
-              this.showButtonEnregistrer = false;
-          }
+                if (this.programmeInfo.statut === 'AFFECTE') {
+                    this.tableauSelectionnable = false;
+                    this.showButtonEditer = true;
+                    this.showButtonEnregistrer = false;
+                }
+                else if(this.programmeInfo.statut === 'EN_COURS' || this.programmeInfo.statut === 'ABANDONNE' || this.programmeInfo.statut === 'MIS_EN_REPART' ||this.programmeInfo.statut ==='REPARTI'){
+                    this.showButtonEditer = false;
+                    this.showButtonToutDesactiver = false;
+                    this.tableauSelectionnable = false;
+                    this.showButtonAnnuler = false;
+                    this.showButtonEnregistrer = false;
+                }
+            }
 
         },
 

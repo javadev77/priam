@@ -40,11 +40,11 @@
                   <label class="control-label pull-right">Date de création</label>
                 </div>
                 <div class="col-sm-2">
-                  <date-picker @update-date="updateDateDebutCreation" date-format="dd/mm/yy" :zeroHour="true" place-holder="De" v-once></date-picker>
+                  <date-picker @update-date="updateDateDebutCreation" :value="critereRechercheData.dateCreationDebut" date-format="dd/mm/yy" :zeroHour="true" place-holder="De" ></date-picker>
 
                 </div>
                 <div class="col-sm-2">
-                  <date-picker @update-date="updateDateFinCreation" date-format="dd/mm/yy" :zeroHour="false" place-holder="A" v-once></date-picker>
+                  <date-picker @update-date="updateDateFinCreation" :value="critereRechercheData.dateCreationFin" date-format="dd/mm/yy" :zeroHour="false" place-holder="A" ></date-picker>
                 </div>
 
                 <div class="col-sm-2">
@@ -512,9 +512,11 @@
           },
 
           retablir() {
+              this.numProgSelected = 'ALL';
               this.critereRechercheData.numProg = null;
               this.critereRechercheData.famille = null;
               this.critereRechercheData.typeUtilisation = null;
+              this.nomProgSelected = 'ALL'
               this.critereRechercheData.nom = null;
               this.critereRechercheData.rionTheorique = null;
               this.critereRechercheData.rionPaiement =  null;

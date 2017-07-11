@@ -43,16 +43,13 @@ public class ProgrammeResource {
                     produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<ProgrammeDto> rechercheProgramme(@RequestBody ProgrammeCritereRecherche input, Pageable pageable) {
         logger.info("input criteria : " + input);
-        List<StatutProgramme> status = null;
-
-        if(input.getStatutCode() == null || input.getStatutCode().isEmpty()) {
-            status = Arrays.asList(StatutProgramme.values());
-        } else {
-            status = Lists.transform(input.getStatutCode(), code -> StatutProgramme.valueOf(code));
-        }
-
         ProgrammeCriteria criteria = new ProgrammeCriteria();
-        criteria.setStatut(status);
+        
+        if(input.getStatutCode() == null || input.getStatutCode().isEmpty()) {
+            criteria.setStatut(Arrays.asList(StatutProgramme.values()));
+        } else {
+            criteria.setStatut(Lists.transform(input.getStatutCode(), StatutProgramme::valueOf));
+        }
 
         String codeFamille = input.getFamille();
         if (codeFamille != null && !"ALL".equals(codeFamille)) {
@@ -147,7 +144,7 @@ public class ProgrammeResource {
 
         ProgrammeDto programmeDto = null;
         String numProg=affectationDto.getNumProg();
-        ArrayList<Fichier> fichiers=affectationDto.getFichiers();
+        ArrayList<Fichier> fichiers = affectationDto.getFichiers();
 
         if(!Strings.isNullOrEmpty(numProg)){
             fichierService.majFichiersAffectesAuProgramme(numProg,fichiers);

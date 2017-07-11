@@ -31,20 +31,20 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
   
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-      Resource resource = this.resourceLoader.getResource(STATIC_INDEX_HTML_RESOURCES);
-      if (resource.exists()) {
-        LOGGER.info("Adding welcome page: {}", STATIC_INDEX_HTML_RESOURCES);
-        // Use forward: prefix so that no view resolution is done
-        registry.addViewController("/").setViewName("forward:/index.html");
-      }
+        Resource resource = this.resourceLoader.getResource(STATIC_INDEX_HTML_RESOURCES);
+        if (resource.exists()) {
+            LOGGER.info("Adding welcome page: {}", STATIC_INDEX_HTML_RESOURCES);
+            // Use forward: prefix so that no view resolution is done
+            registry.addViewController("/").setViewName("forward:/index.html");
+        }
     }
   
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-      if (!registry.hasMappingForPattern("/**")) {
-        registry.addResourceHandler("/**")
-                .addResourceLocations("/");
-      }
+        if (!registry.hasMappingForPattern("/**")) {
+            registry.addResourceHandler("/**")
+                  .addResourceLocations("/");
+        }
     }
   
     @Override

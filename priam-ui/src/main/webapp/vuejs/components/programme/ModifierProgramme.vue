@@ -144,6 +144,16 @@
         <button class="btn btn-default btn-primary pull-right yes" @click="yesContinue">Oui</button>
       </template>
     </modal>
+
+    <modal v-if="showModalMemeRion">
+      <div class="homer-prompt-q control-label" slot="body">
+        Attention le programme {{ nom }} a le même Rion, Famille et Type d'utilisation que celui que vous voulez créer. Voulez-vous continuer?
+      </div>
+      <template slot="footer">
+        <button class="btn btn-default btn-primary pull-right no" @click="onNoConfirm">Non</button>
+        <button class="btn btn-default btn-primary pull-right yes" @click="onYesConfirm">Oui</button>
+      </template>
+    </modal>
   </div>
 
 </template>
@@ -165,6 +175,7 @@
 
     data(){
       return {
+        showModalMemeRion : false,
         showModal: false,
         programmeToModify: null,
         programmeExist : false,
@@ -250,18 +261,9 @@
             .then(data => {
               this.programmeExist = data;
               if (this.programmeExist) {
-                /*var confirmation = confirm("Attention un programme avec le même nom est déjà existant. Voulez-vous continuer?");
-                if (confirmation == true) {
-                  this.modifierProgramme();
-                  console.log("Confirmation de modification de programme OK");
-                  return true;
-                } else {
-                  console.log("Confirmation de modification de programme KO");
-                  return false;
-                }*/
                 this.showModal = true;
               } else {
-                this.modifierProgramme();
+                this.verifierSiMemeRionFamilleTypeUtil();
               }
 
 
@@ -288,8 +290,8 @@
               this.$emit('validate');
             })
             .catch(response => {
-                  alert("Erreur technique lors de la modification du programme !! ");
-                  this.$emit('cancel');
+                alert("Erreur technique lors de la modification du programme !! ");
+                this.$emit('cancel');
             });
         //}
 
@@ -301,10 +303,48 @@
       },
 
       yesContinue() {
-        this.modifierProgramme();
         this.showModal = false;
+        this.verifierSiMemeRionFamilleTypeUtil();
+
       },
 
+      verifierSiMemeRionFamilleTypeUtil() {
+        if(this.programmeToModify.statut === 'CREE') {
+          var critereRechercheData = {};
+          critereRechercheData.typeUtilisation = this.typeUtilisationSelected !== undefined ? this.typeUtilisationSelected.id : null;
+          critereRechercheData.famille = this.familleSelected !== undefined ? this.familleSelected.id : null;
+          critereRechercheData.rionTheorique= this.rionTheoriqueSelected !== undefined ? this.rionTheoriqueSelected.id : null;
+          critereRechercheData.statutCode = ['CREE', 'AFFECTE', 'EN_COURS'];
+
+          this.resource.searchAllProgramme(critereRechercheData)
+            .then(response => {
+              return response.json();
+            })
+            .then(data => {
+              var listeProg = data.content;
+              if(listeProg.length > 0) {
+                this.showModalMemeRion = true;
+              } else {
+                  this.modifierProgramme();
+              }
+            })
+            .catch(response => {
+              alert("Erreur technique lors de la modification du programme !! " + response);
+            });
+        } else {
+          this.modifierProgramme();
+        }
+      },
+
+      onNoConfirm() {
+        this.showModalMemeRion = false;
+        this.$emit('cancel');
+      },
+
+      onYesConfirm() {
+        this.showModalMemeRion = false;
+        this.modifierProgramme();
+      },
 
       initData() {
           if(this.programmeToModify !== undefined && this.programmeToModify !== null) {
@@ -317,11 +357,6 @@
               return element.id === familleCode;
             });
 
-            /*var typeUtilCode = this.programmeToModify.typeUtilisation;
-            this.typeUtilisationSelected = this.$store.getters.typeUtilisation.find(function (element) {
-              return element.id === typeUtilCode;
-            });
-            console.log("typeUtilisationSelected=" + this.typeUtilisationSelected.value);*/
 
             var rionTheoriqueCode = this.programmeToModify.rionTheorique;
             console.log('rionTheoriqueCode=' + rionTheoriqueCode)
@@ -345,6 +380,7 @@
           searchProgramme : {method : 'GET', url :'app/rest/programme/nom/{nom}'},
           findByNumProg : {method : 'GET', url : 'app/rest/programme/numProg/{numProg}'},
           updateProgramme : {method: 'PUT', url : 'app/rest/programme/'},
+          searchAllProgramme : {method : 'POST', url :'app/rest/programme/search?page={page}&size={size}&sort={sort},{dir}'}
       }
       this.resource= this.$resource('', {}, customActions);
 

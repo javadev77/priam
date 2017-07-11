@@ -1,8 +1,13 @@
 package fr.sacem.priam.services;
 
+import com.google.common.collect.Lists;
 import fr.sacem.priam.model.dao.JpaConfigurationTest;
+import fr.sacem.priam.model.dao.jpa.FichierDao;
+import fr.sacem.priam.model.dao.jpa.ProgrammeDao;
 import fr.sacem.priam.model.dao.jpa.ProgrammeSequnceDao;
+import fr.sacem.priam.model.domain.Fichier;
 import fr.sacem.priam.model.domain.Programme;
+import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.StatutProgramme;
 import fr.sacem.priam.model.domain.criteria.ProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
@@ -11,6 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -34,6 +40,12 @@ public class ProgrammeServiceTest {
 	
 	@Autowired
 	ProgrammeSequnceDao programmeSequnceDao;
+	
+	@Autowired
+	ProgrammeDao programmeDao;
+	
+	@Autowired
+	FichierDao fichierDao;
 	
 	private static final Pageable pageable = new Pageable() {
 		
@@ -153,6 +165,29 @@ public class ProgrammeServiceTest {
 		
 		assertThat(programme).isNotNull();
 		assertThat(programme.getStatut()).isEqualTo(StatutProgramme.ABANDONNE);
+	}
+	
+	
+	@Test
+	@Transactional
+	public void test_tout_desaffecter() throws Exception {
+		String pr170001 = "PR170001";
+		List<Fichier> fichiersAffectes = fichierDao.findFichiersByIdProgramme(pr170001, Status.AFFECTE);
+		programmeService.toutDeaffecter(pr170001);
+		
+		Programme programme = programmeDao.findOne(pr170001);
+		
+		assertThat(programme).isNotNull();
+		assertThat(programme.getStatut()).isEqualTo(StatutProgramme.CREE);
+		
+		
+		Fichier probe = new Fichier();
+		probe.setStatut(Status.CHARGEMENT_OK);
+		Example<Fichier> of = Example.of(probe);
+		
+		List<Fichier> expectedFichiersOK = fichierDao.findAll(Lists.transform(fichiersAffectes, Fichier::getId));
+		assertThat(expectedFichiersOK).isNotEmpty();
+		assertThat(expectedFichiersOK).extracting("statut").contains(Status.CHARGEMENT_OK);
 	}
 	
 }

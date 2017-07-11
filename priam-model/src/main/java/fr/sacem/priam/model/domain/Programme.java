@@ -2,7 +2,6 @@ package fr.sacem.priam.model.domain;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by benmerzoukah on 06/06/2017.
@@ -19,7 +18,7 @@ public class Programme {
 	private Date dateCreation;
 	private StatutProgramme statut;
 	private Rion rionPaiement;
-	private List<Fichier> fichiers;
+	//private List<Fichier> fichiers;
 	private String usercre;
 	private Date datmaj;
 	private String usermaj;
@@ -83,10 +82,10 @@ public class Programme {
 		return rionPaiement;
 	}
 	
-	@OneToMany(mappedBy = "programme")
-	public List<Fichier> getFichiers() {
-		return fichiers;
-	}
+	//@OneToMany(mappedBy = "programme")
+	//public List<Fichier> getFichiers() {
+	//	return fichiers;
+	//}
 	
 	@Column(name = "USERCRE")
 	public String getUsercre() {
@@ -155,9 +154,9 @@ public class Programme {
 		this.rionPaiement = rionPaiement;
 	}
 	
-	public void setFichiers(List<Fichier> fichiers) {
+	/*public void setFichiers(List<Fichier> fichiers) {
 		this.fichiers = fichiers;
-	}
+	}*/
 	
 	public void setUsermaj(String usermaj) {
 		this.usermaj = usermaj;
