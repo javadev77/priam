@@ -19,10 +19,12 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.regex.Pattern;
 import java.util.zip.ZipOutputStream;
 
 import static org.junit.Assert.assertEquals;
@@ -44,6 +46,8 @@ public class ZipFileJobConfigurationTest {
     private String inputDirectory = "src/test/resources/zipDirectory/";
     private String outputDirectory = "src/test/resources/zipDirectoryVide/";
     private static final String SINGLE_FILE = "src/test/resources/zipDirectory/FF_PENEF_EXTRANA_EXTCMSFRANCE_20170406140540.csv";
+    private static final String ZIP_FILE = "test.zip";
+    private static final String ZIP_FILE_EN_COURS_DE_TRAITEMENT = "test.zip_en_cours_de_traitement";
     static Properties p = new Properties();
 
     @Before
@@ -78,23 +82,29 @@ public class ZipFileJobConfigurationTest {
                     0, step.getReadCount());
         }
     }
-    @Test @Ignore
+    @Test
     public void launchJobOneArchiveAvecDixElement() throws Exception {
+        //String filtre = "*_en_cours_de_traitement";
+        //Pattern p = Pattern.compile(filtre);
+        //String [] s = new File(inputDirectory).list();
         // Job parameters
         Map<String, JobParameter> jobParametersMap = new HashMap<String, JobParameter>();
         jobParametersMap.put("time", new JobParameter(System.currentTimeMillis()));
-        FileOutputStream fos = new FileOutputStream(inputDirectory + "\\" + "atest.zip");
+        FileOutputStream fos = new FileOutputStream(inputDirectory + "\\" + ZIP_FILE);
         ZipOutputStream zos = new ZipOutputStream(fos);
         UtilFile.addToZipFile(SINGLE_FILE, zos);
-        zos.close();
-        fos.close();
+
         jobParametersMap.put("input.archives", new JobParameter(inputDirectory));
         jobParametersMap.put("output.archives", new JobParameter(outputDirectory));
         JobParameters jobParameters = new JobParameters(jobParametersMap);
+        zos.close();
+        fos.close();
+
         //JobExecution execution = jobLauncher.run(job, jobParameters);
         // launch the job
         JobExecution jobExecution = jobLauncherTestUtils.launchJob(jobParameters);
-
+        File f = new File(inputDirectory + "\\" + ZIP_FILE_EN_COURS_DE_TRAITEMENT);
+        f.delete();
         // assert job run status
         assertEquals(BatchStatus.COMPLETED, jobExecution.getStatus());
 

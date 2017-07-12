@@ -35,6 +35,7 @@ public class ZipMultiResourceItemReader<T> extends MultiResourceItemReader<T> {
     @Value("#{jobParameters['output.archives']}")
     private String outputDirectory = null;
     private UtilFile utilFile;
+    private static String FILE_ZIP_EN_COURS_DE_TRAITEMENT = "_en_cours_de_traitement";
     @Autowired
     private FichierService fichierService;
 
@@ -75,10 +76,13 @@ public class ZipMultiResourceItemReader<T> extends MultiResourceItemReader<T> {
                             Integer nbrDeFichierDansLeRepertoire = archives[0].getFile().listFiles().length;
                             List<File> fichiersDansLeRepertoire = Arrays.asList(archives[0].getFile().listFiles());
                             List<File> fichiersZipDansLeRepertoire = new ArrayList<File>();
+                            Integer nbrDeFichierZipATraiter=0;
                             for (int j = 0; j < nbrDeFichierDansLeRepertoire; j++) {
+                            //if(fichiersDansLeRepertoire.get(0)!=null || !fichiersDansLeRepertoire.get(0).equals("")) {
                                 File file = fichiersDansLeRepertoire.get(j);
-                                if (file.getName().matches(EXTENTION_ZIP)) {
-                                    File fichierEnCoursDeTraitement = new File(rep + file.getName() + "_en_cours_de_traiement");
+                                //on traite qu'un seul fichier zip par lancement de batch
+                                if (file.getName().matches(EXTENTION_ZIP) && nbrDeFichierZipATraiter < 1) {
+                                    File fichierEnCoursDeTraitement = new File(rep + file.getName() + FILE_ZIP_EN_COURS_DE_TRAITEMENT);
                                     boolean renommageOk = file.renameTo(fichierEnCoursDeTraitement);
                                     if (renommageOk) {
                                         fichiersZipDansLeRepertoire.add(fichierEnCoursDeTraitement);
@@ -88,7 +92,9 @@ public class ZipMultiResourceItemReader<T> extends MultiResourceItemReader<T> {
                                         this.stepExecution.getExecutionContext().put("fichierZipEnCours", jobParameterFichierZipEnCours);
                                         this.stepExecution.getExecutionContext().put("outputArchives", outputDirectory);
                                     }
+                                    nbrDeFichierZipATraiter = nbrDeFichierZipATraiter + 1;
                                 }
+                            //}
                             }
                             if (fichiersZipDansLeRepertoire.size() >= 1) {
                                 //on traite qu'un seul fichier zip par operation, ce fichier zip va etre déplacer si le batch est complet
