@@ -127,7 +127,7 @@
                              ref="checkbox"
                              :value="entryColumn.cell.toText(entry)"
                              :checked="entryColumn.cell.isChecked(entry)"
-                             @click="emitCheckbox(entry)" />
+                             @click="emitCheckbox(entry, entryColumn.cell.isChecked(entry))" />
 
                       <!--<label class="checkbox checkbox-inline" :class="{'checked' : entryColumn.cell.isChecked(entry) == 1}">
                         <input class="checkbox checkbox-inline"
@@ -316,15 +316,16 @@
         this.$emit(event, entry, column);
       },
 
-      emitCheckbox(entry) {
+      emitCheckbox(entry, value) {
         let key = Number.parseInt(entry.id);
-        console.log("emitCheckbox="+key)
+        console.log("emitCheckbox id=%s, value=%s", key, value)
           if(this.allChecked) {
               this.allChecked = false;
 
           }
-          console.log("this.checkedCurrentEntry.get(key)="+this.checkedCurrentEntry.get(key))
-          this.checkedCurrentEntry.set(key, !this.checkedCurrentEntry.get(key));
+
+          this.checkedCurrentEntry.set(key, value == 1 ? false : true);
+         console.log("this.checkedCurrentEntry.get(key)="+this.checkedCurrentEntry.get(key));
 
           this.$emit('entry-checked', this.checkedCurrentEntry.get(key), entry);
 
@@ -333,25 +334,27 @@
       emitAllCheckbox() {
         console.log("emitAllCheckbox=" +  this.allChecked)
 
-        console.log("this.$refs.checkbox=" +  this.$refs.checkbox);
+        console.log("this.$refs.checkbox=" +  this.$refs.checkbox.length);
         var entries = [];
         for(var i in this.$refs.checkbox) {
           let elem = this.$refs.checkbox[i];
-          console.log("elem=" +  elem.checked);
-          let key = Number.parseInt(elem.value);
-          if(this.allChecked) {
-            elem.checked =  1;
+          console.log("elem=" +  elem.value);
+          if( elem.value !== undefined) {
+            let key = Number.parseInt(elem.value);
+            if(this.allChecked) {
+              elem.checked =  1;
 
-            entries.push(key);
-            this.checkedCurrentEntry.set(key, true);
-          } else {
-            elem.checked = 0;
-            this.checkedCurrentEntry.set(key, false);
+              entries.push(key);
+              this.checkedCurrentEntry.set(key, true);
+            } else {
+              elem.checked = 0;
+              this.checkedCurrentEntry.set(key, false);
+            }
           }
 
         }
 
-        console.log("entries checked=" +  entries);
+        console.log("this.checkedCurrentEntry=" +  entries.length);
 
         this.$emit('all-checked', this.allChecked, entries);
 

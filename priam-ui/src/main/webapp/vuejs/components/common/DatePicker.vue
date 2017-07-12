@@ -7,7 +7,7 @@
 
   export default {
 
-      props : ['dateFormat', 'placeHolder', 'zeroHour'],
+      props : ['dateFormat', 'placeHolder', 'zeroHour', 'value'],
 
       data() {
 
@@ -23,14 +23,18 @@
           this.initDatePicker();
           var self = this;
           var element = $(this.$el);
+          console.log("this.dateFormat="+this.dateFormat)
           element.datepicker({
             dateFormat: this.dateFormat,
             onSelect: function(date) {
               var val = self.stringToDate(date);
-              console.log("DATE: " + val);
               self.$emit('update-date', val);
             }
           });
+
+
+        console.log("value="+ this.value);
+        element.val(this.value);
 
           var inputValidate = function() {
             var regExp = new RegExp(/^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/);
@@ -86,6 +90,7 @@
           element.on('blur', inputValidate);
 
           element.change(function () {
+              console.log('onChange element')
 
               var date = $(this).val();
               if(typeof date === 'string' && date.length > 0) {
@@ -136,15 +141,12 @@
           },
 
           stringToDate(str) {
-              console.log("str="+str);
               if (typeof str === 'string' && str.length > 3 && str.length < 11) {
                   var parts = str.split("/");
-                  console.log("isZeroHour="+ this.isZeroHour);
                   var date = null;
                   if(this.isZeroHour) {
                     date =  new Date(Date.UTC(parts[2], parts[1] - 1, parts[0], 0, 0, 0, 0));
                   } else {
-                    console.log('dfdf');
                     date =  new Date(Date.UTC(parts[2], parts[1] - 1, parts[0], 23, 59, 59, 999));
                   }
 
@@ -152,8 +154,30 @@
 
               }
               return null;
-          }
+          },
 
+        dateToString(date) {
+             if(date !== null) {
+               var m = moment(date);
+               return m.format("DD/MM/YYYY");
+             }
+
+             return '';
+        }
+
+
+      },
+
+      watch : {
+
+        value: function (value) {
+            console.log("update value = " + value);
+
+            let formattedDate = this.dateToString(value);
+            console.log("formatted update value = " + formattedDate);
+
+            $(this.$el).val(formattedDate);
+        },
 
       },
 

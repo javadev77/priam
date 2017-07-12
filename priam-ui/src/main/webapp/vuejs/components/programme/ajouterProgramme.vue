@@ -109,7 +109,6 @@
       </div>
     </div>
 
-<!--
     <modal v-if="showModalMemeNom">
       <label class="homer-prompt-q control-label" slot="body">
         Attention un programme avec le même nom est déjà existant. Voulez-vous continuer ?
@@ -119,7 +118,7 @@
         <button class="btn btn-default btn-primary pull-right yes" @click="yesContinue">Oui</button>
       </template>
     </modal>
--->
+
   </div>
 
 </template>
@@ -129,6 +128,7 @@
   export default {
     data(){
       return {
+        showModalMemeNom : false,
         programmeExist : false,
         resources:{},
         resource: '',
@@ -172,6 +172,7 @@
         this.$store.dispatch('loadTypeUtilisationVide', val);
         this.typeUtilisationSelected =  this.$store.getters.typeUtilisationOptionsVide[0];
       },
+
       validateBeforeSubmit() {
         this.$validator.validateAll().then(() => {
           // eslint-disable-next-line
@@ -181,26 +182,19 @@
           console.log('Correct them errors!');
         });
       },
+
       verifierEtAjouterLeProgramme(){
 
         var confirNom = true;
         var confirRionFam = true;
         this.resource.searchProgramme({nom : this.nom}).then(response => {
             console.log(response.body);
-          this.programmeExist = response.body;
-          if (this.programmeExist) {
-            confirNom = confirm("Attention un programme avec le même nom est déjà existant. Voulez-vous continuer?");
-            /*if (confirmation == true) {
-              this.ajouterUnProgramme();
-              this.console.log("Confirmation d'ajout de programme OK");
-              return true;
+            this.programmeExist = response.body;
+            if (this.programmeExist) {
+              this.showModalMemeNom = true;
             } else {
-              this.console.log("Confirmation d'ajout de programme KO");
-              return false;
-            }*/
-          } else {
-            //this.ajouterUnProgramme();
-          }
+              //this.ajouterUnProgramme();
+            }
         });
         var critereRechercheData = {};
         critereRechercheData.typeUtilisation = this.typeUtilisationSelected !== undefined ? this.typeUtilisationSelected.id : null;
@@ -244,7 +238,19 @@
           });
         //}
 
+      },
+
+      noContinue() {
+        this.showModalMemeNom = false;
+        this.$emit('cancel');
+      },
+
+      yesContinue() {
+        this.showModalMemeNom = false;
+        this.ajouterUnProgramme();
+
       }
+
 
     },
     components: {
