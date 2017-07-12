@@ -3,7 +3,10 @@ package fr.sacem.priam.ui.rest;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
-import fr.sacem.priam.model.domain.*;
+import fr.sacem.priam.model.domain.Fichier;
+import fr.sacem.priam.model.domain.Programme;
+import fr.sacem.priam.model.domain.StatutProgramme;
+import fr.sacem.priam.model.domain.TypeRepart;
 import fr.sacem.priam.model.domain.criteria.ProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.AffectationDto;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
@@ -18,7 +21,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -88,15 +90,10 @@ public class ProgrammeResource {
      @RequestMapping(value = "programme/nom/{nom}",
                      method = RequestMethod.GET,
                      produces = MediaType.APPLICATION_JSON_VALUE)
-     public Boolean getProgrammeByNom(@PathVariable("nom") String nom){
-        Boolean resultat = false;
+     public Boolean getProgrammeByNom(@PathVariable("nom") String nom) {
         List<Programme> programmes = programmeService.serachProgrammeByNom(nom);
-        if (programmes.size() < 1)
-          resultat = false;
-        else if (programmes.size() >= 1)
-          resultat = true;
-        return resultat;
-
+        
+        return programmes != null && !programmes.isEmpty();
      }
 
      @RequestMapping(value = "programme/",
@@ -144,10 +141,10 @@ public class ProgrammeResource {
 
         ProgrammeDto programmeDto = null;
         String numProg=affectationDto.getNumProg();
-        ArrayList<Fichier> fichiers = affectationDto.getFichiers();
+        List<Fichier> fichiers = affectationDto.getFichiers();
 
         if(!Strings.isNullOrEmpty(numProg)){
-            fichierService.majFichiersAffectesAuProgramme(numProg,fichiers);
+            fichierService.majFichiersAffectesAuProgramme(numProg, fichiers);
             programmeDto = programmeViewDao.findByNumProg(numProg);
         }
 
@@ -161,13 +158,14 @@ public class ProgrammeResource {
     public List<String> getAllNumProgForAutocmplete() {
         return programmeViewDao.findAllNumProgByCriteria();
     }
-
+  
+    
     @RequestMapping(value = "programme/nomprog/autocomplete",
-    method = RequestMethod.GET,
-    produces = MediaType.APPLICATION_JSON_VALUE)
+                    method = RequestMethod.GET,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
     public List<String> getAllNomProgForAutocmplete() {
-    return programmeService.findAllNomProgByCriteria();
-  }
+        return programmeService.findAllNomProgByCriteria();
+    }
    
     @RequestMapping(value = "programme/toutDesaffecter",
                     method = RequestMethod.PUT,
