@@ -76,11 +76,8 @@ public class JobCompletionNotificationLigneProgrammeListener extends JobExecutio
 
     }
 
-    public FichierServiceImpl getFichierService() {
-        return fichierService;
-    }
 
-    public void setFichierService(FichierServiceImpl fichierService) {
+   public void setFichierService(FichierServiceImpl fichierService) {
         this.fichierService = fichierService;
     }
 }

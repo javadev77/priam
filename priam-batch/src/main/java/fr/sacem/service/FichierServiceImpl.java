@@ -41,10 +41,6 @@ public class FichierServiceImpl implements FichierService {
         this.fichierRepository = fichierRepository;
     }
 
-    public FichierRepository getFichierRepository() {
-        return fichierRepository;
-    }
-
     public void setFichierRepository(FichierRepository fichierRepository) {
         this.fichierRepository = fichierRepository;
     }

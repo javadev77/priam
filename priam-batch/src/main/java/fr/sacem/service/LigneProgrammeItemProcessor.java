@@ -18,8 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class LigneProgrammeItemProcessor implements ItemProcessor<LigneProgramme, LigneProgramme> {
 
     private static final Logger log = LoggerFactory.getLogger(LigneProgrammeItemProcessor.class);
-    @Autowired
-    private FichierService fichierService;
     private ExecutionContext executionContext;
 
     @Override
@@ -42,11 +40,4 @@ public class LigneProgrammeItemProcessor implements ItemProcessor<LigneProgramme
         this.executionContext = stepExecution.getExecutionContext();
     }
 
-    public FichierService getFichierService() {
-        return fichierService;
-    }
-
-    public void setFichierService(FichierService fichierService) {
-        this.fichierService = fichierService;
-    }
 }
