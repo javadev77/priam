@@ -16,7 +16,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -181,13 +180,19 @@ public class ProgrammeServiceTest {
 		assertThat(programme.getStatut()).isEqualTo(StatutProgramme.CREE);
 		
 		
-		Fichier probe = new Fichier();
-		probe.setStatut(Status.CHARGEMENT_OK);
-		Example<Fichier> of = Example.of(probe);
 		
 		List<Fichier> expectedFichiersOK = fichierDao.findAll(Lists.transform(fichiersAffectes, Fichier::getId));
 		assertThat(expectedFichiersOK).isNotEmpty();
 		assertThat(expectedFichiersOK).extracting("statut").contains(Status.CHARGEMENT_OK);
+	}
+	
+	@Test
+	@Transactional
+	public void test_findAllNomProgByCriteria() throws Exception {
+		
+		List<String> allNomProgByCriteria = programmeService.findAllNomProgByCriteria();
+		
+		assertThat(allNomProgByCriteria).isNotNull();
 	}
 	
 }

@@ -250,6 +250,28 @@ public class ProgrammeResourceTest {
     
   }
   
+  @Test
+  @Transactional
+  public void test_getAllNomProgForAutocmplete() throws Exception {
+    mockMvc.perform(
+      get("/app/rest/programme/nomprog/autocomplete")
+        .contentType(contentType))
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$[0]", is("Programme 01")));
+    
+  }
+  
+  @Test
+  @Transactional
+  public void test_getAllNumProgForAutocmplete() throws Exception {
+    mockMvc.perform(
+      get("/app/rest/programme/numprog/autocomplete")
+        .contentType(contentType))
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$[0]", is("PR170001")));
+    
+  }
+  
   private AffectationDto createAffectationDto(String numProg, List<String> fichiers) {
       AffectationDto affectationDto = new AffectationDto();
       affectationDto.setNumProg(numProg);
@@ -269,9 +291,9 @@ public class ProgrammeResourceTest {
       affectationDto.setFichiers(transform);
       
       return affectationDto;
-  }
+    }
   
-  protected String json(Object o) throws IOException {
+    protected String json(Object o) throws IOException {
         MockHttpOutputMessage mockHttpOutputMessage = new MockHttpOutputMessage();
         this.mappingJackson2HttpMessageConverter.write(o, MediaType.APPLICATION_JSON, mockHttpOutputMessage);
 

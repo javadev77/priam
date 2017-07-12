@@ -101,9 +101,7 @@ public class ProgrammeService {
 		mappedProgramme.setDateCreation(new Date());
 		mappedProgramme.setStatut(StatutProgramme.CREE);
 		
-		if (mappedProgramme != null) {
-			mappedProgramme = programmeDao.save(mappedProgramme);
-		}
+		mappedProgramme = programmeDao.save(mappedProgramme);
 		
 		return mappedProgramme;
 	}
