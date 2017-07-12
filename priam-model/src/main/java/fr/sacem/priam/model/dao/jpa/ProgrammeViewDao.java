@@ -58,8 +58,8 @@ public interface ProgrammeViewDao extends JpaRepository<ProgrammeView, String> {
     List<String> findAllNumProgByCriteria();
 
     @Transactional(readOnly = true)
-    @Query(value = "SELECT pr.nom " +
-            "FROM ProgrammeView AS pr ")
+    @Query(value = "SELECT distinct pr.nom " +
+            "FROM ProgrammeView AS  order by pr.nom ")
     List<String> findAllNomProgByCriteria();
     
 }
