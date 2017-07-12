@@ -152,7 +152,7 @@ public class ProgrammeService {
 		Programme programme = programmeDao.findOne(programmeDto.getNumProg());
 		programme.setStatut(StatutProgramme.ABANDONNE);
 		
-		return programmeDao.save(programme);
+		return programmeDao.saveAndFlush(programme);
 	}
 	
 	@Transactional
