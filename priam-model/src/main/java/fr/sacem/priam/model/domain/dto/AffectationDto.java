@@ -14,7 +14,7 @@ public class AffectationDto {
     private List<Fichier> fichiers= new ArrayList<>();
 
 
-    public AffectationDto(String numProg, ArrayList<Fichier> fichiers) {
+    public AffectationDto(String numProg, List<Fichier> fichiers) {
         this.numProg = numProg;
         this.fichiers = fichiers;
     }

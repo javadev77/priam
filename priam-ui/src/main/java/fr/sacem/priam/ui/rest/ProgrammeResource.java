@@ -125,12 +125,8 @@ public class ProgrammeResource {
                       method = RequestMethod.PUT,
                       consumes = MediaType.APPLICATION_JSON_VALUE,
                       produces = MediaType.APPLICATION_JSON_VALUE)
-
      public Programme abandonnerProgramme(@RequestBody ProgrammeDto programmeDto) {
-          if(programmeDto != null) {
-              return programmeService.abandonnerProgramme(programmeDto);
-          }
-          return null;
+          return programmeService.abandonnerProgramme(programmeDto);
      }
 
     @RequestMapping(value = "programme/affectation",
