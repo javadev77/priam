@@ -40,33 +40,4 @@ public class DoublePropertyEditor extends PropertyEditorSupport {
         return (value != null ? value.toString() : "");
     }
 
-    /**
-     * Created by fandis on 09/05/2017.
-     */
-    public static class LocalDatePropertyEditor extends PropertyEditorSupport {
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
-        protected LocalDatePropertyEditor() {
-        }
-
-        @Override
-        public void setAsText(String text) throws DateTimeParseException {
-            if (StringUtils.hasText(text)) {
-
-                setValue(LocalDate.parse(text, formatter));
-            } else {
-                setValue(null);
-            }
-        }
-
-        /**
-         * Format the Date as String, using the specified DateFormat.
-         */
-        @Override
-        public String getAsText() {
-            LocalDate value = (LocalDate) getValue();
-            return (value != null ? value.toString() : "");
-        }
-    }
 }

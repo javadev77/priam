@@ -154,17 +154,8 @@ public class ZipMultiResourceItemReader<T> extends MultiResourceItemReader<T> {
         this.archives = archives;
     }
 
-    public Resource[] getArchives() {
-        return archives;
-    }
 
-    public ZipFile getZipFile() {
-        return zipFile;
-    }
 
-    public void setZipFiles(ZipFile[] zipFiles) {
-        this.zipFile = zipFile;
-    }
 
     @BeforeStep
     public void saveStepExecution(StepExecution stepExecution) {
@@ -174,15 +165,6 @@ public class ZipMultiResourceItemReader<T> extends MultiResourceItemReader<T> {
     public String getInputDirectory() {
         return inputDirectory;
     }
-
-    public void setInputDirectory(String inputDirectory) {
-        this.inputDirectory = inputDirectory;
-    }
-
-    public UtilFile getUtilFile() {
-        return utilFile;
-    }
-
     public void setUtilFile(UtilFile utilFile) {
         this.utilFile = utilFile;
     }
