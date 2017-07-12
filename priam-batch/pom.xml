@@ -5,7 +5,7 @@
 
     <groupId>fr.sacem.priam</groupId>
     <artifactId>priam-batch</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+
     <packaging>jar</packaging>
 
     <name>priam-batch</name>

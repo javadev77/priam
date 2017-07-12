@@ -119,15 +119,27 @@
       </template>
     </modal>
 
+    <modal v-if="showModalMemeRion">
+      <div class="homer-prompt-q control-label" slot="body">
+        Attention le programme {{ nomProgrammeMemeRion }} a le même Rion, Famille et Type d'utilisation que celui que vous voulez créer. Voulez-vous continuer?
+      </div>
+      <template slot="footer">
+        <button class="btn btn-default btn-primary pull-right no" @click="onNoConfirm">Non</button>
+        <button class="btn btn-default btn-primary pull-right yes" @click="onYesConfirm">Oui</button>
+      </template>
+    </modal>
+
   </div>
 
 </template>
 <script>
   import vSelect from '../common/Select.vue';
+  import Modal from '../common/Modal.vue';
 
   export default {
     data(){
       return {
+        showModalMemeRion: false,
         showModalMemeNom : false,
         programmeExist : false,
         resources:{},
@@ -145,7 +157,9 @@
           typeUtilisation : '',
           rionTheorique :'',
         },
-        formSubmitted: false
+        formSubmitted: false,
+
+        nomProgrammeMemeRion : ''
 
       }
     },
@@ -193,32 +207,19 @@
             if (this.programmeExist) {
               this.showModalMemeNom = true;
             } else {
-              //this.ajouterUnProgramme();
+                this.checkMemeRionFamilleTypeUtil();
             }
         });
-        var critereRechercheData = {};
-        critereRechercheData.typeUtilisation = this.typeUtilisationSelected !== undefined ? this.typeUtilisationSelected.id : null;
-        critereRechercheData.famille = this.familleSelected !== undefined ? this.familleSelected.id : null;
-        critereRechercheData.rionTheorique= this.rionTheoriqueSelected !== undefined ? this.rionTheoriqueSelected.id : null;
-
-        this.resource.searchAllProgramme(critereRechercheData)
-          .then(response => {
-            return response.json();
-          })
-          .then(data => {
-            var listeProg = data.content;
-            if(listeProg.length > 0) {
-              confirRionFam = confirm("Attention le programme " + listeProg[0].nom  + " a le même Rion, Famille et Type d'utilisation que celui que vous voulez créer. Voulez-vous continuer?");
-            }
-          });
 
 
-        if(confirNom || confirRionFam) {
+
+
+        /*if(confirNom || confirRionFam) {
             this.ajouterUnProgramme();
             this.console.log("Confirmation d'ajout de programme OK");
         } else {
           this.console.log("Confirmation d'ajout de programme KO");
-        }
+        }*/
 
       },
 
@@ -245,16 +246,49 @@
         this.$emit('cancel');
       },
 
+      onNoConfirm() {
+        this.showModalMemeRion = false;
+        this.$emit('cancel');
+      },
+
+      checkMemeRionFamilleTypeUtil() {
+          var critereRechercheData = {};
+          critereRechercheData.typeUtilisation = this.typeUtilisationSelected !== undefined ? this.typeUtilisationSelected.id : null;
+          critereRechercheData.famille = this.familleSelected !== undefined ? this.familleSelected.id : null;
+          critereRechercheData.rionTheorique = this.rionTheoriqueSelected !== undefined ? this.rionTheoriqueSelected.id : null;
+
+          this.resource.searchAllProgramme(critereRechercheData)
+            .then(response => {
+              return response.json();
+            })
+            .then(data => {
+              var listeProg = data.content;
+              if (listeProg.length > 0) {
+                this.nomProgrammeMemeRion = listeProg[0].nom;
+                this.showModalMemeRion = true;
+              } else {
+                  this.ajouterUnProgramme();
+              }
+            });
+      },
+
       yesContinue() {
         this.showModalMemeNom = false;
-        this.ajouterUnProgramme();
+        this.checkMemeRionFamilleTypeUtil();
+
+      },
+
+      onYesConfirm() {
+        this.showModalMemeRion = false;
+        this.ajouterUnProgramme()
 
       }
 
 
     },
     components: {
-      vSelect: vSelect
+      vSelect: vSelect,
+      modal : Modal
     },
     created(){
       const customActions = {

@@ -1,5 +1,10 @@
 <template>
-  <div>
+  <div class="container-fluid">
+    <div class="navbar navbar-default navbar-sm breadcrumb">
+      <div class="titre-page">
+        <span>Chargement</span>
+      </div>
+    </div>
     <div class="container-fluid sacem-formula">
 
       <div class="panel panel-default">

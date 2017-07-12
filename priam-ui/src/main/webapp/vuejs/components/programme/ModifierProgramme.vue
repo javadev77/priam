@@ -147,7 +147,7 @@
 
     <modal v-if="showModalMemeRion">
       <div class="homer-prompt-q control-label" slot="body">
-        Attention le programme {{ nom }} a le même Rion, Famille et Type d'utilisation que celui que vous voulez créer. Voulez-vous continuer?
+        Attention le programme {{ nom }} a le même Rion, Famille et Type d'utilisation que celui que vous voulez modifier. Voulez-vous continuer?
       </div>
       <template slot="footer">
         <button class="btn btn-default btn-primary pull-right no" @click="onNoConfirm">Non</button>
@@ -323,7 +323,7 @@
             .then(data => {
               var listeProg = data.content;
               if(listeProg.length > 0) {
-                this.showModalMemeRion = true;
+                 this.showModalMemeRion = true;
               } else {
                   this.modifierProgramme();
               }
