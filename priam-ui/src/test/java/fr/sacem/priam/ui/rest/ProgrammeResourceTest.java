@@ -1,7 +1,13 @@
 package fr.sacem.priam.ui.rest;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
+import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.dao.jpa.ProgrammeDao;
 import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
+import fr.sacem.priam.model.domain.Fichier;
+import fr.sacem.priam.model.domain.Status;
+import fr.sacem.priam.model.domain.dto.AffectationDto;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.ui.rest.dto.ProgrammeCritereRecherche;
 import org.junit.Before;
@@ -22,12 +28,13 @@ import org.springframework.web.context.WebApplicationContext;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNotNull;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
@@ -52,6 +59,9 @@ public class ProgrammeResourceTest {
   
     @Autowired
     private ProgrammeDao programmeDao;
+    
+    @Autowired
+    private FichierDao fichierDao;
 
 
     @Autowired
@@ -158,6 +168,27 @@ public class ProgrammeResourceTest {
     }
   
     @Test
+    public void should_nom_programme_exist() throws Exception {
+      String pr01 = "Programme 01";
+      mockMvc.perform(
+        get("/app/rest/programme/nom/"+ pr01)
+          .contentType(contentType))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$", is(true)));
+      
+    }
+  
+    @Test
+    public void should_nom_programme_not_exist() throws Exception {
+      mockMvc.perform(
+        get("/app/rest/programme/nom/notfound")
+          .contentType(contentType))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$", is(false)));
+      
+    }
+  
+    @Test
     @Transactional
     public void add_programme() throws Exception {
       mockMvc.perform(
@@ -170,6 +201,76 @@ public class ProgrammeResourceTest {
       
     }
   
+    @Test
+    @Transactional
+    public void test_abandonner_programme() throws Exception {
+      mockMvc.perform(
+        put("/app/rest/programme/abandon")
+          .content(this.json(createProgrammeDto("PR170001","Test01", "COPIEPRIV")))
+          .contentType(contentType))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.statut", is("ABANDONNE")));
+      
+    }
+  
+  @Test
+  @Transactional
+  public void test_affecterFichiers() throws Exception {
+    mockMvc.perform(
+      put("/app/rest/programme/affectation")
+        .content(this.json(createAffectationDto("PR170001", Arrays.asList("F01", "F02"))))
+        .contentType(contentType))
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.statut", is("AFFECTE")));
+    
+  }
+  
+  @Test
+  @Transactional
+  public void test_affecterFichiers_all_vide() throws Exception {
+    mockMvc.perform(
+      put("/app/rest/programme/affectation")
+        .content(this.json(createAffectationDto("PR170001", Collections.emptyList())))
+        .contentType(contentType))
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.statut", is("CREE")));
+    
+  }
+  
+  
+  @Test
+  @Transactional
+  public void test_deaffecterFichiers() throws Exception {
+    mockMvc.perform(
+      put("/app/rest/programme/toutDesaffecter")
+        .content("PR170001")
+        .contentType(contentType))
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.statut", is("CREE")));
+    
+  }
+  
+  private AffectationDto createAffectationDto(String numProg, List<String> fichiers) {
+      AffectationDto affectationDto = new AffectationDto();
+      affectationDto.setNumProg(numProg);
+      List<Fichier> transform = Lists.transform(fichiers, new Function<String, Fichier>() {
+        @Override
+        public Fichier apply(String f) {
+          Fichier fichier = new Fichier();
+          fichier.setNomFichier( f);
+          fichier.setStatut(Status.CHARGEMENT_OK);
+          
+          fichierDao.save(fichier);
+  
+          return fichier;
+        }
+      });
+      
+      affectationDto.setFichiers(transform);
+      
+      return affectationDto;
+  }
+  
   protected String json(Object o) throws IOException {
         MockHttpOutputMessage mockHttpOutputMessage = new MockHttpOutputMessage();
         this.mappingJackson2HttpMessageConverter.write(o, MediaType.APPLICATION_JSON, mockHttpOutputMessage);
@@ -177,12 +278,18 @@ public class ProgrammeResourceTest {
         return mockHttpOutputMessage.getBodyAsString();
     }
   
-  private ProgrammeDto createProgrammeDto(String nom, String famille) {
-      ProgrammeDto dto = new ProgrammeDto();
-      dto.setNom(nom);
-      dto.setFamille(famille);
-      
-      return dto;
-  }
+    private ProgrammeDto createProgrammeDto(String numProg, String nom, String famille) {
+        ProgrammeDto programmeDto = createProgrammeDto(nom, famille);
+        programmeDto.setNumProg(numProg);
+        return  programmeDto;
+    }
+    
+    private ProgrammeDto createProgrammeDto(String nom, String famille) {
+        ProgrammeDto dto = new ProgrammeDto();
+        dto.setNom(nom);
+        dto.setFamille(famille);
+        
+        return dto;
+    }
 
 }

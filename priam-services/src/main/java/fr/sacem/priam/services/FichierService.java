@@ -39,7 +39,7 @@ public class FichierService {
     
     
     @Transactional
-    public void majFichiersAffectesAuProgramme(String numProg, ArrayList<Fichier> nouveauxfichiersAffectes){
+    public void majFichiersAffectesAuProgramme(String numProg, List<Fichier> nouveauxfichiersAffectes){
         List<Long> idsNouveauxFichiersAffectes=new ArrayList<>();
         for(Fichier fichier : nouveauxfichiersAffectes){
             idsNouveauxFichiersAffectes.add(fichier.getId());
@@ -62,6 +62,6 @@ public class FichierService {
         programme.setUseraffect(GUEST);//TODO HABIB => A implementer lors  la mise en place du SSO SACEM
         programme.setDataffect(new Date());
         
-        programmeDao.save(programme);
+        programmeDao.saveAndFlush(programme);
     }
 }

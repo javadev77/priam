@@ -166,7 +166,7 @@ public class ProgrammeService {
 		programme.setUsermaj(GUEST);
 		programme.setDatmaj(new Date());
 		
-		programmeDao.save(programme);
+		programmeDao.saveAndFlush(programme);
 		LOG.info("Fin :Deaffecter les fichiers lies au programme (" + numProg + ")");
 	}
 
