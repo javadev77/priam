@@ -7,7 +7,6 @@ import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.dto.FileDto;
 import fr.sacem.priam.services.FichierService;
 import fr.sacem.priam.ui.rest.dto.AffectationCriteria;
-import fr.sacem.priam.ui.rest.dto.ChargementCritereRecherche;
 import fr.sacem.priam.ui.rest.dto.InputChgtCriteria;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
 import java.util.List;
@@ -35,15 +37,7 @@ public class ChargementResource {
     @Autowired
     FichierService fichierService;
     
-    @RequestMapping(value = "/initCritereRecherche",
-                    method = RequestMethod.GET,
-                    produces = MediaType.APPLICATION_JSON_VALUE)
-    public ChargementCritereRecherche initCritereRecherche() {
     
-        //TODO : HABIB - A compeleter
-        return new ChargementCritereRecherche();
-    }
-  
     @RequestMapping(value = "/search",
                     method = RequestMethod.POST,
                     consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -91,7 +85,7 @@ public class ChargementResource {
   
   private List<Status> statusCriterion(@RequestBody InputChgtCriteria input) {
     List<Status> status = null;
-    if(input.getStatutCode().isEmpty()) {
+    if(input.getStatutCode() == null || input.getStatutCode().isEmpty()) {
       status = Arrays.asList(Status.values());
     } else {
       status = Lists.transform(input.getStatutCode(), code -> Status.valueOf(code));

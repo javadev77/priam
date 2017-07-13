@@ -6,7 +6,7 @@ package fr.sacem.priam.ui.rest.dto;
 public class AffectationCriteria extends InputChgtCriteria {
     private String numProg;
   
-    AffectationCriteria() {
+    public AffectationCriteria() {
       super();
     }
   

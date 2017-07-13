@@ -199,27 +199,18 @@
 
       verifierEtAjouterLeProgramme(){
 
-        var confirNom = true;
-        var confirRionFam = true;
-        this.resource.searchProgramme({nom : this.nom}).then(response => {
-            console.log(response.body);
-            this.programmeExist = response.body;
-            if (this.programmeExist) {
-              this.showModalMemeNom = true;
-            } else {
-                this.checkMemeRionFamilleTypeUtil();
-            }
-        });
-
-
-
-
-        /*if(confirNom || confirRionFam) {
-            this.ajouterUnProgramme();
-            this.console.log("Confirmation d'ajout de programme OK");
-        } else {
-          this.console.log("Confirmation d'ajout de programme KO");
-        }*/
+        this.resource.searchProgramme({nom : this.nom})
+            .then(response => {
+              this.programmeExist = response.body;
+              if (this.programmeExist) {
+                  this.showModalMemeNom = true;
+              } else {
+                  this.checkMemeRionFamilleTypeUtil();
+              }
+            })
+           .catch(response => {
+              alert("Erreur technique lors de l'ajout du programme !! " + response);
+          });
 
       },
 

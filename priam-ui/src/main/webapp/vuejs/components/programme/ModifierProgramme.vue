@@ -147,7 +147,7 @@
 
     <modal v-if="showModalMemeRion">
       <div class="homer-prompt-q control-label" slot="body">
-        Attention le programme {{ nom }} a le même Rion, Famille et Type d'utilisation que celui que vous voulez modifier. Voulez-vous continuer?
+        Attention le programme {{ nomProgrammeMemeRion }} a le même Rion, Famille et Type d'utilisation que celui que vous voulez modifier. Voulez-vous continuer?
       </div>
       <template slot="footer">
         <button class="btn btn-default btn-primary pull-right no" @click="onNoConfirm">Non</button>
@@ -196,7 +196,9 @@
           rionTheorique :'',
         },
 
-        formSubmitted: false
+        formSubmitted: false,
+
+        nomProgrammeMemeRion : ''
 
       }
     },
@@ -269,7 +271,7 @@
 
             });
         } else {
-          this.modifierProgramme();
+          this.verifierSiMemeRionFamilleTypeUtil();
         }
       },
 
@@ -324,6 +326,7 @@
               var listeProg = data.content;
               if(listeProg.length > 0) {
                  this.showModalMemeRion = true;
+                 this.nomProgrammeMemeRion = listeProg[0].nom;
               } else {
                   this.modifierProgramme();
               }

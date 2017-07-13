@@ -3,82 +3,37 @@ package fr.sacem.priam.ui.rest;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import fr.sacem.priam.model.dao.jpa.FichierDao;
-import fr.sacem.priam.model.dao.jpa.ProgrammeDao;
 import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
 import fr.sacem.priam.model.domain.Fichier;
 import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.dto.AffectationDto;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.ui.rest.dto.ProgrammeCritereRecherche;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.mock.http.MockHttpOutputMessage;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.WebApplicationContext;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 /**
  * Created by benmerzoukah on 14/06/2017.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = PriamWebAppTest.class)
-@WebAppConfiguration
-public class ProgrammeResourceTest {
+public class ProgrammeResourceTest extends RestResourceTest {
     public static final String APP_REST_PROGRAMME_SEARCH = "/app/rest/programme/search";
-    private MockMvc mockMvc;
-    private HttpMessageConverter mappingJackson2HttpMessageConverter;
-    private MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(),
-                                                  MediaType.APPLICATION_JSON.getSubtype(),
-                                                  Charset.forName("utf8"));
-    @Autowired
-    private WebApplicationContext webApplicationContext;
 
     @Autowired
     private ProgrammeViewDao programmeViewDao;
-  
-    @Autowired
-    private ProgrammeDao programmeDao;
     
     @Autowired
     private FichierDao fichierDao;
 
-
-    @Autowired
-    public void setConverters(HttpMessageConverter<?>[] converters) {
-
-        this.mappingJackson2HttpMessageConverter = Arrays.asList(converters).stream()
-                    .filter(hmc -> hmc instanceof MappingJackson2HttpMessageConverter)
-                    .findAny()
-                    .orElse(null);
-
-        assertNotNull("the JSON message converter must not be null", this.mappingJackson2HttpMessageConverter);
-    }
-
-    @Before
-    public void setup() throws Exception {
-        this.mockMvc = webAppContextSetup(webApplicationContext).build();
-    }
   
     @Test
     public void search_programmes() throws Exception {
@@ -292,14 +247,6 @@ public class ProgrammeResourceTest {
       
       return affectationDto;
     }
-  
-    protected String json(Object o) throws IOException {
-        MockHttpOutputMessage mockHttpOutputMessage = new MockHttpOutputMessage();
-        this.mappingJackson2HttpMessageConverter.write(o, MediaType.APPLICATION_JSON, mockHttpOutputMessage);
-
-        return mockHttpOutputMessage.getBodyAsString();
-    }
-  
     private ProgrammeDto createProgrammeDto(String numProg, String nom, String famille) {
         ProgrammeDto programmeDto = createProgrammeDto(nom, famille);
         programmeDto.setNumProg(numProg);
