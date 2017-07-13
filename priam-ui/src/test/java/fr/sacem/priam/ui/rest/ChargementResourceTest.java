@@ -2,14 +2,17 @@ package fr.sacem.priam.ui.rest;
 
 import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.domain.Status;
+import fr.sacem.priam.model.domain.dto.FileDto;
 import fr.sacem.priam.ui.rest.dto.AffectationCriteria;
 import fr.sacem.priam.ui.rest.dto.InputChgtCriteria;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -50,7 +53,20 @@ public class ChargementResourceTest extends RestResourceTest {
     }
     
     @Test
+    @Transactional
     public void deleteDonneesFichiers() throws Exception {
+      FileDto fileDto = new FileDto();
+      String fichier125 = "Fichier 125";
+      fileDto.setId(fichierDao.findByNomFichier(fichier125).getId());
+  
+      mockMvc.perform(
+           put("/app/rest/chargement/deleteFichier")
+          .content(this.json(fileDto))
+          .contentType(contentType))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.nomFichier", is(fichier125)))
+        .andExpect(jsonPath("$.statut", is("ABANDONNE")));
+  
     }
   
 }

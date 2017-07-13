@@ -76,5 +76,7 @@ public interface FichierDao extends JpaRepository<Fichier, Long> {
     @Modifying(clearAutomatically = true)
     @Query("UPDATE Fichier f SET f.programme.numProg = :numProg, f.statut =:status  WHERE f.id IN (:idFichiers) ")
     void updateStatusFichiersAffectes(@Param("numProg") String numProg,@Param("status") Status status,@Param("idFichiers") List<Long> idFichiers);
+    
+    Fichier findByNomFichier(String s);
 }
 
