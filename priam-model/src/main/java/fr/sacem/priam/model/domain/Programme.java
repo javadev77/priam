@@ -1,6 +1,7 @@
 package fr.sacem.priam.model.domain;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -8,7 +9,7 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "PRIAM_PROGRAMME")
-public class Programme {
+public class Programme implements Serializable {
 	private String numProg;
 	private String nom;
 	private Rion rionTheorique;

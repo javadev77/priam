@@ -247,7 +247,13 @@
                   id :  'numProg',
                   name :   'N° programme',
                   sortable : true,
-                  type : 'long-text'
+                  type : 'numeric-link',
+                  cell : {
+                    toText : function(entry) {
+                        return {value : entry.numProg, isLink : true};
+                    }
+                  }
+
                 },
                 {
                   id :  'nom',
@@ -605,6 +611,8 @@
               if(column.id !== undefined && column.id === 'fichiers') {
                   //redirect to Affectation.vue
                 this.$router.push({ name: 'affectation', params: { numProg: row.numProg }});
+              } else if(column.id !== undefined && column.id === 'numProg') {
+                this.$router.push({ name: 'selection', params: { numProg: row.numProg }});
               }
           },
 

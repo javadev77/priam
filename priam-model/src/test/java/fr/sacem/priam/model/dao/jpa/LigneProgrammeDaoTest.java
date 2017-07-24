@@ -38,5 +38,14 @@ public class LigneProgrammeDaoTest {
         
         assertThat(all).isNotNull().isEmpty();
     }
-    
+    @Test
+    public void get_one_ligne_programme(){
+        LigneProgramme ligneProgramme = ligneProgrammeDao.findOne(1l);
+        assertThat(ligneProgramme.getRionEffet()).isEqualTo(639);
+    }
+    @Test
+    public void get_ligne_programme_by_programme(){
+        //List<LigneProgramme> ligneProgrammes = ligneProgrammeDao.findLigneProgrammeByProgrammeId("PR170001");
+        //assertThat(ligneProgrammes.size()).isEqualTo(3);
+    }
 }

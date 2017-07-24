@@ -1,9 +1,7 @@
 <template>
   <div class="container-fluid">
     <nav class="navbar navbar-default navbar-fixed-top">
-            <!--<div class="navbar-header">
-                <router-link to="/" class="navbar-brand">PRIAM</router-link>
-            </div>-->
+
             <div class="navbar-header">
               <a class="navbar-brand logo" href="#/">
                 <img src="../assets/Logo_Priam.png" width="100px" height="40px" alt="PRIAM"/>
@@ -11,13 +9,7 @@
             </div>
 
              <two-lines-menu :menus="menus" :activeMenu="currentActiveMenu" :activeSubMenu="currentSubMenu"></two-lines-menu>
-            <!--<div class="nav navbar-nav">
-              <ul class="nav navbar-nav">
-                    <router-link to="/chargement" activeClass="active" tag="li"><a>Chargement</a></router-link>
-                    <router-link to="/affectation" activeClass="active" tag="li"><a>Affectation</a></router-link>
-                </ul>
-            </div>
--->
+
             <div class="nav navbar-nav navbar-right">
               <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown"

@@ -190,7 +190,7 @@
         </div>
     </div>
     <div class="row formula-buttons">
-      <button v-if="showButtonToutDesactiver" style="width: 160px;"  class="btn btn-default btn-primary pull-left" type="button" @click="showModalDesactiver = true">Tout désactiver</button>
+      <button v-if="showButtonToutDesactiver" style="width: 160px;"  class="btn btn-default btn-primary pull-left" type="button" @click="showModalDesactiver = true">Tout désaffecter</button>
       <button v-if="showButtonAnnuler" class="btn btn-default btn-primary pull-right" type="button" @click="annuler()">Annuler</button>
       <button v-if="showButtonEnregistrer" class="btn btn-default btn-primary pull-right" type="button" @click="enregister()">Enregister</button>
       <button v-if="showButtonEditer" class="btn btn-default btn-primary pull-right" type="button" @click="editer()">Editer</button>
@@ -212,7 +212,7 @@
 
     <modal v-if="showModalDesactiver">
       <span class="homer-prompt-q control-label" slot="body">
-        Etes-vous sûr de voir désaffecter tous les fichiers de ce programme?
+        Etes-vous sûr de vouloir désaffecter tous les fichiers de ce programme?
       </span>
       <template slot="footer">
         <button class="btn btn-default btn-primary pull-right no" @click="showModalDesactiver = false">Non</button>
@@ -388,7 +388,6 @@
           console.log("router params numProg = " + this.$route.params.numProg)
           const customActions = {
               findByNumProg : {method : 'GET', url : 'app/rest/programme/numProg/{numProg}'},
-              findAllFichiers : {method : 'POST', url :'app/rest/chargement/allFichiers'},
               affectationProgramme : {method: 'PUT', url : 'app/rest/programme/affectation'},
               toutDeaffecterProg : {method: 'PUT', url : 'app/rest/programme/toutDesaffecter'},
           }
