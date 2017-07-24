@@ -124,15 +124,14 @@
           <div class="result-panel-body panel-body">
 
             <priam-grid
-              :isPaginable="true"
-              :isLocalSort="true"
+
+              v-if="priamGrid.gridData.content"
               :data="priamGrid.gridData"
               :columns="priamGrid.gridColumns"
               noResultText="Aucun résultat."
               :filter-key="priamGrid.searchQuery"
-              @entry-checked="onEntryChecked"
-              @all-checked="onAllChecked"
-            >
+              @load-page="loadPage"
+              @on-sort="onSort">
             </priam-grid>
 
           </div>
@@ -152,8 +151,6 @@
     mixins: [chargementMixins],
 
     data(){
-      var $this =this;
-      var getters = this.$store.getters;
       return {
         fichiersChecked : [],
         programmeInfo: {},
@@ -162,60 +159,56 @@
         isCollapsed: false,
         defaultPageable : {
           page : 1,
-          sort : 'utilisateur',
-          dir : 'DESC',
-          size : 5
+          sort : 'ide12',
+          dir : 'desc',
+          size : 10
         },
         priamGrid: {
           gridColumns: [
             {
-              id: 'utilisateur',
-              name: 'Utilisateur',
-              sortable: true,
-              type: 'long-text'
-            },
-            {
-              id: 'IDE12',
-              name: 'IDE12',
+              id: 'role',
+              name: 'role',
               sortable: true,
               type: 'code-value',
-              cell: {
-                toText: function (cellValue) {
-                  var result = getters.famille.find(function (element) {
-                    return element.id === cellValue;
-                  });
-                  return result !== undefined && result.value;
+              cell : {
+                toText : function(entry) {
+                    var result = entry;
+                    if(result !=undefined)
+                    return result ;
+                    else
+                        return "";
+                }
+            }
+            },
+            {
+              id: 'ide12',
+              name: 'ide12',
+              sortable: true,
+              type: 'code-value',
+              cell : {
+                toText : function(entry) {
+                  var result = entry;
+                  if(result !=undefined)
+                    return result ;
+                  else
+                    return "";
                 }
               }
             },
-            {
+             {
               id: 'titre',
-              name: "Titre",
+              name: "titre",
               sortable: true,
               type: 'long-text',
-              cell: {
-                toText: function (cellValue) {
-                  var result = getters.typeUtilisation.find(function (element) {
-                    return element.id === cellValue;
-                  });
-                  return result !== undefined && result.value;
-                }
-              }
-            },
-
-            {
-              id: 'role',
-              name: "Rôle",
-              sortable: true,
-              type: 'long-text',
-              cell: {
-                toText: function (entry) {
-                  console.log("entry: "+entry.ide12)
-                  if (entry.role !== null) {
-                    return entry.role;
-                  }
-                }
-              }
+               cell : {
+                 toText : function(entry) {
+                   var result = entry;
+                   if(result !=undefined)
+                     return result ;
+                   else
+                     return "";
+                 }
+               }
             },
             {
               id: 'participant',
@@ -223,10 +216,12 @@
               sortable: true,
               type: 'long-text',
               cell: {
-                toText: function (cellValue) {
-                  if (entry.role !== null) {
-                    return entry.participant;
-                  }
+                toText : function(entry) {
+                  var result = entry;
+                  if(result !=undefined)
+                    return result ;
+                  else
+                    return "";
                 }
               }
             },
@@ -236,10 +231,12 @@
               sortable: true,
               type: 'long-text',
               cell: {
-                toText: function (cellValue) {
-                  if (entry.duree !== null) {
-                    return entry.duree;
-                  }
+                toText : function(entry) {
+                  var result = entry;
+                  if(result !=undefined)
+                    return result ;
+                  else
+                    return "";
                 }
               }
             },
@@ -247,64 +244,20 @@
               id: 'ajout',
               name: "Ajout",
               sortable: true,
-              type: 'long-text',
+              type: 'numeric',
               cell: {
-                toText: function (cellValue) {
-                  if (entry.ajout !== null) {
-                    return entry.ajout;
-                  }
-                }
-              }
-            },
-            {
-              id: 'action',
-              name: "Actions",
-              sortable: false,
-              type: 'checkbox',
-              cell: {
-                toText: function (entry) {
-                  return entry.id12;
-                },
-
-                isDisabled: function () {
-                  console.log("$this.isStatusProgrammeAffecte()=" + $this.isStatusProgrammeAffecte())
-                  if (!$this.isTableauSelectionnable()) {
-                    return true;
-                  }
-                  return false;
-                },
-
-                isChecked: function (entry) {
-                  var result = $this.fichiersChecked.find(elem => {
-                    return elem == entry.id;
-                  });
-                  if (result !== undefined) {
-                    return 1;
-                  }
-                  return 0;
-                },
-
-                isAllNotChecked: function () {
-                  if ($this.fichiersChecked.length > 1) {
-                    return false;
-                  }
-                  return true;
+                toText : function(entry) {
+                  var result = entry;
+                  if(result !=undefined)
+                    return result ;
+                  else
+                    return "";
                 }
               }
             }
+
           ],
-          //gridData : {"content":[{"id":254,"utilisateur":"utilisateur1","role":"COPIEPRIV","duree":"00:22","ajout":"automatique","participant":"participant1","IDE12":87933,"titre":"titre1"},{"content":[{"id":2455,"utilisateur":"utilisateur1","role":"COPIEPRIV","duree":"00:22","ajout":"automatique","participant":"participant1","IDE12":87933,"titre":"titre1"},{"id":11,"nomFichier":"Fichier 13","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"04/05/2017 18:15","dateFinChargt":"04/05/2017 22:57","nbLignes":15000,"statut":"CHARGEMENT_KO"},{"id":10,"nomFichier":"Fichier 12","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"02/05/2017 18:15","dateFinChargt":"01/05/2017 18:50","nbLignes":15000,"statut":"CHARGEMENT_KO"},{"id":6,"nomFichier":"Fichier 06","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"02/05/2017 18:15","dateFinChargt":null,"nbLignes":15000,"statut":"EN_COURS"},{"id":5,"nomFichier":"Fichier 05","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"01/05/2017 17:10","dateFinChargt":null,"nbLignes":7451,"statut":"EN_COURS"},{"id":9,"nomFichier":"Fichier 11","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"01/05/2017 17:10","dateFinChargt":"02/05/2017 01:10","nbLignes":45789,"statut":"CHARGEMENT_OK"},{"id":8,"nomFichier":"Fichier 09","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"01/04/2017 17:15","dateFinChargt":"01/04/2017 22:10","nbLignes":22000,"statut":"CHARGEMENT_OK"},{"id":4,"nomFichier":"Fichier 04","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"01/04/2017 17:15","dateFinChargt":null,"nbLignes":1478,"statut":"EN_COURS"},{"id":1,"nomFichier":"Fichier 01","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"04/02/2017 17:15","dateFinChargt":null,"nbLignes":3000,"statut":"EN_COURS"},{"id":2,"nomFichier":"Fichier 02","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"03/02/2017 17:15","dateFinChargt":null,"nbLignes":9500,"statut":"EN_COURS"},{"id":3,"nomFichier":"Fichier 03","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"01/02/2017 17:15","dateFinChargt":null,"nbLignes":6500,"statut":"EN_COURS"},{"id":7,"nomFichier":"Fichier 08","famille":"COPIEPRIV","typeUtilisation":"CPRIVAUDPL","dateDebutChargt":"01/02/2017 17:15","dateFinChargt":null,"nbLignes":6500,"statut":"EN_COURS"}],"last":true,"totalPages":1,"totalElements":13,"size":25,"number":0,"sort":[{"direction":"DESC","property":"dateDebutChargt","ignoreCase":false,"nullHandling":"NATIVE","ascending":false,"descending":true}],"first":true,"numberOfElements":13},
-          gridData: {
-            "content": [],
-            "sort": [{
-              "direction": "DESC",
-              "property": "dateFinChargt",
-              "ignoreCase": false,
-              "nullHandling": "NATIVE",
-              "ascending": false,
-              "descending": true
-            }]
-          },
+          gridData : {},
           searchQuery : ''
         }
       }
@@ -336,10 +289,28 @@
             return response.json();
           })
           .then(data => {
-            this.priamGrid.gridData.content = data;
-            this.priamGrid.gridData.sort = [{"direction":"DESC","property":"dateFinChargt","ignoreCase":false,"nullHandling":"NATIVE","ascending":false,"descending":true}];
+            this.priamGrid.gridData = data;
+           // this.priamGrid.gridData.number = data.number + 1;
 
           });
+      },
+      onSort(currentPage, pageSize, sort) {
+
+        this.launchRequest(currentPage, pageSize,
+          sort.property, sort.direction);
+
+        this.defaultPageable.sort = sort.property;
+        this.defaultPageable.dir = sort.direction;
+      },
+      loadPage: function(pageNum, size, sort) {
+        let pageSize = this.defaultPageable.size;
+        if(size !== undefined) {
+          pageSize = size;
+        }
+
+        this.launchRequest(pageNum, pageSize,
+          sort.property, sort.direction);
+
       },
       rechercher(){
         this.resource.findLigneProgrammeByProgramme(this.$route.params.numProg)
@@ -348,8 +319,8 @@
           })
           .then(data => {
             console.log(data);
-            this.priamGrid.gridData.content = data;
-            this.priamGrid.gridData.sort = [{"direction":"DESC","property":"dateFinChargt","ignoreCase":false,"nullHandling":"NATIVE","ascending":false,"descending":true}];
+            this.priamGrid.gridData = data;
+            //this.priamGrid.gridData.number = data.number + 1;
 
             this.fichiersChecked = [];
             var tab = this.priamGrid.gridData.content;
@@ -398,7 +369,6 @@
         console.log("entries checked=" +  entries);
         this.fichiersChecked = [];
         if(allChecked) {
-          this.fichiersChecked = entries.slice();
           /*for(var i in entries) {
            console.log("element of entry = " + entries[i]);
            this.fichiersChecked.push(entries[i]);
@@ -410,6 +380,11 @@
         this.$store.dispatch('toutDesactiver', true);
         console.log('onAllChecked() ==> this.fichiersChecked='+this.fichiersChecked.length);
       },
+    },
+    computed : {
+      statut() {
+        return [];
+      }
     },
     components : {
       vSelect : vSelect,
