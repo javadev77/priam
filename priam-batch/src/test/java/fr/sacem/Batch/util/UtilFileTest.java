@@ -40,7 +40,7 @@ public class UtilFileTest {
         Fichier fichier = utilFile.chargerLesDonnees(targetStream, NOM_FICHIER_CSV);
         Assert.assertEquals(fichier.getNom(), NOM_FICHIER_CSV);
         Assert.assertEquals(fichier.getFamille(), "COPIEPRIV");
-        Assert.assertEquals(fichier.getTypeUtilisation(), "COPRIVSON");
+        Assert.assertEquals(fichier.getTypeUtilisation(), "CPRIVSONRD");
         Assert.assertNotNull(fichier.getDateDebutChargt());
 
     }

@@ -10,28 +10,14 @@ import java.time.LocalDate;
 public class LigneProgramme implements Serializable {
     private Long idFichier;
     private String cdeCisac;
-    private Long cdeTer;
-    private Long rionEffet;
     private String cdeFamilTypUtil;
     private Long numProg;
-    private Long keyLigPenel;
     private String cdeUtil;
     private String cdeTypUtil;
-    private String cdeModFac;
-    private String cdeTypProg;
-    private String cdeCompl;
-    private String libProg;
-    private String compLibProg;
-    private LocalDate datDbtProg;
-    private LocalDate datFinProg;
-    private Long hrDbt;
-    private Long hrFin;
     private String cdeGreDif;
     private String cdeModDif;
     private String cdeTypIde12;
     private Long ide12;
-    private LocalDate datDif;
-    private Long hrDif;
     private Long durDif;
     private Long nbrDif;
     private Double mt;
@@ -42,32 +28,33 @@ public class LigneProgramme implements Serializable {
     private String indDoubSsTit;
     private Double tax;
     private String typMt;
+    private String cdeGreIde12Cmplx;
+    private String cdeGreIde12;
+    private String titreOriCmplx;
+    private String titreAltPppalCmplx;
+    private String titreOriOeuvPereCmplx;
+    private String titreAltOeuvPereCmplx;
+    private String titreOeuvre;
+    private String cdePaysOriIso4NCmplx;
+    private String realisateurCmplx;
+    private String roleParticipant1;
+    private String nomParticipant1;
+    private String cdeTypUtilOri;
+    private String cdeFamilTypUtilOri;
 
+    public LigneProgramme() {
+    }
 
-    public LigneProgramme(String nomFichier, String cdeCisac, Long cdeTer, Long rionEffet, String cdeFamilTypUtil, Long numProg, Long keyLigPenel, String cdeUtil, String cdeTypUtil, String cdeModFac, String cdeTypProg, String cdeCompl, String libProg, String compLibProg, LocalDate datDbtProg, LocalDate datFinProg, Long hrDbt, Long hrFin, String cdeGreDif, String cdeModDif, String cdeTypIde12, Long ide12, LocalDate datDif, Long hrDif, Long durDif, Long nbrDif, Double mt, String ctna, String paramCoefHor, Long durDifCtna, String cdeLng, String indDoubSsTit, Double tax, String typMt) {
+    public LigneProgramme(String cdeCisac, String cdeFamilTypUtil, Long numProg, String cdeUtil, String cdeTypUtil, String cdeGreDif, String cdeModDif, String cdeTypIde12, Long ide12, Long durDif, Long nbrDif, Double mt, String ctna, String paramCoefHor, Long durDifCtna, String cdeLng, String indDoubSsTit, Double tax, String typMt, String cdeGreIde12Cmplx, String cdeGreIde12, String titreOriCmplx, String titreAltPppalCmplx, String titreOriOeuvPereCmplx, String titreAltOeuvPereCmplx, String titreOeuvre, String cdePaysOriIso4NCmplx, String realisateurCmplx, String roleParticipant1, String nomParticipant1, String cdeTypUtilOri, String cdeFamilTypUtilOri) {
         this.cdeCisac = cdeCisac;
-        this.cdeTer = cdeTer;
-        this.rionEffet = rionEffet;
         this.cdeFamilTypUtil = cdeFamilTypUtil;
         this.numProg = numProg;
-        this.keyLigPenel = keyLigPenel;
         this.cdeUtil = cdeUtil;
         this.cdeTypUtil = cdeTypUtil;
-        this.cdeModFac = cdeModFac;
-        this.cdeTypProg = cdeTypProg;
-        this.cdeCompl = cdeCompl;
-        this.libProg = libProg;
-        this.compLibProg = compLibProg;
-        this.datDbtProg = datDbtProg;
-        this.datFinProg = datFinProg;
-        this.hrDbt = hrDbt;
-        this.hrFin = hrFin;
         this.cdeGreDif = cdeGreDif;
         this.cdeModDif = cdeModDif;
         this.cdeTypIde12 = cdeTypIde12;
         this.ide12 = ide12;
-        this.datDif = datDif;
-        this.hrDif = hrDif;
         this.durDif = durDif;
         this.nbrDif = nbrDif;
         this.mt = mt;
@@ -78,17 +65,27 @@ public class LigneProgramme implements Serializable {
         this.indDoubSsTit = indDoubSsTit;
         this.tax = tax;
         this.typMt = typMt;
-    }
-
-    public LigneProgramme() {
+        this.cdeGreIde12Cmplx = cdeGreIde12Cmplx;
+        this.cdeGreIde12 = cdeGreIde12;
+        this.titreOriCmplx = titreOriCmplx;
+        this.titreAltPppalCmplx = titreAltPppalCmplx;
+        this.titreOriOeuvPereCmplx = titreOriOeuvPereCmplx;
+        this.titreAltOeuvPereCmplx = titreAltOeuvPereCmplx;
+        this.titreOeuvre = titreOeuvre;
+        this.cdePaysOriIso4NCmplx = cdePaysOriIso4NCmplx;
+        this.realisateurCmplx = realisateurCmplx;
+        this.roleParticipant1 = roleParticipant1;
+        this.nomParticipant1 = nomParticipant1;
+        this.cdeTypUtilOri = cdeTypUtilOri;
+        this.cdeFamilTypUtilOri = cdeFamilTypUtilOri;
     }
 
     public Long getIdFichier() {
         return idFichier;
     }
 
-    public void setIdFichier(Long nomFichier) {
-        this.idFichier = nomFichier;
+    public void setIdFichier(Long idFichier) {
+        this.idFichier = idFichier;
     }
 
     public String getCdeCisac() {
@@ -97,22 +94,6 @@ public class LigneProgramme implements Serializable {
 
     public void setCdeCisac(String cdeCisac) {
         this.cdeCisac = cdeCisac;
-    }
-
-    public Long getCdeTer() {
-        return cdeTer;
-    }
-
-    public void setCdeTer(Long cdeTer) {
-        this.cdeTer = cdeTer;
-    }
-
-    public Long getRionEffet() {
-        return rionEffet;
-    }
-
-    public void setRionEffet(Long rionEffet) {
-        this.rionEffet = rionEffet;
     }
 
     public String getCdeFamilTypUtil() {
@@ -131,14 +112,6 @@ public class LigneProgramme implements Serializable {
         this.numProg = numProg;
     }
 
-    public Long getKeyLigPenel() {
-        return keyLigPenel;
-    }
-
-    public void setKeyLigPenel(Long keyLigPenel) {
-        this.keyLigPenel = keyLigPenel;
-    }
-
     public String getCdeUtil() {
         return cdeUtil;
     }
@@ -153,78 +126,6 @@ public class LigneProgramme implements Serializable {
 
     public void setCdeTypUtil(String cdeTypUtil) {
         this.cdeTypUtil = cdeTypUtil;
-    }
-
-    public String getCdeModFac() {
-        return cdeModFac;
-    }
-
-    public void setCdeModFac(String cdeModFac) {
-        this.cdeModFac = cdeModFac;
-    }
-
-    public String getCdeTypProg() {
-        return cdeTypProg;
-    }
-
-    public void setCdeTypProg(String cdeTypProg) {
-        this.cdeTypProg = cdeTypProg;
-    }
-
-    public String getCdeCompl() {
-        return cdeCompl;
-    }
-
-    public void setCdeCompl(String cdeCompl) {
-        this.cdeCompl = cdeCompl;
-    }
-
-    public String getLibProg() {
-        return libProg;
-    }
-
-    public void setLibProg(String libProg) {
-        this.libProg = libProg;
-    }
-
-    public String getCompLibProg() {
-        return compLibProg;
-    }
-
-    public void setCompLibProg(String compLibProg) {
-        this.compLibProg = compLibProg;
-    }
-
-    public LocalDate getDatDbtProg() {
-        return datDbtProg;
-    }
-
-    public void setDatDbtProg(LocalDate datDbtProg) {
-        this.datDbtProg = datDbtProg;
-    }
-
-    public LocalDate getDatFinProg() {
-        return datFinProg;
-    }
-
-    public void setDatFinProg(LocalDate datFinProg) {
-        this.datFinProg = datFinProg;
-    }
-
-    public Long getHrDbt() {
-        return hrDbt;
-    }
-
-    public void setHrDbt(Long hrDbt) {
-        this.hrDbt = hrDbt;
-    }
-
-    public Long getHrFin() {
-        return hrFin;
-    }
-
-    public void setHrFin(Long hrFin) {
-        this.hrFin = hrFin;
     }
 
     public String getCdeGreDif() {
@@ -257,22 +158,6 @@ public class LigneProgramme implements Serializable {
 
     public void setIde12(Long ide12) {
         this.ide12 = ide12;
-    }
-
-    public LocalDate getDatDif() {
-        return datDif;
-    }
-
-    public void setDatDif(LocalDate datDif) {
-        this.datDif = datDif;
-    }
-
-    public Long getHrDif() {
-        return hrDif;
-    }
-
-    public void setHrDif(Long hrDif) {
-        this.hrDif = hrDif;
     }
 
     public Long getDurDif() {
@@ -353,5 +238,109 @@ public class LigneProgramme implements Serializable {
 
     public void setTypMt(String typMt) {
         this.typMt = typMt;
+    }
+
+    public String getCdeGreIde12Cmplx() {
+        return cdeGreIde12Cmplx;
+    }
+
+    public void setCdeGreIde12Cmplx(String cdeGreIde12Cmplx) {
+        this.cdeGreIde12Cmplx = cdeGreIde12Cmplx;
+    }
+
+    public String getCdeGreIde12() {
+        return cdeGreIde12;
+    }
+
+    public void setCdeGreIde12(String cdeGreIde12) {
+        this.cdeGreIde12 = cdeGreIde12;
+    }
+
+    public String getTitreOriCmplx() {
+        return titreOriCmplx;
+    }
+
+    public void setTitreOriCmplx(String titreOriCmplx) {
+        this.titreOriCmplx = titreOriCmplx;
+    }
+
+    public String getTitreAltPppalCmplx() {
+        return titreAltPppalCmplx;
+    }
+
+    public void setTitreAltPppalCmplx(String titreAltPppalCmplx) {
+        this.titreAltPppalCmplx = titreAltPppalCmplx;
+    }
+
+    public String getTitreOriOeuvPereCmplx() {
+        return titreOriOeuvPereCmplx;
+    }
+
+    public void setTitreOriOeuvPereCmplx(String titreOriOeuvPereCmplx) {
+        this.titreOriOeuvPereCmplx = titreOriOeuvPereCmplx;
+    }
+
+    public String getTitreAltOeuvPereCmplx() {
+        return titreAltOeuvPereCmplx;
+    }
+
+    public void setTitreAltOeuvPereCmplx(String titreAltOeuvPereCmplx) {
+        this.titreAltOeuvPereCmplx = titreAltOeuvPereCmplx;
+    }
+
+    public String getTitreOeuvre() {
+        return titreOeuvre;
+    }
+
+    public void setTitreOeuvre(String titreOeuvre) {
+        this.titreOeuvre = titreOeuvre;
+    }
+
+    public String getCdePaysOriIso4NCmplx() {
+        return cdePaysOriIso4NCmplx;
+    }
+
+    public void setCdePaysOriIso4NCmplx(String cdePaysOriIso4NCmplx) {
+        this.cdePaysOriIso4NCmplx = cdePaysOriIso4NCmplx;
+    }
+
+    public String getRealisateurCmplx() {
+        return realisateurCmplx;
+    }
+
+    public void setRealisateurCmplx(String realisateurCmplx) {
+        this.realisateurCmplx = realisateurCmplx;
+    }
+
+    public String getRoleParticipant1() {
+        return roleParticipant1;
+    }
+
+    public void setRoleParticipant1(String roleParticipant1) {
+        this.roleParticipant1 = roleParticipant1;
+    }
+
+    public String getNomParticipant1() {
+        return nomParticipant1;
+    }
+
+    public void setNomParticipant1(String nomParticipant1) {
+        this.nomParticipant1 = nomParticipant1;
+    }
+
+    public String getCdeTypUtilOri() {
+        return cdeTypUtilOri;
+    }
+
+    public void setCdeTypUtilOri(String cdeTypUtilOri) {
+        this.cdeTypUtilOri = cdeTypUtilOri;
+    }
+
+    public String getCdeFamilTypUtilOri() {
+        return cdeFamilTypUtilOri;
+    }
+
+    public void setCdeFamilTypUtilOri(String cdeFamilTypUtilOri) {
+        this.cdeFamilTypUtilOri = cdeFamilTypUtilOri;
     }
 }

@@ -41,7 +41,7 @@ public class LigneProgrammeDaoTest {
     @Test
     public void get_one_ligne_programme(){
         LigneProgramme ligneProgramme = ligneProgrammeDao.findOne(1l);
-        assertThat(ligneProgramme.getRionEffet()).isEqualTo(639);
+        assertThat(ligneProgramme).isNotNull();
     }
     @Test
     public void get_ligne_programme_by_programme(){

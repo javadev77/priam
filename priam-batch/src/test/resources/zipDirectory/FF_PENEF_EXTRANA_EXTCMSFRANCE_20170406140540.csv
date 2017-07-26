@@ -1,19 +1,19 @@
-#-------------------------------------------------------------------------------------------------------------------;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-# Fichier a destination de ???;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-# en provenance de PenefInt1.0.0X;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-#-------------------------------------------------------------------------------------------------------------------;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-# JJ/MM/AAAA HH:MM - Auteur - Objet;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-#-------------------------------------------------------------------------------------------------------------------;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-# 20170406 14:05:44 - PenefInt1.0.0X - Creation;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-#DEBUT;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-#cdeCisac;cdeTer;rionEffet;cdeFamilTypUtil;numProg;keyLigPenel;cdeUtil;cdeTypUtil;cdeModFac;cdeTypProg;cdeCompl;libProg;compLibProg;datDbtProg;datFinProg;hrDbt;hrFin;cdeGreDif;cdeModDif;cdeTypIde12;ide12;datDif;hrDif;durDif;nbrDif;mt;ctna;paramCoefHor;durDifCtna;cdeLng;indDoubSsTit;tax;typMt
-058;250;639;COPIEPRIV;;;F01;COPRIVSON;;PRINC;SANS;RADIO PRINC 639 250;;01/07/2016;31/12/2016;;;;;COCV;2194801411;;;;1;19,61;;;;;;;MB
-058;250;639;COPIEPRIV;;;RMC;COPRIVSON;;PRINC;SANS;RADIO PRINC 639 250;;01/07/2016;31/12/2016;;;;;COCV;8028354411;;;;2;59,11;;;;;;;MB
-058;250;639;COPIEPRIV;;;F03;COPRIVSON;;PRINC;SANS;RADIO PRINC 639 250;;01/07/2016;31/12/2016;;;;;COCV;2562871711;;;;1;31,01;;;;;;;MB
-058;250;639;COPIEPRIV;;;F03;COPRIVSON;;PRINC;SANS;RADIO PRINC 639 250;;01/07/2016;31/12/2016;;;;;COCV;7404492511;;;;2;43,21;;;;;;;MB
-058;250;639;COPIEPRIV;;;F01;COPRIVSON;;PRINC;SANS;RADIO PRINC 639 250;;01/07/2016;31/12/2016;;;;;COCV;7404492511;;;;13;1193,57;;;;;;;MB
-058;250;639;COPIEPRIV;;;FUR;COPRIVSON;;PRINC;SANS;RADIO PRINC 639 250;;01/07/2016;31/12/2016;;;;;COCV;2752739911;;;;1;12,86;;;;;;;MB
-058;250;639;COPIEPRIV;;;F01;COPRIVSON;;PRINC;SANS;RADIO PRINC 639 250;;01/07/2016;31/12/2016;;;;;COCV;2508502411;;;;2;163,54;;;;;;;MB
-058;250;639;COPIEPRIV;;;F03;COPRIVSON;;PRINC;SANS;RADIO PRINC 639 250;;01/07/2016;31/12/2016;;;;;COCV;2956163411;;;;1;209,43;;;;;;;MB
-058;250;639;COPIEPRIV;;;F03;COPRIVSON;;PRINC;SANS;RADIO PRINC 639 250;;01/07/2016;31/12/2016;;;;;COCV;9941821311;;;;1;73,88;;;;;;;MB
-058;250;639;COPIEPRIV;;;F01;COPRIVSON;;PRINC;SANS;RADIO PRINC 639 250;;01/07/2016;31/12/2016;;;;;COCV;9941821311;;;;2;155,41;;;;;;;MB
+#-------------------------------------------------------------------------------------------------------------------;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+# Fichier a destination de ???;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+# en provenance de PenefInt1.0.0X;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#-------------------------------------------------------------------------------------------------------------------;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+# JJ/MM/AAAA HH:MM - Auteur - Objet;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#-------------------------------------------------------------------------------------------------------------------;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+# 20170616 11:16:38 - PenefInt1.0.0X - Creation;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#DEBUT;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#cdeCisac;cdeFamilTypUtil;numProg;cdeUtil;cdeTypUtil;cdeGreDif;cdeModDif;cdeTypIde12;ide12;durDif;nbrDif;mt;ctna;paramCoefHor;durDifCtna;cdeLng;indDoubSsTit;tax;typMt;cdeGreIde12Cmplx;cdeGreIde12;titreOriCmplx;titreAltPppalCmplx;titreOriOeuvPereCmplx;titreAltOeuvPereCmplx;titreOeuvre;cdePaysOriIso4NCmplx;realisateurCmplx;roleParticipant1;nomParticipant1;cdeTypUtilOri;cdeFamilTypUtilOri
+58;COPIEPRIV;;COPPRIVE;CPRIVSONRD;;;COCV;6829877211;0;1;10,26;;;;;;;MN;;ML;;;;;SHERRY;;;CA;GAUDIO BOB;;
+58;COPIEPRIV;;COPPRIVE;CPRIVSONRD;;;COCV;2286440211;0;1;3,9;;;;;;;MN;;ML;;;;;MAKE THE ROAD BY WALKING;;;CA;DELLER;;
+58;COPIEPRIV;;COPPRIVE;CPRIVSONRD;;;COCV;2672192211;0;1;0,34;;;;;;;MN;;ML;;;;;ELECTRICITY;;;CA;ENGLUND ANABEL;;
+58;COPIEPRIV;;COPPRIVE;CPRIVSONRD;;;COCV;3038944711;0;1;1,62;;;;;;;MN;;ML;;;;;THE BLACK TREE;;;CA;BARROW EDWARD;;
+58;COPIEPRIV;;COPPRIVE;CPRIVSONRD;;;COCV;6120476002;0;1;0,14;;;;;;;MN;;AR;;;;;BREGEIRO;;;DP;NAZARETH ERNESTO;;
+58;COPIEPRIV;;COPPRIVE;CPRIVSONRD;;;COCV;2921637701;0;1;73,7;;;;;;;MN;;MO;;;;;KAP WALK OF HOPE;;;C;JONAH BIRD;;
+58;COPIEPRIV;;COPPRIVE;CPRIVSONRD;;;COCV;2574415783;0;1;3,17;;;;;;;MN;;RE;;;;;RIEN N EST PARFAIT;;;R;CAPURRO REYNALD;;
+58;COPIEPRIV;;COPPRIVE;CPRIVSONRD;;;COCV;2522867711;0;1;0,67;;;;;;;MN;;ML;;;;;OWN THIS CLUB;;;CA;EGIZII ANTONIO;;
+58;COPIEPRIV;;COPPRIVE;CPRIVSONRD;;;COCV;113162206;0;1;88,19;;;;;;;MN;;;;;;;;;;;;;
+58;COPIEPRIV;;COPPRIVE;CPRIVSONRD;;;COCV;2753361811;0;1;0,14;;;;;;;MN;;MB;;;;;A STRANGE MOMENTUM;;;CA;TONGUE SHERIDAN PAUL;;

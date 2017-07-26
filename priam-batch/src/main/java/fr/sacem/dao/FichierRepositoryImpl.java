@@ -49,6 +49,8 @@ public class FichierRepositoryImpl implements FichierRepository {
     @Override
     public void updateFichierDate(String nomFichier) {
         String sql = "UPDATE PRIAM_FICHIER SET STATUT_CODE=?,DATE_FIN_CHGT=? WHERE NOM=?";
+        //String sql = "UPDATE PRIAM_FICHIER SET STATUT_CODE=?,DATE_FIN_CHGT=? WHERE ID=(SELECT ID, max(DATE_DEBUT_CHGT) from PRIAM_FICHIER WHERE NOM=? GROUP BY ID ,MAX(DATE_DEBUT_CHGT))";
+
         jdbcTemplate.update(sql, new PreparedStatementSetter() {
 
             public void setValues(PreparedStatement stmt) throws SQLException {

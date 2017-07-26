@@ -11,6 +11,8 @@
     <import resource="classpath:/configuration/job-database-test.xml"/>
     <context:component-scan base-package="fr.sacem.*"/>
     <context:property-placeholder location="classpath:configuration/application-test.properties"/>
+    <util:properties id="envProperties"
+                     location="classpath:configuration/application-test.properties"/>
     <job id="archiveFlatFileReaderJob" xmlns="http://www.springframework.org/schema/batch">
         <step id="archiveFlatFileReaderStep">
             <tasklet>
@@ -18,7 +20,7 @@
                         reader="readerPriamZip"
                         writer="writerPriam"
                         processor="ligneProgrammeItemProcessor"
-                        commit-interval="1">
+                        commit-interval="${commit-interval}">
                 </chunk>
             </tasklet>
         </step>
@@ -44,28 +46,14 @@
                     INSERT INTO PRIAM_LIGNE_PROGRAMME (
                             id_fichier,
                             cdeCisac,
-                            cdeTer,
-                            rionEffet,
                             cdeFamilTypUtil,
                             numProg,
-                            keyLigPenel,
                             cdeUtil,
                             cdeTypUtil,
-                            cdeModFac,
-                            cdeTypProg,
-                            cdeCompl,
-                            libProg,
-                            compLibProg,
-                            datDbtProg,
-                            datFinProg,
-                            hrDbt,
-                            hrFin,
                             cdeGreDif,
                             cdeModDif,
                             cdeTypIde12,
                             ide12,
-                            datDif,
-                            hrDif,
                             durDif,
                             nbrDif,
                             mt,
@@ -75,33 +63,32 @@
                             cdeLng,
                             indDoubSsTit,
                             tax,
-                            typMt
+                            typMt,
+                            cdeGreIde12Cmplx,
+                            cdeGreIde12,
+                            titreOriCmplx,
+                            titreAltPppalCmplx,
+                            titreOriOeuvPereCmplx,
+                            titreAltOeuvPereCmplx,
+                            titreOeuvre,
+                            cdePaysOriIso4NCmplx,
+                            realisateurCmplx,
+                            roleParticipant1,
+                            nomParticipant1,
+                            cdeTypUtilOri,
+                            cdeFamilTypUtilOri
                         )
                         VALUES (
                             :idFichier,
                             :cdeCisac,
-                            :cdeTer,
-                            :rionEffet,
                             :cdeFamilTypUtil,
                             :numProg,
-                            :keyLigPenel,
                             :cdeUtil,
                             :cdeTypUtil,
-                            :cdeModFac,
-                            :cdeTypProg,
-                            :cdeCompl,
-                            :libProg,
-                            :compLibProg,
-                            :datDbtProg,
-                            :datFinProg,
-                            :hrDbt,
-                            :hrFin,
                             :cdeGreDif,
                             :cdeModDif,
                             :cdeTypIde12,
                             :ide12,
-                            :datDif,
-                            :hrDif,
                             :durDif,
                             :nbrDif,
                             :mt,
@@ -111,7 +98,20 @@
                             :cdeLng,
                             :indDoubSsTit,
                             :tax,
-                            :typMt
+                            :typMt,
+                            :cdeGreIde12Cmplx,
+                            :cdeGreIde12,
+                            :titreOriCmplx,
+                            :titreAltPppalCmplx,
+                            :titreOriOeuvPereCmplx,
+                            :titreAltOeuvPereCmplx,
+                            :titreOeuvre,
+                            :cdePaysOriIso4NCmplx,
+                            :realisateurCmplx,
+                            :roleParticipant1,
+                            :nomParticipant1,
+                            :cdeTypUtilOri,
+                            :cdeFamilTypUtilOri
                         )
                 ]]>
             </value>
@@ -129,7 +129,39 @@
                 <property name="lineTokenizer">
                     <bean class="org.springframework.batch.item.file.transform.DelimitedLineTokenizer">
                         <property name="names"
-                                  value="cdeCisac,cdeTer,rionEffet,cdeFamilTypUtil,numProg,keyLigPenel,cdeUtil,cdeTypUtil,cdeModFac,cdeTypProg,cdeCompl,libProg,compLibProg,datDbtProg,datFinProg,hrDbt,hrFin,cdeGreDif,cdeModDif,cdeTypIde12,ide12,datDif,hrDif,durDif,nbrDif,mt,ctna,paramCoefHor,durDifCtna,cdeLng,indDoubSsTit,tax,typMt"/>
+                                  value="
+                            cdeCisac,
+                            cdeFamilTypUtil,
+                            numProg,
+                            cdeUtil,
+                            cdeTypUtil,
+                            cdeGreDif,
+                            cdeModDif,
+                            cdeTypIde12,
+                            ide12,
+                            durDif,
+                            nbrDif,
+                            mt,
+                            ctna,
+                            paramCoefHor,
+                            durDifCtna,
+                            cdeLng,
+                            indDoubSsTit,
+                            tax,
+                            typMt,
+                            cdeGreIde12Cmplx,
+                            cdeGreIde12,
+                            titreOriCmplx,
+                            titreAltPppalCmplx,
+                            titreOriOeuvPereCmplx,
+                            titreAltOeuvPereCmplx,
+                            titreOeuvre,
+                            cdePaysOriIso4NCmplx,
+                            realisateurCmplx,
+                            roleParticipant1,
+                            nomParticipant1,
+                            cdeTypUtilOri,
+                            cdeFamilTypUtilOri"/>
                         <property name="delimiter" value=";"/>
                     </bean>
                 </property>

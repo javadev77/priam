@@ -80,8 +80,8 @@ public class UtilFile {
             // on a besoin de charger que la premiere ligne pour recuperer typeUtilisation et la famille
             if (data.size() >= 1) {
                 donnee = data.get(0);
-                fichier.setTypeUtilisation(donnee[7]);
-                fichier.setFamille(donnee[3]);
+                fichier.setTypeUtilisation(donnee[4]);
+                fichier.setFamille(donnee[1]);
                 fichier.setNom(nomFichier);
                 // Date de debout de chargement
                 fichier.setDateDebutChargt(UtilFile.getCurrentTimeStamp());
