@@ -161,7 +161,7 @@
           page : 1,
           sort : 'ide12',
           dir : 'desc',
-          size : 10
+          size : 25
         },
         priamGrid: {
           gridColumns: [
