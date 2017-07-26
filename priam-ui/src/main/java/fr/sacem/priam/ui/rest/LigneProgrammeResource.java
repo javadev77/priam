@@ -39,13 +39,13 @@ public class LigneProgrammeResource {
       @Override
       public SelectionDto convert(LigneProgramme source) {
         SelectionDto selectionDto=new  SelectionDto();
-        selectionDto.setRole("role1");
+        selectionDto.setRole(source.getRoleParticipant1());
         selectionDto.setIde12(source.getIde12());
-        selectionDto.setAjout("automatique");
-        selectionDto.setDuree(100l);
-        selectionDto.setParticipant("participant");
-        selectionDto.setQuantite("11");
-        selectionDto.setTitre("titre");
+        selectionDto.setAjout(source.getAjout());
+        selectionDto.setDuree(source.getDurDif());
+        selectionDto.setParticipant(source.getNomParticipant1());
+        selectionDto.setQuantite("");
+        selectionDto.setTitre(source.getTitreOeuvre());
         return selectionDto;
       }
     });

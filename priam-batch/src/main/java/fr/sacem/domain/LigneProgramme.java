@@ -1,5 +1,6 @@
 package fr.sacem.domain;
 
+import javax.persistence.Column;
 import java.io.Serializable;
 import java.time.LocalDate;
 
@@ -41,6 +42,42 @@ public class LigneProgramme implements Serializable {
     private String nomParticipant1;
     private String cdeTypUtilOri;
     private String cdeFamilTypUtilOri;
+    private String utilisateur;
+    private String date_insertion;
+    private String ajout;
+    private String selection;
+
+    public String getUtilisateur() {
+        return utilisateur;
+    }
+
+    public void setUtilisateur(String utilisateur) {
+        this.utilisateur = utilisateur;
+    }
+
+    public String getDate_insertion() {
+        return date_insertion;
+    }
+
+    public void setDate_insertion(String date_insertion) {
+        this.date_insertion = date_insertion;
+    }
+
+    public String getAjout() {
+        return ajout;
+    }
+
+    public void setAjout(String ajout) {
+        this.ajout = ajout;
+    }
+
+    public String getSelection() {
+        return selection;
+    }
+
+    public void setSelection(String selection) {
+        this.selection = selection;
+    }
 
     public LigneProgramme() {
     }

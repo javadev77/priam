@@ -83,7 +83,46 @@ public class LigneProgramme  implements Serializable {
     private String cdeTypUtilOri;
     @Column(name = "cdeFamilTypUtilOri")
     private String cdeFamilTypUtilOri;
+    @Column(name = "utilisateur")
+    private String utilisateur;
+    @Column(name = "date_insertion")
+    private String date_insertion;
+    @Column(name = "ajout")
+    private String ajout;
+    @Column(name = "selection")
+    private String selection;
 
+    public String getUtilisateur() {
+        return utilisateur;
+    }
+
+    public void setUtilisateur(String utilisateur) {
+        this.utilisateur = utilisateur;
+    }
+
+    public String getDate_insertion() {
+        return date_insertion;
+    }
+
+    public void setDate_insertion(String date_insertion) {
+        this.date_insertion = date_insertion;
+    }
+
+    public String getAjout() {
+        return ajout;
+    }
+
+    public void setAjout(String ajout) {
+        this.ajout = ajout;
+    }
+
+    public String getSelection() {
+        return selection;
+    }
+
+    public void setSelection(String selection) {
+        this.selection = selection;
+    }
 
     public Fichier getFichier() {
         return fichier;
