@@ -390,6 +390,9 @@
               findByNumProg : {method : 'GET', url : 'app/rest/programme/numProg/{numProg}'},
               affectationProgramme : {method: 'PUT', url : 'app/rest/programme/affectation'},
               toutDeaffecterProg : {method: 'PUT', url : 'app/rest/programme/toutDesaffecter'},
+              findAllFichiers : {method : 'POST', url :'app/rest/chargement/allFichiers'},
+
+
           }
           this.resource= this.$resource('', {}, customActions);
 
