@@ -111,6 +111,15 @@
           </div>
         </div>
       </div>
+
+      <app-filtre-selection
+        :filter="filter"
+        :showUtilisateur="getTypeUtilisationByCode(programmeInfo.typeUtilisation) !== undefined ? (getTypeUtilisationByCode(programmeInfo.typeUtilisation).value == 'Copie privée sonore phono' ? false : true ) : true"
+        :retablir="retablirFiltre"
+        :rechercher="rechercher"
+      >
+      </app-filtre-selection>
+
     </div>
     <div class="container-fluid">
       <div class="panel panel-default">
@@ -147,6 +156,8 @@
   import Grid from '../common/Grid.vue';
   import Modal from '../common/Modal.vue';
   import moment from 'moment';
+  import FiltreSelection from './FiltreSelection.vue';
+
   export default {
     mixins: [chargementMixins],
 
@@ -259,6 +270,14 @@
           ],
           gridData : {},
           searchQuery : ''
+        },
+        filter : {
+            ide12 : '',
+            numProg : this.$route.params.numProg,
+            utilisateur : '',
+            titre : '',
+            ajout : '',
+            selection : ''
         }
       }
     },
@@ -267,7 +286,7 @@
       console.log("router params numProg = " + this.$route.params.numProg);
       const customActions = {
         findByNumProg: {method: 'GET', url: 'app/rest/programme/numProg/{numProg}'},
-        findLigneProgrammeByProgramme : {method: 'POST', url: 'app/rest/ligneProgramme/numprog?page={page}&size={size}&sort={sort},{dir}'}
+        findLigneProgrammeByProgramme : {method: 'POST', url: 'app/rest/ligneProgramme/search?page={page}&size={size}&sort={sort},{dir}'}
       }
       this.resource = this.$resource('', {}, customActions);
 
@@ -282,9 +301,20 @@
         this.defaultPageable.sort, this.defaultPageable.dir);
     },
     methods :{
+      retablirFiltre() {
+          this.filter = {
+              ide12 : '',
+              numProg : this.$route.params.numProg,
+              utilisateur : '',
+              titre : '',
+              ajout : '',
+              selection : ''
+          }
+          this.$emit("resetSelectionFilter", "reset");
+      },
       launchRequest(pageNum, pageSize, sort, dir) {
         this.resource.findLigneProgrammeByProgramme({page : pageNum - 1, size : pageSize,
-          sort : sort, dir: dir},this.$route.params.numProg)
+          sort : sort, dir: dir}, this.filter )
           .then(response => {
             return response.json();
           })
@@ -313,7 +343,7 @@
 
       },
       rechercher(){
-        this.resource.findLigneProgrammeByProgramme(this.$route.params.numProg)
+        this.resource.findLigneProgrammeByProgramme(this.filter)
           .then(response => {
             return response.json();
           })
@@ -328,7 +358,6 @@
               if(tab[i] && tab[i].statut == 'AFFECTE') {
                 this.fichiersChecked.push(tab[i].id);
               }
-
             }
 
             console.log("length this.fichiersChecked=" + this.fichiersChecked.length);
@@ -389,7 +418,8 @@
     components : {
       vSelect : vSelect,
       priamGrid : Grid,
-      modal: Modal
+      modal: Modal,
+      appFiltreSelection : FiltreSelection
     }
   }
 
