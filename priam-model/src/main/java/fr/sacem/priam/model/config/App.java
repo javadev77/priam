@@ -1,3 +1,5 @@
+package fr.sacem.priam.model.config;
+
 import fr.sacem.priam.model.dao.jpa.FamilleDao;
 import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.dao.jpa.LigneProgrammeDao;
