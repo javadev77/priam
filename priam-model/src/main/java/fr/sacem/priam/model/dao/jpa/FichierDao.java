@@ -20,6 +20,7 @@ import java.util.List;
  * Created by benmerzoukah on 09/05/2017.
  */
 @Lazy
+@Transactional
 public interface FichierDao extends JpaRepository<Fichier, Long> {
     
     @Transactional(readOnly = true)

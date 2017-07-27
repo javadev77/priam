@@ -1,6 +1,7 @@
 package fr.sacem.dao;
 
 import fr.sacem.domain.Fichier;
+import fr.sacem.domain.LigneProgramme;
 import fr.sacem.util.UtilFile;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -13,6 +14,7 @@ import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Random;
 
 /**
  * Created by fandis on 17/05/2017.
@@ -45,7 +47,6 @@ public class FichierRepositoryImpl implements FichierRepository {
             }
         });
     }
-
     @Override
     public void updateFichierDate(String nomFichier) {
         String sql = "UPDATE PRIAM_FICHIER SET STATUT_CODE=?,DATE_FIN_CHGT=? WHERE NOM=?";

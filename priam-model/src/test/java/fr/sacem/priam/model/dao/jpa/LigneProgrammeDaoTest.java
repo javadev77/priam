@@ -3,6 +3,9 @@ package fr.sacem.priam.model.dao.jpa;
 import fr.sacem.priam.model.dao.JpaConfigurationTest;
 import fr.sacem.priam.model.domain.Fichier;
 import fr.sacem.priam.model.domain.LigneProgramme;
+import fr.sacem.priam.model.services.LigneProgrammeService;
+import fr.sacem.priam.model.services.LigneProgrammeServiceImpl;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +28,16 @@ public class LigneProgrammeDaoTest {
     
     @Autowired
     LigneProgrammeDao ligneProgrammeDao;
+    LigneProgrammeServiceImpl ligneProgrammeServiceImpl = new LigneProgrammeServiceImpl();
     
     @Autowired
     FichierDao fichierDao;
+
+    @Before
+    public void setUp() throws Exception{
+        ligneProgrammeServiceImpl.setLigneProgrammeDao(ligneProgrammeDao);
+        ligneProgrammeServiceImpl.setFichierDao(fichierDao);
+    }
     
     @Test
     public void should_delete_all_data_ligne_programme() {
