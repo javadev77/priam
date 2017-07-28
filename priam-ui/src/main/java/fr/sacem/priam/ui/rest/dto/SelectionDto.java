@@ -5,12 +5,21 @@ package fr.sacem.priam.ui.rest.dto;
  */
 public class SelectionDto {
   private Long ide12;
-  private String titre;
-  private String role;
-  private String participant;
+  private String titreOeuvre;
+  private String roleParticipant1;
+  private String nomParticipant1;
   private Long duree;
   private String ajout;
   private String quantite;
+  private String utilisateur;
+
+  public String getUtilisateur() {
+    return utilisateur;
+  }
+
+  public void setUtilisateur(String utilisateur) {
+    this.utilisateur = utilisateur;
+  }
 
   public Long getIde12() {
     return ide12;
@@ -20,28 +29,28 @@ public class SelectionDto {
     this.ide12 = ide12;
   }
 
-  public String getTitre() {
-    return titre;
+  public String getTitreOeuvre() {
+    return titreOeuvre;
   }
 
-  public void setTitre(String titre) {
-    this.titre = titre;
+  public void setTitreOeuvre(String titreOeuvre) {
+    this.titreOeuvre = titreOeuvre;
   }
 
-  public String getRole() {
-    return role;
+  public String getRoleParticipant1() {
+    return roleParticipant1;
   }
 
-  public void setRole(String role) {
-    this.role = role;
+  public void setRoleParticipant1(String roleParticipant1) {
+    this.roleParticipant1 = roleParticipant1;
   }
 
-  public String getParticipant() {
-    return participant;
+  public String getNomParticipant1() {
+    return nomParticipant1;
   }
 
-  public void setParticipant(String participant) {
-    this.participant = participant;
+  public void setNomParticipant1(String nomParticipant1) {
+    this.nomParticipant1 = nomParticipant1;
   }
 
   public Long getDuree() {

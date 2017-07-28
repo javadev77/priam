@@ -25,8 +25,6 @@
             </h5>
           </div>
 
-
-
           <!--Body Panel-->
           <div class="panel-collapse" :class="{collapse : isCollapsed}">
             <div class="panel-body">
@@ -117,6 +115,7 @@
         :showUtilisateur="getTypeUtilisationByCode(programmeInfo.typeUtilisation) !== undefined ? (getTypeUtilisationByCode(programmeInfo.typeUtilisation).value == 'Copie privée sonore phono' ? false : true ) : true"
         :retablir="retablirFiltre"
         :rechercher="rechercher"
+        :ajouter="ajouterOeuvre"
       >
       </app-filtre-selection>
 
@@ -131,17 +130,33 @@
         </div>
         <div class="panel-collapse">
           <div class="result-panel-body panel-body">
+            <app-informations-selection>
+            </app-informations-selection>
+            {{this.programmeInfo.typeUtilisation}}
+             <div v-if = "this.programmeInfo.typeUtilisation=='CPRIVSONRD'">
+               <priam-grid
+                 v-if="priamGrid_sono.gridData_sono.content"
+                 :data="priamGrid_sono.gridData_sono"
+                 :columns="priamGrid_sono.gridColumns"
+                 noResultText="Aucun résultat."
+                 :filter-key="priamGrid_sono.searchQuery"
+                 @load-page="loadPage"
+                 @on-sort="onSort">
+               </priam-grid>
+             </div>
+            <div v-else-if = "this.programmeInfo.typeUtilisation=='CPRIVSONPH'">
+              <priam-grid
+                v-if="priamGrid_phono.gridData_phono.content"
+                :data="priamGrid_phono.gridData_phono"
+                :columns="priamGrid_phono.gridColumns"
+                noResultText="Aucun résultat."
+                :filter-key="priamGrid_phono.searchQuery"
+                @load-page="loadPage"
+                @on-sort="onSort">
+              </priam-grid>
+            </div>
 
-            <priam-grid
 
-              v-if="priamGrid.gridData.content"
-              :data="priamGrid.gridData"
-              :columns="priamGrid.gridColumns"
-              noResultText="Aucun résultat."
-              :filter-key="priamGrid.searchQuery"
-              @load-page="loadPage"
-              @on-sort="onSort">
-            </priam-grid>
 
           </div>
         </div>
@@ -157,12 +172,14 @@
   import Modal from '../common/Modal.vue';
   import moment from 'moment';
   import FiltreSelection from './FiltreSelection.vue';
+  import InformationsSelection from './InformationsSelection.vue';
 
   export default {
     mixins: [chargementMixins],
 
     data(){
       return {
+
         fichiersChecked : [],
         programmeInfo: {},
         programmeData: {},
@@ -174,56 +191,11 @@
           dir : 'desc',
           size : 25
         },
-        priamGrid: {
+        priamGrid_phono: {
           gridColumns: [
             {
-              id: 'role',
-              name: 'role',
-              sortable: true,
-              type: 'code-value',
-              cell : {
-                toText : function(entry) {
-                    var result = entry;
-                    if(result !=undefined)
-                    return result ;
-                    else
-                        return "";
-                }
-            }
-            },
-            {
-              id: 'ide12',
-              name: 'ide12',
-              sortable: true,
-              type: 'code-value',
-              cell : {
-                toText : function(entry) {
-                  var result = entry;
-                  if(result !=undefined)
-                    return result ;
-                  else
-                    return "";
-                }
-              }
-            },
-             {
-              id: 'titre',
-              name: "titre",
-              sortable: true,
-              type: 'long-text',
-               cell : {
-                 toText : function(entry) {
-                   var result = entry;
-                   if(result !=undefined)
-                     return result ;
-                   else
-                     return "";
-                 }
-               }
-            },
-            {
-              id: 'participant',
-              name: "Participant",
+              id: 'utilisateur',
+              name: "Utilisateur",
               sortable: true,
               type: 'long-text',
               cell: {
@@ -236,6 +208,68 @@
                 }
               }
             },
+            {
+              id: 'ide2',
+              name: 'IDE12',
+              sortable: true,
+              type: 'code-value',
+              cell : {
+                toText : function(entry) {
+                  var result = entry;
+                  if(result !=undefined)
+                    return result ;
+                  else
+                    return "";
+                }
+              }
+            },
+            {
+              id: 'roleParticipant1',
+              name: 'Rôle',
+              sortable: true,
+              type: 'long-text',
+              cell : {
+                toText : function(entry) {
+                    var result = entry;
+                    if(result !=undefined)
+                    return result ;
+                    else
+                        return "";
+                }
+            }
+            },
+             {
+              id: 'titreOeuvre',
+              name: "Titre",
+              sortable: true,
+              type: 'long-text',
+               cell : {
+                 toText : function(entry) {
+                   var result = entry;
+                   if(result !=undefined)
+                     return result ;
+                   else
+                     return "";
+                 }
+               }
+            },
+
+            {
+            id: 'nomParticipant1',
+            name: "Participant",
+            sortable: true,
+            type: 'long-text',
+            cell: {
+            toText : function(entry) {
+              var result = entry;
+             if(result !=undefined)
+               return result ;
+              else
+                return "";
+              }
+            }
+          },
+
             {
               id: 'duree',
               name: "Durée",
@@ -268,7 +302,136 @@
             }
 
           ],
-          gridData : {},
+          gridData_phono : {},
+          searchQuery : ''
+        },
+        priamGrid_sono: {
+          gridColumns: [
+            {
+              id: 'utilisateur',
+              name: "Utilisateur",
+              sortable: true,
+              type: 'long-text',
+              cell: {
+                toText : function(entry) {
+                  var result = entry;
+                  if(result !=undefined)
+                    return result ;
+                  else
+                    return "";
+                }
+              }
+            },
+            {
+              id: 'ide2',
+              name: 'IDE12',
+              sortable: true,
+              type: 'code-value',
+              cell : {
+                toText : function(entry) {
+                  var result = entry;
+                  if(result !=undefined)
+                    return result ;
+                  else
+                    return "";
+                }
+              }
+            },
+            {
+              id: 'roleParticipant1',
+              name: 'Rôle',
+              sortable: true,
+              type: 'long-text',
+              cell : {
+                toText : function(entry) {
+                  var result = entry;
+                  if(result !=undefined)
+                    return result ;
+                  else
+                    return "";
+                }
+              }
+            },
+            {
+              id: 'titreOeuvre',
+              name: "Titre",
+              sortable: true,
+              type: 'long-text',
+              cell : {
+                toText : function(entry) {
+                  var result = entry;
+                  if(result !=undefined)
+                    return result ;
+                  else
+                    return "";
+                }
+              }
+            },
+
+            {
+              id: 'nomParticipant1',
+              name: "Participant",
+              sortable: true,
+              type: 'long-text',
+              cell: {
+                toText : function(entry) {
+                  var result = entry;
+                  if(result !=undefined)
+                    return result ;
+                  else
+                    return "";
+                }
+              }
+            },
+
+            {
+              id: 'duree',
+              name: "Durée",
+              sortable: true,
+              type: 'long-text',
+              cell: {
+                toText : function(entry) {
+                  var result = entry;
+                  if(result !=undefined)
+                    return result ;
+                  else
+                    return "";
+                }
+              }
+            },
+            {
+              id: 'quantite',
+              name: "Quantité",
+              sortable: true,
+              type: 'long-text',
+              cell: {
+                toText : function(entry) {
+                  var result = entry;
+                  if(result !=undefined)
+                    return result ;
+                  else
+                    return "";
+                }
+              }
+              },
+            {
+              id: 'ajout',
+              name: "Ajout",
+              sortable: true,
+              type: 'numeric',
+              cell: {
+                toText : function(entry) {
+                  var result = entry;
+                  if(result !=undefined)
+                    return result ;
+                  else
+                    return "";
+                }
+              }
+            }
+
+          ],
+          gridData_sono : {},
           searchQuery : ''
         },
         filter : {
@@ -313,15 +476,23 @@
           this.$emit("resetSelectionFilter", "reset");
       },
       launchRequest(pageNum, pageSize, sort, dir) {
-        this.resource.findLigneProgrammeByProgramme({page : pageNum - 1, size : pageSize,
+        this.resource.findLigneProgrammeByProgramme({page : pageNum -1 , size : pageSize,
           sort : sort, dir: dir}, this.filter )
           .then(response => {
             return response.json();
           })
           .then(data => {
-            this.priamGrid.gridData = data;
-           // this.priamGrid.gridData.number = data.number + 1;
+            if(this.programmeInfo.typeUtilisation==='CPRIVSONPH'){
 
+              this.priamGrid_phono.gridData_phono = data;
+              this.priamGrid_phono.gridData_phono.number = data.number + 1;
+
+            }else if (this.programmeInfo.typeUtilisation==='CPRIVSONRD'){
+
+              this.priamGrid_sono.gridData_sono = data;
+              this.priamGrid_sono.gridData_sono.number = data.number + 1;
+
+            }
           });
       },
       onSort(currentPage, pageSize, sort) {
@@ -342,6 +513,10 @@
           sort.property, sort.direction);
 
       },
+      // TODO a definir
+      ajouterOeuvre(){
+
+      },
       rechercher(){
         this.resource.findLigneProgrammeByProgramme(this.filter)
           .then(response => {
@@ -349,11 +524,21 @@
           })
           .then(data => {
             console.log(data);
-            this.priamGrid.gridData = data;
-            //this.priamGrid.gridData.number = data.number + 1;
+            var tab=[];
+            if(this.programmeInfo.typeUtilisation==="CPRIVSONPH"){
 
+              this.priamGrid_phono.gridData_phono = data;
+              this.priamGrid_phono.gridData_phono.number = data.number + 1;
+              tab = this.priamGrid.gridData_phono.content;
+
+            }else if (this.programmeInfo.typeUtilisation==="CPRIVSONRD"){
+
+              this.priamGrid_sono.gridData_sono = data;
+              this.priamGrid_sono.gridData_sono.number = data.number + 1;
+              tab = this.priamGrid.gridData_sono.content;
+
+            }
             this.fichiersChecked = [];
-            var tab = this.priamGrid.gridData.content;
             for(var i in tab) {
               if(tab[i] && tab[i].statut == 'AFFECTE') {
                 this.fichiersChecked.push(tab[i].id);
@@ -361,7 +546,7 @@
             }
 
             console.log("length this.fichiersChecked=" + this.fichiersChecked.length);
-            this.$store.dispatch('toutDesactiver', this.fichiersChecked.length !=0 && this.priamGrid.gridData.content.length == this.fichiersChecked.length );
+            this.$store.dispatch('toutDesactiver', this.fichiersChecked.length !=0 && tab.length == this.fichiersChecked.length );
 
           });
       },
@@ -419,7 +604,8 @@
       vSelect : vSelect,
       priamGrid : Grid,
       modal: Modal,
-      appFiltreSelection : FiltreSelection
+      appFiltreSelection : FiltreSelection,
+      appInformationsSelection : InformationsSelection
     }
   }
 

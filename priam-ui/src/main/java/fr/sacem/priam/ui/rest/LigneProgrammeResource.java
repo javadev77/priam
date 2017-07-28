@@ -70,13 +70,14 @@ public class LigneProgrammeResource {
   private Converter<LigneProgramme, SelectionDto> convert() {
     return source -> {
       SelectionDto selectionDto=new  SelectionDto();
-      selectionDto.setRole(source.getRoleParticipant1());
+      selectionDto.setRoleParticipant1(source.getRoleParticipant1());
       selectionDto.setIde12(source.getIde12());
       selectionDto.setAjout(source.getAjout());
       selectionDto.setDuree(source.getDurDif());
-      selectionDto.setParticipant(source.getNomParticipant1());
+      selectionDto.setNomParticipant1(source.getNomParticipant1());
+      selectionDto.setUtilisateur(source.getUtilisateur());
       selectionDto.setQuantite("");
-      selectionDto.setTitre(source.getTitreOeuvre());
+      selectionDto.setTitreOeuvre(source.getTitreOeuvre());
       return selectionDto;
     };
   }
