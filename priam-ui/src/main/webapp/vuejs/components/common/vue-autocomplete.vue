@@ -1,18 +1,23 @@
 <template>
   <div :class="(className ? className + '-wrapper ' : '') + 'autocomplete-wrapper'">
-    <input  type="text"
-            :id="id"
-            :class="(className ? className + '-input ' : '') + 'autocomplete-input'"
-            :placeholder="placeholder"
-            v-model="type"
-            @input="input(type)"
-            @dblclick="showAll"
-            @blur="hideAll"
-            @keydown="keydown"
-            @focus="focus"
-            autocomplete="off"
 
-    />
+    <div class="form-group has-feedback">
+      <input  type="text"
+              :id="id"
+              :class="(className ? className + '-input ' : '') + 'autocomplete-input form-control  input-sm'"
+              :placeholder="placeholder"
+              v-model="type"
+              @input="input(type)"
+              @dblclick="showAll"
+              @blur="hideAll"
+              @keydown="keydown"
+              @focus="focus"
+              autocomplete="off"
+
+      />
+      <i class="form-control-feedback glyphicon glyphicon-search"></i>
+    </div>
+
 
     <div :class="(className ? className + '-list ' : '') + 'autocomplete transition autocomplete-list'" v-show="showList">
       <ul>

@@ -12,7 +12,8 @@ public class SelectionDto {
   private String ajout;
   private String quantite;
   private String utilisateur;
-
+  private boolean selection;
+  private Long id;
   public String getUtilisateur() {
     return utilisateur;
   }
@@ -76,6 +77,16 @@ public class SelectionDto {
   public void setQuantite(String quantite) {
     this.quantite = quantite;
   }
+
+  public boolean getSelection() {
+    return selection;
+  }
+
+  public void setSelection(boolean selection) { this.selection = selection; }
+
+  public Long getId() { return id; }
+
+  public void setId(Long id) { this.id = id; }
 
   public SelectionDto() {
   }

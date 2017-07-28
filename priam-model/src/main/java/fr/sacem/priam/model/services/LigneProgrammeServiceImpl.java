@@ -24,8 +24,8 @@ public class LigneProgrammeServiceImpl implements LigneProgrammeService {
     TypeUtilisationDao typeUtilisationDao;
     FamilleDao familleDao;
 
-    public void genererLigneProgramme(String nomFichier) {
-        Long nbrLignes = 200l;
+    public void genererLigneProgramme(String nomFichier, Long nbrLignes) {
+
         Fichier fichier = new Fichier();
         fichier.setDateDebutChargt(new Date());
         fichier.setNomFichier(nomFichier);
@@ -45,6 +45,9 @@ public class LigneProgrammeServiceImpl implements LigneProgrammeService {
         fichier.setDateFinChargt(new Date());
         fichier.setTypeUtilisation(mytypeU);
         fichierDao.save(fichier);
+
+        Long randomUtilisateur = (long) (Math.random() * 350000 + 200000);
+
         for (int i =0 ; i<nbrLignes;i++){
             Long random = (long) (Math.random() * 350000 + 200000);
             LigneProgramme ligneProgramme = new LigneProgramme();
@@ -78,7 +81,14 @@ public class LigneProgrammeServiceImpl implements LigneProgrammeService {
             ligneProgramme.setNomParticipant1("participant"+random);
             ligneProgramme.setCdeTypUtilOri("");
             ligneProgramme.setCdeFamilTypUtilOri("");
+            ligneProgramme.setUtilisateur("utilisateur " + randomUtilisateur);
+            ligneProgramme.setAjout((i % 2 == 0) ? "Manuel" : "Automatique");
+            ligneProgramme.setSelection((i % 2 == 0) ? true : false);
             ligneProgrammeDao.save(ligneProgramme);
+
+            if(i%20 == 0) {
+                randomUtilisateur = (long) (Math.random() * 350000 + 200000);
+            }
         }
     }
 
