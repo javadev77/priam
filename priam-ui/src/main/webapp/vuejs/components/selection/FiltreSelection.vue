@@ -22,7 +22,8 @@
                   <label class="control-label pull-right blueText">Utilisateur</label>
               </div>
               <div class="col-sm-3" v-if="showUtilisateur">
-                  <v-select :searchable="false" label="value" v-model="filter.utilisateur" :options="utilisateurOptions"> </v-select>
+                <select2 class="form-control" :options="utilisateurOptions" v-model="filter.utilisateur" :searchable="true">
+                </select2>
               </div>
 
               <div class="col-sm-2">
@@ -36,7 +37,7 @@
                   anchor="code"
                   :min="3"
                   :on-select="selectIde12"
-                  placeholder="TOUS"
+                  :on-input="selectIde12"
                 >
                 </autocomplete>
               </div>
@@ -45,13 +46,22 @@
                   <label class="control-label pull-right blueText">Titre</label>
               </div>
               <div class="col-sm-3">
-                  <v-select :searchable="false" label="value" v-model="filter.titre" :options="titreOptions"> </v-select>
+                <autocomplete
+                  id="filterTitreOeuvre"
+                  url="ligneProgramme/titreOeuvre"
+                  :custom-params="{ programme: $route.params.numProg }"
+                  anchor="value"
+                  :min="3"
+                  :on-select="selectTitreOeuvre"
+                  :on-input="selectTitreOeuvre"
+                >
+                </autocomplete>
               </div>
               <div class="col-sm-2">
                 <label class="control-label pull-right blueText">Ajout</label>
               </div>
               <div class="col-sm-3">
-                <v-select :searchable="false" label="value" v-model="filter.ajout" :options="ajoutOptions"></v-select>
+                <v-select :searchable="false" v-model="filter.ajout" :options="ajoutOptions"></v-select>
               </div>
             </div>
 
@@ -60,7 +70,7 @@
                 <label class="control-label pull-right blueText">Sélection</label>
               </div>
               <div class="col-sm-3">
-                <v-select :searchable="false" label="value" v-model="filter.selection" :options="selectionOptions"></v-select>
+                <v-select :searchable="false" v-model="filter.selection" :options="selectionOptions"></v-select>
               </div>
             </div>
           </form>
@@ -81,41 +91,73 @@
 
   import vSelect from '../common/Select.vue';
   import Autocomplete from '../common/vue-autocomplete.vue';
+  import Select2 from '../common/Select2.vue';
 
   export default {
 
+    data() {
+      return {
+        utilisateursOptions : []
+      }
+    },
     computed : {
       utilisateurOptions() {
-        return [{'id' :'ALL', "value" : "Tous"}];
-      },
-      titreOptions() {
-        return [{'id' :'ALL', "value" : "Tous"}];
+        let result = this.utilisateursOptions.map(elem => {
+          return {
+            id : elem,
+            value : elem
+          }
+        });
+
+        result.unshift({id : 'Tous', value : 'Tous'});
+        return result;
       },
       ajoutOptions() {
         return [
-            {
-                'id' :'ALL', "value" : "Tous"
-            }
+            'Tous',
+            'Manuel',
+            'Automatique'
         ];
       },
       selectionOptions() {
-        return [{'id' :'ALL', "value" : "Tous"}];
+        return [
+          'Tous',
+          'Sélectionné',
+          'Désélectionné',
+        ];
       }
     },
 
     components : {
         vSelect,
-        Autocomplete
+        Autocomplete,
+        select2 :Select2
     },
 
     methods : {
       selectIde12(data) {
-        this.filter.ide12 = data.code;
+        this.filter.ide12 = (data.code) ? data.code : data;
+      },
+
+      selectTitreOeuvre(data) {
+        this.filter.titre = (data.value) ? data.value : data;
       },
 
       resetForm() {
         $("#filterIde12").val("");
+        $("#filterTitreOeuvre").val("");
         this.retablir();
+      },
+
+      getUtilisateursByProgramme() {
+
+        this.resource.getUtilisateursByProgramme()
+          .then(response => {
+            return response.json();
+          })
+          .then(data => {
+            this.utilisateursOptions = data;
+          });
       }
     },
 
@@ -124,6 +166,15 @@
       retablir : Function,
       rechercher : Function,
       showUtilisateur : Boolean
+    },
+
+    created() {
+      const customActions = {
+        getUtilisateursByProgramme : {method : 'GET', url :'app/rest/ligneProgramme/utilisateurs?programme='+this.$route.params.numProg}
+      }
+      this.resource= this.$resource('', {}, customActions);
+
+      this.getUtilisateursByProgramme();
     }
   }
 </script>

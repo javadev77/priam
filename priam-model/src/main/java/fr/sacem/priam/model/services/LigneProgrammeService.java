@@ -8,7 +8,7 @@ import fr.sacem.priam.model.domain.LigneProgramme;
 
 public interface LigneProgrammeService {
 
-    void genererLigneProgramme(String nomFichier);
+    void genererLigneProgramme(String nomFichier, Long nbrLignes);
 
 
 }

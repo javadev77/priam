@@ -11,7 +11,7 @@ public class LigneProgrammeCriteria {
     private Long ide12;
     private String titre;
     private String ajout;
-    private String selection;
+    private Boolean selection;
 
 
     public LigneProgrammeCriteria() {
@@ -42,8 +42,8 @@ public class LigneProgrammeCriteria {
 
     public void setAjout(String ajout) { this.ajout = ajout; }
 
-    public String getSelection() { return selection; }
+    public Boolean getSelection() { return selection; }
 
-    public void setSelection(String selection) { this.selection = selection; }
+    public void setSelection(Boolean selection) { this.selection = selection; }
 
 }

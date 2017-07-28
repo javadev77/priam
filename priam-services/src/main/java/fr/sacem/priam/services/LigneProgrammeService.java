@@ -3,7 +3,7 @@ package fr.sacem.priam.services;
 import fr.sacem.priam.model.dao.jpa.LigneProgrammeDao;
 import fr.sacem.priam.model.domain.LigneProgramme;
 import fr.sacem.priam.model.domain.criteria.LigneProgrammeCriteria;
-import fr.sacem.priam.model.domain.dto.Ide12Dto;
+import fr.sacem.priam.model.domain.dto.AutocompleteDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,17 +26,30 @@ public class LigneProgrammeService {
 	private static final Logger LOG = LoggerFactory.getLogger(LigneProgrammeService.class);
 
 	@Transactional
-    public List<Ide12Dto> getListIDE12ByProgramme(Long ide12, String programme) {
-		return ligneProgrammeDao.findAllIDE12ByProgramme(ide12, programme);
+    public List<AutocompleteDto> getListIDE12ByProgramme(Long ide12, String programme) {
+		return ligneProgrammeDao.findIDE12sByProgramme(ide12, programme);
     }
 
+    @Transactional
+    public List<AutocompleteDto> getTitresByProgramme(String titre, String programme) {
+        return ligneProgrammeDao.findTitresByProgramme(titre, programme);
+    }
+
+    @Transactional
+    public List<String> getUtilisateursByProgramme(String programme) {
+        return ligneProgrammeDao.findUtilisateursByProgramme(programme);
+    }
+
+    @Transactional
     public Page<LigneProgramme> findLigneProgrammeByCriteria(LigneProgrammeCriteria criteria, Pageable pageable) {
 		return ligneProgrammeDao.findLigneProgrammeByCriteria(criteria.getNumProg(),
-                //criteria.getUtilisateur(),
+                criteria.getUtilisateur(),
 				criteria.getIde12(),
-                //criteria.getTitre(),
-                //criteria.getAjout(),
-                //criteria.getSelection(),
+                criteria.getTitre(),
+                criteria.getAjout(),
+                criteria.getSelection(),
 				pageable);
     }
+
+
 }

@@ -90,7 +90,7 @@ public class LigneProgramme  implements Serializable {
     @Column(name = "ajout")
     private String ajout;
     @Column(name = "selection")
-    private String selection;
+    private boolean selection;
 
     public String getUtilisateur() {
         return utilisateur;
@@ -116,11 +116,11 @@ public class LigneProgramme  implements Serializable {
         this.ajout = ajout;
     }
 
-    public String getSelection() {
+    public boolean getSelection() {
         return selection;
     }
 
-    public void setSelection(String selection) {
+    public void setSelection(boolean selection) {
         this.selection = selection;
     }
 

@@ -140,12 +140,22 @@
               noResultText="Aucun résultat."
               :filter-key="priamGrid.searchQuery"
               @load-page="loadPage"
-              @on-sort="onSort">
+              @on-sort="onSort"
+              @all-checked="onAllChecked"
+              @entry-checked="onEntryChecked"
+            >
             </priam-grid>
 
           </div>
         </div>
       </div>
+      <app-action-selection
+        :statutProgramme="programmeInfo.statut"
+        :listSelectionVide="ligneProgrammeSelected.length == 0"
+        :debugListSelection="ligneProgrammeSelected.length"
+      >
+      </app-action-selection>
+
     </div>
   </div>
 </template>
@@ -157,16 +167,20 @@
   import Modal from '../common/Modal.vue';
   import moment from 'moment';
   import FiltreSelection from './FiltreSelection.vue';
+  import ActionSelection from './ActionSelection.vue';
 
   export default {
     mixins: [chargementMixins],
 
     data(){
+
+      var $this =this;
+
       return {
-        fichiersChecked : [],
+        ligneProgrammeSelected : [],
         programmeInfo: {},
         programmeData: {},
-        ableauSelectionnable : true,
+        tableauSelectionnable : true,
         isCollapsed: false,
         defaultPageable : {
           page : 1,
@@ -265,19 +279,54 @@
                     return "";
                 }
               }
-            }
+            },
+            {
+              id: 'action',
+              name: "Actions",
+              sortable: false,
+              type: 'checkbox',
+              cell: {
+                toText: function (entry) {
+                  return entry.id;
+                },
 
+                isDisabled: function () {
+
+                  if (!$this.isTableauSelectionnable()) {
+                    return true;
+                  }
+                  return false;
+                },
+
+                isChecked: function (entry) {
+                  var result = $this.ligneProgrammeSelected.find(elem => {
+                    return elem == entry.id;
+                  });
+                  if (result !== undefined) {
+                    return 1;
+                  }
+                  return 0;
+                },
+
+                isAllNotChecked: function () {
+                  if ($this.ligneProgrammeSelected.length > 1) {
+                    return false;
+                  }
+                  return true;
+                }
+              }
+            }
           ],
           gridData : {},
           searchQuery : ''
         },
         filter : {
-            ide12 : '',
+            ide12 : null,
             numProg : this.$route.params.numProg,
-            utilisateur : '',
-            titre : '',
-            ajout : '',
-            selection : ''
+            utilisateur : 'Tous',
+            titre : null,
+            ajout : 'Tous',
+            selection : 'Tous'
         }
       }
     },
@@ -297,20 +346,22 @@
         .then(data => {
           this.programmeInfo = data;
         });
-      this.launchRequest(this.defaultPageable.page, this.defaultPageable.size,
-        this.defaultPageable.sort, this.defaultPageable.dir);
+
+      this.rechercher();
     },
+
     methods :{
       retablirFiltre() {
           this.filter = {
-              ide12 : '',
+              ide12 : null,
               numProg : this.$route.params.numProg,
-              utilisateur : '',
-              titre : '',
-              ajout : '',
-              selection : ''
+              utilisateur : 'Tous',
+              titre : null,
+              ajout : 'Tous',
+              selection : 'Tous'
           }
-          this.$emit("resetSelectionFilter", "reset");
+
+          this.rechercher();
       },
       launchRequest(pageNum, pageSize, sort, dir) {
         this.resource.findLigneProgrammeByProgramme({page : pageNum - 1, size : pageSize,
@@ -343,71 +394,70 @@
 
       },
       rechercher(){
-        this.resource.findLigneProgrammeByProgramme(this.filter)
+
+        this.resource.findLigneProgrammeByProgramme({page : this.defaultPageable.page - 1, size : this.defaultPageable.size,
+          sort : this.defaultPageable.sort, dir: this.defaultPageable.dir}, this.filter)
           .then(response => {
             return response.json();
           })
           .then(data => {
             console.log(data);
             this.priamGrid.gridData = data;
-            //this.priamGrid.gridData.number = data.number + 1;
+            this.priamGrid.gridData.number = data.number + 1;
 
-            this.fichiersChecked = [];
+            this.ligneProgrammeSelected = [];
             var tab = this.priamGrid.gridData.content;
             for(var i in tab) {
-              if(tab[i] && tab[i].statut == 'AFFECTE') {
-                this.fichiersChecked.push(tab[i].id);
+              if(tab[i] && tab[i].selection) {
+                this.ligneProgrammeSelected.push(tab[i].id);
               }
             }
 
-            console.log("length this.fichiersChecked=" + this.fichiersChecked.length);
-            this.$store.dispatch('toutDesactiver', this.fichiersChecked.length !=0 && this.priamGrid.gridData.content.length == this.fichiersChecked.length );
+            console.log("length this.ligneProgrammeSelected=" + this.ligneProgrammeSelected.length);
+            this.$store.dispatch('toutDesactiver', this.ligneProgrammeSelected.length !=0 && this.priamGrid.gridData.content.length == this.ligneProgrammeSelected.length );
 
           });
       },
       isTableauSelectionnable() {
         return this.tableauSelectionnable;
       },
-      isStatusProgrammeAffecte(){
-        return this.programmeInfo.statut === 'AFFECTE';
-      },
       onEntryChecked(isChecked, entryChecked) {
         console.log('entryId='+entryChecked.id);
         console.log('isChecked='+isChecked);
 
         if(isChecked) {
-          var found = this.fichiersChecked.find( elem => {
+          var found = this.ligneProgrammeSelected.find( elem => {
             return  elem === entryChecked.id;
           });
           if(found !== undefined && found) {
 
           } else {
-            this.fichiersChecked.push(entryChecked.id);
+            this.ligneProgrammeSelected.push(entryChecked.id);
           }
 
         } else {
-          console.log('this.fichiersChecked='+this.fichiersChecked);
-          let number = this.fichiersChecked.indexOf(entryChecked.id);
+          console.log('this.ligneProgrammeSelected='+this.ligneProgrammeSelected);
+          let number = this.ligneProgrammeSelected.indexOf(entryChecked.id);
           console.log('indexOf='+number);
-          this.fichiersChecked.splice(number, 1);
+          this.ligneProgrammeSelected.splice(number, 1);
         }
-        console.log('onEntryChecked() ==> this.fichiersChecked='+this.fichiersChecked.length);
+        console.log('onEntryChecked() ==> this.ligneProgrammeSelected='+this.ligneProgrammeSelected.length);
       },
 
       onAllChecked(allChecked, entries) {
         console.log("entries checked=" +  entries);
-        this.fichiersChecked = [];
+
         if(allChecked) {
-          /*for(var i in entries) {
+          for(var i in entries) {
            console.log("element of entry = " + entries[i]);
-           this.fichiersChecked.push(entries[i]);
-           }*/
+           this.ligneProgrammeSelected.push(entries[i]);
+           }
         } else {
-          this.fichiersChecked = [];
+          this.ligneProgrammeSelected = [];
         }
 
         this.$store.dispatch('toutDesactiver', true);
-        console.log('onAllChecked() ==> this.fichiersChecked='+this.fichiersChecked.length);
+        console.log('onAllChecked() ==> this.ligneProgrammeSelected='+this.ligneProgrammeSelected.length);
       },
     },
     computed : {
@@ -419,7 +469,8 @@
       vSelect : vSelect,
       priamGrid : Grid,
       modal: Modal,
-      appFiltreSelection : FiltreSelection
+      appFiltreSelection : FiltreSelection,
+      appActionSelection : ActionSelection
     }
   }
 

@@ -3,7 +3,7 @@ package fr.sacem.priam.ui.rest;
 import fr.sacem.priam.model.dao.jpa.LigneProgrammeDao;
 import fr.sacem.priam.model.domain.LigneProgramme;
 import fr.sacem.priam.model.domain.criteria.LigneProgrammeCriteria;
-import fr.sacem.priam.model.domain.dto.Ide12Dto;
+import fr.sacem.priam.model.domain.dto.AutocompleteDto;
 import fr.sacem.priam.services.LigneProgrammeService;
 import fr.sacem.priam.ui.rest.dto.LigneProgrammeCritereRecherche;
 import fr.sacem.priam.ui.rest.dto.SelectionDto;
@@ -25,6 +25,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/app/rest/")
 public class LigneProgrammeResource {
+
+  private static final String ALL = "Tous";
+  public static final String SELECTIONNE = "Sélectionné";
 
   @Autowired
   private LigneProgrammeService ligneProgrammeService;
@@ -59,12 +62,28 @@ public class LigneProgrammeResource {
     criteria.setNumProg(ligneProgramme.getNumProg());
     criteria.setIde12(ligneProgramme.getIde12());
 
+    if(ligneProgramme.getTitre() != null && !ligneProgramme.getTitre().isEmpty())
+      criteria.setTitre(ligneProgramme.getTitre());
+
+    if(ligneProgramme.getAjout() != null && !ALL.equals(ligneProgramme.getAjout()))
+      criteria.setAjout(ligneProgramme.getAjout());
+
+    if(ligneProgramme.getSelection() != null && !ALL.equals(ligneProgramme.getSelection()))
+      criteria.setSelection(parseSelection(ligneProgramme.getSelection()));
+
+    if(ligneProgramme.getUtilisateur() != null && !ligneProgramme.getUtilisateur().isEmpty() && !ALL.equals(ligneProgramme.getUtilisateur()))
+      criteria.setUtilisateur(ligneProgramme.getUtilisateur());
+
     Page<LigneProgramme> ligneProgrammes = ligneProgrammeService.findLigneProgrammeByCriteria(criteria, pageable);
 
     Page<SelectionDto> dtoPage =ligneProgrammes.map(convert());
     logger.info("Nbr de lignes programmes pour le programme :"+ligneProgramme.getNumProg()+" est de :"+ ligneProgrammes.getTotalElements());
 
     return dtoPage;
+  }
+
+  private boolean parseSelection(String selection) {
+    return SELECTIONNE.equals(selection);
   }
 
   private Converter<LigneProgramme, SelectionDto> convert() {
@@ -77,6 +96,8 @@ public class LigneProgrammeResource {
       selectionDto.setParticipant(source.getNomParticipant1());
       selectionDto.setQuantite("");
       selectionDto.setTitre(source.getTitreOeuvre());
+      selectionDto.setSelection(source.getSelection());
+      selectionDto.setId(source.getId());
       return selectionDto;
     };
   }
@@ -85,7 +106,7 @@ public class LigneProgrammeResource {
     method = RequestMethod.GET,
     consumes = MediaType.APPLICATION_JSON_VALUE,
     produces = MediaType.APPLICATION_JSON_VALUE)
-  public List<Ide12Dto> getListIDE12ByProgramme(@RequestParam(value = "q") String query, @RequestParam(value = "programme") String programme) {
+  public List<AutocompleteDto> getListIDE12ByProgramme(@RequestParam(value = "q") String query, @RequestParam(value = "programme") String programme) {
 
     Long ide12 ;
 
@@ -96,6 +117,22 @@ public class LigneProgrammeResource {
     }
 
     return ligneProgrammeService.getListIDE12ByProgramme(ide12, programme);
+  }
+
+
+  @RequestMapping(value = "ligneProgramme/titreOeuvre",
+    method = RequestMethod.GET,
+    consumes = MediaType.APPLICATION_JSON_VALUE,
+    produces = MediaType.APPLICATION_JSON_VALUE)
+  public List<AutocompleteDto> getTitresByProgramme(@RequestParam(value = "q") String query, @RequestParam(value = "programme") String programme) {
+    return ligneProgrammeService.getTitresByProgramme(query, programme);
+  }
+
+  @RequestMapping(value = "ligneProgramme/utilisateurs",
+    method = RequestMethod.GET,
+    produces = MediaType.APPLICATION_JSON_VALUE)
+  public List<String> getUtilisateursByProgramme(@RequestParam(value = "programme") String programme) {
+    return ligneProgrammeService.getUtilisateursByProgramme(programme);
   }
 
 }
