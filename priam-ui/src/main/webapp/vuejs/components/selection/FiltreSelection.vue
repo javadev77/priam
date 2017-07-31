@@ -60,16 +60,14 @@
               <div class="col-sm-2">
                 <label class="control-label pull-right blueText">Ajout</label>
               </div>
-              <div class="col-sm-3">
+              <div class="col-sm-2">
                 <v-select :searchable="false" v-model="filter.ajout" :options="ajoutOptions"></v-select>
               </div>
-            </div>
 
-            <div id="row">
               <div class="col-sm-2">
                 <label class="control-label pull-right blueText">Sélection</label>
               </div>
-              <div class="col-sm-3">
+              <div class="col-sm-2">
                 <v-select :searchable="false" v-model="filter.selection" :options="selectionOptions"></v-select>
               </div>
             </div>
