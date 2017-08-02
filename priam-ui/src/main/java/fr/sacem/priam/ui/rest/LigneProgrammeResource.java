@@ -1,16 +1,14 @@
 package fr.sacem.priam.ui.rest;
 
 import fr.sacem.priam.model.dao.jpa.LigneProgrammeDao;
-import fr.sacem.priam.model.domain.LigneProgramme;
 import fr.sacem.priam.model.domain.criteria.LigneProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.AutocompleteDto;
 import fr.sacem.priam.services.LigneProgrammeService;
 import fr.sacem.priam.ui.rest.dto.LigneProgrammeCritereRecherche;
-import fr.sacem.priam.ui.rest.dto.SelectionDto;
+import fr.sacem.priam.model.domain.dto.SelectionDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -37,7 +35,7 @@ public class LigneProgrammeResource {
   private LigneProgrammeDao ligneProgrammeDao;
 
   private static Logger logger = LoggerFactory.getLogger(LigneProgrammeResource.class);
-
+/*
   @RequestMapping(value = "ligneProgramme/numprog",
     method = RequestMethod.POST,
     consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -50,7 +48,7 @@ public class LigneProgrammeResource {
 
     return dtoPage;
   }
-
+*/
   @RequestMapping(value = "ligneProgramme/search",
     method = RequestMethod.POST,
     consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -74,18 +72,19 @@ public class LigneProgrammeResource {
     if(ligneProgramme.getUtilisateur() != null && !ligneProgramme.getUtilisateur().isEmpty() && !ALL.equals(ligneProgramme.getUtilisateur()))
       criteria.setUtilisateur(ligneProgramme.getUtilisateur());
 
-    Page<LigneProgramme> ligneProgrammes = ligneProgrammeService.findLigneProgrammeByCriteria(criteria, pageable);
+    Page<SelectionDto> ligneProgrammes = ligneProgrammeService.findLigneProgrammeByCriteria(criteria,pageable);
 
-    Page<SelectionDto> dtoPage =ligneProgrammes.map(convert());
-    logger.info("Nbr de lignes programmes pour le programme :"+ligneProgramme.getNumProg()+" est de :"+ ligneProgrammes.getTotalElements());
+    //Page<SelectionDto> dtoPage =ligneProgrammes.map(convert());
+    //logger.info("Nbr de lignes programmes pour le programme :"+ligneProgramme.getNumProg()+" est de :"+ ligneProgrammes.getTotalElements());
 
-    return dtoPage;
+    return ligneProgrammes;
   }
 
   private boolean parseSelection(String selection) {
     return SELECTIONNE.equals(selection);
   }
 
+/*
   private Converter<LigneProgramme, SelectionDto> convert() {
     return source -> {
       SelectionDto selectionDto=new  SelectionDto();
@@ -95,14 +94,14 @@ public class LigneProgrammeResource {
       selectionDto.setDuree(source.getDurDif());
       selectionDto.setNomParticipant1(source.getNomParticipant1());
       selectionDto.setUtilisateur(source.getUtilisateur());
-      selectionDto.setQuantite("");
+      selectionDto.setQuantite(0l);
       selectionDto.setTitreOeuvre(source.getTitreOeuvre());
       selectionDto.setSelection(source.getSelection());
       selectionDto.setId(source.getId());
       return selectionDto;
     };
   }
-
+*/
   @RequestMapping(value = "ligneProgramme/ide12",
     method = RequestMethod.GET,
     consumes = MediaType.APPLICATION_JSON_VALUE,

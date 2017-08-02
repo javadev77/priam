@@ -4,6 +4,8 @@ import fr.sacem.priam.model.dao.jpa.LigneProgrammeDao;
 import fr.sacem.priam.model.domain.LigneProgramme;
 import fr.sacem.priam.model.domain.criteria.LigneProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.AutocompleteDto;
+import fr.sacem.priam.model.domain.dto.SelectionDto;
+import fr.sacem.priam.model.domain.dto.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,14 +43,13 @@ public class LigneProgrammeService {
     }
 
     @Transactional
-    public Page<LigneProgramme> findLigneProgrammeByCriteria(LigneProgrammeCriteria criteria, Pageable pageable) {
-		return ligneProgrammeDao.findLigneProgrammeByCriteria(criteria.getNumProg(),
+    public Page<SelectionDto> findLigneProgrammeByCriteria(LigneProgrammeCriteria criteria,Pageable pageable) {
+	    return ligneProgrammeDao.findLigneProgrammeByCriteria(criteria.getNumProg(),
                 criteria.getUtilisateur(),
 				criteria.getIde12(),
                 criteria.getTitre(),
                 criteria.getAjout(),
-                criteria.getSelection(),
-				pageable);
+                criteria.getSelection(),pageable);
     }
 
 

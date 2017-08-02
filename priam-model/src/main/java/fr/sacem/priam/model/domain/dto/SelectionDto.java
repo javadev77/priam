@@ -1,4 +1,4 @@
-package fr.sacem.priam.ui.rest.dto;
+package fr.sacem.priam.model.domain.dto;
 
 /**
  * Created by fandis on 19/07/2017.
@@ -10,7 +10,7 @@ public class SelectionDto {
   private String nomParticipant1;
   private Long duree;
   private String ajout;
-  private String quantite;
+  private Long quantite;
   private String utilisateur;
   private boolean selection;
   private Long id;
@@ -70,11 +70,11 @@ public class SelectionDto {
     this.ajout = ajout;
   }
 
-  public String getQuantite() {
+  public Long getQuantite() {
     return quantite;
   }
 
-  public void setQuantite(String quantite) {
+  public void setQuantite(Long quantite) {
     this.quantite = quantite;
   }
 
@@ -91,7 +91,7 @@ public class SelectionDto {
   public SelectionDto() {
   }
 
-  public SelectionDto(Long ide12, String titreOeuvre, String roleParticipant1, String nomParticipant1, Long duree, String ajout, String quantite, String utilisateur, boolean selection, Long id) {
+  public SelectionDto(Long ide12, String titreOeuvre, String roleParticipant1, String nomParticipant1,String ajout,Long duree, Long quantite, String utilisateur, boolean selection, Long id) {
     this.ide12 = ide12;
     this.titreOeuvre = titreOeuvre;
     this.roleParticipant1 = roleParticipant1;
@@ -103,4 +103,5 @@ public class SelectionDto {
     this.selection = selection;
     this.id = id;
   }
+
 }

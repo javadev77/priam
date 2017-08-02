@@ -399,4 +399,5 @@ public class LigneProgramme  implements Serializable {
     public void setCdeFamilTypUtilOri(String cdeFamilTypUtilOri) {
         this.cdeFamilTypUtilOri = cdeFamilTypUtilOri;
     }
+
 }

@@ -1,6 +1,7 @@
 package fr.sacem.priam.model.dao.jpa;
 
 import fr.sacem.priam.model.domain.LigneProgramme;
+import fr.sacem.priam.model.domain.LigneProgrammeView;
 import fr.sacem.priam.model.domain.dto.AutocompleteDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,8 +10,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
+import fr.sacem.priam.model.domain.dto.SelectionDto;
 
 /**
  * Created by benmerzoukah on 29/05/2017.
@@ -33,26 +34,69 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
             "AND f.programme.numProg = :numProg ")
     Page<LigneProgramme> findLigneProgrammeByProgrammeId(@Param("numProg") String numProg, Pageable pageable);
 
+/*
+    ligneProgramme.ide12, " +
+            "() " +
+            "*/
+
+    /*@Transactional
+    @Query(value="SELECT " +
+            " new fr.sacem.priam.model.domain.dto.Test(ligneProgramme.ide12 , count(ligneProgramme2.id) FROM LigneProgramme ligneProgramme2)) " +
+            "FROM LigneProgramme ligneProgramme join ligneProgramme.fichier as f "+
+            "WHERE ligneProgramme.fichier = f.id " +
+            "AND f.programme.numProg = :numProg " +
+            "AND (ligneProgramme.ide12 = :ide12 OR :ide12 IS NULL) " +
+            "AND (ligneProgramme.ajout = :ajout OR :ajout IS NULL) " +
+            "AND (ligneProgramme.selection = :selection OR :selection IS NULL) " +
+            "AND (ligneProgramme.titreOeuvre = :titre OR :titre IS NULL) " +
+            "AND (ligneProgramme.utilisateur = :utilisateur OR :utilisateur IS NULL) " +
+            "GROUP BY ligneProgramme.ide12"+
+            "")
+    Page<Test> findLigneProgrammeByCriteria(@Param("numProg") String numProg,
+                                            @Param("utilisateur") String utilisateur,
+                                            @Param("ide12") Long ide12,
+                                            @Param("titre") String titre,
+                                            @Param("ajout") String ajout,
+                                            @Param("selection") Boolean selection,
+                                            Pageable pageable);*/
 
     @Transactional
-    @Query(value="SELECT l " +
-            "FROM LigneProgramme l join l.fichier as f "+
-            "WHERE l.fichier = f.id " +
+    @Query(value="SELECT new fr.sacem.priam.model.domain.dto.SelectionDto("+
+                    "ligneProgramme.ide12, " +
+            "ligneProgramme.titreOeuvre, " +
+            "ligneProgramme.roleParticipant1, " +
+            "ligneProgramme.nomParticipant1, " +
+            "ligneProgramme.ajout, " +
+            "ligneProgrammeView.durDif, " +
+            "ligneProgrammeView.quantite, " +
+            "ligneProgramme.utilisateur, " +
+            "ligneProgramme.selection," +
+            "ligneProgramme.id ) " +
+            "FROM LigneProgramme ligneProgramme join ligneProgramme.fichier as f , LigneProgrammeView ligneProgrammeView "+
+            "WHERE ligneProgramme.fichier = f.id " +
+            "AND ligneProgramme.ide12 = ligneProgrammeView.ide12 " +
             "AND f.programme.numProg = :numProg " +
-            "AND (l.ide12 = :ide12 OR :ide12 IS NULL) " +
-            "AND (l.ajout = :ajout OR :ajout IS NULL) " +
-            "AND (l.selection = :selection OR :selection IS NULL) " +
-            "AND (l.titreOeuvre = :titre OR :titre IS NULL) " +
-            "AND (l.utilisateur = :utilisateur OR :utilisateur IS NULL) " +
+            "AND (ligneProgramme.ide12 = :ide12 OR :ide12 IS NULL) " +
+            "AND (ligneProgramme.ajout = :ajout OR :ajout IS NULL) " +
+            "AND (ligneProgramme.selection = :selection OR :selection IS NULL) " +
+            "AND (ligneProgramme.titreOeuvre = :titre OR :titre IS NULL) " +
+            "AND (ligneProgramme.utilisateur = :utilisateur OR :utilisateur IS NULL) " +
+            "GROUP BY ligneProgramme.ide12, " +
+                "ligneProgramme.titreOeuvre, " +
+                "ligneProgramme.roleParticipant1, " +
+                "ligneProgramme.nomParticipant1, " +
+                "ligneProgramme.durDif, " +
+                "ligneProgramme.ajout, " +
+                "ligneProgramme.utilisateur, " +
+                "ligneProgramme.selection, " +
+                "ligneProgramme.id"+
             "")
-    Page<LigneProgramme> findLigneProgrammeByCriteria(@Param("numProg") String numProg,
-                                                      @Param("utilisateur") String utilisateur,
-                                                      @Param("ide12") Long ide12,
-                                                      @Param("titre") String titre,
-                                                      @Param("ajout") String ajout,
-                                                      @Param("selection") Boolean selection,
-                                                      Pageable pageable);
-
+    Page<SelectionDto> findLigneProgrammeByCriteria(@Param("numProg") String numProg,
+                                      @Param("utilisateur") String utilisateur,
+                                      @Param("ide12") Long ide12,
+                                      @Param("titre") String titre,
+                                      @Param("ajout") String ajout,
+                                      @Param("selection") Boolean selection,Pageable pageable);
 
     @Transactional(readOnly = true)
     @Query(value =

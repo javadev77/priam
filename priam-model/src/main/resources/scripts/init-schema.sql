@@ -213,12 +213,24 @@ ALTER TABLE PRIAM_PROGRAMME ADD COLUMN USERAFFECT VARCHAR(60);
 -- -------------------------------------
 
 DROP VIEW IF EXISTS PRIAM_PROG_VIEW;
+DROP VIEW IF EXISTS PRIAM_LIGNE_PROG_VIEW;
+
+
 
 CREATE VIEW PRIAM_PROG_VIEW AS
   select distinct pr.*,
     (select count(f.NUMPROG) from PRIAM_FICHIER f where pr.NUMPROG=f.NUMPROG) as fichiers
   from PRIAM_PROGRAMME pr
   group by pr.NUMPROG;
+
+CREATE OR REPLACE VIEW PRIAM_LIGNE_PROG_VIEW AS
+  SELECT lpr1.ide12 as IDE12,f.numProg as NUMPROG,count(lpr1.ide12) as QUANTITE ,sum(lpr1.durDif) as DURDIF
+  FROM PRIAM_LIGNE_PROGRAMME  lpr1,PRIAM_FICHIER f
+  WHERE lpr1.ID_FICHIER = f.ID
+        AND lpr1.ide12 is NOT  NULL
+        AND f.numProg is NOT  NULL
+  GROUP BY lpr1.ide12,lpr1.numProg;
+
 
 
 

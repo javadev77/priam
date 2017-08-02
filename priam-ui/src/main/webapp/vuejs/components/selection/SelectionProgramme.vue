@@ -283,10 +283,24 @@
               }
             }
           },
-
             {
               id: 'duree',
               name: "Durée",
+              sortable: true,
+              type: 'long-text',
+              cell: {
+                toText : function(entry) {
+                  var result = entry;
+                  if(result !=undefined)
+                    return result ;
+                  else
+                    return "";
+                }
+              }
+            },
+            {
+              id: 'quantite',
+              name: "Quantité",
               sortable: true,
               type: 'long-text',
               cell: {
@@ -582,13 +596,13 @@
 
               this.priamGrid_phono.gridData_phono = data;
               this.priamGrid_phono.gridData_phono.number = data.number + 1;
-              tab = this.priamGrid.gridData_phono.content;
+              tab = this.priamGrid_sono.gridData_phono.content;
 
             }else if (this.programmeInfo.typeUtilisation==="CPRIVSONRD"){
 
               this.priamGrid_sono.gridData_sono = data;
               this.priamGrid_sono.gridData_sono.number = data.number + 1;
-              tab = this.priamGrid.gridData_sono.content;
+              tab = this.priamGrid_sono.gridData_sono.content;
 
             }
             this.fichiersChecked = [];
