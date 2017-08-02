@@ -46,7 +46,7 @@ public class ProgrammeResource {
     public Page<ProgrammeDto> rechercheProgramme(@RequestBody ProgrammeCritereRecherche input, Pageable pageable) {
         logger.info("input criteria : " + input);
         ProgrammeCriteria criteria = new ProgrammeCriteria();
-        
+
         if(input.getStatutCode() == null || input.getStatutCode().isEmpty()) {
             criteria.setStatut(Arrays.asList(StatutProgramme.values()));
         } else {
@@ -92,7 +92,7 @@ public class ProgrammeResource {
                      produces = MediaType.APPLICATION_JSON_VALUE)
      public Boolean getProgrammeByNom(@PathVariable("nom") String nom) {
         List<Programme> programmes = programmeService.serachProgrammeByNom(nom);
-        
+
         return programmes != null && !programmes.isEmpty();
      }
 
@@ -154,15 +154,15 @@ public class ProgrammeResource {
     public List<String> getAllNumProgForAutocmplete() {
         return programmeViewDao.findAllNumProgByCriteria();
     }
-  
-    
+
+
     @RequestMapping(value = "programme/nomprog/autocomplete",
                     method = RequestMethod.GET,
                     produces = MediaType.APPLICATION_JSON_VALUE)
     public List<String> getAllNomProgForAutocmplete() {
         return programmeService.findAllNomProgByCriteria();
     }
-   
+
     @RequestMapping(value = "programme/toutDesaffecter",
                     method = RequestMethod.PUT,
                     consumes = MediaType.APPLICATION_JSON_VALUE,

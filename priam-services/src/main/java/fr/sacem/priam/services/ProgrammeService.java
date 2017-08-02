@@ -172,4 +172,19 @@ public class ProgrammeService {
 	public List<String> findAllNomProgByCriteria(){
 		return programmeViewDao.findAllNomProgByCriteria();
 	}
+
+	@Transactional
+	public Programme validerProgramme(ProgrammeDto programmeDto) {
+		Programme programme = programmeDao.findOne(programmeDto.getNumProg());
+		programme.setStatut(StatutProgramme.VALIDE);
+		/*programme.setU*/
+
+		return programmeDao.saveAndFlush(programme);
+	}
+
+	public Programme invaliderProgramme(ProgrammeDto programmeDto) {
+		Programme programme = programmeDao.findOne(programmeDto.getNumProg());
+		programme.setStatut(StatutProgramme.EN_COURS);
+		return programmeDao.saveAndFlush(programme);
+	}
 }
