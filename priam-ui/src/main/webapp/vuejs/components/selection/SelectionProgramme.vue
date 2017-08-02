@@ -130,7 +130,11 @@
         </div>
         <div class="panel-collapse">
           <div class="result-panel-body panel-body">
-            <app-informations-selection>
+            {{this.ouvresSelectioneesAuto}}
+            <app-informations-selection
+              :ouvresSelectioneesAuto = "ouvresSelectioneesAuto"
+              :ouvresSelectioneesManuel = "ouvresSelectioneesManuel"
+              :dureeSelection = "dureeSelection">
             </app-informations-selection>
 
              <div v-if = "this.programmeInfo.typeUtilisation=='CPRIVSONRD'">
@@ -169,7 +173,7 @@
         :debugListSelection="ligneProgrammeSelected.length"
       >
       </app-action-selection>
-
+{{this.ligneProgrammeSelected}}ddd
     </div>
   </div>
 </template>
@@ -195,6 +199,9 @@
 
         fichiersChecked : [],
         ligneProgrammeSelected : [],
+        ouvresSelectioneesAuto : 1,
+        ouvresSelectioneesManuel : 2,
+        dureeSelection : 3,
         programmeInfo: {},
         programmeData: {},
         tableauSelectionnable : true,
@@ -223,11 +230,11 @@
               }
             },
             {
-              id: 'ide2',
-              name: 'IDE12',
+              id: 'ide12',
+              name: "IDE12",
               sortable: true,
-              type: 'code-value',
-              cell : {
+              type: 'long-text',
+              cell: {
                 toText : function(entry) {
                   var result = entry;
                   if(result !=undefined)
@@ -284,9 +291,9 @@
             }
           },
             {
-              id: 'duree',
+              id: 'durDif',
               name: "Durée",
-              sortable: true,
+              sortable: false,
               type: 'long-text',
               cell: {
                 toText : function(entry) {
@@ -301,7 +308,7 @@
             {
               id: 'quantite',
               name: "Quantité",
-              sortable: true,
+              sortable: false,
               type: 'long-text',
               cell: {
                 toText : function(entry) {
@@ -351,11 +358,11 @@
               }
             },
             {
-              id: 'ide2',
-              name: 'IDE12',
+              id: 'ide12',
+              name: "IDE12",
               sortable: true,
-              type: 'code-value',
-              cell : {
+              type: 'long-text',
+              cell: {
                 toText : function(entry) {
                   var result = entry;
                   if(result !=undefined)
@@ -413,9 +420,9 @@
             },
 
             {
-              id: 'duree',
+              id: 'durDif',
               name: "Durée",
-              sortable: true,
+              sortable: false,
               type: 'long-text',
               cell: {
                 toText : function(entry) {
@@ -430,7 +437,7 @@
             {
               id: 'quantite',
               name: "Quantité",
-              sortable: true,
+              sortable: false,
               type: 'long-text',
               cell: {
                 toText : function(entry) {
@@ -643,6 +650,7 @@
           this.ligneProgrammeSelected.splice(number, 1);
         }
         console.log('onEntryChecked() ==> this.ligneProgrammeSelected='+this.ligneProgrammeSelected.length);
+
       },
 
       onAllChecked(allChecked, entries) {

@@ -36,16 +36,13 @@
 
 
   export default {
-    data() {
 
-      return {
 
+      props : {
            ouvresSelectioneesAuto: 0,
            ouvresSelectioneesManuel: 0,
            dureeSelection:0
-
-
       }
-    }
+
   }
 </script>
