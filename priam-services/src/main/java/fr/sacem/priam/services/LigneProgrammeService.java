@@ -2,7 +2,7 @@ package fr.sacem.priam.services;
 
 import fr.sacem.priam.model.dao.jpa.LigneProgrammeDao;
 import fr.sacem.priam.model.domain.criteria.LigneProgrammeCriteria;
-import fr.sacem.priam.model.domain.dto.AutocompleteDto;
+import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.SelectionDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,12 +27,12 @@ public class LigneProgrammeService {
 	private static final Logger LOG = LoggerFactory.getLogger(LigneProgrammeService.class);
 
 	@Transactional
-    public List<AutocompleteDto> getListIDE12ByProgramme(Long ide12, String programme) {
+    public List<KeyValueDto> getListIDE12ByProgramme(Long ide12, String programme) {
 		return ligneProgrammeDao.findIDE12sByProgramme(ide12, programme);
     }
 
     @Transactional
-    public List<AutocompleteDto> getTitresByProgramme(String titre, String programme) {
+    public List<KeyValueDto> getTitresByProgramme(String titre, String programme) {
         return ligneProgrammeDao.findTitresByProgramme(titre, programme);
     }
 

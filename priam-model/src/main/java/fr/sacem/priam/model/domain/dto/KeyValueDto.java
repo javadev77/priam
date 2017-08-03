@@ -5,16 +5,21 @@ import java.io.Serializable;
 /**
  * Created by jbelwidane on 24/07/2017.
  */
-public class AutocompleteDto implements Serializable{
+public class KeyValueDto implements Serializable{
 
   private Long code;
   private String value;
 
-  public AutocompleteDto(Long code) {
+  public KeyValueDto(Long code) {
     this.code = code;
   }
 
-  public AutocompleteDto(String value) {
+  public KeyValueDto(String value) {
+    this.value = value;
+  }
+
+  public KeyValueDto(Long code, String value) {
+    this.code = code;
     this.value = value;
   }
 

@@ -6,6 +6,7 @@ import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
 import fr.sacem.priam.model.domain.*;
 import fr.sacem.priam.model.domain.criteria.ProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.AffectationDto;
+import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.services.FichierService;
 import fr.sacem.priam.services.ProgrammeService;
@@ -177,7 +178,7 @@ public class ProgrammeResource {
   @RequestMapping(value = "programme/durdif",
     method = RequestMethod.GET,
     produces = MediaType.APPLICATION_JSON_VALUE)
-  public Long getDurDifProgramme(@RequestBody String numProg,@RequestBody String statut) {
+  public List<KeyValueDto> getDurDifProgramme(@RequestParam(value = "numProg") String numProg, @RequestParam(value = "statut") String statut) {
     return programmeService.getDurDifProgramme(numProg,statut);
   }
 }

@@ -131,9 +131,8 @@
         <div class="panel-collapse">
           <div class="result-panel-body panel-body">
             <app-informations-selection
-              :ouvresSelectioneesAuto = "ouvresSelectioneesAuto"
-              :ouvresSelectioneesManuel = "ouvresSelectioneesManuel"
-              :dureeSelection = "dureeSelection">
+              :dureeSelection="dureeSelection"
+            >
             </app-informations-selection>
 
             <div v-if = "this.programmeInfo.typeUtilisation=='CPRIVSONRD'">
@@ -173,6 +172,7 @@
         :invalider="invaliderProgramme"
       >
       </app-action-selection>
+
     </div>
 
 
@@ -219,9 +219,6 @@
         ligneProgramme : [],
         unselectedLigneProgramme : [],
         ligneProgrammeSelected : [],
-        ouvresSelectioneesAuto: 1,
-        ouvresSelectioneesManuel: 2,
-        dureeSelection: 3,
         programmeInfo: {},
         tableauSelectionnable : true,
         isCollapsed: false,
@@ -264,6 +261,21 @@
               }
             },
             {
+              id: 'titreOeuvre',
+              name: "Titre",
+              sortable: true,
+              type: 'long-text',
+              cell : {
+                toText : function(entry) {
+                  var result = entry;
+                  if(result !=undefined)
+                    return result ;
+                  else
+                    return "";
+                }
+              }
+            },
+            {
               id: 'roleParticipant1',
               name: 'Rôle',
               sortable: true,
@@ -279,41 +291,9 @@
               }
             },
             {
-              id: 'titreOeuvre',
-              name: "Titre",
-              sortable: true,
-              type: 'long-text',
-              cell : {
-                toText : function(entry) {
-                  var result = entry;
-                  if(result !=undefined)
-                    return result ;
-                  else
-                    return "";
-                }
-              }
-            },
-
-            {
               id: 'nomParticipant1',
               name: "Participant",
               sortable: true,
-              type: 'long-text',
-              cell: {
-                toText : function(entry) {
-                  var result = entry;
-                  if(result !=undefined)
-                    return result ;
-                  else
-                    return "";
-                }
-              }
-            },
-
-            {
-              id: 'durDif',
-              name: "Durée",
-              sortable: false,
               type: 'long-text',
               cell: {
                 toText : function(entry) {
@@ -433,21 +413,6 @@
               }
             },
             {
-              id: 'roleParticipant1',
-              name: 'Rôle',
-              sortable: true,
-              type: 'long-text',
-              cell : {
-                toText : function(entry) {
-                  var result = entry;
-                  if(result !=undefined)
-                    return result ;
-                  else
-                    return "";
-                }
-              }
-            },
-            {
               id: 'titreOeuvre',
               name: "Titre",
               sortable: true,
@@ -462,7 +427,21 @@
                 }
               }
             },
-
+            {
+              id: 'roleParticipant1',
+              name: 'Rôle',
+              sortable: true,
+              type: 'long-text',
+              cell : {
+                toText : function(entry) {
+                  var result = entry;
+                  if(result !=undefined)
+                    return result ;
+                  else
+                    return "";
+                }
+              }
+            },
             {
               id: 'nomParticipant1',
               name: "Participant",
@@ -482,21 +461,6 @@
             {
               id: 'durDif',
               name: "Durée",
-              sortable: false,
-              type: 'long-text',
-              cell: {
-                toText : function(entry) {
-                  var result = entry;
-                  if(result !=undefined)
-                    return result ;
-                  else
-                    return "";
-                }
-              }
-            },
-            {
-              id: 'quantite',
-              name: "Quantité",
               sortable: false,
               type: 'long-text',
               cell: {
@@ -599,6 +563,11 @@
           ajout : 'Tous',
           selection : 'Tous'
         },
+        dureeSelection : {
+          auto : 0,
+          manuel : 0,
+          duree : 0
+        },
         modalVisible : false,
         modalMessage : '',
         modalWaring : false,
@@ -607,38 +576,9 @@
     },
 
     created() {
-      console.log("router params numProg = " + this.$route.params.numProg);
-      const customActions = {
-        findByNumProg: {method: 'GET', url: 'app/rest/programme/numProg/{numProg}'},
-        findLigneProgrammeByProgramme : {method: 'POST', url: 'app/rest/ligneProgramme/search?page={page}&size={size}&sort={sort},{dir}'},
-        validerSelection: {method: 'POST', url: 'app/rest/ligneProgramme/selection/valider'},
-        invaliderSelection: {method: 'POST', url: 'app/rest/ligneProgramme/selection/invalider'}
-      }
-      this.resource = this.$resource('', {}, customActions);
-
-      this.resource.findByNumProg({numProg: this.$route.params.numProg})
-        .then(response => {
-          return response.json();
-        })
-        .then(data => {
-          this.programmeInfo = data;
-          this.all = this.programmeInfo.statut != 'VALIDE';
-          //this.tableauSelectionnable = this.programmeInfo.statut != 'VALIDE';
-        });
-
-      this.rechercher();
+      this.initProgramme();
     },
-    watch: {
-      ouvresSelectioneesAuto: function (){
-          this.ouvresSelectioneesAuto = $this.ligneProgrammeSelected;
-      },
-      ouvresSelectioneesManuel: function (){
-        this.ouvresSelectioneesManuel = $this.ligneProgrammeSelected;
-      },
-      dureeSelection: function (){
-        this.dureeSelection = $this.ligneProgrammeSelected;
-      },
-    },
+
     methods :{
       retablirFiltre() {
         this.filter = {
@@ -652,6 +592,65 @@
 
         this.rechercher();
       },
+
+      initProgramme() {
+        console.log("router params numProg = " + this.$route.params.numProg);
+
+        const customActions = {
+          findByNumProg: {method: 'GET', url: 'app/rest/programme/numProg/{numProg}'},
+          findLigneProgrammeByProgramme: {
+            method: 'POST',
+            url: 'app/rest/ligneProgramme/search?page={page}&size={size}&sort={sort},{dir}'
+          },
+          validerSelection: {method: 'POST', url: 'app/rest/ligneProgramme/selection/valider'},
+          invaliderSelection: {method: 'POST', url: 'app/rest/ligneProgramme/selection/invalider'},
+          dureeProgramme: {method: 'GET', url: 'app/rest/programme/durdif?numProg={numProg}&statut={statut}'}
+        }
+
+        this.resource = this.$resource('', {}, customActions);
+
+        this.resource.findByNumProg({numProg: this.$route.params.numProg})
+          .then(response => {
+            return response.json();
+          })
+          .
+          then(data => {
+
+              this.programmeInfo = data;
+              this.all = this.programmeInfo.statut != 'VALIDE';
+              this.tableauSelectionnable = (
+                this.programmeInfo.statut != 'VALIDE'
+                && this.programmeInfo.statut != 'MIS_EN_REPART'
+                && this.programmeInfo.statut != 'REPARTI'
+              );
+
+              this.resource.dureeProgramme({numProg: this.$route.params.numProg, statut: this.programmeInfo.statut})
+                .then(response => {
+                  return response.json();
+                })
+                .
+                then(data => {
+
+                  for (var indicateur in data) {
+                      if(data[indicateur].value =='Automatique') {
+                          this.dureeSelection.auto = data[indicateur].code;
+                      }
+                      else if(data[indicateur].value =='Manuel') {
+                          this.dureeSelection.manuel = data[indicateur].code;
+                      }
+                      else if(data[indicateur].value =='SOMME') {
+                        this.dureeSelection.duree = data[indicateur].code;
+                      }
+                  }
+
+                });
+
+
+          });
+
+        this.rechercher();
+      },
+
       launchRequest(pageNum, pageSize, sort, dir) {
         this.resource.findLigneProgrammeByProgramme({page : pageNum -1 , size : pageSize,
           sort : sort, dir: dir}, this.filter )
@@ -772,7 +771,6 @@
           this.unselectedLigneProgramme.push(entryChecked.id);
         }
         console.log('onEntryChecked() ==> this.ligneProgrammeSelected='+this.ligneProgrammeSelected.length);
-        this.informationSelection.ouvresSelectioneesAuto=this.ligneProgrammeSelected.length;
       },
 
       onAllChecked(allChecked, entries) {
@@ -876,7 +874,7 @@
 
       yesContinue() {
 
-        if(this.programmeInfo.statut = 'VALIDE') {
+        if(this.programmeInfo.statut == 'VALIDE') {
           this.inProcess = true;
 
           this.resource.invaliderSelection(this.$route.params.numProg)
@@ -887,7 +885,8 @@
               this.inProcess = false;
               this.modalVisible = false;
               this.$emit('cancel');
-              this.rechercher();
+
+              this.initProgramme();
             })
             .catch(response => {
               alert("Erreur technique lors de la validation de la selection du programme !! " + response);
@@ -916,7 +915,7 @@
 
       invaliderProgramme() {
         this.modalVisible = true;
-        this.modalMessage  = 'Etes-vous sûr de vouloir invalider ce programme?Etes-vous sûr de vouloir invalider ce programme?';
+        this.modalMessage  = 'Etes-vous sûr de vouloir invalider ce programme?';
       }
 
     },
