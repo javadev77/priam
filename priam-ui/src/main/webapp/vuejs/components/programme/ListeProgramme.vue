@@ -250,13 +250,12 @@
                   type : 'numeric-link',
                   cell : {
                     toText : function(entry) {
+
                         console.log("statut "+entry.statut);
-                        if(entry.code === 'CREE') {
-                          console.log("statut " +true);
-                          return {value: entry.numProg, isLink: true}
-                        }else if(entry.code !== 'CREE'){
-                          console.log("statut " +false);
-                        return {value : entry.numProg, isLink : false}
+                        if(entry.statut === 'CREE' || entry.statut === 'ABANDONNE' ) {
+                          return {value: entry.numProg, isLink: false}
+                        }else {
+                        return {value : entry.numProg, isLink : true}
                         }
                     }
                   }
