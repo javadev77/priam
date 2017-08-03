@@ -39,9 +39,11 @@
 
 
       props : {
-           ouvresSelectioneesAuto: 0,
-           ouvresSelectioneesManuel: 0,
-           dureeSelection:0
+
+          ouvresSelectioneesAuto: 0,
+          ouvresSelectioneesManuel: 0,
+          dureeSelection: 0,
+
       }
 
   }

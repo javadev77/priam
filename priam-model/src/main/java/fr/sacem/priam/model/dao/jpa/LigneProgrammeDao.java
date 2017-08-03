@@ -1,8 +1,8 @@
 package fr.sacem.priam.model.dao.jpa;
 
 import fr.sacem.priam.model.domain.LigneProgramme;
-import fr.sacem.priam.model.domain.LigneProgrammeView;
 import fr.sacem.priam.model.domain.dto.AutocompleteDto;
+import fr.sacem.priam.model.domain.dto.SelectionDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,20 +10,21 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
-import fr.sacem.priam.model.domain.dto.SelectionDto;
+import java.util.Set;
 
 /**
  * Created by benmerzoukah on 29/05/2017.
  */
 @Transactional(readOnly = true)
 public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
-    
+
     @Transactional
     @Modifying(clearAutomatically = true)
     @Query("DELETE FROM LigneProgramme lp WHERE lp.fichier.id = :fichierId")
     void deleteAllByFichierId(@Param("fichierId") Long fileId);
-    
+
     List<LigneProgramme> findByFichierId(Long fileId);
 
 
@@ -34,35 +35,10 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
             "AND f.programme.numProg = :numProg ")
     Page<LigneProgramme> findLigneProgrammeByProgrammeId(@Param("numProg") String numProg, Pageable pageable);
 
-/*
-    ligneProgramme.ide12, " +
-            "() " +
-            "*/
-
-    /*@Transactional
-    @Query(value="SELECT " +
-            " new fr.sacem.priam.model.domain.dto.Test(ligneProgramme.ide12 , count(ligneProgramme2.id) FROM LigneProgramme ligneProgramme2)) " +
-            "FROM LigneProgramme ligneProgramme join ligneProgramme.fichier as f "+
-            "WHERE ligneProgramme.fichier = f.id " +
-            "AND f.programme.numProg = :numProg " +
-            "AND (ligneProgramme.ide12 = :ide12 OR :ide12 IS NULL) " +
-            "AND (ligneProgramme.ajout = :ajout OR :ajout IS NULL) " +
-            "AND (ligneProgramme.selection = :selection OR :selection IS NULL) " +
-            "AND (ligneProgramme.titreOeuvre = :titre OR :titre IS NULL) " +
-            "AND (ligneProgramme.utilisateur = :utilisateur OR :utilisateur IS NULL) " +
-            "GROUP BY ligneProgramme.ide12"+
-            "")
-    Page<Test> findLigneProgrammeByCriteria(@Param("numProg") String numProg,
-                                            @Param("utilisateur") String utilisateur,
-                                            @Param("ide12") Long ide12,
-                                            @Param("titre") String titre,
-                                            @Param("ajout") String ajout,
-                                            @Param("selection") Boolean selection,
-                                            Pageable pageable);*/
 
     @Transactional
     @Query(value="SELECT new fr.sacem.priam.model.domain.dto.SelectionDto("+
-                    "ligneProgramme.ide12, " +
+            "ligneProgramme.ide12, " +
             "ligneProgramme.titreOeuvre, " +
             "ligneProgramme.roleParticipant1, " +
             "ligneProgramme.nomParticipant1, " +
@@ -82,34 +58,35 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
             "AND (ligneProgramme.titreOeuvre = :titre OR :titre IS NULL) " +
             "AND (ligneProgramme.utilisateur = :utilisateur OR :utilisateur IS NULL) " +
             "GROUP BY ligneProgramme.ide12, " +
-                "ligneProgramme.titreOeuvre, " +
-                "ligneProgramme.roleParticipant1, " +
-                "ligneProgramme.nomParticipant1, " +
-                "ligneProgramme.durDif, " +
-                "ligneProgramme.ajout, " +
-                "ligneProgramme.utilisateur, " +
-                "ligneProgramme.selection, " +
-                "ligneProgramme.id"+
+            "ligneProgramme.titreOeuvre, " +
+            "ligneProgramme.roleParticipant1, " +
+            "ligneProgramme.nomParticipant1, " +
+            "ligneProgramme.durDif, " +
+            "ligneProgramme.ajout, " +
+            "ligneProgramme.utilisateur, " +
+            "ligneProgramme.selection, " +
+            "ligneProgramme.id"+
             "")
     Page<SelectionDto> findLigneProgrammeByCriteria(@Param("numProg") String numProg,
-                                      @Param("utilisateur") String utilisateur,
-                                      @Param("ide12") Long ide12,
-                                      @Param("titre") String titre,
-                                      @Param("ajout") String ajout,
-                                      @Param("selection") Boolean selection,Pageable pageable);
+                                                    @Param("utilisateur") String utilisateur,
+                                                    @Param("ide12") Long ide12,
+                                                    @Param("titre") String titre,
+                                                    @Param("ajout") String ajout,
+                                                    @Param("selection") Boolean selection, Pageable pageable);
+
 
     @Transactional(readOnly = true)
     @Query(value =
             "SELECT " +
                     " distinct  new fr.sacem.priam.model.domain.dto.AutocompleteDto(l.ide12) " +
-            "FROM " +
+                    "FROM " +
                     "LigneProgramme l " +
-            "WHERE " +
+                    "WHERE " +
                     "l.fichier in (" +
-                        " select f.id from Fichier f where f.programme.numProg like :programme" +
+                    " select f.id from Fichier f where f.programme.numProg like :programme" +
                     ")" +
-             "AND CONCAT(l.ide12,'') like %:query% " +
-             "ORDER BY l.ide12")
+                    "AND CONCAT(l.ide12,'') like %:query% " +
+                    "ORDER BY l.ide12")
     List<AutocompleteDto> findIDE12sByProgramme(@Param("query") Long query, @Param("programme") String programme);
 
 
@@ -139,4 +116,34 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
                     ") " +
                     "ORDER BY l.utilisateur")
     List<String> findUtilisateursByProgramme(@Param("programme") String programme);
+
+    @Modifying(clearAutomatically = true)
+    @Transactional
+    @Query(value="UPDATE LigneProgramme l " +
+            "SET l.selection = :selection " +
+            "WHERE " +
+            "l.fichier in ( SELECT f.id from Fichier f where f.programme.numProg = :numProg) "+
+            "")
+    void updateSelectionByNumProgramme(@Param("numProg") String numProg, @Param("selection") boolean selection);
+
+    @Modifying(clearAutomatically = true)
+    @Transactional
+    @Query(value="UPDATE LigneProgramme l " +
+            "SET l.selection = true " +
+            "WHERE " +
+            "l.fichier in ( SELECT f.id from Fichier f where f.programme.numProg = :numProg) " +
+            "AND l.id not in :listToExclude"+
+            "")
+    void updateSelectionByNumProgrammeExcept(@Param("numProg") String numProg, @Param("listToExclude") Set<Long> listToExclude);
+
+    @Modifying(clearAutomatically = true)
+    @Transactional
+    @Query(value="UPDATE LigneProgramme l " +
+            "SET l.selection = true " +
+            "WHERE " +
+            "l.fichier in ( SELECT f.id from Fichier f where f.programme.numProg = :numProg) " +
+            "AND l.id in :idLingesProgrammes"+
+            "")
+    void updateSelectionByNumProgramme(@Param("numProg") String numProg, @Param("idLingesProgrammes") Set<Long> idLingesProgrammes);
+
 }

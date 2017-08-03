@@ -112,7 +112,7 @@
 
       <app-filtre-selection
         :filter="filter"
-        :showUtilisateur="getTypeUtilisationByCode(programmeInfo.typeUtilisation) !== undefined ? (getTypeUtilisationByCode(programmeInfo.typeUtilisation).value == 'Copie privée sonore phono' ? false : true ) : true"
+        :showUtilisateur="getTypeUtilisationByCode(programmeInfo.typeUtilisation) !== undefined ? (programmeInfo.typeUtilisation == 'CPRIVSONPH' ? false : true ) : true"
         :retablir="retablirFiltre"
         :rechercher="rechercher"
         :ajouter="ajouterOeuvre"
@@ -130,26 +130,25 @@
         </div>
         <div class="panel-collapse">
           <div class="result-panel-body panel-body">
-            {{this.ouvresSelectioneesAuto}}
             <app-informations-selection
               :ouvresSelectioneesAuto = "ouvresSelectioneesAuto"
               :ouvresSelectioneesManuel = "ouvresSelectioneesManuel"
               :dureeSelection = "dureeSelection">
             </app-informations-selection>
 
-             <div v-if = "this.programmeInfo.typeUtilisation=='CPRIVSONRD'">
-               <priam-grid
-                 v-if="priamGrid_sono.gridData_sono.content"
-                 :data="priamGrid_sono.gridData_sono"
-                 :columns="priamGrid_sono.gridColumns"
-                 noResultText="Aucun résultat."
-                 :filter-key="priamGrid_sono.searchQuery"
-                 @load-page="loadPage"
-                 @on-sort="onSort"
-                 @all-checked="onAllChecked"
-                 @entry-checked="onEntryChecked">
-               </priam-grid>
-             </div>
+            <div v-if = "this.programmeInfo.typeUtilisation=='CPRIVSONRD'">
+              <priam-grid
+                v-if="priamGrid_sono.gridData_sono.content"
+                :data="priamGrid_sono.gridData_sono"
+                :columns="priamGrid_sono.gridColumns"
+                noResultText="Aucun résultat."
+                :filter-key="priamGrid_sono.searchQuery"
+                @load-page="loadPage"
+                @on-sort="onSort"
+                @all-checked="onAllChecked"
+                @entry-checked="onEntryChecked">
+              </priam-grid>
+            </div>
             <div v-else-if = "this.programmeInfo.typeUtilisation=='CPRIVSONPH'">
               <priam-grid
                 v-if="priamGrid_phono.gridData_phono.content"
@@ -170,11 +169,30 @@
       <app-action-selection
         :statutProgramme="programmeInfo.statut"
         :listSelectionVide="ligneProgrammeSelected.length == 0"
-        :debugListSelection="ligneProgrammeSelected.length"
+        :valider="validerSelection"
+        :invalider="invaliderProgramme"
       >
       </app-action-selection>
-{{this.ligneProgrammeSelected}}ddd
     </div>
+
+
+    <modal v-if="modalVisible">
+      <label class="homer-prompt-q control-label" slot="body">
+        {{modalMessage}}
+      </label>
+      <template slot="footer">
+
+        <div v-if="modalWaring">
+          <button class="btn btn-default btn-primary pull-right no" @click="closeModal" :disabled="inProcess">Fermer</button>
+        </div>
+
+        <div v-else="">
+          <button class="btn btn-default btn-primary pull-right no" @click="noContinue" :disabled="inProcess">Non</button>
+          <button class="btn btn-default btn-primary pull-right yes" @click="yesContinue" :disabled="inProcess">Oui</button>
+        </div>
+
+      </template>
+    </modal>
   </div>
 </template>
 
@@ -197,13 +215,14 @@
 
       return {
 
-        fichiersChecked : [],
+        all : false,
+        ligneProgramme : [],
+        unselectedLigneProgramme : [],
         ligneProgrammeSelected : [],
-        ouvresSelectioneesAuto : 1,
-        ouvresSelectioneesManuel : 2,
-        dureeSelection : 3,
+        ouvresSelectioneesAuto: 1,
+        ouvresSelectioneesManuel: 2,
+        dureeSelection: 3,
         programmeInfo: {},
-        programmeData: {},
         tableauSelectionnable : true,
         isCollapsed: false,
         defaultPageable : {
@@ -231,7 +250,7 @@
             },
             {
               id: 'ide12',
-              name: "IDE12",
+              name: 'IDE12',
               sortable: true,
               type: 'long-text',
               cell: {
@@ -251,45 +270,46 @@
               type: 'long-text',
               cell : {
                 toText : function(entry) {
-                    var result = entry;
-                    if(result !=undefined)
+                  var result = entry;
+                  if(result !=undefined)
                     return result ;
-                    else
-                        return "";
+                  else
+                    return "";
                 }
-            }
+              }
             },
-             {
+            {
               id: 'titreOeuvre',
               name: "Titre",
               sortable: true,
               type: 'long-text',
-               cell : {
-                 toText : function(entry) {
-                   var result = entry;
-                   if(result !=undefined)
-                     return result ;
-                   else
-                     return "";
-                 }
-               }
+              cell : {
+                toText : function(entry) {
+                  var result = entry;
+                  if(result !=undefined)
+                    return result ;
+                  else
+                    return "";
+                }
+              }
             },
 
             {
-            id: 'nomParticipant1',
-            name: "Participant",
-            sortable: true,
-            type: 'long-text',
-            cell: {
-            toText : function(entry) {
-              var result = entry;
-             if(result !=undefined)
-               return result ;
-              else
-                return "";
+              id: 'nomParticipant1',
+              name: "Participant",
+              sortable: true,
+              type: 'long-text',
+              cell: {
+                toText : function(entry) {
+                  var result = entry;
+                  if(result !=undefined)
+                    return result ;
+                  else
+                    return "";
+                }
               }
-            }
-          },
+            },
+
             {
               id: 'durDif',
               name: "Durée",
@@ -448,12 +468,27 @@
                     return "";
                 }
               }
-              },
+            },
             {
               id: 'ajout',
               name: "Ajout",
               sortable: true,
               type: 'numeric',
+              cell: {
+                toText : function(entry) {
+                  var result = entry;
+                  if(result !=undefined)
+                    return result ;
+                  else
+                    return "";
+                }
+              }
+            },
+            {
+              id: 'selection',
+              name: "selection",
+              sortable: false,
+              type: 'long-text',
               cell: {
                 toText : function(entry) {
                   var result = entry;
@@ -483,16 +518,28 @@
                 },
 
                 isChecked: function (entry) {
+
+                  var notChecked = $this.unselectedLigneProgramme.find(elem => {
+                    return elem == entry.id;
+                  });
+
+                  if (notChecked !== undefined) {
+                    return 0;
+                  }
+
                   var result = $this.ligneProgrammeSelected.find(elem => {
                     return elem == entry.id;
                   });
+
                   if (result !== undefined) {
                     return 1;
                   }
+
                   return 0;
                 },
 
                 isAllNotChecked: function () {
+
                   if ($this.ligneProgrammeSelected.length > 1) {
                     return false;
                   }
@@ -505,13 +552,17 @@
           searchQuery : ''
         },
         filter : {
-            ide12 : null,
-            numProg : this.$route.params.numProg,
-            utilisateur : 'Tous',
-            titre : null,
-            ajout : 'Tous',
-            selection : 'Tous'
-        }
+          ide12 : null,
+          numProg : this.$route.params.numProg,
+          utilisateur : 'Tous',
+          titre : null,
+          ajout : 'Tous',
+          selection : 'Tous'
+        },
+        modalVisible : false,
+        modalMessage : '',
+        modalWaring : false,
+        inProcess : false
       }
     },
 
@@ -519,7 +570,9 @@
       console.log("router params numProg = " + this.$route.params.numProg);
       const customActions = {
         findByNumProg: {method: 'GET', url: 'app/rest/programme/numProg/{numProg}'},
-        findLigneProgrammeByProgramme : {method: 'POST', url: 'app/rest/ligneProgramme/search?page={page}&size={size}&sort={sort},{dir}'}
+        findLigneProgrammeByProgramme : {method: 'POST', url: 'app/rest/ligneProgramme/search?page={page}&size={size}&sort={sort},{dir}'},
+        validerSelection: {method: 'POST', url: 'app/rest/ligneProgramme/selection/valider'},
+        invaliderSelection: {method: 'POST', url: 'app/rest/ligneProgramme/selection/invalider'}
       }
       this.resource = this.$resource('', {}, customActions);
 
@@ -529,23 +582,35 @@
         })
         .then(data => {
           this.programmeInfo = data;
+          this.all = this.programmeInfo.statut != 'VALIDE';
+          //this.tableauSelectionnable = this.programmeInfo.statut != 'VALIDE';
         });
 
       this.rechercher();
     },
-
+    watch: {
+      ouvresSelectioneesAuto: function (){
+          this.ouvresSelectioneesAuto = $this.ligneProgrammeSelected;
+      },
+      ouvresSelectioneesManuel: function (){
+        this.ouvresSelectioneesManuel = $this.ligneProgrammeSelected;
+      },
+      dureeSelection: function (){
+        this.dureeSelection = $this.ligneProgrammeSelected;
+      },
+    },
     methods :{
       retablirFiltre() {
-          this.filter = {
-              ide12 : null,
-              numProg : this.$route.params.numProg,
-              utilisateur : 'Tous',
-              titre : null,
-              ajout : 'Tous',
-              selection : 'Tous'
-          }
+        this.filter = {
+          ide12 : null,
+          numProg : this.$route.params.numProg,
+          utilisateur : 'Tous',
+          titre : null,
+          ajout : 'Tous',
+          selection : 'Tous'
+        }
 
-          this.rechercher();
+        this.rechercher();
       },
       launchRequest(pageNum, pageSize, sort, dir) {
         this.resource.findLigneProgrammeByProgramme({page : pageNum -1 , size : pageSize,
@@ -558,35 +623,57 @@
 
               this.priamGrid_phono.gridData_phono = data;
               this.priamGrid_phono.gridData_phono.number = data.number + 1;
+              this.ligneProgramme = this.priamGrid_phono.gridData_phono.content;
 
             }else if (this.programmeInfo.typeUtilisation==='CPRIVSONRD'){
 
               this.priamGrid_sono.gridData_sono = data;
               this.priamGrid_sono.gridData_sono.number = data.number + 1;
-
+              this.ligneProgramme = this.priamGrid_sono.gridData_sono.content;
             }
+
+            this.selectAll();
           });
       },
       onSort(currentPage, pageSize, sort) {
 
-        this.launchRequest(currentPage, pageSize,
-          sort.property, sort.direction);
+        this.launchRequest(currentPage, pageSize, sort.property, sort.direction);
 
         this.defaultPageable.sort = sort.property;
         this.defaultPageable.dir = sort.direction;
+
       },
       loadPage: function(pageNum, size, sort) {
+
         let pageSize = this.defaultPageable.size;
         if(size !== undefined) {
           pageSize = size;
         }
 
-        this.launchRequest(pageNum, pageSize,
-          sort.property, sort.direction);
+        this.launchRequest(pageNum, pageSize, sort.property, sort.direction);
 
       },
+
       // TODO a definir
       ajouterOeuvre(){
+
+      },
+
+      selectAll: function () {
+
+        for (var i in this.ligneProgramme) {
+          if (this.ligneProgramme[i]) {
+            if(this.all || this.ligneProgramme[i].selection) {
+              if(this.ligneProgrammeSelected.indexOf(this.ligneProgramme[i].id) == -1 && this.unselectedLigneProgramme.indexOf(this.ligneProgramme[i].id) == -1)
+                this.ligneProgrammeSelected.push(this.ligneProgramme[i].id);
+            }
+            else {
+              if(this.ligneProgrammeSelected.indexOf(this.ligneProgramme[i].id) == -1 && this.unselectedLigneProgramme.indexOf(this.ligneProgramme[i].id) == -1)
+                this.unselectedLigneProgramme.push(this.ligneProgramme[i].id);
+            }
+
+          }
+        }
 
       },
       rechercher(){
@@ -603,75 +690,199 @@
 
               this.priamGrid_phono.gridData_phono = data;
               this.priamGrid_phono.gridData_phono.number = data.number + 1;
-              tab = this.priamGrid_sono.gridData_phono.content;
+              tab = this.priamGrid_phono.gridData_phono.content;
 
             }else if (this.programmeInfo.typeUtilisation==="CPRIVSONRD"){
 
               this.priamGrid_sono.gridData_sono = data;
               this.priamGrid_sono.gridData_sono.number = data.number + 1;
               tab = this.priamGrid_sono.gridData_sono.content;
-
-            }
-            this.fichiersChecked = [];
-
-            this.ligneProgrammeSelected = [];
-            for(var i in tab) {
-              if(tab[i] && tab[i].selection) {
-                this.ligneProgrammeSelected.push(tab[i].id);
-              }
             }
 
-            console.log("length this.fichiersChecked=" + this.fichiersChecked.length);
-            this.$store.dispatch('toutDesactiver', this.fichiersChecked.length !=0 && tab.length == this.fichiersChecked.length );
-
+            this.ligneProgramme = tab
+            this.selectAll();
           });
       },
       isTableauSelectionnable() {
         return this.tableauSelectionnable;
       },
-      onEntryChecked(isChecked, entryChecked) {
-        console.log('entryId='+entryChecked.id);
-        console.log('isChecked='+isChecked);
 
+      onEntryChecked(isChecked, entryChecked) {
         if(isChecked) {
+
           var found = this.ligneProgrammeSelected.find( elem => {
             return  elem === entryChecked.id;
           });
           if(found !== undefined && found) {
-
+            let number = this.unselectedLigneProgramme.indexOf(entryChecked.id);
+            this.unselectedLigneProgramme.splice(number, 1);
           } else {
+
+            let number = this.unselectedLigneProgramme.indexOf(entryChecked.id);
+            this.unselectedLigneProgramme.splice(number, 1);
+
             this.ligneProgrammeSelected.push(entryChecked.id);
           }
 
         } else {
-          console.log('this.ligneProgrammeSelected='+this.ligneProgrammeSelected);
+
           let number = this.ligneProgrammeSelected.indexOf(entryChecked.id);
-          console.log('indexOf='+number);
           this.ligneProgrammeSelected.splice(number, 1);
+
+          this.unselectedLigneProgramme.push(entryChecked.id);
         }
         console.log('onEntryChecked() ==> this.ligneProgrammeSelected='+this.ligneProgrammeSelected.length);
-
+        this.informationSelection.ouvresSelectioneesAuto=this.ligneProgrammeSelected.length;
       },
 
       onAllChecked(allChecked, entries) {
-        console.log("entries checked=" +  entries);
+
+        this.all = allChecked;
 
         if(allChecked) {
+
+          this.ligneProgrammeSelected = [];
+          this.unselectedLigneProgramme = [];
+
           for(var i in entries) {
-           console.log("element of entry = " + entries[i]);
-           this.ligneProgrammeSelected.push(entries[i]);
-           }
+            if(this.ligneProgrammeSelected.indexOf(entries[i]) == -1)
+              this.ligneProgrammeSelected.push(entries[i]);
+          }
         } else {
           this.ligneProgrammeSelected = [];
+
+        }
+      },
+
+      onSelectAll() {
+        this.valider({
+          all : true,
+          unselected : [],
+          selected : []
+        });
+      },
+
+      select() {
+        this.valider({
+          all : false,
+          unselected : [],
+          selected : this.ligneProgrammeSelected
+        });
+      },
+
+      unselect() {
+        this.valider({
+          all : false,
+          unselected : this.unselectedLigneProgramme,
+          selected : []
+        });
+      },
+
+      valider(selection) {
+
+        this.selection = selection;
+
+        if(this.programmeInfo.statut == 'AFFECTE' || this.programmeInfo.statut == 'EN_COURS') {
+
+          if(this.programmeInfo.typeUtilisation == 'CPRIVSONRD' && this.totalDureeSelection == 0) {
+            this.modalWaring  = true;
+            this.modalVisible = true;
+            this.modalMessage  = 'Attention la somme des durées sélectionnées sur le programme égale à 0';
+            return;
+          }
+
+          if(this.programmeInfo.typeUtilisation == 'CPRIVSONPH' && this.totalDureeSelection == 0) {
+            this.modalWaring  = true;
+            this.modalVisible = true;
+            this.modalMessage  = 'Attention la somme des quantités sélectionnées sur le programme égale à 0';
+            return;
+          }
+        }
+        this.modalWaring  = false;
+        this.modalVisible = true;
+        this.modalMessage = 'Etes-vous sûr de vouloir valider cette sélection?';
+
+      },
+
+      validerSelection () {
+
+        if(this.all) {
+          if(this.unselectedLigneProgramme.length != 0) {
+            this.unselect();
+          } else {
+            this.onSelectAll();
+          }
+        } else {
+          if(this.ligneProgrammeSelected.length == 0) {
+            window.alert("NE RIEN FAIRE");
+          } else {
+            if(this.ligneProgrammeSelected.length > 0) {
+              this.select();
+            } else {
+              this.unselect();
+            }
+          }
+        }
+      },
+
+      closeModal () {
+        this.modalVisible = false;
+      },
+
+      noContinue() {
+        this.modalVisible = false;
+        this.$emit('cancel');
+      },
+
+      yesContinue() {
+
+        if(this.programmeInfo.statut = 'VALIDE') {
+          this.inProcess = true;
+
+          this.resource.invaliderSelection(this.$route.params.numProg)
+            .then(response => {
+              return response.json();
+            })
+            .then(data => {
+              this.inProcess = false;
+              this.modalVisible = false;
+              this.$emit('cancel');
+              this.rechercher();
+            })
+            .catch(response => {
+              alert("Erreur technique lors de la validation de la selection du programme !! " + response);
+            });
+        }else {
+          this.selection.numProg = this.$route.params.numProg;
+
+          this.inProcess = true;
+
+          this.resource.validerSelection(this.selection)
+            .then(response => {
+              return response.json();
+            })
+            .then(data => {
+              this.inProcess = false;
+              this.modalVisible = false;
+              this.$emit('cancel');
+              this.$router.push({ name: 'programme'});
+            })
+            .catch(response => {
+              alert("Erreur technique lors de la validation de la selection du programme !! " + response);
+            });
         }
 
-        this.$store.dispatch('toutDesactiver', true);
-        console.log('onAllChecked() ==> this.ligneProgrammeSelected='+this.ligneProgrammeSelected.length);
       },
+
+      invaliderProgramme() {
+        this.modalVisible = true;
+        this.modalMessage  = 'Etes-vous sûr de vouloir invalider ce programme?Etes-vous sûr de vouloir invalider ce programme?';
+      }
+
     },
     computed : {
-      statut() {
-        return [];
+      totalDureeSelection () {
+        return this.dureeSelection.auto  + this.dureeSelection.manuel;
       }
     },
     components : {
