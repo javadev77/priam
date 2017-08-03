@@ -757,7 +757,6 @@
       onEntryChecked(isChecked, entryChecked) {
         if(isChecked) {
 
-          debugger;
           if(entryChecked.ajout == 'Manuel') {
             this.dureeSelection.manuel ++;
 
