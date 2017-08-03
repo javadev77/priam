@@ -571,7 +571,8 @@
         modalVisible : false,
         modalMessage : '',
         modalWaring : false,
-        inProcess : false
+        inProcess : false,
+        backupDureeSelection : {}
       }
     },
 
@@ -641,6 +642,12 @@
                       else if(data[indicateur].value =='SOMME') {
                         this.dureeSelection.duree = data[indicateur].code;
                       }
+                  }
+
+                  this.backupDureeSelection = {
+                    auto : this.dureeSelection.auto,
+                    manuel : this.dureeSelection.manuel,
+                    duree : this.dureeSelection.duree
                   }
 
                 });
@@ -749,6 +756,20 @@
       onEntryChecked(isChecked, entryChecked) {
         if(isChecked) {
 
+          debugger;
+          if(entryChecked.ajout == 'Manuel') {
+            this.dureeSelection.manuel ++;
+
+          } else {
+            this.dureeSelection.auto++;
+          }
+
+          if(this.programmeInfo.typeUtilisation==="CPRIVSONPH"){
+            this.dureeSelection.duree += entryChecked.quantite;
+          }else if (this.programmeInfo.typeUtilisation==="CPRIVSONRD"){
+            this.dureeSelection.duree += entryChecked.durDif;
+          }
+
           var found = this.ligneProgrammeSelected.find( elem => {
             return  elem === entryChecked.id;
           });
@@ -764,6 +785,18 @@
           }
 
         } else {
+
+          if(entryChecked.ajout == 'Manuel') {
+            this.dureeSelection.manuel--;
+          } else {
+            this.dureeSelection.auto--;
+          }
+
+          if(this.programmeInfo.typeUtilisation==="CPRIVSONPH"){
+            this.dureeSelection.duree -= entryChecked.quantite;
+          }else if (this.programmeInfo.typeUtilisation==="CPRIVSONRD"){
+            this.dureeSelection.duree -= entryChecked.durDif;
+          }
 
           let number = this.ligneProgrammeSelected.indexOf(entryChecked.id);
           this.ligneProgrammeSelected.splice(number, 1);
@@ -786,8 +819,21 @@
             if(this.ligneProgrammeSelected.indexOf(entries[i]) == -1)
               this.ligneProgrammeSelected.push(entries[i]);
           }
+
+          this.dureeSelection = {
+            auto : this.backupDureeSelection.auto,
+            manuel : this.backupDureeSelection.manuel,
+            duree : this.backupDureeSelection.duree
+          }
+
         } else {
           this.ligneProgrammeSelected = [];
+
+          this.dureeSelection = {
+            auto : 0,
+            manuel : 0,
+            duree : 0
+          }
 
         }
       },

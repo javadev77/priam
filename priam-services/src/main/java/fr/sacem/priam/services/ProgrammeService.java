@@ -197,21 +197,21 @@ public class ProgrammeService {
 
 		Programme programme = programmeDao.findOne(numProg);
 
-		if(StatutProgramme.EN_COURS.equals(StatutProgramme.valueOf(statut)) || StatutProgramme.CREE.equals(StatutProgramme.valueOf(statut))){
-			durDif.addAll(programmeDao.compterToutLesOeuvre(numProg));
-
-			if("CPRIVSONPH".equals(programme.getTypeUtilisation().getCode())) {
-				durDif.add(new KeyValueDto(programmeDao.sommeQuantiteDeToutLesOeuvres(numProg), "SOMME"));
-			} else if("CPRIVSONRD".equals(programme.getTypeUtilisation().getCode())) {
-				durDif.add(new KeyValueDto(programmeDao.sommeDureeDeToutLesOeuvres(numProg), "SOMME"));
-			}
-		}else {
+		if(StatutProgramme.VALIDE.equals(StatutProgramme.valueOf(statut)) || StatutProgramme.MIS_EN_REPART.equals(StatutProgramme.valueOf(statut)) || StatutProgramme.REPARTI.equals(StatutProgramme.valueOf(statut))){
 			durDif.addAll(programmeDao.compterOuvreSelectionnee(numProg));
 
 			if("CPRIVSONPH".equals(programme.getTypeUtilisation().getCode())) {
 				durDif.add(new KeyValueDto(programmeDao.sommeQuantiteDesOeuvresSelectionnees(numProg), "SOMME"));
 			} else if("CPRIVSONRD".equals(programme.getTypeUtilisation().getCode())) {
 				durDif.add(new KeyValueDto(programmeDao.sommeDureeDesOeuvresSelectionnees(numProg), "SOMME"));
+			}
+		}else {
+			durDif.addAll(programmeDao.compterToutLesOeuvre(numProg));
+
+			if("CPRIVSONPH".equals(programme.getTypeUtilisation().getCode())) {
+				durDif.add(new KeyValueDto(programmeDao.sommeQuantiteDeToutLesOeuvres(numProg), "SOMME"));
+			} else if("CPRIVSONRD".equals(programme.getTypeUtilisation().getCode())) {
+				durDif.add(new KeyValueDto(programmeDao.sommeDureeDeToutLesOeuvres(numProg), "SOMME"));
 			}
 	    }
 
