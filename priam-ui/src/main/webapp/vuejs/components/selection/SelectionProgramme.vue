@@ -132,6 +132,7 @@
           <div class="result-panel-body panel-body">
             <app-informations-selection
               :dureeSelection="dureeSelection"
+              :typeUtilisation="programmeInfo.typeUtilisation"
             >
             </app-informations-selection>
 

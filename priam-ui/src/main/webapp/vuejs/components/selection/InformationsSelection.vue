@@ -20,7 +20,8 @@
 
 
         <div class="col-sm-3">
-          <span class="pull-left blueText">Durée sélection</span>
+          <span class="pull-left blueText" v-if="typeUtilisation == 'CPRIVSONRD'">Durée sélection</span>
+          <span class="pull-left blueText" v-else-if="typeUtilisation == 'CPRIVSONPH'">Quantité sélection</span>
         </div>
         <div class="col-sm-3">
           {{ dureeSelection.duree }}
@@ -39,7 +40,8 @@
 
 
       props : {
-        dureeSelection: Object
+        dureeSelection: Object,
+        typeUtilisation : String
       }
 
   }
