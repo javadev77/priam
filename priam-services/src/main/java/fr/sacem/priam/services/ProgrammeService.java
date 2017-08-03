@@ -12,6 +12,7 @@ import fr.sacem.priam.model.domain.StatutProgramme;
 
 
 import fr.sacem.priam.model.domain.criteria.ProgrammeCriteria;
+import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.model.util.MapperConfiguration;
 import org.apache.commons.lang.StringUtils;
@@ -177,7 +178,8 @@ public class ProgrammeService {
 	public Programme validerProgramme(ProgrammeDto programmeDto) {
 		Programme programme = programmeDao.findOne(programmeDto.getNumProg());
 		programme.setStatut(StatutProgramme.VALIDE);
-		/*programme.setU*/
+		programme.setUserValidation(GUEST);
+		programme.setDateValidation(new Date());
 
 		return programmeDao.saveAndFlush(programme);
 	}
@@ -185,15 +187,34 @@ public class ProgrammeService {
 	public Programme invaliderProgramme(ProgrammeDto programmeDto) {
 		Programme programme = programmeDao.findOne(programmeDto.getNumProg());
 		programme.setStatut(StatutProgramme.EN_COURS);
+		programme.setUserValidation(null);
+		programme.setDateValidation(null);
 		return programmeDao.saveAndFlush(programme);
 	}
-	public Long getDurDifProgramme(String numProg,String statut){
-		Long durDif = 0l;
-		if(statut==StatutProgramme.EN_COURS.toString() || statut==StatutProgramme.CREE.toString()){
-			durDif= programmeDao.findDureeByProgrammeEnCours(numProg);
+
+	public List<KeyValueDto> getDurDifProgramme(String numProg, String statut){
+		List<KeyValueDto> durDif = new ArrayList<>();
+
+		Programme programme = programmeDao.findOne(numProg);
+
+		if(StatutProgramme.EN_COURS.equals(StatutProgramme.valueOf(statut)) || StatutProgramme.CREE.equals(StatutProgramme.valueOf(statut))){
+			durDif.addAll(programmeDao.compterToutLesOeuvre(numProg));
+
+			if("CPRIVSONPH".equals(programme.getTypeUtilisation().getCode())) {
+				durDif.add(new KeyValueDto(programmeDao.sommeQuantiteDeToutLesOeuvres(numProg), "SOMME"));
+			} else if("CPRIVSONRD".equals(programme.getTypeUtilisation().getCode())) {
+				durDif.add(new KeyValueDto(programmeDao.sommeDureeDeToutLesOeuvres(numProg), "SOMME"));
+			}
 		}else {
-			durDif= programmeDao.findDureeByProgrammeValide(numProg);
+			durDif.addAll(programmeDao.compterOuvreSelectionnee(numProg));
+
+			if("CPRIVSONPH".equals(programme.getTypeUtilisation().getCode())) {
+				durDif.add(new KeyValueDto(programmeDao.sommeQuantiteDesOeuvresSelectionnees(numProg), "SOMME"));
+			} else if("CPRIVSONRD".equals(programme.getTypeUtilisation().getCode())) {
+				durDif.add(new KeyValueDto(programmeDao.sommeDureeDesOeuvresSelectionnees(numProg), "SOMME"));
+			}
 	    }
-    return durDif;
+
+    	return durDif;
 	}
 }

@@ -2,7 +2,7 @@
 
 
 
-  <div class="row formula-buttons">
+  <div class="row formula-buttons" v-if="statutProgramme != 'MIS_EN_REPART' && statutProgramme != 'REPARTI'">
 
     <div v-if="statutProgramme == 'AFFECTE'">
       <button class="btn btn-default btn-primary pull-right width-140" type="button" @click.prevent="valider()" :disabled="listSelectionVide">Valider Sélection</button>

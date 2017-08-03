@@ -8,9 +8,9 @@ public class SelectionDto {
   private String titreOeuvre;
   private String roleParticipant1;
   private String nomParticipant1;
-  private Long duree;
+  private Long durDif;
   private String ajout;
-  private String quantite;
+  private Long quantite;
   private String utilisateur;
   private boolean selection;
   private Long id;
@@ -54,12 +54,12 @@ public class SelectionDto {
     this.nomParticipant1 = nomParticipant1;
   }
 
-  public Long getDuree() {
-    return duree;
+  public Long getDurDif() {
+    return durDif;
   }
 
-  public void setDuree(Long duree) {
-    this.duree = duree;
+  public void setDurDif(Long duree) {
+    this.durDif = duree;
   }
 
   public String getAjout() {
@@ -70,11 +70,11 @@ public class SelectionDto {
     this.ajout = ajout;
   }
 
-  public String getQuantite() {
+  public Long getQuantite() {
     return quantite;
   }
 
-  public void setQuantite(String quantite) {
+  public void setQuantite(Long quantite) {
     this.quantite = quantite;
   }
 
@@ -91,12 +91,12 @@ public class SelectionDto {
   public SelectionDto() {
   }
 
-  public SelectionDto(Long ide12, String titreOeuvre, String roleParticipant1, String nomParticipant1, Long duree, String ajout, String quantite, String utilisateur, boolean selection, Long id) {
+  public SelectionDto(Long ide12, String titreOeuvre, String roleParticipant1, String nomParticipant1, Long duree, String ajout, Long quantite, String utilisateur, boolean selection, Long id) {
     this.ide12 = ide12;
     this.titreOeuvre = titreOeuvre;
     this.roleParticipant1 = roleParticipant1;
     this.nomParticipant1 = nomParticipant1;
-    this.duree = duree;
+    this.durDif = duree;
     this.ajout = ajout;
     this.quantite = quantite;
     this.utilisateur = utilisateur;

@@ -1,7 +1,7 @@
 package fr.sacem.priam.model.dao.jpa;
 
 import fr.sacem.priam.model.domain.LigneProgramme;
-import fr.sacem.priam.model.domain.dto.AutocompleteDto;
+import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.SelectionDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
-import fr.sacem.priam.model.domain.StatutProgramme;
+
 import java.util.List;
 import java.util.Set;
 
@@ -38,7 +38,7 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
 
     @Transactional
     @Query(value="SELECT new fr.sacem.priam.model.domain.dto.SelectionDto("+
-            "ligneProgramme.ide12, " +
+                    "ligneProgramme.ide12, " +
             "ligneProgramme.titreOeuvre, " +
             "ligneProgramme.roleParticipant1, " +
             "ligneProgramme.nomParticipant1, " +
@@ -47,7 +47,7 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
             "ligneProgrammeView.quantite, " +
             "ligneProgramme.utilisateur, " +
             "ligneProgramme.selection," +
-            "ligneProgramme.id) " +
+            "ligneProgramme.id ) " +
             "FROM LigneProgramme ligneProgramme join ligneProgramme.fichier as f , LigneProgrammeView ligneProgrammeView "+
             "WHERE ligneProgramme.fichier = f.id " +
             "AND ligneProgramme.ide12 = ligneProgrammeView.ide12 " +
@@ -58,27 +58,26 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
             "AND (ligneProgramme.titreOeuvre = :titre OR :titre IS NULL) " +
             "AND (ligneProgramme.utilisateur = :utilisateur OR :utilisateur IS NULL) " +
             "GROUP BY ligneProgramme.ide12, " +
-            "ligneProgramme.titreOeuvre, " +
-            "ligneProgramme.roleParticipant1, " +
-            "ligneProgramme.nomParticipant1, " +
-            "ligneProgramme.durDif, " +
-            "ligneProgramme.ajout, " +
-            "ligneProgramme.utilisateur, " +
-            "ligneProgramme.selection, " +
-            "ligneProgramme.id"+
+                "ligneProgramme.titreOeuvre, " +
+                "ligneProgramme.roleParticipant1, " +
+                "ligneProgramme.nomParticipant1, " +
+                "ligneProgramme.durDif, " +
+                "ligneProgramme.ajout, " +
+                "ligneProgramme.utilisateur, " +
+                "ligneProgramme.selection, " +
+                "ligneProgramme.id"+
             "")
     Page<SelectionDto> findLigneProgrammeByCriteria(@Param("numProg") String numProg,
-                                                    @Param("utilisateur") String utilisateur,
-                                                    @Param("ide12") Long ide12,
-                                                    @Param("titre") String titre,
-                                                    @Param("ajout") String ajout,
-                                                    @Param("selection") Boolean selection, Pageable pageable);
-
+                                      @Param("utilisateur") String utilisateur,
+                                      @Param("ide12") Long ide12,
+                                      @Param("titre") String titre,
+                                      @Param("ajout") String ajout,
+                                      @Param("selection") Boolean selection,Pageable pageable);
 
     @Transactional(readOnly = true)
     @Query(value =
             "SELECT " +
-                    " distinct  new fr.sacem.priam.model.domain.dto.AutocompleteDto(l.ide12) " +
+                    " distinct  new fr.sacem.priam.model.domain.dto.KeyValueDto(l.ide12) " +
                     "FROM " +
                     "LigneProgramme l " +
                     "WHERE " +
@@ -87,13 +86,13 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
                     ")" +
                     "AND CONCAT(l.ide12,'') like %:query% " +
                     "ORDER BY l.ide12")
-    List<AutocompleteDto> findIDE12sByProgramme(@Param("query") Long query, @Param("programme") String programme);
+    List<KeyValueDto> findIDE12sByProgramme(@Param("query") Long query, @Param("programme") String programme);
 
 
     @Transactional(readOnly = true)
     @Query(value =
             "SELECT " +
-                    " distinct new fr.sacem.priam.model.domain.dto.AutocompleteDto(l.titreOeuvre) " +
+                    " distinct new fr.sacem.priam.model.domain.dto.KeyValueDto(l.titreOeuvre) " +
                     "FROM " +
                     "LigneProgramme l " +
                     "WHERE " +
@@ -102,7 +101,7 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
                     ")" +
                     "AND UPPER(l.titreOeuvre) like %:titre% " +
                     "ORDER BY l.titreOeuvre")
-    List<AutocompleteDto> findTitresByProgramme(@Param("titre") String titre, @Param("programme") String programme);
+    List<KeyValueDto> findTitresByProgramme(@Param("titre") String titre, @Param("programme") String programme);
 
     @Transactional(readOnly = true)
     @Query(value =

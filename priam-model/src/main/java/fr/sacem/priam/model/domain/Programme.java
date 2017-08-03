@@ -25,7 +25,9 @@ public class Programme implements Serializable {
 	private String usermaj;
 	private String useraffect;
 	private Date dataffect;
-	
+
+	private String userValidation;
+	private Date dateValidation;
 	
 	public Programme() {
 	}
@@ -114,6 +116,13 @@ public class Programme implements Serializable {
 	public Date getDataffect() {
 		return dataffect;
 	}
+
+	@Column(name = "USER_VALIDATION")
+	public String getUserValidation() { return userValidation; }
+
+	@Column(name = "DATE_VALIDATION")
+	@Temporal(TemporalType.TIMESTAMP)
+	public Date getDateValidation() { return dateValidation; }
 	
 	public void setUsercre(String usercre) {
 		this.usercre = usercre;
@@ -174,4 +183,8 @@ public class Programme implements Serializable {
 	public void setDataffect(Date dataffect) {
 		this.dataffect = dataffect;
 	}
+
+    public void setUserValidation(String userValidation) { this.userValidation = userValidation; }
+
+	public void setDateValidation(Date dateValidation) { this.dateValidation = dateValidation; }
 }

@@ -7,14 +7,14 @@
           <span class="pull-left blueText">Oeuvres sélectionées - Auto</span>
         </div>
         <div class="col-sm-3">
-          {{ this.ouvresSelectioneesAuto }}
+          {{ dureeSelection.auto }}
         </div>
 
         <div class="col-sm-3">
           <span class="pull-left blueText">Oeuvres sélectionées - Manuel</span>
         </div>
         <div class="col-sm-3">
-          {{ this.ouvresSelectioneesManuel }}
+          {{ dureeSelection.manuel }}
         </div>
 
 
@@ -23,7 +23,7 @@
           <span class="pull-left blueText">Durée sélection</span>
         </div>
         <div class="col-sm-3">
-          {{ this.dureeSelection }}
+          {{ dureeSelection.duree }}
         </div>
 
 
@@ -39,11 +39,7 @@
 
 
       props : {
-
-          ouvresSelectioneesAuto: 0,
-          ouvresSelectioneesManuel: 0,
-          dureeSelection: 0,
-
+        dureeSelection: Object
       }
 
   }
