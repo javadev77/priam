@@ -187,4 +187,13 @@ public class ProgrammeService {
 		programme.setStatut(StatutProgramme.EN_COURS);
 		return programmeDao.saveAndFlush(programme);
 	}
+	public Long getDurDifProgramme(String numProg,String statut){
+		Long durDif = 0l;
+		if(statut==StatutProgramme.EN_COURS.toString() || statut==StatutProgramme.CREE.toString()){
+			durDif= programmeDao.findDureeByProgrammeEnCours(numProg);
+		}else {
+			durDif= programmeDao.findDureeByProgrammeValide(numProg);
+	    }
+    return durDif;
+	}
 }

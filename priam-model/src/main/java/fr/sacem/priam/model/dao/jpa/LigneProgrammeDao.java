@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
-
+import fr.sacem.priam.model.domain.StatutProgramme;
 import java.util.List;
 import java.util.Set;
 
@@ -47,7 +47,7 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
             "ligneProgrammeView.quantite, " +
             "ligneProgramme.utilisateur, " +
             "ligneProgramme.selection," +
-            "ligneProgramme.id ) " +
+            "ligneProgramme.id) " +
             "FROM LigneProgramme ligneProgramme join ligneProgramme.fichier as f , LigneProgrammeView ligneProgrammeView "+
             "WHERE ligneProgramme.fichier = f.id " +
             "AND ligneProgramme.ide12 = ligneProgrammeView.ide12 " +

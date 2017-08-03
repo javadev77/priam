@@ -3,10 +3,7 @@ package fr.sacem.priam.ui.rest;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
-import fr.sacem.priam.model.domain.Fichier;
-import fr.sacem.priam.model.domain.Programme;
-import fr.sacem.priam.model.domain.StatutProgramme;
-import fr.sacem.priam.model.domain.TypeRepart;
+import fr.sacem.priam.model.domain.*;
 import fr.sacem.priam.model.domain.criteria.ProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.AffectationDto;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
@@ -177,5 +174,10 @@ public class ProgrammeResource {
 
         return programmeDto;
     }
-
+  @RequestMapping(value = "programme/durdif",
+    method = RequestMethod.GET,
+    produces = MediaType.APPLICATION_JSON_VALUE)
+  public Long getDurDifProgramme(@RequestBody String numProg,@RequestBody String statut) {
+    return programmeService.getDurDifProgramme(numProg,statut);
+  }
 }
