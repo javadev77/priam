@@ -354,6 +354,46 @@
                     return "";
                 }
               }
+            },
+            {
+              id: 'action',
+              name: "Actions",
+              sortable: false,
+              type: 'checkbox',
+              cell: {
+                toText: function (entry) {
+                  return entry.id;
+                },
+
+                isDisabled: function () {
+
+                  if (!$this.isTableauSelectionnable()) {
+                    return true;
+                  }
+                  return false;
+                },
+
+                isChecked: function (entry) {
+
+                  var notChecked = $this.unselectedLigneProgramme.find(elem => {
+                    return elem == entry.id;
+                  });
+
+                  if (notChecked !== undefined) {
+                    return 0;
+                  }
+
+                  var result = $this.ligneProgrammeSelected.find(elem => {
+                    return elem == entry.id;
+                  });
+
+                  if (result !== undefined) {
+                    return 1;
+                  }
+
+                  return 0;
+                }
+              }
             }
 
           ],
