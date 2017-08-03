@@ -250,11 +250,17 @@
                   type : 'numeric-link',
                   cell : {
                     toText : function(entry) {
-                        return {value : entry.numProg, isLink : true};
+
+                        console.log("statut "+entry.statut);
+                        if(entry.statut === 'CREE' || entry.statut === 'ABANDONNE' ) {
+                          return {value: entry.numProg, isLink: false}
+                        }else {
+                        return {value : entry.numProg, isLink : true}
+                        }
                     }
                   }
 
-                },
+                  },
                 {
                   id :  'nom',
                   name :   'Nom',
@@ -322,12 +328,11 @@
                   type : 'numeric-link',
                   cell : {
                     toText : function(entry) {
-                      console.log("entry"  + entry.statut)
                       var result  = getters.statutProgramme.find(function (element) {
                         return element.code === entry.statut;
                       });
                       if(result.code === 'ABANDONNE') {
-                          return {value : entry.fichiers, isLink : false}
+                        return {value : entry.fichiers, isLink : false}
                       } else {
                         return {value : entry.fichiers, isLink : true}
                       }
