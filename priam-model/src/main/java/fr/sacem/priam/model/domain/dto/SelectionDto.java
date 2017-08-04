@@ -86,7 +86,7 @@ public class SelectionDto {
   public SelectionDto() {
   }
 
-  public SelectionDto(Long ide12, String titreOeuvre, String roleParticipant1, String nomParticipant1,String ajout,Long durDif, Long quantite, String utilisateur, boolean selection) {
+  public SelectionDto(Long ide12, String titreOeuvre, String roleParticipant1, String nomParticipant1,String ajout,Long durDif, Long quantite, boolean selection, String utilisateur) {
     this.ide12 = ide12;
     this.titreOeuvre = titreOeuvre;
     this.roleParticipant1 = roleParticipant1;
