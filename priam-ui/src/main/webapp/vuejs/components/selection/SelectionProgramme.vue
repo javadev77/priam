@@ -112,7 +112,6 @@
 
       <app-filtre-selection
         :filter="filter"
-        :showUtilisateur="true"
         :retablir="retablirFiltre"
         :rechercher="rechercher"
         :ajouter="ajouterOeuvre"
@@ -350,7 +349,7 @@
               type: 'checkbox',
               cell: {
                 toText: function (entry) {
-                  return entry.id;
+                  return entry.ide12;
                 },
 
                 isDisabled: function () {
@@ -364,7 +363,7 @@
                 isChecked: function (entry) {
 
                   var notChecked = $this.unselectedLigneProgramme.find(elem => {
-                    return elem == entry.id;
+                    return elem == entry.ide12;
                   });
 
                   if (notChecked !== undefined) {
@@ -372,7 +371,7 @@
                   }
 
                   var result = $this.ligneProgrammeSelected.find(elem => {
-                    return elem == entry.id;
+                    return elem == entry.ide12;
                   });
 
                   if (result !== undefined) {
@@ -486,35 +485,7 @@
               id: 'ajout',
               name: "Ajout",
               sortable: true,
-              type: 'clickable-icons',
-                  /*
-                cellTemplate: function (cellValue) {
-                  var tempalteRepartABlanc = '<img src="static/images/iconescontextes/transfertgestionnaire.gif" width="20px"/>';
-                  var tempalteMiseEnRepart = '<span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>';
-                  var statusCode = cellValue.statut;
-                  var template = [];
-                  if(statusCode !== undefined && 'VALIDE' === statusCode) {
-                    template.push({event : 'nop', template : tempalteMiseEnRepart});
-                    template.push({event : 'nop', template : tempalteRepartABlanc});
-                    return template;
-                  }
-                  return '';
-                }
-              }
-*/
-              /*
-               cell : {
-               cellTemplate: function (cellValue) {
-               var tempalte = '<span class="glyphicon glyphicon-trash" aria-hidden="true" ></span>';
-               var statusCode = cellValue.statut;
-               let element = $this.findStatusByCode(statusCode);
-               if(element !== undefined && ('CHARGEMENT_KO' === element.code || 'CHARGEMENT_OK' === element.code)) {
-               return tempalte;
-               }
-               return '';
-               }
-               }
-             */
+              type: 'numeric',
               cell: {
                 toText : function(entry) {
                   var result = entry;
@@ -524,7 +495,6 @@
                     return "";
                 }
               }
-
             },
             {
               id: 'action',
@@ -533,7 +503,7 @@
               type: 'checkbox',
               cell: {
                 toText: function (entry) {
-                  return entry.id;
+                  return entry.ide12;
                 },
 
                 isDisabled: function () {
@@ -547,7 +517,7 @@
                 isChecked: function (entry) {
 
                   var notChecked = $this.unselectedLigneProgramme.find(elem => {
-                    return elem == entry.id;
+                    return elem == entry.ide12;
                   });
 
                   if (notChecked !== undefined) {
@@ -555,7 +525,7 @@
                   }
 
                   var result = $this.ligneProgrammeSelected.find(elem => {
-                    return elem == entry.id;
+                    return elem == entry.ide12;
                   });
 
                   if (result !== undefined) {
@@ -654,42 +624,42 @@
           .
           then(data => {
 
-              this.programmeInfo = data;
-              this.all = this.programmeInfo.statut != 'VALIDE';
-              this.tableauSelectionnable = (
-                this.programmeInfo.statut != 'VALIDE'
-                && this.programmeInfo.statut != 'MIS_EN_REPART'
-                && this.programmeInfo.statut != 'REPARTI'
-              );
+            this.programmeInfo = data;
+            this.all = this.programmeInfo.statut != 'VALIDE';
+            this.tableauSelectionnable = (
+              this.programmeInfo.statut != 'VALIDE'
+              && this.programmeInfo.statut != 'MIS_EN_REPART'
+              && this.programmeInfo.statut != 'REPARTI'
+            );
 
-              this.tableauSelectionnable = false;
+            this.tableauSelectionnable = false;
 
-              this.resource.dureeProgramme({numProg: this.$route.params.numProg, statut: this.programmeInfo.statut})
-                .then(response => {
-                  return response.json();
-                })
-                .
-                then(data => {
+            this.resource.dureeProgramme({numProg: this.$route.params.numProg, statut: this.programmeInfo.statut})
+              .then(response => {
+                return response.json();
+              })
+              .
+              then(data => {
 
-                  for (var indicateur in data) {
-                      if(data[indicateur].value =='Automatique') {
-                          this.dureeSelection.auto = data[indicateur].code;
-                      }
-                      else if(data[indicateur].value =='Manuel') {
-                          this.dureeSelection.manuel = data[indicateur].code;
-                      }
-                      else if(data[indicateur].value =='SOMME') {
-                        this.dureeSelection.duree = data[indicateur].code;
-                      }
+                for (var indicateur in data) {
+                  if(data[indicateur].value =='Automatique') {
+                    this.dureeSelection.auto = data[indicateur].code;
                   }
-
-                  this.backupDureeSelection = {
-                    auto : this.dureeSelection.auto,
-                    manuel : this.dureeSelection.manuel,
-                    duree : this.dureeSelection.duree
+                  else if(data[indicateur].value =='Manuel') {
+                    this.dureeSelection.manuel = data[indicateur].code;
                   }
+                  else if(data[indicateur].value =='SOMME') {
+                    this.dureeSelection.duree = data[indicateur].code;
+                  }
+                }
 
-                });
+                this.backupDureeSelection = {
+                  auto : this.dureeSelection.auto,
+                  manuel : this.dureeSelection.manuel,
+                  duree : this.dureeSelection.duree
+                }
+
+              });
 
 
             if(this.programmeInfo.statut == 'EN_COURS' || this.programmeInfo.statut == 'VALIDE') {
@@ -757,14 +727,14 @@
 
         for (var i in this.ligneProgramme) {
 
-            if(this.all || this.ligneProgramme[i].selection) {
-              if(this.ligneProgrammeSelected.indexOf(this.ligneProgramme[i].id) == -1 && this.unselectedLigneProgramme.indexOf(this.ligneProgramme[i].id) == -1)
-                this.ligneProgrammeSelected.push(this.ligneProgramme[i].id);
-            }
-            else {
-              if(this.ligneProgrammeSelected.indexOf(this.ligneProgramme[i].id) == -1 && this.unselectedLigneProgramme.indexOf(this.ligneProgramme[i].id) == -1)
-                this.unselectedLigneProgramme.push(this.ligneProgramme[i].id);
-            }
+          if(this.all || this.ligneProgramme[i].selection) {
+            if(this.ligneProgrammeSelected.indexOf(this.ligneProgramme[i].ide12) == -1 && this.unselectedLigneProgramme.indexOf(this.ligneProgramme[i].ide12) == -1)
+              this.ligneProgrammeSelected.push(this.ligneProgramme[i].ide12);
+          }
+          else {
+            if(this.ligneProgrammeSelected.indexOf(this.ligneProgramme[i].ide12) == -1 && this.unselectedLigneProgramme.indexOf(this.ligneProgramme[i].ide12) == -1)
+              this.unselectedLigneProgramme.push(this.ligneProgramme[i].ide12);
+          }
 
         }
 
@@ -819,17 +789,17 @@
           }
 
           var found = this.ligneProgrammeSelected.find( elem => {
-            return  elem === entryChecked.id;
+            return  elem === entryChecked.ide12;
           });
           if(found !== undefined && found) {
-            let number = this.unselectedLigneProgramme.indexOf(entryChecked.id);
+            let number = this.unselectedLigneProgramme.indexOf(entryChecked.ide12);
             this.unselectedLigneProgramme.splice(number, 1);
           } else {
 
-            let number = this.unselectedLigneProgramme.indexOf(entryChecked.id);
+            let number = this.unselectedLigneProgramme.indexOf(entryChecked.ide12);
             this.unselectedLigneProgramme.splice(number, 1);
 
-            this.ligneProgrammeSelected.push(entryChecked.id);
+            this.ligneProgrammeSelected.push(entryChecked.ide12);
           }
 
         } else {
@@ -846,10 +816,10 @@
             this.dureeSelection.duree -= entryChecked.durDif;
           }
 
-          let number = this.ligneProgrammeSelected.indexOf(entryChecked.id);
+          let number = this.ligneProgrammeSelected.indexOf(entryChecked.ide12);
           this.ligneProgrammeSelected.splice(number, 1);
 
-          this.unselectedLigneProgramme.push(entryChecked.id);
+          this.unselectedLigneProgramme.push(entryChecked.ide12);
         }
         console.log('onEntryChecked() ==> this.ligneProgrammeSelected='+this.ligneProgrammeSelected.length);
       },
@@ -916,14 +886,14 @@
 
         if(this.programmeInfo.statut == 'AFFECTE' || this.programmeInfo.statut == 'EN_COURS') {
 
-          if(this.programmeInfo.typeUtilisation == 'CPRIVSONRD' && this.totalDureeSelection == 0) {
+          if(this.programmeInfo.typeUtilisation == 'CPRIVSONRD' && this.dureeSelection.duree == 0) {
             this.modalWaring  = true;
             this.modalVisible = true;
             this.modalMessage  = 'Attention la somme des durées sélectionnées sur le programme égale à 0';
             return;
           }
 
-          if(this.programmeInfo.typeUtilisation == 'CPRIVSONPH' && this.totalDureeSelection == 0) {
+          if(this.programmeInfo.typeUtilisation == 'CPRIVSONPH' && this.dureeSelection.duree == 0) {
             this.modalWaring  = true;
             this.modalVisible = true;
             this.modalMessage  = 'Attention la somme des quantités sélectionnées sur le programme égale à 0';
@@ -970,7 +940,7 @@
 
       yesContinue() {
 
-          debugger;
+        debugger;
         if(this.annulerAction != undefined &&  this.annulerAction == true) {
 
 

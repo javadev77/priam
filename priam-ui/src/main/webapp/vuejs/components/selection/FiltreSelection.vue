@@ -18,10 +18,10 @@
             <div class="row">
 
 
-              <div class="col-sm-2" v-if="showUtilisateur">
+              <div class="col-sm-2">
                   <label class="control-label pull-right blueText">Utilisateur</label>
               </div>
-              <div class="col-sm-3" v-if="showUtilisateur">
+              <div class="col-sm-3">
                 <select2 class="form-control" :options="utilisateurOptions" v-model="filter.utilisateur" :searchable="true">
                 </select2>
               </div>
@@ -80,7 +80,7 @@
     <div class="row formula-buttons">
       <button class="btn btn-default btn-primary pull-right" type="button" @click.prevent="resetForm()">Rétablir</button>
       <button class="btn btn-default btn-primary pull-right" type="button" @click.prevent="rechercher()">Rechercher</button>
-      <button class="btn btn-default btn-primary pull-left disabled"  type="button" @click.prevent="ajouterOeuvre()" style="width: 120px;" :disabled="edition">Ajouter Oeuvre</button>
+      <button class="btn btn-default btn-primary pull-left"  type="button" @click.prevent="ajouterOeuvre()" style="width: 120px;" :disabled="edition">Ajouter Oeuvre</button>
 
     </div>
 
@@ -165,7 +165,6 @@
       filter : Object,
       retablir : Function,
       rechercher : Function,
-      showUtilisateur : Boolean,
       edition : Boolean
     },
 

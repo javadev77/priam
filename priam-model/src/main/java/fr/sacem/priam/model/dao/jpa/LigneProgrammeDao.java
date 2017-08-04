@@ -132,7 +132,7 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
             "SET l.selection = true " +
             "WHERE " +
             "l.fichier in ( SELECT f.id from Fichier f where f.programme.numProg = :numProg) " +
-            "AND l.id not in :listToExclude"+
+            "AND l.ide12 not in :listToExclude"+
             "")
     void updateSelectionByNumProgrammeExcept(@Param("numProg") String numProg, @Param("listToExclude") Set<Long> listToExclude);
 
@@ -142,7 +142,7 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
             "SET l.selection = true " +
             "WHERE " +
             "l.fichier in ( SELECT f.id from Fichier f where f.programme.numProg = :numProg) " +
-            "AND l.id in :idLingesProgrammes"+
+            "AND l.ide12 in :idLingesProgrammes"+
             "")
     void updateSelectionByNumProgramme(@Param("numProg") String numProg, @Param("idLingesProgrammes") Set<Long> idLingesProgrammes);
 

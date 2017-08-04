@@ -24,6 +24,6 @@ public class App {
         ligneProgrammeServiceImpl.setFichierDao(fichierDao);
         ligneProgrammeServiceImpl.setFamilleDao(familleDao);
         ligneProgrammeServiceImpl.setTypeUtilisationDao(typeUtilisationDao);
-        ligneProgrammeServiceImpl.genererLigneProgramme("mon ficiher test MFT 03",200l);
+        ligneProgrammeServiceImpl.genererLigneProgramme("mon ficiher test MFT 99",200l);
     }
 }
