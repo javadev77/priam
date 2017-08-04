@@ -474,8 +474,9 @@
               cell: {
                 toText : function(entry) {
                   var result = entry;
+
                   if(result !=undefined)
-                    return result ;
+                    return this.dureeFormattee(result);
                   else
                     return "";
                 }
@@ -575,6 +576,14 @@
     },
 
     methods :{
+      dureeFormattee(duree) {
+
+        let hours = Math.floor( duree / 3600);
+        let minutes = Math.floor(duree / 60);
+        let seconds = duree % 60;
+
+        return ((hours < 10) ? '0'+hours : hours)+":"+((minutes < 10) ? '0' + minutes: minutes)+":"+ ((seconds < 10) ? '0'+seconds : seconds);
+      },
       retablirFiltre() {
         this.filter = {
           ide12 : null,
