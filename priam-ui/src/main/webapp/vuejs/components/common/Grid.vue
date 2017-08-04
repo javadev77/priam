@@ -143,6 +143,16 @@
 
                     </td>
                   </template>
+                  <template v-else-if="entryColumn.type === 'seconds-as-time'">
+                    <td class="columnCenter">
+                      {{ dureeFormattee(entry[entryColumn.id]) }}
+                    </td>
+                  </template>
+                  <template v-else-if="entryColumn.type === 'text-centre'">
+                    <td class="columnCenter">
+                      {{ entry[entryColumn.id] }}
+                    </td>
+                  </template>
                   <template  v-else>
                     <td>
                       {{ entry[entryColumn.id] }}
@@ -307,6 +317,14 @@
 
     methods: {
 
+      dureeFormattee(duree) {
+
+        let hours = Math.floor( duree / 3600);
+        let minutes = Math.floor(duree / 60);
+        let seconds = duree % 60;
+
+        return ((hours < 10) ? '0'+hours : hours)+":"+((minutes < 10) ? '0' + minutes: minutes)+":"+ ((seconds < 10) ? '0'+seconds : seconds);
+      },
       emitCellClick(entry, column) {
          console.log("CellClick")
          this.$emit('cellClick', entry, column);

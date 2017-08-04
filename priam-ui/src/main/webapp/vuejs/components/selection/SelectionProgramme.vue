@@ -256,7 +256,7 @@
               id: 'ide12',
               name: 'IDE12',
               sortable: true,
-              type: 'long-text',
+              type: 'text-centre',
               cell: {
                 toText : function(entry) {
                   var result = entry;
@@ -286,7 +286,7 @@
               id: 'roleParticipant1',
               name: 'Rôle',
               sortable: true,
-              type: 'long-text',
+              type: 'text-centre',
               cell : {
                 toText : function(entry) {
                   var result = entry;
@@ -316,7 +316,7 @@
               id: 'quantite',
               name: "Quantité",
               sortable: false,
-              type: 'long-text',
+              type: 'text-centre',
               cell: {
                 toText : function(entry) {
                   var result = entry;
@@ -331,7 +331,7 @@
               id: 'ajout',
               name: "Ajout",
               sortable: true,
-              type: 'numeric',
+              type: 'text-centre',
               cell: {
                 toText : function(entry) {
                   var result = entry;
@@ -408,7 +408,7 @@
               id: 'ide12',
               name: "IDE12",
               sortable: true,
-              type: 'long-text',
+              type: 'text-centre',
               cell: {
                 toText : function(entry) {
                   var result = entry;
@@ -438,7 +438,7 @@
               id: 'roleParticipant1',
               name: 'Rôle',
               sortable: true,
-              type: 'long-text',
+              type: 'text-centre',
               cell : {
                 toText : function(entry) {
                   var result = entry;
@@ -469,13 +469,13 @@
               id: 'durDif',
               name: "Durée",
               sortable: false,
-              type: 'long-text',
+              type: 'seconds-as-time',
               cell: {
                 toText : function(entry) {
                   var result = entry;
 
                   if(result !=undefined)
-                    return this.dureeFormattee(result);
+                    return result;
                   else
                     return "";
                 }
@@ -485,7 +485,7 @@
               id: 'ajout',
               name: "Ajout",
               sortable: true,
-              type: 'numeric',
+              type: 'text-centre',
               cell: {
                 toText : function(entry) {
                   var result = entry;
@@ -578,14 +578,7 @@
       goBack() {
         this.$router.back();
       },
-      dureeFormattee(duree) {
 
-        let hours = Math.floor( duree / 3600);
-        let minutes = Math.floor(duree / 60);
-        let seconds = duree % 60;
-
-        return ((hours < 10) ? '0'+hours : hours)+":"+((minutes < 10) ? '0' + minutes: minutes)+":"+ ((seconds < 10) ? '0'+seconds : seconds);
-      },
       retablirFiltre() {
         this.filter = {
           ide12 : null,
