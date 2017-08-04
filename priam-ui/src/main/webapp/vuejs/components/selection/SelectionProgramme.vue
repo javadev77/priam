@@ -116,6 +116,7 @@
         :retablir="retablirFiltre"
         :rechercher="rechercher"
         :ajouter="ajouterOeuvre"
+        :edition="edition"
       >
       </app-filtre-selection>
 
@@ -170,7 +171,13 @@
         :statutProgramme="programmeInfo.statut"
         :listSelectionVide="ligneProgrammeSelected.length == 0"
         :valider="validerSelection"
+        :editer="editSelectionClickHandler"
         :invalider="invaliderProgramme"
+        :edition="edition"
+        :enregistrerEdition="enregistrerEdition"
+        :annulerEdition="annulerEdition"
+        :annulerSelection="annulerSelection"
+        :inProcess="inProcess"
       >
       </app-action-selection>
 
@@ -221,7 +228,7 @@
         unselectedLigneProgramme : [],
         ligneProgrammeSelected : [],
         programmeInfo: {},
-        tableauSelectionnable : true,
+        tableauSelectionnable : false,
         isCollapsed: false,
         defaultPageable : {
           page : 1,
@@ -491,21 +498,6 @@
               }
             },
             {
-              id: 'selection',
-              name: "selection",
-              sortable: false,
-              type: 'long-text',
-              cell: {
-                toText : function(entry) {
-                  var result = entry;
-                  if(result !=undefined)
-                    return result ;
-                  else
-                    return "";
-                }
-              }
-            },
-            {
               id: 'action',
               name: "Actions",
               sortable: false,
@@ -574,7 +566,8 @@
         modalMessage : '',
         modalWaring : false,
         inProcess : false,
-        backupDureeSelection : {}
+        backupDureeSelection : {},
+        edition : false
       }
     },
 
@@ -614,8 +607,10 @@
             url: 'app/rest/ligneProgramme/search?page={page}&size={size}&sort={sort},{dir}'
           },
           validerSelection: {method: 'POST', url: 'app/rest/ligneProgramme/selection/valider'},
+          modifierSelection: {method: 'POST', url: 'app/rest/ligneProgramme/selection/modifier'},
           invaliderSelection: {method: 'POST', url: 'app/rest/ligneProgramme/selection/invalider'},
-          dureeProgramme: {method: 'GET', url: 'app/rest/programme/durdif?numProg={numProg}&statut={statut}'}
+          dureeProgramme: {method: 'GET', url: 'app/rest/programme/durdif?numProg={numProg}&statut={statut}'},
+          annulerSelection: {method: 'POST', url: 'app/rest/ligneProgramme/selection/annuler'},
         }
 
         this.resource = this.$resource('', {}, customActions);
@@ -634,6 +629,8 @@
                 && this.programmeInfo.statut != 'MIS_EN_REPART'
                 && this.programmeInfo.statut != 'REPARTI'
               );
+
+              this.tableauSelectionnable = false;
 
               this.resource.dureeProgramme({numProg: this.$route.params.numProg, statut: this.programmeInfo.statut})
                 .then(response => {
@@ -663,9 +660,16 @@
                 });
 
 
+            if(this.programmeInfo.statut == 'EN_COURS' || this.programmeInfo.statut == 'VALIDE') {
+              this.filter.selection = 'Sélectionné';
+              this.all = false;
+            }
+            this.rechercher();
+
           });
 
-        this.rechercher();
+
+
       },
 
       launchRequest(pageNum, pageSize, sort, dir) {
@@ -691,6 +695,7 @@
             this.selectAll();
           });
       },
+
       onSort(currentPage, pageSize, sort) {
 
         this.launchRequest(currentPage, pageSize, sort.property, sort.direction);
@@ -699,6 +704,7 @@
         this.defaultPageable.dir = sort.direction;
 
       },
+
       loadPage: function(pageNum, size, sort) {
 
         let pageSize = this.defaultPageable.size;
@@ -718,7 +724,7 @@
       selectAll: function () {
 
         for (var i in this.ligneProgramme) {
-          if (this.ligneProgramme[i]) {
+
             if(this.all || this.ligneProgramme[i].selection) {
               if(this.ligneProgrammeSelected.indexOf(this.ligneProgramme[i].id) == -1 && this.unselectedLigneProgramme.indexOf(this.ligneProgramme[i].id) == -1)
                 this.ligneProgrammeSelected.push(this.ligneProgramme[i].id);
@@ -728,10 +734,10 @@
                 this.unselectedLigneProgramme.push(this.ligneProgramme[i].id);
             }
 
-          }
         }
 
       },
+
       rechercher(){
 
         this.resource.findLigneProgrammeByProgramme({page : this.defaultPageable.page - 1, size : this.defaultPageable.size,
@@ -755,10 +761,11 @@
               tab = this.priamGrid_sono.gridData_sono.content;
             }
 
-            this.ligneProgramme = tab
+            this.ligneProgramme = tab;
             this.selectAll();
           });
       },
+
       isTableauSelectionnable() {
         return this.tableauSelectionnable;
       },
@@ -920,16 +927,42 @@
 
       closeModal () {
         this.modalVisible = false;
+        this.annulerAction = undefined;
       },
 
       noContinue() {
         this.modalVisible = false;
+        this.annulerAction = undefined;
         this.$emit('cancel');
       },
 
       yesContinue() {
 
-        if(this.programmeInfo.statut == 'VALIDE') {
+          debugger;
+        if(this.annulerAction != undefined &&  this.annulerAction == true) {
+
+
+          this.inProcess = true;
+
+          this.selection = {
+            numProg : this.$route.params.numProg
+          };
+
+          this.resource.annulerSelection(this.selection)
+            .then(response => {
+              return response.json();
+            })
+            .then(data => {
+              this.inProcess = false;
+              this.modalVisible = false;
+              this.$emit('cancel');
+              this.$router.push({ name: 'programme'});
+            })
+            .catch(response => {
+              alert("Erreur technique lors de la validation de la selection du programme !! " + response);
+            });
+        }else
+        if(this.annulerAction != true &&  this.programmeInfo.statut == 'VALIDE') {
           this.inProcess = true;
 
           this.resource.invaliderSelection(this.$route.params.numProg)
@@ -946,7 +979,7 @@
             .catch(response => {
               alert("Erreur technique lors de la validation de la selection du programme !! " + response);
             });
-        }else {
+        }else if(this.annulerAction != true) {
           this.selection.numProg = this.$route.params.numProg;
 
           this.inProcess = true;
@@ -966,11 +999,89 @@
             });
         }
 
+
+        this.annulerAction = undefined;
+
       },
 
       invaliderProgramme() {
         this.modalVisible = true;
         this.modalMessage  = 'Etes-vous sûr de vouloir invalider ce programme?';
+      },
+
+      enregistrerEdition() {
+
+        this.inProcess = true;
+        this.tableauSelectionnable = false;
+        if(this.all) {
+          if(this.unselectedLigneProgramme.length != 0) {
+            this.selection = {
+              all : false,
+              unselected : this.unselectedLigneProgramme,
+              selected : []
+            };
+          } else {
+            this.selection = {
+              all : true,
+              unselected : [],
+              selected : []
+            };
+          }
+        } else {
+          if(this.ligneProgrammeSelected.length == 0) {
+            window.alert("NE RIEN FAIRE");
+          } else {
+            if(this.ligneProgrammeSelected.length > 0) {
+              this.selection = {
+                all : false,
+                unselected : [],
+                selected : this.ligneProgrammeSelected
+              };
+            } else {
+              this.selection = {
+                all : false,
+                unselected : this.unselectedLigneProgramme,
+                selected : []
+              };
+            }
+          }
+        }
+
+        this.selection.numProg = this.$route.params.numProg;
+
+        this.resource.modifierSelection(this.selection)
+          .then(response => {
+            return response.json();
+          })
+          .then(data => {
+            this.filter.selection = 'Sélectionné';
+            this.initProgramme();
+            this.annulerEdition();
+          })
+          .catch(response => {
+            alert("Erreur technique lors de la validation de la selection du programme !! " + response);
+          });
+      },
+
+      annulerSelection() {
+
+        this.annulerAction = true;
+        this.modalVisible = true;
+        this.tableauSelectionnable = true;
+        this.modalMessage  = 'Toutes les opérations seront perdues. Etes-vous sûr de vouloir annuler la sélection?';
+
+
+      },
+
+      annulerEdition () {
+        this.tableauSelectionnable = false;
+        this.edition = false;
+        this.inProcess = false;
+      },
+
+      editSelectionClickHandler () {
+        this.tableauSelectionnable = true;
+        this.edition = true;
       }
 
     },
