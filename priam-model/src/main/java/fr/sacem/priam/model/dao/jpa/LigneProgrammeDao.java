@@ -46,8 +46,7 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
             "ligneProgrammeView.durDif, " +
             "ligneProgrammeView.quantite, " +
             "ligneProgramme.utilisateur, " +
-            "ligneProgramme.selection," +
-            "ligneProgramme.id ) " +
+            "ligneProgramme.selection) " +
             "FROM LigneProgramme ligneProgramme join ligneProgramme.fichier  f , LigneProgrammeView ligneProgrammeView "+
             "WHERE ligneProgramme.fichier = f.id " +
             "AND ligneProgramme.ide12 = ligneProgrammeView.ide12 " +
@@ -64,9 +63,7 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
                 "ligneProgramme.durDif, " +
                 "ligneProgramme.ajout, " +
                 "ligneProgramme.utilisateur, " +
-                "ligneProgramme.selection, " +
-                "ligneProgramme.id"+
-            "")
+                "ligneProgramme.selection ")
     Page<SelectionDto> findLigneProgrammeByCriteria(@Param("numProg") String numProg,
                                       @Param("utilisateur") String utilisateur,
                                       @Param("ide12") Long ide12,

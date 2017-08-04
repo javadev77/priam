@@ -13,7 +13,6 @@ public class SelectionDto {
   private Long quantite;
   private String utilisateur;
   private boolean selection;
-  private Long id;
   public String getUtilisateur() {
     return utilisateur;
   }
@@ -84,14 +83,10 @@ public class SelectionDto {
 
   public void setSelection(boolean selection) { this.selection = selection; }
 
-  public Long getId() { return id; }
-
-  public void setId(Long id) { this.id = id; }
-
   public SelectionDto() {
   }
 
-  public SelectionDto(Long ide12, String titreOeuvre, String roleParticipant1, String nomParticipant1,String ajout,Long durDif, Long quantite, String utilisateur, boolean selection, Long id) {
+  public SelectionDto(Long ide12, String titreOeuvre, String roleParticipant1, String nomParticipant1,String ajout,Long durDif, Long quantite, String utilisateur, boolean selection) {
     this.ide12 = ide12;
     this.titreOeuvre = titreOeuvre;
     this.roleParticipant1 = roleParticipant1;
@@ -101,7 +96,6 @@ public class SelectionDto {
     this.quantite = quantite;
     this.utilisateur = utilisateur;
     this.selection = selection;
-    this.id = id;
   }
 
 }

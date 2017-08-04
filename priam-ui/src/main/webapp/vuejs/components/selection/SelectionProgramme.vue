@@ -576,6 +576,9 @@
     },
 
     methods :{
+      goBack() {
+        this.$router.back();
+      },
       dureeFormattee(duree) {
 
         let hours = Math.floor( duree / 3600);
