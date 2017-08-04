@@ -37,7 +37,7 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
 
 
     @Transactional
-    @Query(value="SELECT new fr.sacem.priam.model.domain.dto.SelectionDto("+
+    @Query(value="SELECT distinct new fr.sacem.priam.model.domain.dto.SelectionDto("+
                     "ligneProgramme.ide12, " +
             "ligneProgramme.titreOeuvre, " +
             "ligneProgramme.roleParticipant1, " +
@@ -48,7 +48,7 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
             "ligneProgramme.utilisateur, " +
             "ligneProgramme.selection," +
             "ligneProgramme.id ) " +
-            "FROM LigneProgramme ligneProgramme join ligneProgramme.fichier as f , LigneProgrammeView ligneProgrammeView "+
+            "FROM LigneProgramme ligneProgramme join ligneProgramme.fichier  f , LigneProgrammeView ligneProgrammeView "+
             "WHERE ligneProgramme.fichier = f.id " +
             "AND ligneProgramme.ide12 = ligneProgrammeView.ide12 " +
             "AND f.programme.numProg = :numProg " +
