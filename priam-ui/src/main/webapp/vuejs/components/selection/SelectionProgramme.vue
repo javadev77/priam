@@ -112,7 +112,6 @@
 
       <app-filtre-selection
         :filter="filter"
-        :showUtilisateur="getTypeUtilisationByCode(programmeInfo.typeUtilisation) !== undefined ? (programmeInfo.typeUtilisation == 'CPRIVSONPH' ? false : true ) : true"
         :retablir="retablirFiltre"
         :rechercher="rechercher"
         :ajouter="ajouterOeuvre"
@@ -887,14 +886,14 @@
 
         if(this.programmeInfo.statut == 'AFFECTE' || this.programmeInfo.statut == 'EN_COURS') {
 
-          if(this.programmeInfo.typeUtilisation == 'CPRIVSONRD' && this.totalDureeSelection == 0) {
+          if(this.programmeInfo.typeUtilisation == 'CPRIVSONRD' && this.dureeSelection.duree == 0) {
             this.modalWaring  = true;
             this.modalVisible = true;
             this.modalMessage  = 'Attention la somme des durées sélectionnées sur le programme égale à 0';
             return;
           }
 
-          if(this.programmeInfo.typeUtilisation == 'CPRIVSONPH' && this.totalDureeSelection == 0) {
+          if(this.programmeInfo.typeUtilisation == 'CPRIVSONPH' && this.dureeSelection.duree == 0) {
             this.modalWaring  = true;
             this.modalVisible = true;
             this.modalMessage  = 'Attention la somme des quantités sélectionnées sur le programme égale à 0';

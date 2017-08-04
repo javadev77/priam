@@ -77,7 +77,7 @@ public interface ProgrammeDao extends JpaRepository<Programme, String> {
     @Transactional(readOnly = true)
     @Query(nativeQuery = true, value =
             "SELECT sum(quantite) from ( SELECT " +
-                    "count(l.ide12) quantite, l.ide12 " +
+                    "sum(l.nbrDif) quantite, l.ide12 " +
                     "FROM " +
                     "PRIAM_LIGNE_PROGRAMME l " +
                     "inner join PRIAM_FICHIER as f " +
@@ -89,7 +89,7 @@ public interface ProgrammeDao extends JpaRepository<Programme, String> {
     @Transactional(readOnly = true)
     @Query(nativeQuery = true, value =
             "SELECT sum(quantite) from ( SELECT " +
-                    "count(l.ide12) quantite, l.ide12 " +
+                    "sum(l.nbrDif) quantite, l.ide12 " +
                     "FROM " +
                     "PRIAM_LIGNE_PROGRAMME l " +
                     "inner join PRIAM_FICHIER as f " +
