@@ -350,7 +350,7 @@
               type: 'checkbox',
               cell: {
                 toText: function (entry) {
-                  return entry.id;
+                  return entry.ide12;
                 },
 
                 isDisabled: function () {
@@ -364,7 +364,7 @@
                 isChecked: function (entry) {
 
                   var notChecked = $this.unselectedLigneProgramme.find(elem => {
-                    return elem == entry.id;
+                    return elem == entry.ide12;
                   });
 
                   if (notChecked !== undefined) {
@@ -372,7 +372,7 @@
                   }
 
                   var result = $this.ligneProgrammeSelected.find(elem => {
-                    return elem == entry.id;
+                    return elem == entry.ide12;
                   });
 
                   if (result !== undefined) {
@@ -504,7 +504,7 @@
               type: 'checkbox',
               cell: {
                 toText: function (entry) {
-                  return entry.id;
+                  return entry.ide12;
                 },
 
                 isDisabled: function () {
@@ -518,7 +518,7 @@
                 isChecked: function (entry) {
 
                   var notChecked = $this.unselectedLigneProgramme.find(elem => {
-                    return elem == entry.id;
+                    return elem == entry.ide12;
                   });
 
                   if (notChecked !== undefined) {
@@ -526,7 +526,7 @@
                   }
 
                   var result = $this.ligneProgrammeSelected.find(elem => {
-                    return elem == entry.id;
+                    return elem == entry.ide12;
                   });
 
                   if (result !== undefined) {
