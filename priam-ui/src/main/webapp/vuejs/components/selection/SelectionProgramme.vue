@@ -599,7 +599,32 @@
         this.rechercher();
       },
 
-      initProgramme() {
+      getDuree: function (statut) {
+        this.resource.dureeProgramme({numProg: this.$route.params.numProg, statut: statut})
+          .then(response => {
+          return response.json();
+        }).then(data => {
+
+          for (var indicateur in data ) {
+            if (data[indicateur].value == 'Automatique') {
+              this.dureeSelection.auto = data[indicateur].code;
+            }
+            else if (data[indicateur].value == 'Manuel') {
+              this.dureeSelection.manuel = data[indicateur].code;
+            }
+            else if (data[indicateur].value == 'SOMME') {
+              this.dureeSelection.duree = data[indicateur].code;
+            }
+          }
+
+          this.backupDureeSelection = {
+            auto: this.dureeSelection.auto,
+            manuel: this.dureeSelection.manuel,
+            duree: this.dureeSelection.duree
+          }
+      })
+        ;
+      }, initProgramme() {
         console.log("router params numProg = " + this.$route.params.numProg);
 
         const customActions = {
@@ -634,32 +659,7 @@
 
               this.tableauSelectionnable = false;
 
-              this.resource.dureeProgramme({numProg: this.$route.params.numProg, statut: this.programmeInfo.statut})
-                .then(response => {
-                  return response.json();
-                })
-                .
-                then(data => {
-
-                  for (var indicateur in data) {
-                      if(data[indicateur].value =='Automatique') {
-                          this.dureeSelection.auto = data[indicateur].code;
-                      }
-                      else if(data[indicateur].value =='Manuel') {
-                          this.dureeSelection.manuel = data[indicateur].code;
-                      }
-                      else if(data[indicateur].value =='SOMME') {
-                        this.dureeSelection.duree = data[indicateur].code;
-                      }
-                  }
-
-                  this.backupDureeSelection = {
-                    auto : this.dureeSelection.auto,
-                    manuel : this.dureeSelection.manuel,
-                    duree : this.dureeSelection.duree
-                  }
-
-                });
+              this.getDuree(this.programmeInfo.statut);
 
 
             if(this.programmeInfo.statut == 'EN_COURS' || this.programmeInfo.statut == 'VALIDE') {
@@ -830,6 +830,8 @@
 
         if(allChecked) {
 
+          this.getDuree('AFFECTE');
+
           this.ligneProgrammeSelected = [];
           this.unselectedLigneProgramme = [];
 
@@ -940,7 +942,6 @@
 
       yesContinue() {
 
-          debugger;
         if(this.annulerAction != undefined &&  this.annulerAction == true) {
 
 
