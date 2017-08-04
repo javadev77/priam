@@ -316,7 +316,7 @@
               id: 'quantite',
               name: "Quantité",
               sortable: false,
-              type: 'text-centre',
+              type: 'numeric',
               cell: {
                 toText : function(entry) {
                   var result = entry;
