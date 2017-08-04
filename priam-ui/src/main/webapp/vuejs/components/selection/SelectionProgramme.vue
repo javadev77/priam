@@ -599,7 +599,32 @@
         this.rechercher();
       },
 
-      initProgramme() {
+      getDuree: function (statut) {
+        this.resource.dureeProgramme({numProg: this.$route.params.numProg, statut: statut})
+          .then(response => {
+          return response.json();
+        }).then(data => {
+
+          for (var indicateur in data ) {
+            if (data[indicateur].value == 'Automatique') {
+              this.dureeSelection.auto = data[indicateur].code;
+            }
+            else if (data[indicateur].value == 'Manuel') {
+              this.dureeSelection.manuel = data[indicateur].code;
+            }
+            else if (data[indicateur].value == 'SOMME') {
+              this.dureeSelection.duree = data[indicateur].code;
+            }
+          }
+
+          this.backupDureeSelection = {
+            auto: this.dureeSelection.auto,
+            manuel: this.dureeSelection.manuel,
+            duree: this.dureeSelection.duree
+          }
+      })
+        ;
+      }, initProgramme() {
         console.log("router params numProg = " + this.$route.params.numProg);
 
         const customActions = {
@@ -624,42 +649,17 @@
           .
           then(data => {
 
-            this.programmeInfo = data;
-            this.all = this.programmeInfo.statut != 'VALIDE';
-            this.tableauSelectionnable = (
-              this.programmeInfo.statut != 'VALIDE'
-              && this.programmeInfo.statut != 'MIS_EN_REPART'
-              && this.programmeInfo.statut != 'REPARTI'
-            );
+              this.programmeInfo = data;
+              this.all = this.programmeInfo.statut != 'VALIDE';
+              this.tableauSelectionnable = (
+                this.programmeInfo.statut != 'VALIDE'
+                && this.programmeInfo.statut != 'MIS_EN_REPART'
+                && this.programmeInfo.statut != 'REPARTI'
+              );
 
-            this.tableauSelectionnable = false;
+              this.tableauSelectionnable = false;
 
-            this.resource.dureeProgramme({numProg: this.$route.params.numProg, statut: this.programmeInfo.statut})
-              .then(response => {
-                return response.json();
-              })
-              .
-              then(data => {
-
-                for (var indicateur in data) {
-                  if(data[indicateur].value =='Automatique') {
-                    this.dureeSelection.auto = data[indicateur].code;
-                  }
-                  else if(data[indicateur].value =='Manuel') {
-                    this.dureeSelection.manuel = data[indicateur].code;
-                  }
-                  else if(data[indicateur].value =='SOMME') {
-                    this.dureeSelection.duree = data[indicateur].code;
-                  }
-                }
-
-                this.backupDureeSelection = {
-                  auto : this.dureeSelection.auto,
-                  manuel : this.dureeSelection.manuel,
-                  duree : this.dureeSelection.duree
-                }
-
-              });
+              this.getDuree(this.programmeInfo.statut);
 
 
             if(this.programmeInfo.statut == 'EN_COURS' || this.programmeInfo.statut == 'VALIDE') {
@@ -727,14 +727,14 @@
 
         for (var i in this.ligneProgramme) {
 
-          if(this.all || this.ligneProgramme[i].selection) {
-            if(this.ligneProgrammeSelected.indexOf(this.ligneProgramme[i].ide12) == -1 && this.unselectedLigneProgramme.indexOf(this.ligneProgramme[i].ide12) == -1)
-              this.ligneProgrammeSelected.push(this.ligneProgramme[i].ide12);
-          }
-          else {
-            if(this.ligneProgrammeSelected.indexOf(this.ligneProgramme[i].ide12) == -1 && this.unselectedLigneProgramme.indexOf(this.ligneProgramme[i].ide12) == -1)
-              this.unselectedLigneProgramme.push(this.ligneProgramme[i].ide12);
-          }
+            if(this.all || this.ligneProgramme[i].selection) {
+              if(this.ligneProgrammeSelected.indexOf(this.ligneProgramme[i].ide12) == -1 && this.unselectedLigneProgramme.indexOf(this.ligneProgramme[i].ide12) == -1)
+                this.ligneProgrammeSelected.push(this.ligneProgramme[i].ide12);
+            }
+            else {
+              if(this.ligneProgrammeSelected.indexOf(this.ligneProgramme[i].ide12) == -1 && this.unselectedLigneProgramme.indexOf(this.ligneProgramme[i].ide12) == -1)
+                this.unselectedLigneProgramme.push(this.ligneProgramme[i].ide12);
+            }
 
         }
 
@@ -829,6 +829,8 @@
         this.all = allChecked;
 
         if(allChecked) {
+
+          this.getDuree('AFFECTE');
 
           this.ligneProgrammeSelected = [];
           this.unselectedLigneProgramme = [];
@@ -940,7 +942,6 @@
 
       yesContinue() {
 
-        debugger;
         if(this.annulerAction != undefined &&  this.annulerAction == true) {
 
 
