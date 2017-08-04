@@ -1,6 +1,7 @@
 package fr.sacem.priam.model.dao.jpa;
 
 import fr.sacem.priam.model.domain.LigneProgramme;
+import fr.sacem.priam.model.domain.LibelleUtilisateur;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.SelectionDto;
 import org.springframework.data.domain.Page;
@@ -45,11 +46,14 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
             "ligneProgramme.ajout, " +
             "ligneProgrammeView.durDif, " +
             "ligneProgrammeView.quantite, " +
-            "ligneProgramme.utilisateur, " +
+            "lu.libUtil , " +
             "ligneProgramme.selection) " +
-            "FROM LigneProgramme ligneProgramme join ligneProgramme.fichier  f , LigneProgrammeView ligneProgrammeView "+
+            "FROM LigneProgramme ligneProgramme join ligneProgramme.fichier  f , " +
+            "LigneProgrammeView ligneProgrammeView ," +
+            "LibelleUtilisateur lu "+
             "WHERE ligneProgramme.fichier = f.id " +
             "AND ligneProgramme.ide12 = ligneProgrammeView.ide12 " +
+            "AND lu.cdeUtil = ligneProgramme.cdeUtil "+
             "AND f.programme.numProg = :numProg " +
             "AND (ligneProgramme.ide12 = :ide12 OR :ide12 IS NULL) " +
             "AND (ligneProgramme.ajout = :ajout OR :ajout IS NULL) " +
@@ -62,7 +66,7 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
                 "ligneProgramme.nomParticipant1, " +
                 "ligneProgramme.durDif, " +
                 "ligneProgramme.ajout, " +
-                "ligneProgramme.utilisateur, " +
+                "lu.libUtil, " +
                 "ligneProgramme.selection ")
     Page<SelectionDto> findLigneProgrammeByCriteria(@Param("numProg") String numProg,
                                       @Param("utilisateur") String utilisateur,
