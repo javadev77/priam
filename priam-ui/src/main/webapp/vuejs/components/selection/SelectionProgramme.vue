@@ -717,12 +717,12 @@
         for (var i in this.ligneProgramme) {
 
             if(this.all || this.ligneProgramme[i].selection) {
-              if(this.ligneProgrammeSelected.indexOf(this.ligneProgramme[i].id) == -1 && this.unselectedLigneProgramme.indexOf(this.ligneProgramme[i].id) == -1)
-                this.ligneProgrammeSelected.push(this.ligneProgramme[i].id);
+              if(this.ligneProgrammeSelected.indexOf(this.ligneProgramme[i].ide12) == -1 && this.unselectedLigneProgramme.indexOf(this.ligneProgramme[i].ide12) == -1)
+                this.ligneProgrammeSelected.push(this.ligneProgramme[i].ide12);
             }
             else {
-              if(this.ligneProgrammeSelected.indexOf(this.ligneProgramme[i].id) == -1 && this.unselectedLigneProgramme.indexOf(this.ligneProgramme[i].id) == -1)
-                this.unselectedLigneProgramme.push(this.ligneProgramme[i].id);
+              if(this.ligneProgrammeSelected.indexOf(this.ligneProgramme[i].ide12) == -1 && this.unselectedLigneProgramme.indexOf(this.ligneProgramme[i].ide12) == -1)
+                this.unselectedLigneProgramme.push(this.ligneProgramme[i].ide12);
             }
 
         }
@@ -778,17 +778,17 @@
           }
 
           var found = this.ligneProgrammeSelected.find( elem => {
-            return  elem === entryChecked.id;
+            return  elem === entryChecked.ide12;
           });
           if(found !== undefined && found) {
-            let number = this.unselectedLigneProgramme.indexOf(entryChecked.id);
+            let number = this.unselectedLigneProgramme.indexOf(entryChecked.ide12);
             this.unselectedLigneProgramme.splice(number, 1);
           } else {
 
-            let number = this.unselectedLigneProgramme.indexOf(entryChecked.id);
+            let number = this.unselectedLigneProgramme.indexOf(entryChecked.ide12);
             this.unselectedLigneProgramme.splice(number, 1);
 
-            this.ligneProgrammeSelected.push(entryChecked.id);
+            this.ligneProgrammeSelected.push(entryChecked.ide12);
           }
 
         } else {
@@ -805,10 +805,10 @@
             this.dureeSelection.duree -= entryChecked.durDif;
           }
 
-          let number = this.ligneProgrammeSelected.indexOf(entryChecked.id);
+          let number = this.ligneProgrammeSelected.indexOf(entryChecked.ide12);
           this.ligneProgrammeSelected.splice(number, 1);
 
-          this.unselectedLigneProgramme.push(entryChecked.id);
+          this.unselectedLigneProgramme.push(entryChecked.ide12);
         }
         console.log('onEntryChecked() ==> this.ligneProgrammeSelected='+this.ligneProgrammeSelected.length);
       },
