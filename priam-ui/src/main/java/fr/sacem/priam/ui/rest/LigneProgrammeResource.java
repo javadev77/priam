@@ -181,6 +181,10 @@ public class LigneProgrammeResource {
   }
 
   private void modifierSelection(@RequestBody ValdierSelectionProgrammeInput input, Programme programme) {
+
+    if(input.isDeselectAll()) {
+      ligneProgrammeService.deselectAll(programme.getNumProg());
+    } else
     if(input.isAll()) {
       ligneProgrammeService.selectAll(programme.getNumProg());
     } else if (!input.getSelected().isEmpty()) {

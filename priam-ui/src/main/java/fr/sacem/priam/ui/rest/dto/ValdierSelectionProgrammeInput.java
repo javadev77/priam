@@ -11,6 +11,7 @@ import java.util.Set;
 public class ValdierSelectionProgrammeInput {
 
   private String numProg;
+  private boolean deselectAll;
   private boolean all;
   private Set<Long> unselected = new HashSet<>();
   private Set<Long> selected = new HashSet<>();
@@ -50,6 +51,10 @@ public class ValdierSelectionProgrammeInput {
   public void setSelected(Set<Long> selected) {
     this.selected = selected;
   }
+
+  public boolean isDeselectAll() { return deselectAll; }
+
+  public void setDeselectAll(boolean deselectAll) { this.deselectAll = deselectAll; }
 
   @Override
   public String toString() {

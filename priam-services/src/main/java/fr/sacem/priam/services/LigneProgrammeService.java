@@ -68,5 +68,10 @@ public class LigneProgrammeService {
         ligneProgrammeDao.updateSelectionByNumProgrammeExcept(numProg, idLingesProgrammes);
     }
 
+    @Transactional
+    public void deselectAll(String numProg) {
+        ligneProgrammeDao.updateSelectionByNumProgramme(numProg, false);
+    }
+
 
 }

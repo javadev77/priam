@@ -189,8 +189,8 @@
       </label>
       <template slot="footer">
 
-        <div v-if="modalWaring">
-          <button class="btn btn-default btn-primary pull-right no" @click="closeModal" :disabled="inProcess">Fermer</button>
+        <div v-if="modalWaring" class="columnCenter">
+          <button class="btn btn-default btn-primary no" @click="closeModal" :disabled="inProcess">Fermer</button>
         </div>
 
         <div v-else="">
@@ -911,7 +911,7 @@
           }
         } else {
           if(this.ligneProgrammeSelected.length == 0) {
-            window.alert("NE RIEN FAIRE");
+
           } else {
             if(this.ligneProgrammeSelected.length > 0) {
               this.select();
@@ -1012,12 +1012,14 @@
         if(this.all) {
           if(this.unselectedLigneProgramme.length != 0) {
             this.selection = {
+              deselectAll : false,
               all : false,
               unselected : this.unselectedLigneProgramme,
               selected : []
             };
           } else {
             this.selection = {
+              deselectAll : false,
               all : true,
               unselected : [],
               selected : []
@@ -1025,16 +1027,23 @@
           }
         } else {
           if(this.ligneProgrammeSelected.length == 0) {
-            window.alert("NE RIEN FAIRE");
+            this.selection = {
+              deselectAll : true,
+              all : false,
+              unselected : [],
+              selected : []
+            }
           } else {
             if(this.ligneProgrammeSelected.length > 0) {
               this.selection = {
+                deselectAll : false,
                 all : false,
                 unselected : [],
                 selected : this.ligneProgrammeSelected
               };
             } else {
               this.selection = {
+                deselectAll : false,
                 all : false,
                 unselected : this.unselectedLigneProgramme,
                 selected : []
