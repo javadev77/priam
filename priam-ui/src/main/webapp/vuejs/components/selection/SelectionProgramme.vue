@@ -112,7 +112,7 @@
 
       <app-filtre-selection
         :filter="filter"
-        :showUtilisateur="getTypeUtilisationByCode(programmeInfo.typeUtilisation) !== undefined ? (programmeInfo.typeUtilisation == 'CPRIVSONPH' ? false : true ) : true"
+        :showUtilisateur="true"
         :retablir="retablirFiltre"
         :rechercher="rechercher"
         :ajouter="ajouterOeuvre"
@@ -486,7 +486,35 @@
               id: 'ajout',
               name: "Ajout",
               sortable: true,
-              type: 'numeric',
+              type: 'clickable-icons',
+                  /*
+                cellTemplate: function (cellValue) {
+                  var tempalteRepartABlanc = '<img src="static/images/iconescontextes/transfertgestionnaire.gif" width="20px"/>';
+                  var tempalteMiseEnRepart = '<span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>';
+                  var statusCode = cellValue.statut;
+                  var template = [];
+                  if(statusCode !== undefined && 'VALIDE' === statusCode) {
+                    template.push({event : 'nop', template : tempalteMiseEnRepart});
+                    template.push({event : 'nop', template : tempalteRepartABlanc});
+                    return template;
+                  }
+                  return '';
+                }
+              }
+*/
+              /*
+               cell : {
+               cellTemplate: function (cellValue) {
+               var tempalte = '<span class="glyphicon glyphicon-trash" aria-hidden="true" ></span>';
+               var statusCode = cellValue.statut;
+               let element = $this.findStatusByCode(statusCode);
+               if(element !== undefined && ('CHARGEMENT_KO' === element.code || 'CHARGEMENT_OK' === element.code)) {
+               return tempalte;
+               }
+               return '';
+               }
+               }
+             */
               cell: {
                 toText : function(entry) {
                   var result = entry;
@@ -496,6 +524,7 @@
                     return "";
                 }
               }
+
             },
             {
               id: 'action',
