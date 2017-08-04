@@ -2,6 +2,7 @@ package fr.sacem.priam.ui.rest;
 
 import fr.sacem.priam.model.dao.jpa.LigneProgrammeDao;
 import fr.sacem.priam.model.domain.Programme;
+import fr.sacem.priam.model.domain.StatutProgramme;
 import fr.sacem.priam.model.domain.criteria.LigneProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
@@ -156,6 +157,30 @@ public class LigneProgrammeResource {
 
     Programme programme = programmeService.validerProgramme(programmeDTO);
 
+    return new ArrayList<>();
+  }
+
+  @RequestMapping(value = "ligneProgramme/selection/modifier",
+    method = RequestMethod.POST,
+    produces = MediaType.APPLICATION_JSON_VALUE,
+    consumes = MediaType.APPLICATION_JSON_VALUE
+  )
+  public List<String> modifierSelection(@RequestBody ValdierSelectionProgrammeInput input) {
+
+    if(input == null || input.getNumProg() == null || input.getNumProg().isEmpty())
+      throw new RuntimeException("input or num programme must not be null !");
+
+    ProgrammeDto programmeDTO = new ProgrammeDto();
+    programmeDTO.setNumProg(input.getNumProg());
+
+    Programme programme = programmeService.invaliderProgramme(programmeDTO);
+
+    modifierSelection(input, programme);
+
+    return new ArrayList<>();
+  }
+
+  private void modifierSelection(@RequestBody ValdierSelectionProgrammeInput input, Programme programme) {
     if(input.isAll()) {
       ligneProgrammeService.selectAll(programme.getNumProg());
     } else if (!input.getSelected().isEmpty()) {
@@ -163,8 +188,6 @@ public class LigneProgrammeResource {
     } else if (!input.getUnselected().isEmpty()) {
       ligneProgrammeService.selectAllLigneProgrammeExcept(programme.getNumProg(), input.getUnselected());
     }
-
-    return new ArrayList<>();
   }
 
   @RequestMapping(value = "ligneProgramme/selection/invalider",
@@ -181,6 +204,27 @@ public class LigneProgrammeResource {
     programmeDTO.setNumProg(numProg);
 
     Programme programme = programmeService.invaliderProgramme(programmeDTO);
+
+    return new ArrayList<>();
+  }
+
+  @RequestMapping(value = "ligneProgramme/selection/annuler",
+    method = RequestMethod.POST,
+    produces = MediaType.APPLICATION_JSON_VALUE,
+    consumes = MediaType.APPLICATION_JSON_VALUE
+  )
+  public List<String> annulerSelection(@RequestBody ValdierSelectionProgrammeInput input) {
+
+    if(input == null || input.getNumProg() == null || input.getNumProg().isEmpty())
+      throw new RuntimeException("input or num programme must not be null !");
+
+    ProgrammeDto programmeDTO = new ProgrammeDto();
+    programmeDTO.setNumProg(input.getNumProg());
+
+    Programme programme = programmeService.updateStatutProgrammeToAffecte(programmeDTO);
+    ligneProgrammeService.selectAll(programme.getNumProg());
+
+    modifierSelection(input, programme);
 
     return new ArrayList<>();
   }

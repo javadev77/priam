@@ -197,15 +197,7 @@ public class ProgrammeService {
 
 		Programme programme = programmeDao.findOne(numProg);
 
-		if(StatutProgramme.VALIDE.equals(StatutProgramme.valueOf(statut)) || StatutProgramme.MIS_EN_REPART.equals(StatutProgramme.valueOf(statut)) || StatutProgramme.REPARTI.equals(StatutProgramme.valueOf(statut))){
-			durDif.addAll(programmeDao.compterOuvreSelectionnee(numProg));
-
-			if("CPRIVSONPH".equals(programme.getTypeUtilisation().getCode())) {
-				durDif.add(new KeyValueDto(programmeDao.sommeQuantiteDesOeuvresSelectionnees(numProg), "SOMME"));
-			} else if("CPRIVSONRD".equals(programme.getTypeUtilisation().getCode())) {
-				durDif.add(new KeyValueDto(programmeDao.sommeDureeDesOeuvresSelectionnees(numProg), "SOMME"));
-			}
-		}else {
+		if(StatutProgramme.AFFECTE.equals(StatutProgramme.valueOf(statut))) {
 			durDif.addAll(programmeDao.compterToutLesOeuvre(numProg));
 
 			if("CPRIVSONPH".equals(programme.getTypeUtilisation().getCode())) {
@@ -213,8 +205,26 @@ public class ProgrammeService {
 			} else if("CPRIVSONRD".equals(programme.getTypeUtilisation().getCode())) {
 				durDif.add(new KeyValueDto(programmeDao.sommeDureeDeToutLesOeuvres(numProg), "SOMME"));
 			}
-	    }
+		}
+		else {
+			durDif.addAll(programmeDao.compterOuvreSelectionnee(numProg));
+
+			if("CPRIVSONPH".equals(programme.getTypeUtilisation().getCode())) {
+				durDif.add(new KeyValueDto(programmeDao.sommeQuantiteDesOeuvresSelectionnees(numProg), "SOMME"));
+			} else if("CPRIVSONRD".equals(programme.getTypeUtilisation().getCode())) {
+				durDif.add(new KeyValueDto(programmeDao.sommeDureeDesOeuvresSelectionnees(numProg), "SOMME"));
+			}
+		}
 
     	return durDif;
+	}
+
+	public Programme updateStatutProgrammeToAffecte(ProgrammeDto programmeDTO) {
+		Programme programme = programmeDao.findOne(programmeDTO.getNumProg());
+		programme.setStatut(StatutProgramme.AFFECTE);
+		programme.setUseraffect(GUEST);
+		programme.setDataffect(new Date());
+
+		return programmeDao.saveAndFlush(programme);
 	}
 }
