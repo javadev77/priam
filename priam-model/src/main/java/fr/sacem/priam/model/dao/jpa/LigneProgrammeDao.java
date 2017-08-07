@@ -53,6 +53,7 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
             "LibelleUtilisateur lu "+
             "WHERE ligneProgramme.fichier = f.id " +
             "AND ligneProgramme.ide12 = ligneProgrammeView.ide12 " +
+            "AND f.programme.numProg = ligneProgrammeView.numProg "+
             "AND lu.cdeUtil = ligneProgramme.cdeUtil "+
             "AND f.programme.numProg = :numProg " +
             "AND (ligneProgramme.ide12 = :ide12 OR :ide12 IS NULL) " +
