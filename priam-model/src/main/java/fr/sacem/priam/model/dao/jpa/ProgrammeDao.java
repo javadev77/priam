@@ -24,29 +24,44 @@ public interface ProgrammeDao extends JpaRepository<Programme, String> {
 
 
     @Transactional(readOnly = true)
-    @Query(value =
+    @Query(nativeQuery = true, value =
             "SELECT " +
-                    "new fr.sacem.priam.model.domain.dto.KeyValueDto(count(l.durDif), l.ajout)" +
-                    "FROM " +
-                    "LigneProgramme l join l.fichier as f " +
-                    "WHERE " +
-                    "   l.fichier = f.id " +
-                    "AND f.programme.numProg = :numProg "+
-                    "AND l.selection =true " +
-                    "GROUP BY l.ajout")
-    List<KeyValueDto> compterOuvreSelectionnee(@Param("numProg") String numProg);
+            "count(duree), ajout" +
+            " from ( " +
+            "       SELECT " +
+            "           count(l.durDif) duree, l.ide12, l.ajout " +
+            "       FROM " +
+            "           PRIAM_LIGNE_PROGRAMME l " +
+            "       inner join " +
+            "           PRIAM_FICHIER as f on l.ID_FICHIER=f.ID " +
+            "       WHERE " +
+            "           f.numProg = ?1 " +
+            "       AND " +
+            "           l.selection = 1 " +
+            "       GROUP BY " +
+            "           l.ide12, l.ajout" +
+            "       ) result " +
+            "GROUP BY ajout")
+    List<Object> compterOuvreSelectionnee(@Param("numProg") String numProg);
 
     @Transactional(readOnly = true)
-    @Query(value =
+    @Query(nativeQuery = true, value =
             "SELECT " +
-                    "new fr.sacem.priam.model.domain.dto.KeyValueDto(count(l.durDif), l.ajout) " +
-                    "FROM " +
-                    "LigneProgramme l join l.fichier as f " +
-                    "WHERE " +
-                    "   l.fichier = f.id " +
-                    "AND f.programme.numProg = :numProg " +
-                    "GROUP BY l.ajout")
-    List<KeyValueDto> compterToutLesOeuvre(@Param("numProg") String numProg);
+                    "count(duree), ajout" +
+                    " from ( " +
+                    "       SELECT " +
+                    "           count(l.durDif) duree, l.ide12, l.ajout " +
+                    "       FROM " +
+                    "           PRIAM_LIGNE_PROGRAMME l " +
+                    "       inner join " +
+                    "           PRIAM_FICHIER as f on l.ID_FICHIER=f.ID " +
+                    "       WHERE " +
+                    "           f.numProg = ?1 " +
+                    "       GROUP BY " +
+                    "           l.ide12, l.ajout" +
+                    "       ) result " +
+                    "GROUP BY ajout")
+    List<Object> compterToutLesOeuvre(@Param("numProg") String numProg);
 
     @Transactional(readOnly = true)
     @Query(nativeQuery = true, value =

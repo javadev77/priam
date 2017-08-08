@@ -25,6 +25,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
@@ -198,7 +199,14 @@ public class ProgrammeService {
 		Programme programme = programmeDao.findOne(numProg);
 
 		if(StatutProgramme.AFFECTE.equals(StatutProgramme.valueOf(statut))) {
-			durDif.addAll(programmeDao.compterToutLesOeuvre(numProg));
+
+			List<Object> prog = programmeDao.compterToutLesOeuvre(numProg);
+
+			for (Object indicateur : prog) {
+				Object[] indObjects = (Object[]) indicateur;
+				durDif.add(new KeyValueDto(((BigInteger) indObjects[0]).longValue(), (String) indObjects[1]));
+			}
+
 
 			if("CPRIVSONPH".equals(programme.getTypeUtilisation().getCode())) {
 				durDif.add(new KeyValueDto(programmeDao.sommeQuantiteDeToutLesOeuvres(numProg), "SOMME"));
@@ -207,7 +215,12 @@ public class ProgrammeService {
 			}
 		}
 		else {
-			durDif.addAll(programmeDao.compterOuvreSelectionnee(numProg));
+
+			List<Object> prog = programmeDao.compterOuvreSelectionnee(numProg);
+			for (Object indicateur : prog) {
+				Object[] indObjects = (Object[]) indicateur;
+				durDif.add(new KeyValueDto(((BigInteger) indObjects[0]).longValue(), (String) indObjects[1]));
+			}
 
 			if("CPRIVSONPH".equals(programme.getTypeUtilisation().getCode())) {
 				durDif.add(new KeyValueDto(programmeDao.sommeQuantiteDesOeuvresSelectionnees(numProg), "SOMME"));
