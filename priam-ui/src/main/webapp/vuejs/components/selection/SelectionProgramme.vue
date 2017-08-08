@@ -136,7 +136,18 @@
             >
             </app-informations-selection>
 
-            <div v-if = "this.programmeInfo.typeUtilisation=='CPRIVSONRD'">
+            <div class="row center-div">
+              <div class="spinner" v-if="dataLoading">
+                <div class="rect1"></div>
+                <div class="rect2"></div>
+                <div class="rect3"></div>
+                <div class="rect4"></div>
+                <div class="rect5"></div>
+              </div>
+            </div>
+
+
+            <div v-if = "!dataLoading && this.programmeInfo.typeUtilisation=='CPRIVSONRD'">
               <priam-grid
                 v-if="priamGrid_sono.gridData_sono.content"
                 :data="priamGrid_sono.gridData_sono"
@@ -149,7 +160,7 @@
                 @entry-checked="onEntryChecked">
               </priam-grid>
             </div>
-            <div v-else-if = "this.programmeInfo.typeUtilisation=='CPRIVSONPH'">
+            <div v-else-if = "!dataLoading && this.programmeInfo.typeUtilisation=='CPRIVSONPH'">
               <priam-grid
                 v-if="priamGrid_phono.gridData_phono.content"
                 :data="priamGrid_phono.gridData_phono"
@@ -566,7 +577,8 @@
         modalWaring : false,
         inProcess : false,
         backupDureeSelection : {},
-        edition : false
+        edition : false,
+        dataLoading : false
       }
     },
 
@@ -735,6 +747,7 @@
 
       rechercher(){
 
+        this.dataLoading = true;
         this.resource.findLigneProgrammeByProgramme({page : this.defaultPageable.page - 1, size : this.defaultPageable.size,
           sort : this.defaultPageable.sort, dir: this.defaultPageable.dir}, this.filter)
           .then(response => {
@@ -757,6 +770,7 @@
             }
 
             this.ligneProgramme = tab;
+            this.dataLoading = false;
             this.selectAll();
           });
       },
@@ -1109,4 +1123,61 @@
 
 <style>
 
+  .spinner {
+    float:  left;
+    width: 50px;
+    height: 40px;
+    text-align: center;
+    font-size: 10px;
+  }
+
+  .spinner > div {
+    background-color: #333;
+    height: 100%;
+    width: 6px;
+    display: inline-block;
+
+    -webkit-animation: sk-stretchdelay 1.2s infinite ease-in-out;
+    animation: sk-stretchdelay 1.2s infinite ease-in-out;
+  }
+
+  .spinner .rect2 {
+    -webkit-animation-delay: -1.1s;
+    animation-delay: -1.1s;
+  }
+
+  .spinner .rect3 {
+    -webkit-animation-delay: -1.0s;
+    animation-delay: -1.0s;
+  }
+
+  .spinner .rect4 {
+    -webkit-animation-delay: -0.9s;
+    animation-delay: -0.9s;
+  }
+
+  .spinner .rect5 {
+    -webkit-animation-delay: -0.8s;
+    animation-delay: -0.8s;
+  }
+
+  @-webkit-keyframes sk-stretchdelay {
+    0%, 40%, 100% { -webkit-transform: scaleY(0.4) }
+    20% { -webkit-transform: scaleY(1.0) }
+  }
+
+  @keyframes sk-stretchdelay {
+    0%, 40%, 100% {
+      transform: scaleY(0.4);
+      -webkit-transform: scaleY(0.4);
+    }  20% {
+         transform: scaleY(1.0);
+         -webkit-transform: scaleY(1.0);
+       }
+  }
+
+  .center-div {
+    width: 0%;
+    margin: 0 auto;
+  }
 </style>

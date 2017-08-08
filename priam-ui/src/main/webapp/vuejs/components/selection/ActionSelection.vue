@@ -4,13 +4,16 @@
 
   <div class="row formula-buttons" v-if="statutProgramme != 'MIS_EN_REPART' && statutProgramme != 'REPARTI'">
 
-
-    <div class="spinner" v-if="inProcess">
-      <div class="rect1"></div>
-      <div class="rect2"></div>
-      <div class="rect3"></div>
-      <div class="rect4"></div>
-      <div class="rect5"></div>
+    <div class="mask" v-if="inProcess" >
+      <div class="center-div">
+        <div class="spinner">
+          <div class="rect1"></div>
+          <div class="rect2"></div>
+          <div class="rect3"></div>
+          <div class="rect4"></div>
+          <div class="rect5"></div>
+        </div>
+      </div>
     </div>
 
     <div v-if="!edition">
@@ -113,5 +116,24 @@
          transform: scaleY(1.0);
          -webkit-transform: scaleY(1.0);
        }
+  }
+
+  .mask {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1050;
+    outline: 0;
+    background-color: black;
+    opacity: 0.5;
+  }
+
+  .mask .center-div {
+    width: 0%;
+    margin: 0 auto;
+    margin-top: 50vh; /* poussé de la moitié de hauteur de viewport */
+    transform: translateY(-50%);
   }
 </style>

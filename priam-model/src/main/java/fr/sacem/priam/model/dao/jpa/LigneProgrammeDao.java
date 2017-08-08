@@ -38,22 +38,19 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
 
 
     @Transactional
-    @Query(value="SELECT distinct new fr.sacem.priam.model.domain.dto.SelectionDto("+
+    @Query(value="SELECT new fr.sacem.priam.model.domain.dto.SelectionDto("+
                     "ligneProgramme.ide12, " +
-            "ligneProgramme.titreOeuvre, " +
-            "ligneProgramme.roleParticipant1, " +
-            "ligneProgramme.nomParticipant1, " +
-            "ligneProgramme.ajout, " +
-            "ligneProgrammeView.durDif, " +
-            "ligneProgrammeView.quantite, " +
-            "ligneProgramme.selection, " +
-            "lu.libAbrgUtil) " +
+                    "ligneProgramme.titreOeuvre, " +
+                    "ligneProgramme.roleParticipant1, " +
+                    "ligneProgramme.nomParticipant1, " +
+                    "ligneProgramme.ajout, " +
+                    "sum(ligneProgramme.durDif), " +
+                    "sum(ligneProgramme.nbrDif), " +
+                    "ligneProgramme.selection, " +
+                    "lu.libAbrgUtil) " +
             "FROM LigneProgramme ligneProgramme join ligneProgramme.fichier  f , " +
-            "LigneProgrammeView ligneProgrammeView ," +
             "LibelleUtilisateur lu "+
             "WHERE ligneProgramme.fichier = f.id " +
-            "AND ligneProgramme.ide12 = ligneProgrammeView.ide12 " +
-            "AND f.programme.numProg = ligneProgrammeView.numProg "+
             "AND lu.cdeUtil = ligneProgramme.cdeUtil "+
             "AND f.programme.numProg = :numProg " +
             "AND (ligneProgramme.ide12 = :ide12 OR :ide12 IS NULL) " +
@@ -65,7 +62,6 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
                 "ligneProgramme.titreOeuvre, " +
                 "ligneProgramme.roleParticipant1, " +
                 "ligneProgramme.nomParticipant1, " +
-                "ligneProgramme.durDif, " +
                 "ligneProgramme.ajout, " +
                 "ligneProgramme.selection, " +
                 "lu.libAbrgUtil")
@@ -120,31 +116,40 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
 
     @Modifying(clearAutomatically = true)
     @Transactional
-    @Query(value="UPDATE LigneProgramme l " +
-            "SET l.selection = :selection " +
-            "WHERE " +
-            "l.fichier in ( SELECT f.id from Fichier f where f.programme.numProg = :numProg) "+
-            "")
+    @Query(nativeQuery = true, value="update " +
+            "  PRIAM_LIGNE_PROGRAMME p " +
+            "INNER JOIN " +
+            "  PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
+            "set " +
+            "  p.selection=?2 " +
+            "where " +
+            "  f.NUMPROG = ?1")
     void updateSelectionByNumProgramme(@Param("numProg") String numProg, @Param("selection") boolean selection);
 
     @Modifying(clearAutomatically = true)
     @Transactional
-    @Query(value="UPDATE LigneProgramme l " +
-            "SET l.selection = true " +
-            "WHERE " +
-            "l.fichier in ( SELECT f.id from Fichier f where f.programme.numProg = :numProg) " +
-            "AND l.ide12 not in :listToExclude"+
-            "")
+    @Query(nativeQuery = true, value="update " +
+            "  PRIAM_LIGNE_PROGRAMME p " +
+            "INNER JOIN " +
+            "  PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
+            "set " +
+            "  p.selection=1 " +
+            "where " +
+            "  f.NUMPROG = ?1" +
+            " AND p.ide12 not in ?2")
     void updateSelectionByNumProgrammeExcept(@Param("numProg") String numProg, @Param("listToExclude") Set<Long> listToExclude);
 
     @Modifying(clearAutomatically = true)
     @Transactional
-    @Query(value="UPDATE LigneProgramme l " +
-            "SET l.selection = true " +
-            "WHERE " +
-            "l.fichier in ( SELECT f.id from Fichier f where f.programme.numProg = :numProg) " +
-            "AND l.ide12 in :idLingesProgrammes"+
-            "")
+    @Query(nativeQuery = true, value="update " +
+            "  PRIAM_LIGNE_PROGRAMME p " +
+            "INNER JOIN " +
+            "  PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
+            "set " +
+            "  p.selection=1 " +
+            "where " +
+            "  f.NUMPROG = ?1" +
+            " AND p.ide12 in ?2")
     void updateSelectionByNumProgramme(@Param("numProg") String numProg, @Param("idLingesProgrammes") Set<Long> idLingesProgrammes);
 
 }
