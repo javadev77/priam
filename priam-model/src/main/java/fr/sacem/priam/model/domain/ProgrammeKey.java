@@ -9,8 +9,7 @@ import java.io.Serializable;
  */
 @Embeddable
 public class ProgrammeKey implements Serializable {
-    @Column(name = "PREFIX")
-    private String prefix;
+
     @Column(name = "ANNEE")
     private String annee;
     @Column(name = "CODESEQUENCE")
@@ -23,13 +22,7 @@ public class ProgrammeKey implements Serializable {
         this.codeSequence = codeSequence;
     }
 
-    public String getPrefix() {
-        return prefix;
-    }
 
-    public void setPrefix(String prefix) {
-        this.prefix = prefix;
-    }
 
     public String getAnnee() {
         return annee;
@@ -39,8 +32,7 @@ public class ProgrammeKey implements Serializable {
         this.annee = annee;
     }
 
-    public ProgrammeKey(String prefix, String annee,Long codeSequence) {
-        this.prefix = prefix;
+    public ProgrammeKey(String annee,Long codeSequence) {
         this.annee = annee;
         this.codeSequence=codeSequence;
     }

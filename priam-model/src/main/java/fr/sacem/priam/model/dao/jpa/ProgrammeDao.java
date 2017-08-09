@@ -1,9 +1,7 @@
 package fr.sacem.priam.model.dao.jpa;
 
 import fr.sacem.priam.model.domain.Programme;
-import fr.sacem.priam.model.domain.LigneProgramme;
 import fr.sacem.priam.model.domain.StatutProgramme;
-import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

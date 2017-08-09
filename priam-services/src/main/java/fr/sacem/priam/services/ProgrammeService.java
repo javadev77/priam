@@ -87,10 +87,9 @@ public class ProgrammeService {
 		String formated_max_value_to_add = StringUtils.leftPad(max_value_to_add.toString(), 4, "0");
 		programmeKey.setAnnee(year);
 		programmeKey.setCodeSequence(max_value_to_add);
-		programmeKey.setPrefix("PR");
 		programmeSequence.setProgrammeKey(programmeKey);
 		programmeSequnceDao.save(programmeSequence);
-		programmeDto.setNumProg(programmeKey.getPrefix() + programmeKey.getAnnee() + formated_max_value_to_add);
+		programmeDto.setNumProg(programmeKey.getAnnee() + formated_max_value_to_add);
 		// if(Long.getLong(paramAppli.getVal())<today.getYear()){
 		//update la sequence
 		//appdate la table paramAppli
