@@ -1,6 +1,7 @@
 package fr.sacem.priam.services;
 
 import fr.sacem.priam.model.dao.jpa.LigneProgrammeDao;
+import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.criteria.LigneProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.SelectionDto;
@@ -74,4 +75,7 @@ public class LigneProgrammeService {
     }
 
 
+    public void supprimerLigneProgramme(String numProg, Long ide12) {
+	    ligneProgrammeDao.deleteLigneProgrammeByIde12AndNumProg(numProg, ide12);
+    }
 }

@@ -153,6 +153,22 @@
                       {{ entry[entryColumn.id] }}
                     </td>
                   </template>
+
+                  <template v-else-if="entryColumn.type === 'text-with-action'">
+                    <td class="columnCenter" v-if="entryColumn.cell.toText(entry).action">
+
+                        {{entryColumn.cell.toText(entry).value}}
+                        <template v-for="elem in entryColumn.cell.toText(entry).template">
+                          <a v-html="elem.template" v-if="elem.disabled" class="disabled"></a>
+                          <a v-html="elem.template" v-if="!elem.disabled" @click="emitIconCellClick(elem.event, entry, entryColumn)"></a>
+                        </template>
+
+                    </td>
+                    <td class="columnCenter" v-if="!entryColumn.cell.toText(entry).action">
+                      {{ entryColumn.cell.toText(entry.ajout).value }}
+                    </td>
+                  </template>
+
                   <template  v-else>
                     <td>
                       {{ entry[entryColumn.id] }}
@@ -495,5 +511,11 @@
     padding: 5px 5px;
     text-decoration: none;
     width: 10px;
+  }
+
+  .disabled {
+    pointer-events: none;
+    cursor: default;
+    color: gray;
   }
 </style>

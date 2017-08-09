@@ -2,7 +2,6 @@ package fr.sacem.priam.ui.rest;
 
 import fr.sacem.priam.model.dao.jpa.LigneProgrammeDao;
 import fr.sacem.priam.model.domain.Programme;
-import fr.sacem.priam.model.domain.StatutProgramme;
 import fr.sacem.priam.model.domain.criteria.LigneProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
@@ -232,5 +231,15 @@ public class LigneProgrammeResource {
 
     return new ArrayList<>();
   }
+
+  @RequestMapping(value = "ligneProgramme/{numProg}/{ide12}",
+    method = RequestMethod.DELETE,
+    consumes = MediaType.APPLICATION_JSON_VALUE,
+    produces = MediaType.APPLICATION_JSON_VALUE)
+  public boolean supprimerLigneProgramme(@PathVariable(name = "numProg") String numProg, @PathVariable(name = "ide12") Long ide12) {
+    ligneProgrammeService.supprimerLigneProgramme(numProg, ide12);
+    return true;
+  }
+
 
 }

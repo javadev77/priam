@@ -10,7 +10,7 @@ public class SelectionDto {
   private String nomParticipant1;
   private Long durDif;
   private String ajout;
-  private Long quantite;
+  private Long nbrDif;
   private String utilisateur;
   private boolean selection;
   public String getUtilisateur() {
@@ -69,12 +69,12 @@ public class SelectionDto {
     this.ajout = ajout;
   }
 
-  public Long getQuantite() {
-    return quantite;
+  public Long getNbrDif() {
+    return nbrDif;
   }
 
-  public void setQuantite(Long quantite) {
-    this.quantite = quantite;
+  public void setNbrDif(Long quantite) {
+    this.nbrDif = quantite;
   }
 
   public boolean getSelection() {
@@ -93,7 +93,7 @@ public class SelectionDto {
     this.nomParticipant1 = nomParticipant1;
     this.durDif = durDif;
     this.ajout = ajout;
-    this.quantite = quantite;
+    this.nbrDif = quantite;
     this.utilisateur = utilisateur;
     this.selection = selection;
   }

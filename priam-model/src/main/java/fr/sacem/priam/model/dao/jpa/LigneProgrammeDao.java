@@ -64,7 +64,7 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
                 "ligneProgramme.nomParticipant1, " +
                 "ligneProgramme.ajout, " +
                 "ligneProgramme.selection, " +
-                "lu.libAbrgUtil")
+                "lu.libAbrgUtil ")
     Page<SelectionDto> findLigneProgrammeByCriteria(@Param("numProg") String numProg,
                                       @Param("utilisateur") String utilisateur,
                                       @Param("ide12") Long ide12,
@@ -152,4 +152,14 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
             " AND p.ide12 in ?2")
     void updateSelectionByNumProgramme(@Param("numProg") String numProg, @Param("idLingesProgrammes") Set<Long> idLingesProgrammes);
 
+    @Transactional
+    @Modifying(clearAutomatically = true)
+    @Query(nativeQuery = true, value = "DELETE p.* FROM " +
+            "PRIAM_LIGNE_PROGRAMME p " +
+            "INNER JOIN " +
+            "PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
+            "WHERE  "+
+            "  f.NUMPROG = ?1" +
+            " AND p.ide12 = ?2")
+    void deleteLigneProgrammeByIde12AndNumProg(@Param("numProg") String numProg, @Param("ide12") Long ide12);
 }

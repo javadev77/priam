@@ -157,7 +157,8 @@
                 @load-page="loadPage"
                 @on-sort="onSort"
                 @all-checked="onAllChecked"
-                @entry-checked="onEntryChecked">
+                @entry-checked="onEntryChecked"
+                @supprimer-ligne-programme="onSupprimerLigneProgramme">
               </priam-grid>
             </div>
             <div v-else-if = "!dataLoading && this.programmeInfo.typeUtilisation=='CPRIVSONPH'">
@@ -170,7 +171,8 @@
                 @load-page="loadPage"
                 @on-sort="onSort"
                 @all-checked="onAllChecked"
-                @entry-checked="onEntryChecked">
+                @entry-checked="onEntryChecked"
+                @supprimer-ligne-programme="onSupprimerLigneProgramme">
               </priam-grid>
             </div>
           </div>
@@ -211,6 +213,17 @@
 
       </template>
     </modal>
+
+
+    <modal v-if="showPopupSuppression">
+      <label class="homer-prompt-q control-label" slot="body">
+        Etes-vous sûr de vouloir supprimer définitivement cette oeuvre du programme?
+      </label>
+      <template slot="footer">
+        <button class="btn btn-default btn-primary pull-right no" @click="showPopupSuppression = false">Non</button>
+        <button class="btn btn-default btn-primary pull-right yes" @click="supprimerProgramme">Oui</button>
+      </template>
+    </modal>
   </div>
 </template>
 
@@ -234,6 +247,7 @@
       return {
 
         all : false,
+        edition : false,
         ligneProgramme : [],
         unselectedLigneProgramme : [],
         ligneProgrammeSelected : [],
@@ -324,7 +338,7 @@
               }
             },
             {
-              id: 'quantite',
+              id: 'nbrDif',
               name: "Quantité",
               sortable: false,
               type: 'numeric',
@@ -346,8 +360,21 @@
               cell: {
                 toText : function(entry) {
                   var result = entry;
+
                   if(result !=undefined)
-                    return result ;
+                  {
+                    if(result.ajout == 'Manuel') {
+
+                      var tempalteTrash = '<span class="glyphicon glyphicon-trash" aria-hidden="true" style="padding-left: 0px;"></span>';
+                      var template = [];
+                      template.push({event : 'supprimer-ligne-programme', template : tempalteTrash, disabled : !$this.edition});
+                      return {value : result.ajout, template : template ,action : true};
+
+                    }else {
+                      return {value : result, action : false};
+                    }
+
+                  }
                   else
                     return "";
                 }
@@ -496,12 +523,25 @@
               id: 'ajout',
               name: "Ajout",
               sortable: true,
-              type: 'text-centre',
+              type: 'text-with-action',
               cell: {
                 toText : function(entry) {
                   var result = entry;
+
                   if(result !=undefined)
-                    return result ;
+                  {
+                    if(result.ajout == 'Manuel') {
+
+                      var tempalteTrash = '<span class="glyphicon glyphicon-trash" aria-hidden="true" style="padding-left: 0px;"></span>';
+                      var template = [];
+                      template.push({event : 'supprimer-ligne-programme', template : tempalteTrash, disabled : !$this.edition});
+                      return {value : result.ajout, template : template ,action : true};
+
+                    }else {
+                      return {value : result, action : false};
+                    }
+
+                  }
                   else
                     return "";
                 }
@@ -577,13 +617,20 @@
         modalWaring : false,
         inProcess : false,
         backupDureeSelection : {},
-        edition : false,
-        dataLoading : false
+
+        dataLoading : false,
+        showPopupSuppression : false
       }
     },
 
     created() {
-      this.initProgramme();
+
+      if(this.programmeInfo.typeUtilisation==="CPRIVSONPH"){
+        this.defaultPageable.sort = 'sum(nbrDif)';
+      }else if (this.programmeInfo.typeUtilisation==="CPRIVSONRD") {
+        this.defaultPageable.sort = 'sum(durDif)';
+      }
+        this.initProgramme();
     },
 
     methods :{
@@ -629,7 +676,8 @@
           }
       })
         ;
-      }, initProgramme() {
+      },
+      initProgramme() {
         console.log("router params numProg = " + this.$route.params.numProg);
 
         const customActions = {
@@ -643,6 +691,7 @@
           invaliderSelection: {method: 'POST', url: 'app/rest/ligneProgramme/selection/invalider'},
           dureeProgramme: {method: 'GET', url: 'app/rest/programme/durdif?numProg={numProg}&statut={statut}'},
           annulerSelection: {method: 'POST', url: 'app/rest/ligneProgramme/selection/annuler'},
+          supprimerLigneProgramme: {method: 'DELETE', url: 'app/rest/ligneProgramme/{numProg}/{ide12}'},
         }
 
         this.resource = this.$resource('', {}, customActions);
@@ -679,7 +728,31 @@
 
       },
 
+      onSupprimerLigneProgramme(row, column) {
+        this.showPopupSuppression = true;
+        this.selectedLineProgramme = row;
+
+      },
+
+      supprimerProgramme() {
+        this.showPopupSuppression = false;
+        this.resource.supprimerLigneProgramme({numProg : this.programmeInfo.numProg, ide12 : this.selectedLineProgramme.ide12})
+          .then(response => {
+            return response.json();
+          })
+          .then(data => {
+              this.launchRequest(this.currentGridState.pageNum, this.currentGridState.pageSize, this.currentGridState.sort, this.currentGridState.dir);
+              this.getDuree(this.programmeInfo.statut);
+          });
+
+      },
+
       launchRequest(pageNum, pageSize, sort, dir) {
+
+        this.currentGridState = {
+          pageNum, pageSize, sort, dir
+        }
+
         this.resource.findLigneProgrammeByProgramme({page : pageNum -1 , size : pageSize,
           sort : sort, dir: dir}, this.filter )
           .then(response => {
@@ -790,7 +863,7 @@
           }
 
           if(this.programmeInfo.typeUtilisation==="CPRIVSONPH"){
-            this.dureeSelection.duree += entryChecked.quantite;
+            this.dureeSelection.duree += entryChecked.nbrDif;
           }else if (this.programmeInfo.typeUtilisation==="CPRIVSONRD"){
             this.dureeSelection.duree += entryChecked.durDif;
           }
@@ -818,7 +891,7 @@
           }
 
           if(this.programmeInfo.typeUtilisation==="CPRIVSONPH"){
-            this.dureeSelection.duree -= entryChecked.quantite;
+            this.dureeSelection.duree -= entryChecked.nbrDif;
           }else if (this.programmeInfo.typeUtilisation==="CPRIVSONRD"){
             this.dureeSelection.duree -= entryChecked.durDif;
           }
