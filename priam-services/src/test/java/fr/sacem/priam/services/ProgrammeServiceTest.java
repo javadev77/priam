@@ -97,13 +97,13 @@ public class ProgrammeServiceTest {
 	public void findProgrammeByCriteria_num_prog() throws Exception {
 		
 		ProgrammeCriteria criteria = new ProgrammeCriteria();
-		criteria.setNumProg("PR170001");
+		criteria.setNumProg("170001");
 		
 		Page<ProgrammeDto> programmeByCriteria = programmeService.findProgrammeByCriteria(criteria, pageable);
 		
 		assertThat(programmeByCriteria).isNotNull().isNotEmpty();
 		assertThat(programmeByCriteria.getSize()).isEqualTo(pageable.getPageSize());
-		assertThat(programmeByCriteria.getContent()).isNotEmpty().extracting("numProg").contains("PR170001");
+		assertThat(programmeByCriteria.getContent()).isNotEmpty().extracting("numProg").contains("170001");
 	}
 	
 	@Test
@@ -119,7 +119,7 @@ public class ProgrammeServiceTest {
 		
 		Programme programme = programmeService.addProgramme(programmeDto);
 		
-		assertThat(programme.getNumProg()).isEqualTo("PR17" + StringUtils.leftPad(String.valueOf(lastSeq + 1), 4, "0"));
+		assertThat(programme.getNumProg()).isEqualTo("17" + StringUtils.leftPad(String.valueOf(lastSeq + 1), 4, "0"));
 		assertThat(programme.getNom()).isEqualTo("Test-PR01");
 		assertThat(programme.getRionTheorique().getRion()).isEqualTo(619);
 		assertThat(programme.getFamille().getCode()).isEqualTo("COPIEPRIV");
