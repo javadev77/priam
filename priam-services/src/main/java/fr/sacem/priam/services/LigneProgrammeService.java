@@ -21,20 +21,20 @@ import java.util.Set;
  */
 @Component
 public class LigneProgrammeService {
-	
-	@Autowired
-    private LigneProgrammeDao ligneProgrammeDao;
-	
-	private static final Logger LOG = LoggerFactory.getLogger(LigneProgrammeService.class);
 
-	@Transactional
+    @Autowired
+    private LigneProgrammeDao ligneProgrammeDao;
+
+    private static final Logger LOG = LoggerFactory.getLogger(LigneProgrammeService.class);
+
+    @Transactional
     public List<KeyValueDto> getListIDE12ByProgramme(Long ide12, String programme) {
-		return ligneProgrammeDao.findIDE12sByProgramme(ide12, programme);
+        return ligneProgrammeDao.findIDE12sByProgramme(ide12, programme);
     }
 
     @Transactional
     public List<KeyValueDto> getTitresByProgramme(String titre, String programme) {
-        return ligneProgrammeDao.findTitresByProgramme(titre, programme);
+        return ligneProgrammeDao.findTitresByProgramme(titre.toUpperCase(), programme);
     }
 
     @Transactional
@@ -43,13 +43,13 @@ public class LigneProgrammeService {
     }
 
     @Transactional
-    public Page<SelectionDto> findLigneProgrammeByCriteria(LigneProgrammeCriteria criteria,Pageable pageable) {
-	    return ligneProgrammeDao.findLigneProgrammeByCriteria(criteria.getNumProg(),
+    public Page<SelectionDto> findLigneProgrammeByCriteria(LigneProgrammeCriteria criteria, Pageable pageable) {
+        return ligneProgrammeDao.findLigneProgrammeByCriteria(criteria.getNumProg(),
                 criteria.getUtilisateur(),
-				criteria.getIde12(),
+                criteria.getIde12(),
                 criteria.getTitre(),
                 criteria.getAjout(),
-                criteria.getSelection(),pageable);
+                criteria.getSelection(), pageable);
     }
 
     @Transactional
@@ -76,6 +76,6 @@ public class LigneProgrammeService {
 
 
     public void supprimerLigneProgramme(String numProg, Long ide12) {
-	    ligneProgrammeDao.deleteLigneProgrammeByIde12AndNumProg(numProg, ide12);
+        ligneProgrammeDao.deleteLigneProgrammeByIde12AndNumProg(numProg, ide12);
     }
 }
