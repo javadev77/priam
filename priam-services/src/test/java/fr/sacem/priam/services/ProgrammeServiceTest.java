@@ -141,15 +141,15 @@ public class ProgrammeServiceTest {
 	@Transactional
 	public void updateProgramme() throws Exception {
 		ProgrammeDto programmeDto = new ProgrammeDto();
-		programmeDto.setNumProg("PR170001");
-		programmeDto.setNom("Programme-PR170001");
+		programmeDto.setNumProg("170001");
+		programmeDto.setNom("Programme-170001");
 		programmeDto.setRionTheorique(619);
 		programmeDto.setFamille("COPIEPRIV");
 		
 		Programme programme = programmeService.updateProgramme(programmeDto);
 		
 		assertThat(programme).isNotNull();
-		assertThat(programme.getNom()).isEqualTo("Programme-PR170001");
+		assertThat(programme.getNom()).isEqualTo("Programme-170001");
 		assertThat(programme.getRionTheorique().getRion()).isEqualTo(619);
 		assertThat(programme.getFamille().getCode()).isEqualTo("COPIEPRIV");
 	}
@@ -158,7 +158,7 @@ public class ProgrammeServiceTest {
 	@Transactional
 	public void abandonnerProgramme() throws Exception {
 		ProgrammeDto programmeDto = new ProgrammeDto();
-		programmeDto.setNumProg("PR170001");
+		programmeDto.setNumProg("170001");
 		
 		Programme programme = programmeService.abandonnerProgramme(programmeDto);
 		
@@ -170,7 +170,7 @@ public class ProgrammeServiceTest {
 	@Test
 	@Transactional
 	public void test_tout_desaffecter() throws Exception {
-		String pr170001 = "PR170001";
+		String pr170001 = "170001";
 		List<Fichier> fichiersAffectes = fichierDao.findFichiersByIdProgramme(pr170001, Status.AFFECTE);
 		programmeService.toutDeaffecter(pr170001);
 		

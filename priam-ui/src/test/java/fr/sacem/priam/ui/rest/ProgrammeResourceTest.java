@@ -30,11 +30,11 @@ public class ProgrammeResourceTest extends RestResourceTest {
 
     @Autowired
     private ProgrammeViewDao programmeViewDao;
-    
+
     @Autowired
     private FichierDao fichierDao;
 
-  
+
     @Test
     public void search_programmes() throws Exception {
         mockMvc.perform(post(APP_REST_PROGRAMME_SEARCH)
@@ -47,7 +47,7 @@ public class ProgrammeResourceTest extends RestResourceTest {
     @Test
     public void search_programmes_by_numProg() throws Exception {
         ProgrammeCritereRecherche critereRecherche = new ProgrammeCritereRecherche();
-        String pr170001 = "PR170001";
+        String pr170001 = "170001";
         critereRecherche.setNumProg(pr170001);
         mockMvc.perform(post(APP_REST_PROGRAMME_SEARCH)
                .content(this.json(critereRecherche))
@@ -72,8 +72,8 @@ public class ProgrammeResourceTest extends RestResourceTest {
                 .andExpect(jsonPath("$.content[3].rionTheorique", is(expectedRion)))
                 .andExpect(jsonPath("$.content[4].rionTheorique", is(expectedRion)));
     }
-    
-    
+
+
     @Test
     public void search_programmes_by_famille() throws Exception {
         ProgrammeCritereRecherche critereRecherche = new ProgrammeCritereRecherche();
@@ -110,18 +110,18 @@ public class ProgrammeResourceTest extends RestResourceTest {
           .andExpect(jsonPath("$.content[3].typeUtilisation", is(typeUtil)))
           .andExpect(jsonPath("$.content[4].typeUtilisation", is(typeUtil)));
     }
-    
+
     @Test
     public void find_programme_by_numProg() throws Exception {
-      
+
       mockMvc.perform(
-                    get("/app/rest/programme/numProg/PR170001")
+                    get("/app/rest/programme/numProg/170001")
                   .contentType(contentType))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.numProg", is("PR170001")));
-       
+        .andExpect(jsonPath("$.numProg", is("170001")));
+
     }
-  
+
     @Test
     public void should_nom_programme_exist() throws Exception {
       String pr01 = "Programme 01";
@@ -130,9 +130,9 @@ public class ProgrammeResourceTest extends RestResourceTest {
           .contentType(contentType))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$", is(true)));
-      
+
     }
-  
+
     @Test
     public void should_nom_programme_not_exist() throws Exception {
       mockMvc.perform(
@@ -140,9 +140,9 @@ public class ProgrammeResourceTest extends RestResourceTest {
           .contentType(contentType))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$", is(false)));
-      
+
     }
-  
+
     @Test
     @Transactional
     public void add_programme() throws Exception {
@@ -153,58 +153,58 @@ public class ProgrammeResourceTest extends RestResourceTest {
           .andExpect(status().isOk())
           .andExpect(jsonPath("$.famille.code", is("COPIEPRIV")))
           .andExpect(jsonPath("$.nom", is("Test01")));
-      
+
     }
-  
+
     @Test
     @Transactional
     public void test_abandonner_programme() throws Exception {
       mockMvc.perform(
         put("/app/rest/programme/abandon")
-          .content(this.json(createProgrammeDto("PR170001","Test01", "COPIEPRIV")))
+          .content(this.json(createProgrammeDto("170001","Test01", "COPIEPRIV")))
           .contentType(contentType))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.statut", is("ABANDONNE")));
-      
+
     }
-  
+
   @Test
   @Transactional
   public void test_affecterFichiers() throws Exception {
     mockMvc.perform(
       put("/app/rest/programme/affectation")
-        .content(this.json(createAffectationDto("PR170001", Arrays.asList("F01", "F02"))))
+        .content(this.json(createAffectationDto("170001", Arrays.asList("F01", "F02"))))
         .contentType(contentType))
       .andExpect(status().isOk())
       .andExpect(jsonPath("$.statut", is("AFFECTE")));
-    
+
   }
-  
+
   @Test
   @Transactional
   public void test_affecterFichiers_all_vide() throws Exception {
     mockMvc.perform(
       put("/app/rest/programme/affectation")
-        .content(this.json(createAffectationDto("PR170001", Collections.emptyList())))
+        .content(this.json(createAffectationDto("170001", Collections.emptyList())))
         .contentType(contentType))
       .andExpect(status().isOk())
       .andExpect(jsonPath("$.statut", is("CREE")));
-    
+
   }
-  
-  
+
+
   @Test
   @Transactional
   public void test_deaffecterFichiers() throws Exception {
     mockMvc.perform(
       put("/app/rest/programme/toutDesaffecter")
-        .content("PR170001")
+        .content("170001")
         .contentType(contentType))
       .andExpect(status().isOk())
       .andExpect(jsonPath("$.statut", is("CREE")));
-    
+
   }
-  
+
   @Test
   @Transactional
   public void test_getAllNomProgForAutocmplete() throws Exception {
@@ -213,9 +213,9 @@ public class ProgrammeResourceTest extends RestResourceTest {
         .contentType(contentType))
       .andExpect(status().isOk())
       .andExpect(jsonPath("$[0]", is("Programme 01")));
-    
+
   }
-  
+
   @Test
   @Transactional
   public void test_getAllNumProgForAutocmplete() throws Exception {
@@ -223,10 +223,10 @@ public class ProgrammeResourceTest extends RestResourceTest {
       get("/app/rest/programme/numprog/autocomplete")
         .contentType(contentType))
       .andExpect(status().isOk())
-      .andExpect(jsonPath("$[0]", is("PR170001")));
-    
+      .andExpect(jsonPath("$[0]", is("170001")));
+
   }
-  
+
   private AffectationDto createAffectationDto(String numProg, List<String> fichiers) {
       AffectationDto affectationDto = new AffectationDto();
       affectationDto.setNumProg(numProg);
@@ -236,15 +236,15 @@ public class ProgrammeResourceTest extends RestResourceTest {
           Fichier fichier = new Fichier();
           fichier.setNomFichier( f);
           fichier.setStatut(Status.CHARGEMENT_OK);
-          
+
           fichierDao.save(fichier);
-  
+
           return fichier;
         }
       });
-      
+
       affectationDto.setFichiers(transform);
-      
+
       return affectationDto;
     }
     private ProgrammeDto createProgrammeDto(String numProg, String nom, String famille) {
@@ -252,12 +252,12 @@ public class ProgrammeResourceTest extends RestResourceTest {
         programmeDto.setNumProg(numProg);
         return  programmeDto;
     }
-    
+
     private ProgrammeDto createProgrammeDto(String nom, String famille) {
         ProgrammeDto dto = new ProgrammeDto();
         dto.setNom(nom);
         dto.setFamille(famille);
-        
+
         return dto;
     }
 

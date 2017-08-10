@@ -129,8 +129,8 @@ public class FichierDaoTest {
     @Test
     @Transactional
     public void clearSelectedFichiersTest(){
-        fichierDao.clearSelectedFichiers("PR170001",Status.AFFECTE);
-        List<Fichier> all = fichierDao.findFichiersByIdProgramme("PR170001",Status.AFFECTE);
+        fichierDao.clearSelectedFichiers("170001",Status.AFFECTE);
+        List<Fichier> all = fichierDao.findFichiersByIdProgramme("170001",Status.AFFECTE);
 
         assertThat(all)
                 .hasSize(0);
@@ -143,8 +143,8 @@ public class FichierDaoTest {
         idFichiers.add(126l);
         idFichiers.add(127l);
         idFichiers.add(128l);
-        fichierDao.updateStatusFichiersAffectes("PR170001",Status.AFFECTE,idFichiers);
-        List<Fichier> all = fichierDao.findFichiersByIdProgramme("PR170001",Status.AFFECTE);
+        fichierDao.updateStatusFichiersAffectes("170001",Status.AFFECTE,idFichiers);
+        List<Fichier> all = fichierDao.findFichiersByIdProgramme("170001",Status.AFFECTE);
 
         assertThat(all)
                 .hasSize(4);
@@ -152,7 +152,7 @@ public class FichierDaoTest {
     @Test
     @Transactional
     public void findFichiersByIdProgrammeTest(){
-        List<Fichier> all = fichierDao.findFichiersByIdProgramme("PR170001",Status.AFFECTE);
+        List<Fichier> all = fichierDao.findFichiersByIdProgramme("170001",Status.AFFECTE);
         assertThat(all)
                 .isNotNull()
                 .isNotEmpty()

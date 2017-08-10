@@ -111,7 +111,7 @@ public class ProgrammeViewDaoTest {
         assertThat(all.getContent()).isNotNull().isNotEmpty();
     
         all.getContent().forEach( programmeDto -> {
-            assertThat(programmeDto.getNumProg()).startsWith("PR17");
+            assertThat(programmeDto.getNumProg()).startsWith("17");
             assertThat(programmeDto.getRionTheorique()).isEqualTo(619);
         });
     }
@@ -132,13 +132,13 @@ public class ProgrammeViewDaoTest {
     @Test
     public void search_programme_by_numprog() {
         ProgrammeCriteria criteria = new ProgrammeCriteria();
-        criteria.setNumProg("PR170001");
+        criteria.setNumProg("170001");
         criteria.setStatut(Arrays.asList(StatutProgramme.values()));
         
         Page<ProgrammeDto> all = programmeViewDao.findAllProgrammeByCriteria(criteria.getNumProg(), criteria.getNom(), criteria.getStatut(), criteria.getDateCreationDebut(), criteria.getDateCreationFin(), criteria.getFamille(), criteria.getTypeUtilisation(), criteria.getRionTheorique(), criteria.getRionPaiement(), criteria.getTypeRepart(), PAGEABLE);
         
         assertThat(all).isNotNull();
-        assertThat(all.getContent()).extracting("numProg").isEqualTo(Arrays.asList("PR170001"));
+        assertThat(all.getContent()).extracting("numProg").isEqualTo(Arrays.asList("170001"));
         
     }
     
@@ -239,9 +239,9 @@ public class ProgrammeViewDaoTest {
     
     @Test @Transactional
     public void find_by_numprog() {
-        ProgrammeDto pr170001 = programmeViewDao.findByNumProg("PR170001");
+        ProgrammeDto pr170001 = programmeViewDao.findByNumProg("170001");
         
         assertThat(pr170001).isNotNull();
-        assertThat(pr170001.getNumProg()).isEqualTo("PR170001");
+        assertThat(pr170001.getNumProg()).isEqualTo("170001");
     }
 }

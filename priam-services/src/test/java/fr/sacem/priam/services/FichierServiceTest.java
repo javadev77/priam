@@ -52,9 +52,9 @@ public class FichierServiceTest {
 	@Transactional
 	public void majFichiersAffectesAuProgramme() throws Exception {
 		
-		fichierService.majFichiersAffectesAuProgramme("PR170001", Collections.emptyList());
+		fichierService.majFichiersAffectesAuProgramme("170001", Collections.emptyList());
 		
-		Programme pr170001 = programmeDao.findOne("PR170001");
+		Programme pr170001 = programmeDao.findOne("170001");
 		
 		assertThat(pr170001).isNotNull();
 		assertThat(pr170001.getStatut()).isEqualTo(StatutProgramme.CREE);
