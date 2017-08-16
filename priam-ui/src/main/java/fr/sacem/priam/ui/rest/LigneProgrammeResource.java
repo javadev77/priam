@@ -41,20 +41,7 @@ public class LigneProgrammeResource {
   private LigneProgrammeDao ligneProgrammeDao;
 
   private static Logger logger = LoggerFactory.getLogger(LigneProgrammeResource.class);
-/*
-  @RequestMapping(value = "ligneProgramme/numprog",
-    method = RequestMethod.POST,
-    consumes = MediaType.APPLICATION_JSON_VALUE,
-    produces = MediaType.APPLICATION_JSON_VALUE)
-  Page<SelectionDto> findLigneProgrammeByProgrammeId(@RequestBody String numProg, Pageable pageable){
 
-    Page<LigneProgramme> ligneProgrammes = ligneProgrammeDao.findLigneProgrammeByProgrammeId(numProg,pageable);
-    Page<SelectionDto> dtoPage =ligneProgrammes.map(convert());
-    logger.info("Nbr de lignes programmes pour le programme :"+numProg+" est de :"+ ligneProgrammes.getTotalElements());
-
-    return dtoPage;
-  }
-*/
   @RequestMapping(value = "ligneProgramme/search",
     method = RequestMethod.POST,
     consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -80,9 +67,6 @@ public class LigneProgrammeResource {
 
     Page<SelectionDto> ligneProgrammes = ligneProgrammeService.findLigneProgrammeByCriteria(criteria,pageable);
 
-    //Page<SelectionDto> dtoPage =ligneProgrammes.map(convert());
-    //logger.info("Nbr de lignes programmes pour le programme :"+ligneProgramme.getNumProg()+" est de :"+ ligneProgrammes.getTotalElements());
-
     return ligneProgrammes;
   }
 
@@ -90,24 +74,6 @@ public class LigneProgrammeResource {
     return SELECTIONNE.equals(selection);
   }
 
-/*
-  private Converter<LigneProgramme, SelectionDto> convert() {
-    return source -> {
-      SelectionDto selectionDto=new  SelectionDto();
-      selectionDto.setRoleParticipant1(source.getRoleParticipant1());
-      selectionDto.setIde12(source.getIde12());
-      selectionDto.setAjout(source.getAjout());
-      selectionDto.setDuree(source.getDurDif());
-      selectionDto.setNomParticipant1(source.getNomParticipant1());
-      selectionDto.setUtilisateur(source.getUtilisateur());
-      selectionDto.setQuantite(0l);
-      selectionDto.setTitreOeuvre(source.getTitreOeuvre());
-      selectionDto.setSelection(source.getSelection());
-      selectionDto.setId(source.getId());
-      return selectionDto;
-    };
-  }
-*/
   @RequestMapping(value = "ligneProgramme/ide12",
     method = RequestMethod.GET,
     consumes = MediaType.APPLICATION_JSON_VALUE,
