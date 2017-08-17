@@ -45,8 +45,9 @@
       <div class="col-sm-8">
         {{ getTypeUtilisationByCode(programmeInfo.typeUtilisation) !== undefined ? getTypeUtilisationByCode(programmeInfo.typeUtilisation).value : '' }}
       </div>
-
     </div>
+
+      <br/>
       <!-- 3 eme ligne -->
       <div class="row">
         <div class="col-sm-8">
