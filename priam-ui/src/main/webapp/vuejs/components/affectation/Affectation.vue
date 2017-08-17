@@ -640,7 +640,6 @@
                 if(tab[i] && tab[i].statut == 'AFFECTE') {
                   this.fichiersChecked.push(tab[i].id);
                 }
-
               }
 
               console.log("length this.fichiersChecked=" + this.fichiersChecked.length);
@@ -652,6 +651,21 @@
 
         retablir() {
 
+            if('CREE' == this.programmeInfo.statut) {
+
+              this.familleSelected = this.getFamilleByCode(this.programmeInfo.famille);
+              this.typeUtilisationSelected = this.getTypeUtilisationByCode(this.programmeInfo.typeUtilisation);
+              this.statutSelected = {id : 'ALL', value : 'Toutes'};
+            }
+            else {
+              this.familleSelected = {id : 'ALL', value : 'Toutes'};
+              this.typeUtilisationSelected = {id : 'ALL', value : 'Tous'};
+
+              let statut = this.getStatutFichierByCode('AFFECTE');
+              this.statutSelected = { 'id' : statut.code, 'value': statut.libelle };
+            }
+
+            this.rechercher();
         },
 
         onEntryChecked(isChecked, entryChecked) {
