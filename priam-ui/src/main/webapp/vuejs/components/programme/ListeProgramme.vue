@@ -147,6 +147,7 @@
               @cellClick="onCellClick"
               @update-programme="onUpdateProgramme"
               @abondon-programme="onAbondonProgramme"
+              @mise-en-repart="onMiseEnRepartition"
               @load-page="loadPage"
               @on-sort="onSort">
             </priam-grid>
@@ -175,6 +176,13 @@
       </template>
     </modal>
 
+    <template v-if="showEcranModalMisEnRepart">
+      <mise-en-repartition-programme
+        :numProg = "selectedProgramme.numProg"
+        @cancel="showEcranModalMisEnRepart = false">
+
+      </mise-en-repartition-programme>
+    </template>
   </div>
 </template>
 
@@ -190,6 +198,8 @@
   import Modal from '../common/Modal.vue';
   import Autocomplete from '../common/Autocomplete.vue'
   import Select2 from '../common/Select2.vue';
+  import MiseEnRepartitionProgramme from './MiseEnRepartitionProgramme.vue';
+
 
   export default {
 
@@ -206,7 +216,7 @@
             showEcranModal : false,
             showPopupAbandon : false,
             ecranAjouterProgramme : false,
-
+            showEcranModalMisEnRepart : false,
             resource : {},
 
             defaultPageable : {
@@ -362,12 +372,10 @@
                   cell : {
                     cellTemplate: function (cellValue) {
                       var tempalteRepartABlanc = '<img src="static/images/iconescontextes/transfertgestionnaire.gif" width="20px"/>';
-                      var tempalteMiseEnRepart = '<span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>';
                       var statusCode = cellValue.statut;
                       var template = [];
                       if(statusCode !== undefined && 'VALIDE' === statusCode) {
-                        template.push({event : 'nop', template : tempalteMiseEnRepart});
-                        template.push({event : 'nop', template : tempalteRepartABlanc});
+                        template.push({event : 'mise-en-repart', template : tempalteRepartABlanc});
                         return template;
                       }
                       return '';
@@ -683,6 +691,15 @@
 
               });
 
+          },
+
+
+          onMiseEnRepartition(row, column) {
+            console.log('--- onMiseEnRepartition button click---');
+            this.showEcranModalMisEnRepart = true;
+            this.selectedProgramme = row;
+            console.log('--- selectedProgramme numProg = ' + this.selectedProgramme.numProg);
+
           }
 
 
@@ -697,7 +714,8 @@
           datePicker : DatePicker,
           modal: Modal,
           autocomplete : Autocomplete,
-          select2 :Select2
+          select2 :Select2,
+          miseEnRepartitionProgramme : MiseEnRepartitionProgramme
       }
 
   }
