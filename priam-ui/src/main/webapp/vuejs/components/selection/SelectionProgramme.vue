@@ -340,7 +340,7 @@
             {
               id: 'nbrDif',
               name: "Quantité",
-              sortable: false,
+              sortable: true,
               type: 'numeric',
               cell: {
                 toText : function(entry) {
@@ -506,7 +506,7 @@
             {
               id: 'durDif',
               name: "Durée",
-              sortable: false,
+              sortable: true,
               type: 'seconds-as-time',
               cell: {
                 toText : function(entry) {
@@ -626,9 +626,9 @@
     created() {
 
       if(this.programmeInfo.typeUtilisation==="CPRIVSONPH"){
-        this.defaultPageable.sort = 'sum(nbrDif)';
+        this.defaultPageable.sort = 'nbrDif';
       }else if (this.programmeInfo.typeUtilisation==="CPRIVSONRD") {
-        this.defaultPageable.sort = 'sum(durDif)';
+        this.defaultPageable.sort = 'durDif';
       }
         this.initProgramme();
     },

@@ -1,5 +1,6 @@
 package fr.sacem.priam.services;
 
+import fr.sacem.priam.common.TypeUtilisationEnum;
 import fr.sacem.priam.model.dao.jpa.*;
 
 
@@ -207,9 +208,9 @@ public class ProgrammeService {
 			}
 
 
-			if("CPRIVSONPH".equals(programme.getTypeUtilisation().getCode())) {
+			if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_PHONO.getCode().equals(programme.getTypeUtilisation().getCode())) {
 				durDif.add(new KeyValueDto(programmeDao.sommeQuantiteDeToutLesOeuvres(numProg), "SOMME"));
-			} else if("CPRIVSONRD".equals(programme.getTypeUtilisation().getCode())) {
+			} else if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode().equals(programme.getTypeUtilisation().getCode())) {
 				durDif.add(new KeyValueDto(programmeDao.sommeDureeDeToutLesOeuvres(numProg), "SOMME"));
 			}
 		}
@@ -221,9 +222,9 @@ public class ProgrammeService {
 				durDif.add(new KeyValueDto(((BigInteger) indObjects[0]).longValue(), (String) indObjects[1]));
 			}
 
-			if("CPRIVSONPH".equals(programme.getTypeUtilisation().getCode())) {
+			if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_PHONO.getCode().equals(programme.getTypeUtilisation().getCode())) {
 				durDif.add(new KeyValueDto(programmeDao.sommeQuantiteDesOeuvresSelectionnees(numProg), "SOMME"));
-			} else if("CPRIVSONRD".equals(programme.getTypeUtilisation().getCode())) {
+			} else if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode().equals(programme.getTypeUtilisation().getCode())) {
 				durDif.add(new KeyValueDto(programmeDao.sommeDureeDesOeuvresSelectionnees(numProg), "SOMME"));
 			}
 		}
