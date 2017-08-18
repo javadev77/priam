@@ -4,7 +4,6 @@ import fr.sacem.priam.common.TypeUtilisationEnum;
 import fr.sacem.priam.model.dao.jpa.LigneProgrammeDao;
 import fr.sacem.priam.model.dao.jpa.ProgrammeDao;
 import fr.sacem.priam.model.domain.Programme;
-import fr.sacem.priam.model.domain.TypeUtilisation;
 import fr.sacem.priam.model.domain.criteria.LigneProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.SelectionDto;
