@@ -110,6 +110,7 @@ public class LigneProgrammeServiceTest {
     @Test
     public void findLigneProgrammeByCriteria() throws Exception {
         LigneProgrammeCriteria criteria = new LigneProgrammeCriteria();
+        criteria.setNumProg(NUM_PROG);
         criteria.setIde12(IDE12);
         Page<SelectionDto> ligneProgrammeByCriteria = ligneProgrammeService.findLigneProgrammeByCriteria(criteria, pageable);
         assertThat(ligneProgrammeByCriteria).isNotNull();

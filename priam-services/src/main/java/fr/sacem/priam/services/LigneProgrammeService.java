@@ -76,18 +76,19 @@ public class LigneProgrammeService {
             public Sort getSort() {
 
                 Sort sort = pageable.getSort();
+
+                if(sort == null)
+                    return sort;
+
                 Sort.Order sortBy = sort.iterator().next();
 
-                if(!"nbrDif".equals(sortBy.getProperty()) && !"durDif".equals(sortBy.getProperty())) {
-                    return sort;
+                if("nbrDif".equals(sortBy.getProperty()) || "durDif".equals(sortBy.getProperty())) {
+                    if (TypeUtilisationEnum.COPIE_PRIVEE_SONORE_PHONO.getCode().equals(programme.getTypeUtilisation().getCode())) {
+                        sort = JpaSort.unsafe(sortBy.getDirection(), "sum(ligneProgramme.nbrDif)");
+                    } else if (TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode().equals(programme.getTypeUtilisation().getCode())) {
+                        sort = JpaSort.unsafe(sortBy.getDirection(), "sum(ligneProgramme.durDif)");
+                    }
                 }
-
-                if (TypeUtilisationEnum.COPIE_PRIVEE_SONORE_PHONO.getCode().equals(programme.getTypeUtilisation().getCode())) {
-                    sort = JpaSort.unsafe(sortBy.getDirection(), "sum(ligneProgramme.nbrDif)");
-                } else if (TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode().equals(programme.getTypeUtilisation().getCode())) {
-                    sort = JpaSort.unsafe(sortBy.getDirection(), "sum(ligneProgramme.durDif)");
-                }
-
                 return sort;
             }
 
