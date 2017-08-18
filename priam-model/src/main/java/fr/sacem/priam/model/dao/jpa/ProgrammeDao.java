@@ -34,32 +34,12 @@ public interface ProgrammeDao extends JpaRepository<Programme, String> {
             "           PRIAM_FICHIER as f on l.ID_FICHIER=f.ID " +
             "       WHERE " +
             "           f.numProg = ?1 " +
-            "       AND " +
-            "           l.selection = 1 " +
+                    "AND (?2 IS NULL OR l.selection = ?2) " +
             "       GROUP BY " +
             "           l.ide12, l.ajout" +
             "       ) result " +
             "GROUP BY ajout")
-    List<Object> compterOuvreSelectionnee(@Param("numProg") String numProg);
-
-    @Transactional(readOnly = true)
-    @Query(nativeQuery = true, value =
-            "SELECT " +
-                    "count(duree), ajout" +
-                    " from ( " +
-                    "       SELECT " +
-                    "           count(l.durDif) duree, l.ide12, l.ajout " +
-                    "       FROM " +
-                    "           PRIAM_LIGNE_PROGRAMME l " +
-                    "       inner join " +
-                    "           PRIAM_FICHIER as f on l.ID_FICHIER=f.ID " +
-                    "       WHERE " +
-                    "           f.numProg = ?1 " +
-                    "       GROUP BY " +
-                    "           l.ide12, l.ajout" +
-                    "       ) result " +
-                    "GROUP BY ajout")
-    List<Object> compterToutLesOeuvre(@Param("numProg") String numProg);
+    List<Object> compterOuvres(@Param("numProg") String numProg, @Param("selection") Integer selection);
 
     @Transactional(readOnly = true)
     @Query(nativeQuery = true, value =
@@ -70,22 +50,9 @@ public interface ProgrammeDao extends JpaRepository<Programme, String> {
                     "on l.ID_FICHIER=f.ID " +
                     "WHERE " +
                     "f.numProg = ?1 " +
+                    "AND (?2 IS NULL OR l.selection = ?2) " +
                     "GROUP BY l.ide12) result ")
-    Long sommeDureeDeToutLesOeuvres(@Param("numProg") String numProg);
-
-    @Transactional(readOnly = true)
-    @Query(nativeQuery = true, value =
-            "SELECT sum(duree) from ( SELECT " +
-                    "sum(l.durDif) duree, l.ide12 " +
-                    "FROM " +
-                    "PRIAM_LIGNE_PROGRAMME l inner join PRIAM_FICHIER as f " +
-                    "on l.ID_FICHIER=f.ID " +
-                    "WHERE " +
-                    "f.numProg = ?1 " +
-                    "AND l.selection = 1 " +
-                    "GROUP BY l.ide12) result " +
-                    " ")
-    Long sommeDureeDesOeuvresSelectionnees(@Param("numProg") String numProg);
+    Long calculerDureeOeuvres(@Param("numProg") String numProg, @Param("selection") Integer selection);
 
     @Transactional(readOnly = true)
     @Query(nativeQuery = true, value =
@@ -96,19 +63,8 @@ public interface ProgrammeDao extends JpaRepository<Programme, String> {
                     "inner join PRIAM_FICHIER as f " +
                     "on l.ID_FICHIER=f.ID " +
                     "WHERE f.numProg = ?1 " +
+                    "AND (?2 IS NULL OR l.selection = ?2) " +
                     "GROUP BY l.ide12) result")
-    Long sommeQuantiteDeToutLesOeuvres(@Param("numProg") String numProg);
+    Long calculerQuantiteOeuvres(@Param("numProg") String numProg, @Param("selection") Integer selection);
 
-    @Transactional(readOnly = true)
-    @Query(nativeQuery = true, value =
-            "SELECT sum(quantite) from ( SELECT " +
-                    "sum(l.nbrDif) quantite, l.ide12 " +
-                    "FROM " +
-                    "PRIAM_LIGNE_PROGRAMME l " +
-                    "inner join PRIAM_FICHIER as f " +
-                    "on l.ID_FICHIER=f.ID " +
-                    "WHERE f.numProg = ?1 " +
-                    "AND l.selection = 1 " +
-                    "GROUP BY l.ide12) result")
-    Long sommeQuantiteDesOeuvresSelectionnees(@Param("numProg") String numProg);
 }

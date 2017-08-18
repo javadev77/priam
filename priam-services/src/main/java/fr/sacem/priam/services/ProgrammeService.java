@@ -28,9 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigInteger;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static fr.sacem.priam.services.FichierService.GUEST;
 
@@ -39,7 +37,12 @@ import static fr.sacem.priam.services.FichierService.GUEST;
  */
 @Component
 public class ProgrammeService {
-	
+
+	private static final String SOMME = "SOMME";
+	public static final int SELECTION = 1;
+	public static final String AUTOMATIQUE = "Automatique";
+	public static final String MANUEL = "Manuel";
+
 	@Autowired
 	ProgrammeViewDao programmeViewDao;
 	
@@ -84,7 +87,7 @@ public class ProgrammeService {
 		}
 		if (max_value == null)
 			max_value = "0";
-		Long max_value_to_add = Long.valueOf(max_value) + 1;
+		Long max_value_to_add = Long.valueOf(max_value) + SELECTION;
 		String formated_max_value_to_add = StringUtils.leftPad(max_value_to_add.toString(), 4, "0");
 		programmeKey.setAnnee(year);
 		programmeKey.setCodeSequence(max_value_to_add);
@@ -185,6 +188,7 @@ public class ProgrammeService {
 		return programmeDao.saveAndFlush(programme);
 	}
 
+	@Transactional
 	public Programme invaliderProgramme(ProgrammeDto programmeDto) {
 		Programme programme = programmeDao.findOne(programmeDto.getNumProg());
 		programme.setStatut(StatutProgramme.EN_COURS);
@@ -193,51 +197,39 @@ public class ProgrammeService {
 		return programmeDao.saveAndFlush(programme);
 	}
 
-	public List<KeyValueDto> getDurDifProgramme(String numProg, String statut){
-		List<KeyValueDto> durDif = new ArrayList<>();
+	public Map<String, Long> getDurDifProgramme(String numProg, String statut){
+
+		Map<String, Long> result = new HashMap<>();
+		result.put(AUTOMATIQUE, 0L);
+		result.put(MANUEL, 0L);
+		result.put(SOMME, 0L);
 
 		Programme programme = programmeDao.findOne(numProg);
 
-		if(StatutProgramme.AFFECTE.equals(StatutProgramme.valueOf(statut))) {
+		Integer selection = StatutProgramme.AFFECTE.equals(StatutProgramme.valueOf(statut)) ? null : SELECTION;
 
-			List<Object> prog = programmeDao.compterToutLesOeuvre(numProg);
+		List<Object> prog = programmeDao.compterOuvres(numProg, selection);
 
-			for (Object indicateur : prog) {
-				Object[] indObjects = (Object[]) indicateur;
-				durDif.add(new KeyValueDto(((BigInteger) indObjects[0]).longValue(), (String) indObjects[1]));
-			}
-
-
-			if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_PHONO.getCode().equals(programme.getTypeUtilisation().getCode())) {
-				durDif.add(new KeyValueDto(programmeDao.sommeQuantiteDeToutLesOeuvres(numProg), "SOMME"));
-			} else if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode().equals(programme.getTypeUtilisation().getCode())) {
-				durDif.add(new KeyValueDto(programmeDao.sommeDureeDeToutLesOeuvres(numProg), "SOMME"));
-			}
-		}
-		else {
-
-			List<Object> prog = programmeDao.compterOuvreSelectionnee(numProg);
-			for (Object indicateur : prog) {
-				Object[] indObjects = (Object[]) indicateur;
-				durDif.add(new KeyValueDto(((BigInteger) indObjects[0]).longValue(), (String) indObjects[1]));
-			}
-
-			if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_PHONO.getCode().equals(programme.getTypeUtilisation().getCode())) {
-				durDif.add(new KeyValueDto(programmeDao.sommeQuantiteDesOeuvresSelectionnees(numProg), "SOMME"));
-			} else if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode().equals(programme.getTypeUtilisation().getCode())) {
-				durDif.add(new KeyValueDto(programmeDao.sommeDureeDesOeuvresSelectionnees(numProg), "SOMME"));
-			}
+		for (Object indicateur : prog) {
+			Object[] indObjects = (Object[]) indicateur;
+			result.put((String) indObjects[1], ((BigInteger) indObjects[0]).longValue());
 		}
 
-    	return durDif;
+		if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_PHONO.getCode().equals(programme.getTypeUtilisation().getCode())) {
+			result.put(SOMME, programmeDao.calculerQuantiteOeuvres(numProg, selection));
+		} else if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode().equals(programme.getTypeUtilisation().getCode())) {
+			result.put(SOMME, programmeDao.calculerDureeOeuvres(numProg, selection));
+		}
+
+    	return result;
 	}
 
+	@Transactional
 	public Programme updateStatutProgrammeToAffecte(ProgrammeDto programmeDTO) {
 		Programme programme = programmeDao.findOne(programmeDTO.getNumProg());
 		programme.setStatut(StatutProgramme.AFFECTE);
 		programme.setUseraffect(GUEST);
 		programme.setDataffect(new Date());
-
 		return programmeDao.saveAndFlush(programme);
 	}
 }

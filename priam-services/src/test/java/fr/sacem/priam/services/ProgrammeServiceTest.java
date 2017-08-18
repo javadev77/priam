@@ -24,6 +24,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -33,7 +34,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes={JpaConfigurationTest.class, ConfigurationTest.class})
 public class ProgrammeServiceTest {
-	
+
+	public static final String NUM_PROG = "170001";
+	public static final String AFFECTE = "AFFECTE";
 	@Autowired
 	ProgrammeService programmeService;
 	
@@ -97,13 +100,13 @@ public class ProgrammeServiceTest {
 	public void findProgrammeByCriteria_num_prog() throws Exception {
 		
 		ProgrammeCriteria criteria = new ProgrammeCriteria();
-		criteria.setNumProg("170001");
+		criteria.setNumProg(NUM_PROG);
 		
 		Page<ProgrammeDto> programmeByCriteria = programmeService.findProgrammeByCriteria(criteria, pageable);
 		
 		assertThat(programmeByCriteria).isNotNull().isNotEmpty();
 		assertThat(programmeByCriteria.getSize()).isEqualTo(pageable.getPageSize());
-		assertThat(programmeByCriteria.getContent()).isNotEmpty().extracting("numProg").contains("170001");
+		assertThat(programmeByCriteria.getContent()).isNotEmpty().extracting("numProg").contains(NUM_PROG);
 	}
 	
 	@Test
@@ -141,7 +144,7 @@ public class ProgrammeServiceTest {
 	@Transactional
 	public void updateProgramme() throws Exception {
 		ProgrammeDto programmeDto = new ProgrammeDto();
-		programmeDto.setNumProg("170001");
+		programmeDto.setNumProg(NUM_PROG);
 		programmeDto.setNom("Programme-170001");
 		programmeDto.setRionTheorique(619);
 		programmeDto.setFamille("COPIEPRIV");
@@ -158,7 +161,7 @@ public class ProgrammeServiceTest {
 	@Transactional
 	public void abandonnerProgramme() throws Exception {
 		ProgrammeDto programmeDto = new ProgrammeDto();
-		programmeDto.setNumProg("170001");
+		programmeDto.setNumProg(NUM_PROG);
 		
 		Programme programme = programmeService.abandonnerProgramme(programmeDto);
 		
@@ -170,7 +173,7 @@ public class ProgrammeServiceTest {
 	@Test
 	@Transactional
 	public void test_tout_desaffecter() throws Exception {
-		String pr170001 = "170001";
+		String pr170001 = NUM_PROG;
 		List<Fichier> fichiersAffectes = fichierDao.findFichiersByIdProgramme(pr170001, Status.AFFECTE);
 		programmeService.toutDeaffecter(pr170001);
 		
@@ -193,6 +196,43 @@ public class ProgrammeServiceTest {
 		List<String> allNomProgByCriteria = programmeService.findAllNomProgByCriteria();
 		
 		assertThat(allNomProgByCriteria).isNotNull();
+	}
+
+	@Test
+	@Transactional
+	public void validerProgramme() {
+		ProgrammeDto programmeDto = new ProgrammeDto();
+		programmeDto.setNumProg(NUM_PROG);
+		Programme programme = programmeService.validerProgramme(programmeDto);
+		assertThat(programme).isNotNull();
+		assertThat(programme.getStatut()).isEqualTo(StatutProgramme.VALIDE);
+	}
+
+	@Test
+	@Transactional
+	public void invaliderProgramme() {
+		ProgrammeDto programmeDto = new ProgrammeDto();
+		programmeDto.setNumProg(NUM_PROG);
+		Programme programme = programmeService.invaliderProgramme(programmeDto);
+		assertThat(programme).isNotNull();
+		assertThat(programme.getStatut()).isEqualTo(StatutProgramme.EN_COURS);
+	}
+
+	@Test
+	public void getDurDifProgramme(){
+		Map<String, Long> durDifProgramme = programmeService.getDurDifProgramme(NUM_PROG, AFFECTE);
+		assertThat(durDifProgramme).isNotEmpty();
+		assertThat(durDifProgramme.size()).isEqualTo(3);
+	}
+
+	@Test
+	@Transactional
+	public void updateStatutProgrammeToAffecte() {
+		ProgrammeDto programmeDto = new ProgrammeDto();
+		programmeDto.setNumProg(NUM_PROG);
+		Programme programme = programmeService.updateStatutProgrammeToAffecte(programmeDto);
+		assertThat(programme).isNotNull();
+		assertThat(programme.getStatut()).isEqualTo(StatutProgramme.AFFECTE);
 	}
 	
 }
