@@ -167,6 +167,12 @@
       <artifactId>json-path-assert</artifactId>
       <scope>test</scope>
     </dependency>
+
+    <dependency>
+      <groupId>fr.sacem.fwk</groupId>
+      <artifactId>sacem-fwkcore</artifactId>
+      <version>5.3.9</version>
+    </dependency>
   </dependencies>
 
   <build>

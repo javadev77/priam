@@ -9,6 +9,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.web.servlet.config.annotation.*;
 
+//import static fr.sacem.fwk.config.Environment.getParameter;
+
 /**
  * Created by benmerzoukah on 19/04/2017.
  */
@@ -50,7 +52,7 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         //TODO Ajouter un check en fonction du mode de l'application
-        if("dev".equalsIgnoreCase(webappMode)) {
+      if("dev".equalsIgnoreCase(this.webappMode)) {
             registry.addMapping("/app/rest/**")
                     .allowedMethods("PUT", "DELETE", "GET", "POST")
                     .allowedOrigins(vuejsDevServerUrl);
