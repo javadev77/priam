@@ -97,8 +97,32 @@
                   <span class="icons"><span class="first-icon fui-radio-unchecked"></span><span class="second-icon fui-radio-checked"></span></span>
                 </label>
               </div>
-
             </div>
+
+            <div class="row espacement">
+              <div class="col-sm-2">
+                <label class="control-label pull-right">Date de début</label>
+              </div>
+              <div class="col-sm-2">
+                <date-picker @update-date="updateDebutProgramme" :value="dateDebutProgramme" date-format="dd/mm/yy" :zeroHour="true"></date-picker>
+              </div>
+              <div class="col-sm-2">
+                <label class="control-label pull-right">Date de fin</label>
+              </div>
+              <div class="col-sm-2">
+                <date-picker @update-date="updateDateFinProgramme" :value="dateFinProgramme" date-format="dd/mm/yy" :zeroHour="true"></date-picker>
+              </div>
+              <div class="col-sm-2" :class="{'has-error': errors.has('territoire') }">
+                <label class="control-label pull-right">Territoire</label>
+              </div>
+              <div class="col-sm-3" >
+                <v-select name="territoire" v-validate="'required'" :searchable="true" label="value" v-model="territoireSelected"
+                          :options="territoireOptions" :classValidate="{'has-error': errors.has('territoire') }">
+                </v-select>
+
+              </div>
+            </div>
+
           </form>
         </div>
 
@@ -135,6 +159,7 @@
 <script>
   import vSelect from '../common/Select.vue';
   import Modal from '../common/Modal.vue';
+  import DatePicker from '../common/DatePicker.vue';
 
   export default {
     data(){
@@ -159,7 +184,14 @@
         },
         formSubmitted: false,
 
-        nomProgrammeMemeRion : ''
+        nomProgrammeMemeRion : '',
+
+        dateDebutProgramme : null,
+        dateFinProgramme : null,
+        territoireSelected : {
+            id : 250,
+            value : 'FRANCE'
+        }
 
       }
     },
@@ -179,6 +211,10 @@
       rionTheoriqueOptions() {
         return this.$store.getters.rionsAddProg;
       },
+      territoireOptions() {
+        return this.$store.getters.territoire;
+      },
+
     },
     methods: {
       loadTypeUtilisation(val) {
@@ -221,6 +257,10 @@
           this.programmeData.famille=this.familleSelected.id;
           this.programmeData.typeRepart=this.typeRepart;
           this.programmeData.rionTheorique=this.rionTheoriqueSelected.id;
+          this.programmeData.dateDbtPrg=this.dateDebutProgramme;
+          this.programmeData.dateFinPrg=this.dateFinProgramme;
+          this.programmeData.cdeTer=this.territoireSelected.id;
+
           this.resource.addProgramme(this.programmeData).then(response => {
             console.log("ajout ok");
             this.$emit('validate');
@@ -273,13 +313,22 @@
         this.showModalMemeRion = false;
         this.ajouterUnProgramme()
 
-      }
+      },
+
+      updateDebutProgramme(date) {
+        this.dateDebutProgramme = date;
+      },
+
+      updateDateFinProgramme(date) {
+        this.dateFinProgramme = date;
+      },
 
 
     },
     components: {
       vSelect: vSelect,
-      modal : Modal
+      modal : Modal,
+      datePicker : DatePicker,
     },
     created(){
       const customActions = {
@@ -293,6 +342,11 @@
   }
 </script>
 <style>
+
+  .dropdown-menu {
+    overflow-y: auto;
+  }
+
   .espacement {
     height: 30px;
     margin-top: 10px;

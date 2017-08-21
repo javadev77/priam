@@ -27,85 +27,9 @@
 
           <!--Body Panel-->
           <div class="panel-collapse" :class="{collapse : isCollapsed}">
-            <div class="panel-body">
-              <div class="row">
-
-                <div class="col-sm-2">
-                  <span class="pull-right blueText">N° programme</span>
-                </div>
-                <div class="col-sm-2">
-                  {{ programmeInfo.numProg }}
-                </div>
-
-                <div class="col-sm-2">
-                  <span class="pull-right blueText">Statut</span>
-                </div>
-                <div class="col-sm-2">
-                  {{ getStatutProgrammeByCode(programmeInfo.statut) !== undefined ? getStatutProgrammeByCode(programmeInfo.statut).libelle : '' }}
-                </div>
-
-                <div class="col-sm-2">
-                  <span class="pull-right blueText"></span>
-                </div>
-                <div class="col-sm-3">
-                  {{ getFamilleByCode(programmeInfo.famille) !== undefined ? getFamilleByCode(programmeInfo.famille).value : '' }}
-                </div>
-
-                <div class="col-sm-2">
-                  <span class="pull-right blueText">Nb fichiers affectés</span>
-                </div>
-                <div class="col-sm-2">
-                  {{ programmeInfo.fichiers }}
-                </div>
-
-                <div class="col-sm-2">
-                  <span class="pull-right blueText">Créé par</span>
-                </div>
-                <div class="col-sm-2">
-                  {{ programmeInfo.usercre }}
-                </div>
-              </div>
-
-              <br/>
-              <!-- 2 eme ligne -->
-              <div class="row">
-
-                <div class="col-sm-2">
-                  <span class="pull-right blueText">Nom</span>
-                </div>
-                <div class="col-sm-2">
-                  {{ programmeInfo.nom }}
-                </div>
-
-                <div class="col-sm-2">
-                  <span class="pull-right blueText">Rion théorique</span>
-                </div>
-                <div class="col-sm-2">
-                  {{ programmeInfo.rionTheorique }}
-                </div>
-
-                <div class="col-sm-2">
-                  <span class="pull-right blueText">Type d'utilisation</span>
-                </div>
-                <div class="col-sm-3">
-                  {{ getTypeUtilisationByCode(programmeInfo.typeUtilisation) !== undefined ? getTypeUtilisationByCode(programmeInfo.typeUtilisation).value : '' }}
-                </div>
-
-                <div class="col-sm-2">
-                  <span class="pull-right blueText">Mode répartition</span>
-                </div>
-                <div class="col-sm-2">
-                  {{ getModeRepartitionByCode(programmeInfo.typeRepart) !== undefined ?  getModeRepartitionByCode(programmeInfo.typeRepart).value : '' }}
-                </div>
-
-                <div class="col-sm-2">
-                  <span class="pull-right blueText">Date création</span>
-                </div>
-                <div class="col-sm-2">
-                  {{ programmeInfo.dateCreation }}
-                </div>
-              </div>
-            </div>
+            <app-programme-info
+              :programmeInfo="programmeInfo">
+            </app-programme-info>
           </div>
         </div>
       </div>
@@ -236,6 +160,7 @@
   import FiltreSelection from './FiltreSelection.vue';
   import InformationsSelection from './InformationsSelection.vue';
   import ActionSelection from './ActionSelection.vue';
+  import ProgrammeInfo from '../programme/ProgrammeInfo.vue';
 
   export default {
     mixins: [chargementMixins],
@@ -1179,7 +1104,8 @@
       modal: Modal,
       appFiltreSelection : FiltreSelection,
       appInformationsSelection : InformationsSelection,
-      appActionSelection : ActionSelection
+      appActionSelection : ActionSelection,
+      appProgrammeInfo : ProgrammeInfo
     }
   }
 

@@ -1,7 +1,6 @@
 package fr.sacem.priam.model.dao.jpa;
 
 import fr.sacem.priam.model.domain.LigneProgramme;
-import fr.sacem.priam.model.domain.LibelleUtilisateur;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.SelectionDto;
 import org.springframework.data.domain.Page;

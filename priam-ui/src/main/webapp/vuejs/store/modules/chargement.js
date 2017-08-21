@@ -6,6 +6,7 @@ const state = {
   typeUtilisationOptions : [],
   typeUtilisationOptions_vide : [],
   familleTypeUtilMap : {},
+  territoire : [],
 
   statutFichier : {
     EN_COURS: {
@@ -117,7 +118,11 @@ const mutations = {
         }
 
       }
-  }
+  },
+
+  'SET_TERRITOIRE_MAP' (state, data) {
+    state.territoire = data;
+  },
 
 };
 
@@ -170,6 +175,10 @@ const getters = {
 
   statutFichier :state => {
     return state.statutFichier;
+  },
+
+  territoire :state => {
+    return state.territoire;
   }
 
 };

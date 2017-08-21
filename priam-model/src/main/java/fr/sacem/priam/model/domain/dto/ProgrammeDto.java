@@ -10,6 +10,7 @@ import java.util.Date;
  * Created by benmerzoukah on 28/04/2017.
  */
 public class ProgrammeDto {
+
 	private String numProg;
 	private String nom;
 	private String famille;
@@ -27,6 +28,12 @@ public class ProgrammeDto {
 	private String usermaj;
 	private Date dataffecte;
 	private String useraffecte;
+
+	@JsonSerialize(using = SimpleDateSerializer.class)
+	private Date dateDbtPrg;
+	@JsonSerialize(using = SimpleDateSerializer.class)
+	private Date dateFinPrg;
+	private Integer cdeTer;
 	
 	public ProgrammeDto(String numProg, String nom, Famille famille, TypeUtilisation typeUtilisation, Rion rionTheorique,
 	                    Date dateCreation, TypeRepart typeRepart, StatutProgramme statut, Rion rionPaiement, Long nbFichiers,
@@ -47,7 +54,7 @@ public class ProgrammeDto {
 		this.dataffecte = dataffecte;
 		this.useraffecte = useraffecte;
 	}
-	
+
 	public ProgrammeDto(String numProg, String nom, String famille, String typeUtilisation, Integer rionTheorique, Date dateCreation, TypeRepart typeRepart,
 	                    StatutProgramme statut, Integer rionPaiement, Long fichiers, String usercre, Date datmaj, String usermaj,
 	                    Date dataffecte, String useraffecte) {
@@ -66,6 +73,20 @@ public class ProgrammeDto {
 		this.usermaj = usermaj;
 		this.dataffecte = dataffecte;
 		this.useraffecte = useraffecte;
+	}
+
+	public ProgrammeDto(String numProg, String nom, String famille, String typeUtilisation, Integer rionTheorique, Date dateCreation, TypeRepart typeRepart,
+						StatutProgramme statut, Integer rionPaiement, Long fichiers, String usercre, Date datmaj, String usermaj,
+						Date dataffecte, String useraffecte, Date dateDbtPrg,
+						Date dateFinPrg, Integer cdeTer) {
+		this(numProg, nom, famille, typeUtilisation, rionTheorique, dateCreation, typeRepart,
+				statut, rionPaiement, fichiers, usercre, datmaj, usermaj,
+				dataffecte, useraffecte);
+
+		this.dateDbtPrg = dateDbtPrg;
+		this.dateFinPrg = dateFinPrg ;
+		this.cdeTer = cdeTer;
+
 	}
 	
 	public String getNumProg() {
@@ -187,7 +208,19 @@ public class ProgrammeDto {
 	public void setUseraffecte(String useraffecte) {
 		this.useraffecte = useraffecte;
 	}
-	
+
+	public Date getDateDbtPrg() { return dateDbtPrg; }
+
+	public void setDateDbtPrg(Date dateDbtPrg) {this.dateDbtPrg = dateDbtPrg;}
+
+	public Date getDateFinPrg() {return dateFinPrg;}
+
+	public void setDateFinPrg(Date dateFinPrg) {this.dateFinPrg = dateFinPrg;}
+
+	public Integer getCdeTer() {return cdeTer;}
+
+	public void setCdeTer(Integer cdeTer) {this.cdeTer = cdeTer;}
+
 	public ProgrammeDto() {
 	}
 }

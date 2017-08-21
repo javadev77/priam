@@ -24,6 +24,12 @@ public class ProgrammeView {
     private String usermaj;
     private String useraffect;
     private Date dataffect;
+
+    private Date dateDbtPrg;
+    private Date dateFinPrg;
+    private Integer cdeTer;
+
+
     
     public ProgrammeView() {
     }
@@ -108,7 +114,18 @@ public class ProgrammeView {
     public Date getDataffect() {
         return dataffect;
     }
-    
+
+    @Column(name = "DATEDBTPRG")
+    @Temporal(TemporalType.DATE)
+    public Date getDateDbtPrg() { return dateDbtPrg; }
+
+    @Column(name = "DATEFINPRG")
+    @Temporal(TemporalType.DATE)
+    public Date getDateFinPrg() { return dateFinPrg; }
+
+    @Column(name = "CDETER")
+    public Integer getCdeTer() { return cdeTer; }
+
     public void setNumProg(String numProg) {
         this.numProg = numProg;
     }
@@ -168,4 +185,10 @@ public class ProgrammeView {
     public void setUseraffect(String useraffect) {
         this.useraffect = useraffect;
     }
+
+    public void setDateDbtPrg(Date dateDbtPrg) { this.dateDbtPrg = dateDbtPrg; }
+
+    public void setDateFinPrg(Date dateFinPrg) { this.dateFinPrg = dateFinPrg; }
+
+    public void setCdeTer(Integer cdeTer) { this.cdeTer = cdeTer; }
 }

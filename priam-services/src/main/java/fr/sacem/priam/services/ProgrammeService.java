@@ -147,7 +147,11 @@ public class ProgrammeService {
 		programme.setTypeRepart(programmeDto.getTypeRepart());
 		programme.setDatmaj(new Date());
 		programme.setUsermaj("GUEST"); //TODO HABIB => A implementer lors  la mise en place du SSO SACEM
-		
+
+		programme.setDateDbtPrg(programmeDto.getDateDbtPrg());
+		programme.setDateFinPrg(programmeDto.getDateFinPrg());
+		programme.setCdeTer(programmeDto.getCdeTer());
+
 		return programmeDao.save(programme);
 		
 	}

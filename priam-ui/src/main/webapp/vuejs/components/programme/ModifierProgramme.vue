@@ -124,6 +124,30 @@
                 </label>
               </div>
             </div>
+
+            <div class="row espacement">
+              <div class="col-sm-2">
+                <label class="control-label pull-right">Date de début</label>
+              </div>
+              <div class="col-sm-2">
+                <date-picker @update-date="updateDebutProgramme" :value="dateDebutProgramme" date-format="dd/mm/yy" :zeroHour="true"></date-picker>
+              </div>
+              <div class="col-sm-2">
+                <label class="control-label pull-right">Date de fin</label>
+              </div>
+              <div class="col-sm-2">
+                <date-picker @update-date="updateDateFinProgramme" :value="dateFinProgramme" date-format="dd/mm/yy" :zeroHour="true"></date-picker>
+              </div>
+              <div class="col-sm-2" :class="{'has-error': errors.has('territoire') }">
+                <label class="control-label pull-right">Territoire</label>
+              </div>
+              <div class="col-sm-3" >
+                <v-select name="territoire" v-validate="'required'" :searchable="true" label="value" v-model="territoireSelected"
+                          :options="territoireOptions" :classValidate="{'has-error': errors.has('territoire') }">
+                </v-select>
+
+              </div>
+            </div>
           </form>
         </div>
 
@@ -161,6 +185,7 @@
   import vSelect from '../common/Select.vue';
   import messagesfr from 'vee-validate/dist/locale/fr';
   import Modal from '../common/Modal.vue';
+  import DatePicker from '../common/DatePicker.vue';
 
   export default {
 
@@ -198,7 +223,11 @@
 
         formSubmitted: false,
 
-        nomProgrammeMemeRion : ''
+        nomProgrammeMemeRion : '',
+
+        dateDebutProgramme : null,
+        dateFinProgramme : null,
+        territoireSelected : null
 
       }
     },
@@ -217,6 +246,9 @@
 
       isNonModifiable() {
           return this.programmeToModify !== undefined && this.programmeToModify !== null && (this.programmeToModify.statut === 'VALIDE' || this.programmeToModify.statut === 'EN_COURS' || this.programmeToModify.statut === 'AFFECTE')
+      },
+      territoireOptions() {
+        return this.$store.getters.territoire;
       }
     },
 
@@ -283,6 +315,11 @@
         this.programmeData.famille=this.familleSelected.id;
         this.programmeData.typeRepart=this.typeRepart;
         this.programmeData.rionTheorique=this.rionTheoriqueSelected.id;
+
+        this.programmeData.dateDbtPrg=this.dateDebutProgramme;
+        this.programmeData.dateFinPrg=this.dateFinProgramme;
+        this.programmeData.cdeTer=this.territoireSelected.id;
+
         this.resource.updateProgramme(this.programmeData)
             .then(response => {
               return response.json();
@@ -367,15 +404,36 @@
               return Number.parseInt(element.id) === rionTheoriqueCode;
             });
 
+            let dateDbtPrg = this.programmeToModify.dateDbtPrg;
+            let dateFinPrg = this.programmeToModify.dateFinPrg;
+
+            this.dateDebutProgramme = dateDbtPrg.substring(6) + '-' + dateDbtPrg.substring(3, 5) + '-' + dateDbtPrg.substring(0, 2);
+            this.dateFinProgramme = dateFinPrg.substring(6) + '-' + dateFinPrg.substring(3,5) + '-' + dateFinPrg.substring(0,2);
+
+            var cdeTer = this.programmeToModify.cdeTer;
+
+            this.territoireSelected = this.$store.getters.territoire.find(function (element) {
+              return Number.parseInt(element.id) === cdeTer;
+            });
+
             console.log('rionTheoriqueSelected=' + this.rionTheoriqueSelected)
           }
 
-      }
+      },
+
+      updateDebutProgramme(date) {
+        this.dateDebutProgramme = date;
+      },
+
+      updateDateFinProgramme(date) {
+        this.dateFinProgramme = date;
+      },
 
     },
     components: {
       vSelect: vSelect,
-      modal : Modal
+      modal : Modal,
+      datePicker : DatePicker,
     },
 
     created(){
