@@ -37,9 +37,6 @@ public class LigneProgrammeResource {
   @Autowired
   private ProgrammeService programmeService;
 
-  @Autowired
-  private LigneProgrammeDao ligneProgrammeDao;
-
   private static Logger logger = LoggerFactory.getLogger(LigneProgrammeResource.class);
 
   @RequestMapping(value = "ligneProgramme/search",

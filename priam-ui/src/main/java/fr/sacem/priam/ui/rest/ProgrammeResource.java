@@ -3,10 +3,12 @@ package fr.sacem.priam.ui.rest;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
-import fr.sacem.priam.model.domain.*;
+import fr.sacem.priam.model.domain.Fichier;
+import fr.sacem.priam.model.domain.Programme;
+import fr.sacem.priam.model.domain.StatutProgramme;
+import fr.sacem.priam.model.domain.TypeRepart;
 import fr.sacem.priam.model.domain.criteria.ProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.AffectationDto;
-import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.services.FichierService;
 import fr.sacem.priam.services.ProgrammeService;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by benmerzoukah on 06/06/2017.
@@ -178,7 +181,7 @@ public class ProgrammeResource {
   @RequestMapping(value = "programme/durdif",
     method = RequestMethod.GET,
     produces = MediaType.APPLICATION_JSON_VALUE)
-  public List<KeyValueDto> getDurDifProgramme(@RequestParam(value = "numProg") String numProg, @RequestParam(value = "statut") String statut) {
+  public Map<String, Long> getDurDifProgramme(@RequestParam(value = "numProg") String numProg, @RequestParam(value = "statut") String statut) {
     return programmeService.getDurDifProgramme(numProg,statut);
   }
 }

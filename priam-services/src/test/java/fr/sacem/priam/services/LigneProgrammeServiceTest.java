@@ -15,7 +15,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -110,6 +109,7 @@ public class LigneProgrammeServiceTest {
     @Test
     public void findLigneProgrammeByCriteria() throws Exception {
         LigneProgrammeCriteria criteria = new LigneProgrammeCriteria();
+        criteria.setNumProg(NUM_PROG);
         criteria.setIde12(IDE12);
         Page<SelectionDto> ligneProgrammeByCriteria = ligneProgrammeService.findLigneProgrammeByCriteria(criteria, pageable);
         assertThat(ligneProgrammeByCriteria).isNotNull();

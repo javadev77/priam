@@ -340,7 +340,7 @@
             {
               id: 'nbrDif',
               name: "Quantité",
-              sortable: false,
+              sortable: true,
               type: 'numeric',
               cell: {
                 toText : function(entry) {
@@ -506,7 +506,7 @@
             {
               id: 'durDif',
               name: "Durée",
-              sortable: false,
+              sortable: true,
               type: 'seconds-as-time',
               cell: {
                 toText : function(entry) {
@@ -624,13 +624,7 @@
     },
 
     created() {
-
-      if(this.programmeInfo.typeUtilisation==="CPRIVSONPH"){
-        this.defaultPageable.sort = 'sum(nbrDif)';
-      }else if (this.programmeInfo.typeUtilisation==="CPRIVSONRD") {
-        this.defaultPageable.sort = 'sum(durDif)';
-      }
-        this.initProgramme();
+      this.initProgramme();
     },
 
     methods :{
@@ -657,17 +651,9 @@
           return response.json();
         }).then(data => {
 
-          for (var indicateur in data ) {
-            if (data[indicateur].value == 'Automatique') {
-              this.dureeSelection.auto = data[indicateur].code;
-            }
-            else if (data[indicateur].value == 'Manuel') {
-              this.dureeSelection.manuel = data[indicateur].code;
-            }
-            else if (data[indicateur].value == 'SOMME') {
-              this.dureeSelection.duree = data[indicateur].code;
-            }
-          }
+          this.dureeSelection.auto = data.Automatique;
+          this.dureeSelection.manuel = data.Manuel;
+          this.dureeSelection.duree = data.SOMME;
 
           this.backupDureeSelection = {
             auto: this.dureeSelection.auto,
@@ -715,6 +701,11 @@
 
               this.getDuree(this.programmeInfo.statut);
 
+            if(this.programmeInfo.typeUtilisation==="CPRIVSONPH"){
+              this.defaultPageable.sort = 'nbrDif';
+            }else if (this.programmeInfo.typeUtilisation==="CPRIVSONRD") {
+              this.defaultPageable.sort = 'durDif';
+            }
 
             if(this.programmeInfo.statut == 'EN_COURS' || this.programmeInfo.statut == 'VALIDE') {
               this.filter.selection = 'Sélectionné';
