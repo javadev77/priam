@@ -16,9 +16,9 @@
                   <i v-show="errors.has('Nom programme')" class="fa fa-warning"></i>
                   <label v-show="errors.has('Nom programme')" :class="{'has-error': errors.has('Nom programme') }">{{ errors.first('Nom programme') }}</label>
                 </li>
-                <li v-if="errors.has('Rion theorique')">
-                  <i v-show="errors.has('Rion theorique')" class="fa fa-warning"></i>
-                  <label v-show="errors.has('Rion theorique')" :class="{'has-error': errors.has('Rion theorique') }">{{ errors.first('Rion theorique') }}</label>
+                <li v-if="errors.has('Rion statuaire')">
+                  <i v-show="errors.has('Rion statuaire')" class="fa fa-warning"></i>
+                  <label v-show="errors.has('Rion statuaire')" :class="{'has-error': errors.has('Rion statuaire') }">{{ errors.first('Rion statuaire') }}</label>
                 </li>
                 <li v-if="errors.has('Famille')">
                   <i v-show="errors.has('Famille')" class="fa fa-warning"></i>
@@ -50,11 +50,11 @@
               </div>
 
               <!-- Rion statuaire -->
-              <div class="col-sm-2" :class="{'has-error': errors.has('Rion theorique') }">
+              <div class="col-sm-2" :class="{'has-error': errors.has('Rion statuaire') }">
                 <label class="control-label pull-right">Rion statuaire</label>
               </div>
               <div class="col-sm-3" >
-                <v-select name="Rion theorique"
+                <v-select name="Rion statuaire"
                           v-validate="'required'"
                           :searchable="false"
                           label="value"

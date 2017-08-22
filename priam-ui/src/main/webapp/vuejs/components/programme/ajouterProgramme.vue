@@ -44,7 +44,7 @@
                 <label class="control-label pull-right">Rion statuaire</label>
               </div>
               <div class="col-sm-3" >
-                <v-select name="rion.theorique" v-validate="'required'" :searchable="false" label="value" v-model="rionTheoriqueSelected" :options="rionTheoriqueOptions" :classValidate="{'has-error': errors.has('Rion theorique') }">
+                <v-select name="rion.theorique" v-validate="'required'" :searchable="false" label="value" v-model="rionTheoriqueSelected" :options="rionTheoriqueOptions" :classValidate="{'has-error': errors.has('Rion statuaire') }">
                 </v-select>
 
               </div>
