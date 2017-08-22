@@ -39,9 +39,9 @@
                    <input maxlength="20" name="Nom programme" v-model="nom" v-validate="'required|max:20'" class="form-control" :class="{'has-error': errors.has('Nom programme') }"  type="text" >
                  </div>
 
-              <!-- Rion théorique -->
+              <!-- Rion statuaire -->
               <div class="col-sm-2" :class="{'has-error': errors.has('rion.theorique') }">
-                <label class="control-label pull-right">Rion théorique</label>
+                <label class="control-label pull-right">Rion statuaire</label>
               </div>
               <div class="col-sm-3" >
                 <v-select name="rion.theorique" v-validate="'required'" :searchable="false" label="value" v-model="rionTheoriqueSelected" :options="rionTheoriqueOptions" :classValidate="{'has-error': errors.has('Rion theorique') }">

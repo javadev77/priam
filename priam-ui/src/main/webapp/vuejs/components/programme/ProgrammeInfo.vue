@@ -51,7 +51,7 @@
       </div>
 
       <div class="col-sm-2">
-        <span class="pull-right blueText">Rion théorique</span>
+        <span class="pull-right blueText">Rion statuaire</span>
       </div>
       <div class="col-sm-2">
         {{ programmeInfo.rionTheorique }}
