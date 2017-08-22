@@ -371,7 +371,7 @@
                   type : 'clickable-icons',
                   cell : {
                     cellTemplate: function (cellValue) {
-                      var tempalteRepartABlanc = '<img src="static/images/iconescontextes/transfertgestionnaire.gif" width="20px"/>';
+                      var tempalteRepartABlanc = '<img src="static/images/iconescontextes/transfertgestionnaire.gif" title="Mise en répartition" width="20px"/>';
                       var statusCode = cellValue.statut;
                       var template = [];
                       if(statusCode !== undefined && 'VALIDE' === statusCode) {
@@ -396,8 +396,8 @@
                   type : 'clickable-icons',
                   cell : {
                     cellTemplate: function (cellValue) {
-                      var tempalteTrash = '<span class="glyphicon glyphicon-trash" aria-hidden="true" style="padding-left: 0px;"></span>';
-                      var tempalteUpdate = '<span class="glyphicon glyphicon-pencil" aria-hidden="true" style="padding-left: 0px;"></span>';
+                      var tempalteTrash = '<span class="glyphicon glyphicon-trash" aria-hidden="true" style="padding-left: 0px;" title="Abandonner"></span>';
+                      var tempalteUpdate = '<span class="glyphicon glyphicon-pencil" aria-hidden="true" style="padding-left: 0px;" title="Modifier"></span>';
                       var statusCode = cellValue.statut;
 
                       var tempalte = [];

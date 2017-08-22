@@ -27,13 +27,19 @@
 
 
         <div v-if="programmeInfo.statut == 'AFFECTE'">
-          <button class="btn btn-default btn-primary pull-right width-140" type="button" @click.prevent="valider()" :disabled="inProcess || listSelectionVide">Valider Sélection</button>
+
+          <div class="pull-right" :title="listSelectionVide ? 'Il faut sélectionner au moins une oeuvre' : ''">
+            <button class="btn btn-default btn-primary width-140" type="button" @click.prevent="valider()" :disabled="inProcess || listSelectionVide">Valider Sélection</button>
+          </div>
+
           <button class="btn btn-default btn-primary pull-right width-140" type="button" @click.prevent="editer()" :disabled="inProcess">Editer Sélection</button>
         </div>
 
         <div v-else-if="programmeInfo.statut == 'EN_COURS'">
           <button class="btn btn-default btn-primary width-140" type="button" @click.prevent="annulerSelection()" :disabled="inProcess">Annuler Sélection</button>
-          <button class="btn btn-default btn-primary pull-right width-140" type="button" @click.prevent="valider()" :disabled="inProcess || listSelectionVide">Valider Sélection</button>
+          <div class="pull-right" :title="listSelectionVide ? 'Il faut sélectionner au moins une oeuvre' : ''">
+            <button class="btn btn-default btn-primary width-140" type="button" @click.prevent="valider()" :disabled="inProcess || listSelectionVide">Valider Sélection</button>
+          </div>
           <button class="btn btn-default btn-primary pull-right width-140" type="button" @click.prevent="editer()" :disabled="inProcess">Editer Sélection</button>
         </div>
 
