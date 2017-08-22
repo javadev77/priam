@@ -49,7 +49,7 @@
           <form class="form-horizontal" role="form">
             <div class="row">
               <div class="col-sm-2">
-                <label class="control-label pull-right blueText">Famille</label>
+                <label class="control-label pull-right blueText">Famille destination</label>
               </div>
               <div class="col-sm-3">
 
@@ -58,7 +58,7 @@
               </div>
 
               <div class="col-sm-3">
-                <label class="control-label pull-right blueText">Type d'utilisation</label>
+                <label class="control-label pull-right blueText">Type d’utilisation destination</label>
               </div>
               <div class="col-sm-4">
                 <v-select :searchable="false" label="value" v-model="typeUtilisationSelected" :options="typeUtilisationOptions">
