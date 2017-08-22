@@ -11,6 +11,9 @@ import java.util.Date;
  */
 public class ProgrammeDto {
 
+	private String userValidation;
+	private Date dateValidation;
+
 	private String numProg;
 	private String nom;
 	private String famille;
@@ -78,7 +81,7 @@ public class ProgrammeDto {
 	public ProgrammeDto(String numProg, String nom, String famille, String typeUtilisation, Integer rionTheorique, Date dateCreation, TypeRepart typeRepart,
 						StatutProgramme statut, Integer rionPaiement, Long fichiers, String usercre, Date datmaj, String usermaj,
 						Date dataffecte, String useraffecte, Date dateDbtPrg,
-						Date dateFinPrg, Integer cdeTer) {
+						Date dateFinPrg, Integer cdeTer, String userValidation, Date dateValidation) {
 		this(numProg, nom, famille, typeUtilisation, rionTheorique, dateCreation, typeRepart,
 				statut, rionPaiement, fichiers, usercre, datmaj, usermaj,
 				dataffecte, useraffecte);
@@ -86,6 +89,8 @@ public class ProgrammeDto {
 		this.dateDbtPrg = dateDbtPrg;
 		this.dateFinPrg = dateFinPrg ;
 		this.cdeTer = cdeTer;
+		this.userValidation = userValidation;
+		this.dateValidation = dateValidation;
 
 	}
 	
@@ -220,6 +225,22 @@ public class ProgrammeDto {
 	public Integer getCdeTer() {return cdeTer;}
 
 	public void setCdeTer(Integer cdeTer) {this.cdeTer = cdeTer;}
+
+	public String getUserValidation() {
+		return userValidation;
+	}
+
+	public void setUserValidation(String userValidation) {
+		this.userValidation = userValidation;
+	}
+
+	public Date getDateValidation() {
+		return dateValidation;
+	}
+
+	public void setDateValidation(Date dateValidation) {
+		this.dateValidation = dateValidation;
+	}
 
 	public ProgrammeDto() {
 	}

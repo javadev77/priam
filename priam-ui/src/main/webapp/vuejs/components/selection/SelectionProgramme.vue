@@ -104,7 +104,7 @@
         </div>
       </div>
       <app-action-selection
-        :statutProgramme="programmeInfo.statut"
+        :programmeInfo="programmeInfo"
         :listSelectionVide="ligneProgrammeSelected.length == 0"
         :valider="validerSelection"
         :editer="editSelectionClickHandler"
