@@ -11,14 +11,14 @@ public class SelectionDto {
   private Long durDif;
   private String ajout;
   private Long nbrDif;
-  private String utilisateur;
+  private String libAbrgUtil;
   private boolean selection;
-  public String getUtilisateur() {
-    return utilisateur;
+  public String getLibAbrgUtil() {
+    return libAbrgUtil;
   }
 
-  public void setUtilisateur(String utilisateur) {
-    this.utilisateur = utilisateur;
+  public void setLibAbrgUtil(String utilisateur) {
+    this.libAbrgUtil = utilisateur;
   }
 
   public Long getIde12() {
@@ -94,7 +94,7 @@ public class SelectionDto {
     this.durDif = durDif;
     this.ajout = ajout;
     this.nbrDif = quantite;
-    this.utilisateur = utilisateur;
+    this.libAbrgUtil = utilisateur;
     this.selection = selection;
   }
 

@@ -580,7 +580,7 @@
 
               this.familleSelected = this.getFamilleByCode(this.programmeInfo.famille);
               this.typeUtilisationSelected = this.getTypeUtilisationByCode(this.programmeInfo.typeUtilisation);
-              this.statutSelected = {id : 'ALL', value : 'Toutes'};
+              this.statutSelected = {id : 'ALL', value : 'Tous'};
             }
             else {
               this.familleSelected = {id : 'ALL', value : 'Toutes'};

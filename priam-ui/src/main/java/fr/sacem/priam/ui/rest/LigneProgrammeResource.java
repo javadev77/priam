@@ -1,6 +1,5 @@
 package fr.sacem.priam.ui.rest;
 
-import fr.sacem.priam.model.dao.jpa.LigneProgrammeDao;
 import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.criteria.LigneProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
@@ -60,7 +59,7 @@ public class LigneProgrammeResource {
       criteria.setSelection(parseSelection(ligneProgramme.getSelection()));
 
     if(ligneProgramme.getUtilisateur() != null && !ligneProgramme.getUtilisateur().isEmpty() && !ALL.equals(ligneProgramme.getUtilisateur()))
-      criteria.setUtilisateur(ligneProgramme.getUtilisateur());
+      criteria.setUtilisateur(ligneProgramme.getUtilisateur().split(" - ")[0]);
 
     Page<SelectionDto> ligneProgrammes = ligneProgrammeService.findLigneProgrammeByCriteria(criteria,pageable);
 

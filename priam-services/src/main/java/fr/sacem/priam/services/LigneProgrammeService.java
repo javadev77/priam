@@ -83,11 +83,14 @@ public class LigneProgrammeService {
 
                 if("nbrDif".equals(sortBy.getProperty()) || "durDif".equals(sortBy.getProperty())) {
                     if (TypeUtilisationEnum.COPIE_PRIVEE_SONORE_PHONO.getCode().equals(programme.getTypeUtilisation().getCode())) {
-                        sort = JpaSort.unsafe(sortBy.getDirection(), "sum(ligneProgramme.nbrDif)");
+                        sort = JpaSort.unsafe(sortBy.getDirection(), "sum(nbrDif)");
                     } else if (TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode().equals(programme.getTypeUtilisation().getCode())) {
-                        sort = JpaSort.unsafe(sortBy.getDirection(), "sum(ligneProgramme.durDif)");
+                        sort = JpaSort.unsafe(sortBy.getDirection(), "sum(durDif)");
                     }
+                } else if("libAbrgUtil".equals(sortBy.getProperty())) {
+                    sort = JpaSort.unsafe(sortBy.getDirection(), "cdeUtil");
                 }
+
                 return sort;
             }
 
@@ -111,6 +114,7 @@ public class LigneProgrammeService {
                 return pageable.hasPrevious();
             }
         };
+
 
         return ligneProgrammeDao.findLigneProgrammeByCriteria(criteria.getNumProg(),
                 criteria.getUtilisateur(),
