@@ -179,7 +179,8 @@
     <template v-if="showEcranModalMisEnRepart">
       <mise-en-repartition-programme
         :numProg = "selectedProgramme.numProg"
-        @cancel="showEcranModalMisEnRepart = false">
+        @cancel="showEcranModalMisEnRepart = false"
+        @close="showEcranModalMisEnRepart = false">
 
       </mise-en-repartition-programme>
     </template>

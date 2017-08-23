@@ -251,5 +251,44 @@ CREATE OR REPLACE VIEW PRIAM_LIGNE_PROG_VIEW AS
   GROUP BY lpr1.ide12,lpr1.numProg;
 
 
+CREATE TABLE PRIAM_LIGNE_PREPREP (
+  `id` int(11) AUTO_INCREMENT NOT NULL,
+  `cdeCisac` varchar(3) DEFAULT NULL,
+  `cdeTer` bigint(20) DEFAULT NULL,
+  `rionEffet` int(11) DEFAULT NULL,
+  `cdeFamilTypUtil` varchar(45) DEFAULT NULL,
+  `cdeModFac` varchar(45) DEFAULT NULL,
+  `numProg` int(11) DEFAULT NULL,
+  `keyLigPenel` int(11) DEFAULT NULL,
+  `cdeUtil` varchar(45) DEFAULT NULL,
+  `cdeTypUtil` varchar(45) DEFAULT NULL,
+  `cdeTypProg` varchar(45) DEFAULT NULL,
+  `cdeCompl` varchar(45) DEFAULT NULL,
+  `libProg` varchar(100) DEFAULT NULL,
+  `compLibProg` varchar(100) DEFAULT NULL,
+  `datDbtProg` datetime DEFAULT NULL,
+  `datFinProg` datetime DEFAULT NULL,
+  `hrDbt` int(11) DEFAULT NULL,
+  `hrFin` int(11) DEFAULT NULL,
+  `cdeGreDif` varchar(45) DEFAULT NULL,
+  `cdeModDif` varchar(45) DEFAULT NULL,
+  `cdeTypIde12` varchar(45) DEFAULT NULL,
+  `ide12` bigint(20) DEFAULT NULL,
+  `datDif` datetime DEFAULT NULL,
+  `hrDif` int(11) DEFAULT NULL,
+  `durDif` int(11) DEFAULT NULL,
+  `nbrDif` int(11) DEFAULT NULL,
+  `mt` double DEFAULT NULL,
+  `ctna` varchar(45) DEFAULT NULL,
+  `paramCoefHor` varchar(10) DEFAULT NULL,
+  `durDifCtna` int(11) DEFAULT NULL,
+  `cdeLng` varchar(45) DEFAULT NULL,
+  `indDoubSsTit` varchar(45) DEFAULT NULL,
+  `tax` double DEFAULT NULL,
+
+  PRIMARY KEY(id)
+
+);
+
 
 

@@ -19,9 +19,9 @@ public class NumberSerializer extends JsonSerializer<Number>{
         DecimalFormat decimalFormat = new DecimalFormat("##0.00", DecimalFormatSymbols.getInstance(Locale.FRANCE)) ;
 
         if(value instanceof Double || value instanceof Float){
-            jgen.writeString("=" + decimalFormat.format(value));
+            jgen.writeString(decimalFormat.format(value));
         }else if( value instanceof BigDecimal){
-            jgen.writeString("=" + decimalFormat.format(value) + "00");
+            jgen.writeString(decimalFormat.format(value) + "00");
         }else {
             jgen.writeNumber((Integer) value);
         }

@@ -1,48 +1,150 @@
-package fr.sacem.priam.model.domain.dto;
+package fr.sacem.priam.model.domain;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by benmerzoukah on 29/05/2017.
  */
-public class FelixData implements Serializable {
+@Entity
+@Table(name = "PRIAM_LIGNE_PREPREP")
+public class LignePreprep implements Serializable {
     
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+    
+    @Column(name = "cdeCisac")
     private String cdeCisac;
+
+    @Column(name = "cdeTer")
     private Integer cdeTer;
+
+    @Column(name = "rionEffet")
     private Integer rionEffet;
+    
+    @Column(name = "keyLigPenel")
     private Integer keyLigPenel;
+    
+    
+    @Column(name = "cdeFamilTypUtil")
     private String cdeFamilTypUtil;
+    
+    @Column(name = "numProg")
     private String numProg;
+    
+    @Column(name = "cdeUtil")
     private String cdeUtil;
+    
+    @Column(name = "cdeModFac")
     private String cdeModFac;
+    
+    @Column(name = "cdeTypUtil")
     private String cdeTypUtil;
+    
+    @Column(name = "cdeTypProg")
     private String cdeTypProg;
+    
+    @Column(name = "cdeCompl")
     private String cdeCompl;
+    
+    @Column(name = "libProg")
     private String libProg;
+    
+    @Column(name = "compLibProg")
     private String compLibProg;
+    
+    @Column(name = "datDbtProg")
+    @Temporal(TemporalType.DATE)
     private Date datDbtProg;
+    
+    @Column(name = "datFinProg")
+    @Temporal(TemporalType.DATE)
     private Date datFinProg;
+    
+    @Column(name = "hrDbt")
     private Integer hrDbt;
+    
+    @Column(name = "hrFin")
     private Integer hrFin;
+    
+    @Column(name = "cdeGreDif")
     private String cdeGreDif;
+    
+    @Column(name = "cdeModDif")
     private String cdeModDif;
+    
+    @Column(name = "cdeTypIde12")
     private String cdeTypIde12;
+    
+    @Column(name = "ide12")
     private Long ide12;
+    
+    @Column(name = "datDif")
+    @Temporal(TemporalType.DATE)
     private Date datDif;
+    
+    @Column(name = "hrDif")
     private String hrDif;
+    
+    @Column(name = "durDif")
     private Long durDif;
+    
+    @Column(name = "nbrDif")
     private Long nbrDif;
+    
+    @Column(name = "mt")
     private Double mt;
+    
+    @Column(name = "ctna")
     private String ctna;
+    
+    @Column(name = "paramCoefHor")
     private String paramCoefHor;
+    
+    @Column(name = "durDifCtna")
     private Long durDifCtna;
+    
+    @Column(name = "cdeLng")
     private String cdeLng;
+    
+    @Column(name = "indDoubSsTit")
     private String indDoubSsTit;
+    
+    @Column(name = "tax")
     private Double tax;
     
-    public FelixData() {
+    public LignePreprep() {
     
+    }
+    
+    public LignePreprep(String cdeCisac, String cdeUtil, String cdeGreDif, String cdeModDif, String cdeTypIde12, Long ide12, Long durDif, Long nbrDif, Double mt, String ctna, String paramCoefHor, Long durDifCtna, String cdeLng, String indDoubSsTit, Double tax) {
+        this.cdeCisac = cdeCisac;
+        
+        this.cdeUtil = cdeUtil;
+        this.cdeGreDif = cdeGreDif;
+        this.cdeModDif = cdeModDif;
+        this.cdeTypIde12 = cdeTypIde12;
+        this.ide12 = ide12;
+        this.durDif = durDif;
+        this.nbrDif = nbrDif;
+        this.mt = mt;
+        this.ctna = ctna;
+        this.paramCoefHor = paramCoefHor;
+        this.durDifCtna = durDifCtna;
+        this.cdeLng = cdeLng;
+        this.indDoubSsTit = indDoubSsTit;
+        this.tax = tax;
+    }
+    
+    public Long getId() {
+        return id;
+    }
+    
+    public void setId(Long id) {
+        this.id = id;
     }
     
     public String getCdeCisac() {
