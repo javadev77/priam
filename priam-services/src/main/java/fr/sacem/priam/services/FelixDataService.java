@@ -5,16 +5,28 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
+import com.google.common.collect.Lists;
+import fr.sacem.priam.common.TypeUtilisationEnum;
 import fr.sacem.priam.common.util.csv.*;
+import fr.sacem.priam.model.dao.jpa.LignePreprepDao;
 import fr.sacem.priam.model.dao.jpa.LigneProgrammeDao;
+import fr.sacem.priam.model.dao.jpa.ProgrammeDao;
+import fr.sacem.priam.model.domain.LignePreprep;
+import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.dto.FelixData;
+import fr.sacem.priam.model.domain.dto.FichierFelixError;
+import fr.sacem.priam.services.utils.FelixDataSpringValidator;
 import org.apache.commons.io.Charsets;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -23,7 +35,10 @@ import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 import static java.util.Arrays.asList;
 import static org.apache.commons.io.IOUtils.LINE_SEPARATOR;
@@ -35,6 +50,10 @@ import static org.apache.commons.io.IOUtils.LINE_SEPARATOR;
 public class FelixDataService {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(ProgrammeService.class);
+    public static final String CDE_MOD_FAC = "FORFAI";
+    public static final String PRINC = "PRINC";
+    public static final String SANS = "SANS";
+    private static final String DOC_PREFIX ="FF_PRIAM_PREPREP101_" ;
     
     @Autowired
     private LigneProgrammeDao ligneProgrammeDao;
@@ -45,12 +64,12 @@ public class FelixDataService {
     
     
     static {
-        CHARSET = Charsets.toCharset(String.valueOf(""));
+        CHARSET = Charsets.toCharset(String.valueOf("UTF-8"));
         csvMapper = new CsvMapper();
         csvMapper.disable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY);
         SimpleModule module = new SimpleModule();
-        module.addSerializer(Date.class, new DateSerializer("yyyyMMdd"));
-        module.addDeserializer(Date.class, new DateDeserializer("yyyyMMdd"));
+        module.addSerializer(Date.class, new DateSerializer("dd/MM/yyyy"));
+        module.addDeserializer(Date.class, new DateDeserializer("dd/MM/yyyy"));
         module.addSerializer(Double.class, new NumberSerializer());
         module.addDeserializer(Double.class, new DoubleDeserializer());
         module.addSerializer(BigDecimal.class, new RepartBigDecimalSerializer());
@@ -67,28 +86,89 @@ public class FelixDataService {
     private File file;
     private long nbLine = 0;
     
+    @Autowired
+    private ProgrammeDao programmeDao;
     
-    public void generateDonneesRepartition() {
+    @Autowired
+    private LignePreprepDao lignePreprepDao;
     
+    @Autowired
+    private FelixDataSpringValidator validator;
+    
+    
+    @Transactional
+    public void generateEtValidateDonneesRepartition(String numProg) {
+    
+        Programme programme = programmeDao.findOne(numProg);
+        List<LignePreprep> lignesSelectionnes = ligneProgrammeDao.findLigneProgrammeSelectionnesForFelix(programme.getNumProg());
+        List<LignePreprep> allLignes = lignePreprepDao.findByNumProg(numProg);
+        lignePreprepDao.delete(allLignes);
+        lignePreprepDao.flush();
+        
+        Collection<LignePreprep> lignePrepreps = Lists.newArrayList();
+        boolean isValidData = true;
+        for (LignePreprep lignePreprep : lignesSelectionnes) {
+            lignePreprep.setCdeTer(250); // A remplir depuis le programme
+            lignePreprep.setRionEffet(programme.getRionTheorique().getRion());
+            lignePreprep.setCdeFamilTypUtil(programme.getFamille().getCode());
+            lignePreprep.setNumProg(programme.getNumProg());
+
+            lignePreprep.setCdeTypUtil(programme.getTypeUtilisation().getCode());
+            lignePreprep.setCdeModFac(CDE_MOD_FAC);
+            lignePreprep.setCdeTypProg(PRINC);
+            lignePreprep.setCdeCompl(SANS);
+            lignePreprep.setLibProg(programme.getNom());
+            lignePreprep.setCompLibProg("");
+            lignePreprep.setDatDbtProg(new Date()); //TODO A remplir depuis le programme
+            lignePreprep.setDatFinProg(new Date()); //TODO A remplir depuis le programme
+
+
+
+            
+            if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode().equals(programme.getTypeUtilisation().getCode())
+                &&  lignePreprep.getNbrDif() == null) {
+                lignePreprep.setNbrDif(1L);
+            } else {
+                lignePreprep.setNbrDif(lignePreprep.getNbrDif());
+            }
+            
+    
+            lignePrepreps.add(lignePreprep);
+    
+        }
+    
+        lignePreprepDao.save(lignePrepreps);
+        lignePreprepDao.flush();
+        /*for(LignePreprep lignePreprep : lignePrepreps) {
+            BindingResult errors = new BeanPropertyBindingResult(lignePreprep, "lignePreprep");
+            validator.validate(lignePreprep, errors);
+            if(errors.hasErrors()) {
+                return false;
+            }
+    
+        }*/
+    
+        
+        
+        
     }
     
-    private boolean writeFile() throws IOException {
-        createFile();
-        List<FelixData> data = new ArrayList<>();
-        for (FelixData f : data) {
+    private void writeFile(List<LignePreprep> data) throws IOException {
+        /*createFile();
+        for (LignePreprep f : data) {
             writeLine(writer.writeValueAsString(f), false);
             nbLine++;
         }
-        return finish(file, out, "");
+        finish(file, out);*/
     }
     
     private void createFile() throws IOException {
         
         LOGGER.debug("Création d'un fichier FELIX avec charset = " + CHARSET.displayName());
-        file = File.createTempFile("inprogress", "tmp");
+        file = File.createTempFile("FF_PRIAM_PREPREP101", ".tmp");
         out = new FileOutputStream(file);
         
-        writeLines(head());
+       // writeLines(head());
     }
     
     private List<String> head() {
@@ -104,14 +184,14 @@ public class FelixDataService {
             "#cdeCisac;cdeTer;rionEffet;cdeFamilTypUtil;numProg;keyLigPenel;cdeUtil;cdeTypUtil;cdeModFac;cdeTypProg;cdeCompl;libProg;compLibProg;datDbtProg;datFinProg;hrDbt;hrFin;cdeGreDif;cdeModDif;cdeTypIde12;ide12;datDif;hrDif;durDif;nbrDif;mt;ctna;paramCoefHor;durDifCtna;cdeLng;indDoubSsTit;tax");
     }
     
-    private List<String> foot() {
+    private List<String> foot(int lignes) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.FRANCE);
         return asList(
             "#FIN" + dateFormat.format(new Date()),
-            "# Nbr lignes de donnees       = " + nbLine);
+            "# Nbr lignes de donnees       = " + lignes);
     }
     
-    private void writeLine(String line, boolean withLineSeparator) throws IOException {
+    private void writeLine(OutputStream out, String line, boolean withLineSeparator) throws IOException {
         if (line != null) {
             out.write(line.getBytes(CHARSET));
             if (withLineSeparator)
@@ -119,35 +199,59 @@ public class FelixDataService {
         }
     }
     
-    private void writeLines(Collection<String> lines) throws IOException {
+    private void writeLines(OutputStream out, Collection<String> lines) throws IOException {
         for (String line : lines) {
-            writeLine(line, true);
+            writeLine(out, line, true);
         }
     }
     
-    public boolean finish(File file, OutputStream out, String cisac) throws IOException {
-        writeLines(foot());
+    public void finish(File file, OutputStream out) throws IOException {
+        writeLines(out, foot(0));
         out.flush();
         IOUtils.closeQuietly(out);
-        
-        //String fileName = DOC_PREFIX + cisac + SPLITTER + DateUtil.format(new Date(), "yyyyMMddhhmmss") + DOC_SUFFIX;
-        String fileName = null;
-        boolean somethingToSend = this.nbLine > 0 ;
-        
-        if ( somethingToSend ) {
-            LOGGER.debug("Envoi du fichier = " + file.getParent() + "/" + file.getName());
-            //uploadFile(FELIX, file, fileName);
-        } else {
-            LOGGER.info("Annulation de l'envoi de "+file.getParent() + "/" + file.getName()+" - ne contient que du RRP sortant");
-        }
-        
-        if (file.exists()) {
-            FileUtils.forceDelete(file);
-        }
-        return somethingToSend;
     }
     
-}
-
+    public FichierFelixError createFichierFelixWithErrors(String numProg) throws IOException {
+        Programme programme = programmeDao.findOne(numProg);
+        List<LignePreprep> lignePrepreps = lignePreprepDao.findByNumProg(numProg);
+    
+        String fileName = DOC_PREFIX + numProg + "_" + programme.getRionTheorique().getRion() + "_" + new SimpleDateFormat("yyyyMMddhhmmss").format(new Date()) + ".csv";
+        File tmpFile = File.createTempFile(fileName, ".tmp");
+        OutputStream out = new FileOutputStream(tmpFile);
+    
+        writeLines(out, head());
+        int line = 1;
+        ModelMapper modelMapper = new ModelMapper();
+        
+        List<String> errorsList = Lists.newArrayList();
+        for (LignePreprep lignePreprep: lignePrepreps ) {
+            FelixData felixData = modelMapper.map(lignePreprep, FelixData.class);
+            felixData.setKeyLigPenel(lignePreprep.getId().intValue());
+            
+            BindingResult errors = new BeanPropertyBindingResult(felixData, "lignePreprep-"+line);
+            validator.validate(felixData, errors);
+            
+            if(errors.hasErrors()) {
+                for(FieldError fe : errors.getFieldErrors()) {
+                    errorsList.add(String.format("Ligne %s: Le champ %s est obligatoire et non renseigné",
+                        line, fe.getField()));
+                }
+            }
+    
+            writeLine(out, writer.writeValueAsString(felixData), false);
+            line++;
+        }
+    
+        writeLines(out, foot(--line));
+        out.flush();
+        IOUtils.closeQuietly(out);
+    
+        FichierFelixError fichierFelixError = new FichierFelixError();
+        fichierFelixError.setTmpFilename(tmpFile.getName());
+        fichierFelixError.setFilename(fileName);
+        fichierFelixError.setErrors(errorsList);
+        
+        return fichierFelixError;
+    }
 }
 

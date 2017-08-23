@@ -1,55 +1,55 @@
 <template>
   <modal>
-    <template slot="body">
-    <div class="row">
+     <template slot="body" v-if="!isToShowErrors">
+      <div class="row">
 
-      <div class="col-sm-4">
-        <span class="pull-right blueText">N° programme</span>
-      </div>
-      <div class="col-sm-2">
-        {{ programmeInfo.numProg }}
-      </div>
-
-
-      <div class="col-sm-4">
-        <span class="pull-right blueText">Famille</span>
-      </div>
-      <div class="col-sm-4">
-        {{ getFamilleByCode(programmeInfo.famille) !== undefined ? getFamilleByCode(programmeInfo.famille).value : '' }}
-      </div>
-
-      <div class="col-sm-9">
-        <span class="pull-right blueText">Rion théorique</span>
-      </div>
-      <div class="col-sm-1">
-        {{ programmeInfo.rionTheorique }}
-      </div>
-
-    </div>
-
-    <br/>
-    <!-- 2 eme ligne -->
-    <div class="row">
-
-      <div class="col-sm-1">
-        <span class="pull-right blueText">Nom</span>
-      </div>
-      <div class="col-sm-4">
-        {{ programmeInfo.nom }}
-      </div>
+        <div class="col-sm-4">
+          <span class="pull-right blueText">N° programme</span>
+        </div>
+        <div class="col-sm-2">
+          {{ programmeInfo.numProg }}
+        </div>
 
 
-      <div class="col-sm-7">
-        <span class="pull-right blueText">Type d'utilisation</span>
+        <div class="col-sm-4">
+          <span class="pull-right blueText">Famille</span>
+        </div>
+        <div class="col-sm-4">
+          {{ getFamilleByCode(programmeInfo.famille) !== undefined ? getFamilleByCode(programmeInfo.famille).value : '' }}
+        </div>
+
+        <div class="col-sm-9">
+          <span class="pull-right blueText">Rion théorique</span>
+        </div>
+        <div class="col-sm-1">
+          {{ programmeInfo.rionTheorique }}
+        </div>
+
       </div>
-      <div class="col-sm-8">
-        {{ getTypeUtilisationByCode(programmeInfo.typeUtilisation) !== undefined ? getTypeUtilisationByCode(programmeInfo.typeUtilisation).value : '' }}
-      </div>
-    </div>
 
       <br/>
-      <!-- 3 eme ligne -->
+      <!-- 2 eme ligne -->
       <div class="row">
+
+        <div class="col-sm-1">
+          <span class="pull-right blueText">Nom</span>
+        </div>
+        <div class="col-sm-4">
+          {{ programmeInfo.nom }}
+        </div>
+
+
+        <div class="col-sm-7">
+          <span class="pull-right blueText">Type d'utilisation</span>
+        </div>
+        <div class="col-sm-8">
+          {{ getTypeUtilisationByCode(programmeInfo.typeUtilisation) !== undefined ? getTypeUtilisationByCode(programmeInfo.typeUtilisation).value : '' }}
+        </div>
+      </div>
+
+        <br/>
+        <!-- 3 eme ligne -->
+        <div class="row">
         <div class="col-sm-8">
           <label class="radio radio-inline" :class="{'checked' : modeRepartition == 'REPART_BLANC' }">
             <input
@@ -72,9 +72,22 @@
         </div>
       </div>
     </template>
-    <template slot="footer">
-      <button class="btn btn-default btn-primary pull-right yes" @click="$emit('validate')">Valider</button>
+    <template slot="body" v-else>
+      <label>Le fichier de répartition contient les erreurs suivantes :</label>
+      <div style="height:300px; overflow-y:scroll;">
+        <label v-for="error in fichierFelixError.errors">
+          {{ error }}
+        </label>
+
+      </div>
+
+    </template>
+    <template slot="footer" v-if="!isToShowErrors">
+      <button class="btn btn-default btn-primary pull-right yes" @click="validateFelixData">Valider</button>
       <button class="btn btn-default btn-primary pull-right no" @click="$emit('cancel')">Annuler</button>
+    </template>
+    <template slot="footer" v-else>
+      <button class="btn btn-default btn-primary" @click="$emit('close')">Fermer</button>
     </template>
   </modal>
 </template>
@@ -94,11 +107,22 @@
         }
       },
 
+      data() {
+        return {
+          programmeInfo : {},
+          fichierFelixError : {},
+          modeRepartition : 'REPART_BLANC',
+          isToShowErrors : false
+        }
+      },
+
       created() {
         console.log("numProg = " + this.numProg);
 
         const customActions = {
           findByNumProg : {method : 'GET', url : 'app/rest/programme/numProg/{numProg}'},
+          validateFelixData : {method : 'GET', url : 'app/rest/repartition/validateFelixData/{numProg}'},
+          generateFelixData : {method : 'POST', url : 'app/rest/repartition/generateFelixData'}
         }
         this.resource= this.$resource('', {}, customActions);
 
@@ -112,11 +136,77 @@
           });
       },
 
-      data() {
-          return {
-            programmeInfo : {},
-            modeRepartition : 'REPART_BLANC'
-          }
+
+      methods : {
+
+        downloadCsvFile(url, data, filename) {
+          this.$http.post(url, data , {
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+              }, emulateJSON: true
+            }).then( response => {
+              var anchor = $('<a></a>');
+
+              anchor.attr({
+                href: 'data:attachment/csv;charset=utf-8,' + encodeURI(response.data),
+                target: '_blank',
+                download: filename
+              })[0].click();
+
+          }, error => {
+
+          });
+        },
+
+        validateFelixData() {
+
+            this.resource.validateFelixData({numProg:  this.numProg})
+              .then(response => {
+                return response.json();
+              })
+              .then(data => {
+                if(data.errors !== undefined && data.errors.length >0) {
+                  /*this.resource.generateFelixDataWithErrors({numProg : this.programmeInfo.numProg})
+                    .then(response => {
+                        console.log('response' + response);
+                    });*/
+                  this.downloadCsvFile('app/rest/repartition/downloadFichierFelixError',
+                    {numProg: this.programmeInfo.numProg, tmpFilename : data.tmpFilename, filename : data.filename}, data.filename);
+
+                  /*_open('POST', 'app/rest/repartition/downloadFichierFelixError',
+                    {numProg: this.programmeInfo.numProg, filename : data.filename}, '_blank');*/
+                  this.fichierFelixError = data;
+                  this.isToShowErrors = true;
+                } else {
+                    if(this.modeRepartition == 'REPART_BLANC') {
+                        this.downloadCsvFile('app/rest/repartition/downloadFichierFelix', {numProg: this.programmeInfo.numProg}, data.filename);
+                        this.$emit('close');
+                    } else if(this.modeRepartition == 'MISE_EN_REPART') {
+
+                    }
+                }
+
+              });
+
+          var _open = function(verb, url, data) {
+            var form = document.createElement('form');
+            form.action = url;
+            form.method = verb;
+            form.target = target || '_self';
+            if (data) {
+              for (var key in data) {
+                var input = document.createElement('textarea');
+                input.name = key;
+                input.value = typeof data[key] === 'object' ? JSON.stringify(data[key]) : data[key];
+                form.appendChild(input);
+              }
+            }
+            document.body.appendChild(form);
+            form.submit();
+            document.body.removeChild(form);
+          };
+
+        }
       },
 
       components : {

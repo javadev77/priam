@@ -11,9 +11,20 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan(basePackages = {"fr.sacem.priam.services", "fr.sacem.priam.common"})
 public class ConfigurationTest {
 	
-	@Bean
-	public ProgrammeService programmeService() {
+    @Bean
+    public ProgrammeService programmeService() {
 		return new ProgrammeService();
 	}
+    
+    @Bean
+    public FichierService fichierService() {
+	  return new FichierService();
+    }
+    
+    @Bean
+    public LigneProgrammeService ligneProgrammeService() {
+	  return new LigneProgrammeService();
+    }
+    
 	
 }

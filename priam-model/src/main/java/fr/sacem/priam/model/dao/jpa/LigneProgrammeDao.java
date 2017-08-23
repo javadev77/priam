@@ -1,7 +1,7 @@
 package fr.sacem.priam.model.dao.jpa;
 
+import fr.sacem.priam.model.domain.LignePreprep;
 import fr.sacem.priam.model.domain.LigneProgramme;
-import fr.sacem.priam.model.domain.LibelleUtilisateur;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.SelectionDto;
 import org.springframework.data.domain.Page;
@@ -35,7 +35,13 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
             "WHERE l.fichier = f.id " +
             "AND f.programme.numProg = :numProg ")
     Page<LigneProgramme> findLigneProgrammeByProgrammeId(@Param("numProg") String numProg, Pageable pageable);
-
+    
+    @Transactional
+    @Query(value="SELECT l " +
+                     "FROM LigneProgramme l join l.fichier as f "+
+                     "WHERE l.fichier = f.id " +
+                     "AND f.programme.numProg = :numProg ")
+    List<LigneProgramme> findLigneProgrammeByNumProg(@Param("numProg") String numProg);
 
     @Transactional
     @Query(value="SELECT new fr.sacem.priam.model.domain.dto.SelectionDto("+
@@ -71,6 +77,33 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
                                       @Param("titre") String titre,
                                       @Param("ajout") String ajout,
                                       @Param("selection") Boolean selection,Pageable pageable);
+    
+    @Transactional
+    @Query(value="SELECT  new fr.sacem.priam.model.domain.LignePreprep("+
+                     "ligneProgramme.cdeCisac, " +
+                     "ligneProgramme.cdeUtil, " +
+                     "ligneProgramme.cdeGreDif, " +
+                     "ligneProgramme.cdeModDif, " +
+                     "ligneProgramme.cdeTypIde12, " +
+                     "ligneProgramme.ide12, " +
+                     "sum(ligneProgramme.durDif), " +
+                     "sum(ligneProgramme.nbrDif), " +
+                     "ligneProgramme.mt, " +
+                     "ligneProgramme.ctna, " +
+                     "ligneProgramme.paramCoefHor, " +
+                     "ligneProgramme.durDifCtna, " +
+                     "ligneProgramme.cdeLng, " +
+                     "ligneProgramme.indDoubSsTit, " +
+                     "ligneProgramme.tax) " +
+                     
+                     "FROM LigneProgramme ligneProgramme inner join ligneProgramme.fichier  f, " +
+                     "LibelleUtilisateur lu  "+
+                     "WHERE lu.cdeUtil = ligneProgramme.cdeUtil " +
+                     "AND f.programme.numProg = :numProg " +
+                     "AND ligneProgramme.selection = true " +
+                     "GROUP BY ligneProgramme.ide12, " +
+                     "ligneProgramme.cdeUtil ")
+    List<LignePreprep> findLigneProgrammeSelectionnesForFelix(@Param("numProg") String numProg);
 
     @Transactional(readOnly = true)
     @Query(value =
