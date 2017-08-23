@@ -1,5 +1,6 @@
 package fr.sacem.priam.ui.config;
 
+import fr.sacem.fwk.config.Environment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,20 +18,20 @@ import org.springframework.web.servlet.config.annotation.*;
 @Configuration
 @EnableWebMvc
 public class MvcConfig extends WebMvcConfigurerAdapter {
-  
+
     private static final String STATIC_INDEX_HTML_RESOURCES = "/index.html";
     private static final Logger LOGGER = LoggerFactory.getLogger(MvcConfig.class);
-  
+
     @Autowired
     private ResourceLoader resourceLoader;
-  
-    @Value( "${webapp.mode}" )
+
+    //@Value( "${webapp.mode}" )
     private String webappMode;
-    
+
     @Value("${vuejs.server.url}")
     private String vuejsDevServerUrl;
-  
-  
+
+
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         Resource resource = this.resourceLoader.getResource(STATIC_INDEX_HTML_RESOURCES);
@@ -40,7 +41,7 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
             registry.addViewController("/").setViewName("forward:/index.html");
         }
     }
-  
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         if (!registry.hasMappingForPattern("/**")) {
@@ -48,15 +49,18 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
                   .addResourceLocations("/");
         }
     }
-  
+
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         //TODO Ajouter un check en fonction du mode de l'application
-      if("dev".equalsIgnoreCase(this.webappMode)) {
+
+      webappMode = Environment.getParameter("webapp.mode");
+
+        if("dev".equalsIgnoreCase(webappMode)) {
             registry.addMapping("/app/rest/**")
                     .allowedMethods("PUT", "DELETE", "GET", "POST")
                     .allowedOrigins(vuejsDevServerUrl);
         }
-        
+
     }
 }
