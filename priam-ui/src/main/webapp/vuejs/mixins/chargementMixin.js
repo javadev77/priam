@@ -38,7 +38,16 @@ module.exports = {
         return element.id == modeRepartCode;
       });
       return result;
+    },
+
+    getTerritoireByCode(code) {
+      var result  = this.$store.getters.territoire.find(function (element) {
+        return element.id == code;
+      });
+      return result;
     }
+
+
 
 
   }

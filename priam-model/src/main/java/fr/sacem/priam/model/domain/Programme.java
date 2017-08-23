@@ -28,6 +28,10 @@ public class Programme implements Serializable {
 
 	private String userValidation;
 	private Date dateValidation;
+
+	private Date dateDbtPrg;
+	private Date dateFinPrg;
+	private Integer cdeTer;
 	
 	public Programme() {
 	}
@@ -84,12 +88,7 @@ public class Programme implements Serializable {
 	public Rion getRionPaiement() {
 		return rionPaiement;
 	}
-	
-	//@OneToMany(mappedBy = "programme")
-	//public List<Fichier> getFichiers() {
-	//	return fichiers;
-	//}
-	
+
 	@Column(name = "USERCRE")
 	public String getUsercre() {
 		return usercre;
@@ -123,6 +122,17 @@ public class Programme implements Serializable {
 	@Column(name = "DATE_VALIDATION")
 	@Temporal(TemporalType.TIMESTAMP)
 	public Date getDateValidation() { return dateValidation; }
+
+	@Column(name = "DATE_DBT_PRG")
+	@Temporal(TemporalType.DATE)
+	public Date getDateDbtPrg() { return dateDbtPrg; }
+
+	@Column(name = "DATE_FIN_PRG")
+	@Temporal(TemporalType.DATE)
+	public Date getDateFinPrg() { return dateFinPrg; }
+
+	@Column(name = "CDE_TER")
+	public Integer getCdeTer() { return cdeTer; }
 	
 	public void setUsercre(String usercre) {
 		this.usercre = usercre;
@@ -163,11 +173,7 @@ public class Programme implements Serializable {
 	public void setRionPaiement(Rion rionPaiement) {
 		this.rionPaiement = rionPaiement;
 	}
-	
-	/*public void setFichiers(List<Fichier> fichiers) {
-		this.fichiers = fichiers;
-	}*/
-	
+
 	public void setUsermaj(String usermaj) {
 		this.usermaj = usermaj;
 	}
@@ -187,4 +193,10 @@ public class Programme implements Serializable {
     public void setUserValidation(String userValidation) { this.userValidation = userValidation; }
 
 	public void setDateValidation(Date dateValidation) { this.dateValidation = dateValidation; }
+
+	public void setDateDbtPrg(Date dateDbtPrg) { this.dateDbtPrg = dateDbtPrg; }
+
+	public void setDateFinPrg(Date dateFinPrg) { this.dateFinPrg = dateFinPrg; }
+
+	public void setCdeTer(Integer cdeTer) { this.cdeTer = cdeTer; }
 }

@@ -12,6 +12,7 @@ export const fetchInitData = ({commit}) => {
     commit('SET_RIONS', JSON.parse('[{"id":"639","value":"639"}]'));
 
   } else {*/
+
     Vue.http.get('app/rest/general/libellefamille')
       .then(response => response.json())
       .then(data => {
@@ -43,6 +44,14 @@ export const fetchInitData = ({commit}) => {
         if (data) {
           commit('SET_RIONS', data);
         }
+      });
+
+    Vue.http.get('app/rest/general/territoire')
+      .then(response => response.json())
+      .then(data => {
+      if (data) {
+        commit('SET_TERRITOIRE_MAP', data);
+      }
       });
 
   //}

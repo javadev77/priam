@@ -24,6 +24,14 @@ public class ProgrammeView {
     private String usermaj;
     private String useraffect;
     private Date dataffect;
+
+    private Date dateDbtPrg;
+    private Date dateFinPrg;
+    private Integer cdeTer;
+
+    private String userValidation;
+    private Date dateValidation;
+
     
     public ProgrammeView() {
     }
@@ -108,11 +116,31 @@ public class ProgrammeView {
     public Date getDataffect() {
         return dataffect;
     }
-    
+
+    @Column(name = "DATEDBTPRG")
+    @Temporal(TemporalType.DATE)
+    public Date getDateDbtPrg() { return dateDbtPrg; }
+
+    @Column(name = "DATEFINPRG")
+    @Temporal(TemporalType.DATE)
+    public Date getDateFinPrg() { return dateFinPrg; }
+
+    @Column(name = "CDETER")
+    public Integer getCdeTer() { return cdeTer; }
+
+    @Column(name = "DATEVALIDATION")
+    @Temporal(TemporalType.TIMESTAMP)
+    public Date getDateValidation() { return dateValidation; }
+
+    @Column(name = "USERVALIDATION")
+    public String getUserValidation() {
+        return userValidation;
+    }
+
     public void setNumProg(String numProg) {
         this.numProg = numProg;
     }
-    
+
     public void setNom(String nom) {
         this.nom = nom;
     }
@@ -168,4 +196,14 @@ public class ProgrammeView {
     public void setUseraffect(String useraffect) {
         this.useraffect = useraffect;
     }
+
+    public void setDateDbtPrg(Date dateDbtPrg) { this.dateDbtPrg = dateDbtPrg; }
+
+    public void setDateFinPrg(Date dateFinPrg) { this.dateFinPrg = dateFinPrg; }
+
+    public void setCdeTer(Integer cdeTer) { this.cdeTer = cdeTer; }
+
+    public void setUserValidation(String userValidation) { this.userValidation = userValidation; }
+
+    public void setDateValidation(Date dateValidation) { this.dateValidation = dateValidation; }
 }

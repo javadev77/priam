@@ -118,20 +118,18 @@ public class LigneProgrammeDaoTest {
         //assertThat(ligneProgrammes.size()).isEqualTo(3);
     }
 
-    @Test(expected = Exception.class)
+    @Test
     @Transactional
-    public void updateSelectionByNumProgramme() throws Exception{
+    public void testUpdateSelectionByNumProgramme() throws Exception{
 
         boolean success = true;
         try{
             ligneProgrammeDao.updateSelectionByNumProgramme(NUM_PROG, Boolean.TRUE);
         }catch (Exception e) {
-            e.printStackTrace();
             success = false;
-            throw e;
         }
 
-        assertThat(success).isTrue();
+        assertThat(success).isFalse();
     }
 
     @Test
@@ -167,7 +165,7 @@ public class LigneProgrammeDaoTest {
      * org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "UPDATE   PRIAM_LIGNE_PROGRAMME P INNER[*] JOIN   PRIAM_FICHIER F ON P.ID_FICHIER = F.ID SET   P.SELECTION=? WHERE   F.NUMPROG = ? ";
      * @throws Exception
      */
-    @Test(expected = Exception.class)
+    @Test
     @Transactional
     public void updateSelectionByNumProgrammeExcept() throws Exception {
         boolean flag = true;
@@ -176,9 +174,7 @@ public class LigneProgrammeDaoTest {
             listIDE12.add(IDE12);
             ligneProgrammeDao.updateSelectionByNumProgrammeExcept(NUM_PROG, listIDE12);
         } catch (Exception e ) {
-            e.printStackTrace();
             flag = false;
-            throw e;
         }
 
         assertThat(flag).isEqualTo(false);
@@ -189,7 +185,7 @@ public class LigneProgrammeDaoTest {
      * org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "UPDATE   PRIAM_LIGNE_PROGRAMME P INNER[*] JOIN   PRIAM_FICHIER F ON P.ID_FICHIER = F.ID SET   P.SELECTION=? WHERE   F.NUMPROG = ? ";
      * @throws Exception
      */
-    @Test(expected = Exception.class)
+    @Test
     @Transactional
     public void supprimerLigneProgramme() throws Exception {
         boolean flag = true;
@@ -197,7 +193,6 @@ public class LigneProgrammeDaoTest {
             ligneProgrammeDao.deleteLigneProgrammeByIde12AndNumProg(NUM_PROG, IDE12);
         } catch (Exception e ) {
             flag = false;
-            throw e;
         }
 
         assertThat(flag).isEqualTo(false);

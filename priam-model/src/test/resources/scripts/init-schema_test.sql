@@ -171,37 +171,37 @@ CREATE TABLE PRIAM_RION (
 
 ALTER TABLE PRIAM_RION ADD CONSTRAINT PRIAM_RION_PK PRIMARY KEY (RION);
 
-CREATE TABLE PRIAM_PROGRAMME (
-  NUMPROG VARCHAR(8) NOT NULL,
-  NOM VARCHAR(255),
-  RION_THEORIQUE NUMERIC(4,0),
-  CDEFAMILTYPUTIL VARCHAR(10) NOT NULL COMMENT 'Code Famille Type Utilisation',
-  CDETYPUTIL VARCHAR(10) NOT NULL COMMENT 'Code type d utilisation',
-  TYPE_REPART VARCHAR(45),
-  DATE_CREATION DATETIME COMMENT 'Dete de creation du programme',
-  STATUT_PROG_CODE VARCHAR(50) COMMENT 'Statut du programme',
-  RION_PAIEMENT NUMERIC(4,0) DEFAULT NULL,
-
-
-  PRIMARY KEY (NUMPROG),
-  CONSTRAINT FK_PROGRAMME_FAMILLE FOREIGN KEY (CDEFAMILTYPUTIL) REFERENCES PRIAM_FAMILTYPUTIL(CDEFAMILTYPUTIL),
-  CONSTRAINT FK_PROGRAMME_TYPE_UTIL FOREIGN KEY (CDETYPUTIL) REFERENCES PRIAM_TYPUTIL(CDETYPUTIL),
-  CONSTRAINT FK_STATUT_PROG_CODE FOREIGN KEY (STATUT_PROG_CODE) REFERENCES PRIAM_STATUT_PROGRAMME(CODE),
-  CONSTRAINT FK_RION_THEORIQUE FOREIGN KEY (RION_THEORIQUE) REFERENCES PRIAM_RION(RION),
-  CONSTRAINT FK_RION_PAIEMENT FOREIGN KEY (RION_PAIEMENT) REFERENCES PRIAM_RION(RION)
-
+create table PRIAM_PROGRAMME
+(
+	NUMPROG varchar(8) not null
+		primary key,
+	NOM varchar(255) null,
+	RION_THEORIQUE decimal(4) null,
+	CDEFAMILTYPUTIL varchar(10) not null comment 'Code Famille Type Utilisation',
+	CDETYPUTIL varchar(10) not null comment 'Code type d utilisation',
+	TYPE_REPART varchar(45) null,
+	DATE_CREATION datetime null comment 'Dete de creation du programme',
+	STATUT_PROG_CODE varchar(50) null comment 'Statut du programme',
+	RION_PAIEMENT decimal(4) null,
+	USERCRE varchar(60) null,
+	DATMAJ datetime null,
+	USERMAJ varchar(60) null,
+	DATAFFECT datetime null,
+	USERAFFECT varchar(60) null,
+	DATE_VALIDATION datetime null,
+	USER_VALIDATION varchar(60) null,
+	DATE_DBT_PRG date null,
+	DATE_FIN_PRG date null,
+	CDE_TER decimal(4) null,
+	constraint FK_RION_THEORIQUE foreign key (RION_THEORIQUE) references PRIAM_RION (RION),
+	constraint FK_PROGRAMME_FAMILLE foreign key (CDEFAMILTYPUTIL) references PRIAM_FAMILTYPUTIL (CDEFAMILTYPUTIL),
+	constraint FK_PROGRAMME_TYPE_UTIL foreign key (CDETYPUTIL) references PRIAM_TYPUTIL (CDETYPUTIL),
+	constraint FK_STATUT_PROG_CODE foreign key (STATUT_PROG_CODE) references PRIAM_STATUT_PROGRAMME (CODE),
+	constraint FK_RION_PAIEMENT foreign key (RION_PAIEMENT) references PRIAM_RION (RION)
 );
 
 ALTER TABLE PRIAM_FICHIER ADD COLUMN NUMPROG VARCHAR(8);
 ALTER TABLE PRIAM_FICHIER ADD CONSTRAINT FK_NUMPROG FOREIGN KEY (NUMPROG) REFERENCES PRIAM_PROGRAMME(NUMPROG);
-
-
-ALTER TABLE PRIAM_PROGRAMME ADD COLUMN USERCRE VARCHAR(60);
-ALTER TABLE PRIAM_PROGRAMME ADD COLUMN DATMAJ DATETIME;
-ALTER TABLE PRIAM_PROGRAMME ADD COLUMN USERMAJ VARCHAR(60);
-
-ALTER TABLE PRIAM_PROGRAMME ADD COLUMN DATAFFECT DATETIME;
-ALTER TABLE PRIAM_PROGRAMME ADD COLUMN USERAFFECT VARCHAR(60);
 
 -- -------------------------------------
 -- ----- PRIAM_PROG_VIEW ---------------
@@ -209,8 +209,29 @@ ALTER TABLE PRIAM_PROGRAMME ADD COLUMN USERAFFECT VARCHAR(60);
 
 DROP VIEW IF EXISTS PRIAM_PROG_VIEW;
 
-CREATE VIEW PRIAM_PROG_VIEW AS
-  select distinct pr.*,
-    (select count(f.NUMPROG) from PRIAM_FICHIER f where pr.NUMPROG=f.NUMPROG) as fichiers
-  from PRIAM_PROGRAMME pr
-  group by pr.NUMPROG;
+create view PRIAM_PROG_VIEW as
+SELECT DISTINCT
+    `pr`.`NUMPROG`                           AS `NUMPROG`,
+    `pr`.`NOM`                               AS `NOM`,
+    `pr`.`RION_THEORIQUE`                    AS `RION_THEORIQUE`,
+    `pr`.`CDEFAMILTYPUTIL`                   AS `CDEFAMILTYPUTIL`,
+    `pr`.`CDETYPUTIL`                        AS `CDETYPUTIL`,
+    `pr`.`TYPE_REPART`                       AS `TYPE_REPART`,
+    `pr`.`DATE_CREATION`                     AS `DATE_CREATION`,
+    `pr`.`STATUT_PROG_CODE`                  AS `STATUT_PROG_CODE`,
+    `pr`.`RION_PAIEMENT`                     AS `RION_PAIEMENT`,
+    `pr`.`USERCRE`                           AS `USERCRE`,
+    `pr`.`DATMAJ`                            AS `DATMAJ`,
+    `pr`.`USERMAJ`                           AS `USERMAJ`,
+    `pr`.`DATAFFECT`                         AS `DATAFFECT`,
+    `pr`.`USERAFFECT`                        AS `USERAFFECT`,
+    (SELECT count(`f`.`NUMPROG`)
+     FROM PRIAM_FICHIER `f`
+     WHERE (`pr`.`NUMPROG` = `f`.`NUMPROG`)) AS `fichiers`,
+    `pr`.`DATE_DBT_PRG`                      AS `DATEDBTPRG`,
+    `pr`.`DATE_FIN_PRG`                      AS `DATEFINPRG`,
+    `pr`.`CDE_TER`                           AS `CDETER`,
+    `pr`.`USER_VALIDATION`                   AS `USERVALIDATION`,
+    `pr`.`DATE_VALIDATION`                   AS `DATEVALIDATION`
+  FROM PRIAM_PROGRAMME `pr`
+  GROUP BY `pr`.`NUMPROG`;

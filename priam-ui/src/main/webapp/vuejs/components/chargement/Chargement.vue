@@ -250,7 +250,7 @@
               type : 'clickable-icon',
               cell : {
                 cellTemplate: function (cellValue) {
-                  var tempalte = '<span class="glyphicon glyphicon-trash" aria-hidden="true" ></span>';
+                  var tempalte = '<span class="glyphicon glyphicon-trash" aria-hidden="true" title="Abandonner"></span>';
                   var statusCode = cellValue.statut;
                   let element = $this.findStatusByCode(statusCode);
                   if(element !== undefined && ('CHARGEMENT_KO' === element.code || 'CHARGEMENT_OK' === element.code)) {

@@ -237,10 +237,9 @@ public class ProgrammeViewDaoTest {
         programmeDao.save(programme);
     }
     
-    @Test @Transactional
+    @Test
     public void find_by_numprog() {
         ProgrammeDto pr170001 = programmeViewDao.findByNumProg("170001");
-        
         assertThat(pr170001).isNotNull();
         assertThat(pr170001.getNumProg()).isEqualTo("170001");
     }
