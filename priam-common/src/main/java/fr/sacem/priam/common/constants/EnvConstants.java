@@ -1,5 +1,6 @@
 package fr.sacem.priam.common.constants;
 
+
 import static fr.sacem.fwk.config.Environment.getParameter;
 
 /**
@@ -13,6 +14,7 @@ public enum EnvConstants implements ConfigurableProperty {
             return "webapp.mode";
         }
     },
+
     PENEF_ZIP_IN {
         @Override
         public String property() {
@@ -24,6 +26,7 @@ public enum EnvConstants implements ConfigurableProperty {
         public String property() {
             return "priam.penef.dir.zip.archives";
         }
+
     },
     
     FELIX_PREPREP_DIR {

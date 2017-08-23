@@ -5,6 +5,8 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.util.Properties;
+
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -28,5 +30,7 @@ public class EnvConstantsTest {
 
         assertEquals("priam.penef.dir.zip.archives", EnvConstants.PENEF_ZIP_ARCHIVES.property());
         assertEquals("/work/DomainApp/priam/HTDOCS/PENEF/ARCHIVES", Environment.getParameter(EnvConstants.PENEF_ZIP_ARCHIVES.property()));
+
+        
     }
 }
