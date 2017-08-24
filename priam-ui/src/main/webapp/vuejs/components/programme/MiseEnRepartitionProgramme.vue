@@ -166,10 +166,6 @@
               })
               .then(data => {
                 if(data.errors !== undefined && data.errors.length >0) {
-                  /*this.resource.generateFelixDataWithErrors({numProg : this.programmeInfo.numProg})
-                    .then(response => {
-                        console.log('response' + response);
-                    });*/
                   this.downloadCsvFile('app/rest/repartition/downloadFichierFelixError',
                     {numProg: this.programmeInfo.numProg, tmpFilename : data.tmpFilename, filename : data.filename}, data.filename);
 
@@ -182,6 +178,15 @@
                         this.downloadCsvFile('app/rest/repartition/downloadFichierFelix', {numProg: this.programmeInfo.numProg}, data.filename);
                         this.$emit('close');
                     } else if(this.modeRepartition == 'MISE_EN_REPART') {
+                        this.resource.generateFelixData({numProg : this.programmeInfo.numProg})
+                          .then(response => {
+                              console.log("Genetation OK");
+                              this.$emit('validateMiseEnRepart');
+                          })
+                          .catch(error => {
+                              alert("Erreur technique lors de la Genetation du fichier Felix !! ");
+                              this.$emit('close');
+                          });
 
                     }
                 }

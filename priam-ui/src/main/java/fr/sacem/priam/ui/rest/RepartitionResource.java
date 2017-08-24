@@ -1,9 +1,14 @@
 package fr.sacem.priam.ui.rest;
 
+import fr.sacem.priam.common.constants.EnvConstants;
+import fr.sacem.priam.common.exception.TechnicalException;
 import fr.sacem.priam.model.dao.jpa.ProgrammeDao;
+import fr.sacem.priam.model.domain.Programme;
+import fr.sacem.priam.model.domain.StatutProgramme;
 import fr.sacem.priam.model.domain.dto.FichierFelixError;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.services.FelixDataService;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,22 +90,29 @@ public class RepartitionResource {
   
     @RequestMapping(value = "/generateFelixData",
                     method = RequestMethod.POST,
-                    produces = MediaType.APPLICATION_JSON_VALUE,
                     consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void generateFelixData(@RequestBody ProgrammeDto programme) {
+    public void generateFelixData(@RequestBody ProgrammeDto programme) throws TechnicalException {
         FichierFelixError fichierFelixError = null;
         try {
             fichierFelixError = felixDataService.createFichierFelixWithErrors(programme.getNumProg());
             if(fichierFelixError.getErrors() == null || fichierFelixError.getErrors().isEmpty()) {
   
               File file = new File(System.getProperty("java.io.tmpdir") + File.separator + fichierFelixError.getTmpFilename());
-              file.renameTo(new File(System.getProperty("java.io.tmpdir") + File.separator + fichierFelixError.getFilename()));
-              //FileUtils.moveFileToDirectory(file, );
+              File destFile = new File(System.getProperty("java.io.tmpdir") + File.separator + fichierFelixError.getFilename());
+              file.renameTo(destFile);
+              String felixPreprepDir = String.valueOf(EnvConstants.FELIX_PREPREP_DIR);
+              FileUtils.moveFileToDirectory(destFile, new File(felixPreprepDir), false);
+  
+              Programme prog = programmeDao.findOne(programme.getNumProg());
+              prog.setStatut(StatutProgramme.MIS_EN_REPART);
+              programmeDao.saveAndFlush(prog);
               
             }
     
         } catch (IOException e) {
-          logger.error("Erreur lors de la generation du fichier Felix", e);
+            String message = "Erreur lors de la generation du fichier Felix";
+            logger.error(message, e);
+            throw new TechnicalException(message, e);
         }
     }
 }

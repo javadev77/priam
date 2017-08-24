@@ -180,7 +180,8 @@
       <mise-en-repartition-programme
         :numProg = "selectedProgramme.numProg"
         @cancel="showEcranModalMisEnRepart = false"
-        @close="showEcranModalMisEnRepart = false">
+        @close="showEcranModalMisEnRepart = false"
+        @validateMiseEnRepart="onValidateMiseEnRepart">
 
       </mise-en-repartition-programme>
     </template>
@@ -701,6 +702,11 @@
             this.selectedProgramme = row;
             console.log('--- selectedProgramme numProg = ' + this.selectedProgramme.numProg);
 
+          },
+
+          onValidateMiseEnRepart() {
+              this.showEcranModalMisEnRepart = false;
+              this.rechercherProgrammes();
           }
 
 
