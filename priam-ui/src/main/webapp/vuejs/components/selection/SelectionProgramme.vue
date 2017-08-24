@@ -188,7 +188,7 @@
         priamGrid_phono: {
           gridColumns: [
             {
-              id: 'utilisateur',
+              id: 'libAbrgUtil',
               name: "Utilisateur",
               sortable: true,
               type: 'long-text',
@@ -353,7 +353,7 @@
         priamGrid_sono: {
           gridColumns: [
             {
-              id: 'utilisateur',
+              id: 'libAbrgUtil',
               name: "Utilisateur",
               sortable: true,
               type: 'long-text',

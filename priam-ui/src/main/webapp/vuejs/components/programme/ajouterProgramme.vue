@@ -161,6 +161,8 @@
   import Modal from '../common/Modal.vue';
   import DatePicker from '../common/DatePicker.vue';
 
+  const ID_FRANCE = 250;
+
   export default {
     data(){
       return {
@@ -188,10 +190,7 @@
 
         dateDebutProgramme : null,
         dateFinProgramme : null,
-        territoireSelected : {
-            id : 250,
-            value : 'FRANCE'
-        }
+        territoireSelected : null
 
       }
     },
@@ -338,6 +337,14 @@
       }
       this.resource= this.$resource('', {}, customActions);
 
+      this.territoireOptions.forEach((territoire) => {
+
+
+        if(territoire.id == ID_FRANCE)
+          {
+            this.territoireSelected = territoire;
+          }
+      })
     }
   }
 </script>

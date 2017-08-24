@@ -53,8 +53,8 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
                     "sum(ligneProgramme.durDif), " +
                     "sum(ligneProgramme.nbrDif), " +
                     "ligneProgramme.selection, " +
-                    "lu.libAbrgUtil) " +
-            "FROM LigneProgramme ligneProgramme join ligneProgramme.fichier  f , " +
+                    "CONCAT(ligneProgramme.cdeUtil, CASE WHEN lu.libAbrgUtil is null THEN '' ELSE ' - ' END, COALESCE(lu.libAbrgUtil,''))) " +
+            "FROM LigneProgramme ligneProgramme join ligneProgramme.fichier  f, " +
             "LibelleUtilisateur lu "+
             "WHERE ligneProgramme.fichier = f.id " +
             "AND lu.cdeUtil = ligneProgramme.cdeUtil "+
@@ -63,7 +63,7 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
             "AND (ligneProgramme.ajout = :ajout OR :ajout IS NULL) " +
             "AND (ligneProgramme.selection = :selection OR :selection IS NULL) " +
             "AND (ligneProgramme.titreOeuvre = :titre OR :titre IS NULL) " +
-            "AND (ligneProgramme.utilisateur = :utilisateur OR :utilisateur IS NULL) " +
+            "AND (ligneProgramme.cdeUtil = :utilisateur OR :utilisateur IS NULL) " +
             "GROUP BY ligneProgramme.ide12, " +
                 "ligneProgramme.titreOeuvre, " +
                 "ligneProgramme.roleParticipant1, " +
@@ -136,15 +136,13 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
 
     @Transactional(readOnly = true)
     @Query(value =
-            "SELECT " +
-                    " distinct l.utilisateur " +
-                    "FROM " +
-                    "LigneProgramme l " +
-                    "WHERE " +
-                    "l.fichier in (" +
-                    " select f.id from Fichier f where f.programme.numProg like :programme" +
-                    ") " +
-                    "ORDER BY l.utilisateur")
+            "SELECT distinct CONCAT(lu.cdeUtil, CASE WHEN lu.libAbrgUtil is null THEN '' ELSE ' - ' END, COALESCE(lu.libAbrgUtil,'')) " +
+                    "FROM LigneProgramme ligneProgramme join ligneProgramme.fichier  f , " +
+                    "LibelleUtilisateur lu "+
+                    "WHERE ligneProgramme.fichier = f.id " +
+                    "AND lu.cdeUtil = ligneProgramme.cdeUtil "+
+                    "AND f.programme.numProg = :programme " +
+                    "ORDER BY ligneProgramme.cdeUtil")
     List<String> findUtilisateursByProgramme(@Param("programme") String programme);
 
     @Modifying(clearAutomatically = true)
