@@ -11,12 +11,12 @@ public class FelixData implements Serializable {
     private String cdeCisac;
     private Integer cdeTer;
     private Integer rionEffet;
-    private Integer keyLigPenel;
     private String cdeFamilTypUtil;
     private String numProg;
+    private Integer keyLigPenel;
     private String cdeUtil;
-    private String cdeModFac;
     private String cdeTypUtil;
+    private String cdeModFac;
     private String cdeTypProg;
     private String cdeCompl;
     private String libProg;

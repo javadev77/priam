@@ -8,4 +8,8 @@ public class TechnicalException extends Throwable {
     public TechnicalException(String s) {
         super(s);
     }
+    
+    public TechnicalException(String s, Exception e) {
+        super(s, e);
+    }
 }

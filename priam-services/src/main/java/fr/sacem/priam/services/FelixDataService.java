@@ -100,29 +100,29 @@ public class FelixDataService {
     public void generateEtValidateDonneesRepartition(String numProg) {
     
         Programme programme = programmeDao.findOne(numProg);
-        List<LignePreprep> lignesSelectionnes = ligneProgrammeDao.findLigneProgrammeSelectionnesForFelix(programme.getNumProg());
+        
         List<LignePreprep> allLignes = lignePreprepDao.findByNumProg(numProg);
         lignePreprepDao.delete(allLignes);
         lignePreprepDao.flush();
+    
+        List<LignePreprep> lignesSelectionnes = ligneProgrammeDao.findLigneProgrammeSelectionnesForFelix(programme.getNumProg());
         
         Collection<LignePreprep> lignePrepreps = Lists.newArrayList();
         boolean isValidData = true;
         for (LignePreprep lignePreprep : lignesSelectionnes) {
-            lignePreprep.setCdeTer(250); // A remplir depuis le programme
+            lignePreprep.setCdeTer(programme.getCdeTer()); // A remplir depuis le programme
             lignePreprep.setRionEffet(programme.getRionTheorique().getRion());
             lignePreprep.setCdeFamilTypUtil(programme.getFamille().getCode());
             lignePreprep.setNumProg(programme.getNumProg());
-
+            lignePreprep.setKeyLigPenel(lignePreprep.getId() != null  ? lignePreprep.getId().intValue() : null);
             lignePreprep.setCdeTypUtil(programme.getTypeUtilisation().getCode());
             lignePreprep.setCdeModFac(CDE_MOD_FAC);
             lignePreprep.setCdeTypProg(PRINC);
             lignePreprep.setCdeCompl(SANS);
             lignePreprep.setLibProg(programme.getNom());
             lignePreprep.setCompLibProg("");
-            lignePreprep.setDatDbtProg(new Date()); //TODO A remplir depuis le programme
-            lignePreprep.setDatFinProg(new Date()); //TODO A remplir depuis le programme
-
-
+            lignePreprep.setDatDbtProg(programme.getDateDbtPrg()); //TODO A remplir depuis le programme
+            lignePreprep.setDatFinProg(programme.getDateFinPrg()); //TODO A remplir depuis le programme
 
             
             if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode().equals(programme.getTypeUtilisation().getCode())
