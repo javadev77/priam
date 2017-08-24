@@ -5,9 +5,7 @@ import org.springframework.util.StringUtils;
 import java.beans.PropertyEditorSupport;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
+import java.util.Locale;
 
 /**
  * Created by fandis on 09/05/2017.
@@ -19,7 +17,7 @@ public class DoublePropertyEditor extends PropertyEditorSupport {
     @Override
     public void setAsText(String text) {
         if (StringUtils.hasText(text)) {
-            NumberFormat nf = NumberFormat.getInstance();
+            NumberFormat nf = NumberFormat.getInstance(Locale.FRANCE);
             try {
                 setValue(nf.parse(text).doubleValue());
 

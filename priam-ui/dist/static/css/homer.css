@@ -3748,7 +3748,7 @@ input[sacem-combo-rion][readonly] {
   cursor: pointer;
 }
 .homer #HomerPrompt .modal-body {
-  padding: 20px 48px;
+  padding: 20px 18px;
 }
 .homer #HomerPrompt .modal-body > textarea {
   min-height: 84px;

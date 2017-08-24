@@ -7,7 +7,6 @@ package fr.sacem.Batch;
 
 import fr.sacem.util.UtilFile;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -24,7 +23,6 @@ import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.regex.Pattern;
 import java.util.zip.ZipOutputStream;
 
 import static org.junit.Assert.assertEquals;

@@ -215,7 +215,11 @@ public class FelixDataService {
         Programme programme = programmeDao.findOne(numProg);
         List<LignePreprep> lignePrepreps = lignePreprepDao.findByNumProg(numProg);
     
-        String fileName = DOC_PREFIX + numProg + "_" + programme.getRionTheorique().getRion() + "_" + new SimpleDateFormat("yyyyMMddhhmmss").format(new Date()) + ".csv";
+        String fileName = DOC_PREFIX
+                              + numProg + "_"
+                              + programme.getTypeUtilisation().getCode() + "_"
+                              + programme.getRionTheorique().getRion() + "_"
+                              + new SimpleDateFormat("yyyyMMddhhmmss").format(new Date()) + ".csv";
         File tmpFile = File.createTempFile(fileName, ".tmp");
         OutputStream out = new FileOutputStream(tmpFile);
     
