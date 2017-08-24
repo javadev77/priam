@@ -15,9 +15,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -29,6 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class LigneProgrammeServiceTest {
 
 
+    public static final String CDE_UTIL = "";
     @Autowired
     LigneProgrammeService ligneProgrammeService;
 
@@ -148,8 +147,12 @@ public class LigneProgrammeServiceTest {
     public void selectLigneProgramme() throws Exception {
         boolean flag = true;
         try{
-            Set<Long> listIDE12 = new HashSet<>();
-            listIDE12.add(IDE12);
+            Set<Map<String, String>> listIDE12 = new HashSet<>();
+
+            Map<String, String> list = new HashMap<>();
+            list.put("ide12", IDE12+"");
+            list.put("cdeUtil", CDE_UTIL);
+
             ligneProgrammeService.selectLigneProgramme(NUM_PROG, listIDE12);
         } catch (Exception e ) {
             flag = false;
@@ -168,8 +171,14 @@ public class LigneProgrammeServiceTest {
     public void selectAllLigneProgrammeExcept() throws Exception {
         boolean flag = true;
         try{
-            Set<Long> listIDE12 = new HashSet<>();
-            listIDE12.add(IDE12);
+            Set<Map<String, String>> listIDE12 = new HashSet<>();
+
+            Map<String, String> list = new HashMap<>();
+            list.put("ide12", IDE12+"");
+            list.put("cdeUtil", CDE_UTIL);
+
+            listIDE12.add(list);
+
             ligneProgrammeService.selectAllLigneProgrammeExcept(NUM_PROG, listIDE12);
         } catch (Exception e ) {
             e.printStackTrace();

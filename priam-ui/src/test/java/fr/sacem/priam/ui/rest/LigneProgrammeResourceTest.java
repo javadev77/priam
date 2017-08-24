@@ -13,9 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -163,8 +161,11 @@ public class LigneProgrammeResourceTest extends RestResourceTest{
     ValdierSelectionProgrammeInput input = new ValdierSelectionProgrammeInput();
     input.setAll(false);
     input.setNumProg(NUM_PROG);
-    Set<Long> inselectedSet = new HashSet<>();
-    inselectedSet.add(6829877211L);
+    Set<Map<String, String>> inselectedSet = new HashSet<>();
+    Map<String, String> selection = new HashMap<>();
+    selection.put("ide12", 6829877211L+"");
+    selection.put("libAbrgUtil", "");
+    inselectedSet.add(selection);
     input.setUnselected(inselectedSet);
 
     mockMvc.perform(post(APP_REST_MODIFIER_SELECTION)

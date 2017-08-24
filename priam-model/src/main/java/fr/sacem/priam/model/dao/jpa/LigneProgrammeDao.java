@@ -65,12 +65,7 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
             "AND (ligneProgramme.titreOeuvre = :titre OR :titre IS NULL) " +
             "AND (ligneProgramme.cdeUtil = :utilisateur OR :utilisateur IS NULL) " +
             "GROUP BY ligneProgramme.ide12, " +
-                "ligneProgramme.titreOeuvre, " +
-                "ligneProgramme.roleParticipant1, " +
-                "ligneProgramme.nomParticipant1, " +
-                "ligneProgramme.ajout, " +
-                "ligneProgramme.selection, " +
-                "lu.libAbrgUtil ")
+                "ligneProgramme.cdeUtil")
     Page<SelectionDto> findLigneProgrammeByCriteria(@Param("numProg") String numProg,
                                       @Param("utilisateur") String utilisateur,
                                       @Param("ide12") Long ide12,
@@ -167,8 +162,9 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
             "  p.selection=1 " +
             "where " +
             "  f.NUMPROG = ?1" +
-            " AND p.ide12 not in ?2")
-    void updateSelectionByNumProgrammeExcept(@Param("numProg") String numProg, @Param("listToExclude") Set<Long> listToExclude);
+            " AND p.ide12 <> ?2 " +
+            " AND p.cdeUtil not like ?3")
+    void updateSelectionByNumProgrammeExcept(@Param("numProg") String numProg, @Param("ide12") Long ide12, @Param("cdeUtil") String cdeUtil);
 
     @Modifying(clearAutomatically = true)
     @Transactional
@@ -180,8 +176,9 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
             "  p.selection=1 " +
             "where " +
             "  f.NUMPROG = ?1" +
-            " AND p.ide12 in ?2")
-    void updateSelectionByNumProgramme(@Param("numProg") String numProg, @Param("idLingesProgrammes") Set<Long> idLingesProgrammes);
+            " AND p.ide12 = ?2" +
+            " AND p.cdeUtil like ?3")
+    void updateSelectionByNumProgramme(@Param("numProg") String numProg, @Param("ide12") Long ide12, @Param("cdeUtil") String cdeUtil);
 
     @Transactional
     @Modifying(clearAutomatically = true)
@@ -191,6 +188,7 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
             "PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
             "WHERE  "+
             "  f.NUMPROG = ?1" +
-            " AND p.ide12 = ?2")
+            " AND p.ide12 = ?2 ")
     void deleteLigneProgrammeByIde12AndNumProg(@Param("numProg") String numProg, @Param("ide12") Long ide12);
+
 }

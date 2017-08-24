@@ -32,7 +32,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ContextConfiguration(classes={JpaConfigurationTest.class})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class LigneProgrammeDaoTest {
-    
+
+    private static final String CDE_UTIL = "";
     @Autowired
     LigneProgrammeDao ligneProgrammeDao;
     LigneProgrammeServiceImpl ligneProgrammeServiceImpl = new LigneProgrammeServiceImpl();
@@ -171,9 +172,7 @@ public class LigneProgrammeDaoTest {
     public void updateSelectionByNumProgrammeExcept() throws Exception {
         boolean flag = true;
         try{
-            Set<Long> listIDE12 = new HashSet<>();
-            listIDE12.add(IDE12);
-            ligneProgrammeDao.updateSelectionByNumProgrammeExcept(NUM_PROG, listIDE12);
+            ligneProgrammeDao.updateSelectionByNumProgrammeExcept(NUM_PROG, IDE12, CDE_UTIL);
         } catch (Exception e ) {
             flag = false;
         }

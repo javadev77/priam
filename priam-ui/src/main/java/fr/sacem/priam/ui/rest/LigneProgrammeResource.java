@@ -151,7 +151,9 @@ public class LigneProgrammeResource {
     } else if (!input.getSelected().isEmpty()) {
       ligneProgrammeService.selectLigneProgramme(programme.getNumProg(), input.getSelected());
     } else if (!input.getUnselected().isEmpty()) {
-      ligneProgrammeService.selectAllLigneProgrammeExcept(programme.getNumProg(), input.getUnselected());
+      ligneProgrammeService.selectAllLigneProgrammeExcept(programme.getNumProg(), input.getUnselected() );
+
+
     }
   }
 

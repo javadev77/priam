@@ -36,7 +36,7 @@ public interface ProgrammeDao extends JpaRepository<Programme, String> {
             "           f.numProg = ?1 " +
                     "AND (?2 IS NULL OR l.selection = ?2) " +
             "       GROUP BY " +
-            "           l.ide12, l.ajout" +
+            "           l.ide12, l.ajout, l.cdeUtil" +
             "       ) result " +
             "GROUP BY ajout")
     List<Object> compterOuvres(@Param("numProg") String numProg, @Param("selection") Integer selection);
@@ -51,7 +51,7 @@ public interface ProgrammeDao extends JpaRepository<Programme, String> {
                     "WHERE " +
                     "f.numProg = ?1 " +
                     "AND (?2 IS NULL OR l.selection = ?2) " +
-                    "GROUP BY l.ide12) result ")
+                    "GROUP BY l.ide12, l.cdeUtil) result ")
     Long calculerDureeOeuvres(@Param("numProg") String numProg, @Param("selection") Integer selection);
 
     @Transactional(readOnly = true)
@@ -64,7 +64,7 @@ public interface ProgrammeDao extends JpaRepository<Programme, String> {
                     "on l.ID_FICHIER=f.ID " +
                     "WHERE f.numProg = ?1 " +
                     "AND (?2 IS NULL OR l.selection = ?2) " +
-                    "GROUP BY l.ide12) result")
+                    "GROUP BY l.ide12, l.cdeUtil) result")
     Long calculerQuantiteOeuvres(@Param("numProg") String numProg, @Param("selection") Integer selection);
 
 }

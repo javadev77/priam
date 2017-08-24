@@ -326,7 +326,7 @@
                 isChecked: function (entry) {
 
                   var notChecked = $this.unselectedLigneProgramme.find(elem => {
-                    return elem == entry.ide12;
+                    return elem.ide12 == entry.ide12 && elm.libAbrgUtil == entry.libAbrgUtil;
                   });
 
                   if (notChecked !== undefined) {
@@ -334,7 +334,7 @@
                   }
 
                   var result = $this.ligneProgrammeSelected.find(elem => {
-                    return elem == entry.ide12;
+                    return elem.ide12 == entry.ide12 && elm.libAbrgUtil == entry.libAbrgUtil;
                   });
 
                   if (result !== undefined) {
@@ -479,7 +479,7 @@
               type: 'checkbox',
               cell: {
                 toText: function (entry) {
-                  return entry.ide12;
+                  return JSON.stringify({ide12 : entry.ide12, libAbrgUtil : entry.libAbrgUtil});
                 },
 
                 isDisabled: function () {
@@ -493,7 +493,7 @@
                 isChecked: function (entry) {
 
                   var notChecked = $this.unselectedLigneProgramme.find(elem => {
-                    return elem == entry.ide12;
+                    return elem.ide12 == entry.ide12 && elem.libAbrgUtil == entry.libAbrgUtil;
                   });
 
                   if (notChecked !== undefined) {
@@ -501,7 +501,7 @@
                   }
 
                   var result = $this.ligneProgrammeSelected.find(elem => {
-                    return elem == entry.ide12;
+                    return elem.ide12 == entry.ide12 && elem.libAbrgUtil == entry.libAbrgUtil;
                   });
 
                   if (result !== undefined) {
@@ -722,12 +722,15 @@
         for (var i in this.ligneProgramme) {
 
             if(this.all || this.ligneProgramme[i].selection) {
-              if(this.ligneProgrammeSelected.indexOf(this.ligneProgramme[i].ide12) == -1 && this.unselectedLigneProgramme.indexOf(this.ligneProgramme[i].ide12) == -1)
-                this.ligneProgrammeSelected.push(this.ligneProgramme[i].ide12);
+              let number = this.indexOf(this.ligneProgrammeSelected, this.ligneProgramme[i]);
+              if(this.indexOf(this.ligneProgrammeSelected, this.ligneProgramme[i]) == -1
+                && this.indexOf(this.unselectedLigneProgramme, this.ligneProgramme[i]) == -1)
+                this.ligneProgrammeSelected.push({ide12 : this.ligneProgramme[i].ide12, libAbrgUtil : this.ligneProgramme[i].libAbrgUtil});
             }
             else {
-              if(this.ligneProgrammeSelected.indexOf(this.ligneProgramme[i].ide12) == -1 && this.unselectedLigneProgramme.indexOf(this.ligneProgramme[i].ide12) == -1)
-                this.unselectedLigneProgramme.push(this.ligneProgramme[i].ide12);
+              if(this.indexOf(this.ligneProgrammeSelected, this.ligneProgramme[i])
+                && this.indexOf(this.unselectedLigneProgramme, this.ligneProgramme[i]) == -1)
+                this.unselectedLigneProgramme.push({ide12 : this.ligneProgramme[i].ide12, libAbrgUtil : this.ligneProgramme[i].libAbrgUtil});
             }
 
         }
@@ -785,17 +788,18 @@
           }
 
           var found = this.ligneProgrammeSelected.find( elem => {
-            return  elem === entryChecked.ide12;
+            return  elem.ide12 === entryChecked.ide12 && elem.libAbrgUtil === entryChecked.libAbrgUtil;
           });
           if(found !== undefined && found) {
-            let number = this.unselectedLigneProgramme.indexOf(entryChecked.ide12);
+
+            let number = this.indexOf(this.unselectedLigneProgramme, entryChecked);
             this.unselectedLigneProgramme.splice(number, 1);
           } else {
 
-            let number = this.unselectedLigneProgramme.indexOf(entryChecked.ide12);
+            let number = this.indexOf(this.unselectedLigneProgramme, entryChecked);
             this.unselectedLigneProgramme.splice(number, 1);
 
-            this.ligneProgrammeSelected.push(entryChecked.ide12);
+            this.ligneProgrammeSelected.push({ide12:entryChecked.ide12, libAbrgUtil : entryChecked.libAbrgUtil});
           }
 
         } else {
@@ -812,14 +816,25 @@
             this.dureeSelection.duree -= entryChecked.durDif;
           }
 
-          let number = this.ligneProgrammeSelected.indexOf(entryChecked.ide12);
+          let number = this.indexOf(this.ligneProgrammeSelected, entryChecked);
           this.ligneProgrammeSelected.splice(number, 1);
 
-          this.unselectedLigneProgramme.push(entryChecked.ide12);
+          this.unselectedLigneProgramme.push({ide12:entryChecked.ide12, libAbrgUtil : entryChecked.libAbrgUtil});
         }
         console.log('onEntryChecked() ==> this.ligneProgrammeSelected='+this.ligneProgrammeSelected.length);
       },
 
+      indexOf(array, obj) {
+
+          for(let i = 0; i < array.length; i++ ) {
+              if(obj.ide12 == array[i].ide12 && obj.libAbrgUtil == array[i].libAbrgUtil) {
+                  return i;
+              }
+          }
+
+          return -1;
+
+      },
       onAllChecked(allChecked, entries) {
 
         this.all = allChecked;
@@ -1009,6 +1024,8 @@
       },
 
       enregistrerEdition() {
+
+        debugger;
 
         this.inProcess = true;
         this.tableauSelectionnable = false;
