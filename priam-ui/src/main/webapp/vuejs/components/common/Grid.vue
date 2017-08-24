@@ -366,6 +366,7 @@
       },
 
       emitAllCheckbox() {
+
         console.log("emitAllCheckbox=" +  this.allChecked)
 
         console.log("this.$refs.checkbox=" +  this.$refs.checkbox.length);
@@ -373,8 +374,16 @@
         for(var i in this.$refs.checkbox) {
           let elem = this.$refs.checkbox[i];
           console.log("elem=" +  elem.value);
+
           if( elem.value !== undefined) {
-            let key = Number.parseInt(elem.value);
+
+            var key = null;
+            if(this.isNumber(elem.value)) {
+              key = Number.parseInt(elem.value);
+            } else {
+              key = JSON.parse(elem.value);
+            }
+
             if(this.allChecked) {
               elem.checked =  1;
 
@@ -431,6 +440,9 @@
         this.currentPage = 1;
         this.pageSize = pageSize;
         this.$emit('load-page', 1, pageSize, this.sort);
+      },
+      isNumber(n) {
+        return !isNaN(parseFloat(n)) && isFinite(n);
       }
 
     },

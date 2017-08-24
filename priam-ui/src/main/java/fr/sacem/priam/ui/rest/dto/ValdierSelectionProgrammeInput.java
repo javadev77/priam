@@ -3,6 +3,7 @@ package fr.sacem.priam.ui.rest.dto;
 import com.google.common.base.MoreObjects;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -13,8 +14,8 @@ public class ValdierSelectionProgrammeInput {
   private String numProg;
   private boolean deselectAll;
   private boolean all;
-  private Set<Long> unselected = new HashSet<>();
-  private Set<Long> selected = new HashSet<>();
+  private Set<Map<String, String>> unselected = new HashSet<>();
+  private Set<Map<String, String>> selected = new HashSet<>();
 
   public ValdierSelectionProgrammeInput() {
 
@@ -36,19 +37,19 @@ public class ValdierSelectionProgrammeInput {
     this.all = all;
   }
 
-  public Set<Long> getUnselected() {
+  public Set<Map<String, String>> getUnselected() {
     return unselected;
   }
 
-  public void setUnselected(Set<Long> unselected) {
+  public void setUnselected(Set<Map<String, String>> unselected) {
     this.unselected = unselected;
   }
 
-  public Set<Long> getSelected() {
+  public Set<Map<String, String>> getSelected() {
     return selected;
   }
 
-  public void setSelected(Set<Long> selected) {
+  public void setSelected(Set<Map<String, String>> selected) {
     this.selected = selected;
   }
 

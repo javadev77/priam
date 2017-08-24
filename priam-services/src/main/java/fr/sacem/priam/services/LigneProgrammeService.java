@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -25,6 +26,9 @@ import java.util.Set;
  */
 @Component
 public class LigneProgrammeService {
+
+    public static final String IDE_12 = "ide12";
+    public static final String CDE_UTIL = "libAbrgUtil";
 
     @Autowired
     private LigneProgrammeDao ligneProgrammeDao;
@@ -130,15 +134,24 @@ public class LigneProgrammeService {
     }
 
     @Transactional
-    public void selectLigneProgramme(String numProg, Set<Long> idLingesProgrammes) {
+    public void selectLigneProgramme(String numProg, Set<Map<String, String>> idLingesProgrammes) {
         ligneProgrammeDao.updateSelectionByNumProgramme(numProg, false);
-        ligneProgrammeDao.updateSelectionByNumProgramme(numProg, idLingesProgrammes);
+
+        for (Map<String, String>  obj:  idLingesProgrammes) {
+            ligneProgrammeDao.updateSelectionByNumProgramme(numProg, Long.parseLong(obj.get(IDE_12)), obj.get(CDE_UTIL).split(" - ")[0]);
+        }
+
+
     }
 
     @Transactional
-    public void selectAllLigneProgrammeExcept(String numProg, Set<Long> idLingesProgrammes) {
+    public void selectAllLigneProgrammeExcept(String numProg, Set<Map<String, String>> idLingesProgrammes) {
         ligneProgrammeDao.updateSelectionByNumProgramme(numProg, false);
-        ligneProgrammeDao.updateSelectionByNumProgrammeExcept(numProg, idLingesProgrammes);
+
+        for (Map<String, String>  obj:  idLingesProgrammes) {
+            ligneProgrammeDao.updateSelectionByNumProgrammeExcept(numProg, Long.parseLong(obj.get(IDE_12)), obj.get(CDE_UTIL).split(" - ")[0]);
+        }
+
     }
 
     @Transactional
