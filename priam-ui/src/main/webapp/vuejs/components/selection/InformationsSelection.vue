@@ -3,34 +3,32 @@
     <div class="panel-body">
       <div class="row">
 
-        <div class="col-sm-3">
-          <span class="pull-left blueText">Oeuvres sélectionées - Auto</span>
-        </div>
-        <div class="col-sm-3">
-          {{ dureeSelection.auto }}
+
+        <div class="form-group col-xs-8">
+          <label class="col-xs-15 control-label blueText text-right">Oeuvres sélectionées - Auto</label>
+          <div class="col-xs-9 control-label">
+            {{ dureeSelection.auto }}
+          </div>
         </div>
 
-        <div class="col-sm-3">
-          <span class="pull-left blueText">Oeuvres sélectionées - Manuel</span>
-        </div>
-        <div class="col-sm-3">
-          {{ dureeSelection.manuel }}
-        </div>
-
-
-
-        <div class="col-sm-3">
-          <span class="pull-left blueText" v-if="typeUtilisation == 'CPRIVSONRD'">Durée sélection</span>
-          <span class="pull-left blueText" v-else-if="typeUtilisation == 'CPRIVSONPH'">Quantité sélection</span>
-        </div>
-        <div class="col-sm-3" v-if="typeUtilisation == 'CPRIVSONRD'">
-          {{ dureeFormattee }}
-        </div>
-        <div class="col-sm-3" v-else-if="typeUtilisation == 'CPRIVSONPH'">
-          {{ dureeSelection.duree }}
+        <div class="form-group col-xs-8">
+          <label class="col-xs-15 control-label blueText text-right">Oeuvres sélectionées - Manuel</label>
+          <div class="col-xs-9 control-label">
+            {{ dureeSelection.manuel }}
+          </div>
         </div>
 
+        <div class="form-group col-xs-8">
+          <label class="col-xs-15 control-label blueText text-right" v-if="typeUtilisation == 'CPRIVSONRD'">Durée sélection</label>
+          <label class="col-xs-15 control-label blueText text-right" v-else-if="typeUtilisation == 'CPRIVSONPH'">Quantité sélection</label>
 
+          <div class="col-xs-9 control-label" v-if="typeUtilisation == 'CPRIVSONRD'">
+            {{ dureeFormattee }}
+          </div>
+          <div class="col-xs-9 control-label" v-else-if="typeUtilisation == 'CPRIVSONPH'">
+            {{ dureeSelection.duree }}
+          </div>
+         </div>
       </div>
     </div>
   </div>
