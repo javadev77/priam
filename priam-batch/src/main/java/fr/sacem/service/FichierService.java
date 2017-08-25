@@ -8,10 +8,11 @@ import java.io.InputStream;
  * Created by fandis on 17/05/2017.
  */
 public interface FichierService {
-    void addFichier(InputStream inputStream, String nomFichier);
+    Long addFichier(InputStream inputStream, String nomFichier);
 
     void updateFichierDate(String nomFichier);
 
     Fichier findByName(String nomFiciher);
-
+    
+    Fichier findById(Long idFichier);
 }

@@ -7,9 +7,13 @@ import fr.sacem.domain.Fichier;
  */
 public interface FichierRepository {
 
-    void addFichier(Fichier fichier);
+    Long addFichier(Fichier fichier);
 
     void updateFichierDate(String nomFichier);
 
     Fichier findByName(String nomFichier);
+    
+    void updateFichierById(Long idFichier);
+    
+    Fichier findById(Long idFichier);
 }

@@ -103,9 +103,9 @@ public class ZipMultiResourceItemReader<T> extends MultiResourceItemReader<T> {
                                 // find files inside the current zip resource
                                 //La fonction extractFiles traite le fichier csv et retourne son nom
                                 //Le nom du fichier est entregister dans le context du step pour pouvoir l'utiliser dans le itemWriter
-                                String nomFichier = utilFile.extractFiles(zipFile, extractedResources);
-                                Fichier fichier = fichierService.findByName(nomFichier);
-                                JobParameter jobParameterNomDuFichier = new JobParameter(nomFichier);
+                                Long idFichier = utilFile.extractFiles(zipFile, extractedResources);
+                                Fichier fichier = fichierService.findById(idFichier);
+                                JobParameter jobParameterNomDuFichier = new JobParameter(fichier.getNom());
                                 this.stepExecution.getExecutionContext().put("nomFichier", jobParameterNomDuFichier);
                                 JobParameter jobParameterIdFichier = new JobParameter(fichier.getId());
                                 this.stepExecution.getExecutionContext().put("idFichier", jobParameterIdFichier);
