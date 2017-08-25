@@ -81,7 +81,7 @@
 
      computed :{
        dateValidation () {
-         return new Date(this.programmeInfo.dateValidation).toLocaleDateString() + " " + new Date(this.programmeInfo.dateValidation).toLocaleTimeString().slice(0,5);
+         return new Date(this.programmeInfo.dateValidation).toLocaleDateString() + " à " + new Date(this.programmeInfo.dateValidation).toLocaleTimeString().slice(0,5);
        }
      }
 

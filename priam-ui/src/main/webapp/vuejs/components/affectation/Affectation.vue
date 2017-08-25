@@ -582,7 +582,7 @@
               this.statutSelected = {id : 'ALL', value : 'Tous'};
 
               var $this = this;
-              setTimeout(function(){ $this.typeUtilisationSelected = $this.getTypeUtilisationByCode($this.programmeInfo.typeUtilisation); $this.rechercher(); }, 100);
+              setTimeout(function(){ $this.typeUtilisationSelected = $this.getTypeUtilisationByCode($this.programmeInfo.typeUtilisation); $this.rechercher(); }, 200);
 
             }
             else {

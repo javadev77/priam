@@ -55,7 +55,7 @@
               </div>
             </div>
 
-            <div class="row">
+            <div class="row espacement">
 
               <div class="form-group col-md-6" :class="{'has-error': errors.has('Nom programme') }">
                 <label class="col-md-9 control-label">Nom programme</label>
@@ -108,7 +108,7 @@
             </div>
 
             <!-- Date Debut / Fin et territoire programme -->
-            <div class="row">
+            <div class="row espacement">
               <div class="form-group col-md-6" :class="{'has-error': errors.has('dateDebutProgramme') }">
                 <label class="col-md-9 control-label">Date de début</label>
                 <div class="col-md-15">
@@ -135,7 +135,7 @@
             </div>
 
             <!-- Mode de répartition -->
-            <div class="row">
+            <div class="row espacement">
               <div class="form-group col-md-7">
                 <label class="col-md-9 control-label">Mode de répartition</label>
                 <div class="col-md-15">
@@ -467,7 +467,7 @@
 
         var error = {"field":"dateFinProgramme","msg":"Le champ 'Date de fin' est obligatoire et non renseigné.","rule":"required","scope":"__global__"};
 
-        if(this.dateDebutProgramme == null) {
+        if(this.dateFinProgramme == null) {
           this.$validator.errorBag.errors.push(error);
         }else {
           let number = this.indexOf(this.$validator.errorBag.errors, error);
