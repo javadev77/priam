@@ -319,6 +319,7 @@
           critereRechercheData.typeUtilisation = this.typeUtilisationSelected !== undefined ? this.typeUtilisationSelected.id : null;
           critereRechercheData.famille = this.familleSelected !== undefined ? this.familleSelected.id : null;
           critereRechercheData.rionTheorique = this.rionTheoriqueSelected !== undefined ? this.rionTheoriqueSelected.id : null;
+          critereRechercheData.statutCode = ['EN_COURS', 'AFFECTE', 'CREE'];
 
           this.resource.searchAllProgramme(critereRechercheData)
             .then(response => {

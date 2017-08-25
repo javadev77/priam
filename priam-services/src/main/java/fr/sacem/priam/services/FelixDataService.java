@@ -114,7 +114,6 @@ public class FelixDataService {
             lignePreprep.setRionEffet(programme.getRionTheorique().getRion());
             lignePreprep.setCdeFamilTypUtil(programme.getFamille().getCode());
             lignePreprep.setNumProg(programme.getNumProg());
-            lignePreprep.setKeyLigPenel(lignePreprep.getId() != null  ? lignePreprep.getId().intValue() : null);
             lignePreprep.setCdeTypUtil(programme.getTypeUtilisation().getCode());
             lignePreprep.setCdeModFac(CDE_MOD_FAC);
             lignePreprep.setCdeTypProg(PRINC);
@@ -138,17 +137,13 @@ public class FelixDataService {
         }
     
         lignePreprepDao.save(lignePrepreps);
-        lignePreprepDao.flush();
-        /*for(LignePreprep lignePreprep : lignePrepreps) {
-            BindingResult errors = new BeanPropertyBindingResult(lignePreprep, "lignePreprep");
-            validator.validate(lignePreprep, errors);
-            if(errors.hasErrors()) {
-                return false;
-            }
-    
-        }*/
-    
         
+        for(LignePreprep lignePreprep : lignePrepreps) {
+            lignePreprep.setKeyLigPenel(lignePreprep.getId() != null  ? lignePreprep.getId().intValue() : null);
+        }
+    
+        lignePreprepDao.save(lignePrepreps);
+        lignePreprepDao.flush();
         
         
     }
@@ -219,7 +214,7 @@ public class FelixDataService {
                               + numProg + "_"
                               + programme.getTypeUtilisation().getCode() + "_"
                               + programme.getRionTheorique().getRion() + "_"
-                              + new SimpleDateFormat("yyyyMMddhhmmss").format(new Date()) + ".csv";
+                              + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".csv";
         File tmpFile = File.createTempFile(fileName, ".tmp");
         OutputStream out = new FileOutputStream(tmpFile);
     
