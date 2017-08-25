@@ -259,3 +259,12 @@
     }
   }
 </script>
+
+
+<style>
+  body > div > div:nth-child(2) > div > div:nth-child(1) > div:nth-child(3) > div.panel.panel-default > div.panel-collapse > div > form > div > div.form-group.col-md-6 > div > div > div.autocomplete.transition.autocomplete-list {
+    position: fixed;
+    text-align: left;
+  }
+
+</style>

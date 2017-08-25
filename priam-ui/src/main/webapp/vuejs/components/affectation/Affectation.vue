@@ -48,29 +48,31 @@
         <div class="panel-body">
           <form class="form-horizontal" role="form">
             <div class="row">
-              <div class="col-sm-2">
-                <label class="control-label pull-right blueText">Famille destination</label>
-              </div>
-              <div class="col-sm-3">
 
-                <v-select :searchable="false" label="value" v-model="familleSelected" :options="familleOptions" :on-change="loadTypeUtilisation">
-                </v-select>
-              </div>
+              <div class="form-group col-md-1"></div>
 
-              <div class="col-sm-3">
-                <label class="control-label pull-right blueText">Type d’utilisation destination</label>
-              </div>
-              <div class="col-sm-4">
-                <v-select :searchable="false" label="value" v-model="typeUtilisationSelected" :options="typeUtilisationOptions">
-                </v-select>
+              <div class="form-group col-md-7">
+                <label class="col-md-9 control-label blueText text-right">Famille destination</label>
+                <div class="col-md-15">
+                  <v-select :searchable="false" label="value" v-model="familleSelected" :options="familleOptions" :on-change="loadTypeUtilisation">
+                  </v-select>
+                </div>
               </div>
 
-              <div class="col-sm-3">
-                <label class="control-label pull-right blueText">Statut</label>
+              <div class="form-group col-md-8">
+                <label class="col-md-9 control-label blueText text-right">Type d’utilisation destination</label>
+                <div class="col-md-15">
+                  <v-select :searchable="false" label="value" v-model="typeUtilisationSelected" :options="typeUtilisationOptions">
+                  </v-select>
+                </div>
               </div>
-              <div class="col-sm-2">
-                <v-select :searchable="false" label="value" v-model="statutSelected" :options="statutAffectationOptions">
-                </v-select>
+
+              <div class="form-group col-md-6">
+                <label class="col-md-9 control-label blueText text-right">Statut</label>
+                <div class="col-md-15">
+                  <v-select :searchable="false" label="value" v-model="statutSelected" :options="statutAffectationOptions">
+                  </v-select>
+                </div>
               </div>
 
             </div>

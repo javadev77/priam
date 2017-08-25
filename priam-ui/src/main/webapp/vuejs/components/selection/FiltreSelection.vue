@@ -15,62 +15,65 @@
         <div class="panel-body">
 
           <form class="form-horizontal" role="form">
+
+
             <div class="row">
 
-
-              <div class="col-sm-2">
-                  <label class="control-label pull-right blueText">Utilisateur</label>
-              </div>
-              <div class="col-sm-3">
-                <select2 class="form-control" :options="utilisateurOptions" v-model="filter.utilisateur" :searchable="true">
-                </select2>
-              </div>
-
-              <div class="col-sm-2">
-                  <label class="control-label pull-right blueText">IDE12</label>
-              </div>
-              <div class="col-sm-3">
-                <autocomplete
-                  id="filterIde12"
-                  url="ligneProgramme/ide12"
-                  :custom-params="{ programme: $route.params.numProg }"
-                  anchor="code"
-                  :min="3"
-                  :on-select="selectIde12"
-                  :on-input="selectIde12"
-                >
-                </autocomplete>
+              <div class="form-group col-md-5">
+                <label class="col-md-6 control-label blueText text-right">Utilisateur</label>
+                <div class="col-md-18">
+                  <select2 class="form-control" :options="utilisateurOptions" v-model="filter.utilisateur" :searchable="true">
+                  </select2>
+                </div>
               </div>
 
-              <div class="col-sm-2">
-                  <label class="control-label pull-right blueText">Titre</label>
-              </div>
-              <div class="col-sm-3">
-                <autocomplete
-                  id="filterTitreOeuvre"
-                  url="ligneProgramme/titreOeuvre"
-                  :custom-params="{ programme: $route.params.numProg }"
-                  anchor="value"
-                  :min="3"
-                  :on-select="selectTitreOeuvre"
-                  :on-input="selectTitreOeuvre"
-                >
-                </autocomplete>
-              </div>
-              <div class="col-sm-2">
-                <label class="control-label pull-right blueText">Ajout</label>
-              </div>
-              <div class="col-sm-2">
-                <v-select :searchable="false" v-model="filter.ajout" :options="ajoutOptions"></v-select>
+              <div class="form-group col-md-4">
+                <label class="col-md-6 control-label blueText text-right">IDE12</label>
+                <div class="col-md-18 control-label">
+                  <autocomplete
+                    id="filterIde12"
+                    url="ligneProgramme/ide12"
+                    :custom-params="{ programme: $route.params.numProg }"
+                    anchor="code"
+                    :min="3"
+                    :on-select="selectIde12"
+                    :on-input="selectIde12"
+                  >
+                  </autocomplete>
+                </div>
               </div>
 
-              <div class="col-sm-2">
-                <label class="control-label pull-right blueText">Sélection</label>
+              <div class="form-group col-md-6">
+                <label class="col-md-6 control-label blueText text-right">Titre</label>
+                <div class="col-md-18 control-label">
+                  <autocomplete
+                    id="filterTitreOeuvre"
+                    url="ligneProgramme/titreOeuvre"
+                    :custom-params="{ programme: $route.params.numProg }"
+                    anchor="value"
+                    :min="3"
+                    :on-select="selectTitreOeuvre"
+                    :on-input="selectTitreOeuvre"
+                  >
+                  </autocomplete>
+                </div>
               </div>
-              <div class="col-sm-2">
-                <v-select :searchable="false" v-model="filter.selection" :options="selectionOptions"></v-select>
+
+              <div class="form-group col-md-4">
+                <label class="col-md-8 control-label blueText text-right">Ajout</label>
+                <div class="col-md-16 control-label">
+                  <v-select :searchable="false" v-model="filter.ajout" :options="ajoutOptions"></v-select>
+                </div>
+              </div>
+
+              <div class="form-group col-md-4">
+                <label class="col-md-10 control-label blueText text-right">Sélection</label>
+                <div class="col-md-14 control-label">
+                  <v-select :searchable="false" v-model="filter.selection" :options="selectionOptions"></v-select>
+                </div>
               </div>
             </div>
+
           </form>
         </div>
       </div>
