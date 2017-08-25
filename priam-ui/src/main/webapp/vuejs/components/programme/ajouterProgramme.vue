@@ -28,7 +28,21 @@
                   <i v-show="errors.has('typeUtilisation')" class="fa fa-warning"></i>
                   <label v-show="errors.has('typeUtilisation')" :class="{'has-error': errors.has('typeUtilisation') }">{{ errors.first('typeUtilisation') }}</label>
                 </li>
+                <li v-if="errors.has('dateDebutProgramme')">
+                  <i v-show="errors.has('dateDebutProgramme')" class="fa fa-warning"></i>
+                  <label v-show="errors.has('dateDebutProgramme')" :class="{'has-error': errors.has('dateDebutProgramme') }">{{ errors.first('dateDebutProgramme') }}</label>
+                </li>
+                <li v-if="errors.has('dateFinProgramme')">
+                  <i v-show="errors.has('dateFinProgramme')" class="fa fa-warning"></i>
+                  <label v-show="errors.has('dateFinProgramme')" :class="{'has-error': errors.has('dateFinProgramme') }">{{ errors.first('dateFinProgramme') }}</label>
+                </li>
+
+                <li v-if="errors.has('territoire')">
+                  <i v-show="errors.has('territoire')" class="fa fa-warning"></i>
+                  <label v-show="errors.has('territoire')" :class="{'has-error': errors.has('territoire') }">{{ errors.first('territoire') }}</label>
+                </li>
               </ul>
+
             </div>
             <div class="row espacement">
 
@@ -57,6 +71,7 @@
                           :on-change="loadTypeUtilisation" :classValidate="{'has-error': errors.has('Famille') }">
                 </v-select>
 
+
               </div>
 
               <!-- Type d'utilisation -->
@@ -70,6 +85,32 @@
 
               </div>
             </div>
+
+            <div class="row espacement">
+              <div class="col-sm-2" :class="{'has-error': errors.has('dateDebutProgramme') }">
+                <label class="control-label pull-right">Date de début</label>
+              </div>
+              <div class="col-sm-2" :class="{'has-error': errors.has('dateDebutProgramme') }">
+                <date-picker @update-date="updateDebutProgramme" name="dateDebutProgramme" :value="dateDebutProgramme" date-format="dd/mm/yy" :zeroHour="true" ></date-picker>
+              </div>
+              <div class="col-sm-2" :class="{'has-error': errors.has('dateFinProgramme') }">
+                <label class="control-label pull-right">Date de fin</label>
+              </div>
+              <div class="col-sm-2" :class="{'has-error': errors.has('dateFinProgramme') }">
+                <date-picker @update-date="updateDateFinProgramme" name="dateFinProgramme" :value="dateFinProgramme" date-format="dd/mm/yy" :zeroHour="true">
+                </date-picker>
+              </div>
+              <div class="col-sm-2" :class="{'has-error': errors.has('territoire') }">
+                <label class="control-label pull-right">Territoire</label>
+              </div>
+              <div class="col-sm-3" >
+                <v-select name="territoire" v-validate="'required'" :searchable="true" label="value" v-model="territoireSelected"
+                          :options="territoireOptions" :classValidate="{'has-error': errors.has('territoire') }">
+                </v-select>
+
+              </div>
+            </div>
+
             <!-- Mode de répartition -->
             <div class="row espacement">
               <div class="col-sm-2">
@@ -99,29 +140,7 @@
               </div>
             </div>
 
-            <div class="row espacement">
-              <div class="col-sm-2">
-                <label class="control-label pull-right">Date de début</label>
-              </div>
-              <div class="col-sm-2">
-                <date-picker @update-date="updateDebutProgramme" :value="dateDebutProgramme" date-format="dd/mm/yy" :zeroHour="true"></date-picker>
-              </div>
-              <div class="col-sm-2">
-                <label class="control-label pull-right">Date de fin</label>
-              </div>
-              <div class="col-sm-2">
-                <date-picker @update-date="updateDateFinProgramme" :value="dateFinProgramme" date-format="dd/mm/yy" :zeroHour="true"></date-picker>
-              </div>
-              <div class="col-sm-2" :class="{'has-error': errors.has('territoire') }">
-                <label class="control-label pull-right">Territoire</label>
-              </div>
-              <div class="col-sm-3" >
-                <v-select name="territoire" v-validate="'required'" :searchable="true" label="value" v-model="territoireSelected"
-                          :options="territoireOptions" :classValidate="{'has-error': errors.has('territoire') }">
-                </v-select>
 
-              </div>
-            </div>
 
           </form>
         </div>
@@ -212,7 +231,7 @@
       },
       territoireOptions() {
         return this.$store.getters.territoire;
-      },
+      }
 
     },
     methods: {
@@ -223,16 +242,34 @@
       },
 
       validateBeforeSubmit() {
-        this.$validator.validateAll().then(() => {
-          // eslint-disable-next-line
+
+
+        var validator = this.$validator;
+        validator.validateAll().then(() => {
+
+            // eslint-disable-next-line
           this.verifierEtAjouterLeProgramme();
         }).catch(() => {
           // eslint-disable-next-line
           console.log('Correct them errors!');
         });
+
       },
 
       verifierEtAjouterLeProgramme(){
+
+        if(this.dateDebutProgramme == null) {
+          this.$validator.errorBag.errors.push({"field":"dateDebutProgramme","msg":"Le champ 'Date de debut' est obligatoire et non renseigné.","rule":"required","scope":"__global__"});
+        }
+
+        if(this.dateFinProgramme == null) {
+          this.$validator.errorBag.errors.push({"field":"dateFinProgramme","msg":"Le champ 'Date de fin' est obligatoire et non renseigné.","rule":"required","scope":"__global__"});
+        }
+
+        if(this.$validator.errorBag.errors.length != 0)
+        {
+            return;
+        }
 
         this.resource.searchProgramme({nom : this.nom})
             .then(response => {
@@ -316,10 +353,16 @@
 
       updateDebutProgramme(date) {
         this.dateDebutProgramme = date;
+        if(this.dateDebutProgramme == null) {
+          this.$validator.errorBag.errors.push({"field":"dateDebutProgramme","msg":"Le champ 'Date de debut' est obligatoire et non renseigné.","rule":"required","scope":"__global__"});
+        }
       },
 
       updateDateFinProgramme(date) {
         this.dateFinProgramme = date;
+        if(this.dateFinProgramme == null) {
+          this.$validator.errorBag.errors.push({"field":"dateFinProgramme","msg":"Le champ 'Date de fin' est obligatoire et non renseigné.","rule":"required","scope":"__global__"});
+        }
       },
 
 
