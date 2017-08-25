@@ -6,20 +6,20 @@
         <div class="col-sm-4">
           <span class="pull-right blueText">N° programme</span>
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-3">
           {{ programmeInfo.numProg }}
         </div>
 
 
-        <div class="col-sm-4">
+        <div class="col-sm-5">
           <span class="pull-right blueText">Famille</span>
         </div>
-        <div class="col-sm-4">
+        <div class="col-sm-6">
           {{ getFamilleByCode(programmeInfo.famille) !== undefined ? getFamilleByCode(programmeInfo.famille).value : '' }}
         </div>
 
-        <div class="col-sm-9">
-          <span class="pull-right blueText">Rion théorique</span>
+        <div class="col-sm-4">
+          <span class="pull-left blueText">Rion théorique</span>
         </div>
         <div class="col-sm-1">
           {{ programmeInfo.rionTheorique }}
@@ -31,18 +31,18 @@
       <!-- 2 eme ligne -->
       <div class="row">
 
-        <div class="col-sm-1">
+        <div class="col-sm-4">
           <span class="pull-right blueText">Nom</span>
         </div>
-        <div class="col-sm-4">
+        <div class="col-sm-3">
           {{ programmeInfo.nom }}
         </div>
 
 
-        <div class="col-sm-7">
+        <div class="col-sm-5">
           <span class="pull-right blueText">Type d'utilisation</span>
         </div>
-        <div class="col-sm-8">
+        <div class="col-sm-6">
           {{ getTypeUtilisationByCode(programmeInfo.typeUtilisation) !== undefined ? getTypeUtilisationByCode(programmeInfo.typeUtilisation).value : '' }}
         </div>
       </div>
@@ -50,7 +50,7 @@
         <br/>
         <!-- 3 eme ligne -->
         <div class="row">
-        <div class="col-sm-8">
+        <div class="col-sm-9">
           <label class="radio radio-inline" :class="{'checked' : modeRepartition == 'REPART_BLANC' }">
             <input
               type="radio"
@@ -60,7 +60,7 @@
             <span class="icons"><span class="first-icon fui-radio-unchecked"></span><span class="second-icon fui-radio-checked"></span></span>
           </label>
         </div>
-        <div class="col-sm-8">
+        <div class="col-sm-9">
           <label class="radio radio-inline" :class="{'checked' : modeRepartition == 'MISE_EN_REPART' }">
             <input
               type="radio"
