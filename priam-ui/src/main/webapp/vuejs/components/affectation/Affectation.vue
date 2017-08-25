@@ -579,8 +579,11 @@
             if('CREE' == this.programmeInfo.statut) {
 
               this.familleSelected = this.getFamilleByCode(this.programmeInfo.famille);
-              this.typeUtilisationSelected = this.getTypeUtilisationByCode(this.programmeInfo.typeUtilisation);
               this.statutSelected = {id : 'ALL', value : 'Tous'};
+
+              var $this = this;
+              setTimeout(function(){ $this.typeUtilisationSelected = $this.getTypeUtilisationByCode($this.programmeInfo.typeUtilisation); $this.rechercher(); }, 100);
+
             }
             else {
               this.familleSelected = {id : 'ALL', value : 'Toutes'};
@@ -588,9 +591,11 @@
 
               let statut = this.getStatutFichierByCode('AFFECTE');
               this.statutSelected = { 'id' : statut.code, 'value': statut.libelle };
+
+              this.rechercher();
             }
 
-            this.rechercher();
+
         },
 
         onEntryChecked(isChecked, entryChecked) {
