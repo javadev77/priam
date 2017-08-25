@@ -50,7 +50,8 @@ public class JobCompletionNotificationLigneProgrammeListener extends JobExecutio
 
                     if (parameterNomFichierCSV != null) {
                         String nomFichier = (String) parameterNomFichierCSV.getValue();
-                        fichierService.updateFichierDate(nomFichier);
+                        JobParameter idFichier =(JobParameter) executionContext.get("idFichier");
+                        fichierService.updateFichierById((Long)idFichier.getValue());
                     } else {
                         LOG.debug("Pas de ficiher CSV traité ");
                     }

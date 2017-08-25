@@ -18,13 +18,18 @@ public class FichierServiceImpl implements FichierService {
     private static final Logger LOG = LoggerFactory.getLogger(FichierServiceImpl.class);
 
     @Override
-    public void addFichier(InputStream inputStream, String nomFichier) {
-
-        Fichier fichier = UtilFile.chargerLesDonnees(inputStream, nomFichier);
-        fichierRepository.addFichier(fichier);
+    public Long addFichier(InputStream inputStream, String nomFichier) {
         LOG.info("Insertion de la ligne ficiher dans la table PRIAM_FICHIER");
+        Fichier fichier = UtilFile.chargerLesDonnees(inputStream, nomFichier);
+        
+        return fichierRepository.addFichier(fichier);
+        
     }
-
+    
+    public void updateFichierById(Long idFichier) {
+        fichierRepository.updateFichierById(idFichier);
+    }
+    
     public void updateFichierDate(String nomFichier) {
         fichierRepository.updateFichierDate(nomFichier);
         LOG.info("Mise à jour du fichier en cours de traitement avec la date de fin de chargement");
@@ -36,7 +41,13 @@ public class FichierServiceImpl implements FichierService {
         return fichierRepository.findByName(nomFiciher);
 
     }
-
+    
+    @Override
+    public Fichier findById(Long idFichier) {
+        LOG.info("Recuperation du fichier par le idFichier:" + idFichier);
+        return fichierRepository.findById(idFichier);
+    }
+    
     public FichierServiceImpl(FichierRepository fichierRepository) {
         this.fichierRepository = fichierRepository;
     }

@@ -56,9 +56,11 @@ public class FichierRepositoryTest {
         fichier.setNom("MON_FICHIER2");
         fichier.setTypeUtilisation("CPRIVSONPH");
         fichier.setStatut("EN_COURS");
-        fichier.setNbLignes(0l);
+        fichier.setNbLignes(1L);
         fichierRepository.addFichier(fichier);
         fichierRepository.updateFichierDate("MON_FICHIER2");
+    
+        
         Fichier fichier1 = fichierRepository.findByName("MON_FICHIER2");
         Assert.assertNotNull(fichier1);
         Assert.assertNotNull(fichier1.getDateFinChargt());
