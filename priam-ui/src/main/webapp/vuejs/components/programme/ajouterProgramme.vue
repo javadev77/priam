@@ -8,6 +8,7 @@
         </h5>
       </div>
       <div class="panel-collapse">
+
         <div class="panel-body">
           <form @submit.prevent="validateBeforeSubmit" class="form-horizontal" role="form">
             <div class="row" v-if="errors.count()!=0">
@@ -44,104 +45,99 @@
               </ul>
 
             </div>
-            <div class="row espacement">
 
-                 <div class="col-sm-2" :class="{'has-error': errors.has('Nom programme') }">
-                    <label class="control-label pull-right">Nom programme</label>
-                 </div>
-                 <div class="col-sm-3" >
-                   <input maxlength="20" name="Nom programme" v-model="nom" v-validate="'required|max:20'" class="form-control" :class="{'has-error': errors.has('Nom programme') }"  type="text" >
-                 </div>
+            <div class="row">
 
-              <!-- Rion statuaire -->
-              <div class="col-sm-2" :class="{'has-error': errors.has('rion.theorique') }">
-                <label class="control-label pull-right">Rion statuaire</label>
-              </div>
-              <div class="col-sm-3" >
-                <v-select name="rion.theorique" v-validate="'required'" :searchable="false" label="value" v-model="rionTheoriqueSelected" :options="rionTheoriqueOptions" :classValidate="{'has-error': errors.has('Rion statuaire') }">
-                </v-select>
-
-              </div>
-              <!-- Famille -->
-              <div class="col-sm-2" :class="{'has-error': errors.has('Famille') }">
-                <label class="control-label pull-right">Famille</label>
-              </div>
-              <div class="col-sm-2">
-                <v-select name="Famille" v-validate="'required'" :searchable="false" label="value" v-model="familleSelected" :options="familleOptions"
-                          :on-change="loadTypeUtilisation" :classValidate="{'has-error': errors.has('Famille') }">
-                </v-select>
-
-
+              <div class="form-group col-md-6" :class="{'has-error': errors.has('Nom programme') }">
+                <label class="col-md-9 control-label">Nom programme</label>
+                <div class="col-md-15">
+                  <input maxlength="20" name="Nom programme" v-model="nom" v-validate="'required|max:20'" class="form-control" :class="{'has-error': errors.has('Nom programme') }"  type="text" >
+                </div>
               </div>
 
-              <!-- Type d'utilisation -->
-              <div class="col-sm-2" :class="{'has-error': errors.has('typeUtilisation') }">
-                <label class="control-label pull-right">Type d'utilisation</label>
+              <div class="form-group col-md-6" :class="{'has-error': errors.has('rion.theorique') }">
+                <label class="col-md-8 control-label">Rion statuaire</label>
+                <div class="col-md-16">
+                  <v-select name="rion.theorique" v-validate="'required'" :searchable="false" label="value" v-model="rionTheoriqueSelected"
+                            :options="rionTheoriqueOptions" :classValidate="{'has-error': errors.has('Rion statuaire') }">
+                  </v-select>
+                </div>
               </div>
-              <div class="col-sm-3" >
-                <v-select name="typeUtilisation" v-validate="'required'" :searchable="false" label="value" v-model="typeUtilisationSelected"
-                          :options="typeUtilisationOptions" :classValidate="{'has-error': errors.has('typeUtilisation') }">
-                </v-select>
 
+              <div class="form-group col-md-5"  :class="{'has-error': errors.has('Famille') }">
+                <label class="col-md-8 control-label">Famille</label>
+                <div class="col-md-16">
+                  <v-select name="Famille" v-validate="'required'" :searchable="false" label="value" v-model="familleSelected" :options="familleOptions"
+                            :on-change="loadTypeUtilisation" :classValidate="{'has-error': errors.has('Famille') }">
+                  </v-select>
+                </div>
+              </div>
+
+              <div class="form-group col-md-7" :class="{'has-error': errors.has('typeUtilisation') }">
+                <label class="col-md-6 control-label">Type d'utilisation</label>
+                <div class="col-md-16">
+                  <v-select name="typeUtilisation" v-validate="'required'" :searchable="false" label="value" v-model="typeUtilisationSelected"
+                            :options="typeUtilisationOptions" :classValidate="{'has-error': errors.has('typeUtilisation') }">
+                  </v-select>
+                </div>
               </div>
             </div>
 
-            <div class="row espacement">
-              <div class="col-sm-2" :class="{'has-error': errors.has('dateDebutProgramme') }">
-                <label class="control-label pull-right">Date de début</label>
+            <!-- Date Debut / Fin et territoire programme -->
+            <div class="row  espacement">
+              <div class="form-group col-md-6" :class="{'has-error': errors.has('dateDebutProgramme') }">
+                <label class="col-md-9 control-label">Date de début</label>
+                <div class="col-md-15">
+                  <date-picker @update-date="updateDebutProgramme" name="dateDebutProgramme" :value="dateDebutProgramme" date-format="dd/mm/yy" :zeroHour="true" ></date-picker>
+                </div>
               </div>
-              <div class="col-sm-2" :class="{'has-error': errors.has('dateDebutProgramme') }">
-                <date-picker @update-date="updateDebutProgramme" name="dateDebutProgramme" :value="dateDebutProgramme" date-format="dd/mm/yy" :zeroHour="true" ></date-picker>
-              </div>
-              <div class="col-sm-2" :class="{'has-error': errors.has('dateFinProgramme') }">
-                <label class="control-label pull-right">Date de fin</label>
-              </div>
-              <div class="col-sm-2" :class="{'has-error': errors.has('dateFinProgramme') }">
-                <date-picker @update-date="updateDateFinProgramme" name="dateFinProgramme" :value="dateFinProgramme" date-format="dd/mm/yy" :zeroHour="true">
-                </date-picker>
-              </div>
-              <div class="col-sm-2" :class="{'has-error': errors.has('territoire') }">
-                <label class="control-label pull-right">Territoire</label>
-              </div>
-              <div class="col-sm-3" >
-                <v-select name="territoire" v-validate="'required'" :searchable="true" label="value" v-model="territoireSelected"
-                          :options="territoireOptions" :classValidate="{'has-error': errors.has('territoire') }">
-                </v-select>
 
+              <div class="form-group col-md-6" :class="{'has-error': errors.has('dateFinProgramme') }">
+                <label class="col-md-8 control-label">Date de fin</label>
+                <div class="col-md-16">
+                  <date-picker @update-date="updateDateFinProgramme" name="dateFinProgramme" :value="dateFinProgramme" date-format="dd/mm/yy" :zeroHour="true">
+                  </date-picker>
+                </div>
               </div>
+
+              <div class="form-group col-md-5" :class="{'has-error': errors.has('territoire') }">
+                <label class="col-md-8 control-label">Territoire</label>
+                <div class="col-md-16">
+                  <v-select name="territoire" v-validate="'required'" :searchable="true" label="value" v-model="territoireSelected"
+                            :options="territoireOptions" :classValidate="{'has-error': errors.has('territoire') }">
+                  </v-select>
+                </div>
+              </div>
+
             </div>
 
             <!-- Mode de répartition -->
-            <div class="row espacement">
-              <div class="col-sm-2">
-                <label class="pull-right">Mode de répartition</label>
-              </div>
-              <div class="col-sm-2">
-                <label class="radio radio-inline checked disabled" for="TypeRepartitionOeuvre">
-                  <input
-                    type="radio"
-                    id="TypeRepartitionOeuvre"
-                    value="OEUVRE"
-                    v-model="typeRepart"
-                    disabled> Oeuvre
-                  <span class="icons"><span class="first-icon fui-radio-unchecked"></span><span class="second-icon fui-radio-checked"></span></span>
-                </label>
-              </div>
-              <div class="col-sm-3">
-                <label class="radio radio-inline disabled">
-                  <input
-                    type="radio"
-                    id="TypeRepartitionOeuvreAyantDroit"
-                    value="Ayant droit"
-                    v-model="typeRepart"
-                    disabled> Ayant droit
-                  <span class="icons"><span class="first-icon fui-radio-unchecked"></span><span class="second-icon fui-radio-checked"></span></span>
-                </label>
+            <div class="row  espacement">
+              <div class="form-group col-md-7">
+                <label class="col-md-9 control-label">Mode de répartition</label>
+                <div class="col-md-15">
+                  <label class="radio radio-inline checked disabled" for="TypeRepartitionOeuvre">
+                    <input
+                      type="radio"
+                      id="TypeRepartitionOeuvre"
+                      value="OEUVRE"
+                      v-model="typeRepart"
+                      disabled> Oeuvre
+                    <span class="icons"><span class="first-icon fui-radio-unchecked"></span><span class="second-icon fui-radio-checked"></span></span>
+                  </label>
+
+                  <label class="radio radio-inline disabled">
+                    <input
+                      type="radio"
+                      id="TypeRepartitionOeuvreAyantDroit"
+                      value="Ayant droit"
+                      v-model="typeRepart"
+                      disabled> Ayant droit
+                    <span class="icons"><span class="first-icon fui-radio-unchecked"></span><span class="second-icon fui-radio-checked"></span></span>
+                  </label>
+                </div>
               </div>
             </div>
-
-
-
           </form>
         </div>
 
@@ -353,16 +349,39 @@
 
       updateDebutProgramme(date) {
         this.dateDebutProgramme = date;
+        var error = {"field":"dateDebutProgramme","msg":"Le champ 'Date de debut' est obligatoire et non renseigné.","rule":"required","scope":"__global__"};
+
         if(this.dateDebutProgramme == null) {
-          this.$validator.errorBag.errors.push({"field":"dateDebutProgramme","msg":"Le champ 'Date de debut' est obligatoire et non renseigné.","rule":"required","scope":"__global__"});
+          this.$validator.errorBag.errors.push(error);
+        }else {
+          let number = this.indexOf(this.$validator.errorBag.errors, error);
+          this.$validator.errorBag.errors.splice(number, 1);
         }
       },
 
       updateDateFinProgramme(date) {
         this.dateFinProgramme = date;
+
+        var error = {"field":"dateFinProgramme","msg":"Le champ 'Date de fin' est obligatoire et non renseigné.","rule":"required","scope":"__global__"};
+
         if(this.dateFinProgramme == null) {
-          this.$validator.errorBag.errors.push({"field":"dateFinProgramme","msg":"Le champ 'Date de fin' est obligatoire et non renseigné.","rule":"required","scope":"__global__"});
+          this.$validator.errorBag.errors.push(error);
+        }else {
+          let number = this.indexOf(this.$validator.errorBag.errors, error);
+          this.$validator.errorBag.errors.splice(number, 1);
         }
+
+      },
+
+      indexOf(array, obj) {
+
+        for(let i = 0; i < array.length; i++ ) {
+          if(obj.field == array[i].field) {
+            return i;
+          }
+        }
+        return -1;
+
       },
 
 
