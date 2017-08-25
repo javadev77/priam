@@ -6,7 +6,7 @@
 
     <div class="row formula-buttons" v-if="programmeInfo.statut == 'MIS_EN_REPART' || programmeInfo.statut == 'REPARTI'">
       <span class="pull-right">
-        Validé par {{programmeInfo.userValidation}} Le {{dateValidation}}
+        Validé par {{programmeInfo.userValidation}} le {{dateValidation}}
       </span>
     </div>
     <div class="row formula-buttons" v-if="programmeInfo.statut != 'MIS_EN_REPART' && programmeInfo.statut != 'REPARTI'">
@@ -46,7 +46,7 @@
         <div v-else-if="programmeInfo.statut == 'VALIDE'">
           <button class="btn btn-default btn-primary pull-right width-140" type="button" @click.prevent="invalider()">Invalider</button>
           <span class="pull-right">
-            Validé par {{programmeInfo.userValidation}} Le {{dateValidation}}
+            Validé par {{programmeInfo.userValidation}} le {{dateValidation}}
           </span>
         </div>
       </div>
