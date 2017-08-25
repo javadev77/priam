@@ -26,7 +26,7 @@ Vue.use(VeeValidate, {
       },
 
       attributes : {
-        'rion.theorique' : 'Rion théorique',
+        'rion.theorique' : 'Rion statuaire',
         'typeUtilisation' : "Type d'utilisation"
       }
     }

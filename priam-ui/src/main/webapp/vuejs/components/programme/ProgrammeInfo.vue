@@ -1,109 +1,118 @@
 <template>
   <div class="panel-body">
+
+
     <div class="row">
 
-      <div class="col-sm-2">
-        <span class="pull-right blueText">N° programme</span>
-      </div>
-      <div class="col-sm-2">
-        {{ programmeInfo.numProg }}
+      <div class="form-group col-md-2"></div>
+
+      <div class="form-group col-md-3">
+        <label class="col-md-9 control-label blueText text-right">N° programme</label>
+        <div class="col-md-15 control-label">
+          {{ programmeInfo.numProg }}
+        </div>
       </div>
 
-      <div class="col-sm-2">
-        <span class="pull-right blueText">Statut</span>
-      </div>
-      <div class="col-sm-2">
-        {{ getStatutProgrammeByCode(programmeInfo.statut) !== undefined ? getStatutProgrammeByCode(programmeInfo.statut).libelle : '' }}
-      </div>
-
-      <div class="col-sm-2">
-        <span class="pull-right blueText">Famille</span>
-      </div>
-      <div class="col-sm-3">
-        {{ getFamilleByCode(programmeInfo.famille) !== undefined ? getFamilleByCode(programmeInfo.famille).value : '' }}
+      <div class="form-group col-md-4">
+        <label class="col-md-9 control-label blueText text-right">Statut</label>
+        <div class="col-md-15 control-label">
+          {{ getStatutProgrammeByCode(programmeInfo.statut) !== undefined ? getStatutProgrammeByCode(programmeInfo.statut).libelle : '' }}
+        </div>
       </div>
 
-      <div class="col-sm-2">
-        <span class="pull-right blueText">Nb fichiers affectés</span>
-      </div>
-      <div class="col-sm-2">
-        {{ programmeInfo.fichiers }}
-      </div>
-
-      <div class="col-sm-2">
-        <span class="pull-right blueText">Date début</span>
-      </div>
-      <div class="col-sm-2">
-        {{ programmeInfo.dateDbtPrg }}
+      <div class="form-group col-md-6">
+        <label class="col-md-9 control-label blueText text-right">Famille</label>
+        <div class="col-md-15 control-label">
+          {{ getFamilleByCode(programmeInfo.famille) !== undefined ? getFamilleByCode(programmeInfo.famille).value : '' }}
+        </div>
       </div>
 
+      <div class="form-group col-md-4">
+        <label class="col-md-12 control-label blueText text-right">Nb fichiers affectés</label>
+        <div class="col-md-12 control-label">
+          {{ programmeInfo.fichiers }}
+        </div>
+      </div>
+
+      <div class="form-group col-md-4">
+        <label class="col-md-9 control-label blueText text-right">Date début</label>
+        <div class="col-md-15 control-label">
+          {{ programmeInfo.dateDbtPrg }}
+        </div>
+      </div>
 
     </div>
 
-    <br/>
     <!-- 2 eme ligne -->
     <div class="row">
-      <div class="col-sm-2">
-        <span class="pull-right blueText">Nom</span>
-      </div>
-      <div class="col-sm-2">
-        {{ programmeInfo.nom }}
+
+      <div class="form-group col-md-2"></div>
+
+      <div class="form-group col-md-3">
+        <label class="col-md-9 control-label blueText text-right">Nom</label>
+        <div class="col-md-15 control-label">
+          {{ programmeInfo.nom }}
+        </div>
       </div>
 
-      <div class="col-sm-2">
-        <span class="pull-right blueText">Rion statuaire</span>
-      </div>
-      <div class="col-sm-2">
-        {{ programmeInfo.rionTheorique }}
-      </div>
-
-      <div class="col-sm-2">
-        <span class="pull-right blueText">Type d'utilisation</span>
-      </div>
-      <div class="col-sm-3">
-        {{ getTypeUtilisationByCode(programmeInfo.typeUtilisation) !== undefined ? getTypeUtilisationByCode(programmeInfo.typeUtilisation).value : '' }}
+      <div class="form-group col-md-4">
+        <label class="col-md-9 control-label blueText text-right">Rion statuaire</label>
+        <div class="col-md-15 control-label">
+          {{ programmeInfo.rionTheorique }}
+        </div>
       </div>
 
-      <div class="col-sm-2">
-        <span class="pull-right blueText">Mode répartition</span>
-      </div>
-      <div class="col-sm-2">
-        {{ getModeRepartitionByCode(programmeInfo.typeRepart) !== undefined ?  getModeRepartitionByCode(programmeInfo.typeRepart).value : '' }}
+      <div class="form-group col-md-6">
+        <label class="col-md-9 control-label blueText text-right">Type d'utilisation</label>
+        <div class="col-md-15 control-label">
+          {{ getTypeUtilisationByCode(programmeInfo.typeUtilisation) !== undefined ? getTypeUtilisationByCode(programmeInfo.typeUtilisation).value : '' }}
+        </div>
       </div>
 
-      <div class="col-sm-2">
-        <span class="pull-right blueText">Date fin</span>
+      <div class="form-group col-md-4">
+        <label class="col-md-12 control-label blueText text-right">Mode répartition</label>
+        <div class="col-md-12 control-label">
+          {{ getModeRepartitionByCode(programmeInfo.typeRepart) !== undefined ?  getModeRepartitionByCode(programmeInfo.typeRepart).value : '' }}
+        </div>
       </div>
-      <div class="col-sm-2">
-        {{ programmeInfo.dateFinPrg }}
+
+      <div class="form-group col-md-4">
+        <label class="col-md-9 control-label blueText text-right">Date fin</label>
+        <div class="col-md-15 control-label">
+          {{ programmeInfo.dateFinPrg }}
+        </div>
       </div>
+
     </div>
 
-    <br/>
     <!-- 3 eme ligne -->
     <div class="row">
 
-      <div class="col-sm-2">
-        <span class="pull-right blueText">Territoire</span>
-      </div>
-      <div class="col-sm-2">
-        {{ getTerritoireByCode(programmeInfo.cdeTer) !== undefined ? getTerritoireByCode(programmeInfo.cdeTer).value : '' }}
+      <div class="form-group col-md-2"></div>
+
+      <div class="form-group col-md-3">
+        <label class="col-md-9 control-label blueText text-right">Territoire</label>
+        <div class="col-md-15 control-label">
+          {{ getTerritoireByCode(programmeInfo.cdeTer) !== undefined ? getTerritoireByCode(programmeInfo.cdeTer).value : '' }}
+        </div>
       </div>
 
-      <div class="col-sm-2">
-        <span class="pull-right blueText">Date création</span>
-      </div>
-      <div class="col-sm-2">
-        {{ programmeInfo.dateCreation }}
+      <div class="form-group col-md-4">
+        <label class="col-md-9 control-label blueText text-right">Date création</label>
+        <div class="col-md-15 control-label">
+          {{ programmeInfo.dateCreation }}
+        </div>
       </div>
 
-      <div class="col-sm-2">
-        <span class="pull-right blueText">Créé par</span>
+      <div class="form-group col-md-6">
+        <label class="col-md-9 control-label blueText text-right">Créé par</label>
+        <div class="col-md-15 control-label">
+          {{ programmeInfo.usercre }}
+        </div>
       </div>
-      <div class="col-sm-2">
-        {{ programmeInfo.usercre }}
-      </div>
+
     </div>
+
   </div>
 </template>
 
