@@ -12986,7 +12986,7 @@ fieldset[disabled] .navbar-inverse .navbar-btn.active {
 }
 @media (min-width: 768px) {
   .modal-dialog {
-    width: 624px;
+    width: 724px;
     margin: 30px auto;
   }
   .modal-content {

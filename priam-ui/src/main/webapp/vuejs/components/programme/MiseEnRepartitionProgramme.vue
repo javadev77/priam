@@ -1,10 +1,20 @@
 <template>
   <modal>
      <template slot="body" v-if="!isToShowErrors">
-      <div class="row">
 
+       <div class="row" v-if="modeRepartition == 'MISE_EN_REPART'">
+         <div class="col-sm-1">
+         </div>
+         <div class="col-sm-15">
+            <label class="orangeText">
+              Attention, vous êtes sur le point d'envoyer le programme en répartition
+            </label>
+        </div>
+       </div>
+
+      <div class="row">
         <div class="col-sm-4">
-          <span class="pull-right blueText">N° programme</span>
+          <label class="pull-right blueText">N° programme</label>
         </div>
         <div class="col-sm-3">
           {{ programmeInfo.numProg }}
@@ -50,6 +60,9 @@
         <br/>
         <!-- 3 eme ligne -->
         <div class="row">
+
+          <div class="col-sm-1">
+          </div>
         <div class="col-sm-9">
           <label class="radio radio-inline" :class="{'checked' : modeRepartition == 'REPART_BLANC' }">
             <input
@@ -137,6 +150,7 @@
       },
 
 
+
       methods : {
 
         downloadCsvFile(url, data, filename) {
@@ -222,5 +236,11 @@
 </script>
 
 <style>
+
+  .orangeText {
+    color : orange;
+    font-size: 13px !important;
+    line-height: 1.5;
+  }
 
 </style>
