@@ -281,7 +281,7 @@
               id: 'ajout',
               name: "Ajout",
               sortable: true,
-              type: 'text-centre',
+              type: 'text-with-action',
               cell: {
                 toText : function(entry) {
                   var result = entry;
@@ -457,7 +457,7 @@
                   {
                     if(result.ajout == 'Manuel') {
 
-                      var tempalteTrash = '<span class="glyphicon glyphicon-trash" aria-hidden="true" style="padding-left: 0px;"></span>';
+                      var tempalteTrash = '<span class="glyphicon glyphicon-trash" aria-hidden="true" style="padding-left: 0px;" title="Supprimer"></span>';
                       var template = [];
                       template.push({event : 'supprimer-ligne-programme', template : tempalteTrash, disabled : !$this.edition});
                       return {value : result.ajout, template : template ,action : true};
