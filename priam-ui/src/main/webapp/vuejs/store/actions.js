@@ -54,6 +54,14 @@ export const fetchInitData = ({commit}) => {
       }
       });
 
+    Vue.http.get('app/rest/general/config/mipsa')
+      .then(response => response.json())
+      .then(data => {
+        if (data) {
+          commit('SET_MIPSA_CONFIG', data);
+        }
+    });
+
   //}
 
 };

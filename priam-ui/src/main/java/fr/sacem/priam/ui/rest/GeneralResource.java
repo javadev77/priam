@@ -1,6 +1,8 @@
 package fr.sacem.priam.ui.rest;
 
 
+import com.google.common.collect.Maps;
+import fr.sacem.priam.common.util.SsoUtils;
 import fr.sacem.priam.model.dao.jpa.*;
 import fr.sacem.priam.model.domain.*;
 import org.apache.commons.lang3.StringUtils;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.*;
 
 import static com.google.common.collect.Lists.transform;
+import static fr.sacem.priam.common.constants.EnvConstants.*;
 
 /**
  * Created by benmerzoukah on 16/05/2017.
@@ -154,5 +157,32 @@ public class GeneralResource {
 
     return result.toArray(new Map[0]);
   }
-
+  
+    @RequestMapping(value = "/ssotoken",
+                    method = RequestMethod.GET,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
+    public String getSsoToken() {
+        return SsoUtils.getSsoToken() ;
+    }
+  
+    @RequestMapping(value = "/config/mipsa",
+                    method = RequestMethod.GET,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, String> getMipsaConfig() {
+        logger.debug("===== Request Mipsa Config ======");
+  
+        Map<String, String> conf = Maps.newHashMap();
+      
+        conf.put(MIPSA_WEB_COMPONENT_HTML_URL.property(), String.valueOf(MIPSA_WEB_COMPONENT_HTML_URL)) ;
+        conf.put(MIPSA_WEB_COMPONENT_BASEURL.property(), String.valueOf(MIPSA_WEB_COMPONENT_BASEURL)) ;
+        conf.put(MIPSA_WEB_COMPONENT_CDEDECL.property(), String.valueOf(MIPSA_WEB_COMPONENT_CDEDECL)) ;
+        conf.put(MIPSA_WEB_COMPONENT_CDETYPINTERLOC.property(), String.valueOf(MIPSA_WEB_COMPONENT_CDETYPINTERLOC)) ;
+        conf.put(MIPSA_WEB_COMPONENT_USESSOTOKEN.property(), String.valueOf(MIPSA_WEB_COMPONENT_USESSOTOKEN)) ;
+  
+        logger.info("MIPSA CONFIG = " + conf);
+        
+        return conf;
+    }
+  
+  
 }

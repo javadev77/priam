@@ -23,7 +23,10 @@ const state = {
       }
 
 
-    }
+    },
+
+
+    mipsaConfig : {}
 
 }
 
@@ -33,7 +36,13 @@ const mutations = {
   },
   'SELECT_PAGE_SIZE' (state, pageSize) {
     state.pagination.itemsPerPage = pageSize;
+  },
+
+  'SET_MIPSA_CONFIG' (state, mipsaConfig) {
+
+    state.mipsaConfig = mipsaConfig;
   }
+
 };
 
 const actions = {
@@ -41,11 +50,18 @@ const actions = {
   SELECT_PAGE_SIZE  : ({commit}, value) => {
       commit('SELECT_PAGE_SIZE', value);
   }
+
+
 };
 
 const getters = {
   itemsPerPage: state => {
     return state.pagination.itemsPerPage;
+  },
+
+  mipsaConfig : state => {
+
+    return state.mipsaConfig;
   }
 
 };

@@ -83,9 +83,15 @@
     <div class="row formula-buttons">
       <button class="btn btn-default btn-primary pull-right" type="button" @click.prevent="resetForm()">Rétablir</button>
       <button class="btn btn-default btn-primary pull-right" type="button" @click.prevent="rechercher()">Rechercher</button>
-      <button class="btn btn-default btn-primary pull-left"  type="button" @click.prevent="ajouterOeuvre()" style="width: 120px;" :disabled="!edition">Ajouter Oeuvre</button>
+      <!--<button class="btn btn-default btn-primary pull-left"  type="button" @click.prevent="ajouterOeuvre()" style="width: 120px;" :disabled="!edition">Ajouter Oeuvre</button>-->
+      <button class="btn btn-default btn-primary pull-left"  type="button" @click.prevent="ajouterOeuvre()" style="width: 120px;">Ajouter Oeuvre</button>
 
     </div>
+
+    <ecran-modal v-if="showMipsa">
+        <ajouter-oeuvre  slot="body"></ajouter-oeuvre>
+    </ecran-modal>
+
 
   </div>
 </template>
@@ -95,12 +101,18 @@
   import vSelect from '../common/Select.vue';
   import Autocomplete from '../common/vue-autocomplete.vue';
   import Select2 from '../common/Select2.vue';
+  import EcranModal from '../common/EcranModal.vue';
+  import AjouterOeuvre from './AjouterOeuvre.vue';
 
   export default {
 
     data() {
+
+
       return {
+        showMipsa : false,
         utilisateursOptions : []
+
       }
     },
     computed : {
@@ -134,7 +146,9 @@
     components : {
         vSelect,
         Autocomplete,
-        select2 :Select2
+        select2 :Select2,
+        ecranModal : EcranModal,
+        ajouterOeuvre : AjouterOeuvre
     },
 
     methods : {
@@ -161,6 +175,10 @@
           .then(data => {
             this.utilisateursOptions = data;
           });
+      },
+
+      ajouterOeuvre() {
+        this.showMipsa = true;
       }
     },
 

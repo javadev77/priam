@@ -42,7 +42,6 @@
         :edition="edition"
       >
       </app-filtre-selection>
-
     </div>
     <div class="container-fluid">
       <div class="panel panel-default">

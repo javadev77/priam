@@ -35,6 +35,46 @@ public enum EnvConstants implements ConfigurableProperty {
             return "priam.felix.preprep.dir";
         }
         
+    },
+    
+    MIPSA_WEB_COMPONENT_HTML_URL {
+        @Override
+        public String property() {
+            return "priam.mipsa.wc.html.url";
+        }
+        
+    },
+    
+    MIPSA_WEB_COMPONENT_CDEDECL {
+        @Override
+        public String property() {
+            return "priam.mipsa.wc.cdedecl";
+        }
+        
+    },
+    
+    MIPSA_WEB_COMPONENT_BASEURL {
+        @Override
+        public String property() {
+            return "priam.mipsa.wc.baseurl";
+        }
+        
+    },
+    
+    MIPSA_WEB_COMPONENT_CDETYPINTERLOC {
+        @Override
+        public String property() {
+            return "priam.mipsa.wc.cdetypinterloc";
+        }
+        
+    },
+    
+    MIPSA_WEB_COMPONENT_USESSOTOKEN {
+        @Override
+        public String property() {
+            return "priam.mipsa.wc.usessotoken";
+        }
+        
     };
     
     @Override
