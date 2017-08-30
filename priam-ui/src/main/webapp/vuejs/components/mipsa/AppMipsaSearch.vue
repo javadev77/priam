@@ -8,22 +8,18 @@
 
   import 'webcomponents.js/webcomponents-lite'
 
-  var promise ;
-  var errorHandler = function($window, $log, $timeout) {
+  var errorHandler = function() {
+
     return function(response) {
 
-      $log.error('An unknown error occurs, response data is : ', response) ;
 
-      if ( promise ) {
-        $timeout.cancel(promise) ;
-      }
 
-      promise = $timeout(function() {
+      setTimeout(function() {
         var detail = '' ;
         if ( response && response.originalEvent && response.originalEvent.detail && response.originalEvent.detail.error ) {
           detail = '\nDétail : "'+ response.originalEvent.detail.error+'"' ;
         }
-        $window.alert('Une erreur s\'est produite au sein du service mips '+detail) ;
+        window.alert('Une erreur s\'est produite au sein du service mips '+detail) ;
       }, 1000) ;
     } ;
   };
@@ -75,11 +71,7 @@
             self.$emit('selection-changed', event);
           });
 
-          element.bind('error', function () {
-            return function(response) {
-              console.error('An unknown error occurs, response data is : ', response) ;
-            }
-          });
+          element.bind('error', errorHandler);
       }
 
   }

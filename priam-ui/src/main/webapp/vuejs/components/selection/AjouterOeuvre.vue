@@ -11,6 +11,8 @@
 
         <div class="panel-body" style="height:350px; overflow-y:scroll;">
             <app-mipsa :configuration="mipsaConfig" @ready-to-search="readyToSearch"></app-mipsa>
+            <br/>
+            <detail-oeuvre-selectionne :oeuvre="selectedOeuvre"></detail-oeuvre-selectionne>
         </div>
       </div>
 
@@ -25,6 +27,31 @@
   import AppMipsa from '../mipsa/AppMipsaSearch.vue';
 
   export default {
+
+      mounted() {
+        var MISPA_CONFIG = this.$store.getters.mipsaConfig;
+        var headEl = $('head');
+        var url = MISPA_CONFIG['priam.mipsa.wc.html.url'];
+        var importElem = headEl.find('link').get().find(function (elem) {
+            console.log('elem = ' + elem);
+            let link = $(elem);
+            console.log('link = ' + link.attr('href'));
+            return link.attr('href') == url && link.attr('rel') == 'import';
+        })
+        if(importElem == undefined || importElem == null) {
+          var importHtml = $('<link rel="import" >')
+            .attr('href', url)
+            .on('load', function () {
+              console.log('loaded ' + url);
+            })
+            .on('error', function () {
+              console.log('Error to load ' + url);
+            });
+          headEl.append(importHtml);
+        }
+
+
+      },
 
       data() {
          var vm =  this;
@@ -98,8 +125,12 @@
                 },
                 preventDefault: true
               }
-            }
+            },
+
+            selectedOeuvre : {}
           }
+
+
 
       },
 
