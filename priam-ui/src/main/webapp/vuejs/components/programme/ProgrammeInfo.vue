@@ -4,9 +4,9 @@
 
     <div class="row">
 
-      <div class="form-group col-md-2"></div>
+      <div class="form-group col-md-1"></div>
 
-      <div class="form-group col-md-3">
+      <div class="form-group col-md-4">
         <label class="col-md-9 control-label blueText text-right">N° programme</label>
         <div class="col-md-15 control-label">
           {{ programmeInfo.numProg }}
@@ -46,9 +46,9 @@
     <!-- 2 eme ligne -->
     <div class="row">
 
-      <div class="form-group col-md-2"></div>
+      <div class="form-group col-md-1"></div>
 
-      <div class="form-group col-md-3">
+      <div class="form-group col-md-4">
         <label class="col-md-9 control-label blueText text-right">Nom</label>
         <div class="col-md-15 control-label">
           {{ programmeInfo.nom }}
@@ -88,9 +88,9 @@
     <!-- 3 eme ligne -->
     <div class="row">
 
-      <div class="form-group col-md-2"></div>
+      <div class="form-group col-md-1"></div>
 
-      <div class="form-group col-md-3">
+      <div class="form-group col-md-4">
         <label class="col-md-9 control-label blueText text-right">Territoire</label>
         <div class="col-md-15 control-label">
           {{ getTerritoireByCode(programmeInfo.cdeTer) !== undefined ? getTerritoireByCode(programmeInfo.cdeTer).value : '' }}

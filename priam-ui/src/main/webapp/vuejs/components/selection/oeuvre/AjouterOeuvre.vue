@@ -9,13 +9,12 @@
       </div>
       <div class="panel-collapse">
 
-        <div class="panel-body" style="height:350px; overflow-y:scroll;">
+        <div class="panel-body" style="height:450px; overflow-y:scroll;">
             <app-mipsa :configuration="mipsaConfig" @ready-to-search="readyToSearch"></app-mipsa>
             <br/>
-            <detail-oeuvre-selectionne :oeuvre="selectedOeuvre"></detail-oeuvre-selectionne>
+            <detail-oeuvre :oeuvre="selectedOeuvre"></detail-oeuvre>
         </div>
       </div>
-
     </div>
 
   </div>
@@ -24,7 +23,8 @@
 
 <script>
 
-  import AppMipsa from '../mipsa/AppMipsaSearch.vue';
+  import AppMipsa from '../../mipsa/AppMipsaSearch.vue';
+  import DetailOeuvre from '../oeuvre/DetailOeuvre.vue';
 
   export default {
 
@@ -74,7 +74,7 @@
               defaultSearch: {
                 'cdedecl': MISPA_CONFIG['priam.mipsa.wc.cdedecl'],
                 'cdetypinterloc': MISPA_CONFIG['priam.mipsa.wc.cdetypinterloc'],
-                'schemasToSearch':['OCTAV', 'ASSOC'],
+                'schemasToSearch':[],
                 'applyTransRulesIfExist':true,
                 'encodedTitle': '',
                 'encodedTiers': '',
@@ -106,7 +106,7 @@
                 target: '',
                 preventDefault: true,
                 onclick: function(nativeEvent, oeuvre) {
-                  window.alert('icon oeuvre click '+oeuvre.keyToDisplay.cdeFormated) ;
+                  //window.alert('icon oeuvre click '+oeuvre.keyToDisplay.cdeFormated) ;
                 }
               },
               linkAction: {
@@ -115,6 +115,13 @@
                 preventDefault: true,
                 onclick: function(nativeEvent, oeuvre) {
                   window.alert('icon action click '+oeuvre.keyToDisplay.cdeFormated) ;
+                  vm.selectedOeuvre = {
+                    ide12 : oeuvre.ide12 ? oeuvre.ide12: oeuvre.keyToDisplay.cde,
+                    titre : oeuvre.titrePrincipal ? oeuvre.titrePrincipal: oeuvre.titrList[0].titr
+
+                  }
+
+                  console.log("Selected Oeuvre = " + vm.selectedOeuvre.ide12);
                 }
               },
               linkOnCode: {   // used to activate the copy behaviour of IDE12
@@ -147,7 +154,8 @@
       },
 
       components : {
-        appMipsa : AppMipsa
+        appMipsa : AppMipsa,
+        detailOeuvre : DetailOeuvre
       }
   }
 </script>

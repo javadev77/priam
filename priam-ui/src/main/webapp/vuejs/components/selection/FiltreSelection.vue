@@ -102,7 +102,7 @@
   import Autocomplete from '../common/vue-autocomplete.vue';
   import Select2 from '../common/Select2.vue';
   import EcranModal from '../common/EcranModal.vue';
-  import AjouterOeuvre from './AjouterOeuvre.vue';
+  import AjouterOeuvre from './oeuvre/AjouterOeuvre.vue';
 
   export default {
 
