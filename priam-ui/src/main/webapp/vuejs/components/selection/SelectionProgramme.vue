@@ -614,6 +614,9 @@
           then(data => {
 
               this.programmeInfo = data;
+
+             this.$store.dispatch('setCurrentProgrammeEnSelection', this.programmeInfo);
+
               this.all = this.programmeInfo.statut != 'VALIDE';
               this.tableauSelectionnable = (
                 this.programmeInfo.statut != 'VALIDE'

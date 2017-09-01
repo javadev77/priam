@@ -12,7 +12,7 @@
         <div class="panel-body" style="height:450px; overflow-y:scroll;">
             <app-mipsa :configuration="mipsaConfig" @ready-to-search="readyToSearch"></app-mipsa>
             <br/>
-            <detail-oeuvre :oeuvre="selectedOeuvre"></detail-oeuvre>
+            <detail-oeuvre :oeuvre="selectedOeuvre" @ajout-oeuvre="onAjouterOeuvre"></detail-oeuvre>
         </div>
       </div>
     </div>
@@ -27,15 +27,12 @@
   import DetailOeuvre from '../oeuvre/DetailOeuvre.vue';
 
   export default {
-
       mounted() {
         var MISPA_CONFIG = this.$store.getters.mipsaConfig;
         var headEl = $('head');
         var url = MISPA_CONFIG['priam.mipsa.wc.html.url'];
         var importElem = headEl.find('link').get().find(function (elem) {
-            console.log('elem = ' + elem);
             let link = $(elem);
-            console.log('link = ' + link.attr('href'));
             return link.attr('href') == url && link.attr('rel') == 'import';
         })
         if(importElem == undefined || importElem == null) {
@@ -49,7 +46,6 @@
             });
           headEl.append(importHtml);
         }
-
 
       },
 
@@ -149,6 +145,10 @@
             mipsaSearch.set('formVisible', true) ;
             mipsaSearch.set('resultVisible', true) ;
             mipsaSearch.search() ;
+        },
+
+        onAjouterOeuvre(oeuvre) {
+            window.alert('Oeuvre à ajouter : ' + oeuvre.ide12);
         }
 
       },
