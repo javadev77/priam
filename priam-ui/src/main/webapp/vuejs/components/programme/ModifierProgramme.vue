@@ -48,7 +48,7 @@
             <div class="row">
 
               <div class="form-group col-md-6">
-                <label class="col-md-9 control-label">Nom programme</label>
+                <label class="col-md-9 control-label">N° programme</label>
                 <div class="col-md-15">
                   <strong>{{ numProgramme }}</strong>
                 </div>
