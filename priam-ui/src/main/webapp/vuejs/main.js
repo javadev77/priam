@@ -22,7 +22,8 @@ Vue.use(VeeValidate, {
     fr: {
       messages: {
         required : (e) => "Le champ '" + e + "' est obligatoire et non renseigné.",
-        max: (e) => e + " ne peut pas contenir plus de " + n[0] + " caractères."
+        max: (e, n) => e + " ne peut pas contenir plus de " + n[0] + " caractères.",
+        numeric: (e) => "Le champ '" + e +  "' ne peut contenir que des chiffres."
       },
 
       attributes : {
