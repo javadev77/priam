@@ -17,16 +17,15 @@ import org.springframework.core.io.Resource;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.zip.ZipFile;
 
 public class ZipMultiResourceItemReader<T> extends MultiResourceItemReader<T> {
 
     private static final Logger LOG = LoggerFactory.getLogger(ZipMultiResourceItemReader.class);
     private static final String EXTENTION_ZIP = "^(.*\\.((zip|ZIP)$))?[^.]*$";
+    public static final String PREFIX_PRIV_SON_PH = "FF_PENEF_EXTRANA_EXTCPRIVSONPH";
+    public static final String PREFIX_PRIV_SON_PHRD = "FF_PENEF_EXTRANA_EXTCPRIVSONORD";
     private Resource[] archives;
     private ZipFile zipFile;
     private StepExecution stepExecution;
@@ -49,6 +48,7 @@ public class ZipMultiResourceItemReader<T> extends MultiResourceItemReader<T> {
      */
     @Override
     public void open(ExecutionContext executionContext) throws ItemStreamException {
+
         // really used with archives?
         if (inputDirectory != null && outputDirectory != null) {
             String rep = this.getInputDirectory();
@@ -82,16 +82,21 @@ public class ZipMultiResourceItemReader<T> extends MultiResourceItemReader<T> {
                                 File file = fichiersDansLeRepertoire.get(j);
                                 //on traite qu'un seul fichier zip par lancement de batch
                                 if (file.getName().matches(EXTENTION_ZIP) && nbrDeFichierZipATraiter < 1) {
+
                                     File fichierEnCoursDeTraitement = new File(rep + file.getName() + FILE_ZIP_EN_COURS_DE_TRAITEMENT);
+                                    JobParameter jobParameterFichierZipEnCours = new JobParameter(fichierEnCoursDeTraitement.getAbsolutePath());
+                                    JobParameter jobParameterNomFichierOriginal = new JobParameter(file.getName());
+
+
                                     boolean renommageOk = file.renameTo(fichierEnCoursDeTraitement);
                                     if (renommageOk) {
                                         fichiersZipDansLeRepertoire.add(fichierEnCoursDeTraitement);
-                                        JobParameter jobParameterFichierZipEnCours = new JobParameter(fichierEnCoursDeTraitement.getAbsolutePath());
-                                        JobParameter jobParameterNomFichierOriginal = new JobParameter(file.getName());
                                         this.stepExecution.getExecutionContext().put("nomFichierOriginal", jobParameterNomFichierOriginal);
                                         this.stepExecution.getExecutionContext().put("fichierZipEnCours", jobParameterFichierZipEnCours);
                                         this.stepExecution.getExecutionContext().put("outputArchives", outputDirectory);
+                                        this.stepExecution.getExecutionContext().put("ligne-programme-errors", new HashSet<>());
                                     }
+
                                     nbrDeFichierZipATraiter = nbrDeFichierZipATraiter + 1;
                                 }
                             //}
@@ -109,10 +114,16 @@ public class ZipMultiResourceItemReader<T> extends MultiResourceItemReader<T> {
                                 this.stepExecution.getExecutionContext().put("nomFichier", jobParameterNomDuFichier);
                                 JobParameter jobParameterIdFichier = new JobParameter(fichier.getId());
                                 this.stepExecution.getExecutionContext().put("idFichier", jobParameterIdFichier);
+
+                                if(!file.getName().startsWith(PREFIX_PRIV_SON_PHRD) && !file.getName().startsWith(PREFIX_PRIV_SON_PH)) {
+                                    Set<String> errorSet = (Set<String>) executionContext.get("ligne-programme-errors");
+                                    errorSet.add(String.format("Nom fichier invalide (%s)", fichier.getNom()));
+                                    this.stepExecution.getJobExecution().stop();
+                                }
                             }
                         }
                     }
-                    } catch (Exception ex) {
+                } catch (Exception ex) {
                     throw new ItemStreamException(ex);
                 }
 

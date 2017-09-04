@@ -14,6 +14,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by fandis on 17/05/2017.
@@ -24,6 +27,7 @@ public class FichierRepositoryImpl implements FichierRepository {
     private JdbcTemplate jdbcTemplate;
     private ResultSetExtractor<Fichier> fichierExtractor = new FichierExtractor();
     private static final String STATUT_OK = "CHARGEMENT_OK";
+    private static final String STATUT_KO = "CHARGEMENT_KO";
     private static final String STATUT_EN_COURS = "EN_COURS";
 
     public Fichier findByName(String nomFichier) {
@@ -54,7 +58,49 @@ public class FichierRepositoryImpl implements FichierRepository {
                          "WHERE f.ID=?";
         return jdbcTemplate.query(sql, fichierExtractor, String.valueOf(idFichier)) ;
     }
-    
+
+    @Override
+    public void rejeterFichier(Long idFichier, Set<String> errors) {
+
+        String sql = "UPDATE PRIAM_FICHIER SET STATUT_CODE=?,DATE_FIN_CHGT=? WHERE ID=?";
+
+        jdbcTemplate.update(sql, stmt -> {
+            stmt.setString(1, STATUT_KO);
+            stmt.setTimestamp(2, UtilFile.getCurrentTimeStamp());
+            stmt.setLong(3, idFichier);
+
+        });
+    }
+
+    @Override
+    public void supprimerLigneProgrammeParIdFichier(Long idFichier, Set<String> errors) {
+        String sql = "DELETE FROM PRIAM_LIGNE_PROGRAMME WHERE ID_FICHIER=?";
+
+        jdbcTemplate.update(sql, stmt -> {
+            stmt.setLong(1, idFichier);
+        });
+    }
+
+    @Override
+    public void enregistrerLog(Long idFichier, Set<String> errors) {
+
+        String query = new StringBuilder("INSERT INTO PRIAM_FICHIER_LOG (ID_FICHIER, DATE, LOG) VALUES (")
+                                        .append(idFichier).append(", ")
+                                        .append("NOW()").append(", ")
+                                        .append("?)")
+                                        .toString();
+
+
+
+        List<Object[]> parameters = new ArrayList<>();
+
+        errors.forEach( log -> {
+            parameters.add(new Object[] { log });
+        });
+        jdbcTemplate.batchUpdate(query, parameters);
+
+    }
+
     public Long addFichier(Fichier fichier) {
         // traitement des données d'un ficiher
         // insetion des données de ficiher avec le statut EN COURS

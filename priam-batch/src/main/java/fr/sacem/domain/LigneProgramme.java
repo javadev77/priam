@@ -1,5 +1,7 @@
 package fr.sacem.domain;
 
+import org.springframework.batch.item.file.transform.IncorrectTokenCountException;
+
 import javax.persistence.Column;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -9,6 +11,7 @@ import java.time.LocalDate;
  */
 
 public class LigneProgramme implements Serializable {
+
     private Long idFichier;
     private String cdeCisac;
     private String cdeFamilTypUtil;
@@ -46,6 +49,9 @@ public class LigneProgramme implements Serializable {
     private String date_insertion;
     private String ajout;
     private String selection;
+    private Integer lineNumber;
+    private Exception exception;
+
 
     public String getUtilisateur() {
         return utilisateur;
@@ -115,6 +121,10 @@ public class LigneProgramme implements Serializable {
         this.nomParticipant1 = nomParticipant1;
         this.cdeTypUtilOri = cdeTypUtilOri;
         this.cdeFamilTypUtilOri = cdeFamilTypUtilOri;
+    }
+
+    public LigneProgramme(Exception e) {
+        this.exception = e;
     }
 
     public Long getIdFichier() {
@@ -380,4 +390,12 @@ public class LigneProgramme implements Serializable {
     public void setCdeFamilTypUtilOri(String cdeFamilTypUtilOri) {
         this.cdeFamilTypUtilOri = cdeFamilTypUtilOri;
     }
+
+    public Integer getLineNumber() { return lineNumber; }
+
+    public void setLineNumber(Integer lineNumber) { this.lineNumber = lineNumber; }
+
+    public Exception getException() { return exception; }
+
+    public void setException(Exception exception) { this.exception = exception; }
 }

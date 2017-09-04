@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by benmerzoukah on 29/05/2017.
@@ -63,5 +64,9 @@ public class FichierService {
         programme.setDataffect(new Date());
         
         programmeDao.saveAndFlush(programme);
+    }
+
+    public Set<String> getChargementLog(Long idFichier) {
+        return fichierDao.getChargementLog(idFichier);
     }
 }

@@ -123,9 +123,9 @@
     <bean id="ligneProgrammeItemProcessor" class="fr.sacem.service.LigneProgrammeItemProcessor"/>
 
     <bean id="flatFileItemReader"
-          class="org.springframework.batch.item.file.FlatFileItemReader">
+          class="fr.sacem.util.mapper.PriamFileItemReader">
         <property name="lineMapper">
-            <bean class="org.springframework.batch.item.file.mapping.DefaultLineMapper">
+            <bean class="fr.sacem.util.mapper.PriamLineMapper">
                 <property name="lineTokenizer">
                     <bean class="org.springframework.batch.item.file.transform.DelimitedLineTokenizer">
                         <property name="names"
