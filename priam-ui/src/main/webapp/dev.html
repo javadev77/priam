@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <script src="https://unpkg.com/vue/dist/vue.js"></script>
+
+  <base href="https://cdn.rawgit.com/download/polymer-cdn/1.5.0/lib/">
+  <script src="webcomponentsjs/webcomponents-lite.min.js"></script>
+  <link rel="import" href="iron-icon/iron-icon.html">
+  <link rel="import" href="iron-icons/communication-icons.html">
+
+</head>
+<body>
+
+<div id="app">
+        <span>
+        {{ message }}
+        </span>
+  <div>
+    <paper-button v-once id="textButton" toggles>
+      <iron-icon icon="communication:email"></iron-icon>
+    </paper-button>
+  </div>
+</div>
+<paper-button id="textButton" toggles>
+  <iron-icon icon="communication:email"></iron-icon>
+</paper-button>
+<script>
+  Vue.config.ignoredElements = [
+    'paper-button', 'iron-icon'
+  ];
+  var app = new Vue({
+    el: '#app',
+    data: {
+      message: 'Why iron-icons get repeated two times inside the vuejs app ?'
+    }
+  })
+</script>
+</body>
+</html>
+
+
+
