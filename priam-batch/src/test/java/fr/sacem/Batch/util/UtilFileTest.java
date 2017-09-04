@@ -20,8 +20,8 @@ import java.io.InputStream;
 @RunWith(SpringJUnit4ClassRunner.class)
 
 public class UtilFileTest {
-    private static final String SINGLE_FILE = "src/test/resources/zipDirectory/FF_PENEF_EXTRANA_EXTCMSFRANCE_20170406140540.csv";
-    private static final String NOM_FICHIER_CSV = "FF_PENEF_EXTRANA_EXTCMSFRANCE_20170406140540.csv";
+    private static final String SINGLE_FILE = "src/test/resources/zipDirectory/FF_PENEF_EXTRANA_EXTCPRIVSONORD_20170406140540.csv";
+    private static final String NOM_FICHIER_CSV = "FF_PENEF_EXTRANA_EXTCPRIVSONORD_20170406140540.csv";
 
     @Test
     public void nombreDeLignes() throws IOException {

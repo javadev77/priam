@@ -120,12 +120,14 @@ public class LigneProgrammeService {
         };
 
 
-        return ligneProgrammeDao.findLigneProgrammeByCriteria(criteria.getNumProg(),
+        Page<SelectionDto> ligneProgrammeByCriteria = ligneProgrammeDao.findLigneProgrammeByCriteria(criteria.getNumProg(),
                 criteria.getUtilisateur(),
                 criteria.getIde12(),
                 criteria.getTitre(),
                 criteria.getAjout(),
                 criteria.getSelection(), queryPageable);
+
+        return ligneProgrammeByCriteria;
     }
 
     @Transactional

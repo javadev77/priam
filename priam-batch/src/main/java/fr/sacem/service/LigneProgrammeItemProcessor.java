@@ -1,7 +1,8 @@
 package fr.sacem.service;
 
-import fr.sacem.domain.Fichier;
 import fr.sacem.domain.LigneProgramme;
+import fr.sacem.util.exception.PriamValidationException;
+import fr.sacem.util.valdiator.LigneProgrammeSpringValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.JobParameter;
@@ -10,6 +11,11 @@ import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+
+import java.util.Set;
 
 /**
  * Created by fandis on 04/05/2017.
@@ -18,10 +24,31 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class LigneProgrammeItemProcessor implements ItemProcessor<LigneProgramme, LigneProgramme> {
 
     private static final Logger log = LoggerFactory.getLogger(LigneProgrammeItemProcessor.class);
+
+    public static final String MESSAGE_FORMAT = "Ligne '%s': Le champ \"%s\" avec la valeur \"%s\" n'a pas le bon format attendu";
+    public static final String MESSAGE_CHAMPS_OBLIGATOIRE = "Ligne %s: Le champ %s est obligatoire et non renseigné";
+    public static final String LIGNE_PROGRAMME_ERRORS = "ligne-programme-errors";
+
     private ExecutionContext executionContext;
+
+    @Autowired
+    private LigneProgrammeSpringValidator validator;
 
     @Override
     public LigneProgramme process(final LigneProgramme ligneProgramme) throws Exception {
+
+        Set<String> errorSet = (Set<String>) executionContext.get(LIGNE_PROGRAMME_ERRORS);
+
+        if(ligneProgramme.getException() != null) {
+            PriamValidationException exception = (PriamValidationException) ligneProgramme.getException();
+
+            String errorMessage = String.format(MESSAGE_FORMAT,
+                    exception.getLineNumber(), getNomDuChamp(exception.getMessage()), getValeurDuChamp(exception.getMessage())
+            );
+            errorSet.add(errorMessage);
+            return null;
+        }
+
         JobParameter parameter_nom_fichier = (JobParameter) executionContext.get("nomFichier");
         JobParameter parameter_id_fichier=(JobParameter) executionContext.get("idFichier");
         Long idFichier = Long.valueOf(parameter_id_fichier.getValue().toString());
@@ -31,9 +58,28 @@ public class LigneProgrammeItemProcessor implements ItemProcessor<LigneProgramme
         ligneProgramme.setIdFichier(idFichier);
         log.info("Fichier : < " + nomFichier + " > Traitement de la ligne_programme id12 =(" + ligneProgramme.getIde12() + ")");
 
+        BindingResult errors = new BeanPropertyBindingResult(ligneProgramme, "ligneProgramme-"+ ligneProgramme.getLineNumber());
+        validator.validate(ligneProgramme, errors);
+
+        if(errors.hasErrors()) {
+            for(FieldError fe : errors.getFieldErrors()) {
+                errorSet.add(String.format(MESSAGE_CHAMPS_OBLIGATOIRE, ligneProgramme.getLineNumber(), fe.getField()));
+            }
+        }
+
         return ligneProgramme;
     }
 
+    private String getValeurDuChamp(String message) {
+        String text = message.split("'")[4];
+        return text.substring(text.indexOf('[') + 1, text.indexOf(']') );
+    }
+
+    private String getNomDuChamp(String message) {
+
+        return message.split("'")[3];
+
+    }
 
     @BeforeStep
     public void beforeStep(StepExecution stepExecution) {

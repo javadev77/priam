@@ -84,7 +84,9 @@
               :filter-key="priamGrid.searchQuery"
               @cellClick="onCellClick"
               @load-page="loadPage"
-              @on-sort="onSort">
+              @on-sort="onSort"
+              @show-log="onShowLog"
+            >
             </priam-grid>
           </div>
         </div>
@@ -105,6 +107,15 @@
         <button class="btn btn-default btn-primary pull-right yes" @click="supprimerDonneesFichier">Oui</button>
       </template>
     </modal>
+
+    <template v-if="showLogChargement">
+      <app-log-chargement
+        :idFichier = "selectedIdFichier"
+        @close-log="showLogChargement = false"
+      >
+      </app-log-chargement>
+    </template>
+
   </div>
 </template>
 
@@ -117,6 +128,7 @@
   import Modal from '../common/Modal.vue';
   import select2 from '../common/Select2.vue';
   import moment from 'moment';
+  import LogChargement from '../chargement/LogChargement.vue';
 
   export default {
 
@@ -240,7 +252,16 @@
               id :  'logs',
               name :   "Logs",
               sortable : false,
-              type : 'icon'
+              type : 'clickable-icons',
+              cell : {
+                cellTemplate: function (cellValue) {
+                  var templateLog = '<span class="glyphicon glyphicon-list-alt" aria-hidden="true" title="Log"></span>';
+                  var template = [];
+                  template.push({event : 'show-log', template : templateLog});
+                  return template;
+
+                }
+              }
 
             },
             {
@@ -265,7 +286,10 @@
           //gridData : {"content":[],"totalElements":0,"totalPages":1,"last":true,"numberOfElements":25,"sort":null,"first":true,"size":25,"number":1},
           gridData : {},
           searchQuery : ''
-        }
+        },
+
+        showLogChargement : false,
+        selectedIdFichier : null
 
       }
     },
@@ -418,6 +442,11 @@
         this.typeUtilisationSelected = {'id' : 'ALL', 'value': 'Tous'};
         this.$store.dispatch('loadTypeUtilisation', val);
 
+      },
+
+      onShowLog(row, column) {
+        this.selectedIdFichier = row.id;
+        this.showLogChargement = true;
       }
     },
 
@@ -425,7 +454,8 @@
         priamGrid : Grid,
         vSelect : vSelect,
         modal : Modal,
-        select2: select2
+        select2: select2,
+        AppLogChargement : LogChargement
     }
 
   }
