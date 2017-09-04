@@ -14,6 +14,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -79,5 +80,9 @@ public interface FichierDao extends JpaRepository<Fichier, Long> {
     void updateStatusFichiersAffectes(@Param("numProg") String numProg,@Param("status") Status status,@Param("idFichiers") List<Long> idFichiers);
     
     Fichier findByNomFichier(String s);
+
+    @Transactional(readOnly =true)
+    @Query(nativeQuery = true, value="SELECT LOG from  PRIAM_FICHIER_LOG FL WHERE FL.ID_FICHIER = ?1 ORDER BY LOG")
+    Set<String> getChargementLog(@Param("idFichier") Long idFichier);
 }
 

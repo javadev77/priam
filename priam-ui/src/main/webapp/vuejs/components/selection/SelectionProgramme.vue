@@ -326,7 +326,7 @@
                 isChecked: function (entry) {
 
                   var notChecked = $this.unselectedLigneProgramme.find(elem => {
-                    return elem.ide12 == entry.ide12 && elm.libAbrgUtil == entry.libAbrgUtil;
+                    return elem.ide12 == entry.ide12 && elem.libAbrgUtil == entry.libAbrgUtil;
                   });
 
                   if (notChecked !== undefined) {
@@ -334,7 +334,7 @@
                   }
 
                   var result = $this.ligneProgrammeSelected.find(elem => {
-                    return elem.ide12 == entry.ide12 && elm.libAbrgUtil == entry.libAbrgUtil;
+                    return elem.ide12 == entry.ide12 && elem.libAbrgUtil == entry.libAbrgUtil;
                   });
 
                   if (result !== undefined) {
@@ -669,12 +669,16 @@
           pageNum, pageSize, sort, dir
         }
 
+        this.dataLoading = true;
+
         this.resource.findLigneProgrammeByProgramme({page : pageNum -1 , size : pageSize,
           sort : sort, dir: dir}, this.filter )
           .then(response => {
             return response.json();
           })
           .then(data => {
+
+            this.dataLoading = false;
             if(this.programmeInfo.typeUtilisation==='CPRIVSONPH'){
 
               this.priamGrid_phono.gridData_phono = data;
@@ -687,6 +691,7 @@
               this.priamGrid_sono.gridData_sono.number = data.number + 1;
               this.ligneProgramme = this.priamGrid_sono.gridData_sono.content;
             }
+
 
             this.selectAll();
           });
@@ -1024,8 +1029,6 @@
       },
 
       enregistrerEdition() {
-
-        debugger;
 
         this.inProcess = true;
         this.tableauSelectionnable = false;
