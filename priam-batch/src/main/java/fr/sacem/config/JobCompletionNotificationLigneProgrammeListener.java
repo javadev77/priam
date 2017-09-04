@@ -58,7 +58,7 @@ public class JobCompletionNotificationLigneProgrammeListener extends JobExecutio
 
                     Set<String> errors = (Set<String>) executionContext.get(LIGNE_PROGRAMME_ERRORS);
 
-                    if(errors.isEmpty()) {
+                    if(errors == null || errors.isEmpty()) {
                         if (parameterNomFichierCSV != null) {
                             String nomFichier = (String) parameterNomFichierCSV.getValue();
                             JobParameter idFichier =(JobParameter) executionContext.get("idFichier");
