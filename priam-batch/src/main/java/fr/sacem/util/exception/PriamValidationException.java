@@ -12,8 +12,6 @@ public class PriamValidationException extends Exception{
         FORMAT_FICHIER, FORMAT_ATTRIBUT
     }
 
-
-
     public PriamValidationException(int lineNumber, Exception ex, ErrorType errorType) {
         super(ex);
         this.lineNumber = lineNumber;

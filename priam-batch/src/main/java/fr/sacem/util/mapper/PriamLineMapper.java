@@ -30,7 +30,7 @@ public class PriamLineMapper extends DefaultLineMapper<LigneProgramme> {
 
         } catch ( IncorrectTokenCountException e ) {
             throw e;
-        } catch ( BindException ex ) {
+        } catch ( BindException | RuntimeException ex) {
             return new LigneProgramme(new PriamValidationException(lineNumber, ex, FORMAT_ATTRIBUT));
         }
 

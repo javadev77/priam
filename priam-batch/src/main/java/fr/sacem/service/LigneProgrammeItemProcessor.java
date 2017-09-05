@@ -26,7 +26,7 @@ public class LigneProgrammeItemProcessor implements ItemProcessor<LigneProgramme
     private static final Logger log = LoggerFactory.getLogger(LigneProgrammeItemProcessor.class);
 
     public static final String MESSAGE_FORMAT = "Ligne '%s': Le champ \"%s\" avec la valeur \"%s\" n'a pas le bon format attendu";
-    public static final String MESSAGE_CHAMPS_OBLIGATOIRE = "Ligne %s: Le champ %s est obligatoire et non renseigné";
+    public static final String MESSAGE_CHAMPS_OBLIGATOIRE = "Ligne '%s': Le champ %s est obligatoire et non renseigné";
     public static final String LIGNE_PROGRAMME_ERRORS = "ligne-programme-errors";
 
     private ExecutionContext executionContext;

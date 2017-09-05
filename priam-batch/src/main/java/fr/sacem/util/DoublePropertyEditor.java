@@ -1,6 +1,7 @@
 package fr.sacem.util;
 
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindException;
 
 import java.beans.PropertyEditorSupport;
 import java.text.NumberFormat;
@@ -22,7 +23,7 @@ public class DoublePropertyEditor extends PropertyEditorSupport {
                 setValue(nf.parse(text).doubleValue());
 
             } catch (ParseException e) {
-                System.out.println(e.getMessage());
+                throw new RuntimeException(e);
             }
         } else {
             setValue(null);
