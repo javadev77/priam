@@ -1,6 +1,7 @@
 package fr.sacem.service;
 
 import fr.sacem.domain.Fichier;
+import fr.sacem.util.FileUtils;
 import fr.sacem.util.UtilFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,8 +25,6 @@ public class ZipMultiResourceItemReader<T> extends MultiResourceItemReader<T> {
 
     private static final Logger LOG = LoggerFactory.getLogger(ZipMultiResourceItemReader.class);
     private static final String EXTENTION_ZIP = "^(.*\\.((zip|ZIP)$))?[^.]*$";
-    public static final String PREFIX_PRIV_SON_PH = "FF_PENEF_EXTRANA_EXTCPRIVSONPH";
-    public static final String PREFIX_PRIV_SON_PHRD = "FF_PENEF_EXTRANA_EXTCPRIVSONORD";
     private Resource[] archives;
     private ZipFile zipFile;
     private StepExecution stepExecution;
@@ -115,7 +114,7 @@ public class ZipMultiResourceItemReader<T> extends MultiResourceItemReader<T> {
                                 JobParameter jobParameterIdFichier = new JobParameter(fichier.getId());
                                 this.stepExecution.getExecutionContext().put("idFichier", jobParameterIdFichier);
 
-                                if(!file.getName().startsWith(PREFIX_PRIV_SON_PHRD) && !file.getName().startsWith(PREFIX_PRIV_SON_PH)) {
+                                if(!file.getName().startsWith(FileUtils.PREFIX_PRIV_SON_RD) && !file.getName().startsWith(FileUtils.PREFIX_PRIV_SON_PH)) {
                                     Set<String> errorSet = (Set<String>) executionContext.get("ligne-programme-errors");
                                     errorSet.add(String.format("Nom fichier invalide (%s)", fichier.getNom()));
                                     this.stepExecution.getJobExecution().stop();

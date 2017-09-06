@@ -3,6 +3,7 @@ package fr.sacem.Batch.dao;
 import fr.sacem.dao.FichierRepositoryImpl;
 import fr.sacem.domain.Fichier;
 import fr.sacem.util.UtilFile;
+import fr.sacem.util.exception.PriamValidationException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,7 +41,11 @@ public class FichierRepositoryTest {
         fichier.setTypeUtilisation("CPRIVSONPH");
         fichier.setStatut("EN_COURS");
         fichier.setNbLignes(0l);
-        fichierRepository.addFichier(fichier);
+        try {
+            fichierRepository.addFichier(fichier);
+        } catch (PriamValidationException e) {
+            e.printStackTrace();
+        }
         Fichier fichier1 = fichierRepository.findByName("MON_FICHIER1");
         Assert.assertNotNull(fichier1);
         Assert.assertEquals("MON_FICHIER1", fichier1.getNom());
@@ -57,7 +62,11 @@ public class FichierRepositoryTest {
         fichier.setTypeUtilisation("CPRIVSONPH");
         fichier.setStatut("EN_COURS");
         fichier.setNbLignes(1L);
-        fichierRepository.addFichier(fichier);
+        try {
+            fichierRepository.addFichier(fichier);
+        } catch (PriamValidationException e) {
+            e.printStackTrace();
+        }
         fichierRepository.updateFichierDate("MON_FICHIER2");
     
         

@@ -63,7 +63,13 @@ public class LigneProgrammeItemProcessor implements ItemProcessor<LigneProgramme
 
         if(errors.hasErrors()) {
             for(FieldError fe : errors.getFieldErrors()) {
-                errorSet.add(String.format(MESSAGE_CHAMPS_OBLIGATOIRE, ligneProgramme.getLineNumber(), fe.getField()));
+
+                if(fe.getCode().startsWith("length.")){
+                    errorSet.add(String.format(MESSAGE_FORMAT, ligneProgramme.getLineNumber(), fe.getField(), fe.getRejectedValue()));
+                } else {
+                    errorSet.add(String.format(MESSAGE_CHAMPS_OBLIGATOIRE, ligneProgramme.getLineNumber(), fe.getField()));
+                }
+
             }
         }
 

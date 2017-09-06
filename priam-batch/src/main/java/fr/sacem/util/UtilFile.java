@@ -4,6 +4,7 @@ import au.com.bytecode.opencsv.CSVReader;
 import fr.sacem.domain.Fichier;
 import fr.sacem.service.FichierService;
 import fr.sacem.service.ZipMultiResourceItemReader;
+import fr.sacem.util.exception.PriamValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,7 +111,7 @@ public class UtilFile {
      * @param extractedResources
      * @throws IOException
      */
-    public Long extractFiles(final ZipFile currentZipFile, final List<Resource> extractedResources) throws IOException {
+    public Long extractFiles(final ZipFile currentZipFile, final List<Resource> extractedResources) throws IOException, PriamValidationException {
         Enumeration<? extends ZipEntry> zipEntryEnum = currentZipFile.entries();
 
         //Le code support que l'operation traite un seul fichier csv comme demander fonctionnellement

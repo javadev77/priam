@@ -13,8 +13,10 @@ import org.springframework.validation.Validator;
 @Component
 public class LigneProgrammeSpringValidator implements Validator {
 
-    
-    @Override
+
+	public static final int IDE12_LENGTH = 10;
+
+	@Override
     public boolean supports(Class<?> clazz) {
 	  return LigneProgramme.class.equals(clazz);
     }
@@ -29,6 +31,13 @@ public class LigneProgrammeSpringValidator implements Validator {
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeUtil", "error.cdeUtil");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeTypUtil", "error.cdeTypUtil");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeTypIde12", "error.cdeTypIde12");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "ide12", "error.ide12");
+
+		Long ide12 = ((LigneProgramme) o).getIde12();
+		if(ide12 != null && ide12.toString().length() != IDE12_LENGTH) {
+			errors.rejectValue("ide12", "length.error.ide12");
+		}
+
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "ide12", "error.ide12");
 
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "titreOeuvre", "error.titreOeuvre");

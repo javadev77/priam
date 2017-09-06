@@ -29,6 +29,7 @@ public class JobCompletionNotificationLigneProgrammeListener extends JobExecutio
     public static final String MESSAGE_ERREUR_TECHNIQUE = "Le chargement a été interrompu à cause d'un problème technique";
     public static final String MESSAGE_FICHIER_CHARGE = " - Le fichier \"%s\" a bien été chargé";
     public static final String FORMAT_DATE = "dd/MM/yyyy HH:mm";
+    public static final String MESSAGE_FORMAT_FICHIER = "Le fichier ne peut être chargé car il n'a pas le bon format";
     private static String NOM_FICHIER_CSV_EN_COURS = "nomFichier";
     private static String FICHIER_ZIP_EN_COURS = "fichierZipEnCours";
     private static String NOM_ORIGINAL_FICHIER_ZIP = "nomFichierOriginal";
@@ -109,17 +110,28 @@ public class JobCompletionNotificationLigneProgrammeListener extends JobExecutio
                         PriamValidationException.ErrorType errorType = ((PriamValidationException) exception).getErrorType();
 
                         if(ErrorType.FORMAT_FICHIER.equals(errorType)) {
-                            errors.add("Le fichier ne peut être chargé car il n'a pas le bon format");
+                            errors.add(MESSAGE_FORMAT_FICHIER);
                         }
                         else if(ErrorType.FORMAT_ATTRIBUT.equals(errorType)) {
                             errors.add(exception.getMessage());
                         }
 
                     } else if(errors.isEmpty()) {
-                            errors.add(MESSAGE_ERREUR_TECHNIQUE);
+                        errors.add(MESSAGE_ERREUR_TECHNIQUE);
                     }
-                    JobParameter idFichier = (JobParameter) executionContext.get("idFichier");
-                    fichierService.rejeterFichier((Long) idFichier.getValue(), errors);
+
+                    JobParameter jobParameter = (JobParameter) executionContext.get("idFichier");
+
+                    Long idFichier;
+                    if(jobParameter == null) {
+                        idFichier = ((PriamValidationException)exception.getCause()).getIdFichier();
+                        errors.clear();
+                        errors.add(MESSAGE_FORMAT_FICHIER);
+                    } else {
+                        idFichier = (Long) jobParameter.getValue();
+                    }
+
+                    fichierService.rejeterFichier(idFichier, errors);
 
                 }
 

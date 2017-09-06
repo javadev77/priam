@@ -2,6 +2,7 @@ package fr.sacem.Batch.dao;
 
 import fr.sacem.domain.Fichier;
 import fr.sacem.service.FichierServiceImpl;
+import fr.sacem.util.exception.PriamValidationException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +37,7 @@ public class FichierserviceTest {
     }
 
     @Test
-    public void addFichier() throws IOException {
+    public void addFichier() throws IOException, PriamValidationException {
         File file = new File(SINGLE_FILE);
         InputStream targetStream = new FileInputStream(file);
         fichierService.addFichier(targetStream, NOM_FICHIER_CSV);
@@ -46,7 +47,7 @@ public class FichierserviceTest {
     }
 
     @Test
-    public void updateFichiereDate() throws IOException {
+    public void updateFichiereDate() throws IOException, PriamValidationException {
         File file = new File(SINGLE_FILE);
         InputStream targetStream = new FileInputStream(file);
         fichierService.addFichier(targetStream, NOM_FICHIER_CSV);
@@ -57,7 +58,7 @@ public class FichierserviceTest {
     }
 
     @Test
-    public void finByNameTest() throws IOException {
+    public void finByNameTest() throws IOException, PriamValidationException {
         File file = new File(SINGLE_FILE);
         InputStream targetStream = new FileInputStream(file);
         fichierService.addFichier(targetStream, NOM_FICHIER_CSV);
