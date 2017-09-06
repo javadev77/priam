@@ -33,7 +33,6 @@ public class FichierRepositoryImpl implements FichierRepository {
     private static final String STATUT_OK = "CHARGEMENT_OK";
         private static final String STATUT_KO = "CHARGEMENT_KO";
     private static final String STATUT_EN_COURS = "EN_COURS";
-    public static final String COPIEPRIV = "COPIEPRIV";
 
     public Fichier findByName(String nomFichier) {
         String sql = "SELECT f.ID,f.DATE_DEBUT_CHGT,f.DATE_FIN_CHGT,f.CDEFAMILTYPUTIL,f.NB_LIGNES,f.NOM,f.CDETYPUTIL,f.STATUT_CODE " +
@@ -129,8 +128,8 @@ public class FichierRepositoryImpl implements FichierRepository {
 
         }catch (Exception e) {
             
-            String codeFamilleTypeUtilisation = extractCodeFamilleTypeUtilisationFromNomFichier(fichier.getNom());
             String typeUtilisation = extractTypeUtilisationFromNomFichier(fichier.getNom());
+            String codeFamilleTypeUtilisation = extractCodeFamilleTypeUtilisationFromNomFichier(typeUtilisation);
             
             GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
             jdbcTemplate.update(connection -> {
@@ -160,9 +159,9 @@ public class FichierRepositoryImpl implements FichierRepository {
         return result.toString();
     }
 
-    private String extractCodeFamilleTypeUtilisationFromNomFichier(String nom) {
+    private String extractCodeFamilleTypeUtilisationFromNomFichier(String typeUtilisation) {
         StringBuilder result = new StringBuilder();
-        result.append(COPIEPRIV);
+        result.append(TypeUtilisationEnum.getValue(typeUtilisation).getCodeFamille());
         return result.toString();
     }
 
