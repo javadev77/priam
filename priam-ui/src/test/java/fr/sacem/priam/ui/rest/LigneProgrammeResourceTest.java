@@ -142,7 +142,7 @@ public class LigneProgrammeResourceTest extends RestResourceTest{
       .andExpect(status().isOk());
   }
 
-  @Test
+  @Test(expected = Exception.class)
   public void validerSelection() throws Exception {
 
     ValdierSelectionProgrammeInput input = new ValdierSelectionProgrammeInput();

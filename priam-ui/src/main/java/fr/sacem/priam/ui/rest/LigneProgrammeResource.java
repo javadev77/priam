@@ -118,6 +118,8 @@ public class LigneProgrammeResource {
 
     Programme programme = programmeService.validerProgramme(programmeDTO);
 
+    modifierSelection(input, programme);
+
     return new ArrayList<>();
   }
 
