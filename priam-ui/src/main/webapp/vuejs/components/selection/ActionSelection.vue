@@ -29,22 +29,22 @@
         <div v-if="programmeInfo.statut == 'AFFECTE'">
 
           <div class="pull-right" :title="listSelectionVide ? 'Il faut sélectionner au moins une oeuvre' : ''">
-            <button class="btn btn-default btn-primary width-140" type="button" @click.prevent="valider()" :disabled="inProcess || listSelectionVide">Valider Sélection</button>
+            <button class="btn btn-default btn-primary width-140" type="button" @click.prevent="valider()" :disabled="inProcess || listSelectionVide || !isRightVLDSEL">Valider Sélection</button>
           </div>
 
-          <button class="btn btn-default btn-primary pull-right width-140" type="button" @click.prevent="editer()" :disabled="inProcess">Editer Sélection</button>
+          <button class="btn btn-default btn-primary pull-right width-140" type="button" @click.prevent="editer()" :disabled="inProcess || !isRightEDTSEL">Editer Sélection</button>
         </div>
 
         <div v-else-if="programmeInfo.statut == 'EN_COURS'">
-          <button class="btn btn-default btn-primary width-140" type="button" @click.prevent="annulerSelection()" :disabled="inProcess">Annuler Sélection</button>
+          <button class="btn btn-default btn-primary width-140" type="button" @click.prevent="annulerSelection()" :disabled="inProcess || !isRightCLDSEL">Annuler Sélection</button>
           <div class="pull-right" :title="listSelectionVide ? 'Il faut sélectionner au moins une oeuvre' : ''">
-            <button class="btn btn-default btn-primary width-140" type="button" @click.prevent="valider()" :disabled="inProcess || listSelectionVide">Valider Sélection</button>
+            <button class="btn btn-default btn-primary width-140" type="button" @click.prevent="valider()" :disabled="inProcess || listSelectionVide || !isRightVLDSEL">Valider Sélection</button>
           </div>
-          <button class="btn btn-default btn-primary pull-right width-140" type="button" @click.prevent="editer()" :disabled="inProcess">Editer Sélection</button>
+          <button class="btn btn-default btn-primary pull-right width-140" type="button" @click.prevent="editer()" :disabled="inProcess || !isRightEDTSEL">Editer Sélection</button>
         </div>
 
         <div v-else-if="programmeInfo.statut == 'VALIDE'">
-          <button class="btn btn-default btn-primary pull-right width-140" type="button" @click.prevent="invalider()">Invalider</button>
+          <button class="btn btn-default btn-primary pull-right width-140" type="button" @click.prevent="invalider()" :disabled="!isRightINVSEL">Invalider</button>
           <span class="pull-right">
             Validé par {{programmeInfo.userValidation}} le {{dateValidation}}
           </span>
@@ -64,7 +64,12 @@
 </template>
 
 <script>
+
+  import programmeMixins from '../../mixins/programmeMixin';
+
   export default {
+
+    mixins: [programmeMixins],
 
       props : {
         programmeInfo : Object,
@@ -81,8 +86,26 @@
 
      computed :{
        dateValidation () {
+
          return new Date(this.programmeInfo.dateValidation).toLocaleDateString() + " à " + new Date(this.programmeInfo.dateValidation).toLocaleTimeString().slice(0,5);
+       },
+
+       isRightEDTSEL() {
+         return this.hasRight('EDTSEL');
+       },
+
+       isRightINVSEL() {
+         return this.hasRight('INVSEL');
+       },
+
+       isRightCLDSEL() {
+         return this.hasRight('CLDSEL');
+       },
+
+       isRightVLDSEL() {
+         return this.hasRight('VLDSEL');
        }
+
      }
 
   }

@@ -25,9 +25,13 @@ const state = {
 
     },
 
+
     mipsaConfig : {},
 
-    libelleUtilisateur : []
+    libelleUtilisateur : [],
+
+
+   currentUser : {}
 
 }
 
@@ -35,6 +39,7 @@ const mutations = {
   'SELECT_PAGE' (state, page) {
       state.pagination.currentPage = page;
   },
+
   'SELECT_PAGE_SIZE' (state, pageSize) {
       state.pagination.itemsPerPage = pageSize;
   },
@@ -47,6 +52,10 @@ const mutations = {
     state.mipsaConfig = mipsaConfig;
   },
 
+  'SET_CURRENT_USER' (state, userDto) {
+    state.currentUser = userDto;
+    console.log('state.currentUser = ' + state.currentUser.displayName);
+  }
 
 };
 
@@ -64,6 +73,7 @@ const getters = {
     return state.pagination.itemsPerPage;
   },
 
+
   mipsaConfig : state => {
 
     return state.mipsaConfig;
@@ -72,6 +82,10 @@ const getters = {
   libelleUtilisateur : state => {
 
     return state.libelleUtilisateur;
+  },
+
+  getCurrentUser : state => {
+    return state.currentUser;
   }
 
 };

@@ -280,3 +280,57 @@ VALUES ('58', 250, 641, 'COPIEPRIV', '', null, null, 'RIR', 'CPRIVAUDPL', 'PRINC
 INSERT INTO PRIAM_LIGNE_PROGRAMME (cdeCisac, cdeFamilTypUtil, numProg, cdeUtil, cdeTypUtil, cdeGreDif, cdeModDif, cdeTypIde12, ide12, durDif, nbrDif, mt, ctna, paramCoefHor, durDifCtna, cdeLng, indDoubSsTit, tax, typMt, cdeGreIde12Cmplx, cdeGreIde12, titreOriCmplx, titreAltPppalCmplx, titreOriOeuvPereCmplx, titreAltOeuvPereCmplx, titreOeuvre, cdePaysOriIso4NCmplx, realisateurCmplx, roleParticipant1, nomParticipant1, cdeTypUtilOri, cdeFamilTypUtilOri,ID_FICHIER) VALUES ('58', 'COPIEPRIV', null, 'LU1', 'CPRIVAUDPL', '', '', 'COCV', 6829877211, null, 10, 71.52, '', '', null, '', '', null, 'MB', 19, null, null, null, null, null, 'Test Titre', null, null, null, null, null, null, SELECT ID FROM PRIAM_FICHIER WHERE NOM ='Fichier 125');
 INSERT INTO PRIAM_LIGNE_PROGRAMME (cdeCisac, cdeFamilTypUtil, numProg, cdeUtil, cdeTypUtil, cdeGreDif, cdeModDif, cdeTypIde12, ide12, durDif, nbrDif, mt, ctna, paramCoefHor, durDifCtna, cdeLng, indDoubSsTit, tax, typMt, cdeGreIde12Cmplx, cdeGreIde12, titreOriCmplx, titreAltPppalCmplx, titreOriOeuvPereCmplx, titreAltOeuvPereCmplx, titreOeuvre, cdePaysOriIso4NCmplx, realisateurCmplx, roleParticipant1, nomParticipant1, cdeTypUtilOri, cdeFamilTypUtilOri,ID_FICHIER) VALUES ('58', 'COPIEPRIV', null, 'RT2', 'CPRIVAUDPL', '', '', 'COCV', 8028354411, null, 2, 1.26, '', '', null, '', '', null, 'MB', 19, null, null, null, null, null, null, null, null, null, null, null, null, SELECT ID FROM PRIAM_FICHIER WHERE NOM ='Fichier 125');
 INSERT INTO PRIAM_LIGNE_PROGRAMME (cdeCisac, cdeFamilTypUtil, numProg, cdeUtil, cdeTypUtil, cdeGreDif, cdeModDif, cdeTypIde12, ide12, durDif, nbrDif, mt, ctna, paramCoefHor, durDifCtna, cdeLng, indDoubSsTit, tax, typMt, cdeGreIde12Cmplx, cdeGreIde12, titreOriCmplx, titreAltPppalCmplx, titreOriOeuvPereCmplx, titreAltOeuvPereCmplx, titreOeuvre, cdePaysOriIso4NCmplx, realisateurCmplx, roleParticipant1, nomParticipant1, cdeTypUtilOri, cdeFamilTypUtilOri,ID_FICHIER) VALUES ('58', 'COPIEPRIV', null, 'RIR', 'CPRIVAUDPL', '', '', 'COCV', 8028354411, null, 8, 1.74, '', '', null, '', '', null, 'MB', 19, null, null, null, null, null, null, null, null, null, null, null, null, SELECT ID FROM PRIAM_FICHIER WHERE NOM ='Fichier 125');
+
+-- ---------------------------------------------------
+-- ------ TABLE PRIAM_ROLE -------------------
+-- ---------------------------------------------------
+INSERT INTO PRIAM_ROLE
+(EXTERNAL_ID, ROLE)
+values ('ADM','ADM');
+
+INSERT INTO PRIAM_ROLE
+(EXTERNAL_ID, ROLE)
+values ('GST','GST');
+
+INSERT INTO PRIAM_ROLE
+(EXTERNAL_ID, ROLE)
+values ('INV','INV');
+
+-- ---------------------------------------------------
+-- ------ TABLE PRIAM_ROLE_RIGHTS -------------------
+-- ---------------------------------------------------
+INSERT INTO PRIAM_ROLE_RIGHTS
+(ROLE_ID,RIGHTS,LIBELLE)
+VALUES (1,'CRTPRG','Creation de programme');
+
+INSERT INTO PRIAM_ROLE_RIGHTS
+(ROLE_ID,RIGHTS,LIBELLE)
+VALUES (1,'READPRG','Acces ecran programme');
+
+INSERT INTO PRIAM_ROLE_RIGHTS
+(ROLE_ID,RIGHTS,LIBELLE)
+VALUES (1,'MDYPRG','Modification de programme');
+
+INSERT INTO PRIAM_ROLE_RIGHTS
+(ROLE_ID,RIGHTS,LIBELLE)
+VALUES (1,'ABDPRG','Abandon de programme');
+
+INSERT INTO PRIAM_ROLE_RIGHTS
+(ROLE_ID,RIGHTS,LIBELLE)
+VALUES (2,'CRTPRG','Creation de programme');
+
+INSERT INTO PRIAM_ROLE_RIGHTS
+(ROLE_ID,RIGHTS,LIBELLE)
+VALUES (2,'READPRG','Acces ecran programme');
+
+INSERT INTO PRIAM_ROLE_RIGHTS
+(ROLE_ID,RIGHTS,LIBELLE)
+VALUES (2,'MDYPRG','Modification de programme');
+
+INSERT INTO PRIAM_ROLE_RIGHTS
+(ROLE_ID,RIGHTS,LIBELLE)
+VALUES (2,'ABDPRG','Abandon de programme');
+
+INSERT INTO PRIAM_ROLE_RIGHTS
+(ROLE_ID,RIGHTS,LIBELLE)
+VALUES (3,'READPRG','Acces ecran programme');

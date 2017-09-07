@@ -116,10 +116,10 @@
         </div>
     </div>
     <div class="row formula-buttons">
-      <button v-if="showButtonToutDesactiver" style="width: 160px;"  class="btn btn-default btn-primary pull-left" type="button" @click="showModalDesactiver = true">Tout désaffecter</button>
-      <button v-if="showButtonAnnuler" class="btn btn-default btn-primary pull-right" type="button" @click="annuler()">Annuler</button>
-      <button v-if="showButtonEnregistrer" class="btn btn-default btn-primary pull-right" type="button" @click="enregister()">Enregister</button>
-      <button v-if="showButtonEditer" class="btn btn-default btn-primary pull-right" type="button" @click="editer()">Editer</button>
+      <button v-show="showButtonToutDesactiver" style="width: 160px;"  class="btn btn-default btn-primary pull-left" type="button" @click="showModalDesactiver = true">Tout désaffecter</button>
+      <button v-show="showButtonAnnuler" class="btn btn-default btn-primary pull-right" type="button" @click="annuler()">Annuler</button>
+      <button v-show="showButtonEnregistrer" class="btn btn-default btn-primary pull-right" type="button" @click="enregister()" :disabled="!isRightRECAFC">Enregister</button>
+      <button v-show="showButtonEditer" class="btn btn-default btn-primary pull-right" type="button" @click="editer()" :disabled="!isRightEDTAFC">Editer</button>
       <span v-if="isStatusProgrammeAffecte()" class="pull-right">
         Affecté par {{ programmeInfo.useraffecte }} {{ programmeInfo.dataffecte | dateAffectation }}
       </span>
@@ -157,10 +157,11 @@
   import moment from 'moment';
   import Modal from '../common/Modal.vue'
   import ProgrammeInfo from '../programme/ProgrammeInfo.vue';
+  import programmeMixins from '../../mixins/programmeMixin';
 
   export default {
 
-      mixins: [chargementMixins],
+      mixins: [chargementMixins, programmeMixins],
 
       data() {
         var $this =this;
@@ -275,6 +276,9 @@
 
                     isDisabled : function() {
                         console.log("$this.isStatusProgrammeAffecte()=" + $this.isStatusProgrammeAffecte())
+                        if(!$this.isRightRECAFC){
+                            return true;
+                        }
                         if(!$this.isTableauSelectionnable()) {
                             return true;
                         }
@@ -378,6 +382,14 @@
 
           return options;
         },
+
+        isRightRECAFC() {
+          return this.hasRight('RECAFC');
+        },
+
+        isRightEDTAFC() {
+          return this.hasRight('EDTAFC');
+        }
 
       },
 

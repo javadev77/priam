@@ -16,7 +16,7 @@
                     :class="{open: isDropdownOpen}"
                     @click="isDropdownOpen = !isDropdownOpen">
                   <a class="dropdown-toggle clickable" data-toggle="dropdown" aria-expanded="false">
-                    <span>Bonjour GUEST</span>
+                    <span>Bonjour {{ displayName }}</span>
                     <span class="caret"></span>
                   </a>
 
@@ -76,11 +76,19 @@
           id : ''
         },
 
-        isDropdownOpen: false
+        isDropdownOpen: false,
+
+        //displayName: ''
       }
     },
 
     created()  {
+
+      const customActions = {
+        searchUser : {method : 'GET', url :'app/rest/general/currentUser'}
+      }
+      this.resource= this.$resource('', {}, customActions);
+
         let currentRoute = this.$route.matched;
         console.log('currentRoute =  ' + currentRoute[0].name);
         this.currentActiveMenu.id = currentRoute[0].name;
@@ -89,6 +97,30 @@
         console.log('currentActiveMenu ' + this.currentActiveMenu.id);
         console.log('currentSubMenu ' + this.currentSubMenu.id);
 
+    },
+
+
+    computed : {
+      displayName() {
+        let currentUser = this.$store.getters.getCurrentUser;
+        return currentUser.displayName;
+
+      }
+    },
+
+    methods: {
+      getDisplayName() {
+        this.resource.searchUser()
+          .then(response => {
+            return response.json();
+          })
+          .then(data => {
+            console.log('data = ' + data);
+            debugger;
+            //this.displayName = data.displayName;
+          });
+
+      }
     },
 
     components :    {

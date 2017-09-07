@@ -130,8 +130,11 @@
   import select2 from '../common/Select2.vue';
   import moment from 'moment';
   import LogChargement from '../chargement/LogChargement.vue';
+  import programmeMixin from '../../mixins/programmeMixin';
 
   export default {
+
+      mixins : [programmeMixin],
 
     data () {
 
@@ -258,7 +261,10 @@
                 cellTemplate: function (cellValue) {
                   var templateLog = '<span class="glyphicon glyphicon-list-alt" aria-hidden="true" title="Log"></span>';
                   var template = [];
+
                   template.push({event : 'show-log', template : templateLog});
+
+
                   return template;
 
                 }
@@ -275,8 +281,10 @@
                   var tempalte = '<span class="glyphicon glyphicon-trash" aria-hidden="true" title="Abandonner"></span>';
                   var statusCode = cellValue.statut;
                   let element = $this.findStatusByCode(statusCode);
-                  if(element !== undefined && ('CHARGEMENT_KO' === element.code || 'CHARGEMENT_OK' === element.code)) {
-                    return tempalte;
+                  if($this.isRightABDCHGT) {
+                    if(element !== undefined && ('CHARGEMENT_KO' === element.code || 'CHARGEMENT_OK' === element.code)) {
+                      return tempalte;
+                    }
                   }
                   return '';
                 }
@@ -311,7 +319,11 @@
 
       statut() {
         return this.$store.getters.statut;
-      }
+      },
+
+      isRightABDCHGT() {
+        return this.hasRight('ABDCHGT');
+      },
 
     },
 

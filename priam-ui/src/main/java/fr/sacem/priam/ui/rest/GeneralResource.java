@@ -5,11 +5,15 @@ import com.google.common.collect.Maps;
 import fr.sacem.priam.common.util.SsoUtils;
 import fr.sacem.priam.model.dao.jpa.*;
 import fr.sacem.priam.model.domain.*;
+import fr.sacem.priam.ui.security.SsoAuthenticationToken;
+import fr.sacem.priam.ui.rest.dto.UserDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -60,7 +64,7 @@ public class GeneralResource {
         });
 
 
-        return result.toArray(new Map[0]);
+      return result.toArray(new Map[0]);
     }
 
     @RequestMapping(value = "/libelletypeutil",
@@ -144,7 +148,6 @@ public class GeneralResource {
     return result.toArray(new Map[0]);
   }
 
-
     @RequestMapping(value = "/territoire",
                    method = RequestMethod.GET,
                    produces = MediaType.APPLICATION_JSON_VALUE)
@@ -211,5 +214,16 @@ public class GeneralResource {
    }
   
   
+    
+    @RequestMapping(value = "/currentUser",
+      method = RequestMethod.GET,
+      produces = MediaType.APPLICATION_JSON_VALUE)
+    public UserDTO getCurrentUser(Locale locale) {
   
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        SsoAuthenticationToken  currentUser = (SsoAuthenticationToken) auth;
+    
+        return currentUser.getUser();
+    }
+
 }

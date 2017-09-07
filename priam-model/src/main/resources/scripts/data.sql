@@ -325,3 +325,29 @@ VALUES ('170020', 'Programme 12', 639, 'COPIEPRIV','CPRIVAUDPL', 'OEUVRE', CURDA
 
 INSERT INTO priam_app.PRIAM_PROGRAMME(NUMPROG, NOM, RION_THEORIQUE, CDEFAMILTYPUTIL, CDETYPUTIL, TYPE_REPART, DATE_CREATION, STATUT_PROG_CODE, RION_PAIEMENT)
 VALUES ('170021', 'Programme 12', 639, 'COPIEPRIV','CPRIVAUDPL', 'OEUVRE', CURDATE(), 'EN_COURS', NULL);
+
+-- ---------------------------------------------------
+-- ------ TABLE PRIAM_ROLE -------------------
+-- ---------------------------------------------------
+INSERT INTO PRIAM_ROLE
+(EXTERNAL_ID, ROLE)
+values ('ADM','ADM');
+
+INSERT INTO PRIAM_ROLE
+(EXTERNAL_ID, ROLE)
+values ('GST','GST');
+
+INSERT INTO PRIAM_ROLE
+(EXTERNAL_ID, ROLE)
+values ('INV','INV');
+
+-- ---------------------------------------------------
+-- ------ TABLE PRIAM_ROLE_RIGHTS -------------------
+-- ---------------------------------------------------
+INSERT INTO PRIAM_ROLE_RIGHTS
+(ROLE_ID,RIGHTS,LIBELLE)
+VALUES (1,'LOAD','Chargement');
+
+INSERT INTO PRIAM_ROLE_RIGHTS
+(ROLE_ID,RIGHTS,LIBELLE)
+VALUES (2,'LOAD','Chargement');
