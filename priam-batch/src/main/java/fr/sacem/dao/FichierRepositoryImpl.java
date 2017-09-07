@@ -109,28 +109,11 @@ public class FichierRepositoryImpl implements FichierRepository {
         // traitement des données d'un ficiher
         // insetion des données de ficiher avec le statut EN COURS
         String sql = "INSERT INTO PRIAM_FICHIER(DATE_DEBUT_CHGT,CDEFAMILTYPUTIL,NB_LIGNES,NOM,CDETYPUTIL,STATUT_CODE) VALUES(?,?,?,?,?,?)";
-    
+
+        String typeUtilisation = extractTypeUtilisationFromNomFichier(fichier.getNom());
+        String codeFamilleTypeUtilisation = extractCodeFamilleTypeUtilisationFromNomFichier(typeUtilisation);
 
         try{
-            GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-            jdbcTemplate.update(connection -> {
-                PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-                stmt.setTimestamp(1, fichier.getDateDebutChargt());
-                stmt.setString(2, fichier.getFamille());
-                stmt.setLong(3, fichier.getNbLignes());
-                stmt.setString(4, fichier.getNom());
-                stmt.setString(5, fichier.getTypeUtilisation());
-                stmt.setString(6, fichier.getStatut());
-                return stmt;
-            }, keyHolder);
-
-            return keyHolder.getKey().longValue();
-
-        }catch (Exception e) {
-            
-            String typeUtilisation = extractTypeUtilisationFromNomFichier(fichier.getNom());
-            String codeFamilleTypeUtilisation = extractCodeFamilleTypeUtilisationFromNomFichier(typeUtilisation);
-            
             GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
             jdbcTemplate.update(connection -> {
                 PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -143,7 +126,10 @@ public class FichierRepositoryImpl implements FichierRepository {
                 return stmt;
             }, keyHolder);
 
-            throw new PriamValidationException(-1, e, PriamValidationException.ErrorType.FORMAT_FICHIER, keyHolder.getKey().longValue());
+            return keyHolder.getKey().longValue();
+
+        }catch (Exception e) {
+            throw new PriamValidationException(-1, e, PriamValidationException.ErrorType.FORMAT_FICHIER, null);
         }
 
     }

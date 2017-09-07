@@ -48,11 +48,8 @@ public class FichierserviceTest {
 
     @Test
     public void updateFichiereDate() throws IOException, PriamValidationException {
-        File file = new File(SINGLE_FILE);
-        InputStream targetStream = new FileInputStream(file);
-        fichierService.addFichier(targetStream, NOM_FICHIER_CSV);
-        fichierService.updateFichierDate(NOM_FICHIER_CSV);
-        Fichier fichier1 = fichierService.findByName(NOM_FICHIER_CSV);
+        fichierService.updateFichierDate("Fichier 01");
+        Fichier fichier1 = fichierService.findByName("Fichier 01");
         Assert.assertNotNull(fichier1);
         Assert.assertNotNull(fichier1.getDateFinChargt());
     }

@@ -48,9 +48,14 @@ public class LigneProgrammeSpringValidator implements Validator {
 			errors.rejectValue("cdeTypUtil", "format.error.cdeTypUtil");
 		}
 
-		if(!cdeFamilTypUtil.equals(TypeUtilisationEnum.getValue(cdeTypUtil).getCodeFamille())) {
-			errors.rejectValue("cdeFamilTypUtil", "format.error.cdeFamilTypUtil");
+		try{
+			if(!cdeTypUtil.isEmpty() && !cdeFamilTypUtil.equals(TypeUtilisationEnum.getValue(cdeTypUtil).getCodeFamille())) {
+				errors.rejectValue("cdeFamilTypUtil", "format.error.cdeFamilTypUtil");
+			}
+		}catch (Exception e) {
+
 		}
+
 
 		if(ide12 != null && ide12.toString().length() != IDE12_LENGTH) {
 			errors.rejectValue("ide12", "format.error.ide12");
