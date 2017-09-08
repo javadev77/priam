@@ -97,8 +97,6 @@ public class JobCompletionNotificationLigneProgrammeListener extends JobExecutio
 
                 Set<String> errors = (Set<String>) executionContext.get("ligne-programme-errors");
                 if(myStepExecution.getStatus() == BatchStatus.STOPPED){
-
-
                     if( ! errors.isEmpty()) {
                         JobParameter idFichier = (JobParameter) executionContext.get("idFichier");
                         fichierService.rejeterFichier((Long) idFichier.getValue(), errors);

@@ -187,7 +187,7 @@
                   var result  = getters.famille.find(function (element) {
                     return element.id === cellValue;
                   });
-                  return result !== undefined && result.value;
+                  return result !== undefined ? result.value : null;
                 }
               }
             },

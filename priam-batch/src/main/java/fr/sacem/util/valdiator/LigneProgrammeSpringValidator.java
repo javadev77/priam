@@ -25,9 +25,9 @@ public class LigneProgrammeSpringValidator implements Validator {
     public void validate(Object o, Errors errors) {
 
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeCisac", "error.cdeCisac");
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeFamilTypUtil", "error.cdeFamilTypUtil");
+
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeUtil", "error.cdeUtil");
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeTypUtil", "error.cdeTypUtil");
+
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeTypIde12", "error.cdeTypIde12");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "ide12", "error.ide12");
 
@@ -44,12 +44,18 @@ public class LigneProgrammeSpringValidator implements Validator {
 		String cdeFamilTypUtil = ((LigneProgramme)o).getCdeFamilTypUtil();
 		Long ide12 = ((LigneProgramme) o).getIde12();
 
-		if(!cdeTypUtil.equals(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_PHONO.getCode()) && !cdeTypUtil.equals(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode())) {
+		if(cdeTypUtil == null || cdeTypUtil.isEmpty()) {
+			errors.rejectValue("cdeTypUtil", "error.cdeTypUtil");
+		}
+		else if(!cdeTypUtil.equals(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_PHONO.getCode()) && !cdeTypUtil.equals(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode())) {
 			errors.rejectValue("cdeTypUtil", "format.error.cdeTypUtil");
 		}
 
 		try{
-			if(!cdeTypUtil.isEmpty() && !cdeFamilTypUtil.equals(TypeUtilisationEnum.getValue(cdeTypUtil).getCodeFamille())) {
+
+			if(cdeFamilTypUtil == null || cdeFamilTypUtil.isEmpty()) {
+				errors.rejectValue("cdeFamilTypUtil", "error.cdeFamilTypUtil");
+			}else if(!cdeTypUtil.isEmpty() && !cdeFamilTypUtil.equals(TypeUtilisationEnum.getValue(cdeTypUtil).getCodeFamille())) {
 				errors.rejectValue("cdeFamilTypUtil", "format.error.cdeFamilTypUtil");
 			}
 		}catch (Exception e) {

@@ -25,6 +25,7 @@ public class ZipMultiResourceItemReader<T> extends MultiResourceItemReader<T> {
 
     private static final Logger LOG = LoggerFactory.getLogger(ZipMultiResourceItemReader.class);
     private static final String EXTENTION_ZIP = "^(.*\\.((zip|ZIP)$))?[^.]*$";
+    public static final String MESSAGE_NOM_FICHIER_INCORRECTE = "Le fichier ne peut être chargé car son nom n'a pas le bon format";
     private Resource[] archives;
     private ZipFile zipFile;
     private StepExecution stepExecution;
@@ -116,7 +117,7 @@ public class ZipMultiResourceItemReader<T> extends MultiResourceItemReader<T> {
 
                                 if(!file.getName().startsWith(FileUtils.PREFIX_PRIV_SON_RD) && !file.getName().startsWith(FileUtils.PREFIX_PRIV_SON_PH)) {
                                     Set<String> errorSet = (Set<String>) executionContext.get("ligne-programme-errors");
-                                    errorSet.add(String.format("Nom fichier invalide (%s)", fichier.getNom()));
+                                    errorSet.add(MESSAGE_NOM_FICHIER_INCORRECTE);
                                     this.stepExecution.getJobExecution().stop();
                                 }
                             }

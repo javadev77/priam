@@ -142,11 +142,21 @@ public class FichierRepositoryImpl implements FichierRepository {
         else if(nom.startsWith(FileUtils.PREFIX_PRIV_SON_RD))
             result.append(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode());
 
+        if(result.toString().isEmpty())
+        {
+            return null;
+        }
         return result.toString();
     }
 
     private String extractCodeFamilleTypeUtilisationFromNomFichier(String typeUtilisation) {
         StringBuilder result = new StringBuilder();
+
+        if(typeUtilisation == null || typeUtilisation.isEmpty())
+        {
+            return null;
+        }
+
         result.append(TypeUtilisationEnum.getValue(typeUtilisation).getCodeFamille());
         return result.toString();
     }
