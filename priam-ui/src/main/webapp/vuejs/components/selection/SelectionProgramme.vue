@@ -641,9 +641,6 @@
             this.rechercher();
 
           });
-
-
-
       },
 
       onSupprimerLigneProgramme(row, column) {

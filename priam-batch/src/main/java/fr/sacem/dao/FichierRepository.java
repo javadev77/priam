@@ -1,6 +1,7 @@
 package fr.sacem.dao;
 
 import fr.sacem.domain.Fichier;
+import fr.sacem.util.exception.PriamValidationException;
 
 import java.util.Set;
 
@@ -9,7 +10,7 @@ import java.util.Set;
  */
 public interface FichierRepository {
 
-    Long addFichier(Fichier fichier);
+    Long addFichier(Fichier fichier) throws PriamValidationException;
 
     void updateFichierDate(String nomFichier);
 

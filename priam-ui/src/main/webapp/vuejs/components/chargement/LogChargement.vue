@@ -1,11 +1,18 @@
 <template>
   <modal>
     <template slot="body">
-      <label>Le fichier de répartition contient les erreurs suivantes :</label>
+      <label v-if="hasErrors">Le fichier de répartition contient les erreurs suivantes :</label>
       <div style="height:300px; overflow-y:scroll;">
-        <label v-for="log in logs">
-          {{log}}
-        </label>
+        <ul v-if="hasErrors">
+          <li v-for="log in logs">
+            {{log}}
+          </li>
+        </ul>
+        <ul v-else="">
+          <div v-for="log in logs">
+            {{log}}
+          </div>
+        </ul>
       </div>
     </template>
     <template slot="footer">
@@ -25,6 +32,10 @@
 
     props : {
 
+      hasErrors : {
+        type : Boolean,
+        required : true
+      },
       idFichier : {
         type : Number,
         required : true

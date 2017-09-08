@@ -1,6 +1,7 @@
 package fr.sacem.config;
 
 import fr.sacem.service.FichierServiceImpl;
+import fr.sacem.util.exception.PriamValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.BatchStatus;
@@ -16,9 +17,10 @@ import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+
+import static fr.sacem.util.exception.PriamValidationException.ErrorType;
 
 
 @Component
@@ -27,6 +29,7 @@ public class JobCompletionNotificationLigneProgrammeListener extends JobExecutio
     public static final String MESSAGE_ERREUR_TECHNIQUE = "Le chargement a été interrompu à cause d'un problème technique";
     public static final String MESSAGE_FICHIER_CHARGE = " - Le fichier \"%s\" a bien été chargé";
     public static final String FORMAT_DATE = "dd/MM/yyyy HH:mm";
+    public static final String MESSAGE_FORMAT_FICHIER = "Le fichier ne peut être chargé car il n'a pas le bon format";
     private static String NOM_FICHIER_CSV_EN_COURS = "nomFichier";
     private static String FICHIER_ZIP_EN_COURS = "fichierZipEnCours";
     private static String NOM_ORIGINAL_FICHIER_ZIP = "nomFichierOriginal";
@@ -72,14 +75,11 @@ public class JobCompletionNotificationLigneProgrammeListener extends JobExecutio
                             LOG.debug("Pas de ficiher CSV traité ");
                         }
                     } else {
-
                         JobParameter idFichier =(JobParameter) executionContext.get("idFichier");
                         fichierService.rejeterFichier((Long)idFichier.getValue(), errors);
-
                     }
 
                     deplacerFichier(parameterFichierZipEnCours, parameterNomFichierOriginal, outputDirectory);
-
                 } else {
                     LOG.debug("Pas de excution context pour le step en cours : " + myStepExecution.getStepName());
                 }
@@ -95,20 +95,44 @@ public class JobCompletionNotificationLigneProgrammeListener extends JobExecutio
                 JobParameter parameterNomFichierOriginal = (JobParameter) executionContext.get(NOM_ORIGINAL_FICHIER_ZIP);
                 JobParameter outputDirectory = jobExecution.getJobParameters().getParameters().get(REPERTOIRE_DE_DESTINATION);
 
-                if("FAILED".equals(myStepExecution.getExitStatus().getExitCode()))
-                {
-                    Set<String> errors = new HashSet<>();
-                    errors.add(MESSAGE_ERREUR_TECHNIQUE);
-                    JobParameter idFichier = (JobParameter) executionContext.get("idFichier");
-                    fichierService.rejeterFichier((Long) idFichier.getValue(), errors);
+                Set<String> errors = (Set<String>) executionContext.get("ligne-programme-errors");
+                if(myStepExecution.getStatus() == BatchStatus.STOPPED){
 
-                } else if(myStepExecution.getStatus() == BatchStatus.STOPPED){
-                    Set<String> errors = (Set<String>) executionContext.get("ligne-programme-errors");
 
                     if( ! errors.isEmpty()) {
                         JobParameter idFichier = (JobParameter) executionContext.get("idFichier");
                         fichierService.rejeterFichier((Long) idFichier.getValue(), errors);
                     }
+                } else if("FAILED".equals(myStepExecution.getExitStatus().getExitCode()))
+                {
+                    Throwable exception = myStepExecution.getFailureExceptions().iterator().next();
+                    if(exception instanceof PriamValidationException) {
+                        PriamValidationException.ErrorType errorType = ((PriamValidationException) exception).getErrorType();
+
+                        if(ErrorType.FORMAT_FICHIER.equals(errorType)) {
+                            errors.add(MESSAGE_FORMAT_FICHIER);
+                        }
+                        else if(ErrorType.FORMAT_ATTRIBUT.equals(errorType)) {
+                            errors.add(exception.getMessage());
+                        }
+
+                    } else if(errors.isEmpty()) {
+                        errors.add(MESSAGE_ERREUR_TECHNIQUE);
+                    }
+
+                    JobParameter jobParameter = (JobParameter) executionContext.get("idFichier");
+
+                    Long idFichier;
+                    if(jobParameter == null) {
+                        idFichier = ((PriamValidationException)exception.getCause()).getIdFichier();
+                        errors.clear();
+                        errors.add(MESSAGE_FORMAT_FICHIER);
+                    } else {
+                        idFichier = (Long) jobParameter.getValue();
+                    }
+
+                    fichierService.rejeterFichier(idFichier, errors);
+
                 }
 
                 deplacerFichier(parameterFichierZipEnCours, parameterNomFichierOriginal, outputDirectory);

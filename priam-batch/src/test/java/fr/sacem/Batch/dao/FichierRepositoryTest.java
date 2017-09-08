@@ -3,6 +3,7 @@ package fr.sacem.Batch.dao;
 import fr.sacem.dao.FichierRepositoryImpl;
 import fr.sacem.domain.Fichier;
 import fr.sacem.util.UtilFile;
+import fr.sacem.util.exception.PriamValidationException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,32 +37,28 @@ public class FichierRepositoryTest {
         Fichier fichier = new Fichier();
         fichier.setDateDebutChargt(UtilFile.getCurrentTimeStamp());
         fichier.setFamille("COPIEPRIV");
-        fichier.setNom("MON_FICHIER1");
+        fichier.setNom("FF_PENEF_EXTRANA_EXTCPRIVSONPH_MON_FICHIER1");
         fichier.setTypeUtilisation("CPRIVSONPH");
         fichier.setStatut("EN_COURS");
         fichier.setNbLignes(0l);
-        fichierRepository.addFichier(fichier);
-        Fichier fichier1 = fichierRepository.findByName("MON_FICHIER1");
+        try {
+            fichierRepository.addFichier(fichier);
+        } catch (PriamValidationException e) {
+            e.printStackTrace();
+        }
+        Fichier fichier1 = fichierRepository.findByName("FF_PENEF_EXTRANA_EXTCPRIVSONPH_MON_FICHIER1");
         Assert.assertNotNull(fichier1);
-        Assert.assertEquals("MON_FICHIER1", fichier1.getNom());
+        Assert.assertEquals("FF_PENEF_EXTRANA_EXTCPRIVSONPH_MON_FICHIER1", fichier1.getNom());
         Assert.assertEquals(fichier1.getFamille(), "COPIEPRIV");
 
     }
 
     @Test
     public void updateFichierDate() {
-        Fichier fichier = new Fichier();
-        fichier.setDateDebutChargt(UtilFile.getCurrentTimeStamp());
-        fichier.setFamille("COPIEPRIV");
-        fichier.setNom("MON_FICHIER2");
-        fichier.setTypeUtilisation("CPRIVSONPH");
-        fichier.setStatut("EN_COURS");
-        fichier.setNbLignes(1L);
-        fichierRepository.addFichier(fichier);
-        fichierRepository.updateFichierDate("MON_FICHIER2");
-    
-        
-        Fichier fichier1 = fichierRepository.findByName("MON_FICHIER2");
+
+        fichierRepository.updateFichierDate("FF_PENEF_EXTRANA_EXTCPRIVSONPH_MON_FICHIER2");
+
+        Fichier fichier1 = fichierRepository.findByName("FF_PENEF_EXTRANA_EXTCPRIVSONPH_MON_FICHIER2");
         Assert.assertNotNull(fichier1);
         Assert.assertNotNull(fichier1.getDateFinChargt());
 

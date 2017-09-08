@@ -111,6 +111,7 @@
     <template v-if="showLogChargement">
       <app-log-chargement
         :idFichier = "selectedIdFichier"
+        :hasErrors = "hasErrors"
         @close-log="showLogChargement = false"
       >
       </app-log-chargement>
@@ -289,7 +290,8 @@
         },
 
         showLogChargement : false,
-        selectedIdFichier : null
+        selectedIdFichier : null,
+        hasErrors : false
 
       }
     },
@@ -446,6 +448,7 @@
 
       onShowLog(row, column) {
         this.selectedIdFichier = row.id;
+        this.hasErrors = (row.statut != 'CHARGEMENT_OK');
         this.showLogChargement = true;
       }
     },

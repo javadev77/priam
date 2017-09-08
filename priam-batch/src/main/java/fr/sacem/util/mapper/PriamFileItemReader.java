@@ -167,7 +167,7 @@ public class PriamFileItemReader extends AbstractItemCountingItemStreamItemReade
             }
             catch (IncorrectTokenCountException | BindException ex) {
                 ErrorType errorType = ex instanceof IncorrectTokenCountException ? ErrorType.FORMAT_FICHIER : ErrorType.FORMAT_ATTRIBUT;
-                throw new PriamValidationException( lineCount, ex, errorType);
+                throw new PriamValidationException( lineCount, ex, errorType, null);
             }
             catch (Exception ex) {
                 throw new FlatFileParseException("Parsing error at line: " + lineCount + " in resource=["

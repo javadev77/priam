@@ -3,6 +3,7 @@ package fr.sacem.service;
 import fr.sacem.dao.FichierRepository;
 import fr.sacem.domain.Fichier;
 import fr.sacem.util.UtilFile;
+import fr.sacem.util.exception.PriamValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,7 @@ public class FichierServiceImpl implements FichierService {
     private static final Logger LOG = LoggerFactory.getLogger(FichierServiceImpl.class);
 
     @Override
-    public Long addFichier(InputStream inputStream, String nomFichier) {
+    public Long addFichier(InputStream inputStream, String nomFichier) throws PriamValidationException {
         LOG.info("Insertion de la ligne ficiher dans la table PRIAM_FICHIER");
         Fichier fichier = UtilFile.chargerLesDonnees(inputStream, nomFichier);
         

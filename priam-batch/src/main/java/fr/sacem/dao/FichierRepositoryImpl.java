@@ -1,7 +1,10 @@
 package fr.sacem.dao;
 
 import fr.sacem.domain.Fichier;
+import fr.sacem.priam.common.TypeUtilisationEnum;
+import fr.sacem.util.FileUtils;
 import fr.sacem.util.UtilFile;
+import fr.sacem.util.exception.PriamValidationException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -23,11 +26,12 @@ import java.util.Set;
  */
 @Repository
 public class FichierRepositoryImpl implements FichierRepository {
-    
+
+
     private JdbcTemplate jdbcTemplate;
     private ResultSetExtractor<Fichier> fichierExtractor = new FichierExtractor();
     private static final String STATUT_OK = "CHARGEMENT_OK";
-    private static final String STATUT_KO = "CHARGEMENT_KO";
+        private static final String STATUT_KO = "CHARGEMENT_KO";
     private static final String STATUT_EN_COURS = "EN_COURS";
 
     public Fichier findByName(String nomFichier) {
@@ -101,27 +105,53 @@ public class FichierRepositoryImpl implements FichierRepository {
 
     }
 
-    public Long addFichier(Fichier fichier) {
+    public Long addFichier(Fichier fichier) throws PriamValidationException {
         // traitement des données d'un ficiher
         // insetion des données de ficiher avec le statut EN COURS
         String sql = "INSERT INTO PRIAM_FICHIER(DATE_DEBUT_CHGT,CDEFAMILTYPUTIL,NB_LIGNES,NOM,CDETYPUTIL,STATUT_CODE) VALUES(?,?,?,?,?,?)";
-    
-        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(connection -> {
-		PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-		stmt.setTimestamp(1, fichier.getDateDebutChargt());
-		stmt.setString(2, fichier.getFamille());
-		stmt.setLong(3, fichier.getNbLignes());
-		stmt.setString(4, fichier.getNom());
-		stmt.setString(5, fichier.getTypeUtilisation());
-		stmt.setString(6, fichier.getStatut());
-		return stmt;
-	  }, keyHolder);
-        
-        return keyHolder.getKey().longValue();
+
+        String typeUtilisation = extractTypeUtilisationFromNomFichier(fichier.getNom());
+        String codeFamilleTypeUtilisation = extractCodeFamilleTypeUtilisationFromNomFichier(typeUtilisation);
+
+        try{
+            GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+            jdbcTemplate.update(connection -> {
+                PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                stmt.setTimestamp(1, fichier.getDateDebutChargt());
+                stmt.setString(2, codeFamilleTypeUtilisation);
+                stmt.setLong(3, fichier.getNbLignes());
+                stmt.setString(4, fichier.getNom());
+                stmt.setString(5, typeUtilisation);
+                stmt.setString(6, STATUT_KO);
+                return stmt;
+            }, keyHolder);
+
+            return keyHolder.getKey().longValue();
+
+        }catch (Exception e) {
+            throw new PriamValidationException(-1, e, PriamValidationException.ErrorType.FORMAT_FICHIER, null);
+        }
+
     }
-    
-    
+
+    private String extractTypeUtilisationFromNomFichier(String nom) {
+        StringBuilder result = new StringBuilder();
+
+        if(nom.startsWith(FileUtils.PREFIX_PRIV_SON_PH))
+            result.append(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_PHONO.getCode());
+        else if(nom.startsWith(FileUtils.PREFIX_PRIV_SON_RD))
+            result.append(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode());
+
+        return result.toString();
+    }
+
+    private String extractCodeFamilleTypeUtilisationFromNomFichier(String typeUtilisation) {
+        StringBuilder result = new StringBuilder();
+        result.append(TypeUtilisationEnum.getValue(typeUtilisation).getCodeFamille());
+        return result.toString();
+    }
+
+
     @Override
     public void updateFichierDate(String nomFichier) {
         String sql = "UPDATE PRIAM_FICHIER SET STATUT_CODE=?,DATE_FIN_CHGT=? " +
