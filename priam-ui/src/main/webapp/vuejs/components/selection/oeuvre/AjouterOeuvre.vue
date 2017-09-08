@@ -12,7 +12,11 @@
         <div class="panel-body" style="height:450px; overflow-y:scroll;">
             <app-mipsa :configuration="mipsaConfig" @ready-to-search="readyToSearch"></app-mipsa>
             <br/>
-            <detail-oeuvre :oeuvre="selectedOeuvre" @ajout-oeuvre="onAjouterOeuvre"></detail-oeuvre>
+            <detail-oeuvre :oeuvre="selectedOeuvre"
+                           @ajout-oeuvre="onAjouterOeuvre"
+                           @cancel-ajout="$emit('cancel')">
+
+            </detail-oeuvre>
         </div>
       </div>
     </div>

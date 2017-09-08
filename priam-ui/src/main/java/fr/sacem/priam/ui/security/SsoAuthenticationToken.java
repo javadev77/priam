@@ -3,7 +3,7 @@ package fr.sacem.priam.ui.security;
 import fr.sacem.fwk.security.Attribute;
 import fr.sacem.fwk.security.UserProfile;
 import fr.sacem.priam.common.constants.RoleRight;
-import fr.sacem.priam.ui.web.rest.dto.UserDTO;
+import fr.sacem.priam.ui.rest.dto.UserDTO;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;

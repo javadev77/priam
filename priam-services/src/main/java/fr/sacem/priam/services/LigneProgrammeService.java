@@ -208,7 +208,7 @@ public class LigneProgrammeService {
             oeuvreManuelFound.setDurDif(input.getDurDif());
             oeuvreManuelFound.setNbrDif(input.getNbrDif());
             oeuvreManuelFound.setDateInsertion(new Date());
-            oeuvreManuelFound.setUtilisateur("GUEST");
+            oeuvreManuelFound.setUtilisateur(input.getUtilisateur());
             
         } else {
             List<LigneProgramme> founds = ligneProgrammeDao.findOeuvresAutoByIde12AndCdeUtil(input.getNumProg(), input.getIde12(), input.getCdeUtil());

@@ -90,6 +90,7 @@
 
     <div class="row formula-buttons">
       <button class="btn btn-default btn-primary pull-right" type="button" @click.prevent="onClickAjouterOeuvre()">Ajouter</button>
+      <button class="btn btn-default btn-primary pull-right" type="button" @click.prevent="$emit('cancel-ajout')">Annuler</button>
     </div>
 
     </div>
@@ -174,6 +175,8 @@
           sef.$emit('ajout-oeuvre', sef.oeuvreManuelToCreate);
         });
       }
+
+
 
     },
 

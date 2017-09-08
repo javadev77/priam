@@ -49,7 +49,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void  configure(HttpSecurity http) throws Exception {
-http.csrf().disable()
+      http.csrf().disable()
       .exceptionHandling()
       .accessDeniedPage("/404.html")
       .authenticationEntryPoint(authenticationEntryPoint())
@@ -72,7 +72,7 @@ http.csrf().disable()
 
   @Override
   public void configure(WebSecurity web) throws Exception {
-web.ignoring()
+    web.ignoring()
       .regexMatchers(STATIC_RESOURCES_REGEX);
 
   }

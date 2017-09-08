@@ -10,6 +10,7 @@ import fr.sacem.priam.services.LigneProgrammeService;
 import fr.sacem.priam.services.ProgrammeService;
 import fr.sacem.priam.ui.rest.dto.LigneProgrammeCritereRecherche;
 import fr.sacem.priam.ui.rest.dto.ValdierSelectionProgrammeInput;
+import fr.sacem.priam.ui.rest.dto.UserDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -213,14 +214,14 @@ public class LigneProgrammeResource {
   
   
   @RequestMapping(value = "ligneProgramme/selection/ajoutOeuvre",
-    method = RequestMethod.POST,
-    produces = MediaType.APPLICATION_JSON_VALUE,
-    consumes = MediaType.APPLICATION_JSON_VALUE
-  )
-  public SelectionDto ajouterOeuvreManuel(@RequestBody LigneProgramme input) {
-        ligneProgrammeService.ajouterOeuvreManuel(input);
-        
-        return new SelectionDto();
+                  method = RequestMethod.POST,
+                  produces = MediaType.APPLICATION_JSON_VALUE,
+                  consumes = MediaType.APPLICATION_JSON_VALUE)
+  public SelectionDto ajouterOeuvreManuel(@RequestBody LigneProgramme input, UserDTO userDTO) {
+     input.setUtilisateur(userDTO.getDisplayName());
+     ligneProgrammeService.ajouterOeuvreManuel(input);
+     
+     return new SelectionDto();
   }
 
 

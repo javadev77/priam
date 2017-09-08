@@ -1,4 +1,4 @@
-package fr.sacem.priam.ui.web.rest.dto;
+package fr.sacem.priam.ui.rest.dto;
 
 import java.io.Serializable;
 import java.util.Collections;
