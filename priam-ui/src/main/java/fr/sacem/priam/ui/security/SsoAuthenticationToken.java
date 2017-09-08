@@ -13,6 +13,7 @@ import java.util.Set;
 /**
  * Created by embouazzar on 23/08/2017.
  */
+
 public class SsoAuthenticationToken extends AbstractAuthenticationToken {
 
   private UserDTO user;
@@ -32,9 +33,10 @@ public class SsoAuthenticationToken extends AbstractAuthenticationToken {
   }
 
   /**
-   *
-   * @return sacem sso token (cookie value)
-   */
+  *
+  * @return sacem sso token (cookie value)
+  */
+
   public String getSsoToken() {
     return ssoToken;
   }
@@ -42,7 +44,8 @@ public class SsoAuthenticationToken extends AbstractAuthenticationToken {
   /**
    *
    * @return homere user object
-   */
+  */
+
   public UserDTO getUser() {
     return user;
   }

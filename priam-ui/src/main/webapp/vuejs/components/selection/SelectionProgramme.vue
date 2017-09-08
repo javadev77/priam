@@ -601,7 +601,7 @@
           invaliderSelection: {method: 'POST', url: 'app/rest/ligneProgramme/selection/invalider'},
           dureeProgramme: {method: 'GET', url: 'app/rest/programme/durdif?numProg={numProg}&statut={statut}'},
           annulerSelection: {method: 'POST', url: 'app/rest/ligneProgramme/selection/annuler'},
-          supprimerLigneProgramme: {method: 'DELETE', url: 'app/rest/ligneProgramme/{numProg}/{ide12}'},
+          supprimerLigneProgramme: {method: 'DELETE', url: 'app/rest/ligneProgramme/{numProg}/{ide12}/'},
         }
 
         this.resource = this.$resource('', {}, customActions);
@@ -654,7 +654,7 @@
 
       supprimerProgramme() {
         this.showPopupSuppression = false;
-        this.resource.supprimerLigneProgramme({numProg : this.programmeInfo.numProg, ide12 : this.selectedLineProgramme.ide12})
+        this.resource.supprimerLigneProgramme({numProg : this.programmeInfo.numProg, ide12 : this.selectedLineProgramme.ide12}, this.selectedLineProgramme)
           .then(response => {
             return response.json();
           })

@@ -18,8 +18,9 @@ import java.io.IOException;
 import static org.springframework.util.StringUtils.hasText;
 
 /**
- * Created by embouazzar on 23/08/2017.
- */
+ * Created by embouazzar on 23/08/2017.*/
+ 
+
 public class AjaxLogoutSuccessHandler extends AbstractAuthenticationTargetUrlRequestHandler implements LogoutSuccessHandler {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AjaxLogoutSuccessHandler.class);

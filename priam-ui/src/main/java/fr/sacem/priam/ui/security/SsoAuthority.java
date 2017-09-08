@@ -11,6 +11,7 @@ import java.util.Map;
 /**
  * Created by embouazzar on 23/08/2017.
  */
+
 public class SsoAuthority implements GrantedAuthority{
 
   private static final Map<RoleRight, SsoAuthority> MAP;

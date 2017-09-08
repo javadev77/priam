@@ -62,14 +62,14 @@
               <div class="form-group col-md-4">
                 <label class="col-md-8 control-label blueText text-right">Ajout</label>
                 <div class="col-md-16 control-label">
-                  <v-select :searchable="false" v-model="filter.ajout" :options="ajoutOptions"></v-select>
+                  <select2 class="form-control" :searchable="false" v-model="filter.ajout" :options="ajoutOptions"></select2>
                 </div>
               </div>
 
               <div class="form-group col-md-4">
                 <label class="col-md-10 control-label blueText text-right">Sélection</label>
                 <div class="col-md-14 control-label">
-                  <v-select :searchable="false" v-model="filter.selection" :options="selectionOptions"></v-select>
+                  <select2 class="form-control" :searchable="false" v-model="filter.selection" :options="selectionOptions"></select2>
                 </div>
               </div>
             </div>
@@ -83,13 +83,12 @@
     <div class="row formula-buttons">
       <button class="btn btn-default btn-primary pull-right" type="button" @click.prevent="resetForm()">Rétablir</button>
       <button class="btn btn-default btn-primary pull-right" type="button" @click.prevent="rechercher()">Rechercher</button>
-      <!--<button class="btn btn-default btn-primary pull-left"  type="button" @click.prevent="ajouterOeuvre()" style="width: 120px;" :disabled="!edition">Ajouter Oeuvre</button>-->
-      <button class="btn btn-default btn-primary pull-left"  type="button" @click.prevent="ajouterOeuvre()" style="width: 120px;">Ajouter Oeuvre</button>
+      <button class="btn btn-default btn-primary pull-left"  type="button" @click.prevent="ajouterOeuvre()" style="width: 120px;" :disabled="!edition">Ajouter Oeuvre</button>
 
     </div>
 
     <ecran-modal v-if="showMipsa">
-        <ajouter-oeuvre  slot="body"></ajouter-oeuvre>
+        <ajouter-oeuvre  slot="body" @cancel="showMipsa = false" @validate-ajout-oeuvre="onValidateAjoutOeuvre"></ajouter-oeuvre>
     </ecran-modal>
 
 
@@ -179,6 +178,31 @@
 
       ajouterOeuvre() {
         this.showMipsa = true;
+      },
+
+      onValidateAjoutOeuvre(oeuvreToAdd) {
+          var programme = this.$store.getters.programmeEnSelection;
+          this.showMipsa = false;
+          var lingeProgramme = {
+              numProg : this.$route.params.numProg,
+              ide12 : oeuvreToAdd.ide12,
+              titreOeuvre : oeuvreToAdd.titre,
+              durDif : oeuvreToAdd.duree,
+              nbrDif : oeuvreToAdd.quantite,
+              cdeUtil : oeuvreToAdd.utilisateur,
+              roleParticipant1 : oeuvreToAdd.roleParticipant1,
+              nomParticipant1 : oeuvreToAdd.nomParticipant1
+          }
+          this.resource.ajouterOeuvreManuel(lingeProgramme)
+            .then(response => {
+              return response.json();
+            })
+            .then(data => {
+              //
+              console.log('ok ajout');
+              this.rechercher();
+            });
+
       }
     },
 
@@ -191,7 +215,8 @@
 
     created() {
       const customActions = {
-        getUtilisateursByProgramme : {method : 'GET', url :'app/rest/ligneProgramme/utilisateurs?programme='+this.$route.params.numProg}
+        getUtilisateursByProgramme : {method : 'GET', url :'app/rest/ligneProgramme/utilisateurs?programme='+this.$route.params.numProg},
+        ajouterOeuvreManuel : {method : 'POST', url :'app/rest/ligneProgramme/selection/ajoutOeuvre'}
       }
       this.resource= this.$resource('', {}, customActions);
 

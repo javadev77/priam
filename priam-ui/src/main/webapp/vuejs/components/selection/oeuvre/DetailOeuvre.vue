@@ -50,7 +50,8 @@
           <div class="form-group col-md-7" :class="{'has-error': errors.has('Utilisateur') }">
             <label class="col-md-6 control-label blueText text-right">Utilisateur</label>
             <div class="col-md-18">
-              <select2 class="form-control"
+              <select2 v-if="oeuvreManuelToCreate.utilisateur"
+                       class="form-control"
                        data-vv-name="Utilisateur"
                        data-vv-value-path="innerUtilisateur"
                        v-validate="'required'"
@@ -107,12 +108,15 @@
 
           return {
               oeuvreManuelToCreate : {
-                  utilisateur : '',
+                  utilisateur : null,
                   duree : '',
                   quantite : '',
                   titre : '',
-                  ide12 : ''
+                  ide12 : '',
+                  roleParticipant1 : '',
+                  nomParticipant1: ''
               },
+
 
               utilisateursOptions : [],
 
@@ -123,13 +127,14 @@
 
     computed:  {
       utilisateurOptions() {
-        let result = this.utilisateursOptions.map(elem => {
+        let libelleUtilisateur = this.$store.getters.libelleUtilisateur;
+        let result = libelleUtilisateur.map(elem => {
+
           return {
-            id : elem,
-            value : elem
+            id : elem.id,
+            value : elem.value
           }
         });
-
         return result;
       }
     },
@@ -137,8 +142,7 @@
     mounted() {
         //this.oeuvre = this.$store.getters.selectedOeuvre;
         this.programme = this.$store.getters.programmeEnSelection;
-
-        const customActions = {
+        /*const customActions = {
           getUtilisateursByProgramme : {method : 'GET', url :'app/rest/ligneProgramme/utilisateurs?programme='+this.programme.numProg}
         }
         this.resource = this.$resource('', {}, customActions);
@@ -149,19 +153,25 @@
             })
             .then(data => {
               this.utilisateursOptions = data;
-              this.oeuvreManuelToCreate.utilisateur = data !== null && data.length > 0 ? data[0] : '';
-              console.log('data[0] = ' + data[0]);
-            });
+
+              console.log('data[0] = ' + this.oeuvreManuelToCreate.utilisateur);
+              //debugger;
+            });*/
+
+        this.oeuvreManuelToCreate.utilisateur = this.$store.getters.libelleUtilisateur[0].id;
     },
 
     methods : {
 
       onClickAjouterOeuvre() {
 
-        this.$validator.validateAll().then(() => {
-          this.oeuvreManuelToCreate.ide12 = this.oeuvre.ide12;
-          this.oeuvreManuelToCreate.titre = this.oeuvre.titre;
-          this.$emit('ajout-oeuvre', this.oeuvreManuelToCreate);
+        let sef = this;
+        sef.$validator.validateAll().then(() => {
+          sef.oeuvreManuelToCreate.ide12 = sef.oeuvre.ide12;
+          sef.oeuvreManuelToCreate.titre = sef.oeuvre.titre;
+          sef.oeuvreManuelToCreate.roleParticipant1 = sef.oeuvre.roleParticipant1;
+          sef.oeuvreManuelToCreate.nomParticipant1 = sef.oeuvre.nomParticipant1;
+          sef.$emit('ajout-oeuvre', sef.oeuvreManuelToCreate);
         });
       }
 

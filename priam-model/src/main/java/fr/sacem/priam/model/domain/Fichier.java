@@ -46,6 +46,9 @@ public class Fichier implements Serializable {
     @JoinColumn(name = "NUMPROG")
     private Programme programme;
     
+    @Column(name = "SOURCE_AUTO")
+    private Boolean isAutomatique;
+    
     public  Fichier() {
     }
     
@@ -120,6 +123,14 @@ public class Fichier implements Serializable {
     
     public void setProgramme(Programme programme) {
         this.programme = programme;
+    }
+    
+    public Boolean getAutomatique() {
+        return isAutomatique;
+    }
+    
+    public void setAutomatique(Boolean automatique) {
+        isAutomatique = automatique;
     }
     
     @Override

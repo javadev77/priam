@@ -12,15 +12,12 @@ import org.springframework.core.Ordered;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.util.Assert;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -29,6 +26,7 @@ import java.util.Set;
  * @author <a href="mailto:xchen@palo-it.com">Xi CHEN</a>
  * @since 12/11/14.
  */
+
 public class SsoAuthenticationProvider implements AuthenticationProvider, InitializingBean, Ordered {
 
     private static final Logger logger = LoggerFactory.getLogger(SsoAuthenticationProvider.class);
@@ -81,6 +79,7 @@ public class SsoAuthenticationProvider implements AuthenticationProvider, Initia
             /*if(authorities == null || authorities.isEmpty()){
                 throw new InsufficientAuthenticationException("No authorized application role.");
             }*/
+
             SecurityManager.setCurrentUser(userProfile);
         } catch (SecurityManagerException e) {
             throw new AuthenticationServiceException("authentication with security manager got error", e);
@@ -147,6 +146,7 @@ public class SsoAuthenticationProvider implements AuthenticationProvider, Initia
                 authorities.addAll(authentication.getAuthorities());
             }
         }*/
+
         return null;
     }
 }

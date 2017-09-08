@@ -42,6 +42,9 @@ public class GeneralResource {
 
     @Autowired
     private TerritoireDao territoireDao;
+    
+    @Autowired
+    private SarefLibelleUtilisateurDao sarefLibelleUtilisateurDao;
 
     @RequestMapping(value = "/libellefamille",
                     method = RequestMethod.GET,
@@ -183,6 +186,30 @@ public class GeneralResource {
         
         return conf;
     }
+  
+  
+    @RequestMapping(value = "/libelleUtilisateur",
+                    method = RequestMethod.GET,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
+   public  Map<String, String> [] getLibelleCdeUtilisateur(Locale locale) {
+      List<LibelleUtilisateur> labels = sarefLibelleUtilisateurDao.findByLang(StringUtils.upperCase(locale.getLanguage()));
+    
+      List<Map<String, String>> result = new ArrayList<>(labels.size());
+      labels.forEach(libelle -> {
+          Map<String, String> map;
+          map = new HashMap<>();
+          String cdeUtil = libelle.getCdeUtil();
+          map.put("id", cdeUtil);
+          String libAbrgUtil = libelle.getLibAbrgUtil();
+          map.put("value", cdeUtil + (StringUtils.isNotEmpty(libAbrgUtil) ? " - " + StringUtils.trimToEmpty(libAbrgUtil) : ""));
+      
+          result.add(map);
+    
+      });
+    
+      return result.toArray(new Map[0]);
+   }
+  
   
   
 }

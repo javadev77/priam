@@ -25,23 +25,28 @@ const state = {
 
     },
 
+    mipsaConfig : {},
 
-    mipsaConfig : {}
+    libelleUtilisateur : []
 
 }
 
 const mutations = {
   'SELECT_PAGE' (state, page) {
-    state.pagination.currentPage = page;
+      state.pagination.currentPage = page;
   },
   'SELECT_PAGE_SIZE' (state, pageSize) {
-    state.pagination.itemsPerPage = pageSize;
+      state.pagination.itemsPerPage = pageSize;
+  },
+
+  'SET_LIBELLE_UTILISATEUR' (state, data) {
+      state.libelleUtilisateur = data;
   },
 
   'SET_MIPSA_CONFIG' (state, mipsaConfig) {
-
     state.mipsaConfig = mipsaConfig;
-  }
+  },
+
 
 };
 
@@ -62,6 +67,11 @@ const getters = {
   mipsaConfig : state => {
 
     return state.mipsaConfig;
+  },
+
+  libelleUtilisateur : state => {
+
+    return state.libelleUtilisateur;
   }
 
 };

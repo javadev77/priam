@@ -25,6 +25,7 @@ import java.io.IOException;
 /**
  * Created by embouazzar on 23/08/2017.
  */
+
 public class SsoPreAuthenticatedProcessingFilter extends AbstractPreAuthenticatedProcessingFilter{
 
   public static final String REQUEST_COOKIE_SSO_USER = Environment.getParameter("sso.openam.cookie.name");
@@ -89,19 +90,21 @@ public class SsoPreAuthenticatedProcessingFilter extends AbstractPreAuthenticate
     }
   }
 
-  /**
-   * Forcer le nettoyage du profil utilisateur (dans la variable threadlocal du framework Sacem).
-   */
+ /*
+  * Forcer le nettoyage du profil utilisateur (dans la variable threadlocal du framework Sacem).
+  */
+
   private void cleanCurrentUserProfile() {
     SecurityManager.setCurrentUser(null);
     MDC.remove("userId");
   }
 
-  /**
+/**
    * Definir le profil de l'utilisateur courrant (dans la variable threadlocal du framework Sacem).
    *
    * @param authResult Authentication result.
    */
+
   private void setCurrentUserProfile(Authentication authResult) {
     if(authResult instanceof SsoAuthenticationToken){
       SsoAuthenticationToken ssoAuth = (SsoAuthenticationToken) authResult;
@@ -120,9 +123,10 @@ public class SsoPreAuthenticatedProcessingFilter extends AbstractPreAuthenticate
   }
 
 
-  /**
-   * For SACEM SSO, returns the sso cookie value
-   */
+/**
+  * For SACEM SSO, returns the sso cookie value
+  */
+
   @Override
   protected String getPreAuthenticatedPrincipal(HttpServletRequest httpServletRequest) {
     Cookie[] cookies = httpServletRequest.getCookies();

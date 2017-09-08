@@ -1,8 +1,9 @@
 package fr.sacem.priam.model.domain;
 
+import com.google.common.base.Objects;
+
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.Date;
 
 /**
@@ -16,81 +17,123 @@ public class LigneProgramme  implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+    
     @ManyToOne
     @JoinColumn(name = "ID_FICHIER")
     private Fichier fichier;
+    
     @Column(name = "cdeCisac")
     private String cdeCisac;
+    
     @Column(name = "cdeFamilTypUtil")
     private String cdeFamilTypUtil;
-    @Column(name = "numProg")
-    private Long numProg;
+    
+    //@Column(name = "numProg")
+    private String numProg;
+    
     @Column(name = "cdeUtil")
     private String cdeUtil;
+    
     @Column(name = "cdeTypUtil")
     private String cdeTypUtil;
+    
     @Column(name = "cdeGreDif")
     private String cdeGreDif;
+    
     @Column(name = "cdeModDif")
     private String cdeModDif;
+    
     @Column(name = "cdeTypIde12")
     private String cdeTypIde12;
+    
     @Column(name = "ide12")
     private Long ide12;
+    
     @Column(name = "durDif")
     private Long durDif;
+    
     @Column(name = "nbrDif")
     private Long nbrDif;
+    
     @Column(name = "mt")
     private Double mt;
+    
     @Column(name = "ctna")
     private String ctna;
+    
     @Column(name = "paramCoefHor")
     private String paramCoefHor;
+    
     @Column(name = "durDifCtna")
     private Long durDifCtna;
+    
     @Column(name = "cdeLng")
     private String cdeLng;
+    
     @Column(name = "indDoubSsTit")
     private String indDoubSsTit;
+    
     @Column(name = "tax")
     private Double tax;
+    
     @Column(name = "typMt")
     private String typMt;
+    
     @Column(name = "cdeGreIde12Cmplx")
     private String cdeGreIde12Cmplx;
+    
     @Column(name = "cdeGreIde12")
     private String cdeGreIde12;
+    
     @Column(name = "titreOriCmplx")
     private String titreOriCmplx;
+    
     @Column(name = "titreAltPppalCmplx")
     private String titreAltPppalCmplx;
+    
     @Column(name = "titreOriOeuvPereCmplx")
     private String titreOriOeuvPereCmplx;
+    
     @Column(name = "titreAltOeuvPereCmplx")
     private String titreAltOeuvPereCmplx;
+    
     @Column(name = "titreOeuvre")
     private String titreOeuvre;
+    
     @Column(name = "cdePaysOriIso4NCmplx")
     private String cdePaysOriIso4NCmplx;
+    
     @Column(name = "realisateurCmplx")
     private String realisateurCmplx;
+    
     @Column(name = "roleParticipant1")
     private String roleParticipant1;
+    
     @Column(name = "nomParticipant1")
     private String nomParticipant1;
+    
     @Column(name = "cdeTypUtilOri")
     private String cdeTypUtilOri;
+    
     @Column(name = "cdeFamilTypUtilOri")
     private String cdeFamilTypUtilOri;
+    
     @Column(name = "utilisateur")
     private String utilisateur;
+    
     @Column(name = "date_insertion")
-    private String date_insertion;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateInsertion;
+    
     @Column(name = "ajout")
     private String ajout;
+    
     @Column(name = "selection")
     private boolean selection;
+    
+    @ManyToOne
+    @JoinColumn(name = "idOeuvreManuel")
+    private LigneProgramme oeuvreManuel;
 
     public String getUtilisateur() {
         return utilisateur;
@@ -100,12 +143,8 @@ public class LigneProgramme  implements Serializable {
         this.utilisateur = utilisateur;
     }
 
-    public String getDate_insertion() {
-        return date_insertion;
-    }
-
-    public void setDate_insertion(String date_insertion) {
-        this.date_insertion = date_insertion;
+    public void setDateInsertion(Date dateInsertion) {
+        this.dateInsertion = dateInsertion;
     }
 
     public String getAjout() {
@@ -160,11 +199,11 @@ public class LigneProgramme  implements Serializable {
         this.cdeFamilTypUtil = cdeFamilTypUtil;
     }
 
-    public Long getNumProg() {
+    public String getNumProg() {
         return numProg;
     }
 
-    public void setNumProg(Long numProg) {
+    public void setNumProg(String numProg) {
         this.numProg = numProg;
     }
 
@@ -399,5 +438,34 @@ public class LigneProgramme  implements Serializable {
     public void setCdeFamilTypUtilOri(String cdeFamilTypUtilOri) {
         this.cdeFamilTypUtilOri = cdeFamilTypUtilOri;
     }
-
+    
+    public LigneProgramme getOeuvreManuel() {
+        return oeuvreManuel;
+    }
+    
+    public void setOeuvreManuel(LigneProgramme oeuvreManuel) {
+        this.oeuvreManuel = oeuvreManuel;
+    }
+    
+    public Date getDateInsertion() {
+        return dateInsertion;
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+    
+        LigneProgramme that = (LigneProgramme) o;
+    
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        
+    
+        return true;
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

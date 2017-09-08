@@ -56,7 +56,7 @@
       </div>
 
       <div class="form-group col-md-4">
-        <label class="col-md-9 control-label blueText text-right">Rion statuaire</label>
+        <label class="col-md-9 control-label blueText text-right">Rion statutaire</label>
         <div class="col-md-15 control-label">
           {{ programmeInfo.rionTheorique }}
         </div>
