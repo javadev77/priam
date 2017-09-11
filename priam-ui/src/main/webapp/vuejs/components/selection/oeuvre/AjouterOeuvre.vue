@@ -9,7 +9,7 @@
       </div>
       <div class="panel-collapse">
 
-        <div class="panel-body" style="height:450px; overflow-y:scroll;">
+        <div class="panel-body" style="min-height:600px;">
             <app-mipsa :configuration="mipsaConfig" @ready-to-search="readyToSearch"></app-mipsa>
             <br/>
             <detail-oeuvre :oeuvre="selectedOeuvre"
@@ -154,16 +154,14 @@
                 target: '',
                 preventDefault: true,
                 onclick: function(nativeEvent, oeuvre) {
-                  window.alert('icon action click '+oeuvre.keyToDisplay.cdeFormated) ;
                   let tiersCA = vm.getRoleCA(oeuvre.tiersList);
                   vm.selectedOeuvre = {
                     ide12 : oeuvre.ide12 ? oeuvre.ide12: oeuvre.keyToDisplay.cde,
+                    cdeTypeIde12 : oeuvre.cdetypcleoeuv,
                     titre : oeuvre.titrePrincipal ? oeuvre.titrePrincipal: oeuvre.titrList[0].titr,
-                    roleParticipant1 : tiersCA !== undefined ? tiersCA.oeuvreroleSacem : '',
-                    nomParticipant1 : tiersCA !== undefined ? tiersCA.nom : ''
+                    roleParticipant1 : tiersCA !== undefined ? tiersCA.oeuvreroleSacem : oeuvre.tiersList[0].oeuvreroleSacem,
+                    nomParticipant1 : tiersCA !== undefined ? tiersCA.nom : oeuvre.tiersList[0].nom
                   }
-
-                  console.log("Selected Oeuvre = " + vm.selectedOeuvre.ide12);
                 }
               },
               linkOnCode: {   // used to activate the copy behaviour of IDE12

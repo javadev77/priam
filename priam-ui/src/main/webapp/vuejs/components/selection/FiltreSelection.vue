@@ -186,6 +186,7 @@
           var lingeProgramme = {
               numProg : this.$route.params.numProg,
               ide12 : oeuvreToAdd.ide12,
+              cdeTypIde12 : oeuvreToAdd.cdeTypeIde12,
               titreOeuvre : oeuvreToAdd.titre,
               durDif : oeuvreToAdd.duree,
               nbrDif : oeuvreToAdd.quantite,

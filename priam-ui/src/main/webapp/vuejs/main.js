@@ -40,7 +40,7 @@ Vue.use(VueResource);
 if(process.env.DEBUG_MODE) {
   Vue.http.options.root="http://localhost:8080/priam"
 } else {
-  Vue.http.options.root="/priam"
+  Vue.http.options.root="/priambenmerzoukah"
 }
 
 

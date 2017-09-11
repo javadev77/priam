@@ -115,7 +115,8 @@
                   titre : '',
                   ide12 : '',
                   roleParticipant1 : '',
-                  nomParticipant1: ''
+                  nomParticipant1: '',
+                  cdeTypeIde12 :''
               },
 
 
@@ -172,6 +173,7 @@
           sef.oeuvreManuelToCreate.titre = sef.oeuvre.titre;
           sef.oeuvreManuelToCreate.roleParticipant1 = sef.oeuvre.roleParticipant1;
           sef.oeuvreManuelToCreate.nomParticipant1 = sef.oeuvre.nomParticipant1;
+          sef.oeuvreManuelToCreate.cdeTypeIde12 = sef.oeuvre.cdeTypeIde12;
           sef.$emit('ajout-oeuvre', sef.oeuvreManuelToCreate);
         });
       }

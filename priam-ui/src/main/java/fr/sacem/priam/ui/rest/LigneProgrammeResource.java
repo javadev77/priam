@@ -208,6 +208,7 @@ public class LigneProgrammeResource {
                                          @PathVariable(name = "ide12") Long ide12,
                                          @RequestBody SelectionDto selectedLigneProgramme) {
     ligneProgrammeService.supprimerLigneProgramme(numProg, ide12, selectedLigneProgramme);
+    
     return true;
   }
   
@@ -218,10 +219,10 @@ public class LigneProgrammeResource {
                   produces = MediaType.APPLICATION_JSON_VALUE,
                   consumes = MediaType.APPLICATION_JSON_VALUE)
   public SelectionDto ajouterOeuvreManuel(@RequestBody LigneProgramme input, UserDTO userDTO) {
-     input.setUtilisateur(userDTO.getDisplayName());
-     ligneProgrammeService.ajouterOeuvreManuel(input);
-     
-     return new SelectionDto();
+       input.setUtilisateur(userDTO.getUserId());
+       ligneProgrammeService.ajouterOeuvreManuel(input);
+       
+       return new SelectionDto();
   }
 
 

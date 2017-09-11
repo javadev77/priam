@@ -209,6 +209,7 @@ public class LigneProgrammeService {
             oeuvreManuelFound.setNbrDif(input.getNbrDif());
             oeuvreManuelFound.setDateInsertion(new Date());
             oeuvreManuelFound.setUtilisateur(input.getUtilisateur());
+            oeuvreManuelFound.setCdeTypIde12(input.getCdeTypIde12());
             
         } else {
             List<LigneProgramme> founds = ligneProgrammeDao.findOeuvresAutoByIde12AndCdeUtil(input.getNumProg(), input.getIde12(), input.getCdeUtil());
@@ -253,6 +254,7 @@ public class LigneProgrammeService {
         input.setAjout(MANUEL);
         input.setSelection(Boolean.TRUE);
         input.setDateInsertion(new Date());
+        input.setCdeTypIde12(input.getCdeTypIde12());
         
         return ligneProgrammeDao.saveAndFlush(input);
     }

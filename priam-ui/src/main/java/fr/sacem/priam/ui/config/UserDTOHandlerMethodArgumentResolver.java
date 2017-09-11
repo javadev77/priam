@@ -21,7 +21,10 @@ public class UserDTOHandlerMethodArgumentResolver implements HandlerMethodArgume
     }
     
     @Override
-    public Object resolveArgument(MethodParameter methodParameter, ModelAndViewContainer modelAndViewContainer, NativeWebRequest nativeWebRequest, WebDataBinderFactory webDataBinderFactory) throws Exception {
+    public Object resolveArgument(MethodParameter methodParameter,
+                                  ModelAndViewContainer modelAndViewContainer,
+                                  NativeWebRequest nativeWebRequest,
+                                  WebDataBinderFactory webDataBinderFactory) throws Exception {
       UserDTO userDTO = null;
       Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
       if(authentication instanceof SsoAuthenticationToken){

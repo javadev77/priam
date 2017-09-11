@@ -54,12 +54,7 @@ public class GeneralResource {
         List<Map<String, String>> result = new ArrayList<>(labels.size());
 
         labels.forEach(libelle -> {
-            Map<String, String> map;
-            map = new HashMap<>();
-            map.put("id", libelle.getCode());
-            map.put("value", libelle.getLibelle());
-
-            result.add(map);
+            result.add(createStringMap(libelle.getCode(), libelle.getLibelle()));
         });
 
 
@@ -74,12 +69,7 @@ public class GeneralResource {
 
         List<Map<String, String>> result = new ArrayList<>(labels.size());
         labels.forEach(libelle -> {
-          Map<String, String> map;
-          map = new HashMap<>();
-          map.put("id", libelle.getCode());
-          map.put("value", libelle.getLibelle());
-
-          result.add(map);
+          result.add(createStringMap(libelle.getCode(), libelle.getLibelle()));
         });
 
       return result.toArray(new Map[0]);
@@ -106,60 +96,56 @@ public class GeneralResource {
         List<LibelleTypeUtilisation> byCodeAndLang = libelleTypeUtilisationDao.findByCodeAndLang(typeUtilCodes, lang);
         List<Map<String, String>> result = new ArrayList<>(byCodeAndLang.size());
         byCodeAndLang.forEach(libelle -> {
-
-            Map<String, String> map;
-            map = new HashMap<>();
-            map.put("id", libelle.getCode());
-            map.put("value", libelle.getLibelle());
-
-            result.add(map);
+          
+            result.add(createStringMap(libelle.getCode(), libelle.getLibelle()));
           });
 
         return result.toArray(new Map[0]);
     }
-
+  
+    private Map<String, String> createStringMap(String code, String libelle) {
+        Map<String, String> map;
+        map = new HashMap<>();
+        map.put("id", code);
+        map.put("value", libelle);
+        
+        return map;
+    }
+  
     @RequestMapping(value = "/rions",
-      method = RequestMethod.GET,
-      produces = MediaType.APPLICATION_JSON_VALUE)
+                    method = RequestMethod.GET,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, String>[] getRions(Locale locale) {
-      List<Rion> rions = rionDao.findAfterRion(639);
-      List<Map<String, String>> result = new ArrayList<>(rions.size());
-      rions.forEach(rion -> {
-
-        Map<String, String> map = new HashMap<>();
-        map.put("id", String.valueOf(rion.getRion()));
-        map.put("value", String.valueOf(rion.getRion()));
-
-        result.add(map);
-      });
-
-      return result.toArray(new Map[0]);
+        List<Rion> rions = rionDao.findAfterRion(639);
+        List<Map<String, String>> result = new ArrayList<>(rions.size());
+        rions.forEach(rion -> {
+          String rionValue = String.valueOf(rion.getRion());
+          result.add(createStringMap(rionValue, rionValue));
+        });
+  
+        return result.toArray(new Map[0]);
     }
 
 
-  @RequestMapping(value = "/territoire",
-    method = RequestMethod.GET,
-    produces = MediaType.APPLICATION_JSON_VALUE)
-  public  Map<String, String> [] getAllTerritoire(Locale locale) {
-    List<Territoire> territoires = territoireDao.findByLang(StringUtils.upperCase(locale.getLanguage()));
-
-    List<Map<String, String>> result = new ArrayList<>(territoires.size());
-    territoires.forEach(libelle -> {
-      Map<String, String> map;
-      map = new HashMap<>();
-      map.put("id", libelle.getCdePaysIso4N()+"");
-      map.put("value", new StringBuilder()
-                        .append(libelle.getCdePaysIso4N())
-                        .append(" - ")
-                        .append(libelle.getNomPaysAbr())
-                        .toString()
-      );
-
-      result.add(map);
-    });
-
-    return result.toArray(new Map[0]);
-  }
+    @RequestMapping(value = "/territoire",
+                   method = RequestMethod.GET,
+                   produces = MediaType.APPLICATION_JSON_VALUE)
+    public  Map<String, String> [] getAllTerritoire(Locale locale) {
+        List<Territoire> territoires = territoireDao.findByLang(StringUtils.upperCase(locale.getLanguage()));
+    
+        List<Map<String, String>> result = new ArrayList<>(territoires.size());
+        territoires.forEach(libelle -> {
+  
+          result.add(createStringMap(libelle.getCdePaysIso4N() + "",
+                                      new StringBuilder()
+                                        .append(libelle.getCdePaysIso4N())
+                                        .append(" - ")
+                                        .append(libelle.getNomPaysAbr())
+                                        .toString()));
+        });
+    
+        return result.toArray(new Map[0]);
+    }
   
     @RequestMapping(value = "/ssotoken",
                     method = RequestMethod.GET,
@@ -196,14 +182,10 @@ public class GeneralResource {
     
       List<Map<String, String>> result = new ArrayList<>(labels.size());
       labels.forEach(libelle -> {
-          Map<String, String> map;
-          map = new HashMap<>();
           String cdeUtil = libelle.getCdeUtil();
-          map.put("id", cdeUtil);
           String libAbrgUtil = libelle.getLibAbrgUtil();
-          map.put("value", cdeUtil + (StringUtils.isNotEmpty(libAbrgUtil) ? " - " + StringUtils.trimToEmpty(libAbrgUtil) : ""));
-      
-          result.add(map);
+          
+          result.add(createStringMap(cdeUtil, (StringUtils.isNotEmpty(libAbrgUtil) ? StringUtils.trimToEmpty(libAbrgUtil) : "") + "(" + cdeUtil + ")"));
     
       });
     

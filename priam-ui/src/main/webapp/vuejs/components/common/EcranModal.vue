@@ -1,7 +1,7 @@
 <template>
   <transition name="modal">
     <div class="modal-mask" id="HomerPrompt">
-      <div class="container-fluid" style="margin: 15% auto;">
+      <div class="container-fluid"  style="margin: 15% auto;" >
         <div class="modal-container">
           <slot name="body">
           </slot>
@@ -14,7 +14,13 @@
 <script>
 
   export default {
-
+      props : {
+          style : {
+              type: String,
+              required : false,
+              default : ''
+          }
+      }
   }
 
 </script>
