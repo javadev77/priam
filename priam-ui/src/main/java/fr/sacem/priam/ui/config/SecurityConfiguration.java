@@ -1,3 +1,4 @@
+/*
 package fr.sacem.priam.ui.config;
 
 import fr.sacem.fwk.security.SecurityManager;
@@ -35,9 +36,11 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 import java.util.ArrayList;
 import java.util.List;
 
+*/
 /**
  * Created by embouazzar on 23/08/2017.
- */
+ *//*
+
 
 @Configuration
 @EnableWebSecurity
@@ -82,11 +85,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     return new SessionRegistryImpl();
   }
 
-  /**
+  */
+/**
    * Should not use @Bean annotation, to avoid double filter registration
    * @return
    * @throws Exception
-   */
+   *//*
+
   private SsoPreAuthenticatedProcessingFilter ssoPreAuthenticatedProcessingFilter() throws Exception {
     return new SsoPreAuthenticatedProcessingFilter(securityManager(), authenticationManagerBean());
   }
@@ -148,3 +153,4 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   }
 
 }
+*/

@@ -1,3 +1,4 @@
+/*
 package fr.sacem.priam.ui.security;
 
 import fr.sacem.fwk.config.Environment;
@@ -17,9 +18,11 @@ import java.io.IOException;
 
 import static org.springframework.util.StringUtils.hasText;
 
+*/
 /**
  * Created by embouazzar on 23/08/2017.
- */
+ *//*
+
 public class AjaxLogoutSuccessHandler extends AbstractAuthenticationTargetUrlRequestHandler implements LogoutSuccessHandler {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AjaxLogoutSuccessHandler.class);
@@ -42,3 +45,4 @@ public class AjaxLogoutSuccessHandler extends AbstractAuthenticationTargetUrlReq
     this.handle(httpServletRequest, httpServletResponse, authentication);
   }
 }
+*/

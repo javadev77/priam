@@ -1,3 +1,4 @@
+/*
 package fr.sacem.priam.ui.security;
 
 import fr.sacem.priam.common.constants.RoleRight;
@@ -8,9 +9,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+*/
 /**
  * Created by embouazzar on 23/08/2017.
- */
+ *//*
+
 public class SsoAuthority implements GrantedAuthority{
 
   private static final Map<RoleRight, SsoAuthority> MAP;
@@ -69,3 +72,4 @@ public class SsoAuthority implements GrantedAuthority{
   }
 
 }
+*/

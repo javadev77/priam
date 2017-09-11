@@ -174,10 +174,6 @@
                                     <bean class="fr.sacem.util.LocalDatePropertyEditor">
                                     </bean>
                                 </entry>
-                                <entry key="java.lang.Double">
-                                    <bean class="fr.sacem.util.DoublePropertyEditor">
-                                    </bean>
-                                </entry>
                             </map>
                         </property>
                     </bean>

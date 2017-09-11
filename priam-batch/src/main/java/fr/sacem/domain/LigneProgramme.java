@@ -21,16 +21,16 @@ public class LigneProgramme implements Serializable {
     private String cdeGreDif;
     private String cdeModDif;
     private String cdeTypIde12;
-    private Long ide12;
-    private Long durDif;
-    private Long nbrDif;
-    private Double mt;
+    private String ide12;
+    private String durDif;
+    private String nbrDif;
+    private String mt;
     private String ctna;
     private String paramCoefHor;
-    private Long durDifCtna;
+    private String durDifCtna;
     private String cdeLng;
     private String indDoubSsTit;
-    private Double tax;
+    private String tax;
     private String typMt;
     private String cdeGreIde12Cmplx;
     private String cdeGreIde12;
@@ -88,7 +88,7 @@ public class LigneProgramme implements Serializable {
     public LigneProgramme() {
     }
 
-    public LigneProgramme(String cdeCisac, String cdeFamilTypUtil, Long numProg, String cdeUtil, String cdeTypUtil, String cdeGreDif, String cdeModDif, String cdeTypIde12, Long ide12, Long durDif, Long nbrDif, Double mt, String ctna, String paramCoefHor, Long durDifCtna, String cdeLng, String indDoubSsTit, Double tax, String typMt, String cdeGreIde12Cmplx, String cdeGreIde12, String titreOriCmplx, String titreAltPppalCmplx, String titreOriOeuvPereCmplx, String titreAltOeuvPereCmplx, String titreOeuvre, String cdePaysOriIso4NCmplx, String realisateurCmplx, String roleParticipant1, String nomParticipant1, String cdeTypUtilOri, String cdeFamilTypUtilOri) {
+    public LigneProgramme(String cdeCisac, String cdeFamilTypUtil, Long numProg, String cdeUtil, String cdeTypUtil, String cdeGreDif, String cdeModDif, String cdeTypIde12, String ide12, String durDif, String nbrDif, String mt, String ctna, String paramCoefHor, String durDifCtna, String cdeLng, String indDoubSsTit, String tax, String typMt, String cdeGreIde12Cmplx, String cdeGreIde12, String titreOriCmplx, String titreAltPppalCmplx, String titreOriOeuvPereCmplx, String titreAltOeuvPereCmplx, String titreOeuvre, String cdePaysOriIso4NCmplx, String realisateurCmplx, String roleParticipant1, String nomParticipant1, String cdeTypUtilOri, String cdeFamilTypUtilOri) {
         this.cdeCisac = cdeCisac;
         this.cdeFamilTypUtil = cdeFamilTypUtil;
         this.numProg = numProg;
@@ -199,35 +199,35 @@ public class LigneProgramme implements Serializable {
         this.cdeTypIde12 = cdeTypIde12;
     }
 
-    public Long getIde12() {
+    public String getIde12() {
         return ide12;
     }
 
-    public void setIde12(Long ide12) {
+    public void setIde12(String ide12) {
         this.ide12 = ide12;
     }
 
-    public Long getDurDif() {
+    public String getDurDif() {
         return durDif;
     }
 
-    public void setDurDif(Long durDif) {
+    public void setDurDif(String durDif) {
         this.durDif = durDif;
     }
 
-    public Long getNbrDif() {
+    public String getNbrDif() {
         return nbrDif;
     }
 
-    public void setNbrDif(Long nbrDif) {
+    public void setNbrDif(String nbrDif) {
         this.nbrDif = nbrDif;
     }
 
-    public Double getMt() {
+    public String getMt() {
         return mt;
     }
 
-    public void setMt(Double mt) {
+    public void setMt(String mt) {
         this.mt = mt;
     }
 
@@ -247,11 +247,11 @@ public class LigneProgramme implements Serializable {
         this.paramCoefHor = paramCoefHor;
     }
 
-    public Long getDurDifCtna() {
+    public String getDurDifCtna() {
         return durDifCtna;
     }
 
-    public void setDurDifCtna(Long durDifCtna) {
+    public void setDurDifCtna(String durDifCtna) {
         this.durDifCtna = durDifCtna;
     }
 
@@ -271,11 +271,11 @@ public class LigneProgramme implements Serializable {
         this.indDoubSsTit = indDoubSsTit;
     }
 
-    public Double getTax() {
+    public String getTax() {
         return tax;
     }
 
-    public void setTax(Double tax) {
+    public void setTax(String tax) {
         this.tax = tax;
     }
 

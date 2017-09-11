@@ -1,3 +1,4 @@
+/*
 package fr.sacem.priam.ui.security;
 
 import fr.sacem.fwk.security.SecurityManager;
@@ -23,12 +24,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+*/
 /**
  * ref to: PreAuthenticatedAuthenticationProvider
  *
  * @author <a href="mailto:xchen@palo-it.com">Xi CHEN</a>
  * @since 12/11/14.
- */
+ *//*
+
 public class SsoAuthenticationProvider implements AuthenticationProvider, InitializingBean, Ordered {
 
     private static final Logger logger = LoggerFactory.getLogger(SsoAuthenticationProvider.class);
@@ -78,9 +81,11 @@ public class SsoAuthenticationProvider implements AuthenticationProvider, Initia
                 logger.debug("Got logged user profile with token {} : {}", ssoToken, ToStringBuilder.reflectionToString(userProfile));
             }
             authorities = grantAuthorities(userProfile, authentication);
-            /*if(authorities == null || authorities.isEmpty()){
+            */
+/*if(authorities == null || authorities.isEmpty()){
                 throw new InsufficientAuthenticationException("No authorized application role.");
-            }*/
+            }*//*
+
             SecurityManager.setCurrentUser(userProfile);
         } catch (SecurityManagerException e) {
             throw new AuthenticationServiceException("authentication with security manager got error", e);
@@ -112,7 +117,8 @@ public class SsoAuthenticationProvider implements AuthenticationProvider, Initia
     }
 
     private Set<GrantedAuthority> grantAuthorities(UserProfile profile, Authentication authentication) {
-        /*final Set<RoleRight> rights = new HashSet<>();
+        */
+/*final Set<RoleRight> rights = new HashSet<>();
         List<String> roleList = profile.getRoleList();
         if(roleList != null){
             if(logger.isDebugEnabled()){
@@ -146,7 +152,9 @@ public class SsoAuthenticationProvider implements AuthenticationProvider, Initia
             if(authentication.getAuthorities() != null){
                 authorities.addAll(authentication.getAuthorities());
             }
-        }*/
+        }*//*
+
         return null;
     }
 }
+*/
