@@ -61,14 +61,14 @@
 
               <div class="form-group col-md-4">
                 <label class="col-md-8 control-label blueText text-right">Ajout</label>
-                <div class="col-md-16 control-label">
+                <div class="col-md-16">
                   <v-select :searchable="false" v-model="filter.ajout" :options="ajoutOptions"></v-select>
                 </div>
               </div>
 
               <div class="form-group col-md-4">
                 <label class="col-md-10 control-label blueText text-right">Sélection</label>
-                <div class="col-md-14 control-label">
+                <div class="col-md-14">
                   <v-select :searchable="false" v-model="filter.selection" :options="selectionOptions"></v-select>
                 </div>
               </div>

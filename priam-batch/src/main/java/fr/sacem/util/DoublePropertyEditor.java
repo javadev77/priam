@@ -1,7 +1,7 @@
 package fr.sacem.util;
 
+import fr.sacem.util.valdiator.LigneProgrammeSpringValidator;
 import org.springframework.util.StringUtils;
-import org.springframework.validation.BindException;
 
 import java.beans.PropertyEditorSupport;
 import java.text.NumberFormat;
@@ -12,6 +12,7 @@ import java.util.Locale;
  * Created by fandis on 09/05/2017.
  */
 public class DoublePropertyEditor extends PropertyEditorSupport {
+
     public DoublePropertyEditor() {
     }
 
@@ -23,7 +24,7 @@ public class DoublePropertyEditor extends PropertyEditorSupport {
                 setValue(nf.parse(text).doubleValue());
 
             } catch (ParseException e) {
-                throw new RuntimeException(e);
+                setValue(LigneProgrammeSpringValidator.ERROR_DECIMAL_BINDING+text);
             }
         } else {
             setValue(null);

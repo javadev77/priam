@@ -201,7 +201,7 @@
                   var result  = getters.typeUtilisation.find(function (element) {
                     return element.id === cellValue;
                   });
-                  return result !== undefined && result.value;
+                  return result !== undefined ? result.value : null;
                 }
               }
             },

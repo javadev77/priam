@@ -39,16 +39,6 @@ public class LigneProgrammeItemProcessor implements ItemProcessor<LigneProgramme
 
         Set<String> errorSet = (Set<String>) executionContext.get(LIGNE_PROGRAMME_ERRORS);
 
-        if(ligneProgramme.getException() != null) {
-            PriamValidationException exception = (PriamValidationException) ligneProgramme.getException();
-
-            String errorMessage = String.format(MESSAGE_FORMAT,
-                    exception.getLineNumber(), getNomDuChamp(exception.getMessage()), getValeurDuChamp(exception.getMessage())
-            );
-            errorSet.add(errorMessage);
-            return null;
-        }
-
         JobParameter parameter_nom_fichier = (JobParameter) executionContext.get("nomFichier");
         JobParameter parameter_id_fichier=(JobParameter) executionContext.get("idFichier");
         Long idFichier = Long.valueOf(parameter_id_fichier.getValue().toString());

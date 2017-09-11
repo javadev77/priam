@@ -19,7 +19,7 @@
     </div>
 
 
-    <div :class="(className ? className + '-list ' : '') + 'autocomplete transition autocomplete-list'" v-show="showList">
+    <div :class="(className ? className + '-list ' : '') + 'autocomplete transition autocomplete-list pull-left text-left'" v-show="showList">
       <ul>
         <li v-for="(data, i) in json"
             transition="showAll"
