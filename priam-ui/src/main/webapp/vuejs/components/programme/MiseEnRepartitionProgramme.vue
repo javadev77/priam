@@ -29,7 +29,7 @@
         </div>
 
         <div class="col-sm-4">
-          <span class="pull-left blueText">Rion théorique</span>
+          <span class="pull-left blueText">Rion statutaire</span>
         </div>
         <div class="col-sm-1">
           {{ programmeInfo.rionTheorique }}

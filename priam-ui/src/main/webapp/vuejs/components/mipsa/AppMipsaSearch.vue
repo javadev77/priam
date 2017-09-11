@@ -12,8 +12,6 @@
 
     return function(response) {
 
-
-
       setTimeout(function() {
         var detail = '' ;
         if ( response && response.originalEvent && response.originalEvent.detail && response.originalEvent.detail.error ) {

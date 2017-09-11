@@ -9,7 +9,7 @@ import java.util.Date;
  */
 
 @Entity
-@Table(name = "PRIAM_RION")
+@Table(name = "SAREFTR_RION")
 public class Rion {
     
     private Integer rion;

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static com.google.common.collect.Lists.transform;
@@ -116,11 +117,12 @@ public class GeneralResource {
                     method = RequestMethod.GET,
                     produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, String>[] getRions(Locale locale) {
-        List<Rion> rions = rionDao.findAfterRion(639);
+        List<Rion> rions = rionDao.findAllByDateRglmtAfterCurrentDate();
         List<Map<String, String>> result = new ArrayList<>(rions.size());
         rions.forEach(rion -> {
           String rionValue = String.valueOf(rion.getRion());
-          result.add(createStringMap(rionValue, rionValue));
+          String formattedRion = rion.getDatrglmt() != null ? String.format("%s - %s", rionValue, new SimpleDateFormat("MMMM YYYY", locale).format(rion.getDatrglmt())) : rionValue;
+          result.add(createStringMap(rionValue, formattedRion));
         });
   
         return result.toArray(new Map[0]);

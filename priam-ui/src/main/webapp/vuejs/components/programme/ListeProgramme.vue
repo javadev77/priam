@@ -97,8 +97,8 @@
                   <label class="control-label pull-right">Rion de paiement</label>
                 </div>
                 <div class="col-sm-3">
-                  <v-select :searchable="false" label="value" v-model="rionPaiementSelected" :options="rionPaiementOptions">
-                  </v-select>
+                  <select2 class="form-control" :searchable="false" label="value" v-model="rionPaiementSelected" :options="rionPaiementOptions">
+                  </select2>
                 </div>
               </div>
 

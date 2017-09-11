@@ -39,5 +39,14 @@ public class RionDaoTest {
         assertThat(all).isNotNull().isNotEmpty();
         assertThat(all).extracting("rion").doesNotContain(637, 638);
     }
-
+    
+    @Test
+    public void should_return_all_rions_after_current_date() {
+        List<Rion> all = rionDao.findAllByDateRglmtAfterCurrentDate();
+        
+        assertThat(all).isNotNull().isNotEmpty();
+        assertThat(all).extracting("rion").contains(639);
+    }
+    
+    
 }

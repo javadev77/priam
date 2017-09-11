@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid sacem-formula">
+  <div style="overflow-y: auto; max-height: 730px;">
     <div class="panel panel-default">
       <div class="panel-heading">
         <h5 class="panel-title">
@@ -9,7 +9,7 @@
       </div>
       <div class="panel-collapse">
 
-        <div class="panel-body" style="min-height:600px;">
+        <div class="panel-body">
             <app-mipsa :configuration="mipsaConfig" @ready-to-search="readyToSearch"></app-mipsa>
             <br/>
             <detail-oeuvre :oeuvre="selectedOeuvre"

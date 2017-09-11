@@ -1,6 +1,6 @@
 <template>
-  <div>
-  <div class="panel panel-default">
+  <div >
+    <div class="panel panel-default">
     <div class="panel-heading">
       <h5 class="panel-title">
         <a>Détail Oeuvre</a>

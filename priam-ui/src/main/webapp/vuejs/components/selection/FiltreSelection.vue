@@ -88,7 +88,7 @@
     </div>
 
     <ecran-modal v-if="showMipsa">
-        <ajouter-oeuvre  slot="body" @cancel="showMipsa = false" @validate-ajout-oeuvre="onValidateAjoutOeuvre"></ajouter-oeuvre>
+        <ajouter-oeuvre   slot="body" @cancel="showMipsa = false" @validate-ajout-oeuvre="onValidateAjoutOeuvre"></ajouter-oeuvre>
     </ecran-modal>
 
 
