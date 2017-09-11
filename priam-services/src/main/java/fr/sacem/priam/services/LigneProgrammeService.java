@@ -1,8 +1,11 @@
 package fr.sacem.priam.services;
 
 import fr.sacem.priam.common.TypeUtilisationEnum;
+import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.dao.jpa.LigneProgrammeDao;
 import fr.sacem.priam.model.dao.jpa.ProgrammeDao;
+import fr.sacem.priam.model.domain.Fichier;
+import fr.sacem.priam.model.domain.LigneProgramme;
 import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.criteria.LigneProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
@@ -10,6 +13,7 @@ import fr.sacem.priam.model.domain.dto.SelectionDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -17,6 +21,7 @@ import org.springframework.data.jpa.domain.JpaSort;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -29,12 +34,17 @@ public class LigneProgrammeService {
 
     public static final String IDE_12 = "ide12";
     public static final String CDE_UTIL = "libAbrgUtil";
-
+    public static final String CDE_CISAC_058 = "058";
+    public static final String MANUEL = "Manuel";
+    
     @Autowired
     private LigneProgrammeDao ligneProgrammeDao;
 
     @Autowired
     private ProgrammeDao programmeDao;
+    
+    @Autowired
+    private FichierDao fichierDao;
 
     private static final Logger LOG = LoggerFactory.getLogger(LigneProgrammeService.class);
 
@@ -160,9 +170,92 @@ public class LigneProgrammeService {
     public void deselectAll(String numProg) {
         ligneProgrammeDao.updateSelectionByNumProgramme(numProg, false);
     }
-
-
-    public void supprimerLigneProgramme(String numProg, Long ide12) {
-        ligneProgrammeDao.deleteLigneProgrammeByIde12AndNumProg(numProg, ide12);
+    
+    
+    @Transactional
+    public void supprimerLigneProgramme(String numProg, Long ide12, SelectionDto selectedLigneProgramme) {
+    
+        String cdeUtil = selectedLigneProgramme.getLibAbrgUtil().split(" - ")[0];
+        LigneProgramme oeuvreManuelFound = ligneProgrammeDao.findOeuvreManuelByIde12AndCdeUtil(numProg, ide12, cdeUtil);
+        if(oeuvreManuelFound != null) {
+    
+            List<LigneProgramme> oeuvresAutoByIdOeuvreManuel = ligneProgrammeDao.findOeuvresAutoByIdOeuvreManuel(oeuvreManuelFound.getId());
+            oeuvresAutoByIdOeuvreManuel.forEach( oeuvreAuto -> {
+                oeuvreAuto.setSelection(Boolean.FALSE);
+                oeuvreAuto.setOeuvreManuel(null);
+                
+            });
+            ligneProgrammeDao.save(oeuvresAutoByIdOeuvreManuel);
+            //ligneProgrammeDao.deleteLigneProgrammeByIde12AndNumProg(numProg, ide12, cdeUtil);
+            ligneProgrammeDao.delete(oeuvreManuelFound);
+            ligneProgrammeDao.flush();
+        }
+        
+    }
+    
+    
+    @Transactional
+    public void ajouterOeuvreManuel(LigneProgramme input) {
+        Programme programme = programmeDao.findOne(input.getNumProg());
+    
+        LigneProgramme oeuvreManuelFound = ligneProgrammeDao.findOeuvreManuelByIde12AndCdeUtil(input.getNumProg(), input.getIde12(), input.getCdeUtil());
+        if(oeuvreManuelFound != null) {
+            oeuvreManuelFound.setCdeCisac(CDE_CISAC_058);
+            oeuvreManuelFound.setCdeFamilTypUtil(programme.getFamille().getCode());
+            oeuvreManuelFound.setCdeTypUtil(programme.getTypeUtilisation().getCode());
+            oeuvreManuelFound.setAjout(MANUEL);
+            oeuvreManuelFound.setOeuvreManuel(null);
+            oeuvreManuelFound.setDurDif(input.getDurDif());
+            oeuvreManuelFound.setNbrDif(input.getNbrDif());
+            oeuvreManuelFound.setDateInsertion(new Date());
+            oeuvreManuelFound.setUtilisateur(input.getUtilisateur());
+            oeuvreManuelFound.setCdeTypIde12(input.getCdeTypIde12());
+            
+        } else {
+            List<LigneProgramme> founds = ligneProgrammeDao.findOeuvresAutoByIde12AndCdeUtil(input.getNumProg(), input.getIde12(), input.getCdeUtil());
+            if(founds != null && !founds.isEmpty()) {
+                LigneProgramme oeuvreManuel = createOeuvreManuel(input, programme);
+                founds.forEach( found -> {
+                    found.setOeuvreManuel(oeuvreManuel);
+                    found.setSelection(Boolean.FALSE);
+                    ligneProgrammeDao.save(found);
+                });
+        
+            } else {
+                createOeuvreManuel(input, programme);
+            }
+        }
+        
+    }
+    
+    private LigneProgramme createOeuvreManuel(LigneProgramme input, Programme programme) {
+        Fichier probe = new Fichier();
+        probe.setAutomatique(false);
+        Programme programme1 = new Programme();
+        programme1.setNumProg(input.getNumProg());
+        probe.setProgramme(programme1);
+        
+        Example<Fichier> of = Example.of(probe);
+        Fichier f = fichierDao.findOne(of);
+        
+        if(f == null) {
+		f = new Fichier();
+  
+		f.setProgramme(programme);
+		f.setAutomatique(false);
+  
+		fichierDao.saveAndFlush(f);
+	  }
+        
+        input.setFichier(f);
+        input.setCdeCisac(CDE_CISAC_058);
+        input.setCdeFamilTypUtil(programme.getFamille().getCode());
+        input.setCdeTypUtil(programme.getTypeUtilisation().getCode());
+        input.setAjout(MANUEL);
+        input.setSelection(Boolean.TRUE);
+        input.setDateInsertion(new Date());
+        input.setCdeTypIde12(input.getCdeTypIde12());
+        
+        return ligneProgrammeDao.saveAndFlush(input);
     }
 }

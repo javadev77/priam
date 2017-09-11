@@ -1,16 +1,13 @@
-/*
-package fr.sacem.priam.ui.web.rest.dto;
+package fr.sacem.priam.ui.rest.dto;
 
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-*/
 /**
  * Created by embouazzar on 23/08/2017.
- *//*
-
+ */
 public class UserDTO implements Serializable{
 
   public static final UserDTO GUEST = new UserDTO(){
@@ -84,4 +81,3 @@ public class UserDTO implements Serializable{
     }
 
 }
-*/

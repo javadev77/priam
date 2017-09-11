@@ -1,4 +1,3 @@
-/*
 package fr.sacem.priam.ui.security;
 
 import fr.sacem.fwk.config.Environment;
@@ -23,10 +22,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-*/
 /**
  * Created by embouazzar on 23/08/2017.
- *//*
+ */
 
 public class SsoPreAuthenticatedProcessingFilter extends AbstractPreAuthenticatedProcessingFilter{
 
@@ -60,8 +58,7 @@ public class SsoPreAuthenticatedProcessingFilter extends AbstractPreAuthenticate
 
   @Override
   public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain) throws IOException, ServletException {
-    */
-/*if(LOGGER.isDebugEnabled()){
+    if(LOGGER.isDebugEnabled()){
       LOGGER.debug("Pre-Authorizing: " + ((HttpServletRequest) servletRequest).getRequestURI());
     }
 
@@ -90,26 +87,23 @@ public class SsoPreAuthenticatedProcessingFilter extends AbstractPreAuthenticate
       super.doFilter(servletRequest, servletResponse, chain);
     } finally {
       cleanCurrentUserProfile();
-    }*//*
-
+    }
   }
 
+ /*
+  * Forcer le nettoyage du profil utilisateur (dans la variable threadlocal du framework Sacem).
   */
-/**
-   * Forcer le nettoyage du profil utilisateur (dans la variable threadlocal du framework Sacem).
-   *//*
 
   private void cleanCurrentUserProfile() {
     SecurityManager.setCurrentUser(null);
     MDC.remove("userId");
   }
 
-  */
 /**
    * Definir le profil de l'utilisateur courrant (dans la variable threadlocal du framework Sacem).
    *
    * @param authResult Authentication result.
-   *//*
+   */
 
   private void setCurrentUserProfile(Authentication authResult) {
     if(authResult instanceof SsoAuthenticationToken){
@@ -129,10 +123,9 @@ public class SsoPreAuthenticatedProcessingFilter extends AbstractPreAuthenticate
   }
 
 
-  */
 /**
-   * For SACEM SSO, returns the sso cookie value
-   *//*
+  * For SACEM SSO, returns the sso cookie value
+  */
 
   @Override
   protected String getPreAuthenticatedPrincipal(HttpServletRequest httpServletRequest) {
@@ -153,4 +146,3 @@ public class SsoPreAuthenticatedProcessingFilter extends AbstractPreAuthenticate
   }
 
 }
-*/

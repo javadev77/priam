@@ -13,7 +13,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by benmerzoukah on 29/05/2017.
@@ -64,6 +63,7 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
             "AND (ligneProgramme.selection = :selection OR :selection IS NULL) " +
             "AND (ligneProgramme.titreOeuvre = :titre OR :titre IS NULL) " +
             "AND (ligneProgramme.cdeUtil = :utilisateur OR :utilisateur IS NULL) " +
+            "AND (ligneProgramme.oeuvreManuel IS NULL) " +
             "GROUP BY ligneProgramme.ide12, " +
                 "ligneProgramme.cdeUtil")
     Page<SelectionDto> findLigneProgrammeByCriteria(@Param("numProg") String numProg,
@@ -182,13 +182,40 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
 
     @Transactional
     @Modifying(clearAutomatically = true)
-    @Query(nativeQuery = true, value = "DELETE p.* FROM " +
+    @Query(nativeQuery = true, value = "DELETE FROM " +
             "PRIAM_LIGNE_PROGRAMME p " +
             "INNER JOIN " +
             "PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
             "WHERE  "+
-            "  f.NUMPROG = ?1" +
-            " AND p.ide12 = ?2 ")
-    void deleteLigneProgrammeByIde12AndNumProg(@Param("numProg") String numProg, @Param("ide12") Long ide12);
-
+            "f.NUMPROG = ?1 " +
+            "AND p.ide12 = ?2 " +
+            "AND p.cdeUtil = ?3 AND p.ajout = 'Manuel' ")
+    void deleteLigneProgrammeByIde12AndNumProg(@Param("numProg") String numProg, @Param("ide12") Long ide12, @Param("cdeUtil")String cdeUtil);
+    
+    
+    @Query(value="SELECT l " +
+                     "FROM LigneProgramme l join l.fichier as f "+
+                     "WHERE l.fichier = f.id " +
+                     "AND f.programme.numProg = :numProg " +
+                     "AND l.ide12 = :ide12 " +
+                     "AND l.cdeUtil = :cdeUtil " +
+                     "AND l.oeuvreManuel IS NULL " +
+                     "AND l.ajout = 'Automatique' ")
+    List<LigneProgramme> findOeuvresAutoByIde12AndCdeUtil(@Param("numProg") String numProg, @Param("ide12") Long ide12, @Param("cdeUtil") String cdeUtil);
+    
+    @Query(value="SELECT l " +
+                     "FROM LigneProgramme l join l.fichier as f "+
+                     "WHERE l.fichier = f.id " +
+                     "AND f.programme.numProg = :numProg " +
+                     "AND l.ide12 = :ide12 " +
+                     "AND l.cdeUtil = :cdeUtil " +
+                     "AND l.oeuvreManuel IS NULL " +
+                     "AND l.ajout = 'Manuel' ")
+    LigneProgramme findOeuvreManuelByIde12AndCdeUtil(@Param("numProg") String numProg, @Param("ide12") Long ide12, @Param("cdeUtil") String cdeUtil);
+    
+    @Query(value="SELECT l " +
+                     "FROM LigneProgramme l " +
+                     "WHERE l.oeuvreManuel.id = :idOeuvreManuel  " +
+                     "AND l.ajout = 'Automatique' ")
+    List<LigneProgramme> findOeuvresAutoByIdOeuvreManuel(@Param("idOeuvreManuel")Long idOeuvreManuel);
 }

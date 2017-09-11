@@ -1,20 +1,18 @@
-/*
 package fr.sacem.priam.ui.security;
 
 import fr.sacem.fwk.security.Attribute;
 import fr.sacem.fwk.security.UserProfile;
 import fr.sacem.priam.common.constants.RoleRight;
-import fr.sacem.priam.ui.web.rest.dto.UserDTO;
+import fr.sacem.priam.ui.rest.dto.UserDTO;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Set;
 
-*/
 /**
  * Created by embouazzar on 23/08/2017.
- *//*
+ */
 
 public class SsoAuthenticationToken extends AbstractAuthenticationToken {
 
@@ -34,21 +32,19 @@ public class SsoAuthenticationToken extends AbstractAuthenticationToken {
     updateUserProfile(userProfile);
   }
 
+  /**
+  *
+  * @return sacem sso token (cookie value)
   */
-/**
-   *
-   * @return sacem sso token (cookie value)
-   *//*
 
   public String getSsoToken() {
     return ssoToken;
   }
 
-  */
-/**
+  /**
    *
    * @return homere user object
-   *//*
+  */
 
   public UserDTO getUser() {
     return user;
@@ -90,4 +86,3 @@ public class SsoAuthenticationToken extends AbstractAuthenticationToken {
   }
 
 }
-*/

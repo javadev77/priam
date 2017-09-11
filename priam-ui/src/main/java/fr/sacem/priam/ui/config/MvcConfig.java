@@ -8,7 +8,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.*;
+
+import java.util.List;
 
 //import static fr.sacem.fwk.config.Environment.getParameter;
 
@@ -62,5 +65,11 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
                     .allowedOrigins(vuejsDevServerUrl);
         }
 
+    }
+  
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+      
+        argumentResolvers.add(new UserDTOHandlerMethodArgumentResolver());
     }
 }

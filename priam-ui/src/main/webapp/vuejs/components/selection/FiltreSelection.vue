@@ -83,13 +83,12 @@
     <div class="row formula-buttons">
       <button class="btn btn-default btn-primary pull-right" type="button" @click.prevent="resetForm()">Rétablir</button>
       <button class="btn btn-default btn-primary pull-right" type="button" @click.prevent="rechercher()">Rechercher</button>
-      <!--<button class="btn btn-default btn-primary pull-left"  type="button" @click.prevent="ajouterOeuvre()" style="width: 120px;" :disabled="!edition">Ajouter Oeuvre</button>-->
-      <button class="btn btn-default btn-primary pull-left"  type="button" @click.prevent="ajouterOeuvre()" style="width: 120px;">Ajouter Oeuvre</button>
+      <button class="btn btn-default btn-primary pull-left"  type="button" @click.prevent="ajouterOeuvre()" style="width: 120px;" :disabled="!edition">Ajouter Oeuvre</button>
 
     </div>
 
     <ecran-modal v-if="showMipsa">
-        <ajouter-oeuvre  slot="body"></ajouter-oeuvre>
+        <ajouter-oeuvre  slot="body" @cancel="showMipsa = false" @validate-ajout-oeuvre="onValidateAjoutOeuvre"></ajouter-oeuvre>
     </ecran-modal>
 
 
@@ -179,6 +178,32 @@
 
       ajouterOeuvre() {
         this.showMipsa = true;
+      },
+
+      onValidateAjoutOeuvre(oeuvreToAdd) {
+          var programme = this.$store.getters.programmeEnSelection;
+          this.showMipsa = false;
+          var lingeProgramme = {
+              numProg : this.$route.params.numProg,
+              ide12 : oeuvreToAdd.ide12,
+              cdeTypIde12 : oeuvreToAdd.cdeTypeIde12,
+              titreOeuvre : oeuvreToAdd.titre,
+              durDif : oeuvreToAdd.duree,
+              nbrDif : oeuvreToAdd.quantite,
+              cdeUtil : oeuvreToAdd.utilisateur,
+              roleParticipant1 : oeuvreToAdd.roleParticipant1,
+              nomParticipant1 : oeuvreToAdd.nomParticipant1
+          }
+          this.resource.ajouterOeuvreManuel(lingeProgramme)
+            .then(response => {
+              return response.json();
+            })
+            .then(data => {
+              //
+              console.log('ok ajout');
+              this.rechercher();
+            });
+
       }
     },
 
@@ -191,7 +216,8 @@
 
     created() {
       const customActions = {
-        getUtilisateursByProgramme : {method : 'GET', url :'app/rest/ligneProgramme/utilisateurs?programme='+this.$route.params.numProg}
+        getUtilisateursByProgramme : {method : 'GET', url :'app/rest/ligneProgramme/utilisateurs?programme='+this.$route.params.numProg},
+        ajouterOeuvreManuel : {method : 'POST', url :'app/rest/ligneProgramme/selection/ajoutOeuvre'}
       }
       this.resource= this.$resource('', {}, customActions);
 

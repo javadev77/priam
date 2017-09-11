@@ -1,4 +1,3 @@
-/*
 package fr.sacem.priam.ui.config;
 
 import fr.sacem.fwk.security.SecurityManager;
@@ -15,7 +14,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDecisionVoter;
-
 import org.springframework.security.access.vote.AffirmativeBased;
 import org.springframework.security.access.vote.AuthenticatedVoter;
 import org.springframework.security.access.vote.RoleVoter;
@@ -26,7 +24,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -36,15 +33,14 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 import java.util.ArrayList;
 import java.util.List;
 
-*/
 /**
  * Created by embouazzar on 23/08/2017.
- *//*
+ */
 
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled = true)
+@EnableGlobalMethodSecurity(securedEnabled = false)
 @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
@@ -53,7 +49,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void  configure(HttpSecurity http) throws Exception {
-    http.csrf().disable()
+      http.csrf().disable()
       .exceptionHandling()
       .accessDeniedPage("/404.html")
       .authenticationEntryPoint(authenticationEntryPoint())
@@ -67,9 +63,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
       .sessionManagement().maximumSessions(10).sessionRegistry(sessionRegistry()).and().sessionFixation().migrateSession()
       .and()
       .authorizeRequests()
-      //.accessDecisionManager(affirmativeBased())
+      .accessDecisionManager(affirmativeBased())
       .regexMatchers(STATIC_RESOURCES_REGEX).permitAll()
       .anyRequest().authenticated();
+
 
   }
 
@@ -77,6 +74,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   public void configure(WebSecurity web) throws Exception {
     web.ignoring()
       .regexMatchers(STATIC_RESOURCES_REGEX);
+
   }
 
   @Bean(name = "sessionRegistry")
@@ -85,12 +83,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     return new SessionRegistryImpl();
   }
 
-  */
 /**
    * Should not use @Bean annotation, to avoid double filter registration
    * @return
    * @throws Exception
-   *//*
+  */
 
   private SsoPreAuthenticatedProcessingFilter ssoPreAuthenticatedProcessingFilter() throws Exception {
     return new SsoPreAuthenticatedProcessingFilter(securityManager(), authenticationManagerBean());
@@ -153,4 +150,3 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   }
 
 }
-*/

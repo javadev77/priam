@@ -9,13 +9,34 @@
       </div>
       <div class="panel-collapse">
 
-        <div class="panel-body" style="height:450px; overflow-y:scroll;">
+        <div class="panel-body" style="min-height:600px;">
             <app-mipsa :configuration="mipsaConfig" @ready-to-search="readyToSearch"></app-mipsa>
             <br/>
-            <detail-oeuvre :oeuvre="selectedOeuvre" @ajout-oeuvre="onAjouterOeuvre"></detail-oeuvre>
+            <detail-oeuvre :oeuvre="selectedOeuvre"
+                           @ajout-oeuvre="onAjouterOeuvre"
+                           @cancel-ajout="$emit('cancel')">
+
+            </detail-oeuvre>
         </div>
       </div>
     </div>
+
+    <modal v-if="showPopup">
+
+        <template slot="body" v-if="programme.typeUtilisation === 'CPRIVSONPH'">
+          <div style="text-align: justify" v-html="messagePhono">
+          </div>
+        </template>
+        <template  slot="body" v-if="programme.typeUtilisation === 'CPRIVSONRD'">
+          <div style="text-align: justify" v-html="messageRadio">
+          </div>
+        </template>
+
+      <template slot="footer">
+        <button class="btn btn-default btn-primary pull-right no" @click.prevent="afficherEcranSelection">Non</button>
+        <button class="btn btn-default btn-primary pull-right yes" @click.prevent="ajouterOeuvreManuel">Oui</button>
+      </template>
+    </modal>
 
   </div>
 </template>
@@ -25,8 +46,20 @@
 
   import AppMipsa from '../../mipsa/AppMipsaSearch.vue';
   import DetailOeuvre from '../oeuvre/DetailOeuvre.vue';
+  import Modal from '../../common/Modal.vue';
 
   export default {
+
+      created() {
+        const customActions = {
+          findLigneProgrammeByProgramme: {
+            method: 'POST',
+            url: 'app/rest/ligneProgramme/search'
+          }
+        }
+        this.resource = this.$resource('', {}, customActions);
+      },
+
       mounted() {
         var MISPA_CONFIG = this.$store.getters.mipsaConfig;
         var headEl = $('head');
@@ -52,7 +85,7 @@
       data() {
          var vm =  this;
          var MISPA_CONFIG = this.$store.getters.mipsaConfig;
-         var sendToken = MISPA_CONFIG['priam.mipsa.wc.usessotoken'];
+         var sendToken =  false;//MISPA_CONFIG['priam.mipsa.wc.usessotoken'];
          var ssoTokenMethods = sendToken ?
           function(onTokenReceived) {
             vm.$http.get('app/rest/general/ssotoken').then( function(response) {
@@ -64,6 +97,17 @@
 
 
           return {
+
+            programme : null,
+
+            messagePhono : '',
+
+            messageRadio : '',
+
+            showPopup : false,
+
+            oeuvreToAdd : {},
+
             mipsaConfig : {
               baseurl: MISPA_CONFIG['priam.mipsa.wc.baseurl'],
               ssoTokenMethods: ssoTokenMethods,
@@ -110,14 +154,14 @@
                 target: '',
                 preventDefault: true,
                 onclick: function(nativeEvent, oeuvre) {
-                  window.alert('icon action click '+oeuvre.keyToDisplay.cdeFormated) ;
+                  let tiersCA = vm.getRoleCA(oeuvre.tiersList);
                   vm.selectedOeuvre = {
                     ide12 : oeuvre.ide12 ? oeuvre.ide12: oeuvre.keyToDisplay.cde,
-                    titre : oeuvre.titrePrincipal ? oeuvre.titrePrincipal: oeuvre.titrList[0].titr
-
+                    cdeTypeIde12 : oeuvre.cdetypcleoeuv,
+                    titre : oeuvre.titrePrincipal ? oeuvre.titrePrincipal: oeuvre.titrList[0].titr,
+                    roleParticipant1 : tiersCA !== undefined ? tiersCA.oeuvreroleSacem : oeuvre.tiersList[0].oeuvreroleSacem,
+                    nomParticipant1 : tiersCA !== undefined ? tiersCA.nom : oeuvre.tiersList[0].nom
                   }
-
-                  console.log("Selected Oeuvre = " + vm.selectedOeuvre.ide12);
                 }
               },
               linkOnCode: {   // used to activate the copy behaviour of IDE12
@@ -139,6 +183,14 @@
 
       methods : {
 
+        getRoleCA(tiersList) {
+          var result =  tiersList.find(function (tiers) {
+            return tiers.oeuvreroleSacem === 'CA';
+          })
+
+          return result;
+        },
+
         readyToSearch(event) {
             console.log("event  = " + event);
             var mipsaSearch = this.$el.querySelector('mipsa-search') ;
@@ -148,14 +200,52 @@
         },
 
         onAjouterOeuvre(oeuvre) {
-            window.alert('Oeuvre à ajouter : ' + oeuvre.ide12);
+            this.oeuvreToAdd = oeuvre;
+            this.programme = this.$store.getters.programmeEnSelection;
+            debugger;
+            this.resource.findLigneProgrammeByProgramme({ide12 : oeuvre.ide12, utilisateur : oeuvre.utilisateur, numProg : this.programme.numProg})
+              .then(response => {
+                  return response.json();
+              })
+              .then(data => {
+                  if(data && data.content.length > 0 ) {
+                      // CDEUTIL et IDE12 existe Afficher un warning
+                      let ligneProg = data.content[0];
+                      this.showPopup = true;
+                      if(this.programme.typeUtilisation === 'CPRIVSONPH') {
+                          this.messagePhono = 'Attention, cette oeuvre est déjà présente au niveau du programme avec la quantité '
+                            + ligneProg.nbrDif + ', êtes-vous sûr de vouloir la remplacer avec la quantité saisie ?';
+
+                      } else if(this.programme.typeUtilisation === 'CPRIVSONRD') {
+                          this.messageRadio = 'Attention, cette oeuvre est déjà présente au niveau du programme avec la durée '
+                            + ligneProg.durDif + ', êtes-vous sûr de vouloir la remplacer avec la durée saisie ?';
+                      }
+                  } else {
+
+                    this.$emit('validate-ajout-oeuvre', this.oeuvreToAdd);
+                  }
+              });
+        },
+
+        afficherEcranSelection() {
+          this.showPopup = false;
+          this.$emit('cancel');
+
+        },
+
+        ajouterOeuvreManuel() {
+          this.showPopup = false;
+          this.$emit('validate-ajout-oeuvre', this.oeuvreToAdd);
         }
 
       },
 
+
+
       components : {
         appMipsa : AppMipsa,
-        detailOeuvre : DetailOeuvre
+        detailOeuvre : DetailOeuvre,
+        modal : Modal
       }
   }
 </script>

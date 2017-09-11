@@ -11,6 +11,25 @@
 
       <div class="panel-body">
         <form class="form-horizontal" role="form">
+
+          <div class="row" v-if="errors.count()!=0">
+            <ul style="list-style: none">
+              <li v-if="errors.has('duree')">
+                <i v-show="errors.has('duree')" class="fa fa-warning"></i>
+                <label v-show="errors.has('duree')" class="control-label" :class="{'has-error': errors.has('duree') }">{{ errors.first('duree') }}</label>
+              </li>
+              <li v-if="errors.has('quantite')">
+                <i v-show="errors.has('quantite')" class="fa fa-warning"></i>
+                <label v-show="errors.has('quantite')" :class="{'has-error': errors.has('quantite') }">{{ errors.first('quantite') }}</label>
+              </li>
+              <li v-if="errors.has('Utilisateur')">
+                <i v-show="errors.has('Utilisateur')" class="fa fa-warning"></i>
+                <label v-show="errors.has('Utilisateur')" :class="{'has-error': errors.has('Utilisateur') }">{{ errors.first('Utilisateur') }}</label>
+              </li>
+
+            </ul>
+
+          </div>
           <div class="row">
 
           <div class="form-group col-md-4">
@@ -28,25 +47,38 @@
           </div>
 
 
-          <div class="form-group col-md-7">
+          <div class="form-group col-md-7" :class="{'has-error': errors.has('Utilisateur') }">
             <label class="col-md-6 control-label blueText text-right">Utilisateur</label>
             <div class="col-md-18">
-              <select2 class="form-control" :options="utilisateurOptions" v-model="oeuvreManuelToCreate.utilisateur" :searchable="true">
+              <select2 v-if="oeuvreManuelToCreate.utilisateur"
+                       class="form-control"
+                       data-vv-name="Utilisateur"
+                       data-vv-value-path="innerUtilisateur"
+                       v-validate="'required'"
+                       :options="utilisateurOptions"
+                       v-model="oeuvreManuelToCreate.utilisateur"
+                       :searchable="true"
+                       :class="{'has-error': errors.has('Utilisateur') }">
               </select2>
             </div>
           </div>
 
 
-            <div class="form-group col-md-5" v-if="programme.typeUtilisation == 'CPRIVSONRD'">
+            <div class="form-group col-md-5" v-if="programme.typeUtilisation == 'CPRIVSONRD'" :class="{'has-error': errors.has('duree') }">
               <label class="col-md-6 control-label blueText text-right">Durée</label>
               <div class="col-md-18">
-                <input class="form-control" type="text" v-model="oeuvreManuelToCreate.duree">
+                <input v-validate="'required|numeric'"
+                       name="duree"
+                       class="form-control"
+                       type="text"
+                       v-model="oeuvreManuelToCreate.duree"
+                       :class="{'has-error': errors.has('duree') }" >
               </div>
             </div>
-            <div class="form-group col-md-5" v-if="programme.typeUtilisation == 'CPRIVSONPH'">
+            <div class="form-group col-md-5" :class="{'has-error': errors.has('quantite') }" v-if="programme.typeUtilisation == 'CPRIVSONPH'">
               <label class="col-md-6 control-label blueText text-right">Quantité</label>
               <div class="col-md-18">
-                <input class="form-control" type="text" v-model="oeuvreManuelToCreate.quantite">
+                <input v-validate="'required|numeric'" :class="{'has-error': errors.has('quantite') }" name="quantite"  class="form-control" type="text" v-model="oeuvreManuelToCreate.quantite">
               </div>
             </div>
 
@@ -58,6 +90,7 @@
 
     <div class="row formula-buttons">
       <button class="btn btn-default btn-primary pull-right" type="button" @click.prevent="onClickAjouterOeuvre()">Ajouter</button>
+      <button class="btn btn-default btn-primary pull-right" type="button" @click.prevent="$emit('cancel-ajout')">Annuler</button>
     </div>
 
     </div>
@@ -76,12 +109,16 @@
 
           return {
               oeuvreManuelToCreate : {
-                  utilisateur : '',
+                  utilisateur : null,
                   duree : '',
                   quantite : '',
                   titre : '',
-                  ide12 : ''
+                  ide12 : '',
+                  roleParticipant1 : '',
+                  nomParticipant1: '',
+                  cdeTypeIde12 :''
               },
+
 
               utilisateursOptions : [],
 
@@ -92,13 +129,14 @@
 
     computed:  {
       utilisateurOptions() {
-        let result = this.utilisateursOptions.map(elem => {
+        let libelleUtilisateur = this.$store.getters.libelleUtilisateur;
+        let result = libelleUtilisateur.map(elem => {
+
           return {
-            id : elem,
-            value : elem
+            id : elem.id,
+            value : elem.value
           }
         });
-
         return result;
       }
     },
@@ -106,8 +144,7 @@
     mounted() {
         //this.oeuvre = this.$store.getters.selectedOeuvre;
         this.programme = this.$store.getters.programmeEnSelection;
-
-        const customActions = {
+        /*const customActions = {
           getUtilisateursByProgramme : {method : 'GET', url :'app/rest/ligneProgramme/utilisateurs?programme='+this.programme.numProg}
         }
         this.resource = this.$resource('', {}, customActions);
@@ -118,16 +155,30 @@
             })
             .then(data => {
               this.utilisateursOptions = data;
-            });
+
+              console.log('data[0] = ' + this.oeuvreManuelToCreate.utilisateur);
+              //debugger;
+            });*/
+
+        this.oeuvreManuelToCreate.utilisateur = this.$store.getters.libelleUtilisateur[0].id;
     },
 
     methods : {
 
       onClickAjouterOeuvre() {
-          this.oeuvreManuelToCreate.ide12 = this.oeuvre.ide12;
-          this.oeuvreManuelToCreate.titre = this.oeuvre.titre;
-          this.$emit('ajout-oeuvre', this.oeuvreManuelToCreate);
+
+        let sef = this;
+        sef.$validator.validateAll().then(() => {
+          sef.oeuvreManuelToCreate.ide12 = sef.oeuvre.ide12;
+          sef.oeuvreManuelToCreate.titre = sef.oeuvre.titre;
+          sef.oeuvreManuelToCreate.roleParticipant1 = sef.oeuvre.roleParticipant1;
+          sef.oeuvreManuelToCreate.nomParticipant1 = sef.oeuvre.nomParticipant1;
+          sef.oeuvreManuelToCreate.cdeTypeIde12 = sef.oeuvre.cdeTypeIde12;
+          sef.$emit('ajout-oeuvre', sef.oeuvreManuelToCreate);
+        });
       }
+
+
 
     },
 

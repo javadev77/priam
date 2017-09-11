@@ -1,4 +1,3 @@
-/*
 package fr.sacem.priam.ui.security;
 
 import org.slf4j.Logger;
@@ -12,20 +11,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-*/
 /**
  * Created by embouazzar on 23/08/2017.
- *//*
+ */
 
 @Component
 public class Http401UnauthorizedEntryPoint implements AuthenticationEntryPoint{
 
   private static final Logger LOGGER = LoggerFactory.getLogger(Http401UnauthorizedEntryPoint.class);
 
-  */
 /**
    * Always returns a 401 error code to the client.
-   *//*
+  */
 
   public void commence(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException,
     ServletException {
@@ -38,4 +35,3 @@ public class Http401UnauthorizedEntryPoint implements AuthenticationEntryPoint{
 
   }
 }
-*/

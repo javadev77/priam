@@ -55,7 +55,7 @@
                 </div>
 
                 <div class="col-sm-2">
-                  <label class="control-label pull-right">Rion statuaire</label>
+                  <label class="control-label pull-right">Rion statutaire</label>
                 </div>
                 <div class="col-sm-3">
                 <!--  <v-select :searchable="false" label="value" v-model="rionTheoriqueSelected" :options="rionTheoriqueOptions">
@@ -281,7 +281,7 @@
                 },
                 {
                   id :  'rionTheorique',
-                  name :   'Rion statuaire',
+                  name :   'Rion statutaire',
                   sortable : true,
                   type : 'long-text'
                 },

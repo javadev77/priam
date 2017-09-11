@@ -1,4 +1,3 @@
-/*
 package fr.sacem.priam.ui.security;
 
 import fr.sacem.fwk.security.SecurityManager;
@@ -13,24 +12,20 @@ import org.springframework.core.Ordered;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.util.Assert;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-*/
 /**
  * ref to: PreAuthenticatedAuthenticationProvider
  *
  * @author <a href="mailto:xchen@palo-it.com">Xi CHEN</a>
  * @since 12/11/14.
- *//*
+ */
 
 public class SsoAuthenticationProvider implements AuthenticationProvider, InitializingBean, Ordered {
 
@@ -81,10 +76,9 @@ public class SsoAuthenticationProvider implements AuthenticationProvider, Initia
                 logger.debug("Got logged user profile with token {} : {}", ssoToken, ToStringBuilder.reflectionToString(userProfile));
             }
             authorities = grantAuthorities(userProfile, authentication);
-            */
-/*if(authorities == null || authorities.isEmpty()){
+            /*if(authorities == null || authorities.isEmpty()){
                 throw new InsufficientAuthenticationException("No authorized application role.");
-            }*//*
+            }*/
 
             SecurityManager.setCurrentUser(userProfile);
         } catch (SecurityManagerException e) {
@@ -117,8 +111,7 @@ public class SsoAuthenticationProvider implements AuthenticationProvider, Initia
     }
 
     private Set<GrantedAuthority> grantAuthorities(UserProfile profile, Authentication authentication) {
-        */
-/*final Set<RoleRight> rights = new HashSet<>();
+        /*final Set<RoleRight> rights = new HashSet<>();
         List<String> roleList = profile.getRoleList();
         if(roleList != null){
             if(logger.isDebugEnabled()){
@@ -152,9 +145,8 @@ public class SsoAuthenticationProvider implements AuthenticationProvider, Initia
             if(authentication.getAuthorities() != null){
                 authorities.addAll(authentication.getAuthorities());
             }
-        }*//*
+        }*/
 
         return null;
     }
 }
-*/

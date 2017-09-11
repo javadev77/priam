@@ -1,5 +1,6 @@
 package fr.sacem.priam.ui.rest;
 
+import fr.sacem.priam.model.domain.LigneProgramme;
 import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.criteria.LigneProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
@@ -9,6 +10,7 @@ import fr.sacem.priam.services.LigneProgrammeService;
 import fr.sacem.priam.services.ProgrammeService;
 import fr.sacem.priam.ui.rest.dto.LigneProgrammeCritereRecherche;
 import fr.sacem.priam.ui.rest.dto.ValdierSelectionProgrammeInput;
+import fr.sacem.priam.ui.rest.dto.UserDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -202,9 +204,25 @@ public class LigneProgrammeResource {
     method = RequestMethod.DELETE,
     consumes = MediaType.APPLICATION_JSON_VALUE,
     produces = MediaType.APPLICATION_JSON_VALUE)
-  public boolean supprimerLigneProgramme(@PathVariable(name = "numProg") String numProg, @PathVariable(name = "ide12") Long ide12) {
-    ligneProgrammeService.supprimerLigneProgramme(numProg, ide12);
+  public boolean supprimerLigneProgramme(@PathVariable(name = "numProg") String numProg,
+                                         @PathVariable(name = "ide12") Long ide12,
+                                         @RequestBody SelectionDto selectedLigneProgramme) {
+    ligneProgrammeService.supprimerLigneProgramme(numProg, ide12, selectedLigneProgramme);
+    
     return true;
+  }
+  
+  
+  
+  @RequestMapping(value = "ligneProgramme/selection/ajoutOeuvre",
+                  method = RequestMethod.POST,
+                  produces = MediaType.APPLICATION_JSON_VALUE,
+                  consumes = MediaType.APPLICATION_JSON_VALUE)
+  public SelectionDto ajouterOeuvreManuel(@RequestBody LigneProgramme input, UserDTO userDTO) {
+       input.setUtilisateur(userDTO.getUserId());
+       ligneProgrammeService.ajouterOeuvreManuel(input);
+       
+       return new SelectionDto();
   }
 
 
