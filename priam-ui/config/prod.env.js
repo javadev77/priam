@@ -1,4 +1,5 @@
 module.exports = {
   NODE_ENV: '"production"',
-  DEBUG_MODE: false
+  DEBUG_MODE: false,
+  CONTEXT_ROOT : '"/priambenmerzoukah"'
 }

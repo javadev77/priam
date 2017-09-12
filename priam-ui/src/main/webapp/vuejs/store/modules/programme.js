@@ -20,6 +20,8 @@ const state = {
 
   rions : [],
 
+  rionsCreation : [],
+
   statutProgramme : [
     {
       "code" : 'EN_COURS',
@@ -72,6 +74,10 @@ const mutations = {
     state.rions = rions;
   },
 
+  'SET_RIONS_CREATION'(state, rionsCreation) {
+    state.rionsCreation = rionsCreation;
+  },
+
   'TOUT_DESACTIVER'(state, value) {
     state.allFichiersChecked = value;
   }
@@ -101,8 +107,12 @@ const getters = {
     return options;
   },
 
+  rionsSaref : state => {
+    return state.rions;
+  },
+
   rionsAddProg : state => {
-    var options = state.rions.slice();
+    var options = state.rionsCreation.slice();
 
     return options;
   },

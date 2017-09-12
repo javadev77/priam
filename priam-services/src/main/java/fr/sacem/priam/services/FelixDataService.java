@@ -124,8 +124,7 @@ public class FelixDataService {
             lignePreprep.setDatFinProg(programme.getDateFinPrg()); //TODO A remplir depuis le programme
 
             
-            if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode().equals(programme.getTypeUtilisation().getCode())
-                &&  lignePreprep.getNbrDif() == null) {
+            if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode().equals(programme.getTypeUtilisation().getCode()) ) {
                 lignePreprep.setNbrDif(1L);
             } else {
                 lignePreprep.setNbrDif(lignePreprep.getNbrDif());

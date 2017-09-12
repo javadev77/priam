@@ -83,7 +83,7 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
                      "ligneProgramme.ide12, " +
                      "sum(ligneProgramme.durDif), " +
                      "sum(ligneProgramme.nbrDif), " +
-                     "ligneProgramme.mt, " +
+                     "sum(ligneProgramme.mt), " +
                      "ligneProgramme.ctna, " +
                      "ligneProgramme.paramCoefHor, " +
                      "ligneProgramme.durDifCtna, " +
@@ -96,6 +96,7 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
                      "WHERE lu.cdeUtil = ligneProgramme.cdeUtil " +
                      "AND f.programme.numProg = :numProg " +
                      "AND ligneProgramme.selection = true " +
+                     "AND ligneProgramme.oeuvreManuel IS NULL " +
                      "GROUP BY ligneProgramme.ide12, " +
                      "ligneProgramme.cdeUtil ")
     List<LignePreprep> findLigneProgrammeSelectionnesForFelix(@Param("numProg") String numProg);

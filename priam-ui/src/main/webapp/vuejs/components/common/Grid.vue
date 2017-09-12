@@ -38,7 +38,7 @@
                               class="fui"
                               :class="{'fui-triangle-down': !sortAsc,
                                   'fui-triangle-up': sortAsc,
-                                  'sorted' : entry.id === sortProp}">
+                                  'sorted' : isSorted(entry)}">
                         </span>
                       </a>
                       <a v-else @click="sortBy(entry.id)">
@@ -274,13 +274,7 @@
           return this.sort !== undefined && this.sort !== null && this.sort.ascending;
       },
 
-      sortProp() {
-        if(this.sort !== undefined && this.sort!== null) {
-            console.log("property" + this.sort.property)
-            return this.sort.property;
-        }
-        return '';
-      },
+
 
       emptyResult() {
         return this.data.content !== undefined  && this.data.content.length === 0;
@@ -312,7 +306,6 @@
     },
 
     created() {
-        console.log("created this.data.sort="  + this.data.sort[0]);
 
         this.sort = this.data.sort !== undefined ? this.data.sort[0] : undefined;
 
@@ -332,6 +325,15 @@
 
 
     methods: {
+
+      isSorted(entryColumn) {
+        if(this.sort !== undefined && this.sort!== null) {
+          let sortProp = entryColumn.sortProperty !== undefined  ? entryColumn.sortProperty : entryColumn.id;
+          console.log("property" + this.sort.property)
+          return sortProp == this.sort.property;
+        }
+        return false;
+      },
 
       dureeFormattee(duree) {
 
@@ -406,16 +408,16 @@
 
       serverSortBy(entryColumn) {
         console.log("serverSortBy");
-        let sortProp = entryColumn.id;
+        let sortProp = entryColumn.sortProperty !== undefined  ? entryColumn.sortProperty : entryColumn.id;
         let isAsc = false;
-        if(sortProp === this.sort.property ) {
+        if(sortProp == this.sort.property ) {
           isAsc = !this.sort.ascending;
         } else {
           isAsc = true;
         }
 
         this.sort.ascending = isAsc;
-        this.sort.property = sortProp;
+        this.sort.property = entryColumn.id;
         this.sort.direction = isAsc ? 'ASC' : 'DESC';
 
 

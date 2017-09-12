@@ -201,9 +201,10 @@
   import Autocomplete from '../common/Autocomplete.vue'
   import Select2 from '../common/Select2.vue';
   import MiseEnRepartitionProgramme from './MiseEnRepartitionProgramme.vue';
-
+  import ChargementMixin from '../../mixins/chargementMixin';
 
   export default {
+      mixins : [ChargementMixin],
 
       data() {
 
@@ -283,7 +284,12 @@
                   id :  'rionTheorique',
                   name :   'Rion statutaire',
                   sortable : true,
-                  type : 'long-text'
+                  type : 'code-value',
+                  cell : {
+                    toText : function(rionTheorique) {
+                      return $this.getLibelleRionById(rionTheorique);
+                    }
+                  }
                 },
                 {
                   id :  'famille',

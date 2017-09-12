@@ -184,12 +184,16 @@
           dir : 'desc',
           size : 25
         },
+
+        currentGridState : {},
+
         priamGrid_phono: {
           gridColumns: [
             {
               id: 'libAbrgUtil',
               name: "Utilisateur",
               sortable: true,
+              sortProperty : 'cdeUtil',
               type: 'long-text',
               cell: {
                 toText : function(entry) {
@@ -265,6 +269,7 @@
               id: 'nbrDif',
               name: "Quantité",
               sortable: true,
+              sortProperty : 'sum(nbrDif)',
               type: 'numeric',
               cell: {
                 toText : function(entry) {
@@ -355,6 +360,7 @@
               id: 'libAbrgUtil',
               name: "Utilisateur",
               sortable: true,
+              sortProperty : 'cdeUtil',
               type: 'long-text',
               cell: {
                 toText : function(entry) {
@@ -431,6 +437,7 @@
               id: 'durDif',
               name: "Durée",
               sortable: true,
+              sortProperty : 'sum(durDif)',
               type: 'seconds-as-time',
               cell: {
                 toText : function(entry) {
@@ -650,12 +657,13 @@
       },
 
       supprimerProgramme() {
-        this.showPopupSuppression = false;
+
         this.resource.supprimerLigneProgramme({numProg : this.programmeInfo.numProg, ide12 : this.selectedLineProgramme.ide12}, this.selectedLineProgramme)
           .then(response => {
             return response.json();
           })
           .then(data => {
+              this.showPopupSuppression = false;
               this.launchRequest(this.currentGridState.pageNum, this.currentGridState.pageSize, this.currentGridState.sort, this.currentGridState.dir);
               this.getDuree(this.programmeInfo.statut);
           });
@@ -665,8 +673,8 @@
       launchRequest(pageNum, pageSize, sort, dir) {
 
         this.currentGridState = {
-          pageNum, pageSize, sort, dir
-        }
+          pageNum : pageNum, pageSize : pageSize, sort : sort, dir :dir
+        };
 
         this.dataLoading = true;
 

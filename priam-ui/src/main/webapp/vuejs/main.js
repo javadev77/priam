@@ -40,7 +40,7 @@ Vue.use(VueResource);
 if(process.env.DEBUG_MODE) {
   Vue.http.options.root="http://localhost:8080/priam"
 } else {
-  Vue.http.options.root="/priambenmerzoukah"
+  Vue.http.options.root= process.env.CONTEXT_ROOT;
 }
 
 
@@ -49,7 +49,8 @@ const router = new VueRouter({
 });
 
 
-var waitingData = ['LIBELLE_UTILISATEUR', 'LIBELLE_FAMILLE', 'LIBELLE_TYPE_UTILSATION', 'FAMILLE_TYPE_UTILSATION_MAP', 'RIONS', 'TERRITOIRE_MAP', 'MIPSA_CONFIG'];
+var waitingData = ['LIBELLE_UTILISATEUR', 'LIBELLE_FAMILLE', 'LIBELLE_TYPE_UTILSATION',
+                    'FAMILLE_TYPE_UTILSATION_MAP', 'RIONS', 'TERRITOIRE_MAP', 'MIPSA_CONFIG', 'RIONS_CREATION'];
 function bootstrapIfReady(type) {
   var index = waitingData.indexOf(type);
   if (index > -1) {
@@ -120,6 +121,16 @@ function fetchInitData() {
         bootstrapIfReady('RIONS');
       }
     });
+
+  Vue.http.get('app/rest/general/rions_creation')
+    .then(response => response.json())
+    .then(data => {
+      if (data) {
+        store.commit('SET_RIONS_CREATION', data);
+        bootstrapIfReady('RIONS_CREATION');
+      }
+    });
+
 
   Vue.http.get('app/rest/general/territoire')
     .then(response => response.json())

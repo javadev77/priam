@@ -26,8 +26,9 @@ import static fr.sacem.priam.common.constants.EnvConstants.*;
 @RestController
 @RequestMapping("/app/rest/general")
 public class GeneralResource {
-
-    private static Logger logger = LoggerFactory.getLogger(GeneralResource.class);
+  
+  private static final Integer RION_639 = 639 ;
+  private static Logger logger = LoggerFactory.getLogger(GeneralResource.class);
 
     @Autowired
     LibelleFamilleDao libelleFamilleDao;
@@ -117,7 +118,7 @@ public class GeneralResource {
                     method = RequestMethod.GET,
                     produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, String>[] getRions(Locale locale) {
-        List<Rion> rions = rionDao.findAllByDateRglmtAfterCurrentDate();
+        List<Rion> rions = rionDao.findAfterRion(RION_639);
         List<Map<String, String>> result = new ArrayList<>(rions.size());
         rions.forEach(rion -> {
           String rionValue = String.valueOf(rion.getRion());
@@ -127,6 +128,21 @@ public class GeneralResource {
   
         return result.toArray(new Map[0]);
     }
+  
+  @RequestMapping(value = "/rions_creation",
+    method = RequestMethod.GET,
+    produces = MediaType.APPLICATION_JSON_VALUE)
+  public Map<String, String>[] getRionsCreation(Locale locale) {
+    List<Rion> rions = rionDao.findAllByDateRglmtAfterCurrentDate();
+    List<Map<String, String>> result = new ArrayList<>(rions.size());
+    rions.forEach(rion -> {
+      String rionValue = String.valueOf(rion.getRion());
+      String formattedRion = rion.getDatrglmt() != null ? String.format("%s - %s", rionValue, new SimpleDateFormat("MMMM YYYY", locale).format(rion.getDatrglmt())) : rionValue;
+      result.add(createStringMap(rionValue, formattedRion));
+    });
+    
+    return result.toArray(new Map[0]);
+  }
 
 
     @RequestMapping(value = "/territoire",

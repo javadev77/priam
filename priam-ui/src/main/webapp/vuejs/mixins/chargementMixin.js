@@ -45,9 +45,17 @@ module.exports = {
         return element.id == code;
       });
       return result;
-    }
+    },
 
+     getLibelleRionById(id) {
 
+       let result = this.$store.getters.rionsSaref.find(function (element) {
+         return element.id == id;
+       });
+
+       return result !== undefined ? result.value : '';
+
+     }
 
 
   }

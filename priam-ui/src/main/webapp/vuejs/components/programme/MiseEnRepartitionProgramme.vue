@@ -32,7 +32,7 @@
           <span class="pull-left blueText">Rion statutaire</span>
         </div>
         <div class="col-sm-1">
-          {{ programmeInfo.rionTheorique }}
+          {{ getLibelleRionById(programmeInfo.rionTheorique) }}
         </div>
 
       </div>

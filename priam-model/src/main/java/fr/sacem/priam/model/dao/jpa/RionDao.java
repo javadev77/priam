@@ -17,14 +17,12 @@ import java.util.List;
 @Transactional(readOnly = true)
 public interface RionDao extends JpaRepository<Rion, Integer> {
     
-    
+    @Cacheable("rions")
     @Query("SELECT r FROM Rion r " +
-            "WHERE r.rion >= :rion ")/* +
-            "AND (r.datcre is not null AND r.datcre <= CURRENT_DATE)" +
-            "AND (r.datrglmt is null OR r.datrglmt >= CURRENT_DATE)")*/
+            "WHERE r.rion >= :rion ")
     List<Rion> findAfterRion(@Param("rion") Integer rion);
     
-    @Cacheable("rions")
+    @Cacheable("rions_creation")
     @Query("SELECT r FROM Rion r " +
            "WHERE r.datrglmt >= CURRENT_DATE " +
            "AND r.datrglmt is not null ")

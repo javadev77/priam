@@ -14,6 +14,14 @@
 
           <div class="row" v-if="errors.count()!=0">
             <ul style="list-style: none">
+              <li v-if="errors.has('titre')">
+                <i v-show="errors.has('titre')" class="fa fa-warning"></i>
+                <label v-show="errors.has('titre')" class="control-label" :class="{'has-error': errors.has('titre') }">{{ errors.first('titre') }}</label>
+              </li>
+              <li v-if="errors.has('ide12')">
+                <i v-show="errors.has('ide12')" class="fa fa-warning"></i>
+                <label v-show="errors.has('ide12')" class="control-label" :class="{'has-error': errors.has('ide12') }">{{ errors.first('ide12') }}</label>
+              </li>
               <li v-if="errors.has('duree')">
                 <i v-show="errors.has('duree')" class="fa fa-warning"></i>
                 <label v-show="errors.has('duree')" class="control-label" :class="{'has-error': errors.has('duree') }">{{ errors.first('duree') }}</label>
@@ -26,23 +34,34 @@
                 <i v-show="errors.has('Utilisateur')" class="fa fa-warning"></i>
                 <label v-show="errors.has('Utilisateur')" :class="{'has-error': errors.has('Utilisateur') }">{{ errors.first('Utilisateur') }}</label>
               </li>
-
             </ul>
 
           </div>
           <div class="row">
 
-          <div class="form-group col-md-4">
+          <div class="form-group col-md-4" :class="{'has-error': errors.has('titre') }">
             <label class="col-md-5 control-label blueText text-right">Titre</label>
             <div class="col-md-19 control-label">
-              {{ oeuvre.titre }}
+              <input v-validate="'required'"
+                     name="titre"
+                     class="form-control"
+                     type="text"
+                     disabled="disabled"
+                     v-model="oeuvre.titre"
+                     :class="{'has-error': errors.has('titre') }" >
             </div>
           </div>
 
-          <div class="form-group col-md-4">
+          <div class="form-group col-md-4" :class="{'has-error': errors.has('ide12') }">
             <label class="col-md-9 control-label blueText text-right">IDE12</label>
             <div class="col-md-15 control-label">
-              {{ oeuvre.ide12 }}
+              <input v-validate="'required'"
+                     name="ide12"
+                     class="form-control"
+                     type="text"
+                     disabled="disabled"
+                     v-model="oeuvre.ide12"
+                     :class="{'has-error': errors.has('ide12') }" >
             </div>
           </div>
 
