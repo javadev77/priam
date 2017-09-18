@@ -47,11 +47,15 @@
       computed : {
           dureeFormattee() {
 
-            let hours = Math.floor( this.dureeSelection.duree / 3600);
-            let minutes = Math.floor(this.dureeSelection.duree / 60);
-            let seconds = this.dureeSelection.duree % 60;
+            let jours = Math.floor( this.dureeSelection.duree / 86400);
+            let reste = this.dureeSelection.duree % 86400;
+            let hours = Math.floor( reste / 3600);
+            reste = reste % 3600;
+            let minutes = Math.floor(reste / 60);
+            let seconds = reste % 60;
 
-            return ((hours < 10) ? '0'+hours : hours)+":"+((minutes < 10) ? '0' + minutes: minutes)+":"+ ((seconds < 10) ? '0'+seconds : seconds);
+
+            return ((jours < 10) ? '0'+jours : jours) + 'j ' +((hours < 10) ? '0'+hours : hours)+"h "+((minutes < 10) ? '0' + minutes: minutes)+"m "+ ((seconds < 10) ? '0'+seconds : seconds) + "s";
           }
       }
 

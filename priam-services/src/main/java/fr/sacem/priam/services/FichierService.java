@@ -51,6 +51,10 @@ public class FichierService {
             fichierDao.updateStatusFichiersAffectes(numProg, Status.AFFECTE, idsNouveauxFichiersAffectes);
         }
         
+        
+        //Mettre par defaut les oeuvre à  selectionne
+        ligneProgrammeDao.updateSelectionByNumProgramme(numProg, true);
+        
     
         Programme programme = programmeDao.findOne(numProg);
         if(idsNouveauxFichiersAffectes.isEmpty()) {

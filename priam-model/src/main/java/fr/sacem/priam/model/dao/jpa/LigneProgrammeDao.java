@@ -51,7 +51,7 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
                     "ligneProgramme.ajout, " +
                     "sum(ligneProgramme.durDif), " +
                     "sum(ligneProgramme.nbrDif), " +
-                    "ligneProgramme.selection, " +
+                    "ligneProgramme.selectionEnCours, " +
                     "CONCAT(ligneProgramme.cdeUtil, CASE WHEN lu.libAbrgUtil is null THEN '' ELSE ' - ' END, COALESCE(lu.libAbrgUtil,''))) " +
             "FROM LigneProgramme ligneProgramme join ligneProgramme.fichier  f, " +
             "LibelleUtilisateur lu "+
@@ -60,7 +60,7 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
             "AND f.programme.numProg = :numProg " +
             "AND (ligneProgramme.ide12 = :ide12 OR :ide12 IS NULL) " +
             "AND (ligneProgramme.ajout = :ajout OR :ajout IS NULL) " +
-            "AND (ligneProgramme.selection = :selection OR :selection IS NULL) " +
+            "AND (ligneProgramme.selectionEnCours = :selectionEnCours OR :selectionEnCours IS NULL) " +
             "AND (ligneProgramme.titreOeuvre = :titre OR :titre IS NULL) " +
             "AND (ligneProgramme.cdeUtil = :utilisateur OR :utilisateur IS NULL) " +
             "AND (ligneProgramme.oeuvreManuel IS NULL) " +
@@ -71,7 +71,7 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
                                       @Param("ide12") Long ide12,
                                       @Param("titre") String titre,
                                       @Param("ajout") String ajout,
-                                      @Param("selection") Boolean selection,Pageable pageable);
+                                      @Param("selectionEnCours") Boolean selectionEnCours,Pageable pageable);
     
     @Transactional
     @Query(value="SELECT  new fr.sacem.priam.model.domain.LignePreprep("+
@@ -148,10 +148,10 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
             "INNER JOIN " +
             "  PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
             "set " +
-            "  p.selection=?2 " +
+            "  p.SEL_EN_COURS =?2 " +
             "where " +
             "  f.NUMPROG = ?1")
-    void updateSelectionByNumProgramme(@Param("numProg") String numProg, @Param("selection") boolean selection);
+    void updateSelectionByNumProgramme(@Param("numProg") String numProg, @Param("selectionEnCours") boolean selectionEnCours);
 
     @Modifying(clearAutomatically = true)
     @Transactional
@@ -160,7 +160,7 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
             "INNER JOIN " +
             "  PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
             "set " +
-            "  p.selection=1 " +
+            "  p.SEL_EN_COURS=1 " +
             "where " +
             "  f.NUMPROG = ?1" +
             " AND p.ide12 <> ?2 " +
@@ -174,12 +174,15 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
             "INNER JOIN " +
             "  PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
             "set " +
-            "  p.selection=1 " +
+            "  p.SEL_EN_COURS=?4 " +
             "where " +
             "  f.NUMPROG = ?1" +
             " AND p.ide12 = ?2" +
-            " AND p.cdeUtil like ?3")
-    void updateSelectionByNumProgramme(@Param("numProg") String numProg, @Param("ide12") Long ide12, @Param("cdeUtil") String cdeUtil);
+            " AND p.cdeUtil = ?3")
+    void updateSelectionByNumProgramme(@Param("numProg") String numProg,
+                                       @Param("ide12") Long ide12,
+                                       @Param("cdeUtil") String cdeUtil,
+                                       @Param("select") int select);
 
     @Transactional
     @Modifying(clearAutomatically = true)
@@ -219,4 +222,27 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
                      "WHERE l.oeuvreManuel.id = :idOeuvreManuel  " +
                      "AND l.ajout = 'Automatique' ")
     List<LigneProgramme> findOeuvresAutoByIdOeuvreManuel(@Param("idOeuvreManuel")Long idOeuvreManuel);
+    
+    
+    @Transactional
+    @Modifying(clearAutomatically = true)
+    @Query(nativeQuery = true, value = "update " +
+             "PRIAM_LIGNE_PROGRAMME p " +
+              "INNER JOIN " +
+                "PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
+                "set  p.selection=?2 " +
+               "WHERE  "+
+               "f.NUMPROG = ?1 AND p.SEL_EN_COURS=?2")
+    void updateSelection(@Param("numProg") String numProg, @Param("selection") boolean value);
+    
+    @Transactional
+    @Modifying(clearAutomatically = true)
+    @Query(nativeQuery = true, value = "update " +
+                                           "PRIAM_LIGNE_PROGRAMME p " +
+                                           "INNER JOIN " +
+                                           "PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
+                                           "set  p.SEL_EN_COURS=?2 " +
+                                           "WHERE  "+
+                                           "f.NUMPROG = ?1 ")
+    void updateSelectionTemporaire(@Param("numProg") String numProg, @Param("selection") boolean value);
 }

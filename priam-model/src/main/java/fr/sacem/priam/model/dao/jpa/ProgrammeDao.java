@@ -34,7 +34,8 @@ public interface ProgrammeDao extends JpaRepository<Programme, String> {
             "           PRIAM_FICHIER as f on l.ID_FICHIER=f.ID " +
             "       WHERE " +
             "           f.numProg = ?1 " +
-                    "AND (?2 IS NULL OR l.selection = ?2) " +
+                    "AND (?2 IS NULL OR l.SEL_EN_COURS = ?2) " +
+                    "AND l.idOeuvreManuel IS NULL " +
             "       GROUP BY " +
             "           l.ide12, l.ajout, l.cdeUtil" +
             "       ) result " +
@@ -50,7 +51,8 @@ public interface ProgrammeDao extends JpaRepository<Programme, String> {
                     "on l.ID_FICHIER=f.ID " +
                     "WHERE " +
                     "f.numProg = ?1 " +
-                    "AND (?2 IS NULL OR l.selection = ?2) " +
+                    "AND (?2 IS NULL OR l.SEL_EN_COURS = ?2) " +
+                    "AND l.idOeuvreManuel IS NULL " +
                     "GROUP BY l.ide12, l.cdeUtil) result ")
     Long calculerDureeOeuvres(@Param("numProg") String numProg, @Param("selection") Integer selection);
 
@@ -63,7 +65,8 @@ public interface ProgrammeDao extends JpaRepository<Programme, String> {
                     "inner join PRIAM_FICHIER as f " +
                     "on l.ID_FICHIER=f.ID " +
                     "WHERE f.numProg = ?1 " +
-                    "AND (?2 IS NULL OR l.selection = ?2) " +
+                    "AND (?2 IS NULL OR l.SEL_EN_COURS = ?2) " +
+                    "AND l.idOeuvreManuel IS NULL " +
                     "GROUP BY l.ide12, l.cdeUtil) result")
     Long calculerQuantiteOeuvres(@Param("numProg") String numProg, @Param("selection") Integer selection);
 

@@ -131,6 +131,10 @@ public class LigneProgramme  implements Serializable {
     @Column(name = "selection")
     private boolean selection;
     
+    @Column(name = "SEL_EN_COURS")
+    private boolean selectionEnCours;
+    
+    
     @ManyToOne
     @JoinColumn(name = "idOeuvreManuel")
     private LigneProgramme oeuvreManuel;
@@ -449,6 +453,18 @@ public class LigneProgramme  implements Serializable {
     
     public Date getDateInsertion() {
         return dateInsertion;
+    }
+    
+    public boolean isSelection() {
+        return selection;
+    }
+    
+    public boolean isSelectionEnCours() {
+        return selectionEnCours;
+    }
+    
+    public void setSelectionEnCours(boolean selectionEnCours) {
+        this.selectionEnCours = selectionEnCours;
     }
     
     @Override

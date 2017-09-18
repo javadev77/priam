@@ -570,7 +570,8 @@
               }
 
               console.log("length this.fichiersChecked=" + this.fichiersChecked.length);
-              this.$store.dispatch('toutDesactiver', this.fichiersChecked.length !=0 && this.priamGrid.gridData.content.length == this.fichiersChecked.length );
+
+
 
             });
 

@@ -2,18 +2,8 @@ package fr.sacem.priam.services;
 
 import fr.sacem.priam.common.TypeUtilisationEnum;
 import fr.sacem.priam.model.dao.jpa.*;
-
-
 import fr.sacem.priam.model.domain.*;
-
-import fr.sacem.priam.model.domain.ParamAppli;
-import fr.sacem.priam.model.domain.Programme;
-import fr.sacem.priam.model.domain.ProgrammeSequence;
-import fr.sacem.priam.model.domain.StatutProgramme;
-
-
 import fr.sacem.priam.model.domain.criteria.ProgrammeCriteria;
-import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.model.util.MapperConfiguration;
 import org.apache.commons.lang.StringUtils;
@@ -225,7 +215,7 @@ public class ProgrammeService {
 			result.put(SOMME, programmeDao.calculerDureeOeuvres(numProg, selection));
 		}
 
-    	return result;
+    		return result;
 	}
 
 	@Transactional

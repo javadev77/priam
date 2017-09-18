@@ -104,7 +104,7 @@
       </div>
       <app-action-selection
         :programmeInfo="programmeInfo"
-        :listSelectionVide="ligneProgrammeSelected.length == 0"
+        :listSelectionVide="ligneProgramme.length == 0"
         :valider="validerSelection"
         :editer="editSelectionClickHandler"
         :invalider="invaliderProgramme"
@@ -316,7 +316,7 @@
               type: 'checkbox',
               cell: {
                 toText: function (entry) {
-                  return entry.ide12;
+                  return JSON.stringify({ide12 : entry.ide12, libAbrgUtil : entry.libAbrgUtil});
                 },
 
                 isDisabled: function () {
@@ -328,7 +328,6 @@
                 },
 
                 isChecked: function (entry) {
-
                   var notChecked = $this.unselectedLigneProgramme.find(elem => {
                     return elem.ide12 == entry.ide12 && elem.libAbrgUtil == entry.libAbrgUtil;
                   });
@@ -345,7 +344,18 @@
                     return 1;
                   }
 
+                  if(entry.selection) {
+                    return 1;
+                  }
                   return 0;
+                },
+
+                isAllNotChecked: function () {
+
+                  if ($this.ligneProgrammeSelected.length > 1) {
+                    return false;
+                  }
+                  return true;
                 }
               }
             }
@@ -498,6 +508,7 @@
 
                 isChecked: function (entry) {
 
+                  debugger;
                   var notChecked = $this.unselectedLigneProgramme.find(elem => {
                     return elem.ide12 == entry.ide12 && elem.libAbrgUtil == entry.libAbrgUtil;
                   });
@@ -514,6 +525,9 @@
                     return 1;
                   }
 
+                  if(entry.selection) {
+                      return 1;
+                  }
                   return 0;
                 },
 
@@ -609,6 +623,9 @@
           dureeProgramme: {method: 'GET', url: 'app/rest/programme/durdif?numProg={numProg}&statut={statut}'},
           annulerSelection: {method: 'POST', url: 'app/rest/ligneProgramme/selection/annuler'},
           supprimerLigneProgramme: {method: 'DELETE', url: 'app/rest/ligneProgramme/{numProg}/{ide12}/'},
+          calculerDureeAllSelection: {method: 'POST', url: 'app/rest/ligneProgramme/durdifAllSelect'},
+          enregistrerEdition : {method: 'POST', url: 'app/rest/ligneProgramme/selection/enregistrerEdition'},
+          annulerEdition : {method: 'POST', url: 'app/rest/ligneProgramme/selection/annulerEdition'}
         }
 
         this.resource = this.$resource('', {}, customActions);
@@ -699,13 +716,16 @@
               this.ligneProgramme = this.priamGrid_sono.gridData_sono.content;
             }
 
+            this.$store.dispatch('toutDesactiver', this.countNbSelected(this.ligneProgramme) == this.ligneProgramme.length);
 
-            this.selectAll();
+
+            //this.selectAll();
           });
       },
 
       onSort(currentPage, pageSize, sort) {
 
+        debugger;
         this.launchRequest(currentPage, pageSize, sort.property, sort.direction);
 
         this.defaultPageable.sort = sort.property;
@@ -729,54 +749,135 @@
 
       },
 
-      selectAll: function () {
+      selectAll() {
 
-        for (var i in this.ligneProgramme) {
+        debugger;
+        //if(!this.all) {
+          for (var i in this.ligneProgramme) {
+            if (this.indexOf(this.ligneProgrammeSelected, this.ligneProgramme[i]) == -1
+              && this.indexOf(this.unselectedLigneProgramme, this.ligneProgramme[i]) == -1) {
 
-            if(this.all || this.ligneProgramme[i].selection) {
-              let number = this.indexOf(this.ligneProgrammeSelected, this.ligneProgramme[i]);
+              if (this.ligneProgramme[i].selection) {
+                this.ligneProgrammeSelected.push(this.ligneProgramme[i]);
+              } else {
+                this.unselectedLigneProgramme.push(this.ligneProgramme[i]);
+              }
+
+            }
+          }
+
+
+            /*if(this.ligneProgramme[i].selection) {
+
               if(this.indexOf(this.ligneProgrammeSelected, this.ligneProgramme[i]) == -1
                 && this.indexOf(this.unselectedLigneProgramme, this.ligneProgramme[i]) == -1)
-                this.ligneProgrammeSelected.push({ide12 : this.ligneProgramme[i].ide12, libAbrgUtil : this.ligneProgramme[i].libAbrgUtil});
+
+                  this.ligneProgrammeSelected.push({ide12 : this.ligneProgramme[i].ide12, libAbrgUtil : this.ligneProgramme[i].libAbrgUtil});
             }
             else {
               if(this.indexOf(this.ligneProgrammeSelected, this.ligneProgramme[i])
                 && this.indexOf(this.unselectedLigneProgramme, this.ligneProgramme[i]) == -1)
                 this.unselectedLigneProgramme.push({ide12 : this.ligneProgramme[i].ide12, libAbrgUtil : this.ligneProgramme[i].libAbrgUtil});
             }
+          }*/
+        /*for (var i in this.ligneProgramme) {
+          if (this.ligneProgramme[i].selection) {
 
-        }
+            if (this.indexOf(this.ligneProgrammeSelected, this.ligneProgramme[i]) == -1 &&
+              this.indexOf(this.unselectedLigneProgramme, this.ligneProgramme[i]) == -1) {
+              this.ligneProgrammeSelected.push({
+                ide12: this.ligneProgramme[i].ide12,
+                libAbrgUtil: this.ligneProgramme[i].libAbrgUtil
+              });
+            } else if (this.indexOf(this.unselectedLigneProgramme, this.ligneProgramme[i]) != -1) {
+              let number = this.indexOf(this.unselectedLigneProgramme, this.ligneProgramme[i]);
+              this.unselectedLigneProgramme.splice(number, 1);
+              this.ligneProgrammeSelected.push({
+                ide12: this.ligneProgramme[i].ide12,
+                libAbrgUtil: this.ligneProgramme[i].libAbrgUtil
+              });
+            }
+          }
+        }*/
+
+        //}
+
 
       },
 
       rechercher(){
 
-        this.dataLoading = true;
-        this.resource.findLigneProgrammeByProgramme({page : this.defaultPageable.page - 1, size : this.defaultPageable.size,
-          sort : this.defaultPageable.sort, dir: this.defaultPageable.dir}, this.filter)
-          .then(response => {
-            return response.json();
-          })
-          .then(data => {
-            console.log(data);
-            var tab=[];
-            if(this.programmeInfo.typeUtilisation==="CPRIVSONPH"){
+        /*if(this.selectedLineProgramme !== undefined && this.selectedLineProgramme.length > 0
+          || this.unselectedLigneProgramme !== undefined && this.unselectedLigneProgramme.length >0) {
+          this.selection = {
+            deselectAll : false,
+            all : false,
+            unselected : this.unselectedLigneProgramme,
+            selected : this.ligneProgrammeSelected
+          };
 
-              this.priamGrid_phono.gridData_phono = data;
-              this.priamGrid_phono.gridData_phono.number = data.number + 1;
-              tab = this.priamGrid_phono.gridData_phono.content;
+          this.selection.numProg = this.$route.params.numProg;
 
-            }else if (this.programmeInfo.typeUtilisation==="CPRIVSONRD"){
+          this.resource.modifierSelection(this.selection)
+            .then(response => {
+              return response.json();
+            })
+            .then(data => {
+              this.selectedLineProgramme = [];
+              this.unselectedLigneProgramme = [];
+              doSearch.call(this);
+              //this.getDuree()
+            })
+            .catch(response => {
+              alert("Erreur technique lors de la validation de la selection du programme !! " + response);
+            });
+        }*/
 
-              this.priamGrid_sono.gridData_sono = data;
-              this.priamGrid_sono.gridData_sono.number = data.number + 1;
-              tab = this.priamGrid_sono.gridData_sono.content;
-            }
+        function doSearch() {
+          this.dataLoading = true;
+          this.resource.findLigneProgrammeByProgramme({
+            page: this.defaultPageable.page - 1, size: this.defaultPageable.size,
+            sort: this.defaultPageable.sort, dir: this.defaultPageable.dir
+          }, this.filter)
+            .then(response => {
+              return response.json();
+            })
+            .then(data => {
+              console.log(data);
+              var tab = [];
+              if (this.programmeInfo.typeUtilisation === "CPRIVSONPH") {
 
-            this.ligneProgramme = tab;
-            this.dataLoading = false;
-            this.selectAll();
-          });
+                this.priamGrid_phono.gridData_phono = data;
+                this.priamGrid_phono.gridData_phono.number = data.number + 1;
+                tab = this.priamGrid_phono.gridData_phono.content;
+
+              } else if (this.programmeInfo.typeUtilisation === "CPRIVSONRD") {
+
+                this.priamGrid_sono.gridData_sono = data;
+                this.priamGrid_sono.gridData_sono.number = data.number + 1;
+                tab = this.priamGrid_sono.gridData_sono.content;
+              }
+
+              this.ligneProgramme = tab;
+              this.dataLoading = false;
+
+              this.$store.dispatch('toutDesactiver', this.countNbSelected(this.ligneProgramme) == this.ligneProgramme.length);
+              //this.selectAll();
+            });
+        }
+
+        doSearch.call(this);
+      },
+
+      countNbSelected(ligneProgramme) {
+          var count = 0;
+          for(var i in ligneProgramme) {
+              if(ligneProgramme[i].selection) {
+                count++;
+              }
+          }
+
+          return count;
       },
 
       isTableauSelectionnable() {
@@ -811,7 +912,7 @@
             let number = this.indexOf(this.unselectedLigneProgramme, entryChecked);
             this.unselectedLigneProgramme.splice(number, 1);
 
-            this.ligneProgrammeSelected.push({ide12:entryChecked.ide12, libAbrgUtil : entryChecked.libAbrgUtil});
+            this.ligneProgrammeSelected.push(entryChecked);
           }
 
         } else {
@@ -831,8 +932,29 @@
           let number = this.indexOf(this.ligneProgrammeSelected, entryChecked);
           this.ligneProgrammeSelected.splice(number, 1);
 
-          this.unselectedLigneProgramme.push({ide12:entryChecked.ide12, libAbrgUtil : entryChecked.libAbrgUtil});
+          this.unselectedLigneProgramme.push(entryChecked);
         }
+
+
+        this.selection = {
+          deselectAll : false,
+          all : false,
+          unselected : this.unselectedLigneProgramme,
+          selected : this.ligneProgrammeSelected
+        };
+
+        this.selection.numProg = this.$route.params.numProg;
+        this.resource.modifierSelection(this.selection)
+          .then(response => {
+            return response.json();
+          })
+          .then(data => {
+            //this.selectedLineProgramme = [];
+            //this.unselectedLigneProgramme = [];
+          })
+          .catch(response => {
+            alert("Erreur technique lors de la validation de la selection du programme !! " + response);
+          });
         console.log('onEntryChecked() ==> this.ligneProgrammeSelected='+this.ligneProgrammeSelected.length);
       },
 
@@ -847,38 +969,150 @@
           return -1;
 
       },
+
       onAllChecked(allChecked, entries) {
 
         this.all = allChecked;
-
+        debugger
+        this.ligneProgrammeSelected = [];
+        this.unselectedLigneProgramme = [];
         if(allChecked) {
-
-          this.getDuree('AFFECTE');
-
-          this.ligneProgrammeSelected = [];
-          this.unselectedLigneProgramme = [];
-
           for(var i in entries) {
-            if(this.ligneProgrammeSelected.indexOf(entries[i]) == -1)
               this.ligneProgrammeSelected.push(entries[i]);
           }
 
-          this.dureeSelection = {
+        } else {
+          for(var i in entries) {
+            this.unselectedLigneProgramme.push(entries[i]);
+          }
+        }
+
+        this.selection = {
+          deselectAll : false,
+          all : false,
+          unselected : this.unselectedLigneProgramme,
+          selected : this.ligneProgrammeSelected
+        };
+
+        this.selection.numProg = this.$route.params.numProg;
+        this.resource.modifierSelection(this.selection)
+          .then(response => {
+            return response.json();
+          })
+          .then(data => {
+            //this.selectedLineProgramme = [];
+            //this.unselectedLigneProgramme = [];
+            this.getDuree(this.programmeInfo.statut);
+          })
+          .catch(response => {
+            console.log("Erreur technique lors de la validation de la selection du programme !! " + response);
+          });
+
+
+
+          //this.getDuree('AFFECTE');
+
+          //this.ligneProgrammeSelected = [];
+          //this.unselectedLigneProgramme = [];
+
+
+
+
+
+         /* this.resource.findLigneProgrammeByProgramme({page : 0 , size : pageSize,
+            sort : null, null}, this.filter )
+            .then(response => {
+              return response.json();
+            })
+            .then(data => {
+
+                this.ligneProgramme = data.content;
+                //this.selectAll();
+
+                  debugger;
+                  for (var i in this.ligneProgramme) {
+                    if(this.all) {
+                      if(this.indexOf(this.ligneProgrammeSelected, this.ligneProgramme[i]) == -1 &&
+                          this.indexOf(this.unselectedLigneProgramme, this.ligneProgramme[i]) == -1  ) {
+                        this.ligneProgrammeSelected.push(this.ligneProgramme[i]);
+                      } else if (this.indexOf(this.unselectedLigneProgramme, this.ligneProgramme[i]) != -1){
+                          let number = this.indexOf(this.unselectedLigneProgramme, this.ligneProgramme[i]);
+                          this.unselectedLigneProgramme.splice(number, 1);
+                          this.ligneProgrammeSelected.push(this.ligneProgramme[i]);
+                      }
+                    } else {
+                      if(this.indexOf(this.unselectedLigneProgramme, this.ligneProgramme[i]) == -1 &&
+                            this.indexOf(this.ligneProgrammeSelected, this.ligneProgramme[i]) == -1 ) {
+                        this.unselectedLigneProgramme.push(this.ligneProgramme[i]);
+                      } else if(this.indexOf(this.ligneProgrammeSelected, this.ligneProgramme[i]) != -1) {
+                        let number = this.indexOf(this.ligneProgrammeSelected, this.ligneProgramme[i]);
+                        this.ligneProgrammeSelected.splice(number, 1);
+                        this.unselectedLigneProgramme.push(this.ligneProgramme[i]);
+                      }
+                    }
+                  }
+
+                  var  criteria = {
+                        numProg : this.programmeInfo.numProg,
+                        deselectAll : false,
+                        all : this.all,
+                        unselected : [],
+                        selected : this.all ? this.ligneProgrammeSelected : this.unselectedLigneProgramme
+                  };
+
+
+                  /*this.resource.calculerDureeAllSelection(criteria)
+                    .then(response => {
+                      return response.json();
+                    }).then(data => {
+                        this.dureeSelection.auto = data.Automatique;
+                        this.dureeSelection.manuel = data.Manuel;
+                        this.dureeSelection.duree = data.SOMME;
+
+                        this.backupDureeSelection = {
+                          auto: this.dureeSelection.auto,
+                          manuel: this.dureeSelection.manuel,
+                          duree: this.dureeSelection.duree
+                        }
+                  });*/
+
+                /*this.dureeSelection = {
+                   auto : this.backupDureeSelection.auto,
+                   manuel : this.backupDureeSelection.manuel,
+                   duree : this.backupDureeSelection.duree
+                 }*/
+               /* for(var i in this.ligneProgramme) {
+                    var entryChecked = this.ligneProgramme[i];
+                    if(entryChecked.ajout == 'Manuel') {
+                      this.dureeSelection.manuel++;
+
+                    } else {
+                      this.dureeSelection.auto++;
+                    }
+
+                    if(this.programmeInfo.typeUtilisation==="CPRIVSONPH"){
+                      this.dureeSelection.duree += entryChecked.nbrDif;
+                    }else if (this.programmeInfo.typeUtilisation==="CPRIVSONRD"){
+                      this.dureeSelection.duree += entryChecked.durDif;
+                    }
+                }*
+            });*/
+
+          //this.selectAll();
+
+
+
+
+        //} else {
+         // this.ligneProgrammeSelected = [];
+
+          /*this.dureeSelection = {
             auto : this.backupDureeSelection.auto,
             manuel : this.backupDureeSelection.manuel,
             duree : this.backupDureeSelection.duree
-          }
+          }*/
 
-        } else {
-          this.ligneProgrammeSelected = [];
-
-          this.dureeSelection = {
-            auto : 0,
-            manuel : 0,
-            duree : 0
-          }
-
-        }
+       // }
       },
 
       onSelectAll() {
@@ -906,7 +1140,7 @@
       },
 
       valider(selection) {
-
+        debugger;
         this.selection = selection;
 
         if(this.programmeInfo.statut == 'AFFECTE' || this.programmeInfo.statut == 'EN_COURS') {
@@ -932,8 +1166,8 @@
       },
 
       validerSelection () {
-
-        if(this.all) {
+        debugger;
+        /*if(this.all) {
           if(this.unselectedLigneProgramme.length != 0) {
             this.unselect();
           } else {
@@ -949,7 +1183,13 @@
               this.unselect();
             }
           }
-        }
+        }*/
+
+        this.valider({
+          all : false,
+          unselected : [],
+          selected : []
+        });
       },
 
       closeModal () {
@@ -1082,19 +1322,42 @@
           }
         }
 
+
+        this.selection = {
+          deselectAll : false,
+          all : false,
+          unselected : [],//this.unselectedLigneProgramme,
+          selected : []//this.ligneProgrammeSelected
+        };
+
         this.selection.numProg = this.$route.params.numProg;
 
-        this.resource.modifierSelection(this.selection)
+        /*this.resource.modifierSelection(this.selection)
           .then(response => {
             return response.json();
           })
           .then(data => {
             this.filter.selection = 'Sélectionné';
+            this.selectedLineProgramme = [];
+            this.unselectedLigneProgramme = [];
             this.initProgramme();
             this.annulerEdition();
           })
           .catch(response => {
             alert("Erreur technique lors de la validation de la selection du programme !! " + response);
+          });*/
+
+        this.resource.enregistrerEdition(this.selection)
+          .then(response => {
+            this.filter.selection = 'Sélectionné';
+            this.selectedLineProgramme = [];
+            this.unselectedLigneProgramme = [];
+            this.tableauSelectionnable = false;
+            this.edition = false;
+            this.inProcess = false;
+            this.initProgramme();
+
+
           });
       },
 
@@ -1109,9 +1372,15 @@
       },
 
       annulerEdition () {
-        this.tableauSelectionnable = false;
-        this.edition = false;
-        this.inProcess = false;
+
+        this.resource.annulerEdition({numProg : this.$route.params.numProg})
+          .then(response => {
+            this.rechercher();
+            this.tableauSelectionnable = false;
+            this.edition = false;
+            this.inProcess = false;
+        });
+
       },
 
       editSelectionClickHandler () {

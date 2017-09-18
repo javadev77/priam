@@ -13,25 +13,25 @@
        </div>
 
       <div class="row">
-        <div class="col-sm-4">
+        <div class="col-sm-3">
           <label class="pull-right blueText">N° programme</label>
         </div>
-        <div class="col-sm-3">
+        <div class="col-sm-5">
           {{ programmeInfo.numProg }}
         </div>
 
 
-        <div class="col-sm-5">
+        <div class="col-sm-4">
           <span class="pull-right blueText">Famille</span>
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-5">
           {{ getFamilleByCode(programmeInfo.famille) !== undefined ? getFamilleByCode(programmeInfo.famille).value : '' }}
         </div>
 
-        <div class="col-sm-4">
-          <span class="pull-left blueText">Rion statutaire</span>
+        <div class="col-sm-3">
+          <span class="pull-right blueText">Rion statutaire</span>
         </div>
-        <div class="col-sm-1">
+        <div class="col-sm-3">
           {{ getLibelleRionById(programmeInfo.rionTheorique) }}
         </div>
 
@@ -41,15 +41,15 @@
       <!-- 2 eme ligne -->
       <div class="row">
 
-        <div class="col-sm-4">
+        <div class="col-sm-3">
           <span class="pull-right blueText">Nom</span>
         </div>
-        <div class="col-sm-3">
+        <div class="col-sm-5">
           {{ programmeInfo.nom }}
         </div>
 
 
-        <div class="col-sm-5">
+        <div class="col-sm-4">
           <span class="pull-right blueText">Type d'utilisation</span>
         </div>
         <div class="col-sm-6">
@@ -119,6 +119,13 @@
             required : true
         }
       },
+
+    mounted() {
+
+      var modalElem = $('.modal-dialog');
+      modalElem.css('width', "60%");
+
+    },
 
       data() {
         return {

@@ -45,6 +45,9 @@ public class LigneProgrammeService {
     
     @Autowired
     private FichierDao fichierDao;
+    
+    @Autowired
+    private ProgrammeService programmeService;
 
     private static final Logger LOG = LoggerFactory.getLogger(LigneProgrammeService.class);
 
@@ -95,7 +98,10 @@ public class LigneProgrammeService {
 
                 Sort.Order sortBy = sort.iterator().next();
 
-                if("nbrDif".equals(sortBy.getProperty()) || "durDif".equals(sortBy.getProperty())) {
+                if("sum(nbrDif)".equals(sortBy.getProperty()) ||
+                       "nbrDif".equals(sortBy.getProperty()) ||
+                       "sum(durDif)".equals(sortBy.getProperty()) ||
+                       "durDif".equals(sortBy.getProperty())) {
                     if (TypeUtilisationEnum.COPIE_PRIVEE_SONORE_PHONO.getCode().equals(programme.getTypeUtilisation().getCode())) {
                         sort = JpaSort.unsafe(sortBy.getDirection(), "sum(nbrDif)");
                     } else if (TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode().equals(programme.getTypeUtilisation().getCode())) {
@@ -147,10 +153,10 @@ public class LigneProgrammeService {
 
     @Transactional
     public void selectLigneProgramme(String numProg, Set<Map<String, String>> idLingesProgrammes) {
-        ligneProgrammeDao.updateSelectionByNumProgramme(numProg, false);
+        //ligneProgrammeDao.updateSelectionByNumProgramme(numProg, false);
 
         for (Map<String, String>  obj:  idLingesProgrammes) {
-            ligneProgrammeDao.updateSelectionByNumProgramme(numProg, Long.parseLong(obj.get(IDE_12)), obj.get(CDE_UTIL).split(" - ")[0]);
+            ligneProgrammeDao.updateSelectionByNumProgramme(numProg, Long.parseLong(obj.get(IDE_12)), obj.get(CDE_UTIL).split(" - ")[0], 1);
         }
 
 
@@ -257,5 +263,49 @@ public class LigneProgrammeService {
         input.setCdeTypIde12(input.getCdeTypIde12());
         
         return ligneProgrammeDao.saveAndFlush(input);
+    }
+    
+    @Transactional
+    public void deselectLigneProgramme(String numProg, Set<Map<String, String>> unselected) {
+    
+        for (Map<String, String>  obj:  unselected) {
+            ligneProgrammeDao.updateSelectionByNumProgramme(numProg, Long.parseLong(obj.get(IDE_12)), obj.get(CDE_UTIL).split(" - ")[0], 0);
+        }
+    }
+    
+    @Transactional
+    public Map<String, Long> calculerDureeAllSelection(String numProg, Set<Map<String, String>> lignesProg, boolean isSelectAll) {
+        Programme programme = programmeDao.findOne(numProg);
+        if(isSelectAll) {
+           selectLigneProgramme(numProg, lignesProg);
+        } else {
+           deselectLigneProgramme(numProg, lignesProg);
+        }
+    
+        Map<String, Long> durDifProgramme = programmeService.getDurDifProgramme(numProg, programme.getStatut().name());
+       
+       //Rollback les modif de avant calcul
+        if(isSelectAll) {
+            deselectLigneProgramme(numProg, lignesProg);
+        } else {
+            selectLigneProgramme(numProg, lignesProg);
+        }
+        
+        return durDifProgramme;
+    }
+    
+    @Transactional
+    public void enregistrerEdition(String numProg) {
+        
+        ligneProgrammeDao.updateSelection(numProg, Boolean.TRUE);
+        ligneProgrammeDao.updateSelection(numProg, Boolean.FALSE);
+        
+        ligneProgrammeDao.flush();
+    }
+    
+    @Transactional
+    public void annulerEdition(String numProg) {
+        ligneProgrammeDao.updateSelectionTemporaire(numProg, Boolean.FALSE);
+        ligneProgrammeDao.flush();
     }
 }

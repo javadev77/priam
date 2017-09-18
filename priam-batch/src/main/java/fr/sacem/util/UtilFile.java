@@ -3,8 +3,8 @@ package fr.sacem.util;
 import au.com.bytecode.opencsv.CSVReader;
 import fr.sacem.domain.Fichier;
 import fr.sacem.service.FichierService;
-import fr.sacem.service.ZipMultiResourceItemReader;
 import fr.sacem.util.exception.PriamValidationException;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ import java.util.zip.ZipOutputStream;
  */
 public class UtilFile {
     private final static char SEPARATOR = ';';
-    private static final Logger LOG = LoggerFactory.getLogger(ZipMultiResourceItemReader.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UtilFile.class);
     private static final String MON_FILTER = "TRACABILITE";
     private static final String STATUT_EN_COURS = "EN_COURS";
     private static final String EXTENTION_CSV = ".csv";
@@ -36,10 +36,10 @@ public class UtilFile {
         Long count = 0L;
         try {
             InputStream is = inputStream;
-            Reader reader = new InputStreamReader(is);
+            Reader reader = new InputStreamReader(inputStream);
             BufferedReader bufferedReader = new BufferedReader(reader);
             while ((input = bufferedReader.readLine()) != null) {
-                if (!input.substring(0, 1).equals("#"))
+                if (!input.startsWith("#"))
                     count++;
             }
         } catch (IOException e) {
@@ -55,20 +55,19 @@ public class UtilFile {
             //Traitement pour recuperer la famille et le type d'utilisation depuis le contenu du ficiher
             Reader reader = new InputStreamReader(inputStream);
             BufferedReader bufferedReader = new BufferedReader(reader);
-            CSVReader csvReader = new CSVReader(reader, SEPARATOR);
+            CSVReader csvReader = new CSVReader(bufferedReader, SEPARATOR);
             List<String[]> data = new ArrayList<String[]>();
 
             String[] nextLine = null;
             String[] donnee = null;
-            while ((nextLine = csvReader.readNext()) != null && data.size() < 1) {
-                int size = nextLine.length;
-
+            Long nbLignes = 0L;
+            while ((nextLine = csvReader.readNext()) != null) {
                 // ligne vide
-                if (size == 0) {
+                if (nextLine == null || nextLine.length == 0) {
                     continue;
                 }
                 String debut = nextLine[0].trim();
-                if (debut.length() == 0 && size == 1) {
+                if (StringUtils.isBlank(debut) || StringUtils.isEmpty(debut) ) {
                     continue;
                 }
 
@@ -76,11 +75,14 @@ public class UtilFile {
                 if (debut.startsWith("#")) {
                     continue;
                 }
-                data.add(nextLine);
+                if(donnee == null) {
+                    donnee = nextLine;
+                }
+                
+                nbLignes++;
             }
             // on a besoin de charger que la premiere ligne pour recuperer typeUtilisation et la famille
-            if (data.size() >= 1) {
-                donnee = data.get(0);
+            if (donnee != null) {
                 fichier.setTypeUtilisation(donnee[4]);
                 fichier.setFamille(donnee[1]);
                 fichier.setNom(nomFichier);
@@ -89,8 +91,7 @@ public class UtilFile {
                 //Nom du fichier a intégrer en BDD
                 fichier.setNom(nomFichier);
                 //Nombre de lignes dans le fichier
-                Long nb_lignes = UtilFile.nombreDeLignes(inputStream);
-                fichier.setNbLignes(nb_lignes);
+                fichier.setNbLignes(nbLignes);
                 fichier.setStatut(STATUT_EN_COURS);
             }
         } catch (IOException e) {

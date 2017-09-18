@@ -127,7 +127,7 @@
                              ref="checkbox"
                              :value="entryColumn.cell.toText(entry)"
                              :checked="entryColumn.cell.isChecked(entry)"
-                             @click="emitCheckbox(entry, entryColumn.cell.isChecked(entry))" />
+                             @click="emitCheckbox(entry, entryColumn.cell.toText(entry), entryColumn.cell.isChecked(entry))" />
 
                       <!--<label class="checkbox checkbox-inline" :class="{'checked' : entryColumn.cell.isChecked(entry) == 1}">
                         <input class="checkbox checkbox-inline"
@@ -307,6 +307,8 @@
 
     created() {
 
+        debugger;
+
         this.sort = this.data.sort !== undefined ? this.data.sort[0] : undefined;
 
         if(this.isLocalSort) {
@@ -337,11 +339,16 @@
 
       dureeFormattee(duree) {
 
-        let hours = Math.floor( duree / 3600);
-        let minutes = Math.floor(duree / 60);
-        let seconds = duree % 60;
+        let jours = Math.floor( duree / 86400);
+        let reste = duree % 86400;
+        let hours = Math.floor( reste / 3600);
+        reste = reste % 3600;
+        let minutes = Math.floor(reste / 60);
+        let seconds = reste % 60;
 
-        return ((hours < 10) ? '0'+hours : hours)+":"+((minutes < 10) ? '0' + minutes: minutes)+":"+ ((seconds < 10) ? '0'+seconds : seconds);
+
+        return ((jours < 10) ? '0'+jours : jours) + 'j ' +((hours < 10) ? '0'+hours : hours)+"h "+((minutes < 10) ? '0' + minutes: minutes)+"m "+ ((seconds < 10) ? '0'+seconds : seconds) + "s";
+
       },
       emitCellClick(entry, column) {
          console.log("CellClick")
@@ -352,9 +359,16 @@
         this.$emit(event, entry, column);
       },
 
-      emitCheckbox(entry, value) {
-        let key = Number.parseInt(entry.id);
-        console.log("emitCheckbox id=%s, value=%s", key, value)
+      emitCheckbox(entry, entryKey, value) {
+        var key = null;//Number.parseInt(entry.id);
+        debugger;
+        if(this.isNumber(entryKey)) {
+          key = Number.parseInt(entryKey);
+        } else {
+          key = JSON.parse(entryKey);
+        }
+
+        console.log("emitCheckbox id=%s, value=%s", key, value);
           if(this.allChecked) {
               this.allChecked = false;
 
@@ -386,10 +400,11 @@
               key = JSON.parse(elem.value);
             }
 
+            entries.push(key);
             if(this.allChecked) {
               elem.checked =  1;
 
-              entries.push(key);
+
               this.checkedCurrentEntry.set(key, true);
             } else {
               elem.checked = 0;
@@ -400,7 +415,7 @@
         }
 
         console.log("this.checkedCurrentEntry=" +  entries.length);
-
+        debugger;
         this.$emit('all-checked', this.allChecked, entries);
 
       },
@@ -441,6 +456,7 @@
         console.log("type of pageSize = "  + typeof pageSize);
         this.currentPage = 1;
         this.pageSize = pageSize;
+        debugger;
         this.$emit('load-page', 1, pageSize, this.sort);
       },
       isNumber(n) {

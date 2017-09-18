@@ -70,6 +70,6 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
       
-        argumentResolvers.add(new UserDTOHandlerMethodArgumentResolver());
+       //u argumentResolvers.add(new UserDTOHandlerMethodArgumentResolver());
     }
 }

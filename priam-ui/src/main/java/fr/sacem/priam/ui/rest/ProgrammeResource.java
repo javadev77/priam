@@ -178,6 +178,7 @@ public class ProgrammeResource {
 
         return programmeDto;
     }
+    
   @RequestMapping(value = "programme/durdif",
     method = RequestMethod.GET,
     produces = MediaType.APPLICATION_JSON_VALUE)
