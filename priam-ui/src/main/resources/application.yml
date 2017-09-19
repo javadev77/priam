@@ -9,6 +9,10 @@ datasource:
     url: jdbc:mysql://msqdev08:3306/priam_app
     username: priam_app
     password: bidon
+#    url : jdbc:mysql://msqrec08:3306/priam_app
+#    username : priam_app
+#    password : rct
+
     driverClassName: com.mysql.jdbc.Driver
     defaultSchema: priam_app
     maxPoolSize: 20

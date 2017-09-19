@@ -6,29 +6,55 @@
 
         <div class="form-group col-xs-8">
           <label class="col-xs-15 control-label blueText text-right">Oeuvres sélectionées - Auto</label>
-          <div class="col-xs-9 control-label">
+          <div class="col-xs-9 control-label" v-if="!dataLoadingDuree">
             {{ dureeSelection.auto }}
+          </div>
+          <div class="col-xs-9" v-else>
+            <div class="spinner" v-if="dataLoadingDuree">
+              <div class="rect1"></div>
+              <div class="rect2"></div>
+              <div class="rect3"></div>
+            </div>
           </div>
         </div>
 
         <div class="form-group col-xs-8">
           <label class="col-xs-15 control-label blueText text-right">Oeuvres sélectionées - Manuel</label>
-          <div class="col-xs-9 control-label">
+          <div class="col-xs-9 control-label" v-if="!dataLoadingDuree">
             {{ dureeSelection.manuel }}
+          </div>
+          <div class="col-xs-9" v-else>
+            <div class="spinner" v-if="dataLoadingDuree">
+              <div class="rect1"></div>
+              <div class="rect2"></div>
+              <div class="rect3"></div>
+            </div>
           </div>
         </div>
 
         <div class="form-group col-xs-8">
+
           <label class="col-xs-15 control-label blueText text-right" v-if="typeUtilisation == 'CPRIVSONRD'">Durée sélection</label>
           <label class="col-xs-15 control-label blueText text-right" v-else-if="typeUtilisation == 'CPRIVSONPH'">Quantité sélection</label>
 
-          <div class="col-xs-9 control-label" v-if="typeUtilisation == 'CPRIVSONRD'">
-            {{ dureeFormattee }}
-          </div>
-          <div class="col-xs-9 control-label" v-else-if="typeUtilisation == 'CPRIVSONPH'">
-            {{ dureeSelection.duree }}
-          </div>
-         </div>
+          <template v-if="!dataLoadingDuree">
+            <div class="col-xs-9 control-label" v-if="typeUtilisation == 'CPRIVSONRD'">
+              {{ dureeFormattee }}
+            </div>
+            <div class="col-xs-9 control-label" v-else-if="typeUtilisation == 'CPRIVSONPH'">
+              {{ dureeSelection.duree }}
+            </div>
+          </template>
+          <template v-else>
+            <div class="col-xs-9" >
+              <div class="spinner" v-if="dataLoadingDuree">
+                <div class="rect1"></div>
+                <div class="rect2"></div>
+                <div class="rect3"></div>
+              </div>
+            </div>
+          </template>
+        </div>
       </div>
     </div>
   </div>
@@ -41,7 +67,8 @@
 
       props : {
         dureeSelection: Object,
-        typeUtilisation : String
+        typeUtilisation : String,
+        dataLoadingDuree : Boolean
       },
 
       computed : {
@@ -62,3 +89,65 @@
 
   }
 </script>
+
+
+<style>
+
+  .spinner {
+    float:  left;
+    width: 30px;
+    height: 20px;
+    text-align: center;
+    font-size: 10px;
+  }
+
+  .spinner > div {
+    background-color: #333;
+    height: 100%;
+    width: 6px;
+    display: inline-block;
+
+    -webkit-animation: sk-stretchdelay 1.2s infinite ease-in-out;
+    animation: sk-stretchdelay 1.2s infinite ease-in-out;
+  }
+
+  .spinner .rect2 {
+    -webkit-animation-delay: -1.1s;
+    animation-delay: -1.1s;
+  }
+
+  .spinner .rect3 {
+    -webkit-animation-delay: -1.0s;
+    animation-delay: -1.0s;
+  }
+
+  .spinner .rect4 {
+    -webkit-animation-delay: -0.9s;
+    animation-delay: -0.9s;
+  }
+
+  .spinner .rect5 {
+    -webkit-animation-delay: -0.8s;
+    animation-delay: -0.8s;
+  }
+
+  @-webkit-keyframes sk-stretchdelay {
+    0%, 40%, 100% { -webkit-transform: scaleY(0.4) }
+    20% { -webkit-transform: scaleY(1.0) }
+  }
+
+  @keyframes sk-stretchdelay {
+    0%, 40%, 100% {
+      transform: scaleY(0.4);
+      -webkit-transform: scaleY(0.4);
+    }  20% {
+         transform: scaleY(1.0);
+         -webkit-transform: scaleY(1.0);
+       }
+  }
+
+  .center-div {
+    width: 0%;
+    margin: 0 auto;
+  }
+</style>

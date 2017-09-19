@@ -151,7 +151,7 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
             "  p.SEL_EN_COURS =?2 " +
             "where " +
             "  f.NUMPROG = ?1")
-    void updateSelectionByNumProgramme(@Param("numProg") String numProg, @Param("selectionEnCours") boolean selectionEnCours);
+    void updateSelectionTemporaireByNumProgramme(@Param("numProg") String numProg, @Param("selectionEnCours") boolean selectionEnCours);
 
     @Modifying(clearAutomatically = true)
     @Transactional
@@ -179,10 +179,10 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
             "  f.NUMPROG = ?1" +
             " AND p.ide12 = ?2" +
             " AND p.cdeUtil = ?3")
-    void updateSelectionByNumProgramme(@Param("numProg") String numProg,
-                                       @Param("ide12") Long ide12,
-                                       @Param("cdeUtil") String cdeUtil,
-                                       @Param("select") int select);
+    void updateSelectionTemporaireByNumProgramme(@Param("numProg") String numProg,
+                                                 @Param("ide12") Long ide12,
+                                                 @Param("cdeUtil") String cdeUtil,
+                                                 @Param("select") int select);
 
     @Transactional
     @Modifying(clearAutomatically = true)
@@ -243,6 +243,42 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
                                            "PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
                                            "set  p.SEL_EN_COURS=?2 " +
                                            "WHERE  "+
-                                           "f.NUMPROG = ?1 ")
+                                           "f.NUMPROG = ?1 AND p.selection=?2")
     void updateSelectionTemporaire(@Param("numProg") String numProg, @Param("selection") boolean value);
+    
+    @Transactional
+    @Modifying(clearAutomatically = true)
+    @Query(nativeQuery = true, value = "DELETE p.* FROM " +
+                                           "PRIAM_LIGNE_PROGRAMME p " +
+                                           "INNER JOIN " +
+                                           "PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
+                                           "WHERE  "+
+                                           "f.NUMPROG = ?1 " +
+                                           "AND p.selection=?2 " +
+                                           "AND p.ajout = 'Manuel' ")
+    void deleteOeuvresManuels(@Param("numProg") String numProg, @Param("selection") boolean value);
+    
+    @Transactional
+    @Modifying(clearAutomatically = true)
+    @Query(nativeQuery = true, value = "DELETE p.* FROM " +
+                                           "PRIAM_LIGNE_PROGRAMME p " +
+                                           "INNER JOIN " +
+                                           "PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
+                                           "WHERE  "+
+                                           "f.NUMPROG = ?1 " +
+                                           "AND p.ajout = 'Manuel' ")
+    void deleteAllOeuvres(@Param("numProg") String numProg);
+    
+    
+    @Modifying(clearAutomatically = true)
+    @Transactional
+    @Query(nativeQuery = true, value="update " +
+                                         "  PRIAM_LIGNE_PROGRAMME p " +
+                                         "INNER JOIN " +
+                                         "  PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
+                                         "set " +
+                                         "  p.selection =?2 " +
+                                         "where " +
+                                         "  f.NUMPROG = ?1")
+    void deselectAllByNumProgramme(@Param("numProg") String numProg, @Param("selection") boolean selection);
 }

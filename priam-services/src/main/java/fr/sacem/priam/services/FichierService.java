@@ -53,7 +53,8 @@ public class FichierService {
         
         
         //Mettre par defaut les oeuvre à  selectionne
-        ligneProgrammeDao.updateSelectionByNumProgramme(numProg, true);
+        ligneProgrammeDao.updateSelectionTemporaireByNumProgramme(numProg, true);
+        ligneProgrammeDao.deselectAllByNumProgramme(numProg, false);
         
     
         Programme programme = programmeDao.findOne(numProg);

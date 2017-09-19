@@ -148,15 +148,18 @@ public class LigneProgrammeService {
 
     @Transactional
     public void selectAll(String numProg) {
-        ligneProgrammeDao.updateSelectionByNumProgramme(numProg, true);
+        ligneProgrammeDao.updateSelectionTemporaireByNumProgramme(numProg, true);
+        ligneProgrammeDao.updateSelection(numProg, true);
+        
+        ligneProgrammeDao.flush();
     }
 
     @Transactional
     public void selectLigneProgramme(String numProg, Set<Map<String, String>> idLingesProgrammes) {
-        //ligneProgrammeDao.updateSelectionByNumProgramme(numProg, false);
+        //ligneProgrammeDao.updateSelectionTemporaireByNumProgramme(numProg, false);
 
         for (Map<String, String>  obj:  idLingesProgrammes) {
-            ligneProgrammeDao.updateSelectionByNumProgramme(numProg, Long.parseLong(obj.get(IDE_12)), obj.get(CDE_UTIL).split(" - ")[0], 1);
+            ligneProgrammeDao.updateSelectionTemporaireByNumProgramme(numProg, Long.parseLong(obj.get(IDE_12)), obj.get(CDE_UTIL).split(" - ")[0], 1);
         }
 
 
@@ -164,7 +167,7 @@ public class LigneProgrammeService {
 
     @Transactional
     public void selectAllLigneProgrammeExcept(String numProg, Set<Map<String, String>> idLingesProgrammes) {
-        ligneProgrammeDao.updateSelectionByNumProgramme(numProg, false);
+        ligneProgrammeDao.updateSelectionTemporaireByNumProgramme(numProg, false);
 
         for (Map<String, String>  obj:  idLingesProgrammes) {
             ligneProgrammeDao.updateSelectionByNumProgrammeExcept(numProg, Long.parseLong(obj.get(IDE_12)), obj.get(CDE_UTIL).split(" - ")[0]);
@@ -174,7 +177,7 @@ public class LigneProgrammeService {
 
     @Transactional
     public void deselectAll(String numProg) {
-        ligneProgrammeDao.updateSelectionByNumProgramme(numProg, false);
+        ligneProgrammeDao.updateSelectionTemporaireByNumProgramme(numProg, false);
     }
     
     
@@ -216,13 +219,14 @@ public class LigneProgrammeService {
             oeuvreManuelFound.setDateInsertion(new Date());
             oeuvreManuelFound.setUtilisateur(input.getUtilisateur());
             oeuvreManuelFound.setCdeTypIde12(input.getCdeTypIde12());
-            
+             oeuvreManuelFound.setSelectionEnCours(true);
         } else {
             List<LigneProgramme> founds = ligneProgrammeDao.findOeuvresAutoByIde12AndCdeUtil(input.getNumProg(), input.getIde12(), input.getCdeUtil());
             if(founds != null && !founds.isEmpty()) {
                 LigneProgramme oeuvreManuel = createOeuvreManuel(input, programme);
                 founds.forEach( found -> {
                     found.setOeuvreManuel(oeuvreManuel);
+                    found.setSelectionEnCours(Boolean.FALSE);
                     found.setSelection(Boolean.FALSE);
                     ligneProgrammeDao.save(found);
                 });
@@ -261,6 +265,8 @@ public class LigneProgrammeService {
         input.setSelection(Boolean.TRUE);
         input.setDateInsertion(new Date());
         input.setCdeTypIde12(input.getCdeTypIde12());
+        input.setSelectionEnCours(Boolean.TRUE);
+        input.setSelection(Boolean.FALSE);
         
         return ligneProgrammeDao.saveAndFlush(input);
     }
@@ -269,7 +275,7 @@ public class LigneProgrammeService {
     public void deselectLigneProgramme(String numProg, Set<Map<String, String>> unselected) {
     
         for (Map<String, String>  obj:  unselected) {
-            ligneProgrammeDao.updateSelectionByNumProgramme(numProg, Long.parseLong(obj.get(IDE_12)), obj.get(CDE_UTIL).split(" - ")[0], 0);
+            ligneProgrammeDao.updateSelectionTemporaireByNumProgramme(numProg, Long.parseLong(obj.get(IDE_12)), obj.get(CDE_UTIL).split(" - ")[0], 0);
         }
     }
     
@@ -305,7 +311,23 @@ public class LigneProgrammeService {
     
     @Transactional
     public void annulerEdition(String numProg) {
+        
+        ligneProgrammeDao.deleteOeuvresManuels(numProg, Boolean.FALSE); //Annuler les oeuvres ajoutes manuellement
+        
         ligneProgrammeDao.updateSelectionTemporaire(numProg, Boolean.FALSE);
+        ligneProgrammeDao.updateSelectionTemporaire(numProg, Boolean.TRUE);
+        
+        ligneProgrammeDao.flush();
+    }
+    
+    @Transactional
+    public void annulerSelection(String numProg) {
+        ligneProgrammeDao.deleteAllOeuvres(numProg); //Annuler les oeuvres ajoutes manuellement
+        //ligneProgrammeDao.deleteOeuvresManuels(numProg, Boolean.TRUE); //Annuler les oeuvres ajoutes manuellement
+    
+        ligneProgrammeDao.updateSelectionTemporaireByNumProgramme(numProg, Boolean.TRUE);
+        ligneProgrammeDao.updateSelection(numProg, Boolean.TRUE);
+        
         ligneProgrammeDao.flush();
     }
 }

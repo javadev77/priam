@@ -118,10 +118,13 @@ public class LigneProgrammeResource {
 
     ProgrammeDto programmeDTO = new ProgrammeDto();
     programmeDTO.setNumProg(input.getNumProg());
-
+  
+  
+    ligneProgrammeService.enregistrerEdition(input.getNumProg());
+    
     Programme programme = programmeService.validerProgramme(programmeDTO);
-
-    //modifierSelection(input, programme);
+  
+    
 
     return new ArrayList<>();
   }
@@ -201,9 +204,9 @@ public class LigneProgrammeResource {
     programmeDTO.setNumProg(input.getNumProg());
 
     Programme programme = programmeService.updateStatutProgrammeToAffecte(programmeDTO);
-    ligneProgrammeService.selectAll(programme.getNumProg());
+    ligneProgrammeService.annulerSelection(programme.getNumProg());
 
-    modifierSelection(input, programme.getNumProg());
+    //modifierSelection(input, programme.getNumProg());
 
     return new ArrayList<>();
   }
@@ -246,7 +249,15 @@ public class LigneProgrammeResource {
     method = RequestMethod.POST,
     consumes = MediaType.APPLICATION_JSON_VALUE)
   public void enregistrerEdition(@RequestBody ValdierSelectionProgrammeInput input) {
-      ligneProgrammeService.enregistrerEdition(input.getNumProg());
+    if(input == null || input.getNumProg() == null || input.getNumProg().isEmpty())
+      throw new RuntimeException("input or num programme must not be null !");
+  
+    ProgrammeDto programmeDTO = new ProgrammeDto();
+    programmeDTO.setNumProg(input.getNumProg());
+  
+    Programme programme = programmeService.invaliderProgramme(programmeDTO);
+  
+    ligneProgrammeService.enregistrerEdition(input.getNumProg());
   }
   
   

@@ -54,6 +54,7 @@
         <div class="panel-collapse">
           <div class="result-panel-body panel-body">
             <app-informations-selection
+              :dataLoadingDuree="dataLoadingDuree"
               :dureeSelection="dureeSelection"
               :typeUtilisation="programmeInfo.typeUtilisation"
             >
@@ -68,6 +69,8 @@
                 <div class="rect5"></div>
               </div>
             </div>
+
+
 
 
             <div v-if = "!dataLoading && this.programmeInfo.typeUtilisation=='CPRIVSONRD'">
@@ -147,6 +150,8 @@
         <button class="btn btn-default btn-primary pull-right yes" @click="supprimerProgramme">Oui</button>
       </template>
     </modal>
+
+
   </div>
 </template>
 
@@ -564,6 +569,7 @@
         backupDureeSelection : {},
 
         dataLoading : false,
+        dataLoadingDuree : false,
         showPopupSuppression : false
       }
     },
@@ -591,6 +597,7 @@
       },
 
       getDuree: function (statut) {
+        this.dataLoadingDuree = true;
         this.resource.dureeProgramme({numProg: this.$route.params.numProg, statut: statut})
           .then(response => {
           return response.json();
@@ -605,6 +612,8 @@
             manuel: this.dureeSelection.manuel,
             duree: this.dureeSelection.duree
           }
+
+          this.dataLoadingDuree = false;
       })
         ;
       },
@@ -650,7 +659,6 @@
 
               this.tableauSelectionnable = false;
 
-              this.getDuree(this.programmeInfo.statut);
 
             if(this.programmeInfo.typeUtilisation==="CPRIVSONPH"){
               this.defaultPageable.sort = 'nbrDif';
@@ -716,6 +724,7 @@
               this.ligneProgramme = this.priamGrid_sono.gridData_sono.content;
             }
 
+            console.log("ToutDesactiver = " + this.countNbSelected(this.ligneProgramme));
             this.$store.dispatch('toutDesactiver', this.countNbSelected(this.ligneProgramme) == this.ligneProgramme.length);
 
 
@@ -843,7 +852,7 @@
               return response.json();
             })
             .then(data => {
-              console.log(data);
+
               var tab = [];
               if (this.programmeInfo.typeUtilisation === "CPRIVSONPH") {
 
@@ -867,6 +876,7 @@
         }
 
         doSearch.call(this);
+        this.getDuree(this.programmeInfo.statut);
       },
 
       countNbSelected(ligneProgramme) {
@@ -885,6 +895,7 @@
       },
 
       onEntryChecked(isChecked, entryChecked) {
+        this.$store.dispatch('toutDesactiver', false);
         if(isChecked) {
 
           if(entryChecked.ajout == 'Manuel') {
@@ -955,7 +966,8 @@
           .catch(response => {
             alert("Erreur technique lors de la validation de la selection du programme !! " + response);
           });
-        console.log('onEntryChecked() ==> this.ligneProgrammeSelected='+this.ligneProgrammeSelected.length);
+
+         console.log('onEntryChecked() ==> this.ligneProgrammeSelected='+this.ligneProgrammeSelected.length);
       },
 
       indexOf(array, obj) {
@@ -987,6 +999,7 @@
           }
         }
 
+        this.$store.dispatch('toutDesactiver', this.all);
         this.selection = {
           deselectAll : false,
           all : false,
@@ -995,6 +1008,7 @@
         };
 
         this.selection.numProg = this.$route.params.numProg;
+        this.dataLoadingDuree = true;
         this.resource.modifierSelection(this.selection)
           .then(response => {
             return response.json();
@@ -1278,6 +1292,7 @@
       enregistrerEdition() {
 
         this.inProcess = true;
+
         this.tableauSelectionnable = false;
         if(this.all) {
           if(this.unselectedLigneProgramme.length != 0) {
@@ -1375,10 +1390,13 @@
 
         this.resource.annulerEdition({numProg : this.$route.params.numProg})
           .then(response => {
+            this.selectedLineProgramme = [];
+            this.unselectedLigneProgramme = [];
             this.rechercher();
             this.tableauSelectionnable = false;
             this.edition = false;
             this.inProcess = false;
+            this.getDuree(this.programmeInfo.statut);
         });
 
       },

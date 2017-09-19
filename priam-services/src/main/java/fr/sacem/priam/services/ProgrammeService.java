@@ -200,7 +200,7 @@ public class ProgrammeService {
 
 		Programme programme = programmeDao.findOne(numProg);
 
-		Integer selection = StatutProgramme.AFFECTE.equals(StatutProgramme.valueOf(statut)) ? null : SELECTION;
+		Integer selection = SELECTION;
 
 		List<Object> prog = programmeDao.compterOuvres(numProg, selection);
 

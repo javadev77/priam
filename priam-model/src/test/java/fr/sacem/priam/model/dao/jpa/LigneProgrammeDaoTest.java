@@ -120,7 +120,7 @@ public class LigneProgrammeDaoTest {
 
         boolean success = true;
         try{
-            ligneProgrammeDao.updateSelectionByNumProgramme(NUM_PROG, Boolean.TRUE);
+            ligneProgrammeDao.updateSelectionTemporaireByNumProgramme(NUM_PROG, Boolean.TRUE);
         }catch (Exception e) {
             success = false;
         }
