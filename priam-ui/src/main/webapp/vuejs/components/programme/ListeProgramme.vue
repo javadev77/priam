@@ -376,7 +376,7 @@
                   id :  'repartition',
                   name :   "Répartition",
                   sortable : false,
-                  type : 'clickable-icons',
+                  type : 'clickable-icons-or-text',
                   cell : {
                     cellTemplate: function (cellValue) {
                       var tempalteRepartABlanc = '<img src="static/images/iconescontextes/transfertgestionnaire.gif" title="Mise en répartition" width="20px"/>';
@@ -386,7 +386,23 @@
                         template.push({event : 'mise-en-repart', template : tempalteRepartABlanc});
                         return template;
                       }
+
+
                       return '';
+                    },
+
+                    isText : function (entry) {
+                      var statusCode = entry.statut;
+                      if(statusCode !== undefined && 'REPARTI' == statusCode) {
+                        return true;
+                      }
+
+                      return false;
+                    },
+
+                    toText : function (entry) {
+                        return entry.dateValidation;
+
                     }
                   }
 
@@ -394,8 +410,13 @@
                 {
                   id :  'rionPaiement',
                   name :   "Rion de paiement",
-                  sortable : false,
-                  type : 'icon'
+                  sortable : true,
+                  type : 'code-value',
+                  cell : {
+                    toText : function(rionTheorique) {
+                      return $this.getLibelleRionById(rionTheorique);
+                    }
+                  }
                 },
                 {
                   id: 'action',
