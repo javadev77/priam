@@ -41,8 +41,6 @@ public class LigneProgrammeSpringValidator implements Validator {
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "ide12", "error.ide12");
 
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "titreOeuvre", "error.titreOeuvre");
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "roleParticipant1", "error.roleParticipant1");
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "nomParticipant1", "error.nomParticipant1");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeTypUtilOri", "error.cdeTypUtilOri");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeFamilTypUtilOri", "error.cdeFamilTypUtilOri");
 
