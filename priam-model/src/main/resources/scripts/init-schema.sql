@@ -231,7 +231,9 @@ SELECT DISTINCT
     `pr`.`USERAFFECT`                        AS `USERAFFECT`,
     (SELECT count(`f`.`NUMPROG`)
      FROM PRIAM_FICHIER `f`
-     WHERE (`pr`.`NUMPROG` = `f`.`NUMPROG`)) AS `fichiers`,
+     WHERE (`pr`.`NUMPROG` = `f`.`NUMPROG`)
+      AND f.SOURCE_AUTO = 1
+      ) AS `fichiers`,
     `pr`.`DATE_DBT_PRG`                      AS `DATEDBTPRG`,
     `pr`.`DATE_FIN_PRG`                      AS `DATEFINPRG`,
     `pr`.`CDE_TER`                           AS `CDETER`,

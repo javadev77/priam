@@ -26,6 +26,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
+
 /**
  * Created by jbelwidane on 25/07/2017.
  */
@@ -186,20 +189,26 @@ public class LigneProgrammeService {
     
         String cdeUtil = selectedLigneProgramme.getLibAbrgUtil().split(" - ")[0];
         LigneProgramme oeuvreManuelFound = ligneProgrammeDao.findOeuvreManuelByIde12AndCdeUtil(numProg, ide12, cdeUtil);
+        doDeleteOeuvreManuel(oeuvreManuelFound);
+    
+    }
+    
+    @Transactional
+    private void doDeleteOeuvreManuel(LigneProgramme oeuvreManuelFound) {
         if(oeuvreManuelFound != null) {
     
             List<LigneProgramme> oeuvresAutoByIdOeuvreManuel = ligneProgrammeDao.findOeuvresAutoByIdOeuvreManuel(oeuvreManuelFound.getId());
             oeuvresAutoByIdOeuvreManuel.forEach( oeuvreAuto -> {
-                oeuvreAuto.setSelection(Boolean.FALSE);
+                oeuvreAuto.setSelection(FALSE);
+                oeuvreAuto.setSelectionEnCours(TRUE);
                 oeuvreAuto.setOeuvreManuel(null);
-                
+                ligneProgrammeDao.save(oeuvreAuto);
             });
-            ligneProgrammeDao.save(oeuvresAutoByIdOeuvreManuel);
+            //ligneProgrammeDao.save(oeuvresAutoByIdOeuvreManuel);
             //ligneProgrammeDao.deleteLigneProgrammeByIde12AndNumProg(numProg, ide12, cdeUtil);
             ligneProgrammeDao.delete(oeuvreManuelFound);
             ligneProgrammeDao.flush();
         }
-        
     }
     
     
@@ -219,15 +228,15 @@ public class LigneProgrammeService {
             oeuvreManuelFound.setDateInsertion(new Date());
             oeuvreManuelFound.setUtilisateur(input.getUtilisateur());
             oeuvreManuelFound.setCdeTypIde12(input.getCdeTypIde12());
-             oeuvreManuelFound.setSelectionEnCours(true);
+            // oeuvreManuelFound.setSelectionEnCours(true);
         } else {
             List<LigneProgramme> founds = ligneProgrammeDao.findOeuvresAutoByIde12AndCdeUtil(input.getNumProg(), input.getIde12(), input.getCdeUtil());
             if(founds != null && !founds.isEmpty()) {
                 LigneProgramme oeuvreManuel = createOeuvreManuel(input, programme);
                 founds.forEach( found -> {
                     found.setOeuvreManuel(oeuvreManuel);
-                    found.setSelectionEnCours(Boolean.FALSE);
-                    found.setSelection(Boolean.FALSE);
+                    //found.setSelectionEnCours(FALSE);
+                    found.setSelection(FALSE);
                     ligneProgrammeDao.save(found);
                 });
         
@@ -262,11 +271,11 @@ public class LigneProgrammeService {
         input.setCdeFamilTypUtil(programme.getFamille().getCode());
         input.setCdeTypUtil(programme.getTypeUtilisation().getCode());
         input.setAjout(MANUEL);
-        input.setSelection(Boolean.TRUE);
+        input.setSelection(TRUE);
         input.setDateInsertion(new Date());
         input.setCdeTypIde12(input.getCdeTypIde12());
-        input.setSelectionEnCours(Boolean.TRUE);
-        input.setSelection(Boolean.FALSE);
+        input.setSelectionEnCours(TRUE);
+        input.setSelection(FALSE);
         
         return ligneProgrammeDao.saveAndFlush(input);
     }
@@ -303,30 +312,30 @@ public class LigneProgrammeService {
     @Transactional
     public void enregistrerEdition(String numProg) {
         
-        ligneProgrammeDao.updateSelection(numProg, Boolean.TRUE);
-        ligneProgrammeDao.updateSelection(numProg, Boolean.FALSE);
+        ligneProgrammeDao.updateSelection(numProg, TRUE);
+        ligneProgrammeDao.updateSelection(numProg, FALSE);
         
         ligneProgrammeDao.flush();
     }
     
     @Transactional
     public void annulerEdition(String numProg) {
+        List<LigneProgramme> oeuvresManuelsEnCoursEdition = ligneProgrammeDao.findOeuvresManuelsEnCoursEdition(numProg, FALSE);
+        oeuvresManuelsEnCoursEdition.forEach( oeuvreManuel -> doDeleteOeuvreManuel(oeuvreManuel));
         
-        ligneProgrammeDao.deleteOeuvresManuels(numProg, Boolean.FALSE); //Annuler les oeuvres ajoutes manuellement
-        
-        ligneProgrammeDao.updateSelectionTemporaire(numProg, Boolean.FALSE);
-        ligneProgrammeDao.updateSelectionTemporaire(numProg, Boolean.TRUE);
+        ligneProgrammeDao.updateSelectionTemporaire(numProg, FALSE);
+        ligneProgrammeDao.updateSelectionTemporaire(numProg, TRUE);
         
         ligneProgrammeDao.flush();
     }
     
     @Transactional
     public void annulerSelection(String numProg) {
-        ligneProgrammeDao.deleteAllOeuvres(numProg); //Annuler les oeuvres ajoutes manuellement
-        //ligneProgrammeDao.deleteOeuvresManuels(numProg, Boolean.TRUE); //Annuler les oeuvres ajoutes manuellement
-    
-        ligneProgrammeDao.updateSelectionTemporaireByNumProgramme(numProg, Boolean.TRUE);
-        ligneProgrammeDao.updateSelection(numProg, Boolean.TRUE);
+        List<LigneProgramme> allOeuvresManuelsByNumProg = ligneProgrammeDao.findAllOeuvresManuelsByNumProg(numProg);
+        allOeuvresManuelsByNumProg.forEach( oeuvreManuel -> doDeleteOeuvreManuel(oeuvreManuel));
+        
+        ligneProgrammeDao.updateSelectionTemporaireByNumProgramme(numProg, TRUE);
+        ligneProgrammeDao.updateSelection(numProg, TRUE);
         
         ligneProgrammeDao.flush();
     }

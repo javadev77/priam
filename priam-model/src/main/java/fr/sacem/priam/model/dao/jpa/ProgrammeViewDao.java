@@ -35,7 +35,7 @@ public interface ProgrammeViewDao extends JpaRepository<ProgrammeView, String> {
                     "AND (pr.typeRepart = :typeRepart OR :typeRepart IS NULL) " +
                     "AND (pr.rionTheorique = :rionTheorique OR :rionTheorique IS NULL) " +
                     "AND (pr.rionPaiement = :rionPaiement OR :rionPaiement IS NULL) " +
-                    "AND (pr.statut IN (:statut) )")
+                    "AND (pr.statut IN (:statut) ) ")
     Page<ProgrammeDto> findAllProgrammeByCriteria(@Param("numProg") String numProg, @Param("nom") String nom,
                                                   @Param("statut") List<StatutProgramme> statut,  @Param("dateCreationDebut") Date dateCreationDebut,
                                                   @Param("dateCreationFin") Date dateCreationFin, @Param("famille") String famille,

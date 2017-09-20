@@ -258,6 +258,21 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
                                            "AND p.ajout = 'Manuel' ")
     void deleteOeuvresManuels(@Param("numProg") String numProg, @Param("selection") boolean value);
     
+    @Query(value="SELECT l " +
+                     "FROM LigneProgramme l join l.fichier as f "+
+                     "WHERE l.fichier = f.id " +
+                     "AND f.programme.numProg = :numProg " +
+                     "AND l.selection = :selection " +
+                     "AND l.ajout = 'Manuel' ")
+    List<LigneProgramme> findOeuvresManuelsEnCoursEdition(@Param("numProg") String numProg, @Param("selection") boolean value);
+    
+    @Query(value="SELECT l " +
+                     "FROM LigneProgramme l join l.fichier as f "+
+                     "WHERE l.fichier = f.id " +
+                     "AND f.programme.numProg = :numProg " +
+                     "AND l.ajout = 'Manuel' ")
+    List<LigneProgramme> findAllOeuvresManuelsByNumProg(@Param("numProg") String numProg);
+    
     @Transactional
     @Modifying(clearAutomatically = true)
     @Query(nativeQuery = true, value = "DELETE p.* FROM " +
