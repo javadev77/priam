@@ -11,9 +11,6 @@ import java.util.Date;
  */
 public class ProgrammeDto {
 
-	private String userValidation;
-	private Date dateValidation;
-
 	private String numProg;
 	private String nom;
 	private String famille;
@@ -37,10 +34,14 @@ public class ProgrammeDto {
 	@JsonSerialize(using = SimpleDateSerializer.class)
 	private Date dateFinPrg;
 	private Integer cdeTer;
+      private String userValidation;
+    	@JsonSerialize(using = SimpleDateSerializer.class)
+	private Date dateValidation;
+	
 	
 	public ProgrammeDto(String numProg, String nom, Famille famille, TypeUtilisation typeUtilisation, Rion rionTheorique,
 	                    Date dateCreation, TypeRepart typeRepart, StatutProgramme statut, Rion rionPaiement, Long nbFichiers,
-	                    String usercre, Date datmaj, String usermaj, Date dataffecte, String useraffecte) {
+	                    String usercre, Date datmaj, String usermaj, Date dataffecte, String useraffecte, Date dateValidation) {
 		this.numProg = numProg;
 		this.nom = nom;
 		this.famille = famille != null ? famille.getCode() : "";
@@ -56,11 +57,12 @@ public class ProgrammeDto {
 		this.usermaj = usermaj;
 		this.dataffecte = dataffecte;
 		this.useraffecte = useraffecte;
+	    	this.dateValidation = dateValidation;
 	}
 
 	public ProgrammeDto(String numProg, String nom, String famille, String typeUtilisation, Integer rionTheorique, Date dateCreation, TypeRepart typeRepart,
 	                    StatutProgramme statut, Integer rionPaiement, Long fichiers, String usercre, Date datmaj, String usermaj,
-	                    Date dataffecte, String useraffecte) {
+	                    Date dataffecte, String useraffecte, Date dateValidation) {
 		this.numProg = numProg;
 		this.nom = nom;
 		this.famille = famille;
@@ -76,6 +78,7 @@ public class ProgrammeDto {
 		this.usermaj = usermaj;
 		this.dataffecte = dataffecte;
 		this.useraffecte = useraffecte;
+	    	this.dateValidation = dateValidation;
 	}
 
 	public ProgrammeDto(String numProg, String nom, String famille, String typeUtilisation, Integer rionTheorique, Date dateCreation, TypeRepart typeRepart,
@@ -84,7 +87,7 @@ public class ProgrammeDto {
 						Date dateFinPrg, Integer cdeTer, String userValidation, Date dateValidation) {
 		this(numProg, nom, famille, typeUtilisation, rionTheorique, dateCreation, typeRepart,
 				statut, rionPaiement, fichiers, usercre, datmaj, usermaj,
-				dataffecte, useraffecte);
+				dataffecte, useraffecte, dateValidation);
 
 		this.dateDbtPrg = dateDbtPrg;
 		this.dateFinPrg = dateFinPrg ;

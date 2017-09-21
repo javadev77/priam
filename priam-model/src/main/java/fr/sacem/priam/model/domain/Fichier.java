@@ -47,7 +47,7 @@ public class Fichier implements Serializable {
     private Programme programme;
     
     @Column(name = "SOURCE_AUTO")
-    private Boolean isAutomatique;
+    private Boolean automatique;
     
     public  Fichier() {
     }
@@ -125,12 +125,12 @@ public class Fichier implements Serializable {
         this.programme = programme;
     }
     
-    public Boolean getAutomatique() {
-        return isAutomatique;
+    public void setAutomatique(Boolean automatique) {
+        this.automatique = automatique;
     }
     
-    public void setAutomatique(Boolean automatique) {
-        isAutomatique = automatique;
+    public Boolean getAutomatique() {
+        return automatique;
     }
     
     @Override

@@ -137,7 +137,11 @@
         <div class="panel-collapse">
           <div class="result-panel-body panel-body">
             <div class="row">
-              <button style="width: 160px;" class="btn btn-primary pull-right" type="button" @click="openEcranAjouterProgramme()">Créer un programme </button>
+              <button style="width: 160px;"
+                      class="btn btn-primary pull-right"
+                      type="button"
+                      @click="openEcranAjouterProgramme()"
+                      :disabled="!isRightCRTPRG">Créer un programme </button>
             </div>
             <priam-grid
               v-if="priamGrid.gridData.content"
@@ -201,10 +205,13 @@
   import Autocomplete from '../common/Autocomplete.vue'
   import Select2 from '../common/Select2.vue';
   import MiseEnRepartitionProgramme from './MiseEnRepartitionProgramme.vue';
+
   import ChargementMixin from '../../mixins/chargementMixin';
+  import programmeMixin from '../../mixins/programmeMixin';
+
 
   export default {
-      mixins : [ChargementMixin],
+      mixins : [ChargementMixin, programmeMixin],
 
       data() {
 
@@ -376,7 +383,7 @@
                   id :  'repartition',
                   name :   "Répartition",
                   sortable : false,
-                  type : 'clickable-icons',
+                  type : 'clickable-icons-or-text',
                   cell : {
                     cellTemplate: function (cellValue) {
                       var tempalteRepartABlanc = '<img src="static/images/iconescontextes/transfertgestionnaire.gif" title="Mise en répartition" width="20px"/>';
@@ -386,7 +393,23 @@
                         template.push({event : 'mise-en-repart', template : tempalteRepartABlanc});
                         return template;
                       }
+
+
                       return '';
+                    },
+
+                    isText : function (entry) {
+                      var statusCode = entry.statut;
+                      if(statusCode !== undefined && 'REPARTI' == statusCode) {
+                        return true;
+                      }
+
+                      return false;
+                    },
+
+                    toText : function (entry) {
+                        return entry.dateValidation;
+
                     }
                   }
 
@@ -394,8 +417,13 @@
                 {
                   id :  'rionPaiement',
                   name :   "Rion de paiement",
-                  sortable : false,
-                  type : 'icon'
+                  sortable : true,
+                  type : 'code-value',
+                  cell : {
+                    toText : function(rionTheorique) {
+                      return $this.getLibelleRionById(rionTheorique);
+                    }
+                  }
                 },
                 {
                   id: 'action',
@@ -411,11 +439,15 @@
                       var tempalte = [];
                       if(statusCode !== undefined && ('CREE' === statusCode || 'AFFECTE' === statusCode
                         || 'EN_COURS' === statusCode || 'VALIDE' === statusCode) ) {
-                        tempalte.push({event : 'update-programme', template : tempalteUpdate});
+                          if($this.isRightMDYPRG){
+                            tempalte.push({event : 'update-programme', template : tempalteUpdate});
+                          }
                       }
 
                       if(statusCode !== undefined && 'CREE' === statusCode) {
+                          if($this.isRightABDPRG){
                             tempalte.push({event : 'abondon-programme', template : tempalteTrash});
+                          }
                       }
 
                       if(tempalte.length == 1) {
@@ -453,6 +485,18 @@
       },
 
       computed : {
+        isRightCRTPRG() {
+         return this.hasRight('CRTPRG');
+        },
+
+        isRightMDYPRG() {
+          return this.hasRight('MDYPRG');
+        },
+
+        isRightABDPRG() {
+          return this.hasRight('ABDPRG');
+        },
+
         numProgOptions() {
 
             var result = this.numProgItems.map(elem => {

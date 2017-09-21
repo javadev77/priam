@@ -60,6 +60,7 @@ export const fetchInitData = ({commit}) => {
       }
       });
 
+<<<<<<< HEAD
     Vue.http.get('app/rest/general/config/mipsa')
       .then(response => response.json())
       .then(data => {
@@ -67,6 +68,15 @@ export const fetchInitData = ({commit}) => {
           commit('SET_MIPSA_CONFIG', data);
           bootstrapIfReady('MIPSA_CONFIG');
         }
+=======
+
+  Vue.http.get('app/rest/general/currentUser')
+    .then(response => response.json())
+    .then(data => {
+      if (data) {
+        commit('SET_CURRENT_USER', data);
+      }
+>>>>>>> 6c8d238... PRIAM-110 : gestion des roles et des droits
     });
 
   //}

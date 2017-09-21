@@ -24,7 +24,7 @@ public interface ProgrammeViewDao extends JpaRepository<ProgrammeView, String> {
     @Transactional(readOnly = true)
     @Query(value = "SELECT new fr.sacem.priam.model.domain.dto.ProgrammeDto(pr.numProg, pr.nom, pr.famille, pr.typeUtilisation, " +
                                                     "pr.rionTheorique, pr.dateCreation, pr.typeRepart, pr.statut, pr.rionPaiement, pr.fichiers, " +
-                                                    "pr.usercre, pr.datmaj, pr.usermaj, pr.dataffect, pr.useraffect) " +
+                                                    "pr.usercre, pr.datmaj, pr.usermaj, pr.dataffect, pr.useraffect, pr.dateValidation) " +
                     "FROM ProgrammeView AS pr " +
                     "WHERE (pr.numProg like %:numProg% OR :numProg IS NULL) " +
                     "AND (pr.nom like %:nom% OR :nom IS NULL) " +
@@ -35,7 +35,7 @@ public interface ProgrammeViewDao extends JpaRepository<ProgrammeView, String> {
                     "AND (pr.typeRepart = :typeRepart OR :typeRepart IS NULL) " +
                     "AND (pr.rionTheorique = :rionTheorique OR :rionTheorique IS NULL) " +
                     "AND (pr.rionPaiement = :rionPaiement OR :rionPaiement IS NULL) " +
-                    "AND (pr.statut IN (:statut) )")
+                    "AND (pr.statut IN (:statut) ) ")
     Page<ProgrammeDto> findAllProgrammeByCriteria(@Param("numProg") String numProg, @Param("nom") String nom,
                                                   @Param("statut") List<StatutProgramme> statut,  @Param("dateCreationDebut") Date dateCreationDebut,
                                                   @Param("dateCreationFin") Date dateCreationFin, @Param("famille") String famille,

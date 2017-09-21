@@ -40,7 +40,7 @@ Vue.use(VueResource);
 if(process.env.DEBUG_MODE) {
   Vue.http.options.root="http://localhost:8080/priam"
 } else {
-  Vue.http.options.root= process.env.CONTEXT_ROOT;
+  Vue.http.options.root = process.env.CONTEXT_ROOT;
 }
 
 
@@ -50,7 +50,7 @@ const router = new VueRouter({
 
 
 var waitingData = ['LIBELLE_UTILISATEUR', 'LIBELLE_FAMILLE', 'LIBELLE_TYPE_UTILSATION',
-                    'FAMILLE_TYPE_UTILSATION_MAP', 'RIONS', 'TERRITOIRE_MAP', 'MIPSA_CONFIG', 'RIONS_CREATION'];
+                    'FAMILLE_TYPE_UTILSATION_MAP', 'RIONS', 'TERRITOIRE_MAP', 'MIPSA_CONFIG', 'RIONS_CREATION', 'SET_CURRENT_USER'];
 function bootstrapIfReady(type) {
   var index = waitingData.indexOf(type);
   if (index > -1) {
@@ -71,7 +71,7 @@ function bootstrapIfReady(type) {
 /*********************************************
  * ******** Fetch init Data only Once ********
  * ********************************************/
-//fetchInitData(store);
+
 
 function fetchInitData() {
 
@@ -100,6 +100,7 @@ function fetchInitData() {
     .then(data => {
       if (data) {
         store.commit('SET_LIBELLE_TYPE_UTILSATION', data);
+
         bootstrapIfReady('LIBELLE_TYPE_UTILSATION');
       }
     });
@@ -131,7 +132,6 @@ function fetchInitData() {
       }
     });
 
-
   Vue.http.get('app/rest/general/territoire')
     .then(response => response.json())
     .then(data => {
@@ -160,10 +160,15 @@ function fetchInitData() {
       }
     });
 
-  //}
-
-};
+  Vue.http.get('app/rest/general/currentUser')
+    .then(response => response.json())
+    .then(data => {
+      if (data) {
+        store.commit('SET_CURRENT_USER', data);
+        bootstrapIfReady('SET_CURRENT_USER');
+      }
+    });
+}
 
 fetchInitData();
-
 

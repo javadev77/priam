@@ -231,7 +231,9 @@ SELECT DISTINCT
     `pr`.`USERAFFECT`                        AS `USERAFFECT`,
     (SELECT count(`f`.`NUMPROG`)
      FROM PRIAM_FICHIER `f`
-     WHERE (`pr`.`NUMPROG` = `f`.`NUMPROG`)) AS `fichiers`,
+     WHERE (`pr`.`NUMPROG` = `f`.`NUMPROG`)
+      AND f.SOURCE_AUTO = 1
+      ) AS `fichiers`,
     `pr`.`DATE_DBT_PRG`                      AS `DATEDBTPRG`,
     `pr`.`DATE_FIN_PRG`                      AS `DATEFINPRG`,
     `pr`.`CDE_TER`                           AS `CDETER`,
@@ -249,6 +251,23 @@ CREATE OR REPLACE VIEW PRIAM_LIGNE_PROG_VIEW AS
         AND lpr1.ide12 is NOT  NULL
         AND f.numProg is NOT  NULL
   GROUP BY lpr1.ide12,lpr1.numProg;
+
+CREATE TABLE PRIAM_ROLE
+(
+    ID BIGINT PRIMARY KEY NOT NULL AUTO_INCREMENT COMMENT 'Identifiant technique',
+    EXTERNAL_ID VARCHAR(255) COMMENT 'Code Role',
+    ROLE VARCHAR(255) COMMENT 'Description'
+);
+
+CREATE TABLE PRIAM_ROLE_RIGHTS
+(
+    ROLE_ID BIGINT NOT NULL COMMENT 'Role Id',
+    RIGHTS VARCHAR(255) COMMENT 'Habilitation',
+    LIBELLE VARCHAR(255) COMMENT 'Libelle habilitation',
+    CONSTRAINT FK_2555xwvbf9ilta6fgul5al4ch FOREIGN KEY (ROLE_ID) REFERENCES PRIAM_ROLE (ID)
+);
+
+CREATE INDEX FK_2555xwvbf9ilta6fgul5al4ch ON PRIAM_ROLE_RIGHTS (ROLE_ID);
 
 
 CREATE TABLE PRIAM_LIGNE_PREPREP (

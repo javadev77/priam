@@ -107,6 +107,27 @@
 
                     </td>
                   </template>
+                  <template v-else-if="entryColumn.type === 'clickable-icons-or-text'">
+                    <td class="columnCenter"  v-if="!entryColumn.cell.isText(entry)">
+                      <ul class="iconList">
+                        <template v-for="elem in entryColumn.cell.cellTemplate(entry)">
+                          <li>
+                            <a v-html="elem.template" @click="emitIconCellClick(elem.event, entry, entryColumn)">
+                            </a>
+                          </li>
+                        </template>
+
+                      </ul>
+                    </td>
+                    <td class="columnCenter" v-else>
+                      <template v-if="entryColumn.cell">
+                        {{ entryColumn.cell.toText(entry) }}
+                      </template>
+                      <template v-else>
+                        {{ entry[entryColumn.id] }}
+                      </template>
+                    </td>
+                  </template>
                   <template v-else-if="entryColumn.type === 'numeric-link'">
                     <td class="columnRight">
                       <template v-if="entryColumn.cell.toText(entry).isLink" >

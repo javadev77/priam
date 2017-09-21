@@ -57,6 +57,7 @@
         </div>
       </div>
 
+
         <br/>
         <!-- 3 eme ligne -->
         <div class="row">
@@ -64,21 +65,24 @@
           <div class="col-sm-1">
           </div>
         <div class="col-sm-9">
-          <label class="radio radio-inline" :class="{'checked' : modeRepartition == 'REPART_BLANC' }">
+          <label class="radio radio-inline" :class="{'checked' : modeRepartition == 'REPART_BLANC', 'disabled' : !isRightMSEREP }">
             <input
               type="radio"
               value="REPART_BLANC"
               v-model="modeRepartition"
+              :disabled="!isRightMSEREP"
               > Répartition à blanc
             <span class="icons"><span class="first-icon fui-radio-unchecked"></span><span class="second-icon fui-radio-checked"></span></span>
           </label>
         </div>
+
         <div class="col-sm-9">
-          <label class="radio radio-inline" :class="{'checked' : modeRepartition == 'MISE_EN_REPART' }">
+            <label class="radio radio-inline" :class="{'checked' : modeRepartition == 'MISE_EN_REPART', 'disabled' : !isRightMSEREP }">
             <input
               type="radio"
               value="MISE_EN_REPART"
               v-model="modeRepartition"
+              :disabled="!isRightMSEREP"
               > Mise en répatition
             <span class="icons"><span class="first-icon fui-radio-unchecked"></span><span class="second-icon fui-radio-checked"></span></span>
           </label>
@@ -109,8 +113,10 @@
 
   import Modal from '../common/Modal.vue';
   import chargementMixins from '../../mixins/chargementMixin';
+  import programmeMixins from '../../mixins/programmeMixin';
+
   export default {
-      mixins: [chargementMixins],
+      mixins: [chargementMixins, programmeMixins],
 
       props : {
 
@@ -234,6 +240,12 @@
 
         }
       },
+
+    computed : {
+      isRightMSEREP() {
+        return this.hasRight('MSEREP');
+      }
+    },
 
       components : {
           modal : Modal
