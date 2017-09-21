@@ -7,3 +7,4 @@ node
 *.iml
 target/
 yarn.lock
+.project

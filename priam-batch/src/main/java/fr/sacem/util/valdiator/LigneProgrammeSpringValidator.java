@@ -27,7 +27,8 @@ public class LigneProgrammeSpringValidator implements Validator {
     public boolean supports(Class<?> clazz) {
 	  return LigneProgramme.class.equals(clazz);
     }
-    
+
+
     @Override
     public void validate(Object o, Errors errors) {
 
