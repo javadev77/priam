@@ -639,6 +639,8 @@
                 return response.json();
               })
               .then(data => {
+                  debugger;
+                  console.log(data);
                 this.priamGrid.gridData = data;
                 this.priamGrid.gridData.number = data.number + 1;
 

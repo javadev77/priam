@@ -3,6 +3,7 @@ import Affectation from './components/affectation/Affectation.vue';
 import ListeProgramme from './components/programme/ListeProgramme.vue';
 import Selection from './components/selection/SelectionProgramme.vue';
 import AppMipsaSearch from './components/mipsa/AppMipsaSearch.vue';
+import Parametrage from './components/parametrage/Parametrage.vue';
 
 export const routes = [
     { path: '/', redirect: '/programme/listePrg' },
@@ -21,7 +22,7 @@ export const routes = [
         }
       ]
     },
-    { path: '/parametrage', name: 'parametrage', component: AppMipsaSearch },
+    { path: '/parametrage', name: 'parametrage', component: Parametrage },
     { path: '/programme/affectation/:numProg', name: 'affectation', component: Affectation },
     { path: '/programme/selection/:numProg', name: 'selection', component: Selection }
 
