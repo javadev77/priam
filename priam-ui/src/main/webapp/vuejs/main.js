@@ -50,7 +50,7 @@ const router = new VueRouter({
 
 
 var waitingData = ['LIBELLE_UTILISATEUR', 'LIBELLE_FAMILLE', 'LIBELLE_TYPE_UTILSATION',
-                    'FAMILLE_TYPE_UTILSATION_MAP', 'RIONS', 'TERRITOIRE_MAP', 'MIPSA_CONFIG', 'RIONS_CREATION', 'SET_CURRENT_USER'];
+                    'FAMILLE_TYPE_UTILSATION_MAP', 'RIONS', 'TERRITOIRE_MAP', 'MIPSA_CONFIG', 'RIONS_CREATION', 'SET_CURRENT_USER', 'SELECT_PAGE_SIZE'];
 function bootstrapIfReady(type) {
   var index = waitingData.indexOf(type);
   if (index > -1) {
@@ -166,6 +166,15 @@ function fetchInitData() {
       if (data) {
         store.commit('SET_CURRENT_USER', data);
         bootstrapIfReady('SET_CURRENT_USER');
+
+        Vue.http.get('app/rest/general/parametres')
+          .then(response => response.json())
+          .then(data => {
+          if (data) {
+            store.commit('SELECT_PAGE_SIZE', data.USER_PAGE_SIZE ? data.USER_PAGE_SIZE : store.getters.userPageSize );
+            bootstrapIfReady('SELECT_PAGE_SIZE');
+          }
+        });
       }
     });
 }

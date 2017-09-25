@@ -169,7 +169,7 @@
           page : 1,
           sort : 'dateDebutChargt',
           dir : 'desc',
-          size : 25
+          size : this.$store.getters.userPageSize
         },
 
         priamGrid : {

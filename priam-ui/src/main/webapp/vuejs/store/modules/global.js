@@ -5,24 +5,8 @@
 const state = {
 
     pagination : {
-
-      currentPage: {
-        type: Number,
-        default : 1
-      },
-      // Total page
-      totalPages: Number,
-      // Items per page
-      itemsPerPage: Number,
-      // Total items
-      totalItems: Number,
-      // Visible Pages
-      visiblePages: {
-        type: Number,
-        default: 5
-      }
-
-
+      userPageSize: 25,
+      sizes : [25, 50, 100]
     },
 
 
@@ -41,7 +25,7 @@ const mutations = {
   },
 
   'SELECT_PAGE_SIZE' (state, pageSize) {
-      state.pagination.itemsPerPage = pageSize;
+      state.pagination.userPageSize = pageSize;
   },
 
   'SET_LIBELLE_UTILISATEUR' (state, data) {
@@ -70,7 +54,11 @@ const actions = {
 
 const getters = {
   itemsPerPage: state => {
-    return state.pagination.itemsPerPage;
+    return state.pagination.sizes;
+  },
+
+  userPageSize: state => {
+    return state.pagination.userPageSize;
   },
 
 

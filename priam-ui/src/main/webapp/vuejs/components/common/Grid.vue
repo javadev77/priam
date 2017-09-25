@@ -9,7 +9,7 @@
                      :current-page="this.data.number"
                      :total-pages="this.data.totalPages"
                      :total-items="this.data.totalElements"
-                     :itemsPerPage="this.data.size"
+                     :itemsPerPage="pageSize"
                      @page-size-changed="pageSizeChanged"
                      @page-changed="pageOneChanged">
 
@@ -203,10 +203,10 @@
           </table>
 
           <paginator  v-if="isPaginable"
-                      :current-page="this.data.number"
+                     :current-page="this.data.number"
                      :total-pages="this.data.totalPages"
                      :total-items="this.data.totalElements"
-                     :itemsPerPage="this.data.size"
+                     :itemsPerPage="pageSize"
                      @page-size-changed="pageSizeChanged"
                      @page-changed="pageOneChanged">
 
@@ -264,7 +264,7 @@
         sortOrders: sortOrders,
         sort : [],
         currentPage : 1,
-        pageSize : 25
+        pageSize : this.$store.getters.userPageSize
 
         /*pagination: {
           currentPage: this.data.number,
@@ -477,7 +477,6 @@
         console.log("type of pageSize = "  + typeof pageSize);
         this.currentPage = 1;
         this.pageSize = pageSize;
-        debugger;
         this.$emit('load-page', 1, pageSize, this.sort);
       },
       isNumber(n) {

@@ -187,7 +187,7 @@
           page : 1,
           sort : 'ide12',
           dir : 'desc',
-          size : 25
+          size : this.$store.getters.userPageSize
         },
 
         currentGridState : {},
