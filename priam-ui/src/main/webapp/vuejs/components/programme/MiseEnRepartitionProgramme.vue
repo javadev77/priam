@@ -88,20 +88,25 @@
           </label>
         </div>
       </div>
+
+
+       <div v-if="startDownload">
+         {{ downloadFileText }}
+       </div>
     </template>
     <template slot="body" v-else>
       <label>Le fichier de répartition contient les erreurs suivantes :</label>
       <div style="height:300px; overflow-y:scroll;">
-        <label v-for="error in fichierFelixError.errors">
-          {{ error }}
+        <label v-for="error in fichierFelixErrors">
+          {{ error.log }}
         </label>
 
       </div>
 
     </template>
     <template slot="footer" v-if="!isToShowErrors">
-      <button class="btn btn-default btn-primary pull-right yes" @click="validateFelixData">Valider</button>
-      <button class="btn btn-default btn-primary pull-right no" @click="$emit('cancel')">Annuler</button>
+      <button class="btn btn-default btn-primary pull-right yes" :disabled="startDownload" @click.prevent="validateFelixData">Valider</button>
+      <button class="btn btn-default btn-primary pull-right no" :disabled="startDownload" @click.prevent="$emit('cancel')">Annuler</button>
     </template>
     <template slot="footer" v-else>
       <button class="btn btn-default btn-primary" @click="$emit('close')">Fermer</button>
@@ -136,9 +141,12 @@
       data() {
         return {
           programmeInfo : {},
-          fichierFelixError : {},
+          fichierFelixErrors : [],
           modeRepartition : 'REPART_BLANC',
-          isToShowErrors : false
+          isToShowErrors : false,
+          startDownload : false,
+          downloadFileText : '',
+          interval: null
         }
       },
 
@@ -148,7 +156,8 @@
         const customActions = {
           findByNumProg : {method : 'GET', url : 'app/rest/programme/numProg/{numProg}'},
           validateFelixData : {method : 'GET', url : 'app/rest/repartition/validateFelixData/{numProg}'},
-          generateFelixData : {method : 'POST', url : 'app/rest/repartition/generateFelixData'}
+          generateFelixData : {method : 'POST', url : 'app/rest/repartition/generateFelixData'},
+          checkIfDone : {method : 'GET', url : 'app/rest/repartition/fichierfelix/{numProg}'}
         }
         this.resource= this.$resource('', {}, customActions);
 
@@ -167,60 +176,8 @@
       methods : {
 
         downloadCsvFile(url, data, filename) {
-          this.$http.post(url, data , {
-              headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-              }, emulateJSON: true
-            }).then( response => {
-              var anchor = $('<a></a>');
 
-              anchor.attr({
-                href: 'data:attachment/csv;charset=utf-8,' + encodeURI(response.data),
-                target: '_blank',
-                download: filename
-              })[0].click();
-
-          }, error => {
-
-          });
-        },
-
-        validateFelixData() {
-
-            this.resource.validateFelixData({numProg:  this.numProg})
-              .then(response => {
-                return response.json();
-              })
-              .then(data => {
-                if(data.errors !== undefined && data.errors.length >0) {
-                  this.downloadCsvFile('app/rest/repartition/downloadFichierFelixError',
-                    {numProg: this.programmeInfo.numProg, tmpFilename : data.tmpFilename, filename : data.filename}, data.filename);
-
-                  /*_open('POST', 'app/rest/repartition/downloadFichierFelixError',
-                    {numProg: this.programmeInfo.numProg, filename : data.filename}, '_blank');*/
-                  this.fichierFelixError = data;
-                  this.isToShowErrors = true;
-                } else {
-                    if(this.modeRepartition == 'REPART_BLANC') {
-                        this.downloadCsvFile('app/rest/repartition/downloadFichierFelix', {numProg: this.programmeInfo.numProg}, data.filename);
-                        this.$emit('close');
-                    } else if(this.modeRepartition == 'MISE_EN_REPART') {
-                        this.resource.generateFelixData({numProg : this.programmeInfo.numProg})
-                          .then(response => {
-                              console.log("Genetation OK");
-                              this.$emit('validateMiseEnRepart');
-                          })
-                          .catch(error => {
-                              alert("Erreur technique lors de la Genetation du fichier Felix !! ");
-                              this.$emit('close');
-                          });
-
-                    }
-                }
-
-              });
-
-          var _open = function(verb, url, data) {
+          var _open = function(verb, url, data, target) {
             var form = document.createElement('form');
             form.action = url;
             form.method = verb;
@@ -237,6 +194,89 @@
             form.submit();
             document.body.removeChild(form);
           };
+
+          _open('POST', url, data, '_blank');
+          /*this.$http.post(url, data , {
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+              }, emulateJSON: true
+            }).then( response => {
+              this.downloadFileText = 'Fichier Telecharge OK.';
+              var anchor = $('<a></a>');
+              //console.log(encodeURI(response.data))
+             var hrefData = 'data:text/csv;charset=utf-8,' + encodeURIComponent(response.data);
+              anchor.attr({
+                href: hrefData,
+                target: '_blank',
+                download: filename
+              })[0].click();
+
+          }, error => {
+
+          });*/
+        },
+
+        validateFelixData() {
+            this.$emit('validate', this.modeRepartition);
+            /*if(this.modeRepartition == 'REPART_BLANC') {
+
+            } else if(this.modeRepartition == 'MISE_EN_REPART') {
+              this.$emit('validateRepartABlan');
+            }*/
+
+            /*this.resource.validateFelixData({numProg:  this.numProg})
+              .then(response => {
+                return response.json();
+              })
+              .then(data => {
+                this.startDownload = true;
+                var self = this;
+                this.downloadFileText = 'En cours de traitement ....';
+                this.interval = setInterval(function () {
+                      self.resource.checkIfDone({numProg:  self.numProg})
+                        .then(response => {
+                          return response.json();
+                        })
+                        .then(data => {
+                            var fichierFelix = data;
+                            if(fichierFelix !== undefined && fichierFelix.statut == 'GENERE') {
+                              self.downloadFileText = 'Traitement OK.';
+                              self.startDownload = false;
+                              clearInterval(self.interval);
+                              if(fichierFelix.logs !== undefined && fichierFelix.logs.length > 0) {
+                                self.downloadCsvFile('app/rest/repartition/downloadFichierFelixError',
+                                  {numProg: self.programmeInfo.numProg, tmpFilename : fichierFelix.nomFichier, filename : fichierFelix.nomFichier},
+                                  fichierFelix.nomFichier);
+                                self.fichierFelixErrors = fichierFelix.logs;
+                                self.isToShowErrors = true;
+                              } else {
+                                if(self.modeRepartition == 'REPART_BLANC') {
+                                  self.downloadCsvFile('app/rest/repartition/downloadFichierFelix', {numProg: self.programmeInfo.numProg}, fichierFelix.nomFichier);
+                                  self.$emit('close');
+                                } else if(self.modeRepartition == 'MISE_EN_REPART') {
+                                  self.resource.generateFelixData({numProg : self.programmeInfo.numProg})
+                                    .then(response => {
+                                      console.log("Genetation OK");
+                                      self.$emit('validateMiseEnRepart');
+                                    })
+                                    .catch(error => {
+                                      alert("Erreur technique lors de la Genetation du fichier Felix !! ");
+                                      self.$emit('close');
+                                    });
+
+                                }
+                              }
+                            }
+
+                        });
+                  }
+                    ,
+                  1000 * 5);
+
+
+              });*/
+
+
 
         }
       },

@@ -13,8 +13,8 @@ public class LignePreprep implements Serializable {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+    @Column(name = "keyLigPenel")
+    private Long keyLigPenel;
     
     @Column(name = "cdeCisac")
     private String cdeCisac;
@@ -25,8 +25,8 @@ public class LignePreprep implements Serializable {
     @Column(name = "rionEffet")
     private Integer rionEffet;
     
-    @Column(name = "keyLigPenel")
-    private Integer keyLigPenel;
+    /*@Column(name = "keyLigPenel")
+    private Integer keyLigPenel;*/
     
     
     @Column(name = "cdeFamilTypUtil")
@@ -120,7 +120,7 @@ public class LignePreprep implements Serializable {
     
     }
     
-    public LignePreprep(String cdeCisac, String cdeUtil, String cdeGreDif, String cdeModDif, String cdeTypIde12, Long ide12, Long durDif, Long nbrDif, Double mt, String ctna, String paramCoefHor, Long durDifCtna, String cdeLng, String indDoubSsTit, Double tax) {
+    /*public LignePreprep(String cdeCisac, String cdeUtil, String cdeGreDif, String cdeModDif, String cdeTypIde12, Long ide12, Long durDif, Long nbrDif, Double mt, String ctna, String paramCoefHor, Long durDifCtna, String cdeLng, String indDoubSsTit, Double tax) {
         this.cdeCisac = cdeCisac;
         
         this.cdeUtil = cdeUtil;
@@ -137,15 +137,44 @@ public class LignePreprep implements Serializable {
         this.cdeLng = cdeLng;
         this.indDoubSsTit = indDoubSsTit;
         this.tax = tax;
+    }*/
+    
+    public LignePreprep(String cdeCisac, Integer cdeTer, Integer rionEffet, String cdeFamilTypUtil, String numProg, String cdeUtil, String cdeModFac, String cdeTypUtil, String cdeTypProg, String cdeCompl, String libProg, Date datDbtProg, Date datFinProg, String cdeGreDif, String cdeModDif, String cdeTypIde12, Long ide12, Long durDif, Long nbrDif, Double mt, String ctna, String paramCoefHor, Long durDifCtna, String cdeLng, String indDoubSsTit, Double tax) {
+        this.cdeCisac = cdeCisac;
+        this.cdeTer = cdeTer;
+        this.rionEffet = rionEffet;
+        this.cdeFamilTypUtil = cdeFamilTypUtil;
+        this.numProg = numProg;
+        this.cdeUtil = cdeUtil;
+        this.cdeModFac = cdeModFac;
+        this.cdeTypUtil = cdeTypUtil;
+        this.cdeTypProg = cdeTypProg;
+        this.cdeCompl = cdeCompl;
+        this.libProg = libProg;
+        this.datDbtProg = datDbtProg;
+        this.datFinProg = datFinProg;
+        this.cdeGreDif = cdeGreDif;
+        this.cdeModDif = cdeModDif;
+        this.cdeTypIde12 = cdeTypIde12;
+        this.ide12 = ide12;
+        this.durDif = durDif;
+        this.nbrDif = nbrDif;
+        this.mt = mt;
+        this.ctna = ctna;
+        this.paramCoefHor = paramCoefHor;
+        this.durDifCtna = durDifCtna;
+        this.cdeLng = cdeLng;
+        this.indDoubSsTit = indDoubSsTit;
+        this.tax = tax;
     }
     
-    public Long getId() {
+   /* public Long getId() {
         return id;
     }
     
     public void setId(Long id) {
         this.id = id;
-    }
+    }*/
     
     public String getCdeCisac() {
         return cdeCisac;
@@ -395,11 +424,11 @@ public class LignePreprep implements Serializable {
         this.tax = tax;
     }
     
-    public Integer getKeyLigPenel() {
+    public Long getKeyLigPenel() {
         return keyLigPenel;
     }
     
-    public void setKeyLigPenel(Integer keyLigPenel) {
+    public void setKeyLigPenel(Long keyLigPenel) {
         this.keyLigPenel = keyLigPenel;
     }
 }

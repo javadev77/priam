@@ -185,10 +185,27 @@
         :numProg = "selectedProgramme.numProg"
         @cancel="showEcranModalMisEnRepart = false"
         @close="showEcranModalMisEnRepart = false"
-        @validateMiseEnRepart="onValidateMiseEnRepart">
+        @validate="onValidateMiseEnRepart"
+        >
 
       </mise-en-repartition-programme>
     </template>
+
+    <modal v-if="isToShowErrors">
+      <template slot="body" >
+        <label>Le fichier de répartition contient les erreurs suivantes :</label>
+        <div style="height:300px; overflow-y:scroll;">
+          <label v-for="error in fichierFelixErrors">
+            {{ error.log }}
+          </label>
+
+        </div>
+      </template>
+
+      <template slot="footer">
+        <button class="btn btn-default btn-primary" @click="isToShowErrors = false">Fermer</button>
+      </template>
+    </modal>
   </div>
 </template>
 
@@ -217,6 +234,8 @@
 
         var $this =this;
         var getters = this.$store.getters;
+        //let programmesEnCoursTraitement = getters.programmesEnCoursTraitement;
+        //let programmesEnErreur = getters.programmesEnErreur;
 
 
         return {
@@ -228,6 +247,16 @@
             ecranAjouterProgramme : false,
             showEcranModalMisEnRepart : false,
             resource : {},
+
+            modeRepartition : '',
+
+            programmesEnCoursTraitement :[],
+            programmesEnErreur :[],
+            intervalIDs : [],
+            statusTimers : [],
+
+            isToShowErrors : false,
+            fichierFelixErrors : [],
 
             defaultPageable : {
               page : 1,
@@ -258,7 +287,7 @@
                 typeRepart : null,
                 dateCreationDebut : null,
                 dateCreationFin : null,
-                statutCode : ['EN_COURS', 'AFFECTE', 'CREE', 'VALIDE', 'MIS_EN_REPART']
+                statutCode : ['EN_COURS', 'AFFECTE', 'CREE', 'VALIDE', 'MIS_EN_REPART', 'EN_COURS_MISE_EN_REPART']
             },
 
             priamGrid : {
@@ -400,15 +429,38 @@
 
                     isText : function (entry) {
                       var statusCode = entry.statut;
-                      if(statusCode !== undefined && 'REPARTI' == statusCode) {
-                        return true;
+                      var statutFichierFelix = entry.statutFichierFelix !== null && entry.statutFichierFelix !== undefined ? entry.statutFichierFelix : undefined;
+                      if(statusCode !== undefined && 'REPARTI' == statusCode ) {
+                          return true;
+
+                      }  else  if('VALIDE' == statusCode) {
+                        if ($this.programmesEnCoursTraitement.indexOf(entry.numProg) !== -1
+                              ||  $this.programmesEnErreur.indexOf(entry.numProg) !== -1
+                              || (statutFichierFelix !== undefined && statutFichierFelix  !== 'GENERE') ) {
+                            return true;
+                        }
                       }
 
                       return false;
                     },
 
                     toText : function (entry) {
-                        return entry.dateValidation;
+                        var statusCode = entry.statut;
+                        var statutFichierFelix = entry.statutFichierFelix !== null && entry.statutFichierFelix !== undefined ? entry.statutFichierFelix : undefined;
+                        if(statusCode !== undefined && 'REPARTI' == statusCode) {
+                          return {value : entry.dateValidation, isLink : false };
+                        } else if ('VALIDE' == statusCode
+                                    && ($this.programmesEnCoursTraitement.indexOf(entry.numProg) !== -1)
+                                          || (statutFichierFelix !== undefined && (statutFichierFelix == 'EN_COURS' || statutFichierFelix == 'EN_COURS_ENVOI')) ) {
+                            return {value: 'En cours de traitement', isLink: false};
+
+                        } else if ('VALIDE' == statusCode &&
+                                      ($this.programmesEnErreur.indexOf(entry.numProg) !== -1)
+                                        || (statutFichierFelix !== undefined && entry.statutFichierFelix == 'EN_ERREUR')) {
+
+                            return {value: 'Génération en erreur', isLink: true};
+                        }
+                        return {};
 
                     }
                   }
@@ -473,7 +525,11 @@
             searchProgramme : {method : 'POST', url :'app/rest/programme/search?page={page}&size={size}&sort={sort},{dir}'},
             abandonnerProgramme : {method : 'PUT', url :'app/rest/programme/abandon'},
             getAllNumProgForAutocmplete : {method : 'GET', url :'app/rest/programme/numprog/autocomplete'},
-            getAllNomProgForAutocmplete : {method : 'GET', url :'app/rest/programme/nomprog/autocomplete'}
+            getAllNomProgForAutocmplete : {method : 'GET', url :'app/rest/programme/nomprog/autocomplete'},
+            validateFelixData : {method : 'GET', url : 'app/rest/repartition/validateFelixData/{numProg}'},
+            generateFelixData : {method : 'POST', url : 'app/rest/repartition/generateFelixData'},
+            checkIfDone : {method : 'GET', url : 'app/rest/repartition/fichierfelix/{numProg}'}
+
         }
         this.resource= this.$resource('', {}, customActions);
 
@@ -639,6 +695,54 @@
                 return response.json();
               })
               .then(data => {
+
+                //Clear timers
+                //let content = data.content;
+                /*for(var i in content) {
+                    let numProg = content[i].numProg;
+                    if(this.statusTimers.indexOf(numProg) !== -1) {
+                      clearInterval(this.statusTimers[numProg]);
+                    }
+                }*/
+
+                /*this.statusTimers = [];
+                var self = this;
+                for(var i in content) {
+                  let numProg = content[i].numProg;
+                  if(content[i].statut == 'VALIDE') {
+                    //this.statusTimers[numProg] = setInterval(function () {
+
+                      self.resource.checkIfDone({numProg: numProg})
+                        .then(response => {
+                          return response.json();
+                        })
+                        .then(data => {
+
+                            var fichierFelix = data;
+                            if(fichierFelix !== undefined && fichierFelix.statut !== 'EN_COURS') {
+                                //clearInterval(self.statusTimers[numProg]);
+                                self.programmesEnCoursTraitement.splice(self.programmesEnCoursTraitement.indexOf(numProg), 1);
+                            }
+
+                            if(fichierFelix !== undefined && fichierFelix.statut == 'EN_COURS') {
+                              self.programmesEnCoursTraitement.push(numProg);
+                            } else if(fichierFelix.statut == 'GENERE') {
+                              if(fichierFelix.logs !== undefined && fichierFelix.logs.length > 0) {
+                                self.programmesEnErreur.push(numProg);
+                                self.fichierFelixErrors = fichierFelix.logs;
+                              }
+                            } else if(fichierFelix.statut == 'EN_ERREUR') {
+                                self.programmesEnErreur.push(numProg);
+                                self.fichierFelixErrors = fichierFelix.logs;
+                            }
+
+
+                        });
+
+                    //}, 1000 * 5);
+                  }
+                }*/
+
                 this.priamGrid.gridData = data;
                 this.priamGrid.gridData.number = data.number + 1;
 
@@ -678,6 +782,8 @@
                 this.$router.push({ name: 'affectation', params: { numProg: row.numProg }});
               } else if(column.id !== undefined && column.id === 'numProg') {
                 this.$router.push({ name: 'selection', params: { numProg: row.numProg }});
+              } else if(column.id !== undefined && column.id === 'repartition') {
+                 this.isToShowErrors = true;
               }
           },
 
@@ -754,10 +860,110 @@
 
           },
 
-          onValidateMiseEnRepart() {
+
+          onValidateMiseEnRepart(modeRepartition) {
               this.showEcranModalMisEnRepart = false;
-              this.rechercherProgrammes();
-          }
+              this.modeRepartition = modeRepartition;
+              var self = this;
+              let numProg = this.selectedProgramme.numProg;
+              this.resource.validateFelixData({numProg:  numProg})
+                .then(response => {
+                  return response.json();
+                })
+                .then(data => {
+                   self.programmesEnCoursTraitement.push(numProg);
+                  // self.$store.commit('ADD_PROG_EN_COURS', numProg);
+                   self.intervalIDs[numProg] = setInterval(function () {
+                   self.resource.checkIfDone({numProg: numProg})
+                      .then(response => {
+                        return response.json();
+                      })
+                      .then(data => {
+                          var fichierFelix = data;
+                          /*if(fichierFelix !== undefined && fichierFelix.statut !== 'EN_COURS') {
+                            clearInterval(self.intervalIDs[numProg]);
+                          }*/
+
+                          if(fichierFelix !== undefined && fichierFelix.statut == 'GENERE') {
+                            let number = self.programmesEnCoursTraitement.indexOf(numProg);
+                            self.programmesEnCoursTraitement.splice(number, 1);
+                            //self.$store.commit('DELETE_PROG_EN_COURS', numProg);
+
+                            if(fichierFelix.logs !== undefined && fichierFelix.logs.length > 0) {
+                              clearInterval(self.intervalIDs[numProg]);
+                              self.downloadCsvFile('app/rest/repartition/downloadFichierFelixError',
+                                {numProg: numProg, tmpFilename : fichierFelix.nomFichier, filename : fichierFelix.nomFichier},
+                                fichierFelix.nomFichier);
+                              self.fichierFelixErrors = fichierFelix.logs;
+                              self.programmesEnErreur.push(numProg);
+                            } else {
+                              if(self.modeRepartition == 'REPART_BLANC') {
+
+                                clearInterval(self.intervalIDs[numProg]);
+                                self.downloadCsvFile('app/rest/repartition/downloadFichierFelix', {numProg: numProg}, fichierFelix.nomFichier);
+
+                              } else if(self.modeRepartition == 'MISE_EN_REPART') {
+                                self.programmesEnCoursTraitement.push(numProg);
+                                self.resource.generateFelixData({numProg : numProg})
+                                  .then(response => {
+                                    console.log("Genetation OK");
+                                    //clearInterval(self.intervalIDs[numProg]);
+                                    //self.rechercherProgrammes();
+
+                                  })
+                                  .catch(error => {
+                                    alert("Erreur technique lors de la Genetation du fichier Felix !! ");
+
+                                  });
+
+                              }
+                            }
+                          } else if(fichierFelix.statut == 'EN_ERREUR' ) {
+                              //self.$store.commit('ADD_PROG_EN_ERREUR', numProg);
+                              clearInterval(self.intervalIDs[numProg]);
+                              self.programmesEnErreur.push(numProg);
+                              if(fichierFelix.logs !== undefined && fichierFelix.logs.length > 0) {
+                                self.fichierFelixErrors = fichierFelix.logs;
+                              }
+                          } else if(fichierFelix.statut == 'ENVOYE' ) {
+                              let number = self.programmesEnCoursTraitement.indexOf(numProg);
+                              self.programmesEnCoursTraitement.splice(number, 1);
+                              clearInterval(self.intervalIDs[numProg]);
+                              self.rechercherProgrammes();
+                          }
+
+                        });
+                  },
+
+                    1000);
+
+              });
+
+          },
+
+        downloadCsvFile(url, data, filename) {
+
+          var _open = function(verb, url, data, target) {
+            var form = document.createElement('form');
+            form.action = url;
+            form.method = verb;
+            form.target = target || '_self';
+            if (data) {
+              for (var key in data) {
+                var input = document.createElement('textarea');
+                input.name = key;
+                input.value = typeof data[key] === 'object' ? JSON.stringify(data[key]) : data[key];
+                form.appendChild(input);
+              }
+            }
+            document.body.appendChild(form);
+            form.submit();
+            document.body.removeChild(form);
+          };
+
+          _open('POST', url, data, '_blank');
+
+        }
 
 
       },

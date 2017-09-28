@@ -22,6 +22,10 @@ const state = {
 
   rionsCreation : [],
 
+  programmesEnCoursTraitement : [],
+
+  programmesEnErreur : [],
+
   statutProgramme : [
     {
       "code" : 'EN_COURS',
@@ -80,7 +84,28 @@ const mutations = {
 
   'TOUT_DESACTIVER'(state, value) {
     state.allFichiersChecked = value;
+  },
+
+  'ADD_PROG_EN_COURS'(state, numProg) {
+    state.programmesEnCoursTraitement.push(numProg);
+  },
+
+  'DELETE_PROG_EN_COURS'(state, numProg) {
+    let number = state.programmesEnCoursTraitement.indexOf(numProg);
+    state.programmesEnCoursTraitement.splice(number, 1);
+  },
+
+  'ADD_PROG_EN_ERREUR'(state, numProg) {
+    state.programmesEnErreur.push(numProg);
+  },
+
+  'DELETE_PROG_EN_ERREUR'(state, numProg) {
+    let number = state.programmesEnErreur.indexOf(numProg);
+    state.programmesEnErreur.splice(number, 1);
   }
+
+
+
 };
 
 const actions = {
@@ -123,6 +148,14 @@ const getters = {
 
   allFichiersChecked : state => {
     return state.allFichiersChecked;
+  },
+
+  programmesEnCoursTraitement : state => {
+    return state.programmesEnCoursTraitement;
+  },
+
+  programmesEnErreur : state => {
+    return state.programmesEnErreur;
   }
 
 

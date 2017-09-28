@@ -13,7 +13,7 @@ public class FelixData implements Serializable {
     private Integer rionEffet;
     private String cdeFamilTypUtil;
     private String numProg;
-    private Integer keyLigPenel;
+    private Long keyLigPenel;
     private String cdeUtil;
     private String cdeTypUtil;
     private String cdeModFac;
@@ -293,11 +293,11 @@ public class FelixData implements Serializable {
         this.tax = tax;
     }
     
-    public Integer getKeyLigPenel() {
+    public Long getKeyLigPenel() {
         return keyLigPenel;
     }
     
-    public void setKeyLigPenel(Integer keyLigPenel) {
+    public void setKeyLigPenel(Long keyLigPenel) {
         this.keyLigPenel = keyLigPenel;
     }
 }

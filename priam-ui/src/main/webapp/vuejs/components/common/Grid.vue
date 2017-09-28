@@ -120,11 +120,13 @@
                       </ul>
                     </td>
                     <td class="columnCenter" v-else>
-                      <template v-if="entryColumn.cell">
-                        {{ entryColumn.cell.toText(entry) }}
+                      <template v-if="entryColumn.cell.toText(entry).isLink" >
+                        <a @click="emitCellClick(entry, entryColumn)">
+                          {{ entryColumn.cell.toText(entry).value }}
+                        </a>
                       </template>
                       <template v-else>
-                        {{ entry[entryColumn.id] }}
+                        {{ entryColumn.cell.toText(entry).value }}
                       </template>
                     </td>
                   </template>

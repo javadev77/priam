@@ -48,6 +48,9 @@ public class ProgrammeService {
 	@Autowired
 	ProgrammeSequnceDao programmeSequnceDao;
 	
+	@Autowired
+	FichierFelixDao fichierFelixDao;
+	
 	private static final Logger LOG = LoggerFactory.getLogger(ProgrammeService.class);
 	
 	@Transactional
@@ -184,11 +187,17 @@ public class ProgrammeService {
 
 	@Transactional
 	public Programme invaliderProgramme(ProgrammeDto programmeDto) {
-		Programme programme = programmeDao.findOne(programmeDto.getNumProg());
-		programme.setStatut(StatutProgramme.EN_COURS);
-		programme.setUserValidation(null);
-		programme.setDateValidation(null);
-		return programmeDao.saveAndFlush(programme);
+	    FichierFelix byNumprog = fichierFelixDao.findByNumprog(programmeDto.getNumProg());
+	    fichierFelixDao.delete(byNumprog.getId());
+	    fichierFelixDao.flush();
+	    
+	    Programme programme = programmeDao.findOne(programmeDto.getNumProg());
+	    programme.setStatut(StatutProgramme.EN_COURS);
+	    programme.setUserValidation(null);
+	    programme.setDateValidation(null);
+		
+		
+	    return programmeDao.saveAndFlush(programme);
 	}
 
 	public Map<String, Long> getDurDifProgramme(String numProg, String statut){

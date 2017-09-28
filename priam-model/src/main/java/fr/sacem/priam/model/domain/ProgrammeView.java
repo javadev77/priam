@@ -31,6 +31,8 @@ public class ProgrammeView {
 
     private String userValidation;
     private Date dateValidation;
+    
+    private StatutFichierFelix statutFichierFelix;
 
     
     public ProgrammeView() {
@@ -136,7 +138,13 @@ public class ProgrammeView {
     public String getUserValidation() {
         return userValidation;
     }
-
+    
+    @Column(name = "STATUT_FICHIER_FELIX")
+    @Enumerated(EnumType.STRING)
+    public StatutFichierFelix getStatutFichierFelix() {
+        return statutFichierFelix;
+    }
+    
     public void setNumProg(String numProg) {
         this.numProg = numProg;
     }
@@ -206,4 +214,8 @@ public class ProgrammeView {
     public void setUserValidation(String userValidation) { this.userValidation = userValidation; }
 
     public void setDateValidation(Date dateValidation) { this.dateValidation = dateValidation; }
+    
+    public void setStatutFichierFelix(StatutFichierFelix statutFichierFelix) {
+        this.statutFichierFelix = statutFichierFelix;
+    }
 }

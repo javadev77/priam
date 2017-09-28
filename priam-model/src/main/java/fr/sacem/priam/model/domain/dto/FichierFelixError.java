@@ -9,6 +9,7 @@ public class FichierFelixError {
     private String filename;
     private String tmpFilename;
     private List<String> errors;
+    private byte[] content;
     
     public FichierFelixError() {
     
@@ -36,5 +37,13 @@ public class FichierFelixError {
     
     public void setTmpFilename(String tmpFilename) {
 	  this.tmpFilename = tmpFilename;
+    }
+    
+    public byte[] getContent() {
+	  return content;
+    }
+    
+    public void setContent(byte[] content) {
+	  this.content = content;
     }
 }
