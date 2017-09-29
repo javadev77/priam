@@ -172,6 +172,7 @@ function fetchInitData() {
           .then(data => {
           if (data) {
             store.commit('SELECT_PAGE_SIZE', data.USER_PAGE_SIZE ? data.USER_PAGE_SIZE : store.getters.userPageSize );
+            store.commit('SELECT_FAMILLE', data.USER_FAMILLE ? data.USER_FAMILLE : store.getters.userFamille);
             bootstrapIfReady('SELECT_PAGE_SIZE');
           }
         });

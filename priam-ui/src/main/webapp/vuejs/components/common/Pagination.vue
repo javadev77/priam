@@ -174,7 +174,7 @@
       pageSizeChanged(value) {
         this.itemsPerPage = Number.parseInt(value);
         console.log("pageSizeChanged" + this.itemsPerPage);
-        this.$emit('page-size-changed', Number.parseInt(this.itemsPerPage));
+        this.$emit('page-size-changed', this.itemsPerPage);
       }
 
 

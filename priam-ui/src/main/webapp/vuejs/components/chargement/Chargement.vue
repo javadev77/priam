@@ -154,7 +154,7 @@
         isCollapsed: false,
         critereInit : {},
 
-        familleSelected : {'id' : 'ALL', 'value' : 'Toutes'},
+        familleSelected : this.$store.getters.userFamille,
         typeUtilisationSelected : {'id' : 'ALL', 'value' : 'Tous'},
 
         inputChgtCriteria : {

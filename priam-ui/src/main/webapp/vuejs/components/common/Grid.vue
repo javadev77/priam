@@ -9,7 +9,7 @@
                      :current-page="this.data.number"
                      :total-pages="this.data.totalPages"
                      :total-items="this.data.totalElements"
-                     :itemsPerPage="pageSize"
+                     :itemsPerPage="this.data.size"
                      @page-size-changed="pageSizeChanged"
                      @page-changed="pageOneChanged">
 
@@ -206,7 +206,7 @@
                      :current-page="this.data.number"
                      :total-pages="this.data.totalPages"
                      :total-items="this.data.totalElements"
-                     :itemsPerPage="pageSize"
+                     :itemsPerPage="this.data.size"
                      @page-size-changed="pageSizeChanged"
                      @page-changed="pageOneChanged">
 
@@ -264,7 +264,7 @@
         sortOrders: sortOrders,
         sort : [],
         currentPage : 1,
-        pageSize : this.$store.getters.userPageSize
+        pageSize : 25
 
         /*pagination: {
           currentPage: this.data.number,
@@ -327,8 +327,6 @@
     },
 
     created() {
-
-        debugger;
 
         this.sort = this.data.sort !== undefined ? this.data.sort[0] : undefined;
 
