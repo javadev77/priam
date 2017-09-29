@@ -178,7 +178,7 @@
             isCollapsed : false,
             resource: {},
             programmeInfo : {},
-            familleSelected : this.$store.getters.userFamille,
+            familleSelected : null,
             typeUtilisationSelected : null,
             statutSelected : null,
 
@@ -524,7 +524,7 @@
 
             } else {
 
-                this.familleSelected = this.$store.getters.userFamille;
+                this.familleSelected = {id : 'ALL', value : 'Toutes'};
                 this.typeUtilisationSelected = {id : 'ALL', value : 'Tous'};
                 let statutFichier = this.getStatutFichierByCode('AFFECTE');
                 this.statutSelected = { id : statutFichier.code, value : statutFichier.libelle};
@@ -601,7 +601,7 @@
 
             }
             else {
-              this.familleSelected = this.$store.getters.userFamille;
+              this.familleSelected = {id : 'ALL', value : 'Toutes'};
               this.typeUtilisationSelected = {id : 'ALL', value : 'Tous'};
 
               let statut = this.getStatutFichierByCode('AFFECTE');
