@@ -124,12 +124,15 @@
             .then(response => {
               store.commit('SELECT_PAGE_SIZE', $this.userPageSize);
               store.commit('SELECT_FAMILLE', $this.familleSelected.id+","+$this.familleSelected.value);
+              $this.$router.push("/");
           });
 
         },
 
         retablir() {
           this.userPageSize = this.$store.getters.userPageSize;
+          this.familleSelected = this.$store.getters.userFamille;
+          this.$router.push("/");
         }
       }
 
