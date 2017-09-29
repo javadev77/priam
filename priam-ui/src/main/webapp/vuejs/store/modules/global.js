@@ -43,7 +43,10 @@ const mutations = {
   },
 
   'SELECT_FAMILLE' (state, userFamille) {
-    state.userFamille = {'id' : userFamille.split(',')[0], 'value' : userFamille.split(',')[1]};
+    if(typeof userFamille != "object") {
+      state.userFamille = {'id' : userFamille.split(',')[0], 'value' : userFamille.split(',')[1]};
+    }
+
   },
 
 };
