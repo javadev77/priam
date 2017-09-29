@@ -45,7 +45,11 @@
               <div class="form-group col-md-15">
                 <label class="col-md-9 control-label blueText text-right">Famille par défaut</label>
                 <div class="col-md-15">
-                  <input name="Nom programme" type="text" >
+                  <select :value="familleSelected.id" @change="familleChanged($event.target.value)">
+                    <option v-for="f in this.$store.getters.familleOptions" :value="f.id">
+                      {{ f.value }}
+                    </option>
+                  </select>
                 </div>
               </div>
             </div>
@@ -82,7 +86,8 @@
       data() {
 
           return {
-            userPageSize : this.$store.getters.userPageSize
+            userPageSize : this.$store.getters.userPageSize,
+            familleSelected : this.$store.getters.userFamille
           }
 
       },
@@ -90,8 +95,20 @@
       methods :  {
 
         pageSizeChanged(value) {
-          var itemsPerPage = Number.parseInt(value);
-          this.userPageSize = itemsPerPage;
+          this.userPageSize = Number.parseInt(value);
+        },
+
+        familleChanged(value) {
+
+          var familles = this.$store.getters.familleOptions;
+          for(var i = 0; i < familles.length; i++) {
+            if(familles[i].id == value)
+            {
+              this.familleSelected = familles[i];
+              break;
+            }
+          }
+
         },
 
         enregistrer() {
@@ -99,12 +116,14 @@
           var $this = this;
 
           var parametrage = {
-              'USER_PAGE_SIZE' : $this.userPageSize
+              'USER_PAGE_SIZE' : $this.userPageSize,
+              'USER_FAMILLE' : $this.familleSelected.id+","+$this.familleSelected.value
           }
 
           this.resource.enregistrerParametrage(parametrage)
             .then(response => {
               store.commit('SELECT_PAGE_SIZE', $this.userPageSize);
+              store.commit('SELECT_FAMILLE', $this.familleSelected.id+","+$this.familleSelected.value);
           });
 
         },

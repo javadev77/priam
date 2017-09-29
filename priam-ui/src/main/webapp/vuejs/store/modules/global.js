@@ -9,6 +9,7 @@ const state = {
       sizes : [25, 50, 100]
     },
 
+    userFamille : {'id' : 'ALL', 'value' : 'Toutes'},
 
     mipsaConfig : {},
 
@@ -39,7 +40,11 @@ const mutations = {
   'SET_CURRENT_USER' (state, userDto) {
     state.currentUser = userDto;
     console.log('state.currentUser = ' + state.currentUser.displayName);
-  }
+  },
+
+  'SELECT_FAMILLE' (state, userFamille) {
+    state.userFamille = {'id' : userFamille.split(',')[0], 'value' : userFamille.split(',')[1]};
+  },
 
 };
 
@@ -59,6 +64,10 @@ const getters = {
 
   userPageSize: state => {
     return state.pagination.userPageSize;
+  },
+
+  userFamille: state => {
+    return state.userFamille;
   },
 
 
