@@ -5,26 +5,11 @@
 const state = {
 
     pagination : {
-
-      currentPage: {
-        type: Number,
-        default : 1
-      },
-      // Total page
-      totalPages: Number,
-      // Items per page
-      itemsPerPage: Number,
-      // Total items
-      totalItems: Number,
-      // Visible Pages
-      visiblePages: {
-        type: Number,
-        default: 5
-      }
-
-
+      userPageSize: 25,
+      sizes : [25, 50, 100]
     },
 
+    userFamille : {'id' : 'ALL', 'value' : 'Toutes'},
 
     mipsaConfig : {},
 
@@ -41,7 +26,7 @@ const mutations = {
   },
 
   'SELECT_PAGE_SIZE' (state, pageSize) {
-      state.pagination.itemsPerPage = pageSize;
+      state.pagination.userPageSize = pageSize;
   },
 
   'SET_LIBELLE_UTILISATEUR' (state, data) {
@@ -55,7 +40,14 @@ const mutations = {
   'SET_CURRENT_USER' (state, userDto) {
     state.currentUser = userDto;
     console.log('state.currentUser = ' + state.currentUser.displayName);
-  }
+  },
+
+  'SELECT_FAMILLE' (state, userFamille) {
+    if(typeof userFamille != "object") {
+      state.userFamille = {'id' : userFamille.split(',')[0], 'value' : userFamille.split(',')[1]};
+    }
+
+  },
 
 };
 
@@ -70,7 +62,15 @@ const actions = {
 
 const getters = {
   itemsPerPage: state => {
-    return state.pagination.itemsPerPage;
+    return state.pagination.sizes;
+  },
+
+  userPageSize: state => {
+    return state.pagination.userPageSize;
+  },
+
+  userFamille: state => {
+    return state.userFamille;
   },
 
 

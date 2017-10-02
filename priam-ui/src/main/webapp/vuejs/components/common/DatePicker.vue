@@ -1,11 +1,13 @@
 <template>
-  <input class="form-control datepicker from" type="text" size="10" :placeholder="placeHolder"/>
+  <masked-input v-model="dateValue" class="form-control datepicker from" mask="11/11/1111" size="10" :placeholder="placeHolder" />
 </template>
 
 <script>
   import moment from 'moment';
+  import MaskedInput from 'vue-masked-input';
 
   export default {
+
 
       props : ['dateFormat', 'placeHolder', 'zeroHour', 'value'],
 
@@ -183,7 +185,12 @@
 
       beforeDestroy() {
           $(this.$el).datepicker('hide').datepicker('destroy');
+      },
+
+      components: {
+        MaskedInput
       }
+
 
   }
 

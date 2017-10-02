@@ -205,7 +205,7 @@
           </table>
 
           <paginator  v-if="isPaginable"
-                      :current-page="this.data.number"
+                     :current-page="this.data.number"
                      :total-pages="this.data.totalPages"
                      :total-items="this.data.totalElements"
                      :itemsPerPage="this.data.size"
@@ -329,8 +329,6 @@
     },
 
     created() {
-
-        debugger;
 
         this.sort = this.data.sort !== undefined ? this.data.sort[0] : undefined;
 
@@ -479,7 +477,6 @@
         console.log("type of pageSize = "  + typeof pageSize);
         this.currentPage = 1;
         this.pageSize = pageSize;
-        debugger;
         this.$emit('load-page', 1, pageSize, this.sort);
       },
       isNumber(n) {

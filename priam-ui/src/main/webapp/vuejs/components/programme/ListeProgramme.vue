@@ -262,14 +262,14 @@
               page : 1,
               sort : 'dateCreation',
               dir : 'DESC',
-              size : 25
+              size : this.$store.getters.userPageSize
             },
 
             selectedProgramme : null,
 
             date : null,
 
-            familleSelected : {'id' : 'ALL', 'value' : 'Toutes'},
+            familleSelected : this.$store.getters.userFamille,
             typeUtilisationSelected : {'id' : 'ALL', 'value' : 'Tous'},
             rionTheoriqueSelected :  'ALL',//{'id' : 'ALL', 'value' : 'Toutes'},
             rionPaiementSelected : {'id' : 'ALL', 'value' : 'Toutes'},
@@ -659,7 +659,10 @@
               this.critereRechercheData.dateCreationFin = null;
               this.critereRechercheData.statutCode = ['EN_COURS', 'AFFECTE', 'CREE', 'VALIDE', 'MIS_EN_REPART'];
 
+
               this.familleSelected = {'id' : 'ALL', 'value' : 'Toutes'};
+
+
               this.typeUtilisationSelected = {'id' : 'ALL', 'value' : 'Tous'};
               this.rionTheoriqueSelected = 'ALL';//{'id' : 'ALL', 'value' : 'Toutes'};
               this.rionPaiementSelected = {'id' : 'ALL', 'value' : 'Toutes'};
@@ -695,6 +698,7 @@
                 return response.json();
               })
               .then(data => {
+
 
                 //Clear timers
                 //let content = data.content;

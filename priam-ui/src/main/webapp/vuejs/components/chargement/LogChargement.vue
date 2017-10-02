@@ -1,7 +1,7 @@
 <template>
   <modal>
     <template slot="body">
-      <label v-if="hasErrors">Le fichier de répartition contient les erreurs suivantes :</label>
+      <label v-if="hasErrors">Le fichier ne peut être chargé à cause de(s) erreur(s) suivante(s) :</label>
       <div style="height:300px; overflow-y:auto;">
         <ul v-if="hasErrors">
           <li v-for="log in logs">

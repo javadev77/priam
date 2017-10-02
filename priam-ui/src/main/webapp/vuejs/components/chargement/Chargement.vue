@@ -154,7 +154,7 @@
         isCollapsed: false,
         critereInit : {},
 
-        familleSelected : {'id' : 'ALL', 'value' : 'Toutes'},
+        familleSelected : this.$store.getters.userFamille,
         typeUtilisationSelected : {'id' : 'ALL', 'value' : 'Tous'},
 
         inputChgtCriteria : {
@@ -169,7 +169,7 @@
           page : 1,
           sort : 'dateDebutChargt',
           dir : 'desc',
-          size : 25
+          size : this.$store.getters.userPageSize
         },
 
         priamGrid : {

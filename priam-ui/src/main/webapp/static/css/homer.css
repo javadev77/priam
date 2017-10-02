@@ -167,6 +167,11 @@
 .bg-ico-btn-action {
   background: url(../images/iconescontextes/btnediter.gif) no-repeat;
 }
+
+.bg-ico-btn-info {
+  background: url(../images/iconescontextes/btninformation.gif) no-repeat;
+}
+
 .bg-ico-file-excel {
   background: url(../images/iconescontextes/icofichierexcel.gif) no-repeat center;
 }

@@ -188,7 +188,7 @@
         resource: '',
         nom : '',
         rionTheoriqueSelected : null,
-        familleSelected: null,
+        familleSelected: this.$store.getters.userFamille,
         typeUtilisationSelected: null,
         typeRepart:'OEUVRE',
         programmeData: {

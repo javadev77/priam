@@ -48,6 +48,8 @@
 <script>
 
   import Util from '../services/Utils'
+  import store from '../../store/store';
+
 
   export default {
 
@@ -80,12 +82,14 @@
     data () {
 
       return {
-        pageSize : 25,
-        sizes : [25, 50, 100]
       }
     },
 
     computed: {
+
+      sizes () {
+          return this.$store.getters.itemsPerPage;
+      },
       lastPage () {
         if (this.totalPages) {
           return this.totalPages
@@ -170,7 +174,7 @@
       pageSizeChanged(value) {
         this.itemsPerPage = Number.parseInt(value);
         console.log("pageSizeChanged" + this.itemsPerPage);
-        this.$emit('page-size-changed', Number.parseInt(this.itemsPerPage));
+        this.$emit('page-size-changed', this.itemsPerPage);
       }
 
 

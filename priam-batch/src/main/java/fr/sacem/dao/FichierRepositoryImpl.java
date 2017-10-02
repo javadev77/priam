@@ -122,7 +122,7 @@ public class FichierRepositoryImpl implements FichierRepository {
                 stmt.setLong(3, fichier.getNbLignes());
                 stmt.setString(4, fichier.getNom());
                 stmt.setString(5, typeUtilisation);
-                stmt.setString(6, STATUT_KO);
+                stmt.setString(6, STATUT_EN_COURS);
                 return stmt;
             }, keyHolder);
 
