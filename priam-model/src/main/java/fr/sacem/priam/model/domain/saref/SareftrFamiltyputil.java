@@ -1,4 +1,4 @@
-package fr.sacem.priam.model.domain;
+package fr.sacem.priam.model.domain.saref;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -8,15 +8,32 @@ import java.util.List;
  * Created by benmerzoukah on 15/05/2017.
  */
 @Entity
-@Table(name = "PRIAM_FAMILTYPUTIL")
-public class Famille {
+@Table(name = "SAREFFT_FAMILTYPUTIL")
+public class SareftrFamiltyputil {
     
     private String code;
     private Date dateDebut;
     private Date dateFin;
-    private List<TypeUtilisation> typeUtilisations;
-    
-    public Famille() {
+    private List<SareftrTyputil> sareftrTyputils;
+    /*private String cdefamiltyputil;
+    private Long filtre;
+    private Long ordaff;
+    private String com;
+    private String indlieudif;
+    private String typrion;
+    private String typdifaudv;
+    private Date datcre;
+    private String usercre;
+    private Date datmaj;
+    private String usermaj;
+    //private Date datdbtvld;
+    //private Date datfinvld;
+    private String cdetypprocess;
+    private Double poidsof;
+    private String cdefamilpart;
+    private String familrempl;
+    */
+    public SareftrFamiltyputil() {
     
     }
     
@@ -39,12 +56,12 @@ public class Famille {
     }
     
     @OneToMany(mappedBy = "codeFamille", fetch = FetchType.LAZY)
-    public List<TypeUtilisation> getTypeUtilisations() {
-        return typeUtilisations;
+    public List<SareftrTyputil> getSareftrTyputils() {
+        return sareftrTyputils;
     }
     
-    public void setTypeUtilisations(List<TypeUtilisation> typeUtilisations) {
-        this.typeUtilisations = typeUtilisations;
+    public void setSareftrTyputils(List<SareftrTyputil> sareftrTyputils) {
+        this.sareftrTyputils = sareftrTyputils;
     }
     
     public void setCode(String code) {

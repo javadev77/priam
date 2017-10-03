@@ -107,6 +107,37 @@ public class FelixDataService {
     
         /*List<LignePreprep> allLignes = lignePreprepDao.findByNumProg(numProg);
         lignePreprepDao.delete(allLignes);
+
+        lignePreprepDao.flush();
+    
+        List<LignePreprep> lignesSelectionnes = ligneProgrammeDao.findLigneProgrammeSelectionnesForFelix(programme.getNumProg());
+        
+        Collection<LignePreprep> lignePrepreps = Lists.newArrayList();
+        boolean isValidData = true;
+        for (LignePreprep lignePreprep : lignesSelectionnes) {
+            lignePreprep.setCdeTer(programme.getCdeTer()); // A remplir depuis le programme
+            lignePreprep.setRionEffet(programme.getSareftrRionTheorique().getRion());
+            lignePreprep.setCdeFamilTypUtil(programme.getSareftrFamiltyputil().getCode());
+            lignePreprep.setNumProg(programme.getNumProg());
+            lignePreprep.setCdeTypUtil(programme.getSareftrTyputil().getCode());
+            lignePreprep.setCdeModFac(CDE_MOD_FAC);
+            lignePreprep.setCdeTypProg(PRINC);
+            lignePreprep.setCdeCompl(SANS);
+            lignePreprep.setLibProg(programme.getNom());
+            lignePreprep.setCompLibProg("");
+            lignePreprep.setDatDbtProg(programme.getDateDbtPrg()); //TODO A remplir depuis le programme
+            lignePreprep.setDatFinProg(programme.getDateFinPrg()); //TODO A remplir depuis le programme
+
+            
+            if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode().equals(programme.getSareftrTyputil().getCode()) ) {
+                lignePreprep.setNbrDif(1L);
+            } else {
+                lignePreprep.setNbrDif(lignePreprep.getNbrDif());
+            }
+            
+    
+            lignePrepreps.add(lignePreprep);
+
         lignePreprepDao.flush();*/
     
         prepareFelixData(numProg);
@@ -248,8 +279,8 @@ public class FelixDataService {
     
         String fileName = DOC_PREFIX
                               + numProg + "_"
-                              + programme.getTypeUtilisation().getCode() + "_"
-                              + programme.getRionTheorique().getRion() + "_"
+                              + programme.getSareftrTyputil().getCode() + "_"
+                              + programme.getSareftrRionTheorique().getRion() + "_"
                               + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".csv";
         File tmpFile = File.createTempFile(fileName, ".tmp");
         //OutputStream out = new FileOutputStream(tmpFile);

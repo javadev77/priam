@@ -2,6 +2,9 @@ package fr.sacem.priam.model.domain.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import fr.sacem.priam.model.domain.*;
+import fr.sacem.priam.model.domain.saref.SareftrFamiltyputil;
+import fr.sacem.priam.model.domain.saref.SareftrRion;
+import fr.sacem.priam.model.domain.saref.SareftrTyputil;
 import fr.sacem.priam.model.util.SimpleDateSerializer;
 
 import java.util.Date;
@@ -41,9 +44,9 @@ public class ProgrammeDto {
     	private StatutFichierFelix statutFichierFelix;
 	
 	
-	public ProgrammeDto(String numProg, String nom, Famille famille, TypeUtilisation typeUtilisation, Rion rionTheorique,
-	                    Date dateCreation, TypeRepart typeRepart, StatutProgramme statut, Rion rionPaiement, Long nbFichiers,
-	                    String usercre, Date datmaj, String usermaj, Date dataffecte, String useraffecte, Date dateValidation) {
+	public ProgrammeDto(String numProg, String nom, SareftrFamiltyputil famille, SareftrTyputil typeUtilisation, SareftrRion rionTheorique,
+						Date dateCreation, TypeRepart typeRepart, StatutProgramme statut, SareftrRion rionPaiement, Long nbFichiers,
+						String usercre, Date datmaj, String usermaj, Date dataffecte, String useraffecte, Date dateValidation) {
 		this.numProg = numProg;
 		this.nom = nom;
 		this.famille = famille != null ? famille.getCode() : "";

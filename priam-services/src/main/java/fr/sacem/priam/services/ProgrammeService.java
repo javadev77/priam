@@ -5,6 +5,9 @@ import fr.sacem.priam.model.dao.jpa.*;
 import fr.sacem.priam.model.domain.*;
 import fr.sacem.priam.model.domain.criteria.ProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
+import fr.sacem.priam.model.domain.saref.SareftrFamiltyputil;
+import fr.sacem.priam.model.domain.saref.SareftrRion;
+import fr.sacem.priam.model.domain.saref.SareftrTyputil;
 import fr.sacem.priam.model.util.MapperConfiguration;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -57,8 +60,8 @@ public class ProgrammeService {
 	public Page<ProgrammeDto> findProgrammeByCriteria(ProgrammeCriteria criteria, Pageable pageable) {
 		
 		Page<ProgrammeDto> pageProgramme = programmeViewDao.findAllProgrammeByCriteria(criteria.getNumProg(), criteria.getNom(),
-			criteria.getStatut(), criteria.getDateCreationDebut(), criteria.getDateCreationFin(), criteria.getFamille(),
-			criteria.getTypeUtilisation(), criteria.getRionTheorique(), criteria.getRionPaiement(), criteria.getTypeRepart(),
+			criteria.getStatut(), criteria.getDateCreationDebut(), criteria.getDateCreationFin(), criteria.getSareftrFamiltyputil(),
+			criteria.getTypeUtilisation(), criteria.getSareftrRionTheorique(), criteria.getSareftrRionPaiement(), criteria.getTypeRepart(),
 			pageable);
 		
 		return pageProgramme;
@@ -124,18 +127,18 @@ public class ProgrammeService {
 		
 		programme.setNom(programmeDto.getNom());
 		
-		Famille famille = new Famille();
-		famille.setCode(programmeDto.getFamille());
-		programme.setFamille(famille);
+		SareftrFamiltyputil sareftrFamiltyputil = new SareftrFamiltyputil();
+		sareftrFamiltyputil.setCode(programmeDto.getFamille());
+		programme.setSareftrFamiltyputil(sareftrFamiltyputil);
 		
-		TypeUtilisation typeUtilisation = new TypeUtilisation();
-		typeUtilisation.setCode(programmeDto.getTypeUtilisation());
-		typeUtilisation.setCodeFamille(programmeDto.getFamille());
-		programme.setTypeUtilisation(typeUtilisation);
+		SareftrTyputil sareftrTyputil = new SareftrTyputil();
+		sareftrTyputil.setCode(programmeDto.getTypeUtilisation());
+		sareftrTyputil.setCodeFamille(programmeDto.getFamille());
+		programme.setSareftrTyputil(sareftrTyputil);
 		
-		Rion rion = new Rion();
-		rion.setRion(programmeDto.getRionTheorique());
-		programme.setRionTheorique(rion);
+		SareftrRion sareftrRion = new SareftrRion();
+		sareftrRion.setRion(programmeDto.getRionTheorique());
+		programme.setSareftrRionTheorique(sareftrRion);
 		
 		programme.setTypeRepart(programmeDto.getTypeRepart());
 		programme.setDatmaj(new Date());
@@ -218,9 +221,9 @@ public class ProgrammeService {
 			result.put((String) indObjects[1], ((BigInteger) indObjects[0]).longValue());
 		}
 
-		if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_PHONO.getCode().equals(programme.getTypeUtilisation().getCode())) {
+		if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_PHONO.getCode().equals(programme.getSareftrTyputil().getCode())) {
 			result.put(SOMME, programmeDao.calculerQuantiteOeuvres(numProg, selection));
-		} else if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode().equals(programme.getTypeUtilisation().getCode())) {
+		} else if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode().equals(programme.getSareftrTyputil().getCode())) {
 			result.put(SOMME, programmeDao.calculerDureeOeuvres(numProg, selection));
 		}
 

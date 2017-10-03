@@ -1,7 +1,7 @@
 package fr.sacem.priam.model.dao.jpa;
 
-import fr.sacem.priam.model.domain.LibelleFamille;
-import fr.sacem.priam.model.domain.LibelleFamillePK;
+import fr.sacem.priam.model.domain.saref.SareftjLibfamiltyputil;
+import fr.sacem.priam.model.domain.saref.SareftjLibfamiltyputilPK;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,13 +16,13 @@ import java.util.List;
  */
 @Lazy
 @Transactional(readOnly = true)
-public interface LibelleFamilleDao extends JpaRepository<LibelleFamille, LibelleFamillePK> {
+public interface LibelleFamilleDao extends JpaRepository<SareftjLibfamiltyputil, SareftjLibfamiltyputilPK> {
     
     @Cacheable("familles")
-    @Query("SELECT libFam FROM LibelleFamille libFam " +
-            "WHERE (libFam.famille.dateDebut is not null AND libFam.famille.dateDebut <= CURRENT_DATE) " +
-            "AND (libFam.famille.dateFin is null OR libFam.famille.dateFin >= CURRENT_DATE)" +
+    @Query("SELECT libFam FROM SareftjLibfamiltyputil libFam " +
+            "WHERE (libFam.sareftrFamiltyputil.dateDebut is not null AND libFam.sareftrFamiltyputil.dateDebut <= CURRENT_DATE) " +
+            "AND (libFam.sareftrFamiltyputil.dateFin is null OR libFam.sareftrFamiltyputil.dateFin >= CURRENT_DATE)" +
             "AND libFam.lang = :lang")
-    List<LibelleFamille> findByLang(@Param("lang") String lang);
+    List<SareftjLibfamiltyputil> findByLang(@Param("lang") String lang);
     
 }

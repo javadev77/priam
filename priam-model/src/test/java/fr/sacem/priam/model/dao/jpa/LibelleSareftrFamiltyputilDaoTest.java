@@ -1,7 +1,7 @@
 package fr.sacem.priam.model.dao.jpa;
 
 import fr.sacem.priam.model.dao.JpaConfigurationTest;
-import fr.sacem.priam.model.domain.LibelleTypeUtilisation;
+import fr.sacem.priam.model.domain.saref.SareftjLibfamiltyputil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,24 +18,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes={JpaConfigurationTest.class})
-public class LibelleTypeUtilisationDaoTest {
+public class LibelleSareftrFamiltyputilDaoTest {
     
     @Autowired
-    private LibelleTypeUtilisationDao typeUtilisationDao;
+    private LibelleFamilleDao libelleFamilleDao;
     
     
     @Test
-    public void should_return_all_type_utilisation_FR() {
-        List<LibelleTypeUtilisation> all = typeUtilisationDao.findByLang("FR");
-    
+    public void should_return_all_famille_FR() {
+        List<SareftjLibfamiltyputil> all = libelleFamilleDao.findByLang("FR");
         assertThat(all).isNotNull().isNotEmpty();
-        assertThat(all).extracting("code").containsExactly("CPRIVSONPH", "CPRIVAUDV", "CPRIVSONRD", "CPRIVAUDPL", "PRIME", "VALORIS", "ENCOURG");
+        assertThat(all).extracting("code").containsExactly("COPIEPRIV", "FDSVAL", "CMS");
     }
     
     @Test
-    public void should_return_empty_when_null() {
-        List<LibelleTypeUtilisation> all = typeUtilisationDao.findByLang(null);
-        
+    public void should_return_empty_famille_when_null() {
+        List<SareftjLibfamiltyputil> all = libelleFamilleDao.findByLang(null);
         assertThat(all).isNotNull().isEmpty();
     }
 

@@ -1,7 +1,7 @@
 package fr.sacem.priam.model.dao.jpa;
 
 import fr.sacem.priam.model.dao.JpaConfigurationTest;
-import fr.sacem.priam.model.domain.Rion;
+import fr.sacem.priam.model.domain.saref.SareftrRion;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,15 +18,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes={JpaConfigurationTest.class})
-public class RionDaoTest {
+public class SareftrRionDaoTest {
     
     @Autowired
-    private RionDao rionDao;
+    private SareftrRionDao sareftrRionDao;
     
     
     @Test
     public void should_return_all_rions() {
-        List<Rion> all = rionDao.findAll();
+        List<SareftrRion> all = sareftrRionDao.findAll();
     
         assertThat(all).isNotNull().isNotEmpty();
         assertThat(all).extracting("rion").contains(619, 600, 629, 630, 639);
@@ -34,7 +34,7 @@ public class RionDaoTest {
     
     @Test
     public void should_return_rions_after_639() {
-        List<Rion> all = rionDao.findAfterRion(639);
+        List<SareftrRion> all = sareftrRionDao.findAfterRion(639);
     
         assertThat(all).isNotNull().isNotEmpty();
         assertThat(all).extracting("rion").doesNotContain(637, 638);
@@ -42,7 +42,7 @@ public class RionDaoTest {
     
     @Test
     public void should_return_all_rions_after_current_date() {
-        List<Rion> all = rionDao.findAllByDateRglmtAfterCurrentDate();
+        List<SareftrRion> all = sareftrRionDao.findAllByDateRglmtAfterCurrentDate();
         
         assertThat(all).isNotNull().isNotEmpty();
         assertThat(all).extracting("rion").contains(639);

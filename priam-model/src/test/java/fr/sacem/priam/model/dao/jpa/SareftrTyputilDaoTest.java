@@ -1,7 +1,7 @@
 package fr.sacem.priam.model.dao.jpa;
 
 import fr.sacem.priam.model.dao.JpaConfigurationTest;
-import fr.sacem.priam.model.domain.TypeUtilisation;
+import fr.sacem.priam.model.domain.saref.SareftrTyputil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,16 +18,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes={JpaConfigurationTest.class})
-public class TypeUtilisationDaoTest {
+public class SareftrTyputilDaoTest {
     
     @Autowired
-    private TypeUtilisationDao typeUtilisationDao;
+    private SareftrTyputilDao sareftrTyputilDao;
     
     
     @Test
     public void should_return_all_type_utilisation() {
     
-        List<TypeUtilisation> all = typeUtilisationDao.findAll();
+        List<SareftrTyputil> all = sareftrTyputilDao.findAll();
     
         assertThat(all).isNotNull().isNotEmpty();
         assertThat(all).extracting("code").containsExactly("CPRIVSONPH", "CPRIVAUDV", "CPRIVSONRD", "COPRIVSON", "CPRIVAUDPL", "PRIME", "VALORIS", "ENCOURG");
@@ -36,7 +36,7 @@ public class TypeUtilisationDaoTest {
     @Test
     public void should_return_type_utilisation_by_code_famille_COPIPRIVEE() {
         
-        List<TypeUtilisation> all = typeUtilisationDao.findByCodeFamille("COPIEPRIV");
+        List<SareftrTyputil> all = sareftrTyputilDao.findByCodeFamille("COPIEPRIV");
         
         assertThat(all).isNotNull().isNotEmpty();
         assertThat(all).extracting("code").containsExactly("CPRIVSONPH", "CPRIVAUDV", "CPRIVSONRD", "CPRIVAUDPL");
@@ -45,7 +45,7 @@ public class TypeUtilisationDaoTest {
     @Test
     public void should_return_type_utilisation_by_code_famille_CMS() {
         
-        List<TypeUtilisation> all = typeUtilisationDao.findByCodeFamille("CMS");
+        List<SareftrTyputil> all = sareftrTyputilDao.findByCodeFamille("CMS");
         
         assertThat(all).isNotNull().isNotEmpty();
         assertThat(all).extracting("code").containsExactly("ENCOURG");

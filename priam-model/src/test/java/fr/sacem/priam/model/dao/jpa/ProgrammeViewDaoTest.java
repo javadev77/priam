@@ -5,6 +5,9 @@ import fr.sacem.priam.model.dao.JpaConfigurationTest;
 import fr.sacem.priam.model.domain.*;
 import fr.sacem.priam.model.domain.criteria.ProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
+import fr.sacem.priam.model.domain.saref.SareftrFamiltyputil;
+import fr.sacem.priam.model.domain.saref.SareftrRion;
+import fr.sacem.priam.model.domain.saref.SareftrTyputil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -81,11 +84,11 @@ public class ProgrammeViewDaoTest {
     @Autowired
     private ProgrammeDao programmeDao;
     @Autowired
-    private RionDao rionDao;
+    private SareftrRionDao sareftrRionDao;
     @Autowired
-    private TypeUtilisationDao typeUtilisationDao;
+    private SareftrTyputilDao sareftrTyputilDao;
     @Autowired
-    private FamilleDao familleDao;
+    private SareftrFamiltyputilDao sareftrFamiltyputilDao;
     
     @Before
     public void setup() {
@@ -104,8 +107,8 @@ public class ProgrammeViewDaoTest {
         criteria.setStatut(Arrays.asList(StatutProgramme.values()));
         Page<ProgrammeDto> all = programmeViewDao.findAllProgrammeByCriteria(criteria.getNumProg(), criteria.getNom(), criteria.getStatut(),
                 criteria.getDateCreationDebut(), criteria.getDateCreationFin(),
-                criteria.getFamille(), criteria.getTypeUtilisation(),
-                criteria.getRionTheorique(), criteria.getRionPaiement(), criteria.getTypeRepart(), PAGEABLE);
+                criteria.getSareftrFamiltyputil(), criteria.getTypeUtilisation(),
+                criteria.getSareftrRionTheorique(), criteria.getSareftrRionPaiement(), criteria.getTypeRepart(), PAGEABLE);
     
         assertThat(all).isNotNull();
         assertThat(all.getContent()).isNotNull().isNotEmpty();
@@ -122,7 +125,7 @@ public class ProgrammeViewDaoTest {
         //criteria.setNumProg("PR170001");
         criteria.setStatut(Arrays.asList(StatutProgramme.values()));
         
-        Page<ProgrammeDto> all = programmeViewDao.findAllProgrammeByCriteria(criteria.getNumProg(), criteria.getNom(), criteria.getStatut(), criteria.getDateCreationDebut(), criteria.getDateCreationFin(), criteria.getFamille(), criteria.getTypeUtilisation(), criteria.getRionTheorique(), criteria.getRionPaiement(), criteria.getTypeRepart(), PAGEABLE);
+        Page<ProgrammeDto> all = programmeViewDao.findAllProgrammeByCriteria(criteria.getNumProg(), criteria.getNom(), criteria.getStatut(), criteria.getDateCreationDebut(), criteria.getDateCreationFin(), criteria.getSareftrFamiltyputil(), criteria.getTypeUtilisation(), criteria.getSareftrRionTheorique(), criteria.getSareftrRionPaiement(), criteria.getTypeRepart(), PAGEABLE);
         
         assertThat(all).isNotNull();
         assertThat(all.getContent()).extracting("fichiers").isEqualTo(Arrays.asList(0L,0L,0L, 0L, 0L, 4L));
@@ -135,7 +138,7 @@ public class ProgrammeViewDaoTest {
         criteria.setNumProg("170001");
         criteria.setStatut(Arrays.asList(StatutProgramme.values()));
         
-        Page<ProgrammeDto> all = programmeViewDao.findAllProgrammeByCriteria(criteria.getNumProg(), criteria.getNom(), criteria.getStatut(), criteria.getDateCreationDebut(), criteria.getDateCreationFin(), criteria.getFamille(), criteria.getTypeUtilisation(), criteria.getRionTheorique(), criteria.getRionPaiement(), criteria.getTypeRepart(), PAGEABLE);
+        Page<ProgrammeDto> all = programmeViewDao.findAllProgrammeByCriteria(criteria.getNumProg(), criteria.getNom(), criteria.getStatut(), criteria.getDateCreationDebut(), criteria.getDateCreationFin(), criteria.getSareftrFamiltyputil(), criteria.getTypeUtilisation(), criteria.getSareftrRionTheorique(), criteria.getSareftrRionPaiement(), criteria.getTypeRepart(), PAGEABLE);
         
         assertThat(all).isNotNull();
         assertThat(all.getContent()).extracting("numProg").isEqualTo(Arrays.asList("170001"));
@@ -148,7 +151,7 @@ public class ProgrammeViewDaoTest {
         criteria.setNom("Programme 01");
         criteria.setStatut(Arrays.asList(StatutProgramme.values()));
         
-        Page<ProgrammeDto> all = programmeViewDao.findAllProgrammeByCriteria(criteria.getNumProg(), criteria.getNom(), criteria.getStatut(), criteria.getDateCreationDebut(), criteria.getDateCreationFin(), criteria.getFamille(), criteria.getTypeUtilisation(), criteria.getRionTheorique(), criteria.getRionPaiement(), criteria.getTypeRepart(), PAGEABLE);
+        Page<ProgrammeDto> all = programmeViewDao.findAllProgrammeByCriteria(criteria.getNumProg(), criteria.getNom(), criteria.getStatut(), criteria.getDateCreationDebut(), criteria.getDateCreationFin(), criteria.getSareftrFamiltyputil(), criteria.getTypeUtilisation(), criteria.getSareftrRionTheorique(), criteria.getSareftrRionPaiement(), criteria.getTypeRepart(), PAGEABLE);
         
         assertThat(all).isNotNull();
         assertThat(all.getContent()).extracting("nom").contains("Programme 01");
@@ -166,7 +169,7 @@ public class ProgrammeViewDaoTest {
     
         criteria.setStatut(Arrays.asList(StatutProgramme.values()));
         
-        Page<ProgrammeDto> all = programmeViewDao.findAllProgrammeByCriteria(criteria.getNumProg(), criteria.getNom(), criteria.getStatut(), criteria.getDateCreationDebut(), criteria.getDateCreationFin(), criteria.getFamille(), criteria.getTypeUtilisation(), criteria.getRionTheorique(), criteria.getRionPaiement(), criteria.getTypeRepart(), PAGEABLE);
+        Page<ProgrammeDto> all = programmeViewDao.findAllProgrammeByCriteria(criteria.getNumProg(), criteria.getNom(), criteria.getStatut(), criteria.getDateCreationDebut(), criteria.getDateCreationFin(), criteria.getSareftrFamiltyputil(), criteria.getTypeUtilisation(), criteria.getSareftrRionTheorique(), criteria.getSareftrRionPaiement(), criteria.getTypeRepart(), PAGEABLE);
         
         assertThat(all).isNotNull();
         assertThat(all.getContent()).isNotEmpty();
@@ -189,7 +192,7 @@ public class ProgrammeViewDaoTest {
         
         criteria.setStatut(Arrays.asList(StatutProgramme.values()));
         
-        Page<ProgrammeDto> all = programmeViewDao.findAllProgrammeByCriteria(criteria.getNumProg(), criteria.getNom(), criteria.getStatut(), criteria.getDateCreationDebut(), criteria.getDateCreationFin(), criteria.getFamille(), criteria.getTypeUtilisation(), criteria.getRionTheorique(), criteria.getRionPaiement(), criteria.getTypeRepart(), PAGEABLE);
+        Page<ProgrammeDto> all = programmeViewDao.findAllProgrammeByCriteria(criteria.getNumProg(), criteria.getNom(), criteria.getStatut(), criteria.getDateCreationDebut(), criteria.getDateCreationFin(), criteria.getSareftrFamiltyputil(), criteria.getTypeUtilisation(), criteria.getSareftrRionTheorique(), criteria.getSareftrRionPaiement(), criteria.getTypeRepart(), PAGEABLE);
         
         assertThat(all).isNotNull();
         assertThat(all.getContent()).isNotEmpty();
@@ -212,28 +215,28 @@ public class ProgrammeViewDaoTest {
     @Test
     public void add_programme(){
         java.util.Date date = new java.util.Date();
-        Famille famille = new Famille();
-        famille.setCode("monCdeFam1");
-        famille.setDateDebut(date);
-        familleDao.save(famille);
-        TypeUtilisation typeUtilisation = new TypeUtilisation();
-        typeUtilisation.setCode("cdeTyUt1");
-        typeUtilisation.setCodeFamille("monCdeFam1");
-        typeUtilisation.setDateDebut(date);
-        typeUtilisationDao.save(typeUtilisation);
-        Rion rionPaiement = new Rion();
-        rionPaiement.setRion(998);
-        rionDao.save(rionPaiement);
-        Rion rionTheorique = new Rion();
-        rionTheorique.setRion(999);
-        rionDao.save(rionTheorique);
+        SareftrFamiltyputil sareftrFamiltyputil = new SareftrFamiltyputil();
+        sareftrFamiltyputil.setCode("monCdeFam1");
+        sareftrFamiltyputil.setDateDebut(date);
+        sareftrFamiltyputilDao.save(sareftrFamiltyputil);
+        SareftrTyputil sareftrTyputil = new SareftrTyputil();
+        sareftrTyputil.setCode("cdeTyUt1");
+        sareftrTyputil.setCodeFamille("monCdeFam1");
+        sareftrTyputil.setDateDebut(date);
+        sareftrTyputilDao.save(sareftrTyputil);
+        SareftrRion sareftrRionPaiement = new SareftrRion();
+        sareftrRionPaiement.setRion(998);
+        sareftrRionDao.save(sareftrRionPaiement);
+        SareftrRion sareftrRionTheorique = new SareftrRion();
+        sareftrRionTheorique.setRion(999);
+        sareftrRionDao.save(sareftrRionTheorique);
         Programme programme = new Programme();
         programme.setNumProg("myNum1");
         programme.setNom("mon programme 1");
-        programme.setTypeUtilisation(typeUtilisation);
-        programme.setFamille(famille);
-        programme.setRionPaiement(rionPaiement);
-        programme.setRionTheorique(rionTheorique);
+        programme.setSareftrTyputil(sareftrTyputil);
+        programme.setSareftrFamiltyputil(sareftrFamiltyputil);
+        programme.setSareftrRionPaiement(sareftrRionPaiement);
+        programme.setSareftrRionTheorique(sareftrRionTheorique);
         programmeDao.save(programme);
     }
     
