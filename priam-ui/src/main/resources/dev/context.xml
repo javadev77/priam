@@ -5,6 +5,6 @@
               name="priamMariaDbDataSource"
               username="priam_app"
               password="bidon"
-              url="jdbc:mysql://msqdev08:3306/"/>
+              url="jdbc:mysql://msqdev08:3306/priam_app"/>
 
 </Context>

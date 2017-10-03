@@ -1,10 +1,9 @@
 package fr.sacem.priam.model.config;
 
-import org.apache.commons.lang3.StringUtils;
+import org.hibernate.dialect.MySQLInnoDBDialect;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +12,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
@@ -21,7 +21,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
-import java.util.Properties;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by benmerzoukah on 09/05/2017.
@@ -34,9 +35,8 @@ public class JpaConfiguration {
     @Autowired
     private Environment environment;
     
-    
-    @Value("${datasource.priam.maxPoolSize:10}")
-    private int maxPoolSize;
+    @Value("${priam.db.jndi:jdbc/priamMariaDbDataSource}")
+    private String priamDatasourceJndi;
     
     
     @Bean
@@ -45,7 +45,7 @@ public class JpaConfiguration {
         em.setDataSource(dataSource());
         em.setPackagesToScan("fr.sacem.priam.model.domain");
         em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
-        em.setJpaProperties(additionalProperties());
+        em.setJpaPropertyMap(additionalProperties());
         return em;
     }
     
@@ -54,14 +54,9 @@ public class JpaConfiguration {
       */
     @Bean
     public DataSource dataSource() {
-        DataSourceProperties dataSourceProperties = dataSourceProperties();
-        DataSource dataSource =  DataSourceBuilder
-                .create(dataSourceProperties.getClassLoader())
-                .driverClassName(dataSourceProperties.getDriverClassName())
-                .url(dataSourceProperties.getUrl())
-                .username(dataSourceProperties.getUsername())
-                .password(dataSourceProperties.getPassword())
-                .build();
+        JndiDataSourceLookup jndiDataSourceLookup = new JndiDataSourceLookup();
+        jndiDataSourceLookup.setResourceRef(Boolean.TRUE);
+        DataSource dataSource = jndiDataSourceLookup.getDataSource(priamDatasourceJndi);
         
         return dataSource;
     }
@@ -85,16 +80,16 @@ public class JpaConfiguration {
         return new DataSourceProperties();
     }
     
-    
-    private Properties additionalProperties() {
-        Properties properties = new Properties();
-        properties.put("hibernate.dialect", environment.getRequiredProperty("datasource.priam.hibernate.dialect"));
-        //properties.put("hibernate.hbm2ddl.auto", environment.getRequiredProperty("datasource.priam.hibernate.hbm2ddl.method"));
-        properties.put("hibernate.show_sql", environment.getRequiredProperty("datasource.priam.hibernate.show_sql"));
-        properties.put("hibernate.format_sql", environment.getRequiredProperty("datasource.priam.hibernate.format_sql"));
-        if(StringUtils.isNotEmpty(environment.getRequiredProperty("datasource.priam.defaultSchema"))){
-            properties.put("hibernate.default_schema", environment.getRequiredProperty("datasource.priam.defaultSchema"));
-        }
+    private  Map<String, Object> additionalProperties() {
+        Map<String, Object> properties = new HashMap<>();
+        
+        properties.put("hibernate.show_sql", true);
+        //properties.put("hibernate.ejb.interceptor", hibernateInterceptor());
+        properties.put("hibernate.dialect", MySQLInnoDBDialect.class.getName());
+        properties.put("hibernate.bytecode.use_reflection_optimizer", true);
+        properties.put("hibernate.jdbc.batch_size", 30);
+        properties.put("hibernate.connection.zeroDateTimeBehavior", "convertToNull");
+        
         return properties;
     }
     @Bean
