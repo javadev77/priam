@@ -35,8 +35,10 @@ public class ProgrammeResource {
 
     @Autowired
     private ProgrammeService programmeService;
+    
     @Autowired
     private FichierService fichierService;
+    
     @Autowired
     private ProgrammeViewDao programmeViewDao;
 

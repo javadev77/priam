@@ -40,6 +40,8 @@ public class ProgrammeDto {
       private String userValidation;
     	@JsonSerialize(using = SimpleDateSerializer.class)
 	private Date dateValidation;
+    	
+    	private StatutFichierFelix statutFichierFelix;
 	
 	
 	public ProgrammeDto(String numProg, String nom, SareftrFamiltyputil famille, SareftrTyputil typeUtilisation, SareftrRion rionTheorique,
@@ -65,7 +67,7 @@ public class ProgrammeDto {
 
 	public ProgrammeDto(String numProg, String nom, String famille, String typeUtilisation, Integer rionTheorique, Date dateCreation, TypeRepart typeRepart,
 	                    StatutProgramme statut, Integer rionPaiement, Long fichiers, String usercre, Date datmaj, String usermaj,
-	                    Date dataffecte, String useraffecte, Date dateValidation) {
+	                    Date dataffecte, String useraffecte, Date dateValidation, StatutFichierFelix statutFichierFelix) {
 		this.numProg = numProg;
 		this.nom = nom;
 		this.famille = famille;
@@ -82,15 +84,16 @@ public class ProgrammeDto {
 		this.dataffecte = dataffecte;
 		this.useraffecte = useraffecte;
 	    	this.dateValidation = dateValidation;
+	    	this.statutFichierFelix = statutFichierFelix;
 	}
 
 	public ProgrammeDto(String numProg, String nom, String famille, String typeUtilisation, Integer rionTheorique, Date dateCreation, TypeRepart typeRepart,
 						StatutProgramme statut, Integer rionPaiement, Long fichiers, String usercre, Date datmaj, String usermaj,
 						Date dataffecte, String useraffecte, Date dateDbtPrg,
-						Date dateFinPrg, Integer cdeTer, String userValidation, Date dateValidation) {
+						Date dateFinPrg, Integer cdeTer, String userValidation, Date dateValidation, StatutFichierFelix statutFichierFelix) {
 		this(numProg, nom, famille, typeUtilisation, rionTheorique, dateCreation, typeRepart,
 				statut, rionPaiement, fichiers, usercre, datmaj, usermaj,
-				dataffecte, useraffecte, dateValidation);
+				dataffecte, useraffecte, dateValidation, statutFichierFelix);
 
 		this.dateDbtPrg = dateDbtPrg;
 		this.dateFinPrg = dateFinPrg ;
@@ -247,7 +250,15 @@ public class ProgrammeDto {
 	public void setDateValidation(Date dateValidation) {
 		this.dateValidation = dateValidation;
 	}
-
-	public ProgrammeDto() {
+    
+    public StatutFichierFelix getStatutFichierFelix() {
+	  return statutFichierFelix;
+    }
+    
+    public void setStatutFichierFelix(StatutFichierFelix statutFichierFelix) {
+	  this.statutFichierFelix = statutFichierFelix;
+    }
+    
+    public ProgrammeDto() {
 	}
 }

@@ -28,7 +28,7 @@ public class FelixDataSpringValidator implements Validator {
 	  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "rionEffet", "error.rionEffet");
 	  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeFamilTypUtil", "error.cdeFamilTypUtil");
 	  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "numProg", "error.numProg");
-	  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "keyLigPenel", "error.keyLigPenel");
+	  //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "keyLigPenel", "error.keyLigPenel");
 	  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeUtil", "error.cdeUtil");
 	  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeTypUtil", "error.cdeTypUtil");
 	  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeModFac", "error.cdeModFac");

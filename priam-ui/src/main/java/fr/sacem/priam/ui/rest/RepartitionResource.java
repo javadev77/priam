@@ -1,14 +1,12 @@
 package fr.sacem.priam.ui.rest;
 
-import fr.sacem.priam.common.constants.EnvConstants;
 import fr.sacem.priam.common.exception.TechnicalException;
+import fr.sacem.priam.model.dao.jpa.FichierFelixDao;
 import fr.sacem.priam.model.dao.jpa.ProgrammeDao;
-import fr.sacem.priam.model.domain.Programme;
-import fr.sacem.priam.model.domain.StatutProgramme;
-import fr.sacem.priam.model.domain.dto.FichierFelixError;
+import fr.sacem.priam.model.domain.FichierFelix;
+import fr.sacem.priam.model.domain.StatutFichierFelix;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.services.FelixDataService;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +16,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Date;
 
 /**
  * Created by benmerzoukah on 21/08/2017.
@@ -34,17 +35,45 @@ public class RepartitionResource {
     
     @Autowired
     private ProgrammeDao programmeDao;
-    
+  
+    @Autowired
+    private FichierFelixDao fichierFelixDao;
+  
+  
+  
     @RequestMapping(value = "validateFelixData/{numProg}",
                   method = RequestMethod.GET,
                   produces = MediaType.APPLICATION_JSON_VALUE)
-    public FichierFelixError validateFelixData(@PathVariable("numProg") String numProg) throws IOException {
-        felixDataService.generateEtValidateDonneesRepartition(numProg);
-        FichierFelixError fichierFelixWithErrors = felixDataService.createFichierFelixWithErrors(numProg);
+    public ProgrammeDto runAsyncCreateFichierFelix(@PathVariable("numProg") String numProg) throws IOException {
+        FichierFelix ff = fichierFelixDao.findByNumprog(numProg);
+        if(ff != null) {
+          fichierFelixDao.delete(ff);
+          fichierFelixDao.flush();
+        }
+  
+        ff = new FichierFelix();
+        ff.setDateCreation(new Date());
+        ff.setStatut(StatutFichierFelix.EN_COURS);
+        ff.setNumProg(numProg);
+        fichierFelixDao.save(ff);
+        fichierFelixDao.flush();
         
-        return fichierFelixWithErrors;
+        felixDataService.runAsyncCreateFichierFelix(numProg);
+        
+        return new ProgrammeDto();
     }
   
+    
+    @RequestMapping(value = "fichierfelix/{numProg}",
+      method = RequestMethod.GET,
+      produces = MediaType.APPLICATION_JSON_VALUE)
+    public FichierFelix getFichierFelix(@PathVariable("numProg") String numProg) {
+        FichierFelix fichierFelix = fichierFelixDao.findByNumprog(numProg);
+        
+        return fichierFelix;
+    }
+    
+    
     @RequestMapping(value = "/downloadFichierFelixError",
                    method = RequestMethod.POST)
     public void generateFelixDataWithErrors(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -53,27 +82,23 @@ public class RepartitionResource {
         String numProg = request.getParameter("numProg");
       
         //Programme programme = programmeDao.findOne(numProg);
-  
-        generateFelixCsvData(response, tmpFilename, filename);
+        
+        generateFelixCsvData(response, numProg, filename);
     }
   
-    private void generateFelixCsvData(HttpServletResponse response, String tmpFilename, String filename) {
+    private void generateFelixCsvData(HttpServletResponse response, String numProg, String filename) throws IOException {
         response.setContentType("text/csv");
         response.setHeader("Content-Disposition", "attachment; filename=" + filename);
         
-        File file = new File(System.getProperty("java.io.tmpdir") + File.separator + tmpFilename);
-        
-        try(InputStream in = new FileInputStream(file); OutputStream output = response.getOutputStream()) {
-            response.setContentLength((int)file.length());
+       // File file = new File(System.getProperty("java.io.tmpdir") + File.separator + tmpFilename);
+        FichierFelix ff = fichierFelixDao.findByNumprog(numProg);
+        byte[] content = ff.getContent();
+        try(ByteArrayInputStream in = new ByteArrayInputStream(content); OutputStream output = response.getOutputStream()) {
+            response.setContentLength(content.length);
             IOUtils.copy(in, output);
         } catch (Exception e) {
            logger.error("Erreur de telechargement de fichier", e);
-        } finally {
-        //Delete tmp file
-        /*if (file.exists()) {
-          FileUtils.forceDelete(file);
-        }*/
-      
+           throw e;
         }
     }
   
@@ -82,9 +107,9 @@ public class RepartitionResource {
     public void downloadFichierFelixRepartitionABlan(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String numProg = request.getParameter("numProg");
         
-        FichierFelixError fichierFelixError = felixDataService.createFichierFelixWithErrors(numProg);
-        if(fichierFelixError.getErrors() == null || fichierFelixError.getErrors().isEmpty()) {
-            generateFelixCsvData(response, fichierFelixError.getTmpFilename(), fichierFelixError.getFilename());
+        FichierFelix fichierFelix = fichierFelixDao.findByNumprog(numProg);
+        if(fichierFelix.getLogs() == null || fichierFelix.getLogs().isEmpty()) {
+            generateFelixCsvData(response, numProg, fichierFelix.getNomFichier());
         }
     }
   
@@ -92,27 +117,16 @@ public class RepartitionResource {
                     method = RequestMethod.POST,
                     consumes = MediaType.APPLICATION_JSON_VALUE)
     public void generateFelixData(@RequestBody ProgrammeDto programme) throws TechnicalException {
-        FichierFelixError fichierFelixError = null;
-        try {
-            fichierFelixError = felixDataService.createFichierFelixWithErrors(programme.getNumProg());
-            if(fichierFelixError.getErrors() == null || fichierFelixError.getErrors().isEmpty()) {
+        String numProg = programme.getNumProg();
+        FichierFelix ff = fichierFelixDao.findByNumprog(numProg);
+        if(ff != null) {
+            ff.setStatut(StatutFichierFelix.EN_COURS_ENVOI);
+            fichierFelixDao.save(ff);
+            fichierFelixDao.flush();
   
-              File file = new File(System.getProperty("java.io.tmpdir") + File.separator + fichierFelixError.getTmpFilename());
-              File destFile = new File(System.getProperty("java.io.tmpdir") + File.separator + fichierFelixError.getFilename());
-              file.renameTo(destFile);
-              String felixPreprepDir = String.valueOf(EnvConstants.FELIX_PREPREP_DIR);
-              FileUtils.moveFileToDirectory(destFile, new File(felixPreprepDir), false);
-  
-              Programme prog = programmeDao.findOne(programme.getNumProg());
-              prog.setStatut(StatutProgramme.MIS_EN_REPART);
-              programmeDao.saveAndFlush(prog);
-              
-            }
-    
-        } catch (IOException e) {
-            String message = "Erreur lors de la generation du fichier Felix";
-            logger.error(message, e);
-            throw new TechnicalException(message, e);
         }
+  
+        felixDataService.asyncSendFichierFelix(numProg);
+
     }
 }

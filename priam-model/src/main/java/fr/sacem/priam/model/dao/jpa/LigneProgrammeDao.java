@@ -76,25 +76,34 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
     @Transactional
     @Query(value="SELECT  new fr.sacem.priam.model.domain.LignePreprep("+
                      "ligneProgramme.cdeCisac, " +
+                     "prog.cdeTer, " +
+                     "prog.rionTheorique.rion, " +
+                     "prog.famille.code, " +
+                     "prog.numProg, " +
                      "ligneProgramme.cdeUtil, " +
+                     "'FORFAI', " +
+                     "prog.typeUtilisation.code, " +
+                     "'PRINC', " +
+                     "'SANS', " +
+                     "prog.nom, " +
+                     "prog.dateDbtPrg, " +
+                     "prog.dateFinPrg, " +
                      "ligneProgramme.cdeGreDif, " +
                      "ligneProgramme.cdeModDif, " +
                      "ligneProgramme.cdeTypIde12, " +
                      "ligneProgramme.ide12, " +
                      "sum(ligneProgramme.durDif), " +
-                     "sum(ligneProgramme.nbrDif), " +
+                     "(CASE WHEN prog.typeUtilisation.code = 'CPRIVSONRD' THEN 1L  ELSE sum(ligneProgramme.nbrDif) END),  " +
                      "sum(ligneProgramme.mt), " +
                      "ligneProgramme.ctna, " +
                      "ligneProgramme.paramCoefHor, " +
                      "ligneProgramme.durDifCtna, " +
                      "ligneProgramme.cdeLng, " +
                      "ligneProgramme.indDoubSsTit, " +
-                     "ligneProgramme.tax) " +
-                     
-                     "FROM LigneProgramme ligneProgramme inner join ligneProgramme.fichier  f, " +
-                     "SareftjLibutil lu  "+
-                     "WHERE lu.cdeUtil = ligneProgramme.cdeUtil " +
-                     "AND f.programme.numProg = :numProg " +
+                     "ligneProgramme.tax) " +             
+                     "FROM LigneProgramme ligneProgramme inner join ligneProgramme.fichier  f " +
+                     "inner join f.programme prog " +
+                     "WHERE prog.numProg = :numProg " +
                      "AND ligneProgramme.selection = true " +
                      "AND ligneProgramme.oeuvreManuel IS NULL " +
                      "GROUP BY ligneProgramme.ide12, " +

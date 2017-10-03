@@ -2,6 +2,7 @@ package fr.sacem.priam.model.dao.jpa;
 
 import fr.sacem.priam.model.dao.JpaConfigurationTest;
 import fr.sacem.priam.model.domain.Fichier;
+import fr.sacem.priam.model.domain.LignePreprep;
 import fr.sacem.priam.model.domain.LigneProgramme;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.SelectionDto;
@@ -197,7 +198,11 @@ public class LigneProgrammeDaoTest {
     }*/
 
 
-
+    @Test
+    public void findLigneProgrammeSelectionnes() throws Exception {
+        List<LignePreprep> ligneProgrammeSelectionnesForFelix = ligneProgrammeDao.findLigneProgrammeSelectionnesForFelix(NUM_PROG);
+        assertThat(ligneProgrammeSelectionnesForFelix).isNotNull();
+    }
 
 
 }
