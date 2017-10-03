@@ -54,7 +54,7 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
                     "ligneProgramme.selectionEnCours, " +
                     "CONCAT(ligneProgramme.cdeUtil, CASE WHEN lu.libAbrgUtil is null THEN '' ELSE ' - ' END, COALESCE(lu.libAbrgUtil,''))) " +
             "FROM LigneProgramme ligneProgramme join ligneProgramme.fichier  f, " +
-            "LibelleUtilisateur lu "+
+            "SareftjLibutil lu "+
             "WHERE ligneProgramme.fichier = f.id " +
             "AND lu.cdeUtil = ligneProgramme.cdeUtil "+
             "AND f.programme.numProg = :numProg " +
@@ -92,7 +92,7 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
                      "ligneProgramme.tax) " +
                      
                      "FROM LigneProgramme ligneProgramme inner join ligneProgramme.fichier  f, " +
-                     "LibelleUtilisateur lu  "+
+                     "SareftjLibutil lu  "+
                      "WHERE lu.cdeUtil = ligneProgramme.cdeUtil " +
                      "AND f.programme.numProg = :numProg " +
                      "AND ligneProgramme.selection = true " +
@@ -134,7 +134,7 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
     @Query(value =
             "SELECT distinct CONCAT(lu.cdeUtil, CASE WHEN lu.libAbrgUtil is null THEN '' ELSE ' - ' END, COALESCE(lu.libAbrgUtil,'')) " +
                     "FROM LigneProgramme ligneProgramme join ligneProgramme.fichier  f , " +
-                    "LibelleUtilisateur lu "+
+                    "SareftjLibutil lu "+
                     "WHERE ligneProgramme.fichier = f.id " +
                     "AND lu.cdeUtil = ligneProgramme.cdeUtil "+
                     "AND f.programme.numProg = :programme " +

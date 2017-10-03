@@ -1,9 +1,9 @@
 package fr.sacem.priam.model.services;
 
-import fr.sacem.priam.model.dao.jpa.FamilleDao;
+import fr.sacem.priam.model.dao.jpa.SareftrFamiltyputilDao;
 import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.dao.jpa.LigneProgrammeDao;
-import fr.sacem.priam.model.dao.jpa.TypeUtilisationDao;
+import fr.sacem.priam.model.dao.jpa.SareftrTyputilDao;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,8 +16,8 @@ public class LigneProgrammeServiceImpl implements LigneProgrammeService {
 
     LigneProgrammeDao ligneProgrammeDao;
     FichierDao fichierDao;
-    TypeUtilisationDao typeUtilisationDao;
-    FamilleDao familleDao;
+    SareftrTyputilDao sareftrTyputilDao;
+    SareftrFamiltyputilDao sareftrFamiltyputilDao;
 
     public LigneProgrammeDao getLigneProgrammeDao() {
         return ligneProgrammeDao;
@@ -34,19 +34,19 @@ public class LigneProgrammeServiceImpl implements LigneProgrammeService {
         this.fichierDao = fichierDao;
     }
 
-    public TypeUtilisationDao getTypeUtilisationDao() {
-        return typeUtilisationDao;
+    public SareftrTyputilDao getSareftrTyputilDao() {
+        return sareftrTyputilDao;
     }
 
-    public void setTypeUtilisationDao(TypeUtilisationDao typeUtilisationDao) {
-        this.typeUtilisationDao = typeUtilisationDao;
+    public void setSareftrTyputilDao(SareftrTyputilDao sareftrTyputilDao) {
+        this.sareftrTyputilDao = sareftrTyputilDao;
     }
 
-    public FamilleDao getFamilleDao() {
-        return familleDao;
+    public SareftrFamiltyputilDao getSareftrFamiltyputilDao() {
+        return sareftrFamiltyputilDao;
     }
 
-    public void setFamilleDao(FamilleDao familleDao) {
-        this.familleDao = familleDao;
+    public void setSareftrFamiltyputilDao(SareftrFamiltyputilDao sareftrFamiltyputilDao) {
+        this.sareftrFamiltyputilDao = sareftrFamiltyputilDao;
     }
 }

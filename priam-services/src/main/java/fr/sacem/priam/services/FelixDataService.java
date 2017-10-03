@@ -111,10 +111,10 @@ public class FelixDataService {
         boolean isValidData = true;
         for (LignePreprep lignePreprep : lignesSelectionnes) {
             lignePreprep.setCdeTer(programme.getCdeTer()); // A remplir depuis le programme
-            lignePreprep.setRionEffet(programme.getRionTheorique().getRion());
-            lignePreprep.setCdeFamilTypUtil(programme.getFamille().getCode());
+            lignePreprep.setRionEffet(programme.getSareftrRionTheorique().getRion());
+            lignePreprep.setCdeFamilTypUtil(programme.getSareftrFamiltyputil().getCode());
             lignePreprep.setNumProg(programme.getNumProg());
-            lignePreprep.setCdeTypUtil(programme.getTypeUtilisation().getCode());
+            lignePreprep.setCdeTypUtil(programme.getSareftrTyputil().getCode());
             lignePreprep.setCdeModFac(CDE_MOD_FAC);
             lignePreprep.setCdeTypProg(PRINC);
             lignePreprep.setCdeCompl(SANS);
@@ -124,7 +124,7 @@ public class FelixDataService {
             lignePreprep.setDatFinProg(programme.getDateFinPrg()); //TODO A remplir depuis le programme
 
             
-            if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode().equals(programme.getTypeUtilisation().getCode()) ) {
+            if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode().equals(programme.getSareftrTyputil().getCode()) ) {
                 lignePreprep.setNbrDif(1L);
             } else {
                 lignePreprep.setNbrDif(lignePreprep.getNbrDif());
@@ -211,8 +211,8 @@ public class FelixDataService {
     
         String fileName = DOC_PREFIX
                               + numProg + "_"
-                              + programme.getTypeUtilisation().getCode() + "_"
-                              + programme.getRionTheorique().getRion() + "_"
+                              + programme.getSareftrTyputil().getCode() + "_"
+                              + programme.getSareftrRionTheorique().getRion() + "_"
                               + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".csv";
         File tmpFile = File.createTempFile(fileName, ".tmp");
         OutputStream out = new FileOutputStream(tmpFile);

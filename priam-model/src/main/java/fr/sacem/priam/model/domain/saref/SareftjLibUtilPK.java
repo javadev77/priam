@@ -1,54 +1,53 @@
 package fr.sacem.priam.model.domain.saref;
 
-import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Id;
+import java.io.Serializable;
 
 /**
- * @author Fandi
- * @since 27/09/17.
+ *
  */
 public class SareftjLibUtilPK implements Serializable {
-    private String cdelng;
-    private String cdeutil;
-
+    private String cdeLng;
+    private String cdeUtil;
+    
     @Column(name = "CDELNG")
     @Id
-    public String getCdelng() {
-        return cdelng;
+    public String getCdeLng() {
+	  return cdeLng;
     }
-
-    public void setCdelng(String cdelng) {
-        this.cdelng = cdelng;
+    
+    public void setCdeLng(String cdeLng) {
+	  this.cdeLng = cdeLng;
     }
-
+    
     @Column(name = "CDEUTIL")
     @Id
-    public String getCdeutil() {
-        return cdeutil;
+    public String getCdeUtil() {
+	  return cdeUtil;
     }
-
-    public void setCdeutil(String cdeutil) {
-        this.cdeutil = cdeutil;
+    
+    public void setCdeUtil(String cdeUtil) {
+	  this.cdeUtil = cdeUtil;
     }
-
+    
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        SareftjLibUtilPK that = (SareftjLibUtilPK) o;
-
-        if (cdelng != null ? !cdelng.equals(that.cdelng) : that.cdelng != null) return false;
-        if (cdeutil != null ? !cdeutil.equals(that.cdeutil) : that.cdeutil != null) return false;
-
-        return true;
+	  if (this == o) return true;
+	  if (o == null || getClass() != o.getClass()) return false;
+	  
+	  SareftjLibUtilPK that = (SareftjLibUtilPK) o;
+	  
+	  if (cdeLng != null ? !cdeLng.equals(that.cdeLng) : that.cdeLng != null) return false;
+	  if (cdeUtil != null ? !cdeUtil.equals(that.cdeUtil) : that.cdeUtil != null) return false;
+	  
+	  return true;
     }
-
+    
     @Override
     public int hashCode() {
-        int result = cdelng != null ? cdelng.hashCode() : 0;
-        result = 31 * result + (cdeutil != null ? cdeutil.hashCode() : 0);
-        return result;
+	  int result = cdeLng != null ? cdeLng.hashCode() : 0;
+	  result = 31 * result + (cdeUtil != null ? cdeUtil.hashCode() : 0);
+	  return result;
     }
 }

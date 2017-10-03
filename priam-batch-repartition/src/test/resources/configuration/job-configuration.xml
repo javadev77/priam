@@ -45,7 +45,7 @@
                     SET
                             numeroProgramme:numeroProgramme,
                             DATE_REPARTITION:datcalc,
-                            RION_THEORIQUE:rion,
+                            RION_THEORIQUE:sareftrRion,
                             status:status
                     WHERE
                             NUMPROG=:numeroProgramme
@@ -64,7 +64,7 @@
             <bean class="fr.sacem.util.mapper.CsvPriamLineMapper">
                 <property name="lineTokenizer">
                     <bean class="org.springframework.batch.item.file.transform.DelimitedLineTokenizer">
-                        <property name="names" value="numeroProgramme,datcalc,rion,status"/>
+                        <property name="names" value="numeroProgramme,datcalc,sareftrRion,status"/>
                         <property name="delimiter" value=";"/>
                     </bean>
                 </property>

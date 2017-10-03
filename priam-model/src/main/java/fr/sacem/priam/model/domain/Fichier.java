@@ -1,5 +1,8 @@
 package fr.sacem.priam.model.domain;
 
+import fr.sacem.priam.model.domain.saref.SareftrFamiltyputil;
+import fr.sacem.priam.model.domain.saref.SareftrTyputil;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -21,11 +24,11 @@ public class Fichier implements Serializable {
     
     @ManyToOne
     @JoinColumn(name = "CDEFAMILTYPUTIL")
-    private Famille famille;
+    private SareftrFamiltyputil sareftrFamiltyputil;
     
     @ManyToOne
     @JoinColumn(name = "CDETYPUTIL")
-    private TypeUtilisation typeUtilisation;
+    private SareftrTyputil sareftrTyputil;
     
     @Column(name = "DATE_DEBUT_CHGT")
     @Temporal(TemporalType.TIMESTAMP)
@@ -60,12 +63,12 @@ public class Fichier implements Serializable {
         return nomFichier;
     }
     
-    public Famille getFamille() {
-        return famille;
+    public SareftrFamiltyputil getSareftrFamiltyputil() {
+        return sareftrFamiltyputil;
     }
     
-    public TypeUtilisation getTypeUtilisation() {
-        return typeUtilisation;
+    public SareftrTyputil getSareftrTyputil() {
+        return sareftrTyputil;
     }
     
     public Date getDateDebutChargt() {
@@ -93,12 +96,12 @@ public class Fichier implements Serializable {
         this.nomFichier = nomFichier;
     }
     
-    public void setFamille(Famille famille) {
-        this.famille = famille;
+    public void setSareftrFamiltyputil(SareftrFamiltyputil sareftrFamiltyputil) {
+        this.sareftrFamiltyputil = sareftrFamiltyputil;
     }
     
-    public void setTypeUtilisation(TypeUtilisation typeUtilisation) {
-        this.typeUtilisation = typeUtilisation;
+    public void setSareftrTyputil(SareftrTyputil sareftrTyputil) {
+        this.sareftrTyputil = sareftrTyputil;
     }
     
     public void setDateDebutChargt(Date dateDebutChargt) {

@@ -1,122 +1,78 @@
 package fr.sacem.priam.model.domain.saref;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
-
+import java.io.Serializable;
+import java.util.Date;
 
 /**
- * @author Fandi
- * @since 27/09/17.
+ * Created by belwidanej on 21/08/2017.
  */
 @Entity
+@Table(name="SAREFTJ_LIBTER")
 @IdClass(SareftjLibterPK.class)
-public class SareftjLibter {
-
-    private String cdelng;
-    private int cdepaysiso4N;
-    private String nompaysabr;
-    private String nompays;
-    private Timestamp datcre;
-    private String usercre;
-    private Timestamp datmaj;
-    private String usermaj;
-    @Id
-    @Column(name = "CDELNG", insertable = false, updatable = false)
-    public String getCdelng() {
-        return cdelng;
-    }
-
-    public void setCdelng(String cdelng) {
-        this.cdelng = cdelng;
-    }
+public class SareftjLibter implements Serializable {
 
     @Id
-    @Column(name = "CDEPAYSISO4N", insertable = false, updatable = false)
-    public int getCdepaysiso4N() {
-        return cdepaysiso4N;
-    }
+    @Column(name = "CDELNG")
+    private String cdeLng;
+    @Id
+    @Column(name = "CDEPAYSISO4N")
+    private Integer cdePaysIso4N;
+    @Column(name = "NOMPAYSABR")
+    private String nomPaysAbr;
+    @Column(name = "NOMPAYS")
+    private String nomPays;
+    @Column(name = "DATCRE")
+    private Date dateCre;
+    @Column(name = "USERCRE")
+    private String userCre;
+    @Column(name = "DATMAJ")
+    private Date dateMaj;
+    @Column(name = "USERMAJ")
+    private String userMaj;
 
-    public void setCdepaysiso4N(int cdepaysiso4N) {
-        this.cdepaysiso4N = cdepaysiso4N;
-    }
+    public String getCdeLng() { return cdeLng; }
 
-    @Basic
-    @Column(name = "NOMPAYSABR", insertable = false, updatable = false)
-    public String getNompaysabr() {
-        return nompaysabr;
-    }
+    public void setCdeLng(String cdeLng) { this.cdeLng = cdeLng; }
 
-    public void setNompaysabr(String nompaysabr) {
-        this.nompaysabr = nompaysabr;
-    }
+    public Integer getCdePaysIso4N() { return cdePaysIso4N; }
 
-    @Basic
-    @Column(name = "NOMPAYS", insertable = false, updatable = false)
-    public String getNompays() {
-        return nompays;
-    }
+    public void setCdePaysIso4N(Integer cdePaysIso4N) { this.cdePaysIso4N = cdePaysIso4N; }
 
-    public void setNompays(String nompays) {
-        this.nompays = nompays;
-    }
+    public String getNomPaysAbr() { return nomPaysAbr; }
 
-    @Basic
-    @Column(name = "DATCRE", insertable = false, updatable = false)
-    public Timestamp getDatcre() {
-        return datcre;
-    }
+    public void setNomPaysAbr(String nomPaysAbr) { this.nomPaysAbr = nomPaysAbr; }
 
-    public void setDatcre(Timestamp datcre) {
-        this.datcre = datcre;
-    }
+    public String getNomPays() { return nomPays; }
 
-    @Basic
-    @Column(name = "USERCRE", insertable = false, updatable = false)
-    public String getUsercre() {
-        return usercre;
-    }
+    public void setNomPays(String nomPays) { this.nomPays = nomPays; }
 
-    public void setUsercre(String usercre) {
-        this.usercre = usercre;
-    }
+    public Date getDateCre() { return dateCre; }
 
-    @Basic
-    @Column(name = "DATMAJ", insertable = false, updatable = false)
-    public Timestamp getDatmaj() {
-        return datmaj;
-    }
+    public void setDateCre(Date dateCre) { this.dateCre = dateCre; }
 
-    public void setDatmaj(Timestamp datmaj) {
-        this.datmaj = datmaj;
-    }
+    public String getUserCre() { return userCre; }
 
-    @Basic
-    @Column(name = "USERMAJ", insertable = false, updatable = false)
-    public String getUsermaj() {
-        return usermaj;
-    }
+    public void setUserCre(String userCre) { this.userCre = userCre; }
 
-    public void setUsermaj(String usermaj) {
-        this.usermaj = usermaj;
-    }
+    public Date getDateMaj() { return dateMaj; }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public void setDateMaj(Date dateMaj) { this.dateMaj = dateMaj; }
 
-        SareftjLibter that = (SareftjLibter) o;
+    public String getUserMaj() { return userMaj; }
 
-        if (cdepaysiso4N != that.cdepaysiso4N) return false;
-        if (cdelng != null ? !cdelng.equals(that.cdelng) : that.cdelng != null) return false;
+    public void setUserMaj(String userMaj) { this.userMaj = userMaj; }
 
-        return true;
-    }
+    public SareftjLibter() { }
 
-    @Override
-    public int hashCode() {
-        int result = cdelng != null ? cdelng.hashCode() : 0;
-        result = 31 * result + cdepaysiso4N;
-        return result;
+    public SareftjLibter(String cdeLng, Integer cdePaysIso4N, String nomPaysAbr, String nomPays, Date dateCre, String userCre, Date dateMaj, String userMaj) {
+        this.cdeLng = cdeLng;
+        this.cdePaysIso4N = cdePaysIso4N;
+        this.nomPaysAbr = nomPaysAbr;
+        this.nomPays = nomPays;
+        this.dateCre = dateCre;
+        this.userCre = userCre;
+        this.dateMaj = dateMaj;
+        this.userMaj = userMaj;
     }
 }

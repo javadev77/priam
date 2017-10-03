@@ -1,4 +1,4 @@
-package fr.sacem.priam.model.domain;
+package fr.sacem.priam.model.domain.saref;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -10,7 +10,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "SAREFTR_RION")
-public class Rion {
+public class SareftrRion {
     
     private Integer rion;
     private Date datcalc;
@@ -23,7 +23,7 @@ public class Rion {
     private Date datmaj;
     private String usermaj;
     
-    public Rion() {
+    public SareftrRion() {
     }
     
     @Id
@@ -132,7 +132,7 @@ public class Rion {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
     
-        Rion that = (Rion) o;
+        SareftrRion that = (SareftrRion) o;
         
         return rion == that.rion;
         

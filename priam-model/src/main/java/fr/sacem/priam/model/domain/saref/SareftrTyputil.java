@@ -1,4 +1,4 @@
-package fr.sacem.priam.model.domain;
+package fr.sacem.priam.model.domain.saref;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -7,14 +7,35 @@ import java.util.Date;
  * Created by benmerzoukah on 15/05/2017.
  */
 @Entity
-@Table(name = "PRIAM_TYPUTIL")
-public class TypeUtilisation {
+@Table(name = "SAREFFR_TYPUTIL")
+public class SareftrTyputil {
     private String code;
     private String codeFamille;
     private Date dateDebut;
     private Date dateFin;
-    
-    public TypeUtilisation() {
+    /*
+    private String cdetyputil;
+    private String cdefamiltyputil;
+    private Long filtre;
+    private Long ordaff;
+    private Long flgulyss;
+    private Long typdrt;
+    private String com;
+    private java.sql.Timestamp datcre;
+    private String usercre;
+    private java.sql.Timestamp datmaj;
+    private String usermaj;
+    private java.sql.Timestamp datdbtvld;
+    private java.sql.Timestamp datfinvld;
+    private Long cdedistrbcategtyp;
+    private String txfrais;
+    private Long flgsuidg;
+    private Long flgignoredp;
+    private Long flgtax;
+    private String typmt;
+    private String typutilrempl;
+    */
+    public SareftrTyputil() {
     
     }
     

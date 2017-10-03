@@ -1,7 +1,7 @@
 package fr.sacem.priam.model.dao.jpa;
 
 import fr.sacem.priam.model.dao.JpaConfigurationTest;
-import fr.sacem.priam.model.domain.LibelleFamille;
+import fr.sacem.priam.model.domain.saref.SareftrFamiltyputil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,23 +18,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes={JpaConfigurationTest.class})
-public class LibelleFamilleDaoTest {
+public class SareftrFamiltyputilDaoTest {
     
     @Autowired
-    private LibelleFamilleDao libelleFamilleDao;
+    private SareftrFamiltyputilDao sareftrFamiltyputilDao;
     
     
     @Test
-    public void should_return_all_famille_FR() {
-        List<LibelleFamille> all = libelleFamilleDao.findByLang("FR");
+    public void should_return_all_famille() {
+    
+        List<SareftrFamiltyputil> all = sareftrFamiltyputilDao.findAll();
+    
         assertThat(all).isNotNull().isNotEmpty();
         assertThat(all).extracting("code").containsExactly("COPIEPRIV", "FDSVAL", "CMS");
-    }
-    
-    @Test
-    public void should_return_empty_famille_when_null() {
-        List<LibelleFamille> all = libelleFamilleDao.findByLang(null);
-        assertThat(all).isNotNull().isEmpty();
     }
 
 }

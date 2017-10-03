@@ -105,9 +105,9 @@ public class LigneProgrammeService {
                        "nbrDif".equals(sortBy.getProperty()) ||
                        "sum(durDif)".equals(sortBy.getProperty()) ||
                        "durDif".equals(sortBy.getProperty())) {
-                    if (TypeUtilisationEnum.COPIE_PRIVEE_SONORE_PHONO.getCode().equals(programme.getTypeUtilisation().getCode())) {
+                    if (TypeUtilisationEnum.COPIE_PRIVEE_SONORE_PHONO.getCode().equals(programme.getSareftrTyputil().getCode())) {
                         sort = JpaSort.unsafe(sortBy.getDirection(), "sum(nbrDif)");
-                    } else if (TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode().equals(programme.getTypeUtilisation().getCode())) {
+                    } else if (TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode().equals(programme.getSareftrTyputil().getCode())) {
                         sort = JpaSort.unsafe(sortBy.getDirection(), "sum(durDif)");
                     }
                 } else if("libAbrgUtil".equals(sortBy.getProperty())) {
@@ -219,8 +219,8 @@ public class LigneProgrammeService {
         LigneProgramme oeuvreManuelFound = ligneProgrammeDao.findOeuvreManuelByIde12AndCdeUtil(input.getNumProg(), input.getIde12(), input.getCdeUtil());
         if(oeuvreManuelFound != null) {
             oeuvreManuelFound.setCdeCisac(CDE_CISAC_058);
-            oeuvreManuelFound.setCdeFamilTypUtil(programme.getFamille().getCode());
-            oeuvreManuelFound.setCdeTypUtil(programme.getTypeUtilisation().getCode());
+            oeuvreManuelFound.setCdeFamilTypUtil(programme.getSareftrFamiltyputil().getCode());
+            oeuvreManuelFound.setCdeTypUtil(programme.getSareftrTyputil().getCode());
             oeuvreManuelFound.setAjout(MANUEL);
             oeuvreManuelFound.setOeuvreManuel(null);
             oeuvreManuelFound.setDurDif(input.getDurDif());
@@ -268,8 +268,8 @@ public class LigneProgrammeService {
         
         input.setFichier(f);
         input.setCdeCisac(CDE_CISAC_058);
-        input.setCdeFamilTypUtil(programme.getFamille().getCode());
-        input.setCdeTypUtil(programme.getTypeUtilisation().getCode());
+        input.setCdeFamilTypUtil(programme.getSareftrFamiltyputil().getCode());
+        input.setCdeTypUtil(programme.getSareftrTyputil().getCode());
         input.setAjout(MANUEL);
         input.setSelection(TRUE);
         input.setDateInsertion(new Date());

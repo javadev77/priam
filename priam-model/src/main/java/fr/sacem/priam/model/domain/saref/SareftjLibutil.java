@@ -1,4 +1,4 @@
-package fr.sacem.priam.model.domain;
+package fr.sacem.priam.model.domain.saref;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -10,7 +10,7 @@ import java.util.Date;
 @Entity
 @Table(name="SAREFTJ_LIBUTIL")
 @IdClass(SareftjLibUtilPK.class)
-public class LibelleUtilisateur implements Serializable {
+public class SareftjLibutil implements Serializable {
     @Id
     @Column(name = "CDEUTIL")
     private String cdeUtil;
@@ -112,9 +112,9 @@ public class LibelleUtilisateur implements Serializable {
         this.libFeuillet = libFeuillet;
     }
     
-    public LibelleUtilisateur() {  }
+    public SareftjLibutil() {  }
 
-    public LibelleUtilisateur(String cdeUtil, String cdeLng, String libUtil, String libAbrgUtil, Date dateCre, String userCre, Date dateMaj, String userMaj, String libFeuillet) {
+    public SareftjLibutil(String cdeUtil, String cdeLng, String libUtil, String libAbrgUtil, Date dateCre, String userCre, Date dateMaj, String userMaj, String libFeuillet) {
         this.cdeUtil = cdeUtil;
         this.cdeLng = cdeLng;
         this.libUtil = libUtil;
@@ -131,7 +131,7 @@ public class LibelleUtilisateur implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         
-        LibelleUtilisateur that = (LibelleUtilisateur) o;
+        SareftjLibutil that = (SareftjLibutil) o;
         
         if (cdeLng != null ? !cdeLng.equals(that.cdeLng) : that.cdeLng != null) return false;
         if (cdeUtil != null ? !cdeUtil.equals(that.cdeUtil) : that.cdeUtil != null) return false;

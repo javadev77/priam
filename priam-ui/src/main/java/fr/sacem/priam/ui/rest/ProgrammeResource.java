@@ -56,7 +56,7 @@ public class ProgrammeResource {
 
         String codeFamille = input.getFamille();
         if (codeFamille != null && !"ALL".equals(codeFamille)) {
-          criteria.setFamille(codeFamille);
+          criteria.setSareftrFamiltyputil(codeFamille);
         }
 
         String codeTypeUtil = input.getTypeUtilisation();
@@ -74,12 +74,12 @@ public class ProgrammeResource {
 
         String rionTheorique = input.getRionTheorique();
         if (rionTheorique != null && !"ALL".equals(rionTheorique)) {
-          criteria.setRionTheorique(Integer.valueOf(rionTheorique));
+          criteria.setSareftrRionTheorique(Integer.valueOf(rionTheorique));
         }
 
         String rionPaiement = input.getRionPaiement();
         if (rionPaiement != null && !"ALL".equals(rionPaiement)) {
-          criteria.setRionPaiement(Integer.valueOf(rionPaiement));
+          criteria.setSareftrRionPaiement(Integer.valueOf(rionPaiement));
         }
         criteria.setDateCreationDebut(input.getDateCreationDebut());
         criteria.setDateCreationFin(input.getDateCreationFin());
@@ -178,7 +178,7 @@ public class ProgrammeResource {
 
         return programmeDto;
     }
-    
+
   @RequestMapping(value = "programme/durdif",
     method = RequestMethod.GET,
     produces = MediaType.APPLICATION_JSON_VALUE)

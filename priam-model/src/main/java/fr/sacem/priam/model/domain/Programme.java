@@ -1,5 +1,9 @@
 package fr.sacem.priam.model.domain;
 
+import fr.sacem.priam.model.domain.saref.SareftrFamiltyputil;
+import fr.sacem.priam.model.domain.saref.SareftrRion;
+import fr.sacem.priam.model.domain.saref.SareftrTyputil;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -12,13 +16,13 @@ import java.util.Date;
 public class Programme implements Serializable {
 	private String numProg;
 	private String nom;
-	private Rion rionTheorique;
-	private Famille famille;
-	private TypeUtilisation typeUtilisation;
+	private SareftrRion sareftrRionTheorique;
+	private SareftrFamiltyputil sareftrFamiltyputil;
+	private SareftrTyputil sareftrTyputil;
 	private TypeRepart typeRepart;
 	private Date dateCreation;
 	private StatutProgramme statut;
-	private Rion rionPaiement;
+	private SareftrRion sareftrRionPaiement;
 	//private List<Fichier> fichiers;
 	private String usercre;
 	private Date datmaj;
@@ -49,20 +53,20 @@ public class Programme implements Serializable {
 	
 	@ManyToOne
 	@JoinColumn(name = "RION_THEORIQUE")
-	public Rion getRionTheorique() {
-		return rionTheorique;
+	public SareftrRion getSareftrRionTheorique() {
+		return sareftrRionTheorique;
 	}
 	
 	@ManyToOne
 	@JoinColumn(name = "CDEFAMILTYPUTIL")
-	public Famille getFamille() {
-		return famille;
+	public SareftrFamiltyputil getSareftrFamiltyputil() {
+		return sareftrFamiltyputil;
 	}
 	
 	@ManyToOne
 	@JoinColumn(name = "CDETYPUTIL")
-	public TypeUtilisation getTypeUtilisation() {
-		return typeUtilisation;
+	public SareftrTyputil getSareftrTyputil() {
+		return sareftrTyputil;
 	}
 	
 	@Column(name = "TYPE_REPART")
@@ -85,8 +89,8 @@ public class Programme implements Serializable {
 	
 	@ManyToOne
 	@JoinColumn(name = "RION_PAIEMENT")
-	public Rion getRionPaiement() {
-		return rionPaiement;
+	public SareftrRion getSareftrRionPaiement() {
+		return sareftrRionPaiement;
 	}
 
 	@Column(name = "USERCRE")
@@ -146,16 +150,16 @@ public class Programme implements Serializable {
 		this.nom = nom;
 	}
 	
-	public void setRionTheorique(Rion rionTheorique) {
-		this.rionTheorique = rionTheorique;
+	public void setSareftrRionTheorique(SareftrRion sareftrRionTheorique) {
+		this.sareftrRionTheorique = sareftrRionTheorique;
 	}
 	
-	public void setFamille(Famille famille) {
-		this.famille = famille;
+	public void setSareftrFamiltyputil(SareftrFamiltyputil sareftrFamiltyputil) {
+		this.sareftrFamiltyputil = sareftrFamiltyputil;
 	}
 	
-	public void setTypeUtilisation(TypeUtilisation typeUtilisation) {
-		this.typeUtilisation = typeUtilisation;
+	public void setSareftrTyputil(SareftrTyputil sareftrTyputil) {
+		this.sareftrTyputil = sareftrTyputil;
 	}
 	
 	public void setTypeRepart(TypeRepart typeRepart) {
@@ -170,8 +174,8 @@ public class Programme implements Serializable {
 		this.statut = statut;
 	}
 	
-	public void setRionPaiement(Rion rionPaiement) {
-		this.rionPaiement = rionPaiement;
+	public void setSareftrRionPaiement(SareftrRion sareftrRionPaiement) {
+		this.sareftrRionPaiement = sareftrRionPaiement;
 	}
 
 	public void setUsermaj(String usermaj) {

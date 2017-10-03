@@ -1,6 +1,6 @@
 package fr.sacem.priam.model.dao.jpa;
 
-import fr.sacem.priam.model.domain.TypeUtilisation;
+import fr.sacem.priam.model.domain.saref.SareftrTyputil;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,11 +14,11 @@ import java.util.List;
  */
 @Lazy
 @Transactional(readOnly = true)
-public interface TypeUtilisationDao extends JpaRepository<TypeUtilisation, String> {
+public interface SareftrTyputilDao extends JpaRepository<SareftrTyputil, String> {
     
-    @Query("SELECT typu FROM TypeUtilisation typu " +
+    @Query("SELECT typu FROM SareftrTyputil typu " +
             "WHERE typu.dateDebut is not null " +
             "AND (typu.dateFin is null OR typu.dateFin >= CURRENT_DATE)" +
             "AND typu.codeFamille = :cdefam")
-    List<TypeUtilisation> findByCodeFamille(@Param("cdefam") String codeFamille);
+    List<SareftrTyputil> findByCodeFamille(@Param("cdefam") String codeFamille);
 }

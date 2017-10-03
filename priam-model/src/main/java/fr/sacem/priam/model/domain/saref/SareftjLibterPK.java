@@ -1,37 +1,22 @@
 package fr.sacem.priam.model.domain.saref;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
 import java.io.Serializable;
 
 /**
- * @author Fandi
- * @since 27/09/17.
+ * Created by belwidanej on 21/08/2017.
  */
 public class SareftjLibterPK implements Serializable {
 
-    private String cdelng;
-    private int cdepaysiso4N;
+    private String cdeLng;
+    private Integer cdePaysIso4N;
 
-    @Column(name = "CDELNG", insertable = false, updatable = false)
-    @Id
-    public String getCdelng() {
-        return cdelng;
-    }
+    public String getCdeLng() { return cdeLng; }
 
-    public void setCdelng(String cdelng) {
-        this.cdelng = cdelng;
-    }
+    public void setCdeLng(String cdeLng) { this.cdeLng = cdeLng; }
 
-    @Column(name = "CDEPAYSISO4N", insertable = false, updatable = false)
-    @Id
-    public int getCdepaysiso4N() {
-        return cdepaysiso4N;
-    }
+    public Integer getCdePaysIso4N() { return cdePaysIso4N; }
 
-    public void setCdepaysiso4N(int cdepaysiso4N) {
-        this.cdepaysiso4N = cdepaysiso4N;
-    }
+    public void setCdePaysIso4N(Integer cdePaysIso4N) { this.cdePaysIso4N = cdePaysIso4N; }
 
     @Override
     public boolean equals(Object o) {
@@ -40,16 +25,14 @@ public class SareftjLibterPK implements Serializable {
 
         SareftjLibterPK that = (SareftjLibterPK) o;
 
-        if (cdepaysiso4N != that.cdepaysiso4N) return false;
-        if (cdelng != null ? !cdelng.equals(that.cdelng) : that.cdelng != null) return false;
-
-        return true;
+        if (!cdeLng.equals(that.cdeLng)) return false;
+        return cdePaysIso4N.equals(that.cdePaysIso4N);
     }
 
     @Override
     public int hashCode() {
-        int result = cdelng != null ? cdelng.hashCode() : 0;
-        result = 31 * result + cdepaysiso4N;
+        int result = cdeLng.hashCode();
+        result = 31 * result + cdePaysIso4N.hashCode();
         return result;
     }
 }

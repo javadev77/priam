@@ -1,11 +1,11 @@
-package fr.sacem.priam.model.domain;
+package fr.sacem.priam.model.domain.saref;
 
 import java.io.Serializable;
 
 /**
  * Created by benmerzoukah on 15/05/2017.
  */
-public class LibelleTypeUtilisationPK implements Serializable {
+public class SareftjLibfamiltyputilPK implements Serializable {
     private String code;
     
     private String lang;
@@ -28,7 +28,7 @@ public class LibelleTypeUtilisationPK implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
     
-        LibelleTypeUtilisationPK that = (LibelleTypeUtilisationPK) o;
+        SareftjLibfamiltyputilPK that = (SareftjLibfamiltyputilPK) o;
         
         if (code != null ? code.equals(that.code) : that.code != null) return false;
         return (lang != null ? lang.equals(that.lang) : that.lang == null);

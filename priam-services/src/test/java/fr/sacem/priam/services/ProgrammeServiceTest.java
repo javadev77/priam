@@ -124,8 +124,8 @@ public class ProgrammeServiceTest {
 		
 		assertThat(programme.getNumProg()).isEqualTo("17" + StringUtils.leftPad(String.valueOf(lastSeq + 1), 4, "0"));
 		assertThat(programme.getNom()).isEqualTo("Test-PR01");
-		assertThat(programme.getRionTheorique().getRion()).isEqualTo(619);
-		assertThat(programme.getFamille().getCode()).isEqualTo("COPIEPRIV");
+		assertThat(programme.getSareftrRionTheorique().getRion()).isEqualTo(619);
+		assertThat(programme.getSareftrFamiltyputil().getCode()).isEqualTo("COPIEPRIV");
 	}
 	
 	@Test
@@ -153,8 +153,8 @@ public class ProgrammeServiceTest {
 		
 		assertThat(programme).isNotNull();
 		assertThat(programme.getNom()).isEqualTo("Programme-170001");
-		assertThat(programme.getRionTheorique().getRion()).isEqualTo(619);
-		assertThat(programme.getFamille().getCode()).isEqualTo("COPIEPRIV");
+		assertThat(programme.getSareftrRionTheorique().getRion()).isEqualTo(619);
+		assertThat(programme.getSareftrFamiltyputil().getCode()).isEqualTo("COPIEPRIV");
 	}
 	
 	@Test

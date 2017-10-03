@@ -74,7 +74,7 @@ public class FichierDaoTest {
     private FichierDao fichierDao;
     
     @Autowired
-    private TypeUtilisationDao typeUtilisationDao;
+    private SareftrTyputilDao sareftrTyputilDao;
     @Autowired
     private ProgrammeDao programmeDao;
     

@@ -1,4 +1,4 @@
-package fr.sacem.priam.model.domain;
+package fr.sacem.priam.model.domain.saref;
 
 import javax.persistence.*;
 
@@ -6,14 +6,26 @@ import javax.persistence.*;
  * Created by benmerzoukah on 15/05/2017.
  */
 @Entity
-@Table(name = "PRIAM_LIBFAMITYPUTIL")
-@IdClass(LibelleFamillePK.class)
-public class LibelleFamille {
+@Table(name = "SAREFFT_LIBTYPUTIL")
+@IdClass(SareftjLibtyputilPK.class)
+public class SareftjLibtyputil {
     
     private String code;
     private String libelle;
     private String lang;
-    private Famille famille;
+    /*
+  private String cdelng;
+  private String cdetyputil;
+  private String libtyputil;
+  private String libabrgtyputil;
+  private java.sql.Timestamp datcre;
+  private String usercre;
+  private java.sql.Timestamp datmaj;
+  private String usermaj;
+  private String libfeuiltyputil;
+     */
+
+    private SareftrTyputil sareftrTyputil;
     
     @Id
     @Column(name = "CODE")
@@ -21,10 +33,10 @@ public class LibelleFamille {
         return code;
     }
     
-    @ManyToOne(fetch = FetchType.LAZY, optional = false, targetEntity = Famille.class)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false, targetEntity = SareftrTyputil.class)
     @JoinColumn(name = "CODE", insertable = false, updatable = false)
-    public Famille getFamille() {
-        return famille;
+    public SareftrTyputil getSareftrTyputil() {
+        return sareftrTyputil;
     }
     
     public void setCode(String code) {
@@ -50,7 +62,7 @@ public class LibelleFamille {
         this.lang = cdelng;
     }
     
-    public void setFamille(Famille famille) {
-        this.famille = famille;
+    public void setSareftrTyputil(SareftrTyputil sareftrTyputil) {
+        this.sareftrTyputil = sareftrTyputil;
     }
 }

@@ -1,6 +1,6 @@
 package fr.sacem.priam.model.dao.jpa;
 
-import fr.sacem.priam.model.domain.Rion;
+import fr.sacem.priam.model.domain.saref.SareftrRion;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,17 +15,17 @@ import java.util.List;
  */
 @Lazy
 @Transactional(readOnly = true)
-public interface RionDao extends JpaRepository<Rion, Integer> {
+public interface SareftrRionDao extends JpaRepository<SareftrRion, Integer> {
     
     @Cacheable("rions")
-    @Query("SELECT r FROM Rion r " +
+    @Query("SELECT r FROM SareftrRion r " +
             "WHERE r.rion >= :rion ")
-    List<Rion> findAfterRion(@Param("rion") Integer rion);
+    List<SareftrRion> findAfterRion(@Param("rion") Integer rion);
     
     @Cacheable("rions_creation")
-    @Query("SELECT r FROM Rion r " +
+    @Query("SELECT r FROM SareftrRion r " +
            "WHERE r.datrglmt >= CURRENT_DATE " +
            "AND r.datrglmt is not null ")
-    List<Rion> findAllByDateRglmtAfterCurrentDate();
+    List<SareftrRion> findAllByDateRglmtAfterCurrentDate();
     
 }
