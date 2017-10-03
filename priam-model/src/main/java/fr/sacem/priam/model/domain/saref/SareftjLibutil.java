@@ -5,7 +5,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * Created by fandis on 04/08/2017.
+ * Created by fandis on 04/08/2017. 
  */
 @Entity
 @Table(name="SAREFTJ_LIBUTIL")
