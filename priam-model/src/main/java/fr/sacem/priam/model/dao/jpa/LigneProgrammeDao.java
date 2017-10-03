@@ -100,7 +100,7 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
                      "ligneProgramme.durDifCtna, " +
                      "ligneProgramme.cdeLng, " +
                      "ligneProgramme.indDoubSsTit, " +
-                     "ligneProgramme.tax) " +             
+                     "ligneProgramme.tax) " +
                      "FROM LigneProgramme ligneProgramme inner join ligneProgramme.fichier  f " +
                      "inner join f.programme prog " +
                      "WHERE prog.numProg = :numProg " +
