@@ -175,7 +175,7 @@ public class ProgrammeServiceTest {
 	public void test_tout_desaffecter() throws Exception {
 		String pr170001 = NUM_PROG;
 		List<Fichier> fichiersAffectes = fichierDao.findFichiersByIdProgramme(pr170001, Status.AFFECTE);
-		programmeService.toutDeaffecter(pr170001);
+		programmeService.toutDeaffecter(pr170001, "GUEST");
 		
 		Programme programme = programmeDao.findOne(pr170001);
 		

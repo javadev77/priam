@@ -235,21 +235,15 @@ public class FelixDataService {
             
             ff.setNomFichier(fichierFelixWithErrors.getFilename());
             
-            /*for(String error : fichierFelixWithErrors.getErrors()) {
-                FichierFelixLog felixLog = new FichierFelixLog();
-                felixLog.setLog(error);
-                felixLog.setDateCreation(new Date());
-                fichierFelixLogDao.save(felixLog);
-                ff.getLogs().add(felixLog);
-            }*/
             List<String> errors = fichierFelixWithErrors.getErrors();
             if(errors != null && !errors.isEmpty()) {
-                FichierFelixLog felixLog = new FichierFelixLog();
-                felixLog.setLog(errors.get(0));
-                felixLog.setDateCreation(new Date());
-                fichierFelixLogDao.save(felixLog);
-    
-                ff.getLogs().add(felixLog);
+                for(String error : errors) {
+                    FichierFelixLog felixLog = new FichierFelixLog();
+                    felixLog.setLog(error);
+                    felixLog.setDateCreation(new Date());
+                    fichierFelixLogDao.save(felixLog);
+                    ff.getLogs().add(felixLog);
+                }
             }
             ff.setStatut(errors.isEmpty() ? StatutFichierFelix.GENERE : StatutFichierFelix.EN_ERREUR);
             //ff.setContent(fichierFelixWithErrors.getContent());
