@@ -16,13 +16,13 @@ import java.util.Date;
 public class Programme implements Serializable {
 	private String numProg;
 	private String nom;
-	private SareftrRion sareftrRionTheorique;
-	private SareftrFamiltyputil sareftrFamiltyputil;
-	private SareftrTyputil sareftrTyputil;
+	private SareftrRion rionTheorique;
+	private SareftrFamiltyputil famille;
+	private SareftrTyputil typeUtilisation;
 	private TypeRepart typeRepart;
 	private Date dateCreation;
 	private StatutProgramme statut;
-	private SareftrRion sareftrRionPaiement;
+	private SareftrRion rionPaiement;
 	//private List<Fichier> fichiers;
 	private String usercre;
 	private Date datmaj;
@@ -53,20 +53,20 @@ public class Programme implements Serializable {
 	
 	@ManyToOne
 	@JoinColumn(name = "RION_THEORIQUE")
-	public SareftrRion getSareftrRionTheorique() {
-		return sareftrRionTheorique;
+	public SareftrRion getRionTheorique() {
+		return rionTheorique;
 	}
 	
 	@ManyToOne
 	@JoinColumn(name = "CDEFAMILTYPUTIL")
-	public SareftrFamiltyputil getSareftrFamiltyputil() {
-		return sareftrFamiltyputil;
+	public SareftrFamiltyputil getFamille() {
+		return famille;
 	}
 	
 	@ManyToOne
 	@JoinColumn(name = "CDETYPUTIL")
-	public SareftrTyputil getSareftrTyputil() {
-		return sareftrTyputil;
+	public SareftrTyputil getTypeUtilisation() {
+		return typeUtilisation;
 	}
 	
 	@Column(name = "TYPE_REPART")
@@ -89,8 +89,8 @@ public class Programme implements Serializable {
 	
 	@ManyToOne
 	@JoinColumn(name = "RION_PAIEMENT")
-	public SareftrRion getSareftrRionPaiement() {
-		return sareftrRionPaiement;
+	public SareftrRion getRionPaiement() {
+		return rionPaiement;
 	}
 
 	@Column(name = "USERCRE")
@@ -150,18 +150,6 @@ public class Programme implements Serializable {
 		this.nom = nom;
 	}
 	
-	public void setSareftrRionTheorique(SareftrRion sareftrRionTheorique) {
-		this.sareftrRionTheorique = sareftrRionTheorique;
-	}
-	
-	public void setSareftrFamiltyputil(SareftrFamiltyputil sareftrFamiltyputil) {
-		this.sareftrFamiltyputil = sareftrFamiltyputil;
-	}
-	
-	public void setSareftrTyputil(SareftrTyputil sareftrTyputil) {
-		this.sareftrTyputil = sareftrTyputil;
-	}
-	
 	public void setTypeRepart(TypeRepart typeRepart) {
 		this.typeRepart = typeRepart;
 	}
@@ -172,10 +160,6 @@ public class Programme implements Serializable {
 	
 	public void setStatut(StatutProgramme statut) {
 		this.statut = statut;
-	}
-	
-	public void setSareftrRionPaiement(SareftrRion sareftrRionPaiement) {
-		this.sareftrRionPaiement = sareftrRionPaiement;
 	}
 
 	public void setUsermaj(String usermaj) {
@@ -194,7 +178,7 @@ public class Programme implements Serializable {
 		this.dataffect = dataffect;
 	}
 
-    public void setUserValidation(String userValidation) { this.userValidation = userValidation; }
+    	public void setUserValidation(String userValidation) { this.userValidation = userValidation; }
 
 	public void setDateValidation(Date dateValidation) { this.dateValidation = dateValidation; }
 
@@ -203,4 +187,20 @@ public class Programme implements Serializable {
 	public void setDateFinPrg(Date dateFinPrg) { this.dateFinPrg = dateFinPrg; }
 
 	public void setCdeTer(Integer cdeTer) { this.cdeTer = cdeTer; }
+    
+    public void setTypeUtilisation(SareftrTyputil typeUtilisation) {
+	  this.typeUtilisation = typeUtilisation;
+    }
+    
+    public void setFamille(SareftrFamiltyputil famille) {
+	  this.famille = famille;
+    }
+    
+    public void setRionPaiement(SareftrRion rionPaiement) {
+	  this.rionPaiement = rionPaiement;
+    }
+    
+    public void setRionTheorique(SareftrRion rionTheorique) {
+	  this.rionTheorique = rionTheorique;
+    }
 }

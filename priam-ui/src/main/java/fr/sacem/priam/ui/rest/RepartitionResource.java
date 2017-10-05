@@ -1,5 +1,6 @@
 package fr.sacem.priam.ui.rest;
 
+import fr.sacem.priam.common.constants.EnvConstants;
 import fr.sacem.priam.common.exception.TechnicalException;
 import fr.sacem.priam.model.dao.jpa.FichierFelixDao;
 import fr.sacem.priam.model.dao.jpa.ProgrammeDao;
@@ -16,9 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.Date;
 
 /**
@@ -90,11 +89,11 @@ public class RepartitionResource {
         response.setContentType("text/csv");
         response.setHeader("Content-Disposition", "attachment; filename=" + filename);
         
-       // File file = new File(System.getProperty("java.io.tmpdir") + File.separator + tmpFilename);
+        
         FichierFelix ff = fichierFelixDao.findByNumprog(numProg);
-        byte[] content = ff.getContent();
-        try(ByteArrayInputStream in = new ByteArrayInputStream(content); OutputStream output = response.getOutputStream()) {
-            response.setContentLength(content.length);
+        File file = new File(EnvConstants.FELIX_PREPREP_DIR.toString() + File.separator + ff.getNomFichier());
+        //byte[] content = ff.getContent();
+        try(FileInputStream in = new FileInputStream(file); OutputStream output = response.getOutputStream()) {
             IOUtils.copy(in, output);
         } catch (Exception e) {
            logger.error("Erreur de telechargement de fichier", e);

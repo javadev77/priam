@@ -233,10 +233,10 @@ public class ProgrammeViewDaoTest {
         Programme programme = new Programme();
         programme.setNumProg("myNum1");
         programme.setNom("mon programme 1");
-        programme.setSareftrTyputil(sareftrTyputil);
-        programme.setSareftrFamiltyputil(sareftrFamiltyputil);
-        programme.setSareftrRionPaiement(sareftrRionPaiement);
-        programme.setSareftrRionTheorique(sareftrRionTheorique);
+        programme.setTypeUtilisation(sareftrTyputil);
+        programme.setFamille(sareftrFamiltyputil);
+        programme.setRionPaiement(sareftrRionPaiement);
+        programme.setRionTheorique(sareftrRionTheorique);
         programmeDao.save(programme);
     }
     

@@ -2,6 +2,7 @@ package fr.sacem.priam.model.dao.jpa;
 
 import fr.sacem.priam.model.dao.JpaConfigurationTest;
 import fr.sacem.priam.model.domain.saref.SareftjLibtyputil;
+import fr.sacem.priam.model.util.TypeUtilisationPriam;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class LibelleSareftrTyputilDaoTest {
     
     @Test
     public void should_return_all_type_utilisation_FR() {
-        List<SareftjLibtyputil> all = sareftjLibtyputilDao.findByLang("FR");
+        List<SareftjLibtyputil> all = sareftjLibtyputilDao.findByLang("FR", TypeUtilisationPriam.getCodes());
     
         assertThat(all).isNotNull().isNotEmpty();
         assertThat(all).extracting("code").containsExactly("CPRIVSONPH", "CPRIVAUDV", "CPRIVSONRD", "CPRIVAUDPL", "PRIME", "VALORIS", "ENCOURG");
@@ -34,7 +35,7 @@ public class LibelleSareftrTyputilDaoTest {
     
     @Test
     public void should_return_empty_when_null() {
-        List<SareftjLibtyputil> all = sareftjLibtyputilDao.findByLang(null);
+        List<SareftjLibtyputil> all = sareftjLibtyputilDao.findByLang(null, TypeUtilisationPriam.getCodes());
         
         assertThat(all).isNotNull().isEmpty();
     }

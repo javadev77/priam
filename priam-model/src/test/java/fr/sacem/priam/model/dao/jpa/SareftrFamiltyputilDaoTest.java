@@ -2,6 +2,7 @@ package fr.sacem.priam.model.dao.jpa;
 
 import fr.sacem.priam.model.dao.JpaConfigurationTest;
 import fr.sacem.priam.model.domain.saref.SareftrFamiltyputil;
+import fr.sacem.priam.model.util.FamillePriam;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +28,10 @@ public class SareftrFamiltyputilDaoTest {
     @Test
     public void should_return_all_famille() {
     
-        List<SareftrFamiltyputil> all = sareftrFamiltyputilDao.findAll();
+        List<SareftrFamiltyputil> all = sareftrFamiltyputilDao.findByFamilles(FamillePriam.getCodes());
     
         assertThat(all).isNotNull().isNotEmpty();
-        assertThat(all).extracting("code").containsExactly("COPIEPRIV", "FDSVAL", "CMS");
+        assertThat(all).extracting("code").containsExactly("COPIEPRIV");
     }
 
 }

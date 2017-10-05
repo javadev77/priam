@@ -75,12 +75,49 @@ public enum EnvConstants implements ConfigurableProperty {
             return "priam.mipsa.wc.usessotoken";
         }
         
+    },
+    
+    
+    FTP_FELIX_HOME_DIR {
+        @Override
+        public String property() {return "priam.ftp.felix.home.directory";}
+        
+    },
+    FTP_FELIX_SERVER {
+        @Override
+        public String property() {return "priam.ftp.felix.server.host";}
+        
+    },
+    FTP_FELIX_PORT {
+        
+        @Override
+        public String property() {return "priam.ftp.felix.server.port";}
+        
+        
+        @Override
+        public String defaultValue() {
+            return "22";
+        }
+    },
+    FTP_FELIX_USERNAME {
+        @Override
+        public String property() {return "priam.ftp.felix.user.name";}
+        
+      
+    },
+    FTP_FELIX_PASSWORD {
+        @Override
+        public String property() {return "priam.ftp.felix.user.password";}
     };
+    
     
     @Override
     public String toString() {
-         return getParameter(property());
+        
+        return getParameter(property(), defaultValue());
     }
-
-
+    
+    public String defaultValue(){
+        return null;
+    }
 }

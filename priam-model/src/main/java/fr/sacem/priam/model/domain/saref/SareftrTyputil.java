@@ -7,7 +7,7 @@ import java.util.Date;
  * Created by benmerzoukah on 15/05/2017.
  */
 @Entity
-@Table(name = "SAREFFR_TYPUTIL")
+@Table(name = "SAREFTR_TYPUTIL")
 public class SareftrTyputil {
     private String code;
     private String codeFamille;

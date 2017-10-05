@@ -1,7 +1,7 @@
 package fr.sacem.service;
 
 import fr.sacem.domain.Fichier;
-import fr.sacem.util.FileUtils;
+import fr.sacem.priam.common.util.FileUtils;
 import fr.sacem.util.UtilFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

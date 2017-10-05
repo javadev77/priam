@@ -1,7 +1,6 @@
 package fr.sacem.service;
 
-import fr.sacem.util.FileUtils;
-import jdk.nashorn.internal.runtime.options.LoggingOption;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.JobParameter;

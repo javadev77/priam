@@ -7,6 +7,7 @@ import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.google.common.collect.Lists;
 import fr.sacem.priam.common.constants.EnvConstants;
+import fr.sacem.priam.common.util.SftpUtil;
 import fr.sacem.priam.common.util.csv.*;
 import fr.sacem.priam.model.dao.jpa.*;
 import fr.sacem.priam.model.domain.*;
@@ -14,6 +15,7 @@ import fr.sacem.priam.model.domain.dto.FelixData;
 import fr.sacem.priam.model.domain.dto.FichierFelixError;
 import fr.sacem.priam.services.utils.FelixDataSpringValidator;
 import org.apache.commons.io.Charsets;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -37,6 +39,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import static fr.sacem.priam.common.util.SftpUtil.SftpServer.FELIX;
 import static java.util.Arrays.asList;
 import static org.apache.commons.io.IOUtils.LINE_SEPARATOR;
 
@@ -154,30 +157,14 @@ public class FelixDataService {
         
     }
     
-    private List<LignePreprep> prepareFelixData(String numProg) {
+    private void prepareFelixData(String numProg) {
         lignePreprepDao.deleteAll(numProg);
         
         List<LignePreprep> lignesSelectionnes = ligneProgrammeDao.findLigneProgrammeSelectionnesForFelix(numProg);
         lignePreprepDao.save(lignesSelectionnes);
         lignePreprepDao.flush();
-        
-        /*for (LignePreprep lignePreprep : lignesSelectionnes) {
-            lignePreprep.setKeyLigPenel(lignePreprep.getId().intValue());
-            
-        }*/
-        
-        return lignesSelectionnes;
     }
-    
-    /*private <T extends LignePreprep> T persistOrMerge(T t) {
-        if (t.getId() == null) {
-            entityManager.persist(t);
-            return t;
-        } else {
-            return entityManager.merge(t);
-        }
-    }*/
-    
+   
     private void writeFile(List<LignePreprep> data) throws IOException {
         /*createFile();
         for (LignePreprep f : data) {
@@ -240,29 +227,41 @@ public class FelixDataService {
     @Async("threadPoolTaskExecutor")
     public void runAsyncCreateFichierFelix(String numProg) {
         LOGGER.info("===> Start Async Method runAsyncCreateFichierFelix() ");
-        FichierFelix ff = fichierFelixDao.findByNumprog(numProg);
+        FichierFelix ff = null;
         try {
-            
+            ff = fichierFelixDao.findByNumprog(numProg);
             FichierFelixError fichierFelixWithErrors = createFichierFelixWithErrors(numProg);
     
             
             ff.setNomFichier(fichierFelixWithErrors.getFilename());
             
-            for(String error : fichierFelixWithErrors.getErrors()) {
+            /*for(String error : fichierFelixWithErrors.getErrors()) {
                 FichierFelixLog felixLog = new FichierFelixLog();
                 felixLog.setLog(error);
                 felixLog.setDateCreation(new Date());
                 fichierFelixLogDao.save(felixLog);
                 ff.getLogs().add(felixLog);
+            }*/
+            List<String> errors = fichierFelixWithErrors.getErrors();
+            if(errors != null && !errors.isEmpty()) {
+                FichierFelixLog felixLog = new FichierFelixLog();
+                felixLog.setLog(errors.get(0));
+                felixLog.setDateCreation(new Date());
+                fichierFelixLogDao.save(felixLog);
+    
+                ff.getLogs().add(felixLog);
             }
-            
-            ff.setStatut(StatutFichierFelix.GENERE);
-            ff.setContent(fichierFelixWithErrors.getContent());
+            ff.setStatut(errors.isEmpty() ? StatutFichierFelix.GENERE : StatutFichierFelix.EN_ERREUR);
+            //ff.setContent(fichierFelixWithErrors.getContent());
             fichierFelixDao.saveAndFlush(ff);
             
         } catch (IOException e) {
             String message = "Erreur lors de la generation du fichier PREPREP";
-            LOGGER.error(message);
+            LOGGER.error(message, e);
+            createErrorMessage(ff, message);
+        } catch (Throwable t) {
+            String message = "Erreur technique !!!";
+            LOGGER.error(message, t);
             createErrorMessage(ff, message);
         }
     
@@ -273,18 +272,16 @@ public class FelixDataService {
     @Transactional
     public FichierFelixError createFichierFelixWithErrors(String numProg) throws IOException {
         Programme programme = programmeDao.findOne(numProg);
-        //List<LignePreprep> lignePrepreps = lignePreprepDao.findByNumProg(numProg);
-        List<LignePreprep> lignePrepreps = prepareFelixData(numProg);
-        //lignePrepreps = lignePreprepDao.findByNumProg(numProg);
+        List<LignePreprep> lignePrepreps = ligneProgrammeDao.findLigneProgrammeSelectionnesForFelix(numProg);
     
         String fileName = DOC_PREFIX
                               + numProg + "_"
-                              + programme.getSareftrTyputil().getCode() + "_"
-                              + programme.getSareftrRionTheorique().getRion() + "_"
+                              + programme.getTypeUtilisation().getCode() + "_"
+                              + programme.getRionTheorique().getRion() + "_"
                               + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".csv";
-        File tmpFile = File.createTempFile(fileName, ".tmp");
-        //OutputStream out = new FileOutputStream(tmpFile);
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        File tmpFile = new File(EnvConstants.FELIX_PREPREP_DIR.toString() + File.separator + fileName);
+        OutputStream out = new FileOutputStream(tmpFile);
+        //ByteArrayOutputStream out = new ByteArrayOutputStream();
     
         writeLines(out, head());
         int line = 1;
@@ -311,14 +308,12 @@ public class FelixDataService {
     
         writeLines(out, foot(--line));
         out.flush();
-        byte[] bytes = out.toByteArray();
-        
         
     
         FichierFelixError fichierFelixError = new FichierFelixError();
-        fichierFelixError.setTmpFilename(tmpFile.getName());
+        fichierFelixError.setTmpFilename(tmpFile.getAbsolutePath());
         fichierFelixError.setFilename(fileName);
-        fichierFelixError.setContent(bytes);
+        //fichierFelixError.setContent(bytes);
         fichierFelixError.setErrors(errorsList);
     
         IOUtils.closeQuietly(out);
@@ -329,39 +324,49 @@ public class FelixDataService {
     @Transactional
     @Async("threadPoolTaskExecutor")
     public void asyncSendFichierFelix(String numProg) {
-        /*List<LignePreprep> allLignes = lignePreprepDao.findByNumProg(numProg);
-        lignePreprepDao.delete(allLignes);
-        lignePreprepDao.flush();*/
+        
+        try {
+            
+            prepareFelixData(numProg);
+            
+            // Envoi du fichier via FTP
+            
+            FichierFelix ff = fichierFelixDao.findByNumprog(numProg);
+            File tempFile = new File(EnvConstants.FELIX_PREPREP_DIR.toString() + File.separator + ff.getNomFichier());
+            /*try (FileOutputStream fileOuputStream = new FileOutputStream(tempFile)) {
+                fileOuputStream.write(ff.getContent());
+            } catch (FileNotFoundException e) {
+                String message = "Impossible de trouver le Fichier Felix Preprep " + tempFile.getAbsolutePath();
+                LOGGER.error(message, e);
+                createErrorMessage(ff, message);
+                return;
+            } catch (IOException e) {
+                String message = String.format("Erreur Technique lors de l'ecriture du fichier temporaire", tempFile.getAbsolutePath());
+                LOGGER.error(message, e);
+                createErrorMessage(ff, message);
+                return;
+            }*/
     
-        //prepareFelixData(numProg);
-        /*lignePreprepDao.save(lignePrepreps);
-        lignePreprepDao.flush();*/
     
-        List<LignePreprep> lignePrepreps = prepareFelixData(numProg);//lignePreprepDao.findByNumProg(numProg);
-        // Envoi du fichier via FTP
-        //File felixPreprepDir = new File(System.getProperty("java.io.tmpdir"));
-        FichierFelix ff = fichierFelixDao.findByNumprog(numProg);
-        File felixPreprep = new File(String.valueOf(EnvConstants.FELIX_PREPREP_DIR) + File.separator + ff.getNomFichier());
-        try(FileOutputStream fileOuputStream = new FileOutputStream(felixPreprep)) {
-            fileOuputStream.write(ff.getContent());
+            LOGGER.debug("==> Debut Envoi du fichier à FELIX = " + ff.getNomFichier());
+            SftpUtil.uploadFile(FELIX, tempFile, ff.getNomFichier());
+            LOGGER.debug("<=== Fin Envoi du fichier à FELIX = " + ff.getNomFichier());
+            
             majStatut(numProg, StatutProgramme.MIS_EN_REPART);
-    
+            
             ff.setStatut(StatutFichierFelix.ENVOYE);
             fichierFelixDao.saveAndFlush(ff);
-        } catch (FileNotFoundException e) {
-            //Rollback the status
-            //majStatut(numProg, StatutProgramme.VALIDE);
-            String message = "Impossible de trouver le Fichier Felix Preprep " + felixPreprep.getAbsolutePath();
+    
+            if (tempFile.exists()) {
+                FileUtils.forceDelete(tempFile);
+            }
+            
+        } catch (Throwable e) {
+            FichierFelix ff = fichierFelixDao.findByNumprog(numProg);
+            String message = String.format("Probleme lors de l'envoi du fichier PREPREP  %s à FELIX", ff.getNomFichier());
             LOGGER.error(message, e);
             createErrorMessage(ff, message);
-            
-        } catch (IOException e) {
-            //numProg the status
-           // majStatut(numProg, StatutProgramme.VALIDE);
-            String message = String.format("Probleme lors de l'envoi du fichier PREPREP  %s à FElix", ff.getNomFichier());
-            LOGGER.error(message, e);
-            createErrorMessage(ff, message);
-            
+
         }
         
     }
@@ -371,6 +376,7 @@ public class FelixDataService {
         FichierFelixLog felixLog = new FichierFelixLog();
         felixLog.setLog(message);
         felixLog.setDateCreation(new Date());
+        fichierFelixLogDao.save(felixLog);
         ff.getLogs().add(felixLog);
     
         fichierFelixDao.saveAndFlush(ff);

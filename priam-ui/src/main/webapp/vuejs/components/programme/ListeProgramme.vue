@@ -458,6 +458,7 @@
                                       ($this.programmesEnErreur.indexOf(entry.numProg) !== -1)
                                         || (statutFichierFelix !== undefined && entry.statutFichierFelix == 'EN_ERREUR')) {
 
+
                             return {value: 'Génération en erreur', isLink: true};
                         }
                         return {};
@@ -787,7 +788,18 @@
               } else if(column.id !== undefined && column.id === 'numProg') {
                 this.$router.push({ name: 'selection', params: { numProg: row.numProg }});
               } else if(column.id !== undefined && column.id === 'repartition') {
-                 this.isToShowErrors = true;
+                 var statutFichierFelix = row.statutFichierFelix !== null && row.statutFichierFelix !== undefined ? row.statutFichierFelix : undefined;
+                 if(statutFichierFelix !== undefined && statutFichierFelix == 'EN_ERREUR') {
+                   this.resource.checkIfDone({numProg: row.numProg})
+                     .then(response => {
+                       return response.json();
+                     })
+                     .then(fichierFelix => {
+                       this.fichierFelixErrors = fichierFelix.logs;
+                       this.isToShowErrors = true;
+                     });
+
+                 }
               }
           },
 
@@ -884,50 +896,39 @@
                       })
                       .then(data => {
                           var fichierFelix = data;
-                          /*if(fichierFelix !== undefined && fichierFelix.statut !== 'EN_COURS') {
-                            clearInterval(self.intervalIDs[numProg]);
-                          }*/
 
                           if(fichierFelix !== undefined && fichierFelix.statut == 'GENERE') {
                             let number = self.programmesEnCoursTraitement.indexOf(numProg);
                             self.programmesEnCoursTraitement.splice(number, 1);
-                            //self.$store.commit('DELETE_PROG_EN_COURS', numProg);
 
-                            if(fichierFelix.logs !== undefined && fichierFelix.logs.length > 0) {
+                            if(self.modeRepartition == 'REPART_BLANC') {
                               clearInterval(self.intervalIDs[numProg]);
-                              self.downloadCsvFile('app/rest/repartition/downloadFichierFelixError',
-                                {numProg: numProg, tmpFilename : fichierFelix.nomFichier, filename : fichierFelix.nomFichier},
-                                fichierFelix.nomFichier);
-                              self.fichierFelixErrors = fichierFelix.logs;
-                              self.programmesEnErreur.push(numProg);
-                            } else {
-                              if(self.modeRepartition == 'REPART_BLANC') {
+                              self.downloadCsvFile('app/rest/repartition/downloadFichierFelix', {numProg: numProg}, fichierFelix.nomFichier);
 
-                                clearInterval(self.intervalIDs[numProg]);
-                                self.downloadCsvFile('app/rest/repartition/downloadFichierFelix', {numProg: numProg}, fichierFelix.nomFichier);
+                            } else if(self.modeRepartition == 'MISE_EN_REPART') {
+                              self.programmesEnCoursTraitement.push(numProg);
+                              self.resource.generateFelixData({numProg : numProg})
+                                .then(response => {
+                                  console.log("Genetation OK");
+                                  //clearInterval(self.intervalIDs[numProg]);
+                                  //self.rechercherProgrammes();
 
-                              } else if(self.modeRepartition == 'MISE_EN_REPART') {
-                                self.programmesEnCoursTraitement.push(numProg);
-                                self.resource.generateFelixData({numProg : numProg})
-                                  .then(response => {
-                                    console.log("Genetation OK");
-                                    //clearInterval(self.intervalIDs[numProg]);
-                                    //self.rechercherProgrammes();
+                                })
+                                .catch(error => {
+                                  alert("Erreur technique lors de la Genetation du fichier Felix !! ");
 
-                                  })
-                                  .catch(error => {
-                                    alert("Erreur technique lors de la Genetation du fichier Felix !! ");
+                                });
 
-                                  });
-
-                              }
                             }
                           } else if(fichierFelix.statut == 'EN_ERREUR' ) {
-                              //self.$store.commit('ADD_PROG_EN_ERREUR', numProg);
                               clearInterval(self.intervalIDs[numProg]);
                               self.programmesEnErreur.push(numProg);
+
                               if(fichierFelix.logs !== undefined && fichierFelix.logs.length > 0) {
                                 self.fichierFelixErrors = fichierFelix.logs;
+                                self.downloadCsvFile('app/rest/repartition/downloadFichierFelixError',
+                                  {numProg: numProg, tmpFilename : fichierFelix.nomFichier, filename : fichierFelix.nomFichier},
+                                  fichierFelix.nomFichier);
                               }
                           } else if(fichierFelix.statut == 'ENVOYE' ) {
                               let number = self.programmesEnCoursTraitement.indexOf(numProg);

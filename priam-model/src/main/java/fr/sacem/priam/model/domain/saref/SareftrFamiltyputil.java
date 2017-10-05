@@ -8,7 +8,7 @@ import java.util.List;
  * Created by benmerzoukah on 15/05/2017.
  */
 @Entity
-@Table(name = "SAREFFT_FAMILTYPUTIL")
+@Table(name = "SAREFTR_FAMILTYPUTIL")
 public class SareftrFamiltyputil {
     
     private String code;

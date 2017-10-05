@@ -94,7 +94,7 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
                      "ligneProgramme.ide12, " +
                      "sum(ligneProgramme.durDif), " +
                      "(CASE WHEN prog.typeUtilisation.code = 'CPRIVSONRD' THEN 1L  ELSE sum(ligneProgramme.nbrDif) END),  " +
-                     "sum(ligneProgramme.mt), " +
+                     "0.0d , " +
                      "ligneProgramme.ctna, " +
                      "ligneProgramme.paramCoefHor, " +
                      "ligneProgramme.durDifCtna, " +

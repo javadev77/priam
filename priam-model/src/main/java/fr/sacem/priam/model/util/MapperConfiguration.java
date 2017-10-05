@@ -18,8 +18,8 @@ public class MapperConfiguration {
         SareftrTyputil sareftrTyputil =new SareftrTyputil();
         sareftrTyputil.setCodeFamille(programmeDto.getFamille());
         sareftrTyputil.setCode(programmeDto.getTypeUtilisation());
-        programme.setSareftrFamiltyputil(sareftrFamiltyputil);
-        programme.setSareftrTyputil(sareftrTyputil);
+        programme.setFamille(sareftrFamiltyputil);
+        programme.setTypeUtilisation(sareftrTyputil);
         return programme;
     }
 

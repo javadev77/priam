@@ -1,4 +1,4 @@
-package fr.sacem.util;
+package fr.sacem.priam.common.util;
 
 public class FileUtils {
     public static final String PREFIX_PRIV_SON_PH = "FF_PENEF_EXTRANA_EXTCPRIVSONPH";

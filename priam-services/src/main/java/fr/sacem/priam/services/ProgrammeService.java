@@ -129,16 +129,16 @@ public class ProgrammeService {
 		
 		SareftrFamiltyputil sareftrFamiltyputil = new SareftrFamiltyputil();
 		sareftrFamiltyputil.setCode(programmeDto.getFamille());
-		programme.setSareftrFamiltyputil(sareftrFamiltyputil);
+		programme.setFamille(sareftrFamiltyputil);
 		
 		SareftrTyputil sareftrTyputil = new SareftrTyputil();
 		sareftrTyputil.setCode(programmeDto.getTypeUtilisation());
 		sareftrTyputil.setCodeFamille(programmeDto.getFamille());
-		programme.setSareftrTyputil(sareftrTyputil);
+		programme.setTypeUtilisation(sareftrTyputil);
 		
 		SareftrRion sareftrRion = new SareftrRion();
 		sareftrRion.setRion(programmeDto.getRionTheorique());
-		programme.setSareftrRionTheorique(sareftrRion);
+		programme.setRionTheorique(sareftrRion);
 		
 		programme.setTypeRepart(programmeDto.getTypeRepart());
 		programme.setDatmaj(new Date());
@@ -221,9 +221,9 @@ public class ProgrammeService {
 			result.put((String) indObjects[1], ((BigInteger) indObjects[0]).longValue());
 		}
 
-		if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_PHONO.getCode().equals(programme.getSareftrTyputil().getCode())) {
+		if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_PHONO.getCode().equals(programme.getTypeUtilisation().getCode())) {
 			result.put(SOMME, programmeDao.calculerQuantiteOeuvres(numProg, selection));
-		} else if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode().equals(programme.getSareftrTyputil().getCode())) {
+		} else if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode().equals(programme.getTypeUtilisation().getCode())) {
 			result.put(SOMME, programmeDao.calculerDureeOeuvres(numProg, selection));
 		}
 
