@@ -233,20 +233,15 @@ public class GeneralResource {
     @RequestMapping(value = "/currentUser",
       method = RequestMethod.GET,
       produces = MediaType.APPLICATION_JSON_VALUE)
-    public UserDTO getCurrentUser(Locale locale) {
-
-      SsoAuthenticationToken currentUser = getSsoAuthenticationToken();
-
-        return currentUser.getUser();
+    public UserDTO getCurrentUser(Locale locale, UserDTO currentUser) {
+        return currentUser;
     }
 
   @RequestMapping(value = "/parametres",
     method = RequestMethod.GET,
     produces = MediaType.APPLICATION_JSON_VALUE)
-  public Map<String, String> getParametrageByUser() {
-
-    SsoAuthenticationToken currentUser = getSsoAuthenticationToken();
-    return parametrageService.findByUserId(currentUser.getUser().getUserId());
+  public Map<String, String> getParametrageByUser(UserDTO currentUser) {
+    return parametrageService.findByUserId(currentUser.getUserId());
 
   }
 

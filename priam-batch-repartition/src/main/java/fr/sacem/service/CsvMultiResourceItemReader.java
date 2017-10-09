@@ -1,6 +1,7 @@
 package fr.sacem.service;
 
 
+import fr.sacem.priam.common.constants.EnvConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.JobParameter;
@@ -9,7 +10,6 @@ import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemStreamException;
 import org.springframework.batch.item.file.MultiResourceItemReader;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
@@ -25,15 +25,19 @@ public class CsvMultiResourceItemReader<T> extends MultiResourceItemReader<T> {
     public static final String PREFIX_FILE_ACQUITEMENT ="Acquittement";
     private Resource[] fichiersCSV;
     private StepExecution stepExecution;
-    @Value("#{jobParameters['input.felix']}")
+    
+    //@Value("#{jobParameters['input.felix']}")
     private String inputDirectory = null;
-    @Value("#{jobParameters['output.felix']}")
+    
+    //@Value("#{jobParameters['output.felix']}")
     private String outputDirectory = null;
+    
     private static String FILE_CSV_EN_COURS_DE_TRAITEMENT = "_en_cours_de_traitement";
 
     @Override
     public void open(ExecutionContext executionContext) throws ItemStreamException {
-
+        inputDirectory = String.valueOf(EnvConstants.FELIX_ACQT_INPUT_DIR);
+        outputDirectory = String.valueOf(EnvConstants.FELIX_ACQT_ARCHIVES_DIR);
         // really used with archives?
         if (inputDirectory != null && outputDirectory != null) {
             String rep = this.getInputDirectory();

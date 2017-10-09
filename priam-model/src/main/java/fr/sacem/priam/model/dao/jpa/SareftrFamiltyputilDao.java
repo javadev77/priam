@@ -18,7 +18,7 @@ import java.util.List;
 public interface SareftrFamiltyputilDao extends JpaRepository<SareftrFamiltyputil, String> {
     @Cacheable("familles")
     @Query("SELECT libFam FROM SareftrFamiltyputil libFam " +
-		   "WHERE (libFam.dateDebut is not null AND libFam.dateDebut <= CURRENT_DATE) " +
+		   "WHERE (libFam.dateDebut is null OR libFam.dateDebut <= CURRENT_DATE) " +
 		   "AND (libFam.dateFin is null OR libFam.dateFin >= CURRENT_DATE) " +
 		   "AND libFam.code IN (:familles)")
     List<SareftrFamiltyputil> findByFamilles(@Param("familles") List<String> familles);

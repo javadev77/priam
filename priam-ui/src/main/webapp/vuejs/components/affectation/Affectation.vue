@@ -275,7 +275,6 @@
                     } ,
 
                     isDisabled : function() {
-                        console.log("$this.isStatusProgrammeAffecte()=" + $this.isStatusProgrammeAffecte())
                         if(!$this.isRightRECAFC){
                             return true;
                         }
@@ -456,7 +455,7 @@
         },
 
         isStatusProgrammeAffecte(){
-          return this.programmeInfo.statut === 'AFFECTE';
+          return this.programmeInfo.statut !== 'CREE';
         },
 
         isTableauSelectionnable() {

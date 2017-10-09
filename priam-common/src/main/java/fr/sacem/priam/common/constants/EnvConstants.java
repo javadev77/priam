@@ -108,6 +108,21 @@ public enum EnvConstants implements ConfigurableProperty {
     FTP_FELIX_PASSWORD {
         @Override
         public String property() {return "priam.ftp.felix.user.password";}
+    },
+    
+    FELIX_ACQT_INPUT_DIR {
+        @Override
+        public String property() {
+            return "priam.felix.acquittement.in";
+        }
+    },
+    
+    FELIX_ACQT_ARCHIVES_DIR{
+        @Override
+        public String property() {
+            return "priam.felix.acquittement.archives";
+        }
+        
     };
     
     

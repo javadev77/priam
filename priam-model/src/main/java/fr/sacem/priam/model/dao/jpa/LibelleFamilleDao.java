@@ -20,7 +20,7 @@ public interface LibelleFamilleDao extends JpaRepository<SareftjLibfamiltyputil,
     
     @Cacheable("libelle_familles")
     @Query("SELECT libFam FROM SareftjLibfamiltyputil libFam " +
-            "WHERE (libFam.sareftrFamiltyputil.dateDebut is not null AND libFam.sareftrFamiltyputil.dateDebut <= CURRENT_DATE) " +
+            "WHERE (libFam.sareftrFamiltyputil.dateDebut is null OR libFam.sareftrFamiltyputil.dateDebut <= CURRENT_DATE) " +
             "AND (libFam.sareftrFamiltyputil.dateFin is null OR libFam.sareftrFamiltyputil.dateFin >= CURRENT_DATE)" +
             "AND libFam.lang = :lang " +
             "AND libFam.code IN (:familles)")

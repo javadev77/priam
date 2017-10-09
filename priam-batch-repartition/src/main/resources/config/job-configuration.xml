@@ -14,6 +14,7 @@
     <util:properties id="envProperties"
                      location="classpath:config/application.properties"/>
     <job id="csvArchiveFlatFileReaderJob" xmlns="http://www.springframework.org/schema/batch">
+
         <step id="csvArchiveFlatFileReaderStep">
             <tasklet>
                 <chunk
@@ -28,6 +29,8 @@
             <listener ref="listenerCompletition"/>
         </listeners>
     </job>
+
+
     <bean id="listenerCompletition" class="fr.sacem.config.JobCompletionNotificationLigneProgrammeListener">
     </bean>
     <bean id="readerPriamCsv"

@@ -139,14 +139,14 @@ public class ProgrammeResource {
                     method = RequestMethod.PUT,
                     consumes = MediaType.APPLICATION_JSON_VALUE,
                     produces = MediaType.APPLICATION_JSON_VALUE)
-    public ProgrammeDto affecterFichiers (@RequestBody AffectationDto affectationDto) {
+    public ProgrammeDto affecterFichiers (@RequestBody AffectationDto affectationDto, UserDTO currentUser) {
 
         ProgrammeDto programmeDto = null;
         String numProg=affectationDto.getNumProg();
         List<Fichier> fichiers = affectationDto.getFichiers();
 
         if(!Strings.isNullOrEmpty(numProg)){
-            fichierService.majFichiersAffectesAuProgramme(numProg, fichiers);
+            fichierService.majFichiersAffectesAuProgramme(numProg, fichiers, currentUser.getDisplayName());
             programmeDto = programmeViewDao.findByNumProg(numProg);
         }
 

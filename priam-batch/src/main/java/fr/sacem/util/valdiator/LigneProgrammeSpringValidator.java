@@ -50,7 +50,7 @@ public class LigneProgrammeSpringValidator implements Validator {
 		String cdeFamilTypUtil = ((LigneProgramme)o).getCdeFamilTypUtil();
 		String ide12 = ((LigneProgramme) o).getIde12();
 
-		if(ide12 != null && !ide12.isEmpty() && ide12.length() != IDE12_LENGTH) {
+		if(ide12 != null && !ide12.isEmpty() && (ide12.length() < 6 ||  ide12.length() > 12)) {
 			errors.rejectValue("ide12", "format.error.ide12");
 		}
 

@@ -76,7 +76,8 @@
                             roleParticipant1,
                             nomParticipant1,
                             cdeTypUtilOri,
-                            cdeFamilTypUtilOri
+                            cdeFamilTypUtilOri,
+                            libelleUtilisateur
                         )
                         VALUES (
                             :idFichier,
@@ -111,7 +112,10 @@
                             :roleParticipant1,
                             :nomParticipant1,
                             :cdeTypUtilOri,
-                            :cdeFamilTypUtilOri
+                            :cdeFamilTypUtilOri,
+                            (SELECT concat(libUtil.CDEUTIL, case when libUtil.LIBABRGUTIL is null then '' else ' - ' end, coalesce(libUtil.LIBABRGUTIL, ''))
+                             FROM SAREFTJ_LIBUTIL libUtil
+                              WHERE libUtil.CDEUTIL = :cdeUtil )
                         )
                 ]]>
             </value>
