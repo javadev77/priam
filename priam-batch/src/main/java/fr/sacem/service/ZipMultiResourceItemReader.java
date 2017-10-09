@@ -6,16 +6,16 @@ import fr.sacem.util.UtilFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.JobParameter;
+import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemStreamException;
 import org.springframework.batch.item.file.MultiResourceItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-
+import fr.sacem.priam.common.constants.EnvConstants;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -29,14 +29,11 @@ public class ZipMultiResourceItemReader<T> extends MultiResourceItemReader<T> {
     private Resource[] archives;
     private ZipFile zipFile;
     private StepExecution stepExecution;
-    @Value("#{jobParameters['input.archives']}")
-    private String inputDirectory = null;
-    @Value("#{jobParameters['output.archives']}")
-    private String outputDirectory = null;
     private UtilFile utilFile;
     private static String FILE_ZIP_EN_COURS_DE_TRAITEMENT = "_en_cours_de_traitement";
     @Autowired
     private FichierService fichierService;
+
 
     /**
      * Tries to extract all files in the archives and adds them as resources to
@@ -49,9 +46,14 @@ public class ZipMultiResourceItemReader<T> extends MultiResourceItemReader<T> {
     @Override
     public void open(ExecutionContext executionContext) throws ItemStreamException {
 
+        JobParameters jobParameters = stepExecution.getJobParameters();
+        JobParameter inputDirectoryParam =jobParameters.getParameters().get("input.archives");
+        JobParameter outputDirectoryParam =jobParameters.getParameters().get("output.archives");
+        String inputDirectory = (String)inputDirectoryParam.getValue();
+        String outputDirectory = (String)outputDirectoryParam.getValue();
         // really used with archives?
         if (inputDirectory != null && outputDirectory != null) {
-            String rep = this.getInputDirectory();
+            String rep = inputDirectory;
             FileSystemResource repertoireBase = new FileSystemResource(rep);
             this.setArchives(new Resource[]{repertoireBase});
             if (archives != null) {
@@ -171,10 +173,6 @@ public class ZipMultiResourceItemReader<T> extends MultiResourceItemReader<T> {
     @BeforeStep
     public void saveStepExecution(StepExecution stepExecution) {
         this.stepExecution = stepExecution;
-    }
-
-    public String getInputDirectory() {
-        return inputDirectory;
     }
     public void setUtilFile(UtilFile utilFile) {
         this.utilFile = utilFile;

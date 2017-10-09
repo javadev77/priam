@@ -124,21 +124,34 @@
                     </archive>
                 </configuration>
             </plugin>
-           <!-- <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.7.9</version>
-                <executions>
-                    <execution>
-                        <id>report-aggregate</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>report-aggregate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>-->
+
         </plugins>
     </build>
-
+    <!--
+    <profiles>
+    <profile>
+        <id>dev</id>
+        <activation>
+            <activeByDefault>true</activeByDefault>
+        </activation>
+        <build>
+            <resources>
+                <resource>
+                    <directory>${basedir}/src/main/resources/</directory>
+                </resource>
+            </resources>
+        </build>
+    </profile>
+    <profile>
+        <id>prod</id>
+        <build>
+            <resources>
+                <resource>
+                    <directory>${basedir}/src/main/resources</directory>
+                </resource>
+            </resources>
+        </build>
+    </profile>
+    </profiles>
+-->
 </project>

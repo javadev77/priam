@@ -2,17 +2,22 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:util="http://www.springframework.org/schema/util"
        xmlns:p="http://www.springframework.org/schema/p"
        xsi:schemaLocation="http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
     <import resource="classpath:/config/job-database.xml"/>
     <context:component-scan base-package="fr.sacem.*"/>
-    <context:property-placeholder location="classpath:config/application.properties"/>
-    <util:properties id="envProperties"
-                     location="classpath:config/application.properties"/>
+
+
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+           <property name="searchSystemEnvironment" value="true"/>
+        <property name="ignoreResourceNotFound" value="true"/>
+        <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+<property name="location" value="classpath:config/application.properties"/>
+
+    </bean>
     <job id="archiveFlatFileReaderJob" xmlns="http://www.springframework.org/schema/batch">
         <step id="archiveFlatFileReaderStep">
             <tasklet>
@@ -76,7 +81,8 @@
                             roleParticipant1,
                             nomParticipant1,
                             cdeTypUtilOri,
-                            cdeFamilTypUtilOri
+                            cdeFamilTypUtilOri,
+                            libelleUtilisateur
                         )
                         VALUES (
                             :idFichier,
@@ -111,7 +117,10 @@
                             :roleParticipant1,
                             :nomParticipant1,
                             :cdeTypUtilOri,
-                            :cdeFamilTypUtilOri
+                            :cdeFamilTypUtilOri,
+                            (SELECT concat(libUtil.CDEUTIL, case when libUtil.LIBABRGUTIL is null then '' else ' - ' end, coalesce(libUtil.LIBABRGUTIL, ''))
+                             FROM SAREFTJ_LIBUTIL libUtil
+                              WHERE libUtil.CDEUTIL = :cdeUtil )
                         )
                 ]]>
             </value>

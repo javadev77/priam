@@ -19,8 +19,10 @@ import java.util.Locale;
 public class LigneProgrammeSpringValidator implements Validator {
 
 
-	public static final int IDE12_LENGTH = 10;
-
+	public static final int IDE12_LENGTH_MAX = 12;
+	public static final int IDE12_LENGTH_MIN = 6;
+	public static final String NOMPARTICIPANT_VIDE = "COMPTE DE RESERVE";
+	public static final String ROLEPARTICIPANT_VIDE = "CR";
 	public static final String ERROR_DECIMAL_BINDING = "PARSIN-ERROR-";
 
 	@Override
@@ -44,13 +46,23 @@ public class LigneProgrammeSpringValidator implements Validator {
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "titreOeuvre", "error.titreOeuvre");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeTypUtilOri", "error.cdeTypUtilOri");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeFamilTypUtilOri", "error.cdeFamilTypUtilOri");
-
 		//COPIEPRIV
 		String cdeTypUtil = ((LigneProgramme)o).getCdeTypUtil();
 		String cdeFamilTypUtil = ((LigneProgramme)o).getCdeFamilTypUtil();
 		String ide12 = ((LigneProgramme) o).getIde12();
+		String nomParticipant1 = ((LigneProgramme) o).getNomParticipant1();
+		String roleParticipant1 = ((LigneProgramme) o).getRoleParticipant1();
 
-		if(ide12 != null && !ide12.isEmpty() && ide12.length() != IDE12_LENGTH) {
+		if(nomParticipant1 == null || nomParticipant1.isEmpty()){
+			((LigneProgramme) o).setNomParticipant1(NOMPARTICIPANT_VIDE);
+		}
+		if(roleParticipant1 == null || roleParticipant1.isEmpty()){
+			((LigneProgramme) o).setRoleParticipant1(ROLEPARTICIPANT_VIDE);
+		}
+		if(ide12 != null && !ide12.isEmpty() && (ide12.length() < IDE12_LENGTH_MIN || ide12.length() > IDE12_LENGTH_MAX)) {
+			errors.rejectValue("ide12", "format.error.ide12");
+		}
+		if(ide12 != null && !ide12.isEmpty() && (ide12.length() < IDE12_LENGTH_MIN || ide12.length() > IDE12_LENGTH_MAX)) {
 			errors.rejectValue("ide12", "format.error.ide12");
 		}
 

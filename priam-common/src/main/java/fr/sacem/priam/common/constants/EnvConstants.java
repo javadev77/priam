@@ -75,8 +75,13 @@ public enum EnvConstants implements ConfigurableProperty {
             return "priam.mipsa.wc.usessotoken";
         }
         
+    },
+    BATCH_CONFIG_PROPERTIES {
+        @Override
+        public String property() {
+            return "priam.batch.configuration.prperties";}
+
     };
-    
     @Override
     public String toString() {
          return getParameter(property());

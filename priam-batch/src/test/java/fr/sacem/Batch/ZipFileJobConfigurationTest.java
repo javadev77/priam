@@ -5,6 +5,7 @@ package fr.sacem.Batch;
  */
 
 
+import fr.sacem.priam.common.constants.EnvConstants;
 import fr.sacem.util.UtilFile;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,6 +64,8 @@ public class ZipFileJobConfigurationTest {
         // Job parameters
         Map<String, JobParameter> jobParametersMap = new HashMap<String, JobParameter>();
         jobParametersMap.put("time", new JobParameter(System.currentTimeMillis()));
+        //String inputDirectory = String.valueOf(EnvConstants.PENEF_ZIP_IN);
+        //String outputDirectory = String.valueOf(EnvConstants.PENEF_ZIP_ARCHIVES);
         jobParametersMap.put("input.archives", new JobParameter(inputDirectory));
         jobParametersMap.put("output.archives", new JobParameter(outputDirectory));
         JobParameters jobParameters = new JobParameters(jobParametersMap);

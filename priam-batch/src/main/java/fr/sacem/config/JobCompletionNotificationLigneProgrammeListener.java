@@ -90,7 +90,6 @@ public class JobCompletionNotificationLigneProgrammeListener extends JobExecutio
             while (it.hasNext()) {
                 StepExecution myStepExecution = (StepExecution) it.next();
                 executionContext = myStepExecution.getExecutionContext();
-
                 JobParameter parameterFichierZipEnCours = (JobParameter) executionContext.get(FICHIER_ZIP_EN_COURS);
                 JobParameter parameterNomFichierOriginal = (JobParameter) executionContext.get(NOM_ORIGINAL_FICHIER_ZIP);
                 JobParameter outputDirectory = jobExecution.getJobParameters().getParameters().get(REPERTOIRE_DE_DESTINATION);
