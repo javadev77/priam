@@ -13,6 +13,7 @@ import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.services.FichierService;
 import fr.sacem.priam.services.ProgrammeService;
 import fr.sacem.priam.ui.rest.dto.ProgrammeCritereRecherche;
+import fr.sacem.priam.ui.rest.dto.UserDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,7 +104,8 @@ public class ProgrammeResource {
                      method = RequestMethod.POST,
                      consumes = MediaType.APPLICATION_JSON_VALUE,
                      produces = MediaType.APPLICATION_JSON_VALUE)
-     public Programme save (@RequestBody ProgrammeDto programmeDto){
+     public Programme save (@RequestBody ProgrammeDto programmeDto, UserDTO userDTO){
+        programmeDto.setUsercre(userDTO.getDisplayName());
         return programmeService.addProgramme(programmeDto);
      }
 
@@ -119,9 +121,10 @@ public class ProgrammeResource {
                      method = RequestMethod.PUT,
                      consumes = MediaType.APPLICATION_JSON_VALUE,
                      produces = MediaType.APPLICATION_JSON_VALUE)
-     public Programme updateProgramme(@RequestBody ProgrammeDto programmeDto){
+     public Programme updateProgramme(@RequestBody ProgrammeDto programmeDto, UserDTO userDTO){
+         programmeDto.setUsermaj(userDTO.getDisplayName());
 
-          return programmeService.updateProgramme(programmeDto);
+         return programmeService.updateProgramme(programmeDto);
      }
 
      @RequestMapping(value = "programme/abandon",
@@ -136,14 +139,14 @@ public class ProgrammeResource {
                     method = RequestMethod.PUT,
                     consumes = MediaType.APPLICATION_JSON_VALUE,
                     produces = MediaType.APPLICATION_JSON_VALUE)
-    public ProgrammeDto affecterFichiers (@RequestBody AffectationDto affectationDto) {
+    public ProgrammeDto affecterFichiers (@RequestBody AffectationDto affectationDto, UserDTO currentUser) {
 
         ProgrammeDto programmeDto = null;
         String numProg=affectationDto.getNumProg();
         List<Fichier> fichiers = affectationDto.getFichiers();
 
         if(!Strings.isNullOrEmpty(numProg)){
-            fichierService.majFichiersAffectesAuProgramme(numProg, fichiers);
+            fichierService.majFichiersAffectesAuProgramme(numProg, fichiers, currentUser.getDisplayName());
             programmeDto = programmeViewDao.findByNumProg(numProg);
         }
 
@@ -170,21 +173,21 @@ public class ProgrammeResource {
                     method = RequestMethod.PUT,
                     consumes = MediaType.APPLICATION_JSON_VALUE,
                     produces = MediaType.APPLICATION_JSON_VALUE)
-    public ProgrammeDto deaffecterFichiers (@RequestBody String numProg){
+    public ProgrammeDto deaffecterFichiers (@RequestBody String numProg, UserDTO userDTO){
         logger.info("deaffecterFichiers() ==> numProg=" + numProg);
         ProgrammeDto programmeDto = null;
         if(!Strings.isNullOrEmpty(numProg)){
-          programmeService.toutDeaffecter(numProg);
+          programmeService.toutDeaffecter(numProg, userDTO.getDisplayName());
           programmeDto = programmeViewDao.findByNumProg(numProg);
         }
 
         return programmeDto;
     }
 
-  @RequestMapping(value = "programme/durdif",
-    method = RequestMethod.GET,
-    produces = MediaType.APPLICATION_JSON_VALUE)
-  public Map<String, Long> getDurDifProgramme(@RequestParam(value = "numProg") String numProg, @RequestParam(value = "statut") String statut) {
-    return programmeService.getDurDifProgramme(numProg,statut);
-  }
+    @RequestMapping(value = "programme/durdif",
+      method = RequestMethod.GET,
+      produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Long> getDurDifProgramme(@RequestParam(value = "numProg") String numProg, @RequestParam(value = "statut") String statut) {
+        return programmeService.getDurDifProgramme(numProg,statut);
+    }
 }

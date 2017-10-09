@@ -52,11 +52,12 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
                     "sum(ligneProgramme.durDif), " +
                     "sum(ligneProgramme.nbrDif), " +
                     "ligneProgramme.selectionEnCours, " +
-                    "CONCAT(ligneProgramme.cdeUtil, CASE WHEN lu.libAbrgUtil is null THEN '' ELSE ' - ' END, COALESCE(lu.libAbrgUtil,''))) " +
-            "FROM LigneProgramme ligneProgramme join ligneProgramme.fichier  f, " +
-            "SareftjLibutil lu "+
+                    "ligneProgramme.libelleUtilisateur) " +
+                    //"CONCAT(ligneProgramme.cdeUtil, CASE WHEN lu.libAbrgUtil is null THEN '' ELSE ' - ' END, COALESCE(lu.libAbrgUtil,''))) " +
+            "FROM LigneProgramme ligneProgramme join ligneProgramme.fichier  f " +
+            //"SareftjLibutil lu "+
             "WHERE ligneProgramme.fichier = f.id " +
-            "AND lu.cdeUtil = ligneProgramme.cdeUtil "+
+            //"AND lu.cdeUtil = ligneProgramme.cdeUtil "+
             "AND f.programme.numProg = :numProg " +
             "AND (ligneProgramme.ide12 = :ide12 OR :ide12 IS NULL) " +
             "AND (ligneProgramme.ajout = :ajout OR :ajout IS NULL) " +
@@ -94,7 +95,7 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
                      "ligneProgramme.ide12, " +
                      "sum(ligneProgramme.durDif), " +
                      "(CASE WHEN prog.typeUtilisation.code = 'CPRIVSONRD' THEN 1L  ELSE sum(ligneProgramme.nbrDif) END),  " +
-                     "sum(ligneProgramme.mt), " +
+                     "0.0d , " +
                      "ligneProgramme.ctna, " +
                      "ligneProgramme.paramCoefHor, " +
                      "ligneProgramme.durDifCtna, " +
@@ -141,11 +142,9 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
 
     @Transactional(readOnly = true)
     @Query(value =
-            "SELECT distinct CONCAT(lu.cdeUtil, CASE WHEN lu.libAbrgUtil is null THEN '' ELSE ' - ' END, COALESCE(lu.libAbrgUtil,'')) " +
-                    "FROM LigneProgramme ligneProgramme join ligneProgramme.fichier  f , " +
-                    "SareftjLibutil lu "+
+            "SELECT distinct ligneProgramme.libelleUtilisateur " +
+                    "FROM LigneProgramme ligneProgramme join ligneProgramme.fichier  f " +
                     "WHERE ligneProgramme.fichier = f.id " +
-                    "AND lu.cdeUtil = ligneProgramme.cdeUtil "+
                     "AND f.programme.numProg = :programme " +
                     "ORDER BY ligneProgramme.cdeUtil")
     List<String> findUtilisateursByProgramme(@Param("programme") String programme);

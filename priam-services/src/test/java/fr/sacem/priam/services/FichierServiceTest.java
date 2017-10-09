@@ -52,7 +52,7 @@ public class FichierServiceTest {
 	@Transactional
 	public void majFichiersAffectesAuProgramme() throws Exception {
 		
-		fichierService.majFichiersAffectesAuProgramme("170001", Collections.emptyList());
+		fichierService.majFichiersAffectesAuProgramme("170001", Collections.emptyList(), "GUEST");
 		
 		Programme pr170001 = programmeDao.findOne("170001");
 		

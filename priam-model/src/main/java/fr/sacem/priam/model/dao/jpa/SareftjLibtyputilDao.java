@@ -20,16 +20,17 @@ public interface SareftjLibtyputilDao extends JpaRepository<SareftjLibtyputil, S
     
     @Cacheable("typeUtilisation")
     @Query("SELECT lib FROM SareftjLibtyputil lib " +
-            "WHERE(lib.sareftrTyputil.dateDebut is not null AND lib.sareftrTyputil.dateDebut <= CURRENT_DATE) " +
+            "WHERE(lib.sareftrTyputil.dateDebut is null OR lib.sareftrTyputil.dateDebut <= CURRENT_DATE) " +
             "AND (lib.sareftrTyputil.dateFin is null OR lib.sareftrTyputil.dateFin >= CURRENT_DATE)" +
-            "AND lib.lang = :lang")
-    List<SareftjLibtyputil> findByLang(@Param("lang") String lang);
+            "AND lib.lang = :lang " +
+            "AND lib.code IN (:codes) ")
+    List<SareftjLibtyputil> findByLang(@Param("lang") String lang, @Param("codes") List<String> codes);
     
     @Cacheable("typeUtilisationByCodeAndLang")
     @Query("SELECT lib " +
            "FROM SareftjLibtyputil AS lib " +
-           "WHERE lib.code in (:codes) " +
-           "AND (lib.sareftrTyputil.dateDebut is not null AND lib.sareftrTyputil.dateDebut <= CURRENT_DATE) " +
+           "WHERE (lib.code is null or lib.code in (:codes)) " +
+           "AND (lib.sareftrTyputil.dateDebut is null OR lib.sareftrTyputil.dateDebut <= CURRENT_DATE) " +
            "AND (lib.sareftrTyputil.dateFin is null OR lib.sareftrTyputil.dateFin >= CURRENT_DATE) " +
            "AND  lib.lang = :lang")
     List<SareftjLibtyputil> findByCodeAndLang(@Param("codes") List<String> codes,@Param("lang") String lang);

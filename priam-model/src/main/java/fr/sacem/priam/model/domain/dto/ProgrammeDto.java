@@ -1,7 +1,9 @@
 package fr.sacem.priam.model.domain.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import fr.sacem.priam.model.domain.*;
+import fr.sacem.priam.model.domain.StatutFichierFelix;
+import fr.sacem.priam.model.domain.StatutProgramme;
+import fr.sacem.priam.model.domain.TypeRepart;
 import fr.sacem.priam.model.domain.saref.SareftrFamiltyputil;
 import fr.sacem.priam.model.domain.saref.SareftrRion;
 import fr.sacem.priam.model.domain.saref.SareftrTyputil;
@@ -22,6 +24,7 @@ public class ProgrammeDto {
 	
 	@JsonSerialize(using = SimpleDateSerializer.class)
 	private Date dateCreation;
+	
 	private TypeRepart typeRepart;
 	private StatutProgramme statut;
 	private Integer rionPaiement;
@@ -29,20 +32,25 @@ public class ProgrammeDto {
 	private String usercre;
 	private Date datmaj;
 	private String usermaj;
+	
 	private Date dataffecte;
 	private String useraffecte;
 
 	@JsonSerialize(using = SimpleDateSerializer.class)
 	private Date dateDbtPrg;
+	
 	@JsonSerialize(using = SimpleDateSerializer.class)
 	private Date dateFinPrg;
+	
 	private Integer cdeTer;
-      private String userValidation;
-    	@JsonSerialize(using = SimpleDateSerializer.class)
+ 
+	private String userValidation;
+    	
+      //@JsonSerialize(using = SimpleDateSerializer.class)
 	private Date dateValidation;
     	
     	private StatutFichierFelix statutFichierFelix;
-	
+    	
 	
 	public ProgrammeDto(String numProg, String nom, SareftrFamiltyputil famille, SareftrTyputil typeUtilisation, SareftrRion rionTheorique,
 						Date dateCreation, TypeRepart typeRepart, StatutProgramme statut, SareftrRion rionPaiement, Long nbFichiers,
@@ -259,6 +267,5 @@ public class ProgrammeDto {
 	  this.statutFichierFelix = statutFichierFelix;
     }
     
-    public ProgrammeDto() {
-	}
+    public ProgrammeDto() {}
 }

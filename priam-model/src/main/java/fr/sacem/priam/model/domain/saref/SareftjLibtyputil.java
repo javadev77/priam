@@ -6,7 +6,7 @@ import javax.persistence.*;
  * Created by benmerzoukah on 15/05/2017.
  */
 @Entity
-@Table(name = "SAREFFT_LIBTYPUTIL")
+@Table(name = "SAREFTJ_LIBTYPUTIL")
 @IdClass(SareftjLibtyputilPK.class)
 public class SareftjLibtyputil {
     
@@ -29,13 +29,13 @@ public class SareftjLibtyputil {
     private SareftrTyputil sareftrTyputil;
     
     @Id
-    @Column(name = "CODE")
+    @Column(name = "CDETYPUTIL")
     public String getCode() {
         return code;
     }
     
     @ManyToOne(fetch = FetchType.LAZY, optional = false, targetEntity = SareftrTyputil.class)
-    @JoinColumn(name = "CODE", insertable = false, updatable = false)
+    @JoinColumn(name = "CDETYPUTIL", insertable = false, updatable = false)
     public SareftrTyputil getSareftrTyputil() {
         return sareftrTyputil;
     }
@@ -44,7 +44,7 @@ public class SareftjLibtyputil {
         this.code = code;
     }
     
-    @Column(name = "LIBELLE")
+    @Column(name = "LIBABRGTYPUTIL")
     public String getLibelle() {
         return libelle;
     }

@@ -46,7 +46,7 @@
         <div v-else-if="programmeInfo.statut == 'VALIDE'">
           <button class="btn btn-default btn-primary pull-right width-140" type="button" @click.prevent="invalider()" :disabled="!isRightINVSEL">Invalider</button>
           <span class="pull-right">
-            Validé par {{programmeInfo.userValidation}} le {{dateValidation}}
+            Validé par {{ programmeInfo.userValidation }} {{ programmeInfo.dateValidation | dateAffectation }}
           </span>
         </div>
       </div>

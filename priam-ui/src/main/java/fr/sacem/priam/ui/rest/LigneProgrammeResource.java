@@ -9,8 +9,8 @@ import fr.sacem.priam.model.domain.dto.SelectionDto;
 import fr.sacem.priam.services.LigneProgrammeService;
 import fr.sacem.priam.services.ProgrammeService;
 import fr.sacem.priam.ui.rest.dto.LigneProgrammeCritereRecherche;
-import fr.sacem.priam.ui.rest.dto.ValdierSelectionProgrammeInput;
 import fr.sacem.priam.ui.rest.dto.UserDTO;
+import fr.sacem.priam.ui.rest.dto.ValdierSelectionProgrammeInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,7 +111,7 @@ public class LigneProgrammeResource {
     produces = MediaType.APPLICATION_JSON_VALUE,
     consumes = MediaType.APPLICATION_JSON_VALUE
   )
-  public List<String> validerSelection(@RequestBody ValdierSelectionProgrammeInput input) {
+  public List<String> validerSelection(@RequestBody ValdierSelectionProgrammeInput input, UserDTO userDTO) {
 
     if(input == null || input.getNumProg() == null || input.getNumProg().isEmpty())
       throw new RuntimeException("input or num programme must not be null !");
@@ -119,7 +119,7 @@ public class LigneProgrammeResource {
     ProgrammeDto programmeDTO = new ProgrammeDto();
     programmeDTO.setNumProg(input.getNumProg());
   
-  
+    programmeDTO.setUserValidation(userDTO.getDisplayName());
     ligneProgrammeService.enregistrerEdition(input.getNumProg());
     
     Programme programme = programmeService.validerProgramme(programmeDTO);
@@ -195,13 +195,14 @@ public class LigneProgrammeResource {
     produces = MediaType.APPLICATION_JSON_VALUE,
     consumes = MediaType.APPLICATION_JSON_VALUE
   )
-  public List<String> annulerSelection(@RequestBody ValdierSelectionProgrammeInput input) {
+  public List<String> annulerSelection(@RequestBody ValdierSelectionProgrammeInput input, UserDTO userDTO) {
 
     if(input == null || input.getNumProg() == null || input.getNumProg().isEmpty())
       throw new RuntimeException("input or num programme must not be null !");
 
     ProgrammeDto programmeDTO = new ProgrammeDto();
     programmeDTO.setNumProg(input.getNumProg());
+    programmeDTO.setUseraffecte(userDTO.getDisplayName());
 
     Programme programme = programmeService.updateStatutProgrammeToAffecte(programmeDTO);
     ligneProgrammeService.annulerSelection(programme.getNumProg());

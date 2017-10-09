@@ -24,11 +24,11 @@ public class Fichier implements Serializable {
     
     @ManyToOne
     @JoinColumn(name = "CDEFAMILTYPUTIL")
-    private SareftrFamiltyputil sareftrFamiltyputil;
+    private SareftrFamiltyputil famille;
     
     @ManyToOne
     @JoinColumn(name = "CDETYPUTIL")
-    private SareftrTyputil sareftrTyputil;
+    private SareftrTyputil typeUtilisation;
     
     @Column(name = "DATE_DEBUT_CHGT")
     @Temporal(TemporalType.TIMESTAMP)
@@ -63,12 +63,12 @@ public class Fichier implements Serializable {
         return nomFichier;
     }
     
-    public SareftrFamiltyputil getSareftrFamiltyputil() {
-        return sareftrFamiltyputil;
+    public SareftrFamiltyputil getFamille() {
+        return famille;
     }
     
-    public SareftrTyputil getSareftrTyputil() {
-        return sareftrTyputil;
+    public SareftrTyputil getTypeUtilisation() {
+        return typeUtilisation;
     }
     
     public Date getDateDebutChargt() {
@@ -96,12 +96,12 @@ public class Fichier implements Serializable {
         this.nomFichier = nomFichier;
     }
     
-    public void setSareftrFamiltyputil(SareftrFamiltyputil sareftrFamiltyputil) {
-        this.sareftrFamiltyputil = sareftrFamiltyputil;
+    public void setFamille(SareftrFamiltyputil famille) {
+        this.famille = famille;
     }
     
-    public void setSareftrTyputil(SareftrTyputil sareftrTyputil) {
-        this.sareftrTyputil = sareftrTyputil;
+    public void setTypeUtilisation(SareftrTyputil typeUtilisation) {
+        this.typeUtilisation = typeUtilisation;
     }
     
     public void setDateDebutChargt(Date dateDebutChargt) {

@@ -124,8 +124,8 @@ public class ProgrammeServiceTest {
 		
 		assertThat(programme.getNumProg()).isEqualTo("17" + StringUtils.leftPad(String.valueOf(lastSeq + 1), 4, "0"));
 		assertThat(programme.getNom()).isEqualTo("Test-PR01");
-		assertThat(programme.getSareftrRionTheorique().getRion()).isEqualTo(619);
-		assertThat(programme.getSareftrFamiltyputil().getCode()).isEqualTo("COPIEPRIV");
+		assertThat(programme.getRionTheorique().getRion()).isEqualTo(619);
+		assertThat(programme.getFamille().getCode()).isEqualTo("COPIEPRIV");
 	}
 	
 	@Test
@@ -153,8 +153,8 @@ public class ProgrammeServiceTest {
 		
 		assertThat(programme).isNotNull();
 		assertThat(programme.getNom()).isEqualTo("Programme-170001");
-		assertThat(programme.getSareftrRionTheorique().getRion()).isEqualTo(619);
-		assertThat(programme.getSareftrFamiltyputil().getCode()).isEqualTo("COPIEPRIV");
+		assertThat(programme.getRionTheorique().getRion()).isEqualTo(619);
+		assertThat(programme.getFamille().getCode()).isEqualTo("COPIEPRIV");
 	}
 	
 	@Test
@@ -175,7 +175,7 @@ public class ProgrammeServiceTest {
 	public void test_tout_desaffecter() throws Exception {
 		String pr170001 = NUM_PROG;
 		List<Fichier> fichiersAffectes = fichierDao.findFichiersByIdProgramme(pr170001, Status.AFFECTE);
-		programmeService.toutDeaffecter(pr170001);
+		programmeService.toutDeaffecter(pr170001, "GUEST");
 		
 		Programme programme = programmeDao.findOne(pr170001);
 		

@@ -98,7 +98,8 @@ public class ProgrammeService {
 		//recuperer la derniere ligne ajouter dans la tavle Programme Sequence
 		//construire le Id du programme
 		Programme mappedProgramme = mapperConfiguration.convertProgrammeDtoToProgramme(programmeDto);
-		mappedProgramme.setUsercre("GUEST"); // TODO : HABIB - A changer qaund le module SSO sera intégré
+	    
+	    	mappedProgramme.setUsercre(programmeDto.getUsercre());
 		mappedProgramme.setDateCreation(new Date());
 		mappedProgramme.setStatut(StatutProgramme.CREE);
 		
@@ -129,20 +130,20 @@ public class ProgrammeService {
 		
 		SareftrFamiltyputil sareftrFamiltyputil = new SareftrFamiltyputil();
 		sareftrFamiltyputil.setCode(programmeDto.getFamille());
-		programme.setSareftrFamiltyputil(sareftrFamiltyputil);
+		programme.setFamille(sareftrFamiltyputil);
 		
 		SareftrTyputil sareftrTyputil = new SareftrTyputil();
 		sareftrTyputil.setCode(programmeDto.getTypeUtilisation());
 		sareftrTyputil.setCodeFamille(programmeDto.getFamille());
-		programme.setSareftrTyputil(sareftrTyputil);
+		programme.setTypeUtilisation(sareftrTyputil);
 		
 		SareftrRion sareftrRion = new SareftrRion();
 		sareftrRion.setRion(programmeDto.getRionTheorique());
-		programme.setSareftrRionTheorique(sareftrRion);
+		programme.setRionTheorique(sareftrRion);
 		
 		programme.setTypeRepart(programmeDto.getTypeRepart());
 		programme.setDatmaj(new Date());
-		programme.setUsermaj("GUEST"); //TODO HABIB => A implementer lors  la mise en place du SSO SACEM
+		programme.setUsermaj(programmeDto.getUsermaj());
 
 		programme.setDateDbtPrg(programmeDto.getDateDbtPrg());
 		programme.setDateFinPrg(programmeDto.getDateFinPrg());
@@ -161,12 +162,12 @@ public class ProgrammeService {
 	}
 	
 	@Transactional
-	public void toutDeaffecter(String numProg) {
+	public void toutDeaffecter(String numProg, String user) {
 		LOG.info("Debut :Deaffecter les fichiers lies au programme (" + numProg + ")");
 		fichierDao.clearSelectedFichiers(numProg, Status.CHARGEMENT_OK);
 		Programme programme = programmeDao.findOne(numProg);
 		programme.setStatut(StatutProgramme.CREE);
-		programme.setUsermaj(GUEST);
+		programme.setUsermaj(user);
 		programme.setDatmaj(new Date());
 		
 		programmeDao.saveAndFlush(programme);
@@ -182,7 +183,7 @@ public class ProgrammeService {
 	public Programme validerProgramme(ProgrammeDto programmeDto) {
 		Programme programme = programmeDao.findOne(programmeDto.getNumProg());
 		programme.setStatut(StatutProgramme.VALIDE);
-		programme.setUserValidation(GUEST);
+		programme.setUserValidation(programmeDto.getUserValidation());
 		programme.setDateValidation(new Date());
 
 		return programmeDao.saveAndFlush(programme);
@@ -190,9 +191,11 @@ public class ProgrammeService {
 
 	@Transactional
 	public Programme invaliderProgramme(ProgrammeDto programmeDto) {
-	    FichierFelix byNumprog = fichierFelixDao.findByNumprog(programmeDto.getNumProg());
-	    fichierFelixDao.delete(byNumprog.getId());
-	    fichierFelixDao.flush();
+	    FichierFelix ff = fichierFelixDao.findByNumprog(programmeDto.getNumProg());
+	    if(ff != null) {
+		  fichierFelixDao.delete(ff.getId());
+		  fichierFelixDao.flush();
+	    }
 	    
 	    Programme programme = programmeDao.findOne(programmeDto.getNumProg());
 	    programme.setStatut(StatutProgramme.EN_COURS);
@@ -221,9 +224,9 @@ public class ProgrammeService {
 			result.put((String) indObjects[1], ((BigInteger) indObjects[0]).longValue());
 		}
 
-		if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_PHONO.getCode().equals(programme.getSareftrTyputil().getCode())) {
+		if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_PHONO.getCode().equals(programme.getTypeUtilisation().getCode())) {
 			result.put(SOMME, programmeDao.calculerQuantiteOeuvres(numProg, selection));
-		} else if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode().equals(programme.getSareftrTyputil().getCode())) {
+		} else if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode().equals(programme.getTypeUtilisation().getCode())) {
 			result.put(SOMME, programmeDao.calculerDureeOeuvres(numProg, selection));
 		}
 
@@ -234,7 +237,7 @@ public class ProgrammeService {
 	public Programme updateStatutProgrammeToAffecte(ProgrammeDto programmeDTO) {
 		Programme programme = programmeDao.findOne(programmeDTO.getNumProg());
 		programme.setStatut(StatutProgramme.AFFECTE);
-		programme.setUseraffect(GUEST);
+		programme.setUseraffect(programmeDTO.getUseraffecte());
 		programme.setDataffect(new Date());
 		return programmeDao.saveAndFlush(programme);
 	}

@@ -62,10 +62,6 @@ public class LigneProgrammeSpringValidator implements Validator {
 		if(ide12 != null && !ide12.isEmpty() && (ide12.length() < IDE12_LENGTH_MIN || ide12.length() > IDE12_LENGTH_MAX)) {
 			errors.rejectValue("ide12", "format.error.ide12");
 		}
-		if(ide12 != null && !ide12.isEmpty() && (ide12.length() < IDE12_LENGTH_MIN || ide12.length() > IDE12_LENGTH_MAX)) {
-			errors.rejectValue("ide12", "format.error.ide12");
-		}
-
 		if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode().equals(cdeTypUtil)) {
 			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "durDif", "error.durDif");
 		}

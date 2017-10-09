@@ -147,9 +147,11 @@
                   var parts = str.split("/");
                   var date = null;
                   if(this.isZeroHour) {
-                    date =  new Date(Date.UTC(parts[2], parts[1] - 1, parts[0], 0, 0, 0, 0));
+                      date = moment.utc([parts[2], parts[1] - 1, parts[0], 0, 0, 0, 0]).toDate();
+                      //date =  new Date(Date.UTC(parts[2], parts[1] - 1, parts[0], 0, 0, 0, 0));
                   } else {
-                    date =  new Date(Date.UTC(parts[2], parts[1] - 1, parts[0], 23, 59, 59, 999));
+                      //date =  new Date(Date.UTC(parts[2], parts[1] - 1, parts[0], 23, 59, 59, 999));
+                      date = moment.utc([parts[2], parts[1] - 1, parts[0], 23, 59, 59, 999]).toDate();
                   }
 
                   return date;
@@ -160,7 +162,7 @@
 
         dateToString(date) {
              if(date !== null) {
-               var m = moment(date);
+               var m = moment.utc(date);
                return m.format("DD/MM/YYYY");
              }
 

@@ -134,6 +134,9 @@ public class LigneProgramme  implements Serializable {
     @Column(name = "SEL_EN_COURS")
     private boolean selectionEnCours;
     
+    @Column(name = "libelleUtilisateur")
+    private String libelleUtilisateur;
+    
     
     @ManyToOne
     @JoinColumn(name = "idOeuvreManuel")
@@ -465,6 +468,14 @@ public class LigneProgramme  implements Serializable {
     
     public void setSelectionEnCours(boolean selectionEnCours) {
         this.selectionEnCours = selectionEnCours;
+    }
+    
+    public String getLibelleUtilisateur() {
+        return libelleUtilisateur;
+    }
+    
+    public void setLibelleUtilisateur(String libelleUtilisateur) {
+        this.libelleUtilisateur = libelleUtilisateur;
     }
     
     @Override

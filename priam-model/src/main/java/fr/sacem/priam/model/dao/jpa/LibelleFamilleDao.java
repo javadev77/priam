@@ -18,11 +18,12 @@ import java.util.List;
 @Transactional(readOnly = true)
 public interface LibelleFamilleDao extends JpaRepository<SareftjLibfamiltyputil, SareftjLibfamiltyputilPK> {
     
-    @Cacheable("familles")
+    @Cacheable("libelle_familles")
     @Query("SELECT libFam FROM SareftjLibfamiltyputil libFam " +
-            "WHERE (libFam.sareftrFamiltyputil.dateDebut is not null AND libFam.sareftrFamiltyputil.dateDebut <= CURRENT_DATE) " +
+            "WHERE (libFam.sareftrFamiltyputil.dateDebut is null OR libFam.sareftrFamiltyputil.dateDebut <= CURRENT_DATE) " +
             "AND (libFam.sareftrFamiltyputil.dateFin is null OR libFam.sareftrFamiltyputil.dateFin >= CURRENT_DATE)" +
-            "AND libFam.lang = :lang")
-    List<SareftjLibfamiltyputil> findByLang(@Param("lang") String lang);
+            "AND libFam.lang = :lang " +
+            "AND libFam.code IN (:familles)")
+    List<SareftjLibfamiltyputil> findByLang(@Param("lang") String lang, @Param("familles") List<String> familles);
     
 }

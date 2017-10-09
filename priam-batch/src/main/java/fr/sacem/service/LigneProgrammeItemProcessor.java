@@ -1,7 +1,6 @@
 package fr.sacem.service;
 
 import fr.sacem.domain.LigneProgramme;
-import fr.sacem.util.exception.PriamValidationException;
 import fr.sacem.util.valdiator.LigneProgrammeSpringValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,19 +49,20 @@ public class LigneProgrammeItemProcessor implements ItemProcessor<LigneProgramme
 
         BindingResult errors = new BeanPropertyBindingResult(ligneProgramme, "ligneProgramme-"+ ligneProgramme.getLineNumber());
         validator.validate(ligneProgramme, errors);
-
-        if(errors.hasErrors()) {
-            for(FieldError fe : errors.getFieldErrors()) {
-
-                if(fe.getCode().startsWith("format.")){
-                    errorSet.add(String.format(MESSAGE_FORMAT, ligneProgramme.getLineNumber(), fe.getField(), fe.getRejectedValue()));
-                } else {
-                    errorSet.add(String.format(MESSAGE_CHAMPS_OBLIGATOIRE, ligneProgramme.getLineNumber(), fe.getField()));
-                }
-
-            }
+    
+        if (!errors.hasErrors()) {
+            return ligneProgramme;
         }
+        for(FieldError fe : errors.getFieldErrors()) {
 
+		if(fe.getCode().startsWith("format.")){
+		    errorSet.add(String.format(MESSAGE_FORMAT, ligneProgramme.getLineNumber(), fe.getField(), fe.getRejectedValue()));
+		} else {
+		    errorSet.add(String.format(MESSAGE_CHAMPS_OBLIGATOIRE, ligneProgramme.getLineNumber(), fe.getField()));
+		}
+
+	  }
+    
         return ligneProgramme;
     }
 

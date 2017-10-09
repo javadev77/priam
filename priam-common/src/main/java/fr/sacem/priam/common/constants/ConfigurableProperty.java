@@ -5,5 +5,5 @@ package fr.sacem.priam.common.constants;
  */
 public interface ConfigurableProperty {
 
-    public String property();
+    String property();
 }

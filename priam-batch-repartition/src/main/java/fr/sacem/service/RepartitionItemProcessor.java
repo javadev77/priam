@@ -4,7 +4,6 @@ import fr.sacem.domain.Repartition;
 import fr.sacem.util.valdiator.RepartitionSpringValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.JobParameter;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.ExecutionContext;
@@ -49,18 +48,19 @@ public class RepartitionItemProcessor implements ItemProcessor<Repartition, Repa
                 repartition.setStatus("VALIDE");
             }
         }
-        if(errors.hasErrors()) {
-            for(FieldError fe : errors.getFieldErrors()) {
-
-                if(fe.getCode().startsWith("format.")){
-                    errorSet.add(String.format(MESSAGE_FORMAT, repartition.getLineNumber(), fe.getField(), fe.getRejectedValue()));
-                } else {
-                    errorSet.add(String.format(MESSAGE_CHAMPS_OBLIGATOIRE, repartition.getLineNumber(), fe.getField()));
-                }
-
-            }
+        if (!errors.hasErrors()) {
+            return repartition;
         }
+        for(FieldError fe : errors.getFieldErrors()) {
 
+		if(fe.getCode().startsWith("format.")){
+		    errorSet.add(String.format(MESSAGE_FORMAT, repartition.getLineNumber(), fe.getField(), fe.getRejectedValue()));
+		} else {
+		    errorSet.add(String.format(MESSAGE_CHAMPS_OBLIGATOIRE, repartition.getLineNumber(), fe.getField()));
+		}
+
+	  }
+    
         return repartition;
     }
 

@@ -2,7 +2,7 @@ package fr.sacem.dao;
 
 import fr.sacem.domain.Fichier;
 import fr.sacem.priam.common.TypeUtilisationEnum;
-import fr.sacem.util.FileUtils;
+import fr.sacem.priam.common.util.FileUtils;
 import fr.sacem.util.UtilFile;
 import fr.sacem.util.exception.PriamValidationException;
 import org.springframework.dao.DataAccessException;

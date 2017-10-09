@@ -1,5 +1,6 @@
 package fr.sacem;
 
+import fr.sacem.priam.common.constants.EnvConstants;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameter;
@@ -22,7 +23,7 @@ import java.util.Properties;
 public class AppRepartition {
     @Resource
     private static Environment env;
-
+    
     public static void main(String[] args) {
 
         String[] springConfig =
@@ -40,8 +41,8 @@ public class AppRepartition {
         try {
             Map<String, JobParameter> jobParametersMap = new HashMap<String, JobParameter>();
             jobParametersMap.put("time", new JobParameter(System.currentTimeMillis()));
-            jobParametersMap.put("input.felix", new JobParameter(envProperties.getProperty("input.felix")));
-            jobParametersMap.put("output.felix", new JobParameter(envProperties.getProperty("output.felix")));
+            jobParametersMap.put("input.felix", new JobParameter(String.valueOf(EnvConstants.FELIX_ACQT_INPUT_DIR)));
+            jobParametersMap.put("output.felix", new JobParameter(String.valueOf(EnvConstants.FELIX_ACQT_ARCHIVES_DIR)));
             JobParameters jobParameters = new JobParameters(jobParametersMap);
             JobExecution execution = jobLauncher.run(job, jobParameters);
             System.out.println("Exit Status : " + execution.getStatus());

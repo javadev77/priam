@@ -4,8 +4,10 @@ package fr.sacem.priam.ui.rest;
 import com.google.common.collect.Maps;
 import fr.sacem.priam.common.util.SsoUtils;
 import fr.sacem.priam.model.dao.jpa.*;
-import fr.sacem.priam.model.domain.*;
+import fr.sacem.priam.model.domain.Parametrage;
 import fr.sacem.priam.model.domain.saref.*;
+import fr.sacem.priam.model.util.FamillePriam;
+import fr.sacem.priam.model.util.TypeUtilisationPriam;
 import fr.sacem.priam.services.ParametrageService;
 import fr.sacem.priam.ui.rest.dto.UserDTO;
 import fr.sacem.priam.ui.security.SsoAuthenticationToken;
@@ -23,8 +25,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
-import static com.google.common.collect.Lists.transform;
+import static com.google.common.base.Predicates.in;
 import static fr.sacem.priam.common.constants.EnvConstants.*;
 
 /**
@@ -34,12 +37,13 @@ import static fr.sacem.priam.common.constants.EnvConstants.*;
 @RequestMapping("/app/rest/general")
 public class GeneralResource {
 
-  private static final Integer RION_639 = 639 ;
-  private static Logger logger = LoggerFactory.getLogger(GeneralResource.class);
-
+    private static final Integer RION_639 = 639 ;
+    private static Logger logger = LoggerFactory.getLogger(GeneralResource.class);
+    
     @Autowired
     LibelleFamilleDao libelleFamilleDao;
 
+  
     @Autowired
     SareftjLibtyputilDao sareftjLibtyputilDao;
 
@@ -62,8 +66,9 @@ public class GeneralResource {
                     method = RequestMethod.GET,
                     produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, String> [] getAllLibelleFamille(Locale locale) {
-        List<SareftjLibfamiltyputil> labels = libelleFamilleDao.findByLang(StringUtils.upperCase(locale.getLanguage()));
-        List<Map<String, String>> result = new ArrayList<>(labels.size());
+      String lang = StringUtils.upperCase(locale.getLanguage());
+      List<SareftjLibfamiltyputil> labels = libelleFamilleDao.findByLang(lang, FamillePriam.getCodes());
+      List<Map<String, String>> result = new ArrayList<>(labels.size());
 
         labels.forEach(libelle -> {
             result.add(createStringMap(libelle.getCode(), libelle.getLibelle()));
@@ -77,7 +82,8 @@ public class GeneralResource {
                     method = RequestMethod.GET,
                     produces = MediaType.APPLICATION_JSON_VALUE)
     public  Map<String, String> [] getAllLibelleTypeUtilisation(Locale locale) {
-        List<SareftjLibtyputil> labels = sareftjLibtyputilDao.findByLang(StringUtils.upperCase(locale.getLanguage()));
+      String lang = StringUtils.upperCase(locale.getLanguage());
+      List<SareftjLibtyputil> labels = sareftjLibtyputilDao.findByCodeAndLang(TypeUtilisationPriam.getCodes(), lang);
 
         List<Map<String, String>> result = new ArrayList<>(labels.size());
         labels.forEach(libelle -> {
@@ -91,26 +97,29 @@ public class GeneralResource {
                     method = RequestMethod.GET,
                     produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Map<String, String> []> getFamilleByTypeUtilisation(Locale locale) {
-        List<SareftrFamiltyputil> all = sareftrFamiltyputilDao.findAll();
+        List<SareftrFamiltyputil> all = sareftrFamiltyputilDao.findByFamilles(FamillePriam.getCodes());
 
         Map<String, Map<String, String> []> result = new HashMap<>();
 
         String lang = StringUtils.upperCase(locale.getLanguage());
         all.forEach( famille -> {
-            List<String> typeUtilCodes = transform(famille.getSareftrTyputils(), typeUtilisation -> typeUtilisation.getCode());
-            result.put(famille.getCode(), getLibelleTypeUtilisationByCodes(typeUtilCodes, lang));
+            List<String> collect = famille.getSareftrTyputils()
+                                     .stream()
+                                      .map(s -> s.getCode())
+                                     .filter(in(TypeUtilisationPriam.getCodes()))
+                                     .collect(Collectors.toList());
+            result.put(famille.getCode(), getLibelleTypeUtilisationByCodes(collect, lang));
         });
 
         return result;
     }
 
     private Map<String, String> [] getLibelleTypeUtilisationByCodes(List<String> typeUtilCodes, String lang) {
-        List<SareftjLibtyputil> byCodeAndLang = sareftjLibtyputilDao.findByCodeAndLang(typeUtilCodes, lang);
-        List<Map<String, String>> result = new ArrayList<>(byCodeAndLang.size());
+        List<SareftjLibtyputil> byCodeAndLang = sareftjLibtyputilDao.findByCodeAndLang(typeUtilCodes != null && !typeUtilCodes.isEmpty() ? typeUtilCodes : null, lang);
+        List<Map<String, String>> result = new ArrayList<>(typeUtilCodes.size());
         byCodeAndLang.forEach(libelle -> {
-
             result.add(createStringMap(libelle.getCode(), libelle.getLibelle()));
-          });
+        });
 
         return result.toArray(new Map[0]);
     }
@@ -224,20 +233,15 @@ public class GeneralResource {
     @RequestMapping(value = "/currentUser",
       method = RequestMethod.GET,
       produces = MediaType.APPLICATION_JSON_VALUE)
-    public UserDTO getCurrentUser(Locale locale) {
-
-      SsoAuthenticationToken currentUser = getSsoAuthenticationToken();
-
-        return currentUser.getUser();
+    public UserDTO getCurrentUser(Locale locale, UserDTO currentUser) {
+        return currentUser;
     }
 
   @RequestMapping(value = "/parametres",
     method = RequestMethod.GET,
     produces = MediaType.APPLICATION_JSON_VALUE)
-  public Map<String, String> getParametrageByUser() {
-
-    SsoAuthenticationToken currentUser = getSsoAuthenticationToken();
-    return parametrageService.findByUserId(currentUser.getUser().getUserId());
+  public Map<String, String> getParametrageByUser(UserDTO currentUser) {
+    return parametrageService.findByUserId(currentUser.getUserId());
 
   }
 
