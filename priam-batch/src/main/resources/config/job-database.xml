@@ -6,12 +6,10 @@
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"
 >
-    <context:component-scan base-package="fr.sacem.*"/>
-    <bean class="fr.sacem.config.DataSourceConfiguration"/>
-    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-        <property name="dataSource" ref="dataSource"/>
-    </bean>
+
     <!--
+        <context:component-scan base-package="fr.sacem.*"/>
+
 <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
 <property name="driverClassName" value="${spring.datasource.driver-class-name}"/>
 
