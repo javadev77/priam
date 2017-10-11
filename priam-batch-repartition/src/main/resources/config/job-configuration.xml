@@ -8,7 +8,6 @@
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
          http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
-    <import resource="classpath:/config/job-database.xml"/>
     <context:component-scan base-package="fr.sacem.*"/>
     <context:property-placeholder location="classpath:config/application.properties"/>
     <util:properties id="envProperties"
@@ -109,6 +108,15 @@
           p:dataSource-ref="dataSource"
           p:transactionManager-ref="transactionManager"/>
 
-
-
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <!--
+        <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+            <property name="driverClassName" value="${spring.datasource.driver-class-name}"/>
+            <property name="url" value="${spring.datasource.url}"/>
+            <property name="username" value="${spring.datasource.username}"/>
+            <property name="password" value="${spring.datasource.password}"/>
+        </bean>
+    -->
 </beans>
