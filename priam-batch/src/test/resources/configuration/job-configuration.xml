@@ -8,9 +8,10 @@
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
          http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
-    <import resource="classpath:/configuration/job-database-test.xml"/>
     <context:component-scan base-package="fr.sacem.*"/>
+
     <context:property-placeholder location="classpath:configuration/application-test.properties"/>
+    <import resource="classpath:/configuration/job-database-test.xml"/>
     <util:properties id="envProperties"
                      location="classpath:configuration/application-test.properties"/>
     <job id="archiveFlatFileReaderJob" xmlns="http://www.springframework.org/schema/batch">
