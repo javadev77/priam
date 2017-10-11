@@ -7,6 +7,7 @@ import fr.sacem.priam.model.domain.TypeRepart;
 import fr.sacem.priam.model.domain.saref.SareftrFamiltyputil;
 import fr.sacem.priam.model.domain.saref.SareftrRion;
 import fr.sacem.priam.model.domain.saref.SareftrTyputil;
+import fr.sacem.priam.model.util.CustomDateSerializer;
 import fr.sacem.priam.model.util.SimpleDateSerializer;
 
 import java.util.Date;
@@ -46,10 +47,13 @@ public class ProgrammeDto {
  
 	private String userValidation;
     	
-      //@JsonSerialize(using = SimpleDateSerializer.class)
+      @JsonSerialize(using = CustomDateSerializer.class)
 	private Date dateValidation;
     	
     	private StatutFichierFelix statutFichierFelix;
+    
+    	@JsonSerialize(using = CustomDateSerializer.class)
+    	private Date dateRepartition;
     	
 	
 	public ProgrammeDto(String numProg, String nom, SareftrFamiltyputil famille, SareftrTyputil typeUtilisation, SareftrRion rionTheorique,
@@ -75,7 +79,7 @@ public class ProgrammeDto {
 
 	public ProgrammeDto(String numProg, String nom, String famille, String typeUtilisation, Integer rionTheorique, Date dateCreation, TypeRepart typeRepart,
 	                    StatutProgramme statut, Integer rionPaiement, Long fichiers, String usercre, Date datmaj, String usermaj,
-	                    Date dataffecte, String useraffecte, Date dateValidation, StatutFichierFelix statutFichierFelix) {
+	                    Date dataffecte, String useraffecte, Date dateValidation, StatutFichierFelix statutFichierFelix, Date dateRepartition) {
 		this.numProg = numProg;
 		this.nom = nom;
 		this.famille = famille;
@@ -93,21 +97,23 @@ public class ProgrammeDto {
 		this.useraffecte = useraffecte;
 	    	this.dateValidation = dateValidation;
 	    	this.statutFichierFelix = statutFichierFelix;
+	    	this.dateRepartition = dateRepartition;
 	}
 
 	public ProgrammeDto(String numProg, String nom, String famille, String typeUtilisation, Integer rionTheorique, Date dateCreation, TypeRepart typeRepart,
 						StatutProgramme statut, Integer rionPaiement, Long fichiers, String usercre, Date datmaj, String usermaj,
 						Date dataffecte, String useraffecte, Date dateDbtPrg,
-						Date dateFinPrg, Integer cdeTer, String userValidation, Date dateValidation, StatutFichierFelix statutFichierFelix) {
+						Date dateFinPrg, Integer cdeTer, String userValidation, Date dateValidation, StatutFichierFelix statutFichierFelix, Date dateRepartition) {
 		this(numProg, nom, famille, typeUtilisation, rionTheorique, dateCreation, typeRepart,
 				statut, rionPaiement, fichiers, usercre, datmaj, usermaj,
-				dataffecte, useraffecte, dateValidation, statutFichierFelix);
+				dataffecte, useraffecte, dateValidation, statutFichierFelix, dateRepartition);
 
 		this.dateDbtPrg = dateDbtPrg;
 		this.dateFinPrg = dateFinPrg ;
 		this.cdeTer = cdeTer;
 		this.userValidation = userValidation;
 		this.dateValidation = dateValidation;
+		this.dateRepartition = dateRepartition;
 
 	}
 	
@@ -265,6 +271,14 @@ public class ProgrammeDto {
     
     public void setStatutFichierFelix(StatutFichierFelix statutFichierFelix) {
 	  this.statutFichierFelix = statutFichierFelix;
+    }
+    
+    public Date getDateRepartition() {
+	  return dateRepartition;
+    }
+    
+    public void setDateRepartition(Date dateRepartition) {
+	  this.dateRepartition = dateRepartition;
     }
     
     public ProgrammeDto() {}

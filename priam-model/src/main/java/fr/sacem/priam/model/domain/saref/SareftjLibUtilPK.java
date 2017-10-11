@@ -31,6 +31,15 @@ public class SareftjLibUtilPK implements Serializable {
 	  this.cdeUtil = cdeUtil;
     }
     
+    public SareftjLibUtilPK(){
+    
+    }
+    
+    public SareftjLibUtilPK(String cdeLng, String cdeUtil) {
+	  this.cdeLng = cdeLng;
+	  this.cdeUtil = cdeUtil;
+    }
+    
     @Override
     public boolean equals(Object o) {
 	  if (this == o) return true;

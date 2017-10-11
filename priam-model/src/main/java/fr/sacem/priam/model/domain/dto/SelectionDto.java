@@ -13,6 +13,8 @@ public class SelectionDto {
   private Long nbrDif;
   private String libAbrgUtil;
   private boolean selection;
+  private String cdeUtil;
+  
   public String getLibAbrgUtil() {
     return libAbrgUtil;
   }
@@ -82,11 +84,20 @@ public class SelectionDto {
   }
 
   public void setSelection(boolean selection) { this.selection = selection; }
-
+  
+  public String getCdeUtil() {
+    return cdeUtil;
+  }
+  
+  public void setCdeUtil(String cdeUtil) {
+    this.cdeUtil = cdeUtil;
+  }
+  
   public SelectionDto() {
   }
 
-  public SelectionDto(Long ide12, String titreOeuvre, String roleParticipant1, String nomParticipant1,String ajout,Long durDif, Long quantite, boolean selection, String utilisateur) {
+  public SelectionDto(Long ide12, String titreOeuvre, String roleParticipant1, String nomParticipant1,String ajout,Long durDif, Long quantite,
+                      boolean selection, String utilisateur, String cdeUtil) {
     this.ide12 = ide12;
     this.titreOeuvre = titreOeuvre;
     this.roleParticipant1 = roleParticipant1;
@@ -96,6 +107,7 @@ public class SelectionDto {
     this.nbrDif = quantite;
     this.libAbrgUtil = utilisateur;
     this.selection = selection;
+    this.cdeUtil = cdeUtil;
   }
 
 }

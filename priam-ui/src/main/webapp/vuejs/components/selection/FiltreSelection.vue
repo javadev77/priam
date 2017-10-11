@@ -192,7 +192,8 @@
               nbrDif : oeuvreToAdd.quantite,
               cdeUtil : oeuvreToAdd.utilisateur,
               roleParticipant1 : oeuvreToAdd.roleParticipant1,
-              nomParticipant1 : oeuvreToAdd.nomParticipant1
+              nomParticipant1 : oeuvreToAdd.nomParticipant1,
+              libelleUtilisateur : oeuvreToAdd.libelleUtilisateur
           }
           this.resource.ajouterOeuvreManuel(lingeProgramme)
             .then(response => {

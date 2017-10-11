@@ -33,6 +33,8 @@ public class ProgrammeView {
     private Date dateValidation;
     
     private StatutFichierFelix statutFichierFelix;
+    
+    private Date dateRepartition;
 
     
     public ProgrammeView() {
@@ -142,7 +144,14 @@ public class ProgrammeView {
     @Column(name = "STATUT_FICHIER_FELIX")
     @Enumerated(EnumType.STRING)
     public StatutFichierFelix getStatutFichierFelix() {
+        
         return statutFichierFelix;
+    }
+    
+    @Column(name = "DATE_REPARTITION")
+    @Temporal(TemporalType.DATE)
+    public Date getDateRepartition() {
+        return dateRepartition;
     }
     
     public void setNumProg(String numProg) {
@@ -217,5 +226,9 @@ public class ProgrammeView {
     
     public void setStatutFichierFelix(StatutFichierFelix statutFichierFelix) {
         this.statutFichierFelix = statutFichierFelix;
+    }
+    
+    public void setDateRepartition(Date dateRepartition) {
+        this.dateRepartition = dateRepartition;
     }
 }

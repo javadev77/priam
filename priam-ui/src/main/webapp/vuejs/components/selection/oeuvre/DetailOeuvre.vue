@@ -135,7 +135,8 @@
                   ide12 : '',
                   roleParticipant1 : '',
                   nomParticipant1: '',
-                  cdeTypeIde12 :''
+                  cdeTypeIde12 :'',
+                  libelleUtilisateur : ''
               },
 
 
@@ -193,6 +194,10 @@
           sef.oeuvreManuelToCreate.roleParticipant1 = sef.oeuvre.roleParticipant1;
           sef.oeuvreManuelToCreate.nomParticipant1 = sef.oeuvre.nomParticipant1;
           sef.oeuvreManuelToCreate.cdeTypeIde12 = sef.oeuvre.cdeTypeIde12;
+          var libUtil = sef.$store.getters.libelleUtilisateur.find(function (element) {
+              return element.id == sef.oeuvreManuelToCreate.utilisateur;
+          });
+          sef.oeuvreManuelToCreate.libelleUtilisateur = libUtil.value;
           sef.$emit('ajout-oeuvre', sef.oeuvreManuelToCreate);
         });
       }
