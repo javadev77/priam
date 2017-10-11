@@ -79,7 +79,7 @@
                         <property name="targetType" value="fr.sacem.domain.Repartition"/>
                         <property name="customEditors">
                             <map>
-                                <entry key="java.time.LocalDate">
+                                <entry key="java.time.LocalDateTime">
                                     <bean class="fr.sacem.util.DatePropertyEditor">
                                     </bean>
                                 </entry>

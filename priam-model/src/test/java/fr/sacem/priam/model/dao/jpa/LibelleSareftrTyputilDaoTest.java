@@ -30,7 +30,7 @@ public class LibelleSareftrTyputilDaoTest {
         List<SareftjLibtyputil> all = sareftjLibtyputilDao.findByLang("FR", TypeUtilisationPriam.getCodes());
     
         assertThat(all).isNotNull().isNotEmpty();
-        assertThat(all).extracting("code").containsExactly("CPRIVSONPH", "CPRIVAUDV", "CPRIVSONRD", "CPRIVAUDPL", "PRIME", "VALORIS", "ENCOURG");
+        assertThat(all).extracting("code").containsAll(TypeUtilisationPriam.getCodes());
     }
     
     @Test

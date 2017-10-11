@@ -8,20 +8,19 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 /**
  * Created by benmerzoukah on 09/05/2017.
  */
-public class CustomDateSerializer extends StdSerializer<Date> {
+public class DatePreprepSerializer extends StdSerializer<Date> {
   
-    private SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.FRANCE);
+    private SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
     
-    public CustomDateSerializer() {
+    public DatePreprepSerializer() {
         this(null);
     }
     
-    public CustomDateSerializer(Class t) {
+    public DatePreprepSerializer(Class t) {
         super(t);
     }
     

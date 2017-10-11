@@ -12,7 +12,7 @@ import java.time.format.DateTimeParseException;
  */
 public class LocalDatePropertyEditor extends PropertyEditorSupport {
 
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 
     public LocalDatePropertyEditor() {
     }

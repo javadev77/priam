@@ -25,7 +25,6 @@
           this.initDatePicker();
           var self = this;
           var element = $(this.$el);
-          console.log("this.dateFormat="+this.dateFormat)
           element.datepicker({
             dateFormat: this.dateFormat,
             onSelect: function(date) {
@@ -35,7 +34,6 @@
           });
 
 
-        console.log("value="+ this.value);
         element.val(this.value);
 
           var inputValidate = function() {
@@ -46,24 +44,7 @@
               var _year = parseInt(parts[2]);
               var _month = parseInt(parts[1]) - 1;
               var _date = parseInt(parts[0]);
-              /*if(angular.isDefined(attrs.minDate)){
-                try {
-                  var minDate = new Date();
-                  minDate.setDate( minDate.getDate() + parseInt( options.minDate ) );
-                  _year = Math.max( minDate.getYear(), _year );
-                  _month = Math.max( minDate.getMonth(), _month );
-                  _date = Math.max( minDate.getDate(), _date );
-                } catch ( e ) {
-                  //ignore
-                }
-              }*/
-              //var value = new Date(Date.UTC(_year, _month, _date, 0, 0, 0, 0));
-              //var newStringVal = $filter( 'date')( value, 'dd/MM/yyyy');
-              //ngModelCtrl.$setViewValue(value);
 
-              /*if(element.val() !== newStringVal){
-                element.val( newStringVal );
-              }*/
             }else {
               element.val('');
             }
@@ -91,7 +72,7 @@
           });
           element.on('blur', inputValidate);
 
-          element.change(function () {
+          element.on('change', function () {
               console.log('onChange element')
 
               var date = $(this).val();
@@ -148,9 +129,9 @@
                   var date = null;
                   if(this.isZeroHour) {
                       date = moment.utc([parts[2], parts[1] - 1, parts[0], 0, 0, 0, 0]).toDate();
-                      //date =  new Date(Date.UTC(parts[2], parts[1] - 1, parts[0], 0, 0, 0, 0));
+
                   } else {
-                      //date =  new Date(Date.UTC(parts[2], parts[1] - 1, parts[0], 23, 59, 59, 999));
+
                       date = moment.utc([parts[2], parts[1] - 1, parts[0], 23, 59, 59, 999]).toDate();
                   }
 
@@ -175,13 +156,19 @@
       watch : {
 
         value: function (value) {
-            console.log("update value = " + value);
-
             let formattedDate = this.dateToString(value);
-            console.log("formatted update value = " + formattedDate);
-
             $(this.$el).val(formattedDate);
         },
+
+        dateValue : function (value) {
+          if (typeof value === 'string' && value.length == 10) {
+              let element = $(this.$el);
+              element.val(value);
+              let date = this.stringToDate(value);
+              element.datepicker('setDate', date);
+              this.$emit('update-date', date);
+          }
+        }
 
       },
 

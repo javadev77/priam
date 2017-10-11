@@ -29,7 +29,7 @@ public class LibelleSareftrFamiltyputilDaoTest {
     public void should_return_all_famille_FR() {
         List<SareftjLibfamiltyputil> all = libelleFamilleDao.findByLang("FR", FamillePriam.getCodes());
         assertThat(all).isNotNull().isNotEmpty();
-        assertThat(all).extracting("code").containsExactly("COPIEPRIV", "FDSVAL", "CMS");
+        assertThat(all).extracting("code").containsAll(FamillePriam.getCodes());
     }
     
     @Test

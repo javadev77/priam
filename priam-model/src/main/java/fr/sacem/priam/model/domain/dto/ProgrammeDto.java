@@ -8,6 +8,7 @@ import fr.sacem.priam.model.domain.saref.SareftrFamiltyputil;
 import fr.sacem.priam.model.domain.saref.SareftrRion;
 import fr.sacem.priam.model.domain.saref.SareftrTyputil;
 import fr.sacem.priam.model.util.CustomDateSerializer;
+import fr.sacem.priam.model.util.DateRepartitionSerializer;
 import fr.sacem.priam.model.util.SimpleDateSerializer;
 
 import java.util.Date;
@@ -52,7 +53,7 @@ public class ProgrammeDto {
     	
     	private StatutFichierFelix statutFichierFelix;
     
-    	@JsonSerialize(using = CustomDateSerializer.class)
+    	@JsonSerialize(using = DateRepartitionSerializer.class)
     	private Date dateRepartition;
     	
 	
