@@ -448,7 +448,7 @@
                         var statusCode = entry.statut;
                         var statutFichierFelix = entry.statutFichierFelix !== null && entry.statutFichierFelix !== undefined ? entry.statutFichierFelix : undefined;
                         if(statusCode !== undefined && 'REPARTI' == statusCode) {
-                          return {value : entry.dateValidation, isLink : false };
+                          return {value : entry.dateRepartition, isLink : false };
                         } else if ('VALIDE' == statusCode
                                     && ($this.programmesEnCoursTraitement.indexOf(entry.numProg) !== -1)
                                           || (statutFichierFelix !== undefined && (statutFichierFelix == 'EN_COURS' || statutFichierFelix == 'EN_COURS_ENVOI')) ) {

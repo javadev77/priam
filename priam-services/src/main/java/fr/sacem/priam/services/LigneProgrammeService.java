@@ -187,7 +187,7 @@ public class LigneProgrammeService {
     @Transactional
     public void supprimerLigneProgramme(String numProg, Long ide12, SelectionDto selectedLigneProgramme) {
     
-        String cdeUtil = selectedLigneProgramme.getLibAbrgUtil().split(" - ")[0];
+        String cdeUtil = selectedLigneProgramme.getCdeUtil();//selectedLigneProgramme.getLibAbrgUtil().split(" - ")[0];
         LigneProgramme oeuvreManuelFound = ligneProgrammeDao.findOeuvreManuelByIde12AndCdeUtil(numProg, ide12, cdeUtil);
         doDeleteOeuvreManuel(oeuvreManuelFound);
     
@@ -276,6 +276,7 @@ public class LigneProgrammeService {
         input.setCdeTypIde12(input.getCdeTypIde12());
         input.setSelectionEnCours(TRUE);
         input.setSelection(FALSE);
+        //input.setLibelleUtilisateur(sareftjLibutilDao.find);
         
         return ligneProgrammeDao.saveAndFlush(input);
     }

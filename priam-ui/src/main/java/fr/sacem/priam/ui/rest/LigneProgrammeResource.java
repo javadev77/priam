@@ -1,16 +1,21 @@
 package fr.sacem.priam.ui.rest;
 
+import com.google.common.base.Strings;
+import fr.sacem.priam.model.dao.jpa.SareftjLibutilDao;
 import fr.sacem.priam.model.domain.LigneProgramme;
 import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.criteria.LigneProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.model.domain.dto.SelectionDto;
+import fr.sacem.priam.model.domain.saref.SareftjLibUtilPK;
+import fr.sacem.priam.model.domain.saref.SareftjLibutil;
 import fr.sacem.priam.services.LigneProgrammeService;
 import fr.sacem.priam.services.ProgrammeService;
 import fr.sacem.priam.ui.rest.dto.LigneProgrammeCritereRecherche;
 import fr.sacem.priam.ui.rest.dto.UserDTO;
 import fr.sacem.priam.ui.rest.dto.ValdierSelectionProgrammeInput;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -38,7 +44,10 @@ public class LigneProgrammeResource {
 
   @Autowired
   private ProgrammeService programmeService;
-
+  
+  @Autowired
+  private SareftjLibutilDao sareftjLibutilDao;
+  
   private static Logger logger = LoggerFactory.getLogger(LigneProgrammeResource.class);
 
   @RequestMapping(value = "ligneProgramme/search",
@@ -230,9 +239,16 @@ public class LigneProgrammeResource {
                     method = RequestMethod.POST,
                     produces = MediaType.APPLICATION_JSON_VALUE,
                     consumes = MediaType.APPLICATION_JSON_VALUE)
-    public SelectionDto ajouterOeuvreManuel(@RequestBody LigneProgramme input, UserDTO userDTO) {
-         input.setUtilisateur(userDTO.getUserId());
-         ligneProgrammeService.ajouterOeuvreManuel(input);
+    public SelectionDto ajouterOeuvreManuel(@RequestBody LigneProgramme input, UserDTO userDTO, Locale locale) {
+        String lang = StringUtils.upperCase(locale.getLanguage());
+        SareftjLibUtilPK pk = new SareftjLibUtilPK(lang, input.getCdeUtil());
+        SareftjLibutil sareftjLibutil = sareftjLibutilDao.findOne(pk);
+  
+        String libAbrgUtil = sareftjLibutil.getLibAbrgUtil();
+        input.setLibelleUtilisateur(sareftjLibutil.getCdeUtil() + (Strings.isNullOrEmpty(libAbrgUtil) ? "" :  " - " + libAbrgUtil));
+        input.setUtilisateur(userDTO.getUserId());
+        
+        ligneProgrammeService.ajouterOeuvreManuel(input);
          
          return new SelectionDto();
     }
