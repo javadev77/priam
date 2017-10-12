@@ -141,7 +141,7 @@ public class Programme implements Serializable {
 	public Integer getCdeTer() { return cdeTer; }
    
 	  @Column(name = "DATE_REPARTITION")
-	  @Temporal(TemporalType.DATE)
+	  @Temporal(TemporalType.TIMESTAMP)
 	  public Date getDateRepartition() {
 		return dateRepartition;
 	  }

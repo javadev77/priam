@@ -240,7 +240,7 @@ CREATE TABLE `PRIAM_FICHIER_FELIX` (
   PRIMARY KEY (`ID`),
   KEY `NUMPROG_FK` (`NUMPROG`),
   CONSTRAINT `NUMPROG_FK` FOREIGN KEY (`NUMPROG`) REFERENCES `PRIAM_PROGRAMME` (`NUMPROG`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -750,48 +750,6 @@ CREATE TABLE `SAREFTR_TYPUTIL` (
   
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Type d utilisation';
 
-
--- -------------------------------------
--- ----- PRIAM_PROG_VIEW ---------------
--- -------------------------------------
-
-DROP VIEW IF EXISTS PRIAM_PROG_VIEW;
-
-
-create view PRIAM_PROG_VIEW as
-SELECT DISTINCT
-    `pr`.`NUMPROG`                           AS `NUMPROG`,
-    `pr`.`NOM`                               AS `NOM`,
-    `pr`.`RION_THEORIQUE`                    AS `RION_THEORIQUE`,
-    `pr`.`CDEFAMILTYPUTIL`                   AS `CDEFAMILTYPUTIL`,
-    `pr`.`CDETYPUTIL`                        AS `CDETYPUTIL`,
-    `pr`.`TYPE_REPART`                       AS `TYPE_REPART`,
-    `pr`.`DATE_CREATION`                     AS `DATE_CREATION`,
-    `pr`.`STATUT_PROG_CODE`                  AS `STATUT_PROG_CODE`,
-    `pr`.`RION_PAIEMENT`                     AS `RION_PAIEMENT`,
-    `pr`.`USERCRE`                           AS `USERCRE`,
-    `pr`.`DATMAJ`                            AS `DATMAJ`,
-    `pr`.`USERMAJ`                           AS `USERMAJ`,
-    `pr`.`DATAFFECT`                         AS `DATAFFECT`,
-    `pr`.`USERAFFECT`                        AS `USERAFFECT`,
-    (SELECT count(`f`.`NUMPROG`)
-     FROM PRIAM_FICHIER `f`
-     WHERE (`pr`.`NUMPROG` = `f`.`NUMPROG`)
-      AND f.SOURCE_AUTO = 1
-      ) AS `fichiers`,
-    `pr`.`DATE_DBT_PRG`                      AS `DATEDBTPRG`,
-    `pr`.`DATE_FIN_PRG`                      AS `DATEFINPRG`,
-    `pr`.`CDE_TER`                           AS `CDETER`,
-    `pr`.`USER_VALIDATION`                   AS `USERVALIDATION`,
-    `pr`.`DATE_VALIDATION`                   AS `DATEVALIDATION`,
-    `ff`.`STATUT`                            AS `STATUT_FICHIER_FELIX`
-
-  FROM PRIAM_PROGRAMME `pr`
-    LEFT JOIN PRIAM_FICHIER_FELIX ff ON ff.NUMPROG = pr.NUMPROG
-  GROUP BY `pr`.`NUMPROG`;
-
-
-
 -- Dump completed on 2017-09-25 16:44:46
 
 
@@ -829,7 +787,7 @@ SELECT DISTINCT
     `pr`.`USER_VALIDATION`                   AS `USERVALIDATION`,
     `pr`.`DATE_VALIDATION`                   AS `DATEVALIDATION`,
     `ff`.`STATUT`                            AS `STATUT_FICHIER_FELIX`,
-    `pr`.`DATE_REPARTITION`                  AS `DATE_REPARTITION`,
+    `pr`.`DATE_REPARTITION`                  AS `DATE_REPARTITION`
 
   FROM PRIAM_PROGRAMME `pr`
     LEFT JOIN PRIAM_FICHIER_FELIX ff ON ff.NUMPROG = pr.NUMPROG

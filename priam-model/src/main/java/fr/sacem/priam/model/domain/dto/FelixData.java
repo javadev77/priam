@@ -1,5 +1,8 @@
 package fr.sacem.priam.model.domain.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import fr.sacem.priam.model.util.DatePreprepSerializer;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -21,8 +24,13 @@ public class FelixData implements Serializable {
     private String cdeCompl;
     private String libProg;
     private String compLibProg;
+    
+    @JsonSerialize(using = DatePreprepSerializer.class)
     private Date datDbtProg;
+    
+    @JsonSerialize(using = DatePreprepSerializer.class)
     private Date datFinProg;
+    
     private Integer hrDbt;
     private Integer hrFin;
     private String cdeGreDif;

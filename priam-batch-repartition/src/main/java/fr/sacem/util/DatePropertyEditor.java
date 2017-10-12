@@ -3,7 +3,7 @@ package fr.sacem.util;
 import org.springframework.util.StringUtils;
 
 import java.beans.PropertyEditorSupport;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
@@ -21,7 +21,7 @@ public class DatePropertyEditor extends PropertyEditorSupport {
     public void setAsText(String text) throws DateTimeParseException {
         if (StringUtils.hasText(text)) {
 
-            setValue(LocalDate.parse(text, formatter));
+            setValue(LocalDateTime.parse(text, formatter));
         } else {
             setValue(null);
         }
@@ -32,7 +32,7 @@ public class DatePropertyEditor extends PropertyEditorSupport {
      */
     @Override
     public String getAsText() {
-        LocalDate value = (LocalDate) getValue();
+        LocalDateTime value = (LocalDateTime) getValue();
         return (value != null ? value.toString() : "");
     }
 }

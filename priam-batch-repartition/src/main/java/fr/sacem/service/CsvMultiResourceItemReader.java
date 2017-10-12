@@ -26,10 +26,8 @@ public class CsvMultiResourceItemReader<T> extends MultiResourceItemReader<T> {
     private Resource[] fichiersCSV;
     private StepExecution stepExecution;
     
-    //@Value("#{jobParameters['input.felix']}")
     private String inputDirectory = null;
     
-    //@Value("#{jobParameters['output.felix']}")
     private String outputDirectory = null;
     
     private static String FILE_CSV_EN_COURS_DE_TRAITEMENT = "_en_cours_de_traitement";

@@ -9,6 +9,7 @@ import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.dto.AffectationDto;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.ui.rest.dto.ProgrammeCritereRecherche;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -170,6 +171,7 @@ public class ProgrammeResourceTest extends RestResourceTest {
 
   @Test
   @Transactional
+  @Ignore
   public void test_affecterFichiers() throws Exception {
     mockMvc.perform(
       put("/app/rest/programme/affectation")
@@ -182,6 +184,7 @@ public class ProgrammeResourceTest extends RestResourceTest {
 
   @Test
   @Transactional
+  @Ignore
   public void test_affecterFichiers_all_vide() throws Exception {
     mockMvc.perform(
       put("/app/rest/programme/affectation")
@@ -236,6 +239,7 @@ public class ProgrammeResourceTest extends RestResourceTest {
           Fichier fichier = new Fichier();
           fichier.setNomFichier( f);
           fichier.setStatut(Status.CHARGEMENT_OK);
+          fichier.setAutomatique(Boolean.TRUE);
 
           fichierDao.save(fichier);
 

@@ -159,7 +159,7 @@ public class LigneProgrammeServiceTest {
             flag = false;
         }
 
-        assertThat(flag).isEqualTo(false);
+        assertThat(flag).isEqualTo(true);
     }
 
     /***

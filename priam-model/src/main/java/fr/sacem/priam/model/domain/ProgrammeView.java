@@ -149,7 +149,7 @@ public class ProgrammeView {
     }
     
     @Column(name = "DATE_REPARTITION")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getDateRepartition() {
         return dateRepartition;
     }
