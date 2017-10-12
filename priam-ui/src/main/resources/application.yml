@@ -4,6 +4,9 @@ server:
 ---
 spring:
   profiles: dev,default
+  jmx:
+    enabled: false
+
 #datasource:
 #  priam:
 #    url: jdbc:mysql://msqdev08:3306/priam_app

@@ -171,6 +171,7 @@ public class ProgrammeResourceTest extends RestResourceTest {
 
   @Test
   @Transactional
+  @Ignore
   public void test_affecterFichiers() throws Exception {
     mockMvc.perform(
       put("/app/rest/programme/affectation")
@@ -238,6 +239,7 @@ public class ProgrammeResourceTest extends RestResourceTest {
           Fichier fichier = new Fichier();
           fichier.setNomFichier( f);
           fichier.setStatut(Status.CHARGEMENT_OK);
+          fichier.setAutomatique(Boolean.TRUE);
 
           fichierDao.save(fichier);
 
