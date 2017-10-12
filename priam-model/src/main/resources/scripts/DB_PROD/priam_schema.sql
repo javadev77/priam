@@ -15,6 +15,10 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
+
+
+
+
 --
 -- Table structure for table `BATCH_JOB_EXECUTION`
 --
@@ -190,6 +194,213 @@ INSERT INTO BATCH_STEP_EXECUTION_SEQ (ID, UNIQUE_KEY) select * from (select 0 as
 INSERT INTO BATCH_JOB_EXECUTION_SEQ (ID, UNIQUE_KEY) select * from (select 0 as ID, '0' as UNIQUE_KEY) as tmp where not exists(select * from BATCH_JOB_EXECUTION_SEQ);
 INSERT INTO BATCH_JOB_SEQ (ID, UNIQUE_KEY) select * from (select 0 as ID, '0' as UNIQUE_KEY) as tmp where not exists(select * from BATCH_JOB_SEQ);
 
+--
+-- Table structure for table `SAREFTJ_LIBCISACROLE`
+--
+
+DROP TABLE IF EXISTS `SAREFTJ_LIBCISACROLE`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `SAREFTJ_LIBCISACROLE` (
+  `CDELNG` varchar(3) DEFAULT NULL COMMENT 'Code langue ISO2A de la langue utilisée dans les environements sacem',
+  `CDEROLCISAC` varchar(2) DEFAULT NULL,
+  `LIB` varchar(300) DEFAULT NULL COMMENT 'Libellé long du type de découpage commune canton',
+  `LIBABRG` varchar(25) DEFAULT NULL COMMENT 'Libellé court du type de découpage communes canton',
+  `DATCRE` date DEFAULT NULL COMMENT 'Date de création',
+  `USERCRE` varchar(60) DEFAULT NULL COMMENT 'Créés par',
+  `DATMAJ` date DEFAULT NULL COMMENT 'Modifiée le',
+  `USERMAJ` varchar(60) DEFAULT NULL COMMENT 'Modifiée par',
+
+  CONSTRAINT `SAREFTJ_LIBCISACROLE_PK` PRIMARY KEY (`CDELNG`, `CDEROLCISAC`)
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='libellé des rôle des Participants (CISAC)';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+
+--
+-- Table structure for table `SAREFTJ_LIBTER`
+--
+
+DROP TABLE IF EXISTS `SAREFTJ_LIBTER`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `SAREFTJ_LIBTER` (
+  `CDELNG` varchar(3) DEFAULT NULL COMMENT 'Code langue ISO2A de la langue utilisee dans les environements sacem',
+  `CDEPAYSISO4N` int(4) DEFAULT NULL COMMENT 'Code pays suivant la norme 3366 - ISO 4N',
+  `NOMPAYSABR` varchar(25) DEFAULT NULL COMMENT 'TERRI-ABRFRA Nom abrege du territoire Attention, multilinguisme. Obligatoire pour le Francais',
+  `NOMPAYS` varchar(60) DEFAULT NULL COMMENT 'TERRI-NOMFRA Nom du territoire Attention, multilinguisme. Obligatoire pour le Francais',
+  `DATCRE` date DEFAULT NULL COMMENT 'Date de creation',
+  `USERCRE` varchar(60) DEFAULT NULL COMMENT 'Utilisateur ayant cree l''entree',
+  `DATMAJ` date DEFAULT NULL COMMENT 'Date de modification',
+  `USERMAJ` varchar(60) DEFAULT NULL COMMENT 'Utilisateur ayant effectue la derniere mise a jour',
+
+  CONSTRAINT `SAREFTJ_LIBTER_PK` PRIMARY KEY (`CDELNG`, `CDEPAYSISO4N`)
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='LIBELLE TERRITOIRE (RLATE';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `SAREFTJ_LIBTYPUTIL`
+--
+
+DROP TABLE IF EXISTS `SAREFTJ_LIBTYPUTIL`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `SAREFTJ_LIBTYPUTIL` (
+  `CDELNG` varchar(3) NOT NULL COMMENT 'Code langue ISO2A de la langue utilisee dans les environements sacem',
+  `CDETYPUTIL` varchar(10) NOT NULL COMMENT 'Code type d utilisation',
+  `LIBTYPUTIL` varchar(300) NOT NULL COMMENT 'Libelle type d''utilisation',
+  `LIBABRGTYPUTIL` varchar(25) DEFAULT NULL COMMENT 'Libelle abrege du type d''utilisation',
+  `DATCRE` datetime NOT NULL COMMENT 'DATETIME de creation',
+  `USERCRE` varchar(60) NOT NULL COMMENT 'Utilisateur ayant effectue la creation',
+  `DATMAJ` datetime NOT NULL COMMENT 'DATETIME de modification',
+  `USERMAJ` varchar(60) NOT NULL COMMENT 'Utilisateur ayant effectue la modification',
+  `LIBFEUILTYPUTIL` varchar(300) NOT NULL COMMENT ' Libelle feuille type d''utilisation',
+
+  CONSTRAINT `SAREFTJ_LIBUTIL_PK` PRIMARY KEY (`CDELNG`, `CDETYPUTIL`)
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Type d utilisation a comme libelle';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `SAREFTJ_LIBUTIL`
+--
+
+DROP TABLE IF EXISTS `SAREFTJ_LIBUTIL`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `SAREFTJ_LIBUTIL` (
+  `CDELNG` varchar(3) DEFAULT NULL COMMENT 'Code langue ISO2A de la langue utilisee dans les environements sacem',
+  `CDEUTIL` varchar(10) DEFAULT NULL COMMENT 'Code utilisateur',
+  `LIBUTIL` varchar(300) DEFAULT NULL COMMENT 'Libelle utilisateur',
+  `LIBABRGUTIL` varchar(25) DEFAULT NULL COMMENT 'Libelle abrege Utilisateur',
+  `DATCRE` date DEFAULT NULL COMMENT 'Date de creation',
+  `USERCRE` varchar(60) DEFAULT NULL COMMENT 'Utilisateur ayant effectue la creation',
+  `DATMAJ` date DEFAULT NULL COMMENT 'Date de modification',
+  `USERMAJ` varchar(60) DEFAULT NULL COMMENT 'Utilisateur ayant effectue la modification',
+  `LIBFEUILLET` varchar(4) DEFAULT NULL COMMENT 'Libellé du feuillet',
+
+  CONSTRAINT `SAREFTJ_LIBUTIL_PK` PRIMARY KEY (`CDELNG`, `CDEUTIL`)
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Libelle d''un utilisateur';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `SAREFTR_FAMILTYPUTIL`
+--
+
+DROP TABLE IF EXISTS `SAREFTR_FAMILTYPUTIL`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `SAREFTR_FAMILTYPUTIL` (
+  `CDEFAMILTYPUTIL` varchar(10) NOT NULL COMMENT 'Code Famille Type d''Utilisation',
+  `FILTRE` bigint(20) NOT NULL COMMENT 'Filtrage des donnees de la table',
+  `ORDAFF` int(11) NOT NULL COMMENT 'Ordre affichage',
+  `COM` varchar(300) DEFAULT NULL COMMENT 'Commentaires libres',
+  `INDLIEUDIF` varchar(1) DEFAULT NULL COMMENT 'Indicateur du type de diffusion audiovisuelle (TV )',
+  `TYPRION` varchar(10) NOT NULL COMMENT 'Type de repartition',
+  `TYPDIFAUDV` varchar(10) DEFAULT NULL COMMENT 'Type de diffusion audiovisuel',
+  `DATCRE` datetime NOT NULL COMMENT 'Date de creation',
+  `USERCRE` varchar(60) NOT NULL COMMENT 'Utilisateur ayant effectue la creation',
+  `DATMAJ` datetime NOT NULL COMMENT 'Date de modification',
+  `USERMAJ` varchar(60) NOT NULL COMMENT 'Utilisateur ayant effectue la modification',
+  `DATDBTVLD` datetime NOT NULL COMMENT 'Date de debut de validite',
+  `DATFINVLD` datetime DEFAULT NULL COMMENT 'Date de fin d evalidite',
+  `CDETYPPROCESS` varchar(10) DEFAULT NULL,
+  `POIDSOF` decimal(8,2) DEFAULT NULL,
+  `CDEFAMILPART` char(2) NOT NULL,
+  `FAMILREMPL` varchar(10) DEFAULT NULL COMMENT 'valeur de remplacement pour interrogation de la documentation si la famille n¿est plus valide',
+
+  CONSTRAINT `SAREFTR_FAMILTYPUTIL_PK` PRIMARY KEY (`CDEFAMILTYPUTIL`)
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Famille de type d''utilisation';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `SAREFTR_RION`
+--
+
+DROP TABLE IF EXISTS `SAREFTR_RION`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `SAREFTR_RION` (
+  `RION` int(11) NOT NULL COMMENT 'No Repartition',
+  `DATCALC` datetime DEFAULT NULL COMMENT 'Date de calcul',
+  `DATRGLMT` datetime DEFAULT NULL COMMENT 'Date Reglement',
+  `FILTRE` bigint(20) NOT NULL COMMENT 'Filtre',
+  `ORDAFF` int(11) NOT NULL COMMENT 'Ordre affichage',
+  `COM` varchar(300) DEFAULT NULL COMMENT 'commentaire',
+  `DATCRE` datetime NOT NULL COMMENT 'Date de creation',
+  `USERCRE` varchar(60) NOT NULL COMMENT 'Utilisateur ayant effectue la creation',
+  `DATMAJ` datetime NOT NULL COMMENT 'Modifie le',
+  `USERMAJ` varchar(60) NOT NULL COMMENT 'Modifie par',
+
+  CONSTRAINT `SAREFTR_RION_PK` PRIMARY KEY (`RION`)
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Table qui regroupe les numero de Rion de repartition';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `SAREFTR_TYPUTIL`
+--
+
+DROP TABLE IF EXISTS `SAREFTR_TYPUTIL`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `SAREFTR_TYPUTIL` (
+  `CDETYPUTIL` varchar(10) NOT NULL COMMENT 'Code type d utilisation',
+  `CDEFAMILTYPUTIL` varchar(10) DEFAULT NULL COMMENT 'Code Famille Type d''Utilisation',
+  `FILTRE` bigint(20) NOT NULL COMMENT 'Filtrage des donnees de la table',
+  `ORDAFF` int(11) NOT NULL COMMENT 'Ordre affichage',
+  `FLGULYSS` smallint(6) DEFAULT NULL COMMENT 'indique si la valeur est a traiter par l''application ULYSS',
+  `TYPDRT` smallint(6) DEFAULT NULL COMMENT 'Type de droit',
+  `COM` varchar(300) DEFAULT NULL COMMENT 'Commentaires libres',
+  `DATCRE` datetime NOT NULL COMMENT 'Date de creation',
+  `USERCRE` varchar(60) NOT NULL COMMENT 'Utilisateur ayant effectue la creation',
+  `DATMAJ` datetime NOT NULL COMMENT 'Date de modification',
+  `USERMAJ` varchar(60) NOT NULL COMMENT 'Utilisateur ayant effectue la modification',
+  `DATDBTVLD` datetime NOT NULL COMMENT 'Date de debut de validite',
+  `DATFINVLD` datetime DEFAULT NULL COMMENT 'Date de fin d evalidite',
+  `CDEDISTRBCATEGTYP` smallint(6) NOT NULL COMMENT 'code type catégorie distribution CISAC',
+  `TXFRAIS` varchar(3) DEFAULT NULL COMMENT 'code Taux de frais',
+  `FLGSUIDG` smallint(6) DEFAULT NULL COMMENT 'Flag de suivi des droits généraux',
+  `FLGIGNOREDP` smallint(6) DEFAULT NULL COMMENT 'Flag Ignorer le Domaine Public',
+  `FLGTAX` smallint(6) DEFAULT NULL COMMENT 'Indicateur de traitement a  la taxation',
+  `TYPMT` varchar(3) DEFAULT NULL COMMENT 'Type de montant par défaut à utiliser si absent dans penef et pour application des frais',
+  `TYPUTILREMPL` varchar(10) DEFAULT NULL COMMENT 'valeur de remplacement pour interrogation de la documentation si le type d¿utilisation n¿est plus valide',
+
+  CONSTRAINT `SAREFTR_TYPUTIL_PK` PRIMARY KEY (`CDETYPUTIL`)
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Type d utilisation';
+
+--
+-- Table structure for table `SAREFTJ_LIBFAMILTYPUTIL`
+--
+
+DROP TABLE IF EXISTS `SAREFTJ_LIBFAMILTYPUTIL`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `SAREFTJ_LIBFAMILTYPUTIL` (
+  `CDELNG` varchar(3) NOT NULL COMMENT 'Code langue ISO2A de la langue utilisee dans les environements sacem',
+  `CDEFAMILTYPUTIL` varchar(10) NOT NULL COMMENT 'Code Famille Type d''Utilisation',
+  `LIBFAMILTYPUTIL` varchar(300) NOT NULL COMMENT 'Libelle de la famille de type d''utilisation',
+  `LIBABRGFAMILTYPUTIL` varchar(25) DEFAULT NULL COMMENT 'Libelle abrege de la famille de type d''utilisation',
+  `DATCRE` datetime NOT NULL COMMENT 'DATETIME de creation',
+  `USERCRE` varchar(60) NOT NULL COMMENT 'Utilisateur ayant effectue la creation',
+  `DATMAJ` datetime NOT NULL COMMENT 'DATETIME de modification',
+  `USERMAJ` varchar(60) NOT NULL COMMENT 'Utilisateur ayant effectue la modification',
+
+   CONSTRAINT `SAREFTJ_LIBFAMILTYPUTIL_PK` PRIMARY KEY (`CDELNG`, `CDEFAMILTYPUTIL`),
+
+   CONSTRAINT `SAREFTJ_LIBFA_LIBFAMILTYPUT_FK` FOREIGN KEY (`CDEFAMILTYPUTIL`)
+	  REFERENCES `SAREFTR_FAMILTYPUTIL` (`CDEFAMILTYPUTIL`)
+
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Libelle d''une famille de type d''utilisation';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+
+-- Dump completed on 2017-09-25 16:44:46
 
 --
 -- Table structure for table `PRIAM_FICHIER`
@@ -222,6 +433,61 @@ CREATE TABLE `PRIAM_FICHIER` (
 ) ENGINE=InnoDB AUTO_INCREMENT=513 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+-- -------------------------------------
+-- ----- PRIAM_PROG_VIEW ---------------
+-- -------------------------------------
+
+DROP VIEW IF EXISTS PRIAM_PROG_VIEW;
+
+
+create view PRIAM_PROG_VIEW as
+SELECT DISTINCT
+    `pr`.`NUMPROG`                           AS `NUMPROG`,
+    `pr`.`NOM`                               AS `NOM`,
+    `pr`.`RION_THEORIQUE`                    AS `RION_THEORIQUE`,
+    `pr`.`CDEFAMILTYPUTIL`                   AS `CDEFAMILTYPUTIL`,
+    `pr`.`CDETYPUTIL`                        AS `CDETYPUTIL`,
+    `pr`.`TYPE_REPART`                       AS `TYPE_REPART`,
+    `pr`.`DATE_CREATION`                     AS `DATE_CREATION`,
+    `pr`.`STATUT_PROG_CODE`                  AS `STATUT_PROG_CODE`,
+    `pr`.`RION_PAIEMENT`                     AS `RION_PAIEMENT`,
+    `pr`.`USERCRE`                           AS `USERCRE`,
+    `pr`.`DATMAJ`                            AS `DATMAJ`,
+    `pr`.`USERMAJ`                           AS `USERMAJ`,
+    `pr`.`DATAFFECT`                         AS `DATAFFECT`,
+    `pr`.`USERAFFECT`                        AS `USERAFFECT`,
+    (SELECT count(`f`.`NUMPROG`)
+     FROM PRIAM_FICHIER `f`
+     WHERE (`pr`.`NUMPROG` = `f`.`NUMPROG`)
+      AND f.SOURCE_AUTO = 1
+      ) AS `fichiers`,
+    `pr`.`DATE_DBT_PRG`                      AS `DATEDBTPRG`,
+    `pr`.`DATE_FIN_PRG`                      AS `DATEFINPRG`,
+    `pr`.`CDE_TER`                           AS `CDETER`,
+    `pr`.`USER_VALIDATION`                   AS `USERVALIDATION`,
+    `pr`.`DATE_VALIDATION`                   AS `DATEVALIDATION`,
+    `ff`.`STATUT`                            AS `STATUT_FICHIER_FELIX`,
+	`pr`.`DATE_REPARTITION` 				 AS `DATE_REPARTITION`
+
+  FROM PRIAM_PROGRAMME `pr`
+    LEFT JOIN PRIAM_FICHIER_FELIX ff ON ff.NUMPROG = pr.NUMPROG
+  GROUP BY `pr`.`NUMPROG`;
+
+
+
+
+
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
 --
 -- Table structure for table `PRIAM_FICHIER_FELIX`
 --
@@ -240,7 +506,7 @@ CREATE TABLE `PRIAM_FICHIER_FELIX` (
   PRIMARY KEY (`ID`),
   KEY `NUMPROG_FK` (`NUMPROG`),
   CONSTRAINT `NUMPROG_FK` FOREIGN KEY (`NUMPROG`) REFERENCES `PRIAM_PROGRAMME` (`NUMPROG`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -546,265 +812,8 @@ CREATE TABLE `PRIAM_STATUT_PROGRAMME` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 
---
--- Table structure for table `SAREFTJ_LIBCISACROLE`
---
-
-DROP TABLE IF EXISTS `SAREFTJ_LIBCISACROLE`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `SAREFTJ_LIBCISACROLE` (
-  `CDELNG` varchar(3) DEFAULT NULL COMMENT 'Code langue ISO2A de la langue utilisée dans les environements sacem',
-  `CDEROLCISAC` varchar(2) DEFAULT NULL,
-  `LIB` varchar(300) DEFAULT NULL COMMENT 'Libellé long du type de découpage commune canton',
-  `LIBABRG` varchar(25) DEFAULT NULL COMMENT 'Libellé court du type de découpage communes canton',
-  `DATCRE` date DEFAULT NULL COMMENT 'Date de création',
-  `USERCRE` varchar(60) DEFAULT NULL COMMENT 'Créés par',
-  `DATMAJ` date DEFAULT NULL COMMENT 'Modifiée le',
-  `USERMAJ` varchar(60) DEFAULT NULL COMMENT 'Modifiée par',
-  
-  CONSTRAINT `SAREFTJ_LIBCISACROLE_PK` PRIMARY KEY (`CDELNG`, `CDEROLCISAC`)
-  
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='libellé des rôle des Participants (CISAC)';
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `SAREFTJ_LIBFAMILTYPUTIL`
---
-
-DROP TABLE IF EXISTS `SAREFTJ_LIBFAMILTYPUTIL`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `SAREFTJ_LIBFAMILTYPUTIL` (
-  `CDELNG` varchar(3) NOT NULL COMMENT 'Code langue ISO2A de la langue utilisee dans les environements sacem',
-  `CDEFAMILTYPUTIL` varchar(10) NOT NULL COMMENT 'Code Famille Type d''Utilisation',
-  `LIBFAMILTYPUTIL` varchar(300) NOT NULL COMMENT 'Libelle de la famille de type d''utilisation',
-  `LIBABRGFAMILTYPUTIL` varchar(25) DEFAULT NULL COMMENT 'Libelle abrege de la famille de type d''utilisation',
-  `DATCRE` datetime NOT NULL COMMENT 'DATETIME de creation',
-  `USERCRE` varchar(60) NOT NULL COMMENT 'Utilisateur ayant effectue la creation',
-  `DATMAJ` datetime NOT NULL COMMENT 'DATETIME de modification',
-  `USERMAJ` varchar(60) NOT NULL COMMENT 'Utilisateur ayant effectue la modification',
-   
-   CONSTRAINT `SAREFTJ_LIBFAMILTYPUTIL_PK` PRIMARY KEY (`CDELNG`, `CDEFAMILTYPUTIL`),
-   
-   CONSTRAINT `SAREFTJ_LIBFA_LIBFAMILTYPUT_FK` FOREIGN KEY (`CDEFAMILTYPUTIL`)
-	  REFERENCES `SAREFTR_FAMILTYPUTIL` (`CDEFAMILTYPUTIL`)
-  
-  
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Libelle d''une famille de type d''utilisation';
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `SAREFTJ_LIBTER`
---
-
-DROP TABLE IF EXISTS `SAREFTJ_LIBTER`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `SAREFTJ_LIBTER` (
-  `CDELNG` varchar(3) DEFAULT NULL COMMENT 'Code langue ISO2A de la langue utilisee dans les environements sacem',
-  `CDEPAYSISO4N` int(4) DEFAULT NULL COMMENT 'Code pays suivant la norme 3366 - ISO 4N',
-  `NOMPAYSABR` varchar(25) DEFAULT NULL COMMENT 'TERRI-ABRFRA Nom abrege du territoire Attention, multilinguisme. Obligatoire pour le Francais',
-  `NOMPAYS` varchar(60) DEFAULT NULL COMMENT 'TERRI-NOMFRA Nom du territoire Attention, multilinguisme. Obligatoire pour le Francais',
-  `DATCRE` date DEFAULT NULL COMMENT 'Date de creation',
-  `USERCRE` varchar(60) DEFAULT NULL COMMENT 'Utilisateur ayant cree l''entree',
-  `DATMAJ` date DEFAULT NULL COMMENT 'Date de modification',
-  `USERMAJ` varchar(60) DEFAULT NULL COMMENT 'Utilisateur ayant effectue la derniere mise a jour',
-  
-  CONSTRAINT `SAREFTJ_LIBTER_PK` PRIMARY KEY (`CDELNG`, `CDEPAYSISO4N`)
-  
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='LIBELLE TERRITOIRE (RLATE';
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `SAREFTJ_LIBTYPUTIL`
---
-
-DROP TABLE IF EXISTS `SAREFTJ_LIBTYPUTIL`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `SAREFTJ_LIBTYPUTIL` (
-  `CDELNG` varchar(3) NOT NULL COMMENT 'Code langue ISO2A de la langue utilisee dans les environements sacem',
-  `CDETYPUTIL` varchar(10) NOT NULL COMMENT 'Code type d utilisation',
-  `LIBTYPUTIL` varchar(300) NOT NULL COMMENT 'Libelle type d''utilisation',
-  `LIBABRGTYPUTIL` varchar(25) DEFAULT NULL COMMENT 'Libelle abrege du type d''utilisation',
-  `DATCRE` datetime NOT NULL COMMENT 'DATETIME de creation',
-  `USERCRE` varchar(60) NOT NULL COMMENT 'Utilisateur ayant effectue la creation',
-  `DATMAJ` datetime NOT NULL COMMENT 'DATETIME de modification',
-  `USERMAJ` varchar(60) NOT NULL COMMENT 'Utilisateur ayant effectue la modification',
-  `LIBFEUILTYPUTIL` varchar(300) NOT NULL COMMENT ' Libelle feuille type d''utilisation',
-  
-  CONSTRAINT `SAREFTJ_LIBUTIL_PK` PRIMARY KEY (`CDELNG`, `CDETYPUTIL`)
-  
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Type d utilisation a comme libelle';
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `SAREFTJ_LIBUTIL`
---
-
-DROP TABLE IF EXISTS `SAREFTJ_LIBUTIL`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `SAREFTJ_LIBUTIL` (
-  `CDELNG` varchar(3) DEFAULT NULL COMMENT 'Code langue ISO2A de la langue utilisee dans les environements sacem',
-  `CDEUTIL` varchar(10) DEFAULT NULL COMMENT 'Code utilisateur',
-  `LIBUTIL` varchar(300) DEFAULT NULL COMMENT 'Libelle utilisateur',
-  `LIBABRGUTIL` varchar(25) DEFAULT NULL COMMENT 'Libelle abrege Utilisateur',
-  `DATCRE` date DEFAULT NULL COMMENT 'Date de creation',
-  `USERCRE` varchar(60) DEFAULT NULL COMMENT 'Utilisateur ayant effectue la creation',
-  `DATMAJ` date DEFAULT NULL COMMENT 'Date de modification',
-  `USERMAJ` varchar(60) DEFAULT NULL COMMENT 'Utilisateur ayant effectue la modification',
-  `LIBFEUILLET` varchar(4) DEFAULT NULL COMMENT 'Libellé du feuillet',
-    
-  CONSTRAINT `SAREFTJ_LIBUTIL_PK` PRIMARY KEY (`CDELNG`, `CDEUTIL`)
-  
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Libelle d''un utilisateur';
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `SAREFTR_FAMILTYPUTIL`
---
-
-DROP TABLE IF EXISTS `SAREFTR_FAMILTYPUTIL`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `SAREFTR_FAMILTYPUTIL` (
-  `CDEFAMILTYPUTIL` varchar(10) NOT NULL COMMENT 'Code Famille Type d''Utilisation',
-  `FILTRE` bigint(20) NOT NULL COMMENT 'Filtrage des donnees de la table',
-  `ORDAFF` int(11) NOT NULL COMMENT 'Ordre affichage',
-  `COM` varchar(300) DEFAULT NULL COMMENT 'Commentaires libres',
-  `INDLIEUDIF` varchar(1) DEFAULT NULL COMMENT 'Indicateur du type de diffusion audiovisuelle (TV )',
-  `TYPRION` varchar(10) NOT NULL COMMENT 'Type de repartition',
-  `TYPDIFAUDV` varchar(10) DEFAULT NULL COMMENT 'Type de diffusion audiovisuel',
-  `DATCRE` datetime NOT NULL COMMENT 'Date de creation',
-  `USERCRE` varchar(60) NOT NULL COMMENT 'Utilisateur ayant effectue la creation',
-  `DATMAJ` datetime NOT NULL COMMENT 'Date de modification',
-  `USERMAJ` varchar(60) NOT NULL COMMENT 'Utilisateur ayant effectue la modification',
-  `DATDBTVLD` datetime NOT NULL COMMENT 'Date de debut de validite',
-  `DATFINVLD` datetime DEFAULT NULL COMMENT 'Date de fin d evalidite',
-  `CDETYPPROCESS` varchar(10) DEFAULT NULL,
-  `POIDSOF` decimal(8,2) DEFAULT NULL,
-  `CDEFAMILPART` char(2) NOT NULL,
-  `FAMILREMPL` varchar(10) DEFAULT NULL COMMENT 'valeur de remplacement pour interrogation de la documentation si la famille n¿est plus valide',
-  
-  CONSTRAINT `SAREFTR_FAMILTYPUTIL_PK` PRIMARY KEY (`CDEFAMILTYPUTIL`)
-  
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Famille de type d''utilisation';
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `SAREFTR_RION`
---
-
-DROP TABLE IF EXISTS `SAREFTR_RION`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `SAREFTR_RION` (
-  `RION` int(11) NOT NULL COMMENT 'No Repartition',
-  `DATCALC` datetime DEFAULT NULL COMMENT 'Date de calcul',
-  `DATRGLMT` datetime DEFAULT NULL COMMENT 'Date Reglement',
-  `FILTRE` bigint(20) NOT NULL COMMENT 'Filtre',
-  `ORDAFF` int(11) NOT NULL COMMENT 'Ordre affichage',
-  `COM` varchar(300) DEFAULT NULL COMMENT 'commentaire',
-  `DATCRE` datetime NOT NULL COMMENT 'Date de creation',
-  `USERCRE` varchar(60) NOT NULL COMMENT 'Utilisateur ayant effectue la creation',
-  `DATMAJ` datetime NOT NULL COMMENT 'Modifie le',
-  `USERMAJ` varchar(60) NOT NULL COMMENT 'Modifie par',
-  
-  CONSTRAINT `SAREFTR_RION_PK` PRIMARY KEY (`RION`)
-  
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Table qui regroupe les numero de Rion de repartition';
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `SAREFTR_TYPUTIL`
---
-
-DROP TABLE IF EXISTS `SAREFTR_TYPUTIL`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `SAREFTR_TYPUTIL` (
-  `CDETYPUTIL` varchar(10) NOT NULL COMMENT 'Code type d utilisation',
-  `CDEFAMILTYPUTIL` varchar(10) DEFAULT NULL COMMENT 'Code Famille Type d''Utilisation',
-  `FILTRE` bigint(20) NOT NULL COMMENT 'Filtrage des donnees de la table',
-  `ORDAFF` int(11) NOT NULL COMMENT 'Ordre affichage',
-  `FLGULYSS` smallint(6) DEFAULT NULL COMMENT 'indique si la valeur est a traiter par l''application ULYSS',
-  `TYPDRT` smallint(6) DEFAULT NULL COMMENT 'Type de droit',
-  `COM` varchar(300) DEFAULT NULL COMMENT 'Commentaires libres',
-  `DATCRE` datetime NOT NULL COMMENT 'Date de creation',
-  `USERCRE` varchar(60) NOT NULL COMMENT 'Utilisateur ayant effectue la creation',
-  `DATMAJ` datetime NOT NULL COMMENT 'Date de modification',
-  `USERMAJ` varchar(60) NOT NULL COMMENT 'Utilisateur ayant effectue la modification',
-  `DATDBTVLD` datetime NOT NULL COMMENT 'Date de debut de validite',
-  `DATFINVLD` datetime DEFAULT NULL COMMENT 'Date de fin d evalidite',
-  `CDEDISTRBCATEGTYP` smallint(6) NOT NULL COMMENT 'code type catégorie distribution CISAC',
-  `TXFRAIS` varchar(3) DEFAULT NULL COMMENT 'code Taux de frais',
-  `FLGSUIDG` smallint(6) DEFAULT NULL COMMENT 'Flag de suivi des droits généraux',
-  `FLGIGNOREDP` smallint(6) DEFAULT NULL COMMENT 'Flag Ignorer le Domaine Public',
-  `FLGTAX` smallint(6) DEFAULT NULL COMMENT 'Indicateur de traitement a  la taxation',
-  `TYPMT` varchar(3) DEFAULT NULL COMMENT 'Type de montant par défaut à utiliser si absent dans penef et pour application des frais',
-  `TYPUTILREMPL` varchar(10) DEFAULT NULL COMMENT 'valeur de remplacement pour interrogation de la documentation si le type d¿utilisation n¿est plus valide',
-  
-  CONSTRAINT `SAREFTR_TYPUTIL_PK` PRIMARY KEY (`CDETYPUTIL`)
-  
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Type d utilisation';
-
--- Dump completed on 2017-09-25 16:44:46
 
 
--- -------------------------------------
--- ----- PRIAM_PROG_VIEW ---------------
--- -------------------------------------
-
-DROP VIEW IF EXISTS PRIAM_PROG_VIEW;
-
-
-create view PRIAM_PROG_VIEW as
-SELECT DISTINCT
-    `pr`.`NUMPROG`                           AS `NUMPROG`,
-    `pr`.`NOM`                               AS `NOM`,
-    `pr`.`RION_THEORIQUE`                    AS `RION_THEORIQUE`,
-    `pr`.`CDEFAMILTYPUTIL`                   AS `CDEFAMILTYPUTIL`,
-    `pr`.`CDETYPUTIL`                        AS `CDETYPUTIL`,
-    `pr`.`TYPE_REPART`                       AS `TYPE_REPART`,
-    `pr`.`DATE_CREATION`                     AS `DATE_CREATION`,
-    `pr`.`STATUT_PROG_CODE`                  AS `STATUT_PROG_CODE`,
-    `pr`.`RION_PAIEMENT`                     AS `RION_PAIEMENT`,
-    `pr`.`USERCRE`                           AS `USERCRE`,
-    `pr`.`DATMAJ`                            AS `DATMAJ`,
-    `pr`.`USERMAJ`                           AS `USERMAJ`,
-    `pr`.`DATAFFECT`                         AS `DATAFFECT`,
-    `pr`.`USERAFFECT`                        AS `USERAFFECT`,
-    (SELECT count(`f`.`NUMPROG`)
-     FROM PRIAM_FICHIER `f`
-     WHERE (`pr`.`NUMPROG` = `f`.`NUMPROG`)
-      AND f.SOURCE_AUTO = 1
-      ) AS `fichiers`,
-    `pr`.`DATE_DBT_PRG`                      AS `DATEDBTPRG`,
-    `pr`.`DATE_FIN_PRG`                      AS `DATEFINPRG`,
-    `pr`.`CDE_TER`                           AS `CDETER`,
-    `pr`.`USER_VALIDATION`                   AS `USERVALIDATION`,
-    `pr`.`DATE_VALIDATION`                   AS `DATEVALIDATION`,
-    `ff`.`STATUT`                            AS `STATUT_FICHIER_FELIX`,
-    `pr`.`DATE_REPARTITION`                  AS `DATE_REPARTITION`
-
-  FROM PRIAM_PROGRAMME `pr`
-    LEFT JOIN PRIAM_FICHIER_FELIX ff ON ff.NUMPROG = pr.NUMPROG
-  GROUP BY `pr`.`NUMPROG`;
-
-
-
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 COMMIT;
 

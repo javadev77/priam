@@ -1,0 +1,1 @@
+/usr/java/JDK8/bin/java -jar -Dspring.profiles.active=production /usr1/priam/BatchRepartition/lib/priam-batch-repartition-0.8.0.jar

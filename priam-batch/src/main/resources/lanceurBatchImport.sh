@@ -1,0 +1,1 @@
+/usr/java/JDK8/bin/java -jar -Dspring.profiles.active=production /usr1/priam/BatchImport/lib/priam-batch-0.8.0.jar
