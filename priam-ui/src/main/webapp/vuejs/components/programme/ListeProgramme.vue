@@ -436,7 +436,9 @@
                       }  else  if('VALIDE' == statusCode) {
                         if ($this.programmesEnCoursTraitement.indexOf(entry.numProg) !== -1
                               ||  $this.programmesEnErreur.indexOf(entry.numProg) !== -1
-                              || (statutFichierFelix !== undefined && statutFichierFelix  !== 'GENERE') ) {
+                              || (statutFichierFelix !== undefined
+                                  && statutFichierFelix  !== 'GENERE'
+                                  && statutFichierFelix  !== 'ENVOYE') ) {
                             return true;
                         }
                       }
