@@ -26,5 +26,10 @@ public class ConfigurationTest {
 	  return new LigneProgrammeService();
     }
     
+    @Bean
+    public FelixDataService felixDataService() {
+	  return new FelixDataService();
+    }
+    
 	
 }

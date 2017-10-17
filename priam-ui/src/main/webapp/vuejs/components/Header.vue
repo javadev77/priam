@@ -4,7 +4,7 @@
 
             <div class="navbar-header">
               <a class="navbar-brand logo" href="#/">
-                <img src="../assets/Logo_Priam.png" width="100px" height="40px" alt="PRIAM"/>
+                <img src="static/images/Logo_Priam.png" width="100px" height="40px" alt="PRIAM"/>
               </a>
             </div>
 
