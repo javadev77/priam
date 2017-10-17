@@ -1,6 +1,6 @@
 package fr.sacem.priam.model.dao.jpa;
 
-import fr.sacem.priam.common.constants.RoleRight;
+import edu.emory.mathcs.backport.java.util.Arrays;
 import fr.sacem.priam.common.constants.RoleType;
 import fr.sacem.priam.model.dao.JpaConfigurationTest;
 import fr.sacem.priam.model.domain.Role;
@@ -11,7 +11,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -35,5 +34,19 @@ public class RoleDaoTest {
         assertThat(allRoles).isNotNull();
         assertThat(allRoles).extracting("type").contains(RoleType.ADM, RoleType.GST, RoleType.INV);
     }
-
+    
+    @Test
+    public void should_return_roles_ADM() {
+        Role roleADM = roleDao.findByType(RoleType.ADM);
+        
+        assertThat(roleADM).isNotNull();
+        assertThat(roleADM.getType()).isNotNull().isEqualTo(RoleType.ADM);
+    }
+    
+    @Test
+    public void should_find_by_external_ID() {
+        List<Role> byExternalIdIn = roleDao.findByExternalIdIn(Arrays.asList(new String[]{"ADM", "GST"}));
+    
+        assertThat(byExternalIdIn).isNotNull().extracting("type").containsExactly(RoleType.ADM, RoleType.GST);
+    }
 }

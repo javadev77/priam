@@ -18,7 +18,9 @@ public interface SareftrTyputilDao extends JpaRepository<SareftrTyputil, String>
     
     @Query("SELECT typu FROM SareftrTyputil typu " +
             "WHERE typu.dateDebut is not null " +
-            "AND (typu.dateFin is null OR typu.dateFin >= CURRENT_DATE)" +
+            "AND (typu.dateFin is null OR " +
+               "DATE_FORMAT(typu.dateFin, '%Y-%d-%m') = '0000-00-00' OR " +
+               "typu.dateFin >= CURRENT_DATE)" +
             "AND typu.codeFamille = :cdefam")
     List<SareftrTyputil> findByCodeFamille(@Param("cdefam") String codeFamille);
 }
