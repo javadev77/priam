@@ -2,6 +2,8 @@ package fr.sacem;
 
 import fr.sacem.config.ConfigurationPriam;
 import fr.sacem.domain.Admap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameter;
@@ -18,7 +20,10 @@ import java.util.Map;
  */
 public class App {
 
+    private static  final Logger LOGGER = LoggerFactory.getLogger(App.class);
+    
     public static void main(String[] args) {
+        
 
         ApplicationContext context = new AnnotationConfigApplicationContext(ConfigurationPriam.class);
 
@@ -37,10 +42,10 @@ public class App {
             System.out.println("Exit Status : " + execution.getStatus());
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("Error execution", e);
         }
-
-        System.out.println("Done");
+    
+        LOGGER.info("Done");
 
     }
 }
