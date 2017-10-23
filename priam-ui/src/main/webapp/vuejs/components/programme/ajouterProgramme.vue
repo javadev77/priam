@@ -88,24 +88,41 @@
               <div class="form-group col-md-6" :class="{'has-error': errors.has('dateDebutProgramme') }">
                 <label class="col-md-9 control-label">Date de début</label>
                 <div class="col-md-15">
-                  <date-picker @update-date="updateDebutProgramme" name="dateDebutProgramme" :value="dateDebutProgramme" date-format="dd/mm/yy" :zeroHour="true" ></date-picker>
+                  <!--<date-picker @update-date="updateDebutProgramme" name="dateDebutProgramme" :value="dateDebutProgramme" date-format="dd/mm/yy" :zeroHour="true" ></date-picker>-->
+                  <date-picker v-validate="'required'"
+                               data-vv-value-path="innerDateDebutProgrammeValue"
+                               data-vv-name="dateDebutProgramme"
+                               v-model="dateDebutProgramme"
+                               date-format="dd/mm/yy"
+                               :zeroHour="true" >
+                  </date-picker>
                 </div>
               </div>
 
               <div class="form-group col-md-6" :class="{'has-error': errors.has('dateFinProgramme') }">
                 <label class="col-md-8 control-label">Date de fin</label>
                 <div class="col-md-16">
-                  <date-picker @update-date="updateDateFinProgramme" name="dateFinProgramme" :value="dateFinProgramme" date-format="dd/mm/yy" :zeroHour="true">
+                  <!--<date-picker @update-date="updateDateFinProgramme" name="dateFinProgramme" :value="dateFinProgramme" date-format="dd/mm/yy" :zeroHour="true">-->
+                  <!--</date-picker>-->
+                  <date-picker v-validate="'required'"
+                               data-vv-value-path="innerDateFinProgrammeValue"
+                               data-vv-name="dateFinProgramme"
+                               v-model="dateFinProgramme"
+                               date-format="dd/mm/yy"
+                               :zeroHour="true">
                   </date-picker>
                 </div>
               </div>
 
-              <div class="form-group col-md-5" :class="{'has-error': errors.has('territoire') }">
-                <label class="col-md-8 control-label">Territoire</label>
-                <div class="col-md-16">
-                  <v-select name="territoire" v-validate="'required'" :searchable="true" label="value" v-model="territoireSelected"
-                            :options="territoireOptions" :classValidate="{'has-error': errors.has('territoire') }">
-                  </v-select>
+              <div class="form-group col-md-10" :class="{'has-error': errors.has('territoire') }">
+                <label class="col-md-4 control-label">Territoire</label>
+                <div class="col-md-10">
+                  <!--<v-select name="territoire" v-validate="'required'" :searchable="true" label="value" v-model="territoireSelected"-->
+                            <!--:options="territoireOptions" :classValidate="{'has-error': errors.has('territoire') }">-->
+                  <!--</v-select>-->
+
+                    <select2 class="form-control" name="territoire" v-validate="'required'" :searchable="true" v-model="territoireSelected"
+                             :options="territoireOptions" :class="{'has-error': errors.has('territoire') }"/>
                 </div>
               </div>
 
@@ -175,6 +192,7 @@
   import vSelect from '../common/Select.vue';
   import Modal from '../common/Modal.vue';
   import DatePicker from '../common/DatePicker.vue';
+  import Select2 from '../common/Select2.vue';
 
   const ID_FRANCE = 250;
 
@@ -254,7 +272,7 @@
 
       verifierEtAjouterLeProgramme(){
 
-        if(this.dateDebutProgramme == null) {
+        /*if(this.dateDebutProgramme == null) {
           this.$validator.errorBag.errors.push({"field":"dateDebutProgramme","msg":"Le champ 'Date de debut' est obligatoire et non renseigné.","rule":"required","scope":"__global__"});
         }
 
@@ -265,7 +283,7 @@
         if(this.$validator.errorBag.errors.length != 0)
         {
             return;
-        }
+        }*/
 
         this.resource.searchProgramme({nom : this.nom})
             .then(response => {
@@ -291,7 +309,7 @@
           this.programmeData.rionTheorique=this.rionTheoriqueSelected.id;
           this.programmeData.dateDbtPrg=this.dateDebutProgramme;
           this.programmeData.dateFinPrg=this.dateFinProgramme;
-          this.programmeData.cdeTer=this.territoireSelected.id;
+          this.programmeData.cdeTer=this.territoireSelected;
 
           this.resource.addProgramme(this.programmeData).then(response => {
             console.log("ajout ok");
@@ -391,6 +409,7 @@
       vSelect: vSelect,
       modal : Modal,
       datePicker : DatePicker,
+      select2 : Select2
     },
     created(){
       const customActions = {
@@ -405,7 +424,7 @@
 
         if(territoire.id == ID_FRANCE)
           {
-            this.territoireSelected = territoire;
+            this.territoireSelected = territoire.id;
           }
       })
     }

@@ -47,11 +47,21 @@
                   <label class="control-label pull-right">Date de création</label>
                 </div>
                 <div class="col-sm-2">
-                  <date-picker @update-date="updateDateDebutCreation" :value="critereRechercheData.dateCreationDebut" date-format="dd/mm/yy" :zeroHour="true" place-holder="De" ></date-picker>
+                  <date-picker v-model="critereRechercheData.dateCreationDebut"
+                               date-format="dd/mm/yy"
+                               :zeroHour="true"
+                               place-holder="De" >
+
+                  </date-picker>
 
                 </div>
                 <div class="col-sm-2">
-                  <date-picker @update-date="updateDateFinCreation" :value="critereRechercheData.dateCreationFin" date-format="dd/mm/yy" :zeroHour="false" place-holder="A" ></date-picker>
+                  <date-picker v-model="critereRechercheData.dateCreationFin"
+                               date-format="dd/mm/yy"
+                               :zeroHour="false"
+                               place-holder="A" >
+
+                  </date-picker>
                 </div>
 
                 <div class="col-sm-2">
@@ -829,14 +839,13 @@
 
           },
 
-          updateDateDebutCreation(date) {
-              console.log("dateCreationDebut="+date)
+          /*updateDateDebutCreation(date) {
               this.critereRechercheData.dateCreationDebut = date;
           },
 
           updateDateFinCreation(date) {
               this.critereRechercheData.dateCreationFin = date;
-          },
+          },*/
 
           isChecked (code) {
             var result = this.critereRechercheData.statutCode.find(function (element) {

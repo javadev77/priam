@@ -112,14 +112,28 @@
               <div class="form-group col-md-6" :class="{'has-error': errors.has('dateDebutProgramme') }">
                 <label class="col-md-9 control-label">Date de début</label>
                 <div class="col-md-15">
-                  <date-picker @update-date="updateDebutProgramme" :value="dateDebutProgramme" date-format="dd/mm/yy" :zeroHour="true" :disabled="isNonModifiable"></date-picker>
+                  <date-picker v-validate="'required'"
+                               data-vv-value-path="innerDateDebutProgrammeValue"
+                               data-vv-name="dateDebutProgramme"
+                               v-model="dateDebutProgramme"
+                               date-format="dd/mm/yy"
+                               :zeroHour="true"
+                               :disabled="isNonModifiable">
+                  </date-picker>
                 </div>
               </div>
 
               <div class="form-group col-md-6" :class="{'has-error': errors.has('dateFinProgramme') }">
                 <label class="col-md-8 control-label">Date de fin</label>
                 <div class="col-md-16">
-                  <date-picker @update-date="updateDateFinProgramme" :value="dateFinProgramme" date-format="dd/mm/yy" :zeroHour="true" :disabled="isNonModifiable"></date-picker>
+                  <date-picker v-validate="'required'"
+                               data-vv-value-path="innerDateFinProgrammeValue"
+                               data-vv-name="dateFinProgramme"
+                               v-model="dateFinProgramme"
+                               date-format="dd/mm/yy"
+                               :zeroHour="true"
+                               :disabled="isNonModifiable" >
+                  </date-picker>
                 </div>
               </div>
 
@@ -300,21 +314,6 @@
       },
 
       verifierEtModifierLeProgramme() {
-
-
-        if(this.dateDebutProgramme == null) {
-          this.$validator.errorBag.errors.push({"field":"dateDebutProgramme","msg":"Le champ 'Date de debut' est obligatoire et non renseigné.","rule":"required","scope":"__global__"});
-        }
-
-        if(this.dateFinProgramme == null) {
-          this.$validator.errorBag.errors.push({"field":"dateFinProgramme","msg":"Le champ 'Date de fin' est obligatoire et non renseigné.","rule":"required","scope":"__global__"});
-        }
-
-        if(this.$validator.errorBag.errors.length != 0)
-        {
-          return;
-        }
-
         if(this.programmeToModify.nom !== this.nom) {
           this.resource.searchProgramme({nom: this.nom})
             .then(response => {
@@ -450,7 +449,7 @@
 
       },
 
-      updateDebutProgramme(date) {
+      /*updateDebutProgramme(date) {
         this.dateDebutProgramme = date;
         var error = {"field":"dateDebutProgramme","msg":"Le champ 'Date de debut' est obligatoire et non renseigné.","rule":"required","scope":"__global__"};
 
@@ -474,7 +473,7 @@
           this.$validator.errorBag.errors.splice(number, 1);
         }
 
-      },
+      },*/
 
       indexOf(array, obj) {
 
