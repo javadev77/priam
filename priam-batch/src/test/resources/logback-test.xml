@@ -14,11 +14,8 @@
     <resetJUL>true</resetJUL>
   </contextListener>
 
-<<<<<<< HEAD
+
   <root level="DEBUG">
-=======
-  <root level="INFO">
->>>>>>> 41f49c332acf515b338126dac0b84424e0128fb7
     <appender-ref ref="CONSOLE"/>
   </root>
 
