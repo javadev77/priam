@@ -282,7 +282,7 @@
             familleSelected : this.$store.getters.userFamille,
             typeUtilisationSelected : {'id' : 'ALL', 'value' : 'Tous'},
             rionTheoriqueSelected :  'ALL',//{'id' : 'ALL', 'value' : 'Toutes'},
-            rionPaiementSelected : {'id' : 'ALL', 'value' : 'Toutes'},
+            rionPaiementSelected : 'ALL', //{'id' : 'ALL', 'value' : 'Toutes'},
             typeRepartSelected : {'id' : 'ALL', 'value' : 'Tous'},
             numProgSelected: 'ALL',
             nomProgSelected: 'ALL',
@@ -677,8 +677,8 @@
 
 
               this.typeUtilisationSelected = {'id' : 'ALL', 'value' : 'Tous'};
-              this.rionTheoriqueSelected = 'ALL';//{'id' : 'ALL', 'value' : 'Toutes'};
-              this.rionPaiementSelected = {'id' : 'ALL', 'value' : 'Toutes'};
+              this.rionTheoriqueSelected = 'ALL';
+              this.rionPaiementSelected = 'ALL';
               this.typeRepartSelected = {'id' : 'ALL', 'value' : 'Tous'};
 
               this.rechercherProgrammes();
@@ -823,7 +823,7 @@
               this.critereRechercheData.typeUtilisation = this.typeUtilisationSelected !== undefined ? this.typeUtilisationSelected.id : null;
               this.critereRechercheData.famille = this.familleSelected !== undefined ? this.familleSelected.id : null;
               this.critereRechercheData.rionTheorique= this.rionTheoriqueSelected !== undefined ? this.rionTheoriqueSelected : null;
-              this.critereRechercheData.rionPaiement= this.rionPaiementSelected !== undefined ? this.rionPaiementSelected.id : null;
+              this.critereRechercheData.rionPaiement= this.rionPaiementSelected !== undefined ? this.rionPaiementSelected : null;
               this.critereRechercheData.typeRepart = this.typeRepartSelected !== undefined ? this.typeRepartSelected.id : null;
 
               this.launchRequest(this.defaultPageable.page, this.defaultPageable.size,
