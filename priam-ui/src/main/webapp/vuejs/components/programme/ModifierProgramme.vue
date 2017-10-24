@@ -16,17 +16,17 @@
                   <i v-show="errors.has('Nom programme')" class="fa fa-warning"></i>
                   <label v-show="errors.has('Nom programme')" :class="{'has-error': errors.has('Nom programme') }">{{ errors.first('Nom programme') }}</label>
                 </li>
-                <li v-if="errors.has('Rion statuaire')">
-                  <i v-show="errors.has('Rion statuaire')" class="fa fa-warning"></i>
-                  <label v-show="errors.has('Rion statuaire')" :class="{'has-error': errors.has('Rion statuaire') }">{{ errors.first('Rion statuaire') }}</label>
+                <li v-if="errors.has('rion.theorique')">
+                  <i v-show="errors.has('rion.theorique')" class="fa fa-warning"></i>
+                  <label v-show="errors.has('rion.theorique')" :class="{'has-error': errors.has('rion.theorique') }">{{ errors.first('Rion statuaire') }}</label>
                 </li>
                 <li v-if="errors.has('Famille')">
                   <i v-show="errors.has('Famille')" class="fa fa-warning"></i>
                   <label v-show="errors.has('Famille')" :class="{'has-error': errors.has('Famille') }">{{ errors.first('Famille') }}</label>
                 </li>
-                <li v-if="errors.has('Type utilisation')">
-                  <i v-show="errors.has('Type utilisation')" class="fa fa-warning"></i>
-                  <label v-show="errors.has('Type utilisation')" :class="{'has-error': errors.has('Type utilisation') }">{{ errors.first('Type utilisation') }}</label>
+                <li v-if="errors.has('typeUtilisation')">
+                  <i v-show="errors.has('typeUtilisation')" class="fa fa-warning"></i>
+                  <label v-show="errors.has('typeUtilisation')" :class="{'has-error': errors.has('typeUtilisation') }">{{ errors.first('Type utilisation') }}</label>
                 </li>
                 <li v-if="errors.has('dateDebutProgramme')">
                   <i v-show="errors.has('dateDebutProgramme')" class="fa fa-warning"></i>
@@ -58,16 +58,16 @@
             <div class="row espacement">
 
               <div class="form-group col-md-6" :class="{'has-error': errors.has('Nom programme') }">
-                <label class="col-md-9 control-label">Nom programme</label>
+                <label class="col-md-9 control-label">Nom programme <span class="mandatory">*</span></label>
                 <div class="col-md-15">
                   <input maxlength="20" name="Nom programme" v-model="nom" v-validate="'required|max:20'" class="form-control" :class="{'has-error': errors.has('Nom programme') }"  type="text" >
                 </div>
               </div>
 
               <div class="form-group col-md-6" :class="{'has-error': errors.has('rion.theorique') }">
-                <label class="col-md-8 control-label">Rion statutaire</label>
+                <label class="col-md-8 control-label">Rion statutaire <span class="mandatory">*</span></label>
                 <div class="col-md-16">
-                  <v-select name="Rion statuaire"
+                  <v-select name="rion.theorique"
                             v-validate="'required'"
                             :searchable="false"
                             label="value"
@@ -79,7 +79,7 @@
               </div>
 
               <div class="form-group col-md-5"  :class="{'has-error': errors.has('Famille') }">
-                <label class="col-md-8 control-label">Famille</label>
+                <label class="col-md-8 control-label">Famille <span class="mandatory">*</span></label>
                 <div class="col-md-16">
                   <v-select name="Famille"
                             v-validate="'required'"
@@ -93,9 +93,9 @@
               </div>
 
               <div class="form-group col-md-7" :class="{'has-error': errors.has('typeUtilisation') }">
-                <label class="col-md-6 control-label">Type d'utilisation</label>
+                <label class="col-md-6 control-label">Type d'utilisation <span class="mandatory">*</span></label>
                 <div class="col-md-16">
-                  <v-select name="Type utilisation"
+                  <v-select name="typeUtilisation"
                             v-validate="'required'"
                             :searchable="false"
                             label="value"
@@ -110,7 +110,7 @@
             <!-- Date Debut / Fin et territoire programme -->
             <div class="row espacement">
               <div class="form-group col-md-6" :class="{'has-error': errors.has('dateDebutProgramme') }">
-                <label class="col-md-9 control-label">Date de début</label>
+                <label class="col-md-9 control-label">Date de début <span class="mandatory">*</span></label>
                 <div class="col-md-15">
                   <date-picker v-validate="'required'"
                                data-vv-value-path="innerDateDebutProgrammeValue"
@@ -124,7 +124,7 @@
               </div>
 
               <div class="form-group col-md-6" :class="{'has-error': errors.has('dateFinProgramme') }">
-                <label class="col-md-8 control-label">Date de fin</label>
+                <label class="col-md-8 control-label">Date de fin <span class="mandatory">*</span></label>
                 <div class="col-md-16">
                   <date-picker v-validate="'required'"
                                data-vv-value-path="innerDateFinProgrammeValue"
@@ -138,7 +138,7 @@
               </div>
 
               <div class="form-group col-md-5" :class="{'has-error': errors.has('territoire') }">
-                <label class="col-md-8 control-label">Territoire</label>
+                <label class="col-md-8 control-label">Territoire <span class="mandatory">*</span></label>
                 <div class="col-md-16">
                   <v-select name="territoire" v-validate="'required'" :searchable="true" label="value" v-model="territoireSelected"
                             :options="territoireOptions" :classValidate="{'has-error': errors.has('territoire') }" :disabled="isNonModifiable">
@@ -214,6 +214,21 @@
   import messagesfr from 'vee-validate/dist/locale/fr';
   import Modal from '../common/Modal.vue';
   import DatePicker from '../common/DatePicker.vue';
+  import { Validator } from 'vee-validate';
+
+  const dictionary = {
+
+    fr: {
+      attributes: {
+        'rion.theorique' : 'Rion statuaire',
+        'typeUtilisation' : "Type d'utilisation",
+        'dateDebutProgramme' : 'Date de début',
+        'dateFinProgramme' : 'Date de fin'
+      }
+    }
+  };
+
+  Validator.updateDictionary(dictionary);
 
   export default {
 
@@ -547,4 +562,9 @@
   .has-error {
     color: #a94442;
   }
+
+  .mandatory {
+    color: #FF0000;
+  }
+
 </style>

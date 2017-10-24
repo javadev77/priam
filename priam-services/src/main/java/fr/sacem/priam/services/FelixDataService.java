@@ -246,7 +246,7 @@ public class FelixDataService {
                     ff.getLogs().add(felixLog);
                 }
             }
-            ff.setStatut(errors.isEmpty() ? StatutFichierFelix.GENERE : StatutFichierFelix.EN_ERREUR);
+            ff.setStatut(errors == null || errors.isEmpty() ? StatutFichierFelix.GENERE : StatutFichierFelix.EN_ERREUR);
             //ff.setContent(fichierFelixWithErrors.getContent());
             fichierFelixDao.saveAndFlush(ff);
             
@@ -254,7 +254,7 @@ public class FelixDataService {
             String message = "Erreur lors de la generation du fichier PREPREP";
             LOGGER.error(message, e);
             createErrorMessage(ff, message);
-        } catch (Throwable t) {
+        } catch (Exception t) {
             String message = "Erreur technique !!!";
             LOGGER.error(message, t);
             createErrorMessage(ff, message);
@@ -347,7 +347,7 @@ public class FelixDataService {
                 FileUtils.forceDelete(tempFile);
             }
             
-        } catch (Throwable e) {
+        } catch (Exception e) {
             FichierFelix ff = fichierFelixDao.findByNumprog(numProg);
             String message = String.format("Probleme lors de l'envoi du fichier PREPREP  %s à FELIX", ff.getNomFichier());
             LOGGER.error(message, e);

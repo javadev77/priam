@@ -24,11 +24,6 @@ Vue.use(VeeValidate, {
         required : (e) => "Le champ '" + e + "' est obligatoire et non renseigné.",
         max: (e, n) => e + " ne peut pas contenir plus de " + n[0] + " caractères.",
         numeric: (e) => "Le champ '" + e +  "' ne peut contenir que des chiffres."
-      },
-
-      attributes : {
-        'rion.theorique' : 'Rion statuaire',
-        'typeUtilisation' : "Type d'utilisation"
       }
     }
   }

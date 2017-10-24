@@ -49,14 +49,14 @@
             <div class="row">
 
               <div class="form-group col-md-6" :class="{'has-error': errors.has('Nom programme') }">
-                <label class="col-md-9 control-label">Nom programme</label>
+                <label class="col-md-9 control-label">Nom programme <span class="mandatory">*</span></label>
                 <div class="col-md-15">
                   <input maxlength="20" name="Nom programme" v-model="nom" v-validate="'required|max:20'" class="form-control" :class="{'has-error': errors.has('Nom programme') }"  type="text" >
                 </div>
               </div>
 
               <div class="form-group col-md-6" :class="{'has-error': errors.has('rion.theorique') }">
-                <label class="col-md-8 control-label">Rion statutaire</label>
+                <label class="col-md-8 control-label">Rion statutaire <span class="mandatory">*</span></label>
                 <div class="col-md-16">
                   <v-select name="rion.theorique" v-validate="'required'" :searchable="false" label="value" v-model="rionTheoriqueSelected"
                             :options="rionTheoriqueOptions" :classValidate="{'has-error': errors.has('Rion statuaire') }">
@@ -65,7 +65,7 @@
               </div>
 
               <div class="form-group col-md-5"  :class="{'has-error': errors.has('Famille') }">
-                <label class="col-md-8 control-label">Famille</label>
+                <label class="col-md-8 control-label">Famille <span class="mandatory">*</span></label>
                 <div class="col-md-16">
                   <v-select name="Famille" v-validate="'required'" :searchable="false" label="value" v-model="familleSelected" :options="familleOptions"
                             :on-change="loadTypeUtilisation" :classValidate="{'has-error': errors.has('Famille') }">
@@ -74,7 +74,7 @@
               </div>
 
               <div class="form-group col-md-7" :class="{'has-error': errors.has('typeUtilisation') }">
-                <label class="col-md-6 control-label">Type d'utilisation</label>
+                <label class="col-md-6 control-label">Type d'utilisation <span class="mandatory">*</span></label>
                 <div class="col-md-16">
                   <v-select name="typeUtilisation" v-validate="'required'" :searchable="false" label="value" v-model="typeUtilisationSelected"
                             :options="typeUtilisationOptions" :classValidate="{'has-error': errors.has('typeUtilisation') }">
@@ -86,7 +86,7 @@
             <!-- Date Debut / Fin et territoire programme -->
             <div class="row  espacement">
               <div class="form-group col-md-6" :class="{'has-error': errors.has('dateDebutProgramme') }">
-                <label class="col-md-9 control-label">Date de début</label>
+                <label class="col-md-9 control-label">Date de début <span class="mandatory">*</span></label>
                 <div class="col-md-15">
                   <!--<date-picker @update-date="updateDebutProgramme" name="dateDebutProgramme" :value="dateDebutProgramme" date-format="dd/mm/yy" :zeroHour="true" ></date-picker>-->
                   <date-picker v-validate="'required'"
@@ -100,7 +100,7 @@
               </div>
 
               <div class="form-group col-md-6" :class="{'has-error': errors.has('dateFinProgramme') }">
-                <label class="col-md-8 control-label">Date de fin</label>
+                <label class="col-md-8 control-label">Date de fin <span class="mandatory">*</span></label>
                 <div class="col-md-16">
                   <!--<date-picker @update-date="updateDateFinProgramme" name="dateFinProgramme" :value="dateFinProgramme" date-format="dd/mm/yy" :zeroHour="true">-->
                   <!--</date-picker>-->
@@ -115,7 +115,7 @@
               </div>
 
               <div class="form-group col-md-10" :class="{'has-error': errors.has('territoire') }">
-                <label class="col-md-4 control-label">Territoire</label>
+                <label class="col-md-4 control-label">Territoire <span class="mandatory">*</span></label>
                 <div class="col-md-10">
                   <!--<v-select name="territoire" v-validate="'required'" :searchable="true" label="value" v-model="territoireSelected"-->
                             <!--:options="territoireOptions" :classValidate="{'has-error': errors.has('territoire') }">-->
@@ -193,8 +193,23 @@
   import Modal from '../common/Modal.vue';
   import DatePicker from '../common/DatePicker.vue';
   import Select2 from '../common/Select2.vue';
+  import {Validator} from 'vee-validate';
 
   const ID_FRANCE = 250;
+
+  const dictionary = {
+
+    fr: {
+      attributes: {
+        'rion.theorique' : 'Rion statuaire',
+        'typeUtilisation' : "Type d'utilisation",
+        'dateDebutProgramme' : 'Date de début',
+        'dateFinProgramme' : 'Date de fin'
+      }
+    }
+  };
+
+  Validator.updateDictionary(dictionary);
 
   export default {
     data(){
@@ -206,7 +221,7 @@
         resource: '',
         nom : '',
         rionTheoriqueSelected : null,
-        familleSelected: this.$store.getters.userFamille,
+        familleSelected: this.$store.getters.familleOptionsVide[0],
         typeUtilisationSelected: null,
         typeRepart:'OEUVRE',
         programmeData: {
@@ -463,5 +478,9 @@
 
   .has-error {
     color: #a94442;
+  }
+
+  .mandatory {
+    color: #FF0000;
   }
 </style>
