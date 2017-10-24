@@ -31,7 +31,7 @@
                     </th>
                   </template>
                   <template v-else>
-                    <th>
+                    <th v-if="entry.sortable">
                       <a v-if="!isLocalSort" @click="serverSortBy(entry)">
                         <span>{{ entry.name }}</span>
                         <span v-if="entry.sortable"
@@ -51,6 +51,9 @@
                               >
                         </span>
                       </a>
+                    </th>
+                    <th v-else>
+                      <span>{{ entry.name }}</span>
                     </th>
                   </template>
                 </template>
