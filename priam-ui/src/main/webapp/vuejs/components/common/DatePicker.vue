@@ -52,13 +52,14 @@
 
 
         element.on('keydown', function (e) {
+          console.log('keydown event fired !!!');
           if (e.which === 13) {
             element.datepicker('hide');
           }
         });
 
         element.on('change' , function (e) {
-
+          console.log('change event fired !!!');
           let val = element.val();
           if(val === '' || val.length === 0) {
               element.datepicker('setDate', null);
@@ -104,6 +105,14 @@
           }
         });
         element.on('blur', inputValidate);*/
+
+//        element.on('blur', function () {
+//          console.log('blur event fired !!!');
+//          var date = element.val();
+//          var val = self.stringToDate(date);
+//          self.$emit('input', val);
+//        });
+
       },
 
       methods : {
@@ -170,7 +179,11 @@
         value: function (value) {
             console.log("The date value changed !!! " + value );
             let formattedDate = this.dateToString(value);
-            $(this.$el).val(formattedDate);
+            let element = $(this.$el);
+            element.val(formattedDate);
+
+            element.datepicker('setDate', value);
+            this.$emit('input', value);
         },
 
         dateValue : function (value) {

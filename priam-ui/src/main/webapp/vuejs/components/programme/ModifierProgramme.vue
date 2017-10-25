@@ -18,7 +18,7 @@
                 </li>
                 <li v-if="errors.has('rion.theorique')">
                   <i v-show="errors.has('rion.theorique')" class="fa fa-warning"></i>
-                  <label v-show="errors.has('rion.theorique')" :class="{'has-error': errors.has('rion.theorique') }">{{ errors.first('Rion statuaire') }}</label>
+                  <label v-show="errors.has('rion.theorique')" :class="{'has-error': errors.has('rion.theorique') }">{{ errors.first('rion.theorique') }}</label>
                 </li>
                 <li v-if="errors.has('Famille')">
                   <i v-show="errors.has('Famille')" class="fa fa-warning"></i>
@@ -26,7 +26,7 @@
                 </li>
                 <li v-if="errors.has('typeUtilisation')">
                   <i v-show="errors.has('typeUtilisation')" class="fa fa-warning"></i>
-                  <label v-show="errors.has('typeUtilisation')" :class="{'has-error': errors.has('typeUtilisation') }">{{ errors.first('Type utilisation') }}</label>
+                  <label v-show="errors.has('typeUtilisation')" :class="{'has-error': errors.has('typeUtilisation') }">{{ errors.first('typeUtilisation') }}</label>
                 </li>
                 <li v-if="errors.has('dateDebutProgramme')">
                   <i v-show="errors.has('dateDebutProgramme')" class="fa fa-warning"></i>
@@ -112,7 +112,7 @@
               <div class="form-group col-md-6" :class="{'has-error': errors.has('dateDebutProgramme') }">
                 <label class="col-md-9 control-label">Date de début <span class="mandatory">*</span></label>
                 <div class="col-md-15">
-                  <date-picker v-validate="'required'"
+                  <date-picker v-validate="'required|date_format:DD/MM/YYYY|before:dateFinProgramme'"
                                data-vv-value-path="innerDateDebutProgrammeValue"
                                data-vv-name="dateDebutProgramme"
                                v-model="dateDebutProgramme"
@@ -126,9 +126,10 @@
               <div class="form-group col-md-6" :class="{'has-error': errors.has('dateFinProgramme') }">
                 <label class="col-md-8 control-label">Date de fin <span class="mandatory">*</span></label>
                 <div class="col-md-16">
-                  <date-picker v-validate="'required'"
+                  <date-picker v-validate="'required|date_format:DD/MM/YYYY'"
                                data-vv-value-path="innerDateFinProgrammeValue"
                                data-vv-name="dateFinProgramme"
+                               name="dateFinProgramme"
                                v-model="dateFinProgramme"
                                date-format="dd/mm/yy"
                                :zeroHour="true"
@@ -224,6 +225,10 @@
         'typeUtilisation' : "Type d'utilisation",
         'dateDebutProgramme' : 'Date de début',
         'dateFinProgramme' : 'Date de fin'
+      },
+
+      messages : {
+        before: (e,n) => "La date de début doit être antérieure à la date de fin."
       }
     }
   };

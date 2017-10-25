@@ -59,7 +59,7 @@
                 <label class="col-md-8 control-label">Rion statutaire <span class="mandatory">*</span></label>
                 <div class="col-md-16">
                   <v-select name="rion.theorique" v-validate="'required'" :searchable="false" label="value" v-model="rionTheoriqueSelected"
-                            :options="rionTheoriqueOptions" :classValidate="{'has-error': errors.has('Rion statuaire') }">
+                            :options="rionTheoriqueOptions" :classValidate="{'has-error': errors.has('rion.theorique') }">
                   </v-select>
                 </div>
               </div>
@@ -89,9 +89,10 @@
                 <label class="col-md-9 control-label">Date de début <span class="mandatory">*</span></label>
                 <div class="col-md-15">
                   <!--<date-picker @update-date="updateDebutProgramme" name="dateDebutProgramme" :value="dateDebutProgramme" date-format="dd/mm/yy" :zeroHour="true" ></date-picker>-->
-                  <date-picker v-validate="'required'"
+                  <date-picker v-validate="'required|date_format:DD/MM/YYYY|before:dateFinProgramme'"
                                data-vv-value-path="innerDateDebutProgrammeValue"
                                data-vv-name="dateDebutProgramme"
+                               name="dateDebutProgramme"
                                v-model="dateDebutProgramme"
                                date-format="dd/mm/yy"
                                :zeroHour="true" >
@@ -104,9 +105,10 @@
                 <div class="col-md-16">
                   <!--<date-picker @update-date="updateDateFinProgramme" name="dateFinProgramme" :value="dateFinProgramme" date-format="dd/mm/yy" :zeroHour="true">-->
                   <!--</date-picker>-->
-                  <date-picker v-validate="'required'"
+                  <date-picker v-validate="'required|date_format:DD/MM/YYYY'"
                                data-vv-value-path="innerDateFinProgrammeValue"
                                data-vv-name="dateFinProgramme"
+                               name="dateFinProgramme"
                                v-model="dateFinProgramme"
                                date-format="dd/mm/yy"
                                :zeroHour="true">
@@ -205,6 +207,11 @@
         'typeUtilisation' : "Type d'utilisation",
         'dateDebutProgramme' : 'Date de début',
         'dateFinProgramme' : 'Date de fin'
+      },
+
+      messages : {
+        before: (e,n) => "La date de début doit être antérieure à la date de fin.",
+        after: (e,n) => "La date de début doit être antérieure à la date de fin."
       }
     }
   };

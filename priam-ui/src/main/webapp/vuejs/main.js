@@ -12,9 +12,10 @@ import './utils/Arrays'
 import VeeValidate from 'vee-validate';
 import vueShortkey from 'vue-shortkey'
 
+import moment from 'moment';
+import { Validator } from 'vee-validate';
 
-Vue.use(vueShortkey);
-
+Validator.installDateTimeValidators(moment);
 
 Vue.use(VeeValidate, {
   locale: 'fr',
@@ -24,10 +25,13 @@ Vue.use(VeeValidate, {
         required : (e) => "Le champ '" + e + "' est obligatoire et non renseigné.",
         max: (e, n) => e + " ne peut pas contenir plus de " + n[0] + " caractères.",
         numeric: (e) => "Le champ '" + e +  "' ne peut contenir que des chiffres."
+
       }
     }
   }
 });
+
+Vue.use(vueShortkey);
 
 Vue.use(VueRouter);
 Vue.use(VueResource);
