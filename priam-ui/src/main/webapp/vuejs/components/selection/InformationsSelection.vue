@@ -7,7 +7,7 @@
         <div class="form-group col-xs-8">
           <label class="col-xs-15 control-label blueText text-right">Oeuvres sélectionées - Auto</label>
           <div class="col-xs-9 control-label" v-if="!dataLoadingDuree">
-            {{ dureeSelection.auto }}
+            {{ dureeSelection.auto | numberFormat }}
           </div>
           <div class="col-xs-9" v-else>
             <div class="spinner" v-if="dataLoadingDuree">
@@ -21,7 +21,7 @@
         <div class="form-group col-xs-8">
           <label class="col-xs-15 control-label blueText text-right">Oeuvres sélectionées - Manuel</label>
           <div class="col-xs-9 control-label" v-if="!dataLoadingDuree">
-            {{ dureeSelection.manuel }}
+            {{ dureeSelection.manuel | numberFormat }}
           </div>
           <div class="col-xs-9" v-else>
             <div class="spinner" v-if="dataLoadingDuree">
@@ -42,7 +42,7 @@
               {{ dureeFormattee }}
             </div>
             <div class="col-xs-9 control-label" v-else-if="typeUtilisation == 'CPRIVSONPH'">
-              {{ dureeSelection.duree }}
+              {{ dureeSelection.duree | numberFormat }}
             </div>
           </template>
           <template v-else>

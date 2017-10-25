@@ -76,7 +76,7 @@
                   </template>
                   <template v-else-if="entryColumn.type === 'numeric'">
                     <td class="columnRight">
-                      {{ entry[entryColumn.id] }}
+                      {{ entry[entryColumn.id] | numberFormat }}
                     </td>
                   </template>
                   <template v-else-if="entryColumn.type === 'code-value'">
