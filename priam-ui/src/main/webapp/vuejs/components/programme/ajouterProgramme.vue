@@ -51,14 +51,14 @@
               <div class="form-group col-md-6" :class="{'has-error': errors.has('Nom programme') }">
                 <label class="col-md-9 control-label">Nom programme <span class="mandatory">*</span></label>
                 <div class="col-md-15">
-                  <input maxlength="20" name="Nom programme" v-model="nom" v-validate="'required|max:20'" class="form-control" :class="{'has-error': errors.has('Nom programme') }"  type="text" >
+                  <input maxlength="20" name="Nom programme" v-model="nom" v-validate.disable="'required|max:20'" class="form-control" :class="{'has-error': errors.has('Nom programme') }"  type="text" >
                 </div>
               </div>
 
               <div class="form-group col-md-6" :class="{'has-error': errors.has('rion.theorique') }">
                 <label class="col-md-8 control-label">Rion statutaire <span class="mandatory">*</span></label>
                 <div class="col-md-16">
-                  <v-select name="rion.theorique" v-validate="'required'" :searchable="false" label="value" v-model="rionTheoriqueSelected"
+                  <v-select name="rion.theorique" v-validate.disable="'required'" :searchable="false" label="value" v-model="rionTheoriqueSelected"
                             :options="rionTheoriqueOptions" :classValidate="{'has-error': errors.has('rion.theorique') }">
                   </v-select>
                 </div>
@@ -67,7 +67,7 @@
               <div class="form-group col-md-5"  :class="{'has-error': errors.has('Famille') }">
                 <label class="col-md-8 control-label">Famille <span class="mandatory">*</span></label>
                 <div class="col-md-16">
-                  <v-select name="Famille" v-validate="'required'" :searchable="false" label="value" v-model="familleSelected" :options="familleOptions"
+                  <v-select name="Famille" v-validate.disable="'required'" :searchable="false" label="value" v-model="familleSelected" :options="familleOptions"
                             :on-change="loadTypeUtilisation" :classValidate="{'has-error': errors.has('Famille') }">
                   </v-select>
                 </div>
@@ -76,7 +76,7 @@
               <div class="form-group col-md-7" :class="{'has-error': errors.has('typeUtilisation') }">
                 <label class="col-md-6 control-label">Type d'utilisation <span class="mandatory">*</span></label>
                 <div class="col-md-16">
-                  <v-select name="typeUtilisation" v-validate="'required'" :searchable="false" label="value" v-model="typeUtilisationSelected"
+                  <v-select name="typeUtilisation" v-validate.disable="'required'" :searchable="false" label="value" v-model="typeUtilisationSelected"
                             :options="typeUtilisationOptions" :classValidate="{'has-error': errors.has('typeUtilisation') }">
                   </v-select>
                 </div>
@@ -89,7 +89,7 @@
                 <label class="col-md-9 control-label">Date de début <span class="mandatory">*</span></label>
                 <div class="col-md-15">
                   <!--<date-picker @update-date="updateDebutProgramme" name="dateDebutProgramme" :value="dateDebutProgramme" date-format="dd/mm/yy" :zeroHour="true" ></date-picker>-->
-                  <date-picker v-validate="'required|date_format:DD/MM/YYYY|before:dateFinProgramme'"
+                  <date-picker v-validate.disable="'required|date_format:DD/MM/YYYY|before:dateFinProgramme'"
                                data-vv-value-path="innerDateDebutProgrammeValue"
                                data-vv-name="dateDebutProgramme"
                                name="dateDebutProgramme"
@@ -105,7 +105,7 @@
                 <div class="col-md-16">
                   <!--<date-picker @update-date="updateDateFinProgramme" name="dateFinProgramme" :value="dateFinProgramme" date-format="dd/mm/yy" :zeroHour="true">-->
                   <!--</date-picker>-->
-                  <date-picker v-validate="'required|date_format:DD/MM/YYYY'"
+                  <date-picker v-validate.disable="'required|date_format:DD/MM/YYYY'"
                                data-vv-value-path="innerDateFinProgrammeValue"
                                data-vv-name="dateFinProgramme"
                                name="dateFinProgramme"
@@ -123,7 +123,7 @@
                             <!--:options="territoireOptions" :classValidate="{'has-error': errors.has('territoire') }">-->
                   <!--</v-select>-->
 
-                    <select2 class="form-control" name="territoire" v-validate="'required'" :searchable="true" v-model="territoireSelected"
+                    <select2 class="form-control" name="territoire" v-validate.disable="'required'" :searchable="true" v-model="territoireSelected"
                              :options="territoireOptions" :class="{'has-error': errors.has('territoire') }"/>
                 </div>
               </div>
@@ -211,7 +211,6 @@
 
       messages : {
         before: (e,n) => "La date de début doit être antérieure à la date de fin.",
-        after: (e,n) => "La date de début doit être antérieure à la date de fin."
       }
     }
   };

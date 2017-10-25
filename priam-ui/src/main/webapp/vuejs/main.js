@@ -18,6 +18,7 @@ import { Validator } from 'vee-validate';
 Validator.installDateTimeValidators(moment);
 
 Vue.use(VeeValidate, {
+  events : '',
   locale: 'fr',
   dictionary: {
     fr: {
