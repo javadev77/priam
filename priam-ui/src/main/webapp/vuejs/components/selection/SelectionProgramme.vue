@@ -549,6 +549,16 @@
           gridData_sono : {},
           searchQuery : ''
         },
+
+        currentFilter : {
+          ide12 : null,
+          numProg : this.$route.params.numProg,
+          utilisateur : 'Tous',
+          titre : null,
+          ajout : 'Tous',
+          selection : 'Tous'
+        },
+
         filter : {
           ide12 : null,
           numProg : this.$route.params.numProg,
@@ -704,7 +714,7 @@
         this.dataLoading = true;
 
         this.resource.findLigneProgrammeByProgramme({page : pageNum -1 , size : pageSize,
-          sort : sort, dir: dir}, this.filter )
+          sort : sort, dir: dir}, this.currentFilter )
           .then(response => {
             return response.json();
           })
@@ -874,6 +884,13 @@
               //this.selectAll();
             });
         }
+
+        this.currentFilter.ide12 = this.filter.ide12;
+        this.currentFilter.ajout = this.filter.ajout;
+        this.currentFilter.numProg = this.filter.numProg;
+        this.currentFilter.utilisateur = this.filter.utilisateur;
+        this.currentFilter.titre = this.filter.titre;
+        this.currentFilter.selection = this.filter.selection;
 
         doSearch.call(this);
         this.getDuree(this.programmeInfo.statut);
