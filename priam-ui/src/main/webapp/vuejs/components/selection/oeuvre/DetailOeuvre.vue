@@ -46,7 +46,7 @@
           <div class="row">
 
           <div class="form-group col-md-4" :class="{'has-error': errors.has('titre') }">
-            <label class="col-md-5 control-label blueText text-right">Titre</label>
+            <label class="col-md-5 control-label blueText text-right">Titre <span class="mandatory">*</span></label>
             <div class="col-md-19 control-label">
               <input v-validate.disable="'required'"
                      name="titre"
@@ -59,7 +59,7 @@
           </div>
 
           <div class="form-group col-md-4" :class="{'has-error': errors.has('ide12') }">
-            <label class="col-md-9 control-label blueText text-right">IDE12</label>
+            <label class="col-md-9 control-label blueText text-right">IDE12 <span class="mandatory">*</span></label>
             <div class="col-md-15 control-label">
               <input v-validate.disable="'required'"
                      name="ide12"
@@ -73,7 +73,7 @@
 
 
           <div class="form-group col-md-7" :class="{'has-error': errors.has('Utilisateur') }">
-            <label class="col-md-6 control-label blueText text-right">Utilisateur</label>
+            <label class="col-md-6 control-label blueText text-right">Utilisateur <span class="mandatory">*</span></label>
             <div class="col-md-18">
               <select2 v-if="oeuvreManuelToCreate.utilisateur"
                        class="form-control"
@@ -91,7 +91,7 @@
 
 
             <div class="form-group col-md-5" v-if="programme.typeUtilisation == 'CPRIVSONRD'" :class="{'has-error': errors.has('duree') }">
-              <label class="col-md-6 control-label blueText text-right">Durée</label>
+              <label class="col-md-6 control-label blueText text-right">Durée <span class="mandatory">*</span></label>
               <div class="col-md-18">
                 <input v-validate.disable="'required|numeric'"
                        name="duree"
@@ -102,7 +102,7 @@
               </div>
             </div>
             <div class="form-group col-md-5" :class="{'has-error': errors.has('quantite') }" v-if="programme.typeUtilisation == 'CPRIVSONPH'">
-              <label class="col-md-6 control-label blueText text-right">Quantité</label>
+              <label class="col-md-6 control-label blueText text-right">Quantité <span class="mandatory">*</span></label>
               <div class="col-md-18">
                 <input v-validate.disable="'required|numeric'"
                        :class="{'has-error': errors.has('quantite') }" n
@@ -251,3 +251,10 @@
 
   }
 </script>
+
+<style>
+
+  .mandatory {
+    color: #FF0000;
+  }
+</style>
