@@ -6,8 +6,6 @@ import fr.sacem.priam.model.domain.LignePreprep;
 import fr.sacem.priam.model.domain.LigneProgramme;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.SelectionDto;
-import fr.sacem.priam.model.services.LigneProgrammeServiceImpl;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +33,6 @@ public class LigneProgrammeDaoTest {
     private static final String CDE_UTIL = "";
     @Autowired
     LigneProgrammeDao ligneProgrammeDao;
-    LigneProgrammeServiceImpl ligneProgrammeServiceImpl = new LigneProgrammeServiceImpl();
     
     @Autowired
     FichierDao fichierDao;
@@ -87,13 +84,6 @@ public class LigneProgrammeDaoTest {
     private static final Long INITIAL_IDE12 = 772L;
     private static final Long IDE12 = 6829877211L;
     private static final String INITIAL_TITRES = "Tes";
-
-
-    @Before
-    public void setUp() throws Exception{
-        ligneProgrammeServiceImpl.setLigneProgrammeDao(ligneProgrammeDao);
-        ligneProgrammeServiceImpl.setFichierDao(fichierDao);
-    }
     
     @Test
     public void should_delete_all_data_ligne_programme() {

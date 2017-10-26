@@ -22,14 +22,20 @@
                 <i v-show="errors.has('ide12')" class="fa fa-warning"></i>
                 <label v-show="errors.has('ide12')" class="control-label" :class="{'has-error': errors.has('ide12') }">{{ errors.first('ide12') }}</label>
               </li>
-              <li v-if="errors.has('duree')">
-                <i v-show="errors.has('duree')" class="fa fa-warning"></i>
-                <label v-show="errors.has('duree')" class="control-label" :class="{'has-error': errors.has('duree') }">{{ errors.first('duree') }}</label>
-              </li>
-              <li v-if="errors.has('quantite')">
-                <i v-show="errors.has('quantite')" class="fa fa-warning"></i>
-                <label v-show="errors.has('quantite')" :class="{'has-error': errors.has('quantite') }">{{ errors.first('quantite') }}</label>
-              </li>
+              <template v-if="programme.typeUtilisation == 'CPRIVSONRD'">
+                <li v-if="errors.has('duree')">
+                  <i v-show="errors.has('duree')" class="fa fa-warning"></i>
+                  <label v-show="errors.has('duree')" class="control-label" :class="{'has-error': errors.has('duree') }">{{ errors.first('duree') }}</label>
+                </li>
+
+              </template>
+              <template  v-if="programme.typeUtilisation == 'CPRIVSONPH'">
+                <li v-if="errors.has('quantite')">
+                  <i v-show="errors.has('quantite')" class="fa fa-warning"></i>
+                  <label v-show="errors.has('quantite')" :class="{'has-error': errors.has('quantite') }">{{ errors.first('quantite') }}</label>
+                </li>
+              </template>
+
               <li v-if="errors.has('Utilisateur')">
                 <i v-show="errors.has('Utilisateur')" class="fa fa-warning"></i>
                 <label v-show="errors.has('Utilisateur')" :class="{'has-error': errors.has('Utilisateur') }">{{ errors.first('Utilisateur') }}</label>
@@ -42,7 +48,7 @@
           <div class="form-group col-md-4" :class="{'has-error': errors.has('titre') }">
             <label class="col-md-5 control-label blueText text-right">Titre</label>
             <div class="col-md-19 control-label">
-              <input v-validate="'required'"
+              <input v-validate.disable="'required'"
                      name="titre"
                      class="form-control"
                      type="text"
@@ -55,7 +61,7 @@
           <div class="form-group col-md-4" :class="{'has-error': errors.has('ide12') }">
             <label class="col-md-9 control-label blueText text-right">IDE12</label>
             <div class="col-md-15 control-label">
-              <input v-validate="'required'"
+              <input v-validate.disable="'required'"
                      name="ide12"
                      class="form-control"
                      type="text"
@@ -73,7 +79,8 @@
                        class="form-control"
                        data-vv-name="Utilisateur"
                        data-vv-value-path="innerUtilisateur"
-                       v-validate="'required'"
+                       v-validate.disable="'required'"
+                       name="Utilisateur"
                        :options="utilisateurOptions"
                        v-model="oeuvreManuelToCreate.utilisateur"
                        :searchable="true"
@@ -86,7 +93,7 @@
             <div class="form-group col-md-5" v-if="programme.typeUtilisation == 'CPRIVSONRD'" :class="{'has-error': errors.has('duree') }">
               <label class="col-md-6 control-label blueText text-right">Durée</label>
               <div class="col-md-18">
-                <input v-validate="'required|numeric'"
+                <input v-validate.disable="'required|numeric'"
                        name="duree"
                        class="form-control"
                        type="text"
@@ -97,7 +104,12 @@
             <div class="form-group col-md-5" :class="{'has-error': errors.has('quantite') }" v-if="programme.typeUtilisation == 'CPRIVSONPH'">
               <label class="col-md-6 control-label blueText text-right">Quantité</label>
               <div class="col-md-18">
-                <input v-validate="'required|numeric'" :class="{'has-error': errors.has('quantite') }" name="quantite"  class="form-control" type="text" v-model="oeuvreManuelToCreate.quantite">
+                <input v-validate.disable="'required|numeric'"
+                       :class="{'has-error': errors.has('quantite') }" n
+                       name="quantite"
+                       class="form-control"
+                       type="text"
+                       v-model="oeuvreManuelToCreate.quantite">
               </div>
             </div>
 
@@ -118,6 +130,18 @@
 <script>
 
   import Select2 from '../../common/Select2.vue';
+  import {Validator} from 'vee-validate';
+
+  const dictionary = {
+
+    fr: {
+      attributes: {
+        'duree' : 'Durée'
+      }
+    }
+  };
+
+  Validator.updateDictionary(dictionary);
 
   export default {
       props: {
@@ -189,18 +213,33 @@
 
         let sef = this;
         sef.$validator.validateAll().then(() => {
-          sef.oeuvreManuelToCreate.ide12 = sef.oeuvre.ide12;
-          sef.oeuvreManuelToCreate.titre = sef.oeuvre.titre;
-          sef.oeuvreManuelToCreate.roleParticipant1 = sef.oeuvre.roleParticipant1;
-          sef.oeuvreManuelToCreate.nomParticipant1 = sef.oeuvre.nomParticipant1;
-          sef.oeuvreManuelToCreate.cdeTypeIde12 = sef.oeuvre.cdeTypeIde12;
-          var libUtil = sef.$store.getters.libelleUtilisateur.find(function (element) {
-              return element.id == sef.oeuvreManuelToCreate.utilisateur;
-          });
-          sef.oeuvreManuelToCreate.libelleUtilisateur = libUtil.value;
-          sef.$emit('ajout-oeuvre', sef.oeuvreManuelToCreate);
+            sef.oeuvreManuelToCreate.ide12 = sef.oeuvre.ide12;
+            sef.oeuvreManuelToCreate.titre = sef.oeuvre.titre;
+            sef.oeuvreManuelToCreate.roleParticipant1 = sef.oeuvre.roleParticipant1;
+            sef.oeuvreManuelToCreate.nomParticipant1 = sef.oeuvre.nomParticipant1;
+            sef.oeuvreManuelToCreate.cdeTypeIde12 = sef.oeuvre.cdeTypeIde12;
+            var libUtil = sef.$store.getters.libelleUtilisateur.find(function (element) {
+                return element.id == sef.oeuvreManuelToCreate.utilisateur;
+            });
+            sef.oeuvreManuelToCreate.libelleUtilisateur = libUtil.value;
+            sef.$emit('ajout-oeuvre', sef.oeuvreManuelToCreate);
+        }).catch(() => {
+          console.log('Correct them errors!');
         });
-      }
+
+      },
+
+      validateBeforeSubmit() {
+
+
+        var validator = this.$validator;
+        validator.validateAll().then(() => {
+          console.log('All things are OK !!');
+        }).catch(() => {
+          console.log('Correct them errors!');
+        });
+
+      },
 
 
 
