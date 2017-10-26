@@ -138,12 +138,19 @@
                 </div>
               </div>
 
-              <div class="form-group col-md-5" :class="{'has-error': errors.has('territoire') }">
-                <label class="col-md-8 control-label">Territoire <span class="mandatory">*</span></label>
-                <div class="col-md-16">
-                  <v-select name="territoire" v-validate.disable="'required'" :searchable="true" label="value" v-model="territoireSelected"
-                            :options="territoireOptions" :classValidate="{'has-error': errors.has('territoire') }" :disabled="isNonModifiable">
-                  </v-select>
+              <div class="form-group col-md-10" :class="{'has-error': errors.has('territoire') }">
+                <label class="col-md-4 control-label">Territoire <span class="mandatory">*</span></label>
+                <div class="col-md-10">
+                  <select2 class="form-control"
+                           name="territoire"
+                           v-validate.disable="'required'"
+                           :searchable="true"
+                           v-model="territoireSelected"
+                           :options="territoireOptions"
+                           :class="{'has-error': errors.has('territoire') }"
+                           :disabled="isNonModifiable">
+                  </select2>
+
                 </div>
               </div>
 
@@ -212,11 +219,11 @@
 </template>
 <script>
   import vSelect from '../common/Select.vue';
-  import messagesfr from 'vee-validate/dist/locale/fr';
   import Modal from '../common/Modal.vue';
   import DatePicker from '../common/DatePicker.vue';
   import { Validator } from 'vee-validate';
   import moment from 'moment';
+  import Select2 from '../common/Select2.vue';
 
   const dictionary = {
 
@@ -470,8 +477,8 @@
             let dateFinPrg = this.programmeToModify.dateFinPrg;
 
 
-            this.dateDebutProgramme = this.stringToDate(dateDbtPrg); // dateDbtPrg ? dateDbtPrg.substring(6) + '-' + dateDbtPrg.substring(3, 5) + '-' + dateDbtPrg.substring(0, 2) : null;
-            this.dateFinProgramme = this.stringToDate(dateFinPrg); // ? dateFinPrg.substring(6) + '-' + dateFinPrg.substring(3,5) + '-' + dateFinPrg.substring(0,2) : null;
+            this.dateDebutProgramme = this.stringToDate(dateDbtPrg);
+            this.dateFinProgramme = this.stringToDate(dateFinPrg);
 
             var cdeTer = this.programmeToModify.cdeTer;
 
@@ -483,32 +490,6 @@
           }
 
       },
-
-      /*updateDebutProgramme(date) {
-        this.dateDebutProgramme = date;
-        var error = {"field":"dateDebutProgramme","msg":"Le champ 'Date de debut' est obligatoire et non renseigné.","rule":"required","scope":"__global__"};
-
-        if(this.dateDebutProgramme == null) {
-          this.$validator.errorBag.errors.push(error);
-        }else {
-          let number = this.indexOf(this.$validator.errorBag.errors, error);
-          this.$validator.errorBag.errors.splice(number, 1);
-        }
-      },
-
-      updateDateFinProgramme(date) {
-        this.dateFinProgramme = date;
-
-        var error = {"field":"dateFinProgramme","msg":"Le champ 'Date de fin' est obligatoire et non renseigné.","rule":"required","scope":"__global__"};
-
-        if(this.dateFinProgramme == null) {
-          this.$validator.errorBag.errors.push(error);
-        }else {
-          let number = this.indexOf(this.$validator.errorBag.errors, error);
-          this.$validator.errorBag.errors.splice(number, 1);
-        }
-
-      },*/
 
       indexOf(array, obj) {
 
@@ -526,6 +507,7 @@
       vSelect: vSelect,
       modal : Modal,
       datePicker : DatePicker,
+      select2 : Select2
     },
 
     created(){

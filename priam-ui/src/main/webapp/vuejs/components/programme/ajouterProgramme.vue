@@ -103,8 +103,6 @@
               <div class="form-group col-md-6" :class="{'has-error': errors.has('dateFinProgramme') }">
                 <label class="col-md-8 control-label">Date de fin <span class="mandatory">*</span></label>
                 <div class="col-md-16">
-                  <!--<date-picker @update-date="updateDateFinProgramme" name="dateFinProgramme" :value="dateFinProgramme" date-format="dd/mm/yy" :zeroHour="true">-->
-                  <!--</date-picker>-->
                   <date-picker v-validate.disable="'required|date_format:DD/MM/YYYY'"
                                data-vv-value-path="innerDateFinProgrammeValue"
                                data-vv-name="dateFinProgramme"
@@ -119,12 +117,14 @@
               <div class="form-group col-md-10" :class="{'has-error': errors.has('territoire') }">
                 <label class="col-md-4 control-label">Territoire <span class="mandatory">*</span></label>
                 <div class="col-md-10">
-                  <!--<v-select name="territoire" v-validate="'required'" :searchable="true" label="value" v-model="territoireSelected"-->
-                            <!--:options="territoireOptions" :classValidate="{'has-error': errors.has('territoire') }">-->
-                  <!--</v-select>-->
-
-                    <select2 class="form-control" name="territoire" v-validate.disable="'required'" :searchable="true" v-model="territoireSelected"
-                             :options="territoireOptions" :class="{'has-error': errors.has('territoire') }"/>
+                    <select2 class="form-control"
+                             name="territoire"
+                             v-validate.disable="'required'"
+                             :searchable="true"
+                             v-model="territoireSelected"
+                             :options="territoireOptions"
+                             :class="{'has-error': errors.has('territoire') }" >
+                    </select2>
                 </div>
               </div>
 
@@ -292,20 +292,6 @@
       },
 
       verifierEtAjouterLeProgramme(){
-
-        /*if(this.dateDebutProgramme == null) {
-          this.$validator.errorBag.errors.push({"field":"dateDebutProgramme","msg":"Le champ 'Date de debut' est obligatoire et non renseigné.","rule":"required","scope":"__global__"});
-        }
-
-        if(this.dateFinProgramme == null) {
-          this.$validator.errorBag.errors.push({"field":"dateFinProgramme","msg":"Le champ 'Date de fin' est obligatoire et non renseigné.","rule":"required","scope":"__global__"});
-        }
-
-        if(this.$validator.errorBag.errors.length != 0)
-        {
-            return;
-        }*/
-
         this.resource.searchProgramme({nom : this.nom})
             .then(response => {
               this.programmeExist = response.body;
