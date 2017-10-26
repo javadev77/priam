@@ -985,7 +985,6 @@
       onAllChecked(allChecked, entries) {
 
         this.all = allChecked;
-        debugger
         this.ligneProgrammeSelected = [];
         this.unselectedLigneProgramme = [];
         if(allChecked) {

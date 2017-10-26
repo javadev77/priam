@@ -162,7 +162,9 @@ public class LigneProgrammeService {
         //ligneProgrammeDao.updateSelectionTemporaireByNumProgramme(numProg, false);
 
         for (Map<String, String>  obj:  idLingesProgrammes) {
-            ligneProgrammeDao.updateSelectionTemporaireByNumProgramme(numProg, Long.parseLong(obj.get(IDE_12)), obj.get(CDE_UTIL).split(" - ")[0], 1);
+            if (obj != null && !obj.isEmpty()) {
+                ligneProgrammeDao.updateSelectionTemporaireByNumProgramme(numProg, Long.parseLong(obj.get(IDE_12)), obj.get(CDE_UTIL).split(" - ")[0], 1);
+            }
         }
 
 
@@ -285,7 +287,9 @@ public class LigneProgrammeService {
     public void deselectLigneProgramme(String numProg, Set<Map<String, String>> unselected) {
     
         for (Map<String, String>  obj:  unselected) {
-            ligneProgrammeDao.updateSelectionTemporaireByNumProgramme(numProg, Long.parseLong(obj.get(IDE_12)), obj.get(CDE_UTIL).split(" - ")[0], 0);
+            if(obj != null && !obj.isEmpty()) {
+                ligneProgrammeDao.updateSelectionTemporaireByNumProgramme(numProg, Long.parseLong(obj.get(IDE_12)), obj.get(CDE_UTIL).split(" - ")[0], 0);
+            }
         }
     }
     
