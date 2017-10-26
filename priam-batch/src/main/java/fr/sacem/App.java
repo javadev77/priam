@@ -1,6 +1,7 @@
 package fr.sacem;
 
-import fr.sacem.config.ConfigurationPriam;
+import fr.sacem.config.ConfigurationPriamLocal;
+import fr.sacem.config.ConfigurationPriamProd;
 import fr.sacem.domain.Admap;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
@@ -20,7 +21,7 @@ public class App {
 
     public static void main(String[] args) {
 
-        ApplicationContext context = new AnnotationConfigApplicationContext(ConfigurationPriam.class);
+        ApplicationContext context = new AnnotationConfigApplicationContext(ConfigurationPriamProd.class, ConfigurationPriamLocal.class);
 
         JobLauncher jobLauncher = (JobLauncher) context.getBean("jobLauncher");
         Job job = (Job) context.getBean("archiveFlatFileReaderJob");
