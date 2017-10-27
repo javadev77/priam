@@ -136,7 +136,8 @@
 
     fr: {
       attributes: {
-        'duree' : 'Durée'
+        'duree' : 'Durée',
+        'quantite' : 'Quantité'
       }
     }
   };

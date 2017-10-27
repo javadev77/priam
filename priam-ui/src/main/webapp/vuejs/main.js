@@ -15,22 +15,28 @@ import vueShortkey from 'vue-shortkey'
 import moment from 'moment';
 import { Validator } from 'vee-validate';
 
-Validator.installDateTimeValidators(moment);
-
 Vue.use(VeeValidate, {
-  events : '',
   locale: 'fr',
   dictionary: {
     fr: {
+      attributes: {
+        'rion.theorique' : 'Rion statuaire',
+        'typeUtilisation' : "Type d'utilisation",
+        'dateDebutProgramme' : 'Date de début',
+        'dateFinProgramme' : 'Date de fin'
+      },
+
       messages: {
         required : (e) => "Le champ '" + e + "' est obligatoire et non renseigné.",
         max: (e, n) => e + " ne peut pas contenir plus de " + n[0] + " caractères.",
-        numeric: (e) => "Le champ '" + e +  "' ne peut contenir que des chiffres."
+        numeric: (e) => "Le champ '" + e +  "' ne peut contenir que des chiffres.",
+        before: (e,n) => "La date de début doit être antérieure à la date de fin."
 
       }
     }
   }
 });
+Validator.installDateTimeValidators(moment);
 
 Vue.use(vueShortkey);
 

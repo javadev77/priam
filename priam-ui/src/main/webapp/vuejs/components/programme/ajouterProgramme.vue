@@ -195,27 +195,9 @@
   import Modal from '../common/Modal.vue';
   import DatePicker from '../common/DatePicker.vue';
   import Select2 from '../common/Select2.vue';
-  import {Validator} from 'vee-validate';
 
   const ID_FRANCE = 250;
 
-  const dictionary = {
-
-    fr: {
-      attributes: {
-        'rion.theorique' : 'Rion statuaire',
-        'typeUtilisation' : "Type d'utilisation",
-        'dateDebutProgramme' : 'Date de début',
-        'dateFinProgramme' : 'Date de fin'
-      },
-
-      messages : {
-        before: (e,n) => "La date de début doit être antérieure à la date de fin.",
-      }
-    }
-  };
-
-  Validator.updateDictionary(dictionary);
 
   export default {
     data(){
