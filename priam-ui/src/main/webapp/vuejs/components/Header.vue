@@ -4,11 +4,11 @@
 
             <div class="navbar-header">
               <a class="navbar-brand logo" href="#/">
-                <img src="../../static/images/Logo_Priam.png" width="100px" height="40px" alt="PRIAM"/>
+                <img src="static/images/Logo_Priam.png" width="100px" height="40px" alt="PRIAM"/>
               </a>
             </div>
 
-             <two-lines-menu :menus="menus" :activeMenu="currentActiveMenu" :activeSubMenu="currentSubMenu"></two-lines-menu>
+             <two-lines-menu :menus="menus" :activeMenu="currentActiveMenu.id" :activeSubMenu="currentSubMenu.id"></two-lines-menu>
 
             <div class="nav navbar-nav navbar-right">
               <ul class="nav navbar-nav navbar-right">
@@ -69,14 +69,14 @@
           },
 
         ],
-       currentActiveMenu :  {
+        currentActiveMenu :  {
           id : ''
         },
         currentSubMenu :  {
           id : ''
         },
 
-        isDropdownOpen: false,
+        isDropdownOpen: false
 
         //displayName: ''
       }
@@ -84,18 +84,10 @@
 
     created()  {
 
-      const customActions = {
-        searchUser : {method : 'GET', url :'app/rest/general/currentUser'}
-      }
-      this.resource= this.$resource('', {}, customActions);
-
         let currentRoute = this.$route.matched;
         console.log('currentRoute =  ' + currentRoute[0].name);
         this.currentActiveMenu.id = currentRoute[0].name;
         this.currentSubMenu.id = currentRoute.length > 1 && currentRoute[1] !== undefined ? currentRoute[1].name : '';
-
-        console.log('currentActiveMenu ' + this.currentActiveMenu.id);
-        console.log('currentSubMenu ' + this.currentSubMenu.id);
 
     },
 
@@ -108,19 +100,36 @@
       }
     },
 
-    methods: {
-      getDisplayName() {
-        this.resource.searchUser()
-          .then(response => {
-            return response.json();
-          })
-          .then(data => {
-            console.log('data = ' + data);
-            debugger;
-            //this.displayName = data.displayName;
-          });
+    methods : {
+
+        findMenu(idMenu) {
+            let menu = this.menus.find(elem => {
+              return elem.id === idMenu;
+            });
+
+            return menu;
+        }
+
+    },
+
+    watch : {
+
+      '$route' (to, from) {
+        console.log('from route =  ' + from.path);
+        console.log('to route =  ' + to.path);
+        if( to.path !== from.path) {
+            let newRoute = to.matched;
+            let foundMenu = this.findMenu(newRoute[0].name);
+            if(foundMenu && foundMenu !== undefined) {
+              this.currentActiveMenu.id = foundMenu.id;
+              this.currentSubMenu.id = foundMenu.items !== undefined &&
+                                       foundMenu.items.length >= 1 &&
+                                       foundMenu.items[0] !== undefined ? foundMenu.items[0].id : '';
+            } // if not found we stay in the current active menu
+        }
 
       }
+
     },
 
     components :    {
