@@ -136,6 +136,8 @@
 
     fr: {
       attributes: {
+        'titre' : 'Titre',
+        'ide12' : 'IDE12',
         'duree' : 'Durée',
         'quantite' : 'Quantité'
       }

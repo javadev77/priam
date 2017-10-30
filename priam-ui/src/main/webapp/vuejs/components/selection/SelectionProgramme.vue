@@ -116,6 +116,7 @@
         :annulerEdition="annulerEdition"
         :annulerSelection="annulerSelection"
         :inProcess="inProcess"
+        :isLoadingDuree="dataLoadingDuree"
       >
       </app-action-selection>
 
@@ -132,7 +133,7 @@
           <button class="btn btn-default btn-primary no" @click="closeModal" :disabled="inProcess">Fermer</button>
         </div>
 
-        <div v-else="">
+        <div v-else>
           <button class="btn btn-default btn-primary pull-right no" @click="noContinue" :disabled="inProcess">Non</button>
           <button class="btn btn-default btn-primary pull-right yes" @click="yesContinue" :disabled="inProcess">Oui</button>
         </div>
@@ -786,71 +787,9 @@
           }
 
 
-            /*if(this.ligneProgramme[i].selection) {
-
-              if(this.indexOf(this.ligneProgrammeSelected, this.ligneProgramme[i]) == -1
-                && this.indexOf(this.unselectedLigneProgramme, this.ligneProgramme[i]) == -1)
-
-                  this.ligneProgrammeSelected.push({ide12 : this.ligneProgramme[i].ide12, libAbrgUtil : this.ligneProgramme[i].libAbrgUtil});
-            }
-            else {
-              if(this.indexOf(this.ligneProgrammeSelected, this.ligneProgramme[i])
-                && this.indexOf(this.unselectedLigneProgramme, this.ligneProgramme[i]) == -1)
-                this.unselectedLigneProgramme.push({ide12 : this.ligneProgramme[i].ide12, libAbrgUtil : this.ligneProgramme[i].libAbrgUtil});
-            }
-          }*/
-        /*for (var i in this.ligneProgramme) {
-          if (this.ligneProgramme[i].selection) {
-
-            if (this.indexOf(this.ligneProgrammeSelected, this.ligneProgramme[i]) == -1 &&
-              this.indexOf(this.unselectedLigneProgramme, this.ligneProgramme[i]) == -1) {
-              this.ligneProgrammeSelected.push({
-                ide12: this.ligneProgramme[i].ide12,
-                libAbrgUtil: this.ligneProgramme[i].libAbrgUtil
-              });
-            } else if (this.indexOf(this.unselectedLigneProgramme, this.ligneProgramme[i]) != -1) {
-              let number = this.indexOf(this.unselectedLigneProgramme, this.ligneProgramme[i]);
-              this.unselectedLigneProgramme.splice(number, 1);
-              this.ligneProgrammeSelected.push({
-                ide12: this.ligneProgramme[i].ide12,
-                libAbrgUtil: this.ligneProgramme[i].libAbrgUtil
-              });
-            }
-          }
-        }*/
-
-        //}
-
-
       },
 
       rechercher(){
-
-        /*if(this.selectedLineProgramme !== undefined && this.selectedLineProgramme.length > 0
-          || this.unselectedLigneProgramme !== undefined && this.unselectedLigneProgramme.length >0) {
-          this.selection = {
-            deselectAll : false,
-            all : false,
-            unselected : this.unselectedLigneProgramme,
-            selected : this.ligneProgrammeSelected
-          };
-
-          this.selection.numProg = this.$route.params.numProg;
-
-          this.resource.modifierSelection(this.selection)
-            .then(response => {
-              return response.json();
-            })
-            .then(data => {
-              this.selectedLineProgramme = [];
-              this.unselectedLigneProgramme = [];
-              doSearch.call(this);
-              //this.getDuree()
-            })
-            .catch(response => {
-              alert("Erreur technique lors de la validation de la selection du programme !! " + response);
-            });
-        }*/
 
         function doSearch() {
           this.dataLoading = true;
@@ -1038,111 +977,6 @@
             console.log("Erreur technique lors de la validation de la selection du programme !! " + response);
           });
 
-
-
-          //this.getDuree('AFFECTE');
-
-          //this.ligneProgrammeSelected = [];
-          //this.unselectedLigneProgramme = [];
-
-
-
-
-
-         /* this.resource.findLigneProgrammeByProgramme({page : 0 , size : pageSize,
-            sort : null, null}, this.filter )
-            .then(response => {
-              return response.json();
-            })
-            .then(data => {
-
-                this.ligneProgramme = data.content;
-                //this.selectAll();
-
-                  debugger;
-                  for (var i in this.ligneProgramme) {
-                    if(this.all) {
-                      if(this.indexOf(this.ligneProgrammeSelected, this.ligneProgramme[i]) == -1 &&
-                          this.indexOf(this.unselectedLigneProgramme, this.ligneProgramme[i]) == -1  ) {
-                        this.ligneProgrammeSelected.push(this.ligneProgramme[i]);
-                      } else if (this.indexOf(this.unselectedLigneProgramme, this.ligneProgramme[i]) != -1){
-                          let number = this.indexOf(this.unselectedLigneProgramme, this.ligneProgramme[i]);
-                          this.unselectedLigneProgramme.splice(number, 1);
-                          this.ligneProgrammeSelected.push(this.ligneProgramme[i]);
-                      }
-                    } else {
-                      if(this.indexOf(this.unselectedLigneProgramme, this.ligneProgramme[i]) == -1 &&
-                            this.indexOf(this.ligneProgrammeSelected, this.ligneProgramme[i]) == -1 ) {
-                        this.unselectedLigneProgramme.push(this.ligneProgramme[i]);
-                      } else if(this.indexOf(this.ligneProgrammeSelected, this.ligneProgramme[i]) != -1) {
-                        let number = this.indexOf(this.ligneProgrammeSelected, this.ligneProgramme[i]);
-                        this.ligneProgrammeSelected.splice(number, 1);
-                        this.unselectedLigneProgramme.push(this.ligneProgramme[i]);
-                      }
-                    }
-                  }
-
-                  var  criteria = {
-                        numProg : this.programmeInfo.numProg,
-                        deselectAll : false,
-                        all : this.all,
-                        unselected : [],
-                        selected : this.all ? this.ligneProgrammeSelected : this.unselectedLigneProgramme
-                  };
-
-
-                  /*this.resource.calculerDureeAllSelection(criteria)
-                    .then(response => {
-                      return response.json();
-                    }).then(data => {
-                        this.dureeSelection.auto = data.Automatique;
-                        this.dureeSelection.manuel = data.Manuel;
-                        this.dureeSelection.duree = data.SOMME;
-
-                        this.backupDureeSelection = {
-                          auto: this.dureeSelection.auto,
-                          manuel: this.dureeSelection.manuel,
-                          duree: this.dureeSelection.duree
-                        }
-                  });*/
-
-                /*this.dureeSelection = {
-                   auto : this.backupDureeSelection.auto,
-                   manuel : this.backupDureeSelection.manuel,
-                   duree : this.backupDureeSelection.duree
-                 }*/
-               /* for(var i in this.ligneProgramme) {
-                    var entryChecked = this.ligneProgramme[i];
-                    if(entryChecked.ajout == 'Manuel') {
-                      this.dureeSelection.manuel++;
-
-                    } else {
-                      this.dureeSelection.auto++;
-                    }
-
-                    if(this.programmeInfo.typeUtilisation==="CPRIVSONPH"){
-                      this.dureeSelection.duree += entryChecked.nbrDif;
-                    }else if (this.programmeInfo.typeUtilisation==="CPRIVSONRD"){
-                      this.dureeSelection.duree += entryChecked.durDif;
-                    }
-                }*
-            });*/
-
-          //this.selectAll();
-
-
-
-
-        //} else {
-         // this.ligneProgrammeSelected = [];
-
-          /*this.dureeSelection = {
-            auto : this.backupDureeSelection.auto,
-            manuel : this.backupDureeSelection.manuel,
-            duree : this.backupDureeSelection.duree
-          }*/
-
-       // }
       },
 
       onSelectAll() {

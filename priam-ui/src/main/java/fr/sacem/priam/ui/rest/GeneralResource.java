@@ -140,9 +140,13 @@ public class GeneralResource {
     public Map<String, String>[] getRions(Locale locale) {
         List<SareftrRion> sareftrRions = sareftrRionDao.findAfterRion(RION_639);
         List<Map<String, String>> result = new ArrayList<>(sareftrRions.size());
+        SimpleDateFormat sdf = new SimpleDateFormat("MMMM YYYY", Locale.FRANCE);
         sareftrRions.forEach(rion -> {
           String rionValue = String.valueOf(rion.getRion());
-          String formattedRion = rion.getDatrglmt() != null ? String.format("%s - %s", rionValue, new SimpleDateFormat("MMMM YYYY", locale).format(rion.getDatrglmt())) : rionValue;
+          
+          String formattedRion = rion.getDatrglmt() != null ?
+                                   String.format("%s - %s", rionValue, sdf.format(rion.getDatrglmt())) :
+                                   rionValue;
           result.add(createStringMap(rionValue, formattedRion));
         });
 
@@ -155,9 +159,11 @@ public class GeneralResource {
   public Map<String, String>[] getRionsCreation(Locale locale) {
     List<SareftrRion> sareftrRions = sareftrRionDao.findAllByDateRglmtAfterCurrentDate();
     List<Map<String, String>> result = new ArrayList<>(sareftrRions.size());
+    SimpleDateFormat sdf = new SimpleDateFormat("MMMM YYYY", Locale.FRANCE);
     sareftrRions.forEach(rion -> {
       String rionValue = String.valueOf(rion.getRion());
-      String formattedRion = rion.getDatrglmt() != null ? String.format("%s - %s", rionValue, new SimpleDateFormat("MMMM YYYY", locale).format(rion.getDatrglmt())) : rionValue;
+      
+      String formattedRion = rion.getDatrglmt() != null ? String.format("%s - %s", rionValue, sdf.format(rion.getDatrglmt())) : rionValue;
       result.add(createStringMap(rionValue, formattedRion));
     });
 
