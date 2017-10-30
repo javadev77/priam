@@ -47,7 +47,7 @@
         <property name="sql">
             <value>
                 <![CDATA[
-                    INSERT INTO PRIAM_LIGNE_PROGRAMME (
+                    INSERT INTO PRIAM_LIGNE_PROGRAMME_CP (
                             id_fichier,
                             cdeCisac,
                             cdeFamilTypUtil,

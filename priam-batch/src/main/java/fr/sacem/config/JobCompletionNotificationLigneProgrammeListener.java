@@ -34,6 +34,7 @@ public class JobCompletionNotificationLigneProgrammeListener extends JobExecutio
     private static String FICHIER_ZIP_EN_COURS = "fichierZipEnCours";
     private static String NOM_ORIGINAL_FICHIER_ZIP = "nomFichierOriginal";
     private static String REPERTOIRE_DE_DESTINATION = "output.archives";
+    private static String FILE_ERREUR = "erreur" ;
     private ExecutionContext executionContext;
     private FichierServiceImpl fichierService;
     private static final Logger LOG = LoggerFactory.getLogger(JobCompletionNotificationLigneProgrammeListener.class);
@@ -102,6 +103,7 @@ public class JobCompletionNotificationLigneProgrammeListener extends JobExecutio
                     }
                 } else if("FAILED".equals(myStepExecution.getExitStatus().getExitCode()))
                 {
+                    System.out.println("--------------------------------");
                     Throwable exception = myStepExecution.getFailureExceptions().iterator().next();
                     if(exception instanceof PriamValidationException) {
                         PriamValidationException.ErrorType errorType = ((PriamValidationException) exception).getErrorType();
@@ -152,7 +154,9 @@ public class JobCompletionNotificationLigneProgrammeListener extends JobExecutio
             }
         }
     }
+    private void renommerFichierEnErreur(){
 
+    }
 
     public void setFichierService(FichierServiceImpl fichierService) {
         this.fichierService = fichierService;

@@ -31,8 +31,9 @@ public class FichierRepositoryImpl implements FichierRepository {
     private JdbcTemplate jdbcTemplate;
     private ResultSetExtractor<Fichier> fichierExtractor = new FichierExtractor();
     private static final String STATUT_OK = "CHARGEMENT_OK";
-        private static final String STATUT_KO = "CHARGEMENT_KO";
+    private static final String STATUT_KO = "CHARGEMENT_KO";
     private static final String STATUT_EN_COURS = "EN_COURS";
+    private static final String TYPE_FICHIER = "CP";
 
     public Fichier findByName(String nomFichier) {
         String sql = "SELECT f.ID,f.DATE_DEBUT_CHGT,f.DATE_FIN_CHGT,f.CDEFAMILTYPUTIL,f.NB_LIGNES,f.NOM,f.CDETYPUTIL,f.STATUT_CODE " +
@@ -78,7 +79,7 @@ public class FichierRepositoryImpl implements FichierRepository {
 
     @Override
     public void supprimerLigneProgrammeParIdFichier(Long idFichier, Set<String> errors) {
-        String sql = "DELETE FROM PRIAM_LIGNE_PROGRAMME WHERE ID_FICHIER=?";
+        String sql = "DELETE FROM PRIAM_LIGNE_PROGRAMME_CP WHERE ID_FICHIER=?";
 
         jdbcTemplate.update(sql, stmt -> {
             stmt.setLong(1, idFichier);
@@ -108,7 +109,7 @@ public class FichierRepositoryImpl implements FichierRepository {
     public Long addFichier(Fichier fichier) throws PriamValidationException {
         // traitement des données d'un ficiher
         // insetion des données de ficiher avec le statut EN COURS
-        String sql = "INSERT INTO PRIAM_FICHIER(DATE_DEBUT_CHGT,CDEFAMILTYPUTIL,NB_LIGNES,NOM,CDETYPUTIL,STATUT_CODE) VALUES(?,?,?,?,?,?)";
+        String sql = "INSERT INTO PRIAM_FICHIER(DATE_DEBUT_CHGT,CDEFAMILTYPUTIL,NB_LIGNES,NOM,CDETYPUTIL,STATUT_CODE,TYPE_FICHIER) VALUES(?,?,?,?,?,?,?)";
 
         String typeUtilisation = extractTypeUtilisationFromNomFichier(fichier.getNom());
         String codeFamilleTypeUtilisation = extractCodeFamilleTypeUtilisationFromNomFichier(typeUtilisation);
@@ -123,6 +124,7 @@ public class FichierRepositoryImpl implements FichierRepository {
                 stmt.setString(4, fichier.getNom());
                 stmt.setString(5, typeUtilisation);
                 stmt.setString(6, STATUT_EN_COURS);
+                stmt.setString(7,TYPE_FICHIER);
                 return stmt;
             }, keyHolder);
 
