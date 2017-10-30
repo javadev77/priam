@@ -461,7 +461,7 @@
 
       onShowLog(row, column) {
         this.selectedIdFichier = row.id;
-        this.hasErrors = (row.statut != 'CHARGEMENT_OK');
+        this.hasErrors = (row.statut === 'CHARGEMENT_KO');
         this.showLogChargement = true;
       }
     },

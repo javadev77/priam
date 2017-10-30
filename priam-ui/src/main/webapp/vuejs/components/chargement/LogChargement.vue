@@ -8,7 +8,7 @@
             {{log}}
           </li>
         </ul>
-        <ul v-else="">
+        <ul v-else>
           <div v-for="log in logs">
             {{log}}
           </div>
