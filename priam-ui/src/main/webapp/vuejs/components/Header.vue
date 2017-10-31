@@ -27,7 +27,7 @@
                   </ul>
                 </li>
                     <li>
-                      <p class="homerversion">Version : 1.0.0</p>
+                      <p class="homerversion">Version : 1.0.2</p>
                     </li>
               </ul>
             </div><!-- /.navbar-collapse -->
