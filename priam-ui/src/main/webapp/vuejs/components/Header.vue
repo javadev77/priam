@@ -49,6 +49,7 @@
             id : 'programme',
             name : 'programme',
             label : 'Programme',
+            routes : ['programme', 'selection', 'affectation', 'ListePrg'],
             items : [
               {
                 id : 'ListePrg',
@@ -60,12 +61,14 @@
           {
             id : 'chargement',
             name : 'chargement',
-            label : 'Chargement'
+            label : 'Chargement',
+            routes : ['chargement']
           },
           {
             id : 'parametrage',
             name : 'parametrage',
-            label : 'Paramétrage'
+            label : 'Paramétrage',
+            routes : ['parametrage']
           },
 
         ],
@@ -77,8 +80,6 @@
         },
 
         isDropdownOpen: false
-
-        //displayName: ''
       }
     },
 
@@ -86,8 +87,7 @@
 
         let currentRoute = this.$route.matched;
         console.log('currentRoute =  ' + currentRoute[0].name);
-        this.currentActiveMenu.id = currentRoute[0].name;
-        this.currentSubMenu.id = currentRoute.length > 1 && currentRoute[1] !== undefined ? currentRoute[1].name : '';
+        this.setCurrentActiveMenu(currentRoute[0].name);
 
     },
 
@@ -102,12 +102,23 @@
 
     methods : {
 
-        findMenu(idMenu) {
+        findMenu(routeViewName) {
             let menu = this.menus.find(elem => {
-              return elem.id === idMenu;
+              return elem.routes && elem.routes.indexOf(routeViewName) > -1;
             });
 
             return menu;
+        },
+
+        setCurrentActiveMenu(currentRouteViewName) {
+          let foundMenu = this.findMenu(currentRouteViewName);
+          if(foundMenu && foundMenu !== undefined) {
+            this.currentActiveMenu.id = foundMenu.id;
+            this.currentSubMenu.id = foundMenu.items !== undefined &&
+                                     foundMenu.items.length >= 1 &&
+                                     foundMenu.items[0] !== undefined ?
+                                     foundMenu.items[0].id : '';
+          }
         }
 
     },
@@ -117,16 +128,8 @@
       '$route' (to, from) {
         console.log('from route =  ' + from.path);
         console.log('to route =  ' + to.path);
-        if( to.path !== from.path) {
-            let newRoute = to.matched;
-            let foundMenu = this.findMenu(newRoute[0].name);
-            if(foundMenu && foundMenu !== undefined) {
-              this.currentActiveMenu.id = foundMenu.id;
-              this.currentSubMenu.id = foundMenu.items !== undefined &&
-                                       foundMenu.items.length >= 1 &&
-                                       foundMenu.items[0] !== undefined ? foundMenu.items[0].id : '';
-            } // if not found we stay in the current active menu
-        }
+        let newRoute = to.matched;
+        this.setCurrentActiveMenu(newRoute[0].name);
 
       }
 
