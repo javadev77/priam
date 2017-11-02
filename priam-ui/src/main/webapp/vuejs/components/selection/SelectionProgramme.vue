@@ -756,9 +756,6 @@
       loadPage: function(pageNum, size, sort) {
         this.defaultPageable.size = size;
         let pageSize = this.defaultPageable.size;
-        if(size !== undefined) {
-          pageSize = size;
-        }
 
         this.launchRequest(pageNum, pageSize, sort.property, sort.direction);
 
