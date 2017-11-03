@@ -145,7 +145,7 @@ public class LigneProgrammeDaoTest {
      * La base de donnée de test ne supporte pas la fonction COALESCE et CASE WHEN
      * @throws Exception
      */
-    @Test(expected = Exception.class)
+    @Test
     public void getUtilisateursByProgramme() throws Exception {
         List<String> utilisateursByProgramme = ligneProgrammeDao.findUtilisateursByProgramme(NUM_PROG);
         assertThat(utilisateursByProgramme).isNotNull().isNotEmpty();

@@ -4,6 +4,7 @@ import fr.sacem.priam.model.domain.LignePreprep;
 import fr.sacem.priam.model.domain.LigneProgramme;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.SelectionDto;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -144,13 +145,10 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
 
     @Transactional(readOnly = true)
     @Query(value =
-               "SELECT distinct CONCAT(lu.cdeUtil, CASE WHEN lu.libAbrgUtil is null THEN '' ELSE ' - ' END, COALESCE(lu.libAbrgUtil,'')) " +
-                   "FROM LigneProgramme ligneProgramme join ligneProgramme.fichier  f , " +
-                   "SareftjLibutil lu "+
-                   "WHERE ligneProgramme.fichier = f.id " +
-                   "AND lu.cdeUtil = ligneProgramme.cdeUtil "+
-                   "AND f.programme.numProg = :programme " +
-                   "ORDER BY ligneProgramme.cdeUtil")
+               "SELECT distinct ligneProgramme.libelleUtilisateur " +
+                   "FROM LigneProgramme ligneProgramme inner join ligneProgramme.fichier as f "+
+                   "WHERE f.programme.numProg = :programme " +
+                   "ORDER BY ligneProgramme.libelleUtilisateur")
     List<String> findUtilisateursByProgramme(@Param("programme") String programme);
 
     @Modifying(clearAutomatically = true)

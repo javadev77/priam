@@ -7,3 +7,5 @@ create index IDX_durDif on PRIAM_LIGNE_PROGRAMME (durDif);
 create index IDX_nbrDif on PRIAM_LIGNE_PROGRAMME (nbrDif);
 
 create index IDX_idOeuvreManuel on PRIAM_LIGNE_PROGRAMME (idOeuvreManuel);
+
+create index IDX_LIBUTIL on PRIAM_LIGNE_PROGRAMME (libelleUtilisateur);
