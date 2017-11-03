@@ -334,7 +334,7 @@
                 },
 
                 isChecked: function (entry) {
-                  var notChecked = $this.unselectedLigneProgramme.find(elem => {
+                  /*var notChecked = $this.unselectedLigneProgramme.find(elem => {
                     return elem.ide12 == entry.ide12 && elem.libAbrgUtil == entry.libAbrgUtil;
                   });
 
@@ -348,7 +348,7 @@
 
                   if (result !== undefined) {
                     return 1;
-                  }
+                  }*/
 
                   if(entry.selection) {
                     return 1;
@@ -515,7 +515,7 @@
                 isChecked: function (entry) {
 
                   debugger;
-                  var notChecked = $this.unselectedLigneProgramme.find(elem => {
+                  /*var notChecked = $this.unselectedLigneProgramme.find(elem => {
                     return elem.ide12 == entry.ide12 && elem.libAbrgUtil == entry.libAbrgUtil;
                   });
 
@@ -529,7 +529,7 @@
 
                   if (result !== undefined) {
                     return 1;
-                  }
+                  }*/
 
                   if(entry.selection) {
                       return 1;
@@ -581,7 +581,8 @@
 
         dataLoading : false,
         dataLoadingDuree : false,
-        showPopupSuppression : false
+        showPopupSuppression : false,
+        isActionAnnulerEdition : false
       }
     },
 
@@ -700,7 +701,12 @@
           })
           .then(data => {
               this.showPopupSuppression = false;
-              this.launchRequest(this.currentGridState.pageNum, this.currentGridState.pageSize, this.currentGridState.sort, this.currentGridState.dir);
+              //this.launchRequest(this.currentGridState.pageNum, this.currentGridState.pageSize, this.currentGridState.sort, this.currentGridState.dir);
+              var index = this.indexOf(this.ligneProgramme, this.selectedLineProgramme);
+
+              if (index > -1) {
+                this.ligneProgramme.splice(index, 1);
+              }
               this.getDuree(this.programmeInfo.statut);
           });
 
@@ -735,8 +741,7 @@
               this.ligneProgramme = this.priamGrid_sono.gridData_sono.content;
             }
 
-            console.log("ToutDesactiver = " + this.countNbSelected(this.ligneProgramme));
-            this.$store.dispatch('toutDesactiver', this.countNbSelected(this.ligneProgramme) == this.ligneProgramme.length);
+            //this.$store.dispatch('toutDesactiver', this.countNbSelected(this.ligneProgramme) == this.ligneProgramme.length);
 
 
             //this.selectAll();
@@ -745,11 +750,25 @@
 
       onSort(currentPage, pageSize, sort) {
 
-        debugger;
-        this.launchRequest(currentPage, pageSize, sort.property, sort.direction);
 
-        this.defaultPageable.sort = sort.property;
-        this.defaultPageable.dir = sort.direction;
+        this.modifierSelectionTemporaire();
+
+        this.resource.modifierSelection(this.selection)
+          .then(response => {
+            return response.json();
+          }).then(data => {
+
+
+          this.launchRequest(currentPage, pageSize, sort.property, sort.direction);
+
+          this.defaultPageable.sort = sort.property;
+          this.defaultPageable.dir = sort.direction;
+
+        })
+          .catch(response => {
+            console.log("Erreur technique lors de la validation de la selection du programme !! " + response);
+          });
+
 
       },
 
@@ -757,7 +776,20 @@
         this.defaultPageable.size = size;
         let pageSize = this.defaultPageable.size;
 
-        this.launchRequest(pageNum, pageSize, sort.property, sort.direction);
+
+        this.modifierSelectionTemporaire();
+
+        this.resource.modifierSelection(this.selection)
+          .then(response => {
+            return response.json();
+          }).then(data => {
+
+            this.launchRequest(pageNum, pageSize, sort.property, sort.direction);
+
+        }).catch(response => {
+            console.log("Erreur technique lors de la validation de la selection du programme !! " + response);
+          });
+
 
       },
 
@@ -816,7 +848,7 @@
               this.ligneProgramme = tab;
               this.dataLoading = false;
 
-              this.$store.dispatch('toutDesactiver', this.countNbSelected(this.ligneProgramme) == this.ligneProgramme.length);
+             // this.$store.dispatch('toutDesactiver', this.countNbSelected(this.ligneProgramme) == this.ligneProgramme.length);
               //this.selectAll();
             });
         }
@@ -828,27 +860,36 @@
         this.currentFilter.titre = this.filter.titre;
         this.currentFilter.selection = this.filter.selection;
 
-        doSearch.call(this);
-        this.getDuree(this.programmeInfo.statut);
+        if(this.isActionAnnulerEdition) {
+          doSearch.call(this);
+          this.getDuree(this.programmeInfo.statut);
+        } else {
+          this.modifierSelectionTemporaire();
+
+          this.resource.modifierSelection(this.selection)
+            .then(response => {
+              return response.json();
+            }).then(data => {
+
+            doSearch.call(this);
+            this.getDuree(this.programmeInfo.statut);
+
+          })
+            .catch(response => {
+              console.log("Erreur technique lors de la validation de la selection du programme !! " + response);
+            });
+        }
+
       },
 
-      countNbSelected(ligneProgramme) {
-          var count = 0;
-          for(var i in ligneProgramme) {
-              if(ligneProgramme[i].selection) {
-                count++;
-              }
-          }
 
-          return count;
-      },
 
       isTableauSelectionnable() {
         return this.tableauSelectionnable;
       },
 
       onEntryChecked(isChecked, entryChecked) {
-        this.$store.dispatch('toutDesactiver', false);
+
         if(isChecked) {
 
           if(entryChecked.ajout == 'Manuel') {
@@ -899,8 +940,11 @@
           this.unselectedLigneProgramme.push(entryChecked);
         }
 
+        entryChecked.selection = isChecked;
+       // this.$store.dispatch('toutDesactiver', this.countNbSelected(this.ligneProgramme) == this.ligneProgramme.length);
 
-        this.selection = {
+
+        /*this.selection = {
           deselectAll : false,
           all : false,
           unselected : this.unselectedLigneProgramme,
@@ -918,7 +962,7 @@
           })
           .catch(response => {
             alert("Erreur technique lors de la validation de la selection du programme !! " + response);
-          });
+          });*/
 
          console.log('onEntryChecked() ==> this.ligneProgrammeSelected='+this.ligneProgrammeSelected.length);
       },
@@ -940,7 +984,7 @@
         this.all = allChecked;
         this.ligneProgrammeSelected = [];
         this.unselectedLigneProgramme = [];
-        if(allChecked) {
+        /*if(allChecked) {
           for(var i in entries) {
               this.ligneProgrammeSelected.push(entries[i]);
           }
@@ -949,10 +993,19 @@
           for(var i in entries) {
             this.unselectedLigneProgramme.push(entries[i]);
           }
+        }*/
+
+        for(var i in entries) {
+            let index = this.indexOf(this.ligneProgramme, entries[i]);
+            if(index > -1 && this.ligneProgramme[index].selection !== allChecked) {
+              this.ligneProgramme[index].selection = allChecked;
+              this.recalculerCompteurs(this.ligneProgramme[index]);
+            }
+
         }
 
-        this.$store.dispatch('toutDesactiver', this.all);
-        this.selection = {
+        //this.$store.dispatch('toutDesactiver', this.all);
+       /* this.selection = {
           deselectAll : false,
           all : false,
           unselected : this.unselectedLigneProgramme,
@@ -972,9 +1025,41 @@
           })
           .catch(response => {
             console.log("Erreur technique lors de la validation de la selection du programme !! " + response);
-          });
+          });*/
 
       },
+
+      recalculerCompteurs(entry) {
+        if(entry.ajout == 'Manuel') {
+          if(entry.selection) {
+            this.dureeSelection.manuel++;
+          } else {
+            this.dureeSelection.manuel--;
+          }
+
+        } else {
+          if(entry.selection) {
+            this.dureeSelection.auto++;
+          } else {
+            this.dureeSelection.auto--;
+          }
+        }
+
+        let duree;
+        if(this.programmeInfo.typeUtilisation==="CPRIVSONPH"){
+          duree = entry.nbrDif;
+        }else if (this.programmeInfo.typeUtilisation==="CPRIVSONRD"){
+          duree = entry.durDif;
+        }
+
+        if(entry.selection) {
+          this.dureeSelection.duree += duree;
+        } else {
+          this.dureeSelection.duree -= duree;
+        }
+      },
+
+
 
       onSelectAll() {
         this.valider({
@@ -1141,86 +1226,64 @@
         this.inProcess = true;
 
         this.tableauSelectionnable = false;
-        if(this.all) {
-          if(this.unselectedLigneProgramme.length != 0) {
-            this.selection = {
-              deselectAll : false,
-              all : false,
-              unselected : this.unselectedLigneProgramme,
-              selected : []
-            };
-          } else {
-            this.selection = {
-              deselectAll : false,
-              all : true,
-              unselected : [],
-              selected : []
-            };
-          }
-        } else {
-          if(this.ligneProgrammeSelected.length == 0) {
-            this.selection = {
-              deselectAll : true,
-              all : false,
-              unselected : [],
-              selected : []
-            }
-          } else {
-            if(this.ligneProgrammeSelected.length > 0) {
-              this.selection = {
-                deselectAll : false,
-                all : false,
-                unselected : [],
-                selected : this.ligneProgrammeSelected
-              };
-            } else {
-              this.selection = {
-                deselectAll : false,
-                all : false,
-                unselected : this.unselectedLigneProgramme,
-                selected : []
-              };
-            }
-          }
-        }
+        this.modifierSelectionTemporaire();
 
-
-        this.selection = {
-          deselectAll : false,
-          all : false,
-          unselected : [],//this.unselectedLigneProgramme,
-          selected : []//this.ligneProgrammeSelected
-        };
-
-        this.selection.numProg = this.$route.params.numProg;
-
-        /*this.resource.modifierSelection(this.selection)
+        this.resource.modifierSelection(this.selection)
           .then(response => {
             return response.json();
           })
           .then(data => {
-            this.filter.selection = 'Sélectionné';
-            this.selectedLineProgramme = [];
-            this.unselectedLigneProgramme = [];
-            this.initProgramme();
-            this.annulerEdition();
+            this.selection = {
+              deselectAll : false,
+              all : false,
+              unselected : [],
+              selected : []
+            };
+
+            this.selection.numProg = this.$route.params.numProg;
+            this.resource.enregistrerEdition(this.selection)
+              .then(response => {
+                this.filter.selection = 'Sélectionné';
+                this.selectedLineProgramme = [];
+                this.unselectedLigneProgramme = [];
+                this.tableauSelectionnable = false;
+                this.edition = false;
+                this.inProcess = false;
+                this.initProgramme();
+              });
           })
           .catch(response => {
             alert("Erreur technique lors de la validation de la selection du programme !! " + response);
-          });*/
-
-        this.resource.enregistrerEdition(this.selection)
-          .then(response => {
-            this.filter.selection = 'Sélectionné';
-            this.selectedLineProgramme = [];
-            this.unselectedLigneProgramme = [];
-            this.tableauSelectionnable = false;
-            this.edition = false;
-            this.inProcess = false;
-            this.initProgramme();
-
-
           });
+
+
+
+
+
+      },
+
+      modifierSelectionTemporaire() {
+
+        this.unselectedLigneProgramme = [];
+        this.ligneProgrammeSelected= [];
+
+        for(var i in this.ligneProgramme) {
+          if(this.ligneProgramme[i].selection) {
+            this.ligneProgrammeSelected.push(this.ligneProgramme[i]);
+
+          } else {
+            this.unselectedLigneProgramme.push(this.ligneProgramme[i]);
+          }
+        }
+
+        this.selection = {
+          deselectAll : false,
+          all : false,
+          unselected : this.unselectedLigneProgramme,
+          selected : this.ligneProgrammeSelected
+        };
+
+        this.selection.numProg = this.$route.params.numProg;
       },
 
       annulerSelection() {
@@ -1234,7 +1297,7 @@
       },
 
       annulerEdition () {
-
+        this.isActionAnnulerEdition = true;
         this.resource.annulerEdition({numProg : this.$route.params.numProg})
           .then(response => {
             this.selectedLineProgramme = [];
@@ -1254,11 +1317,41 @@
       }
 
     },
+
     computed : {
       totalDureeSelection () {
         return this.dureeSelection.auto  + this.dureeSelection.manuel;
+      },
+
+      countNbSelected() {
+        var count = 0;
+        for(var i in this.ligneProgramme) {
+          if(this.ligneProgramme[i].selection) {
+            count++;
+          }
+        }
+
+        return count;
+      },
+
+      lengthOfTabLigneProgramme() {
+       return this.ligneProgramme.length;
       }
     },
+
+    watch: {
+      lengthOfTabLigneProgramme : function (newValue) {
+        console.log("The length of tab has changed  "+  newValue);
+        this.$store.dispatch('toutDesactiver', newValue && newValue === this.countNbSelected);
+      },
+
+      countNbSelected : function (newValue) {
+        console.log("Le nombre de selection a cahnge "+  newValue);
+        this.$store.dispatch('toutDesactiver', newValue && newValue === this.lengthOfTabLigneProgramme);
+      }
+
+    },
+
     components : {
       vSelect : vSelect,
       priamGrid : Grid,

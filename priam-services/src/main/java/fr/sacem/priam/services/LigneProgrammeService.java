@@ -21,10 +21,7 @@ import org.springframework.data.jpa.domain.JpaSort;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
@@ -189,7 +186,7 @@ public class LigneProgrammeService {
     @Transactional
     public void supprimerLigneProgramme(String numProg, Long ide12, SelectionDto selectedLigneProgramme) {
     
-        String cdeUtil = selectedLigneProgramme.getCdeUtil();//selectedLigneProgramme.getLibAbrgUtil().split(" - ")[0];
+        String cdeUtil = selectedLigneProgramme.getCdeUtil();
         LigneProgramme oeuvreManuelFound = ligneProgrammeDao.findOeuvreManuelByIde12AndCdeUtil(numProg, ide12, cdeUtil);
         doDeleteOeuvreManuel(oeuvreManuelFound);
     
@@ -285,7 +282,7 @@ public class LigneProgrammeService {
     
     @Transactional
     public void deselectLigneProgramme(String numProg, Set<Map<String, String>> unselected) {
-    
+        List<LigneProgramme> toUpdate = new ArrayList<>();
         for (Map<String, String>  obj:  unselected) {
             if(obj != null && !obj.isEmpty()) {
                 ligneProgrammeDao.updateSelectionTemporaireByNumProgramme(numProg, Long.parseLong(obj.get(IDE_12)), obj.get(CDE_UTIL).split(" - ")[0], 0);

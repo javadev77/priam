@@ -308,7 +308,6 @@
 
       filteredData() {
         var sortKey = this.sortKey
-        var filterKey = this.filterKey && this.filterKey.toLowerCase()
         var order = this.sortOrders[sortKey] || 1;
         var data = this.data.content;
 

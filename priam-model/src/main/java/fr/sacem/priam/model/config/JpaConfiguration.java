@@ -84,14 +84,17 @@ public class JpaConfiguration {
         Map<String, Object> properties = new HashMap<>();
         
         properties.put("hibernate.show_sql", true);
-        //properties.put("hibernate.ejb.interceptor", hibernateInterceptor());
         properties.put("hibernate.dialect", MySQLInnoDBDialect.class.getName());
         properties.put("hibernate.bytecode.use_reflection_optimizer", true);
-        properties.put("hibernate.jdbc.batch_size", 30);
+        properties.put("hibernate.jdbc.batch_size", 50);
+        properties.put("hibernate.order_inserts", true);
+        properties.put("hibernate.order_updates", true);
+        properties.put("hibernate.jdbc.batch_versioned_data", true);
         properties.put("hibernate.connection.zeroDateTimeBehavior", "convertToNull");
         
         return properties;
     }
+    
     @Bean
     public ModelMapper modelMapper() {
         return new ModelMapper();

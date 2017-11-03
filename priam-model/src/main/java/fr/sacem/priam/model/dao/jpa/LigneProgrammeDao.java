@@ -17,7 +17,6 @@ import java.util.List;
 /**
  * Created by benmerzoukah on 29/05/2017.
  */
-@Transactional(readOnly = true)
 public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
 
     @Transactional
@@ -155,7 +154,6 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
     List<String> findUtilisateursByProgramme(@Param("programme") String programme);
 
     @Modifying(clearAutomatically = true)
-    @Transactional
     @Query(nativeQuery = true, value="update " +
             "  PRIAM_LIGNE_PROGRAMME p " +
             "INNER JOIN " +
@@ -181,7 +179,6 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
     void updateSelectionByNumProgrammeExcept(@Param("numProg") String numProg, @Param("ide12") Long ide12, @Param("cdeUtil") String cdeUtil);
 
     @Modifying(clearAutomatically = true)
-    @Transactional
     @Query(nativeQuery = true, value="update " +
             "  PRIAM_LIGNE_PROGRAMME p " +
             "INNER JOIN " +
@@ -237,7 +234,7 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
     List<LigneProgramme> findOeuvresAutoByIdOeuvreManuel(@Param("idOeuvreManuel")Long idOeuvreManuel);
     
     
-    @Transactional
+    
     @Modifying(clearAutomatically = true)
     @Query(nativeQuery = true, value = "update " +
              "PRIAM_LIGNE_PROGRAMME p " +
@@ -248,7 +245,7 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
                "f.NUMPROG = ?1 AND p.SEL_EN_COURS=?2")
     void updateSelection(@Param("numProg") String numProg, @Param("selection") boolean value);
     
-    @Transactional
+    
     @Modifying(clearAutomatically = true)
     @Query(nativeQuery = true, value = "update " +
                                            "PRIAM_LIGNE_PROGRAMME p " +
@@ -309,4 +306,15 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
                                          "where " +
                                          "  f.NUMPROG = ?1")
     void deselectAllByNumProgramme(@Param("numProg") String numProg, @Param("selection") boolean selection);
+    
+    
+    
+    @Query(value="SELECT l " +
+                     "FROM LigneProgramme l inner join l.fichier as f "+
+                     "WHERE l.fichier = f.id " +
+                     "AND f.programme.numProg = :numProg " +
+                     "AND l.ide12 = :ide12 " +
+                     "AND l.cdeUtil = :cdeUtil " +
+                     "AND l.oeuvreManuel IS NULL ")
+    LigneProgramme findByIde12AndCdeUtil(@Param("numProg") String numProg, @Param("ide12") Long ide12, @Param("cdeUtil") String cdeUtil);
 }
