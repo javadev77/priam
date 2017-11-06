@@ -10,6 +10,7 @@ import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.model.domain.dto.SelectionDto;
 import fr.sacem.priam.model.domain.saref.SareftjLibUtilPK;
 import fr.sacem.priam.model.domain.saref.SareftjLibutil;
+import fr.sacem.priam.model.util.GlobalConstants;
 import fr.sacem.priam.services.LigneProgrammeService;
 import fr.sacem.priam.services.ProgrammeService;
 import fr.sacem.priam.ui.rest.dto.LigneProgrammeCritereRecherche;
@@ -159,19 +160,6 @@ public class LigneProgrammeResource {
   }
 
   private void modifierSelection(@RequestBody ValdierSelectionProgrammeInput input, String numProg) {
-
-      /*if(input.isDeselectAll()) {
-        ligneProgrammeService.deselectAll(programme.getNumProg());
-      } else
-      if(input.isAll()) {
-        ligneProgrammeService.selectAll(programme.getNumProg());
-      } else if (!input.getSelected().isEmpty()) {
-        ligneProgrammeService.selectLigneProgramme(programme.getNumProg(), input.getSelected());
-      } else if (!input.getUnselected().isEmpty()) {
-        ligneProgrammeService.selectAllLigneProgrammeExcept(programme.getNumProg(), input.getUnselected() );
-  
-  
-      }*/
   
       if (!input.getSelected().isEmpty()) {
         ligneProgrammeService.selectLigneProgramme(numProg, input.getSelected());
@@ -240,7 +228,7 @@ public class LigneProgrammeResource {
                     produces = MediaType.APPLICATION_JSON_VALUE,
                     consumes = MediaType.APPLICATION_JSON_VALUE)
     public SelectionDto ajouterOeuvreManuel(@RequestBody LigneProgramme input, UserDTO userDTO, Locale locale) {
-        String lang = StringUtils.upperCase(locale.getLanguage());
+        String lang = GlobalConstants.FR_LANG;
         SareftjLibUtilPK pk = new SareftjLibUtilPK(lang, input.getCdeUtil());
         SareftjLibutil sareftjLibutil = sareftjLibutilDao.findOne(pk);
   

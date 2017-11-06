@@ -70,7 +70,9 @@ const state = {
       "checked" : false
     }
 
-  ]
+  ],
+
+  lastProgrammesMisEnRepart : []
 }
 
 const mutations = {
@@ -102,6 +104,15 @@ const mutations = {
   'DELETE_PROG_EN_ERREUR'(state, numProg) {
     let number = state.programmesEnErreur.indexOf(numProg);
     state.programmesEnErreur.splice(number, 1);
+  },
+
+  'SAVE_LAST_PROGRAMME'(state, programme) {
+    var progFound = state.lastProgrammesMisEnRepart.find(function (prog) {
+      return prog.numProg === programme.numProg;
+    })
+    if(progFound === undefined) {
+      state.lastProgrammesMisEnRepart.push(programme);
+    }
   }
 
 
@@ -156,9 +167,11 @@ const getters = {
 
   programmesEnErreur : state => {
     return state.programmesEnErreur;
+  },
+
+  getLastProgByNumProg : (state, getters) => (numProg) => {
+      return state.lastProgrammesMisEnRepart.find(prog => prog.id === numProg)
   }
-
-
 
 
 };

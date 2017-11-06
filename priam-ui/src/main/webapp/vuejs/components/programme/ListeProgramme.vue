@@ -300,6 +300,7 @@
                 statutCode : ['EN_COURS', 'AFFECTE', 'CREE', 'VALIDE', 'MIS_EN_REPART', 'EN_COURS_MISE_EN_REPART']
             },
 
+
             priamGrid : {
               gridColumns : [
                 {
@@ -410,6 +411,15 @@
                   sortable : true,
                   type : 'code-value',
                   cell : {
+                    /*cellTemplate : function(programme) {
+                      var result  = getters.statutProgramme.find(function (element) {
+                        return element.code === programme.statut;
+                      });
+
+                      var template = result !== undefined ? result.libelle + '<span class="glyphicon glyphicon-info-sign" aria-hidden="true" style="padding-left: 0px;" title="Répartition KO"></span>': '';
+                      return template;
+                    }*/
+
                     toText : function(cellValue) {
                       var result  = getters.statutProgramme.find(function (element) {
                         return element.code === cellValue;
@@ -708,55 +718,11 @@
                 return response.json();
               })
               .then(data => {
-
-
-                //Clear timers
-                //let content = data.content;
-                /*for(var i in content) {
-                    let numProg = content[i].numProg;
-                    if(this.statusTimers.indexOf(numProg) !== -1) {
-                      clearInterval(this.statusTimers[numProg]);
+                /*for(var i in  data.content) {
+                    if(data.content[i].statut === 'MIS_EN_REPART') {
+                        this.$store.commit('SAVE_LAST_PROGRAMME',data.content[i]);
                     }
                 }*/
-
-                /*this.statusTimers = [];
-                var self = this;
-                for(var i in content) {
-                  let numProg = content[i].numProg;
-                  if(content[i].statut == 'VALIDE') {
-                    //this.statusTimers[numProg] = setInterval(function () {
-
-                      self.resource.checkIfDone({numProg: numProg})
-                        .then(response => {
-                          return response.json();
-                        })
-                        .then(data => {
-
-                            var fichierFelix = data;
-                            if(fichierFelix !== undefined && fichierFelix.statut !== 'EN_COURS') {
-                                //clearInterval(self.statusTimers[numProg]);
-                                self.programmesEnCoursTraitement.splice(self.programmesEnCoursTraitement.indexOf(numProg), 1);
-                            }
-
-                            if(fichierFelix !== undefined && fichierFelix.statut == 'EN_COURS') {
-                              self.programmesEnCoursTraitement.push(numProg);
-                            } else if(fichierFelix.statut == 'GENERE') {
-                              if(fichierFelix.logs !== undefined && fichierFelix.logs.length > 0) {
-                                self.programmesEnErreur.push(numProg);
-                                self.fichierFelixErrors = fichierFelix.logs;
-                              }
-                            } else if(fichierFelix.statut == 'EN_ERREUR') {
-                                self.programmesEnErreur.push(numProg);
-                                self.fichierFelixErrors = fichierFelix.logs;
-                            }
-
-
-                        });
-
-                    //}, 1000 * 5);
-                  }
-                }*/
-
                 this.priamGrid.gridData = data;
                 this.priamGrid.gridData.number = data.number + 1;
 

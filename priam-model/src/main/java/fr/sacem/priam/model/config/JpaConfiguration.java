@@ -49,9 +49,6 @@ public class JpaConfiguration {
         return em;
     }
     
-    /*
-      * Configure HikariCP pooled DataSource.
-      */
     @Bean
     public DataSource dataSource() {
         JndiDataSourceLookup jndiDataSourceLookup = new JndiDataSourceLookup();
