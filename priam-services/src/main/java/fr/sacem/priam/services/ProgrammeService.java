@@ -2,6 +2,8 @@ package fr.sacem.priam.services;
 
 import fr.sacem.priam.common.TypeUtilisationEnum;
 import fr.sacem.priam.model.dao.jpa.*;
+import fr.sacem.priam.model.dao.jpa.cp.FichierCPDao;
+import fr.sacem.priam.model.dao.jpa.cp.ProgrammeCPDao;
 import fr.sacem.priam.model.domain.*;
 import fr.sacem.priam.model.domain.criteria.ProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
@@ -23,8 +25,6 @@ import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.*;
 
-import static fr.sacem.priam.services.FichierService.GUEST;
-
 /**
  * Created by benmerzoukah on 07/06/2017.
  */
@@ -40,10 +40,10 @@ public class ProgrammeService {
 	ProgrammeViewDao programmeViewDao;
 	
 	@Autowired
-	ProgrammeDao programmeDao;
+	ProgrammeCPDao programmeCPDao;
 	
 	@Autowired
-	FichierDao fichierDao;
+	FichierCPDao fichierCPDao;
 	
 	@Autowired
 	ParamAppliDao paramAppliDao;
@@ -103,7 +103,7 @@ public class ProgrammeService {
 		mappedProgramme.setDateCreation(new Date());
 		mappedProgramme.setStatut(StatutProgramme.CREE);
 		
-		mappedProgramme = programmeDao.save(mappedProgramme);
+		mappedProgramme = programmeCPDao.save(mappedProgramme);
 		
 		return mappedProgramme;
 	}
@@ -115,7 +115,7 @@ public class ProgrammeService {
 			Programme programmeSearcher = new Programme();
 			programmeSearcher.setNom(nom);
 			Example example = Example.of(programmeSearcher);
-			resultat = programmeDao.findAll(example);
+			resultat = programmeCPDao.findAll(example);
 		} else {
 			LOG.info("Nom programme vide ou null");
 		}
@@ -124,7 +124,7 @@ public class ProgrammeService {
 	
 	@Transactional
 	public Programme updateProgramme(ProgrammeDto programmeDto) {
-		Programme programme = programmeDao.findOne(programmeDto.getNumProg());
+		Programme programme = programmeCPDao.findOne(programmeDto.getNumProg());
 		
 		programme.setNom(programmeDto.getNom());
 		
@@ -149,28 +149,28 @@ public class ProgrammeService {
 		programme.setDateFinPrg(programmeDto.getDateFinPrg());
 		programme.setCdeTer(programmeDto.getCdeTer());
 
-		return programmeDao.save(programme);
+		return programmeCPDao.save(programme);
 		
 	}
 	
 	@Transactional
 	public Programme abandonnerProgramme(ProgrammeDto programmeDto) {
-		Programme programme = programmeDao.findOne(programmeDto.getNumProg());
+		Programme programme = programmeCPDao.findOne(programmeDto.getNumProg());
 		programme.setStatut(StatutProgramme.ABANDONNE);
 		
-		return programmeDao.saveAndFlush(programme);
+		return programmeCPDao.saveAndFlush(programme);
 	}
 	
 	@Transactional
 	public void toutDeaffecter(String numProg, String user) {
 		LOG.info("Debut :Deaffecter les fichiers lies au programme (" + numProg + ")");
-		fichierDao.clearSelectedFichiers(numProg, Status.CHARGEMENT_OK);
-		Programme programme = programmeDao.findOne(numProg);
+		fichierCPDao.clearSelectedFichiers(numProg, Status.CHARGEMENT_OK);
+		Programme programme = programmeCPDao.findOne(numProg);
 		programme.setStatut(StatutProgramme.CREE);
 		programme.setUsermaj(user);
 		programme.setDatmaj(new Date());
 		
-		programmeDao.saveAndFlush(programme);
+		programmeCPDao.saveAndFlush(programme);
 		LOG.info("Fin :Deaffecter les fichiers lies au programme (" + numProg + ")");
 	}
 
@@ -181,12 +181,12 @@ public class ProgrammeService {
 
 	@Transactional
 	public Programme validerProgramme(ProgrammeDto programmeDto) {
-		Programme programme = programmeDao.findOne(programmeDto.getNumProg());
+		Programme programme = programmeCPDao.findOne(programmeDto.getNumProg());
 		programme.setStatut(StatutProgramme.VALIDE);
 		programme.setUserValidation(programmeDto.getUserValidation());
 		programme.setDateValidation(new Date());
 
-		return programmeDao.saveAndFlush(programme);
+		return programmeCPDao.saveAndFlush(programme);
 	}
 
 	@Transactional
@@ -197,13 +197,13 @@ public class ProgrammeService {
 		  fichierFelixDao.flush();
 	    }
 	    
-	    Programme programme = programmeDao.findOne(programmeDto.getNumProg());
+	    Programme programme = programmeCPDao.findOne(programmeDto.getNumProg());
 	    programme.setStatut(StatutProgramme.EN_COURS);
 	    programme.setUserValidation(null);
 	    programme.setDateValidation(null);
 		
 		
-	    return programmeDao.saveAndFlush(programme);
+	    return programmeCPDao.saveAndFlush(programme);
 	}
 
 	public Map<String, Long> getDurDifProgramme(String numProg, String statut){
@@ -213,11 +213,11 @@ public class ProgrammeService {
 		result.put(MANUEL, 0L);
 		result.put(SOMME, 0L);
 
-		Programme programme = programmeDao.findOne(numProg);
+		Programme programme = programmeCPDao.findOne(numProg);
 
 		Integer selection = SELECTION;
 
-		List<Object> prog = programmeDao.compterOuvres(numProg, selection);
+		List<Object> prog = programmeCPDao.compterOuvres(numProg, selection);
 
 		for (Object indicateur : prog) {
 			Object[] indObjects = (Object[]) indicateur;
@@ -225,9 +225,9 @@ public class ProgrammeService {
 		}
 
 		if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_PHONO.getCode().equals(programme.getTypeUtilisation().getCode())) {
-			result.put(SOMME, programmeDao.calculerQuantiteOeuvres(numProg, selection));
+			result.put(SOMME, programmeCPDao.calculerQuantiteOeuvres(numProg, selection));
 		} else if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode().equals(programme.getTypeUtilisation().getCode())) {
-			result.put(SOMME, programmeDao.calculerDureeOeuvres(numProg, selection));
+			result.put(SOMME, programmeCPDao.calculerDureeOeuvres(numProg, selection));
 		}
 
     		return result;
@@ -235,10 +235,10 @@ public class ProgrammeService {
 
 	@Transactional
 	public Programme updateStatutProgrammeToAffecte(ProgrammeDto programmeDTO) {
-		Programme programme = programmeDao.findOne(programmeDTO.getNumProg());
+		Programme programme = programmeCPDao.findOne(programmeDTO.getNumProg());
 		programme.setStatut(StatutProgramme.AFFECTE);
 		programme.setUseraffect(programmeDTO.getUseraffecte());
 		programme.setDataffect(new Date());
-		return programmeDao.saveAndFlush(programme);
+		return programmeCPDao.saveAndFlush(programme);
 	}
 }

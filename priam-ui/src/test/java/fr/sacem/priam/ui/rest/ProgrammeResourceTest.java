@@ -2,9 +2,9 @@ package fr.sacem.priam.ui.rest;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import fr.sacem.priam.model.dao.jpa.FichierDao;
+import fr.sacem.priam.model.dao.jpa.cp.FichierCPDao;
 import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
-import fr.sacem.priam.model.domain.Fichier;
+import fr.sacem.priam.model.domain.cp.FichierCP;
 import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.dto.AffectationDto;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
@@ -33,7 +33,7 @@ public class ProgrammeResourceTest extends RestResourceTest {
     private ProgrammeViewDao programmeViewDao;
 
     @Autowired
-    private FichierDao fichierDao;
+    private FichierCPDao fichierCPDao;
 
 
     @Test
@@ -233,15 +233,15 @@ public class ProgrammeResourceTest extends RestResourceTest {
   private AffectationDto createAffectationDto(String numProg, List<String> fichiers) {
       AffectationDto affectationDto = new AffectationDto();
       affectationDto.setNumProg(numProg);
-      List<Fichier> transform = Lists.transform(fichiers, new Function<String, Fichier>() {
+      List<FichierCP> transform = Lists.transform(fichiers, new Function<String, FichierCP>() {
         @Override
-        public Fichier apply(String f) {
-          Fichier fichier = new Fichier();
+        public FichierCP apply(String f) {
+          FichierCP fichier = new FichierCP();
           fichier.setNomFichier( f);
           fichier.setStatut(Status.CHARGEMENT_OK);
           fichier.setAutomatique(Boolean.TRUE);
 
-          fichierDao.save(fichier);
+          fichierCPDao.save(fichier);
 
           return fichier;
         }

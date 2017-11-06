@@ -3,7 +3,7 @@ package fr.sacem.priam.ui.rest;
 import fr.sacem.priam.common.constants.EnvConstants;
 import fr.sacem.priam.common.exception.TechnicalException;
 import fr.sacem.priam.model.dao.jpa.FichierFelixDao;
-import fr.sacem.priam.model.dao.jpa.ProgrammeDao;
+import fr.sacem.priam.model.dao.jpa.cp.ProgrammeCPDao;
 import fr.sacem.priam.model.domain.FichierFelix;
 import fr.sacem.priam.model.domain.StatutFichierFelix;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
@@ -26,20 +26,20 @@ import java.util.Date;
 @RestController
 @RequestMapping("/app/rest/repartition")
 public class RepartitionResource {
-  
+
     private static Logger logger = LoggerFactory.getLogger(RepartitionResource.class);
-    
+
     @Autowired
     private FelixDataService felixDataService;
-    
+
     @Autowired
-    private ProgrammeDao programmeDao;
-  
+    private ProgrammeCPDao programmeCPDao;
+
     @Autowired
     private FichierFelixDao fichierFelixDao;
-  
-  
-  
+
+
+
     @RequestMapping(value = "validateFelixData/{numProg}",
                   method = RequestMethod.GET,
                   produces = MediaType.APPLICATION_JSON_VALUE)
@@ -49,47 +49,47 @@ public class RepartitionResource {
           fichierFelixDao.delete(ff);
           fichierFelixDao.flush();
         }
-  
+
         ff = new FichierFelix();
         ff.setDateCreation(new Date());
         ff.setStatut(StatutFichierFelix.EN_COURS);
         ff.setNumProg(numProg);
         fichierFelixDao.save(ff);
         fichierFelixDao.flush();
-        
+
         felixDataService.runAsyncCreateFichierFelix(numProg);
-        
+
         return new ProgrammeDto();
     }
-  
-    
+
+
     @RequestMapping(value = "fichierfelix/{numProg}",
       method = RequestMethod.GET,
       produces = MediaType.APPLICATION_JSON_VALUE)
     public FichierFelix getFichierFelix(@PathVariable("numProg") String numProg) {
         FichierFelix fichierFelix = fichierFelixDao.findByNumprog(numProg);
-        
+
         return fichierFelix;
     }
-    
-    
+
+
     @RequestMapping(value = "/downloadFichierFelixError",
                    method = RequestMethod.POST)
     public void generateFelixDataWithErrors(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String tmpFilename = request.getParameter("tmpFilename");
         String filename = request.getParameter("filename");
         String numProg = request.getParameter("numProg");
-      
+
         //Programme programme = programmeDao.findOne(numProg);
-        
+
         generateFelixCsvData(response, numProg, filename);
     }
-  
+
     private void generateFelixCsvData(HttpServletResponse response, String numProg, String filename) throws IOException {
         response.setContentType("text/csv");
         response.setHeader("Content-Disposition", "attachment; filename=" + filename);
-        
-        
+
+
         FichierFelix ff = fichierFelixDao.findByNumprog(numProg);
         File file = new File(EnvConstants.FELIX_PREPREP_DIR.toString() + File.separator + ff.getNomFichier());
         //byte[] content = ff.getContent();
@@ -100,18 +100,18 @@ public class RepartitionResource {
            throw e;
         }
     }
-  
+
     @RequestMapping(value = "/downloadFichierFelix",
                     method = RequestMethod.POST)
     public void downloadFichierFelixRepartitionABlan(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String numProg = request.getParameter("numProg");
-        
+
         FichierFelix fichierFelix = fichierFelixDao.findByNumprog(numProg);
         if(fichierFelix.getLogs() == null || fichierFelix.getLogs().isEmpty()) {
             generateFelixCsvData(response, numProg, fichierFelix.getNomFichier());
         }
     }
-  
+
     @RequestMapping(value = "/generateFelixData",
                     method = RequestMethod.POST,
                     consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -122,9 +122,9 @@ public class RepartitionResource {
             ff.setStatut(StatutFichierFelix.EN_COURS_ENVOI);
             fichierFelixDao.save(ff);
             fichierFelixDao.flush();
-  
+
         }
-  
+
         felixDataService.asyncSendFichierFelix(numProg);
 
     }

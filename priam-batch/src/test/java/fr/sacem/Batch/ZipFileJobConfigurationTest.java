@@ -5,7 +5,6 @@ package fr.sacem.Batch;
  */
 
 
-import fr.sacem.priam.common.constants.EnvConstants;
 import fr.sacem.util.UtilFile;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +30,7 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles("batch-test")
-public class ZipFileJobConfigurationTest {
+public class git add ZipFileJobConfigurationTest {
 
     /**
      * Logger.

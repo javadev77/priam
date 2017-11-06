@@ -1,4 +1,4 @@
-package fr.sacem.priam.model.dao.jpa;
+package fr.sacem.priam.model.dao.jpa.cp;
 
 import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.StatutProgramme;
@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by fandis on 14/06/2017.
  */
-public interface ProgrammeDao extends JpaRepository<Programme, String> {
+public interface ProgrammeCPDao extends JpaRepository<Programme, String> {
 
     @Modifying(clearAutomatically = true)
     @Query("UPDATE Programme p SET p.statut =:statusProgramme WHERE p.numProg = :numProg")
@@ -29,7 +29,7 @@ public interface ProgrammeDao extends JpaRepository<Programme, String> {
             "       SELECT " +
             "           count(l.durDif) duree, l.ide12, l.ajout " +
             "       FROM " +
-            "           PRIAM_LIGNE_PROGRAMME l " +
+            "           PRIAM_LIGNE_PROGRAMME_CP l " +
             "       inner join " +
             "           PRIAM_FICHIER as f on l.ID_FICHIER=f.ID " +
             "       WHERE " +
@@ -47,7 +47,7 @@ public interface ProgrammeDao extends JpaRepository<Programme, String> {
             "SELECT sum(duree) from ( SELECT " +
                     "sum(l.durDif) duree, l.ide12 " +
                     "FROM " +
-                    "PRIAM_LIGNE_PROGRAMME l inner join PRIAM_FICHIER as f " +
+                    "PRIAM_LIGNE_PROGRAMME_CP l inner join PRIAM_FICHIER as f " +
                     "on l.ID_FICHIER=f.ID " +
                     "WHERE " +
                     "f.numProg = ?1 " +
@@ -61,7 +61,7 @@ public interface ProgrammeDao extends JpaRepository<Programme, String> {
             "SELECT sum(quantite) from ( SELECT " +
                     "sum(l.nbrDif) quantite, l.ide12 " +
                     "FROM " +
-                    "PRIAM_LIGNE_PROGRAMME l " +
+                    "PRIAM_LIGNE_PROGRAMME_CP l " +
                     "inner join PRIAM_FICHIER as f " +
                     "on l.ID_FICHIER=f.ID " +
                     "WHERE f.numProg = ?1 " +

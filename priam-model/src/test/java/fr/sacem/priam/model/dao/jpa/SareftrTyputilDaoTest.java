@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,7 +33,7 @@ public class SareftrTyputilDaoTest {
         List<SareftrTyputil> all = sareftrTyputilDao.findAll();
     
         assertThat(all).isNotNull().isNotEmpty();
-        assertThat(all).extracting("code").containsExactly("CPRIVSONPH", "CPRIVAUDV", "CPRIVSONRD", "COPRIVSON", "CPRIVAUDPL", "PRIME", "VALORIS", "ENCOURG");
+        assertThat(all).extracting("code").containsExactly("COPRIVSON", "CPRIVAUDPL", "CPRIVAUDV","CPRIVSONPH", "CPRIVSONRD", "ENCOURG", "PRIME", "VALORIS");
     }
     
     @Test
@@ -39,7 +42,14 @@ public class SareftrTyputilDaoTest {
         List<SareftrTyputil> all = sareftrTyputilDao.findByCodeFamille("COPIEPRIV");
         
         assertThat(all).isNotNull().isNotEmpty();
-        assertThat(all).extracting("code").containsExactly("CPRIVSONPH", "CPRIVAUDV", "CPRIVSONRD", "CPRIVAUDPL");
+        List list = new ArrayList();
+        list.add("CPRIVAUDPL");
+        list.add("CPRIVAUDV");
+        list.add("CPRIVSONPH");
+        list.add("CPRIVSONRD");
+
+
+        assertThat(all).extracting("code").containsExactlyElementsOf(list);
     }
     
     @Test

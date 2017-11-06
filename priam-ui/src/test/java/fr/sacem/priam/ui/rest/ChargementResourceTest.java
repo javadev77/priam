@@ -1,6 +1,6 @@
 package fr.sacem.priam.ui.rest;
 
-import fr.sacem.priam.model.dao.jpa.FichierDao;
+import fr.sacem.priam.model.dao.jpa.cp.FichierCPDao;
 import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.dto.FileDto;
 import fr.sacem.priam.ui.rest.dto.AffectationCriteria;
@@ -20,12 +20,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Created by benmerzoukah on 13/07/2017.
  */
 public class ChargementResourceTest extends RestResourceTest {
-  
+
   public static final String COPIEPRIV = "COPIEPRIV";
-  
+
   @Autowired
-  FichierDao fichierDao;
-  
+  FichierCPDao fichierCPDao;
+
   @Test
     public void rechercheFichiers_by_famille() throws Exception {
       InputChgtCriteria criteria = new InputChgtCriteria();
@@ -37,13 +37,13 @@ public class ChargementResourceTest extends RestResourceTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.content[0].famille", is("COPIEPRIV")));
     }
-    
+
     @Test
     public void find_fichiers_affectes_by_numprog() throws Exception {
       AffectationCriteria criteria = new AffectationCriteria();
       criteria.setNumProg("PR170001");
       criteria.setStatutCode(newArrayList(Status.AFFECTE.name()));
-      
+
       mockMvc.perform(
         post("/app/rest/chargement/allFichiers")
           .content(this.json(criteria))
@@ -51,14 +51,14 @@ public class ChargementResourceTest extends RestResourceTest {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$[0].statut", is("AFFECTE")));
     }
-    
+
     @Test
     @Transactional
     public void deleteDonneesFichiers() throws Exception {
       FileDto fileDto = new FileDto();
       String fichier125 = "Fichier 125";
-      fileDto.setId(fichierDao.findByNomFichier(fichier125).getId());
-  
+      fileDto.setId(fichierCPDao.findByNomFichier(fichier125).getId());
+
       mockMvc.perform(
            put("/app/rest/chargement/deleteFichier")
           .content(this.json(fileDto))
@@ -66,7 +66,7 @@ public class ChargementResourceTest extends RestResourceTest {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.nomFichier", is(fichier125)))
         .andExpect(jsonPath("$.statut", is("ABANDONNE")));
-  
+
     }
-  
+
 }

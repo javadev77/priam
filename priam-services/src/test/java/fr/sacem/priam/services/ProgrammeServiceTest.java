@@ -2,10 +2,10 @@ package fr.sacem.priam.services;
 
 import com.google.common.collect.Lists;
 import fr.sacem.priam.model.dao.JpaConfigurationTest;
-import fr.sacem.priam.model.dao.jpa.FichierDao;
-import fr.sacem.priam.model.dao.jpa.ProgrammeDao;
+import fr.sacem.priam.model.dao.jpa.cp.FichierCPDao;
+import fr.sacem.priam.model.dao.jpa.cp.ProgrammeCPDao;
 import fr.sacem.priam.model.dao.jpa.ProgrammeSequnceDao;
-import fr.sacem.priam.model.domain.Fichier;
+import fr.sacem.priam.model.domain.cp.FichierCP;
 import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.StatutProgramme;
@@ -44,10 +44,10 @@ public class ProgrammeServiceTest {
 	ProgrammeSequnceDao programmeSequnceDao;
 	
 	@Autowired
-	ProgrammeDao programmeDao;
+	ProgrammeCPDao programmeCPDao;
 	
 	@Autowired
-	FichierDao fichierDao;
+	FichierCPDao fichierCPDao;
 	
 	private static final Pageable pageable = new Pageable() {
 		
@@ -174,17 +174,17 @@ public class ProgrammeServiceTest {
 	@Transactional
 	public void test_tout_desaffecter() throws Exception {
 		String pr170001 = NUM_PROG;
-		List<Fichier> fichiersAffectes = fichierDao.findFichiersByIdProgramme(pr170001, Status.AFFECTE);
+		List<FichierCP> fichiersAffectes = fichierCPDao.findFichiersByIdProgramme(pr170001, Status.AFFECTE);
 		programmeService.toutDeaffecter(pr170001, "GUEST");
 		
-		Programme programme = programmeDao.findOne(pr170001);
+		Programme programme = programmeCPDao.findOne(pr170001);
 		
 		assertThat(programme).isNotNull();
 		assertThat(programme.getStatut()).isEqualTo(StatutProgramme.CREE);
 		
 		
 		
-		List<Fichier> expectedFichiersOK = fichierDao.findAll(Lists.transform(fichiersAffectes, Fichier::getId));
+		List<FichierCP> expectedFichiersOK = fichierCPDao.findAll(Lists.transform(fichiersAffectes, FichierCP::getId));
 		assertThat(expectedFichiersOK).isNotEmpty();
 		assertThat(expectedFichiersOK).extracting("statut").contains(Status.CHARGEMENT_OK);
 	}

@@ -1,8 +1,8 @@
 package fr.sacem.priam.model.services;
 
 import fr.sacem.priam.model.dao.jpa.SareftrFamiltyputilDao;
-import fr.sacem.priam.model.dao.jpa.FichierDao;
-import fr.sacem.priam.model.dao.jpa.LigneProgrammeDao;
+import fr.sacem.priam.model.dao.jpa.cp.FichierCPDao;
+import fr.sacem.priam.model.dao.jpa.cp.LigneProgrammeCPDao;
 import fr.sacem.priam.model.dao.jpa.SareftrTyputilDao;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,24 +14,24 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class LigneProgrammeServiceImpl implements LigneProgrammeService {
 
-    LigneProgrammeDao ligneProgrammeDao;
-    FichierDao fichierDao;
+    LigneProgrammeCPDao ligneProgrammeCPDao;
+    FichierCPDao fichierCPDao;
     SareftrTyputilDao sareftrTyputilDao;
     SareftrFamiltyputilDao sareftrFamiltyputilDao;
 
-    public LigneProgrammeDao getLigneProgrammeDao() {
-        return ligneProgrammeDao;
+    public LigneProgrammeCPDao getLigneProgrammeCPDao() {
+        return ligneProgrammeCPDao;
     }
 
-    public void setLigneProgrammeDao(LigneProgrammeDao ligneProgrammeDao) {
-        this.ligneProgrammeDao = ligneProgrammeDao;
+    public void setLigneProgrammeCPDao(LigneProgrammeCPDao ligneProgrammeCPDao) {
+        this.ligneProgrammeCPDao = ligneProgrammeCPDao;
     }
-    public FichierDao getFichierDao() {
-        return fichierDao;
+    public FichierCPDao getFichierCPDao() {
+        return fichierCPDao;
     }
 
-    public void setFichierDao(FichierDao fichierDao) {
-        this.fichierDao = fichierDao;
+    public void setFichierCPDao(FichierCPDao fichierCPDao) {
+        this.fichierCPDao = fichierCPDao;
     }
 
     public SareftrTyputilDao getSareftrTyputilDao() {

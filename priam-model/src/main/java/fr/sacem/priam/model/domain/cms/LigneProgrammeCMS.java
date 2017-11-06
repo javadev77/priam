@@ -1,6 +1,7 @@
-package fr.sacem.priam.model.domain;
+package fr.sacem.priam.model.domain.cms;
 
 import com.google.common.base.Objects;
+import fr.sacem.priam.model.domain.cms.FichierCMS;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -10,137 +11,137 @@ import java.util.Date;
  * Created by benmerzoukah on 29/05/2017.
  */
 @Entity
-@Table(name = "PRIAM_LIGNE_PROGRAMME")
-public class LigneProgramme  implements Serializable {
-    
+@Table(name = "PRIAM_LIGNE_PROGRAMME_CMS")
+public class LigneProgrammeCMS implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    
+
     @ManyToOne
     @JoinColumn(name = "ID_FICHIER")
-    private Fichier fichier;
-    
+    private FichierCMS fichier;
+
     @Column(name = "cdeCisac")
     private String cdeCisac;
-    
+
     @Column(name = "cdeFamilTypUtil")
     private String cdeFamilTypUtil;
-    
+
     //@Column(name = "numProg")
     private String numProg;
-    
+
     @Column(name = "cdeUtil")
     private String cdeUtil;
-    
+
     @Column(name = "cdeTypUtil")
     private String cdeTypUtil;
-    
+
     @Column(name = "cdeGreDif")
     private String cdeGreDif;
-    
+
     @Column(name = "cdeModDif")
     private String cdeModDif;
-    
+
     @Column(name = "cdeTypIde12")
     private String cdeTypIde12;
-    
+
     @Column(name = "ide12")
     private Long ide12;
-    
+
     @Column(name = "durDif")
     private Long durDif;
-    
+
     @Column(name = "nbrDif")
     private Long nbrDif;
-    
+
     @Column(name = "mt")
     private Double mt;
-    
+
     @Column(name = "ctna")
     private String ctna;
-    
+
     @Column(name = "paramCoefHor")
     private String paramCoefHor;
-    
+
     @Column(name = "durDifCtna")
     private Long durDifCtna;
-    
+
     @Column(name = "cdeLng")
     private String cdeLng;
-    
+
     @Column(name = "indDoubSsTit")
     private String indDoubSsTit;
-    
+
     @Column(name = "tax")
     private Double tax;
-    
+
     @Column(name = "typMt")
     private String typMt;
-    
+
     @Column(name = "cdeGreIde12Cmplx")
     private String cdeGreIde12Cmplx;
-    
+
     @Column(name = "cdeGreIde12")
     private String cdeGreIde12;
-    
+
     @Column(name = "titreOriCmplx")
     private String titreOriCmplx;
-    
+
     @Column(name = "titreAltPppalCmplx")
     private String titreAltPppalCmplx;
-    
+
     @Column(name = "titreOriOeuvPereCmplx")
     private String titreOriOeuvPereCmplx;
-    
+
     @Column(name = "titreAltOeuvPereCmplx")
     private String titreAltOeuvPereCmplx;
-    
+
     @Column(name = "titreOeuvre")
     private String titreOeuvre;
-    
+
     @Column(name = "cdePaysOriIso4NCmplx")
     private String cdePaysOriIso4NCmplx;
-    
+
     @Column(name = "realisateurCmplx")
     private String realisateurCmplx;
-    
+
     @Column(name = "roleParticipant1")
     private String roleParticipant1;
-    
+
     @Column(name = "nomParticipant1")
     private String nomParticipant1;
-    
+
     @Column(name = "cdeTypUtilOri")
     private String cdeTypUtilOri;
-    
+
     @Column(name = "cdeFamilTypUtilOri")
     private String cdeFamilTypUtilOri;
-    
+
     @Column(name = "utilisateur")
     private String utilisateur;
-    
+
     @Column(name = "date_insertion")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateInsertion;
-    
+
     @Column(name = "ajout")
     private String ajout;
-    
+
     @Column(name = "selection")
     private boolean selection;
-    
+
     @Column(name = "SEL_EN_COURS")
     private boolean selectionEnCours;
-    
+
     @Column(name = "libelleUtilisateur")
     private String libelleUtilisateur;
-    
-    
+
+
     @ManyToOne
     @JoinColumn(name = "idOeuvreManuel")
-    private LigneProgramme oeuvreManuel;
+    private LigneProgrammeCMS oeuvreManuel;
 
     public String getUtilisateur() {
         return utilisateur;
@@ -170,15 +171,15 @@ public class LigneProgramme  implements Serializable {
         this.selection = selection;
     }
 
-    public Fichier getFichier() {
+    public FichierCMS getFichier() {
         return fichier;
     }
 
-    public void setFichier(Fichier fichier) {
+    public void setFichier(FichierCMS fichier) {
         this.fichier = fichier;
     }
 
-    public LigneProgramme() {
+    public LigneProgrammeCMS() {
     
     }
 
@@ -446,11 +447,11 @@ public class LigneProgramme  implements Serializable {
         this.cdeFamilTypUtilOri = cdeFamilTypUtilOri;
     }
     
-    public LigneProgramme getOeuvreManuel() {
+    public LigneProgrammeCMS getOeuvreManuel() {
         return oeuvreManuel;
     }
     
-    public void setOeuvreManuel(LigneProgramme oeuvreManuel) {
+    public void setOeuvreManuel(LigneProgrammeCMS oeuvreManuel) {
         this.oeuvreManuel = oeuvreManuel;
     }
     
@@ -483,7 +484,7 @@ public class LigneProgramme  implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
     
-        LigneProgramme that = (LigneProgramme) o;
+        LigneProgrammeCMS that = (LigneProgrammeCMS) o;
     
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
         

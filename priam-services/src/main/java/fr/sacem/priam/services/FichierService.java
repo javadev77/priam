@@ -1,9 +1,9 @@
 package fr.sacem.priam.services;
 
-import fr.sacem.priam.model.dao.jpa.FichierDao;
-import fr.sacem.priam.model.dao.jpa.LigneProgrammeDao;
-import fr.sacem.priam.model.dao.jpa.ProgrammeDao;
-import fr.sacem.priam.model.domain.Fichier;
+import fr.sacem.priam.model.dao.jpa.cp.FichierCPDao;
+import fr.sacem.priam.model.dao.jpa.cp.LigneProgrammeCPDao;
+import fr.sacem.priam.model.dao.jpa.cp.ProgrammeCPDao;
+import fr.sacem.priam.model.domain.cp.FichierCP;
 import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.StatutProgramme;
@@ -24,40 +24,40 @@ public class FichierService {
     
     public static final String GUEST = "GUEST";
     @Autowired
-    private FichierDao fichierDao;
+    private FichierCPDao fichierCPDao;
     
     @Autowired
-    private  LigneProgrammeDao ligneProgrammeDao;
+    private LigneProgrammeCPDao ligneProgrammeCPDao;
     
     @Autowired
-    private ProgrammeDao programmeDao;
+    private ProgrammeCPDao programmeCPDao;
     
     @Transactional
     public void deleteDonneesFichiers(Long fileId) {
-        ligneProgrammeDao.deleteAllByFichierId(fileId);
-        fichierDao.updateFichierStatus(fileId, Status.ABANDONNE);
+        ligneProgrammeCPDao.deleteAllByFichierId(fileId);
+        fichierCPDao.updateFichierStatus(fileId, Status.ABANDONNE);
     }
     
     
     @Transactional
-    public void majFichiersAffectesAuProgramme(String numProg, List<Fichier> nouveauxfichiersAffectes, String currentUserName){
+    public void majFichiersAffectesAuProgramme(String numProg, List<FichierCP> nouveauxfichiersAffectes, String currentUserName){
         List<Long> idsNouveauxFichiersAffectes=new ArrayList<>();
-        for(Fichier fichier : nouveauxfichiersAffectes){
+        for(FichierCP fichier : nouveauxfichiersAffectes){
             idsNouveauxFichiersAffectes.add(fichier.getId());
         }
 
-        fichierDao.clearSelectedFichiers(numProg, Status.CHARGEMENT_OK);
+        fichierCPDao.clearSelectedFichiers(numProg, Status.CHARGEMENT_OK);
         if(!idsNouveauxFichiersAffectes.isEmpty()) {
-            fichierDao.updateStatusFichiersAffectes(numProg, Status.AFFECTE, idsNouveauxFichiersAffectes);
+            fichierCPDao.updateStatusFichiersAffectes(numProg, Status.AFFECTE, idsNouveauxFichiersAffectes);
         }
         
         
         //Mettre par defaut les oeuvre à  selectionne
-        ligneProgrammeDao.updateSelectionTemporaireByNumProgramme(numProg, true);
-        ligneProgrammeDao.deselectAllByNumProgramme(numProg, false);
+        ligneProgrammeCPDao.updateSelectionTemporaireByNumProgramme(numProg, true);
+        ligneProgrammeCPDao.deselectAllByNumProgramme(numProg, false);
         
     
-        Programme programme = programmeDao.findOne(numProg);
+        Programme programme = programmeCPDao.findOne(numProg);
         if(idsNouveauxFichiersAffectes.isEmpty()) {
             programme.setStatut(StatutProgramme.CREE);
         } else {
@@ -68,10 +68,10 @@ public class FichierService {
         programme.setUseraffect(currentUserName);
         programme.setDataffect(new Date());
         
-        programmeDao.saveAndFlush(programme);
+        programmeCPDao.saveAndFlush(programme);
     }
 
     public Set<String> getChargementLog(Long idFichier) {
-        return fichierDao.getChargementLog(idFichier);
+        return fichierCPDao.getChargementLog(idFichier);
     }
 }

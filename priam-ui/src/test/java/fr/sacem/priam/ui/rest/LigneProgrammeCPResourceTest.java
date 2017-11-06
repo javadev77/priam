@@ -1,6 +1,6 @@
 package fr.sacem.priam.ui.rest;
 
-import fr.sacem.priam.model.dao.jpa.LigneProgrammeDao;
+import fr.sacem.priam.model.dao.jpa.cp.LigneProgrammeCPDao;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.SelectionDto;
 import fr.sacem.priam.ui.rest.dto.LigneProgrammeCritereRecherche;
@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Created by belwidanej on 10/08/2017.
  */
-public class LigneProgrammeResourceTest extends RestResourceTest{
+public class LigneProgrammeCPResourceTest extends RestResourceTest{
 
   private static final Pageable pageable = new Pageable() {
 
@@ -87,7 +87,7 @@ public class LigneProgrammeResourceTest extends RestResourceTest{
 
 
   @Autowired
-  private LigneProgrammeDao ligneProgrammeViewDao;
+  private LigneProgrammeCPDao ligneProgrammeViewDao;
 
 
   @Test
@@ -131,17 +131,17 @@ public class LigneProgrammeResourceTest extends RestResourceTest{
    * La base de donnée de test ne supporte pas la fonction COALESCE et CASE WHEN
    * @throws Exception
    */
-  @Test(expected = Exception.class)
+  @Test
   public void getUtilisateursByProgramme() throws Exception {
     List<String> titresByProgramme = ligneProgrammeViewDao.findUtilisateursByProgramme(NUM_PROG);
 
-    mockMvc.perform(get(APP_REST_GET_UTILISATEURS_BY_PROGRAMME+"?q=programme="+NUM_PROG)
+    mockMvc.perform(get(APP_REST_GET_UTILISATEURS_BY_PROGRAMME+"?programme="+NUM_PROG)
       .content(this.json(titresByProgramme))
       .contentType(contentType))
       .andExpect(status().isOk());
   }
 
-  @Test(expected = Exception.class)
+  @Test
   public void validerSelection() throws Exception {
 
     ValdierSelectionProgrammeInput input = new ValdierSelectionProgrammeInput();
@@ -154,7 +154,7 @@ public class LigneProgrammeResourceTest extends RestResourceTest{
       .andExpect(status().isOk());
   }
 
-  @Test(expected = Exception.class)
+  @Test
   public void modifierSelection() throws Exception {
 
     ValdierSelectionProgrammeInput input = new ValdierSelectionProgrammeInput();
@@ -182,7 +182,7 @@ public class LigneProgrammeResourceTest extends RestResourceTest{
       .andExpect(status().isOk());
   }
 
-  @Test(expected = Exception.class)
+  @Test
   public void annulerSelection() throws Exception {
 
     ValdierSelectionProgrammeInput input = new ValdierSelectionProgrammeInput();
@@ -193,9 +193,8 @@ public class LigneProgrammeResourceTest extends RestResourceTest{
       .contentType(contentType))
       .andExpect(status().isOk());
   }
-
-  @Test(expected = Exception.class)
-  @Ignore
+@Ignore
+  @Test
   public void supprimerLigneProgramme() throws Exception {
     mockMvc.perform(delete(APP_REST_SUPPRIMER_LIGNE_PROGRAMME)
       .contentType(contentType))

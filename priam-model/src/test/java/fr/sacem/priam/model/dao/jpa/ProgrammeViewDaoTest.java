@@ -2,6 +2,7 @@ package fr.sacem.priam.model.dao.jpa;
 
 
 import fr.sacem.priam.model.dao.JpaConfigurationTest;
+import fr.sacem.priam.model.dao.jpa.cp.ProgrammeCPDao;
 import fr.sacem.priam.model.domain.*;
 import fr.sacem.priam.model.domain.criteria.ProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
@@ -82,7 +83,7 @@ public class ProgrammeViewDaoTest {
     @Autowired
     private ProgrammeViewDao programmeViewDao;
     @Autowired
-    private ProgrammeDao programmeDao;
+    private ProgrammeCPDao programmeCPDao;
     @Autowired
     private SareftrRionDao sareftrRionDao;
     @Autowired
@@ -207,7 +208,7 @@ public class ProgrammeViewDaoTest {
         Programme programmeSearcher =new Programme();
         programmeSearcher.setNom("Programme 01");
         Example example = Example.of(programmeSearcher);
-        List<Programme> resultat= programmeDao.findAll(example);
+        List<Programme> resultat= programmeCPDao.findAll(example);
         assertThat(resultat).isNotNull();
         assertThat(resultat.size()).isEqualTo(2);
 
@@ -235,9 +236,9 @@ public class ProgrammeViewDaoTest {
         programme.setNom("mon programme 1");
         programme.setTypeUtilisation(sareftrTyputil);
         programme.setFamille(sareftrFamiltyputil);
-        programme.setRionPaiement(sareftrRionPaiement);
+        //programme.setRionPaiement(sareftrRionPaiement);
         programme.setRionTheorique(sareftrRionTheorique);
-        programmeDao.save(programme);
+        programmeCPDao.save(programme);
     }
     
     @Test

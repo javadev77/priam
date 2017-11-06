@@ -2,7 +2,7 @@ package fr.sacem.priam.ui.rest;
 
 import com.google.common.base.Strings;
 import fr.sacem.priam.model.dao.jpa.SareftjLibutilDao;
-import fr.sacem.priam.model.domain.LigneProgramme;
+import fr.sacem.priam.model.domain.cp.LigneProgrammeCP;
 import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.criteria.LigneProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
@@ -44,10 +44,10 @@ public class LigneProgrammeResource {
 
   @Autowired
   private ProgrammeService programmeService;
-  
+
   @Autowired
   private SareftjLibutilDao sareftjLibutilDao;
-  
+
   private static Logger logger = LoggerFactory.getLogger(LigneProgrammeResource.class);
 
   @RequestMapping(value = "ligneProgramme/search",
@@ -127,13 +127,13 @@ public class LigneProgrammeResource {
 
     ProgrammeDto programmeDTO = new ProgrammeDto();
     programmeDTO.setNumProg(input.getNumProg());
-  
+
     programmeDTO.setUserValidation(userDTO.getDisplayName());
     ligneProgrammeService.enregistrerEdition(input.getNumProg());
-    
+
     Programme programme = programmeService.validerProgramme(programmeDTO);
-  
-    
+
+
 
     return new ArrayList<>();
   }
@@ -159,20 +159,6 @@ public class LigneProgrammeResource {
   }
 
   private void modifierSelection(@RequestBody ValdierSelectionProgrammeInput input, String numProg) {
-
-      /*if(input.isDeselectAll()) {
-        ligneProgrammeService.deselectAll(programme.getNumProg());
-      } else
-      if(input.isAll()) {
-        ligneProgrammeService.selectAll(programme.getNumProg());
-      } else if (!input.getSelected().isEmpty()) {
-        ligneProgrammeService.selectLigneProgramme(programme.getNumProg(), input.getSelected());
-      } else if (!input.getUnselected().isEmpty()) {
-        ligneProgrammeService.selectAllLigneProgrammeExcept(programme.getNumProg(), input.getUnselected() );
-  
-  
-      }*/
-  
       if (!input.getSelected().isEmpty()) {
         ligneProgrammeService.selectLigneProgramme(numProg, input.getSelected());
       }
@@ -229,31 +215,31 @@ public class LigneProgrammeResource {
                                          @PathVariable(name = "ide12") Long ide12,
                                          @RequestBody SelectionDto selectedLigneProgramme) {
     ligneProgrammeService.supprimerLigneProgramme(numProg, ide12, selectedLigneProgramme);
-    
+
     return true;
   }
-  
-  
-  
+
+
+
     @RequestMapping(value = "ligneProgramme/selection/ajoutOeuvre",
                     method = RequestMethod.POST,
                     produces = MediaType.APPLICATION_JSON_VALUE,
                     consumes = MediaType.APPLICATION_JSON_VALUE)
-    public SelectionDto ajouterOeuvreManuel(@RequestBody LigneProgramme input, UserDTO userDTO, Locale locale) {
+    public SelectionDto ajouterOeuvreManuel(@RequestBody LigneProgrammeCP input, UserDTO userDTO, Locale locale) {
         String lang = StringUtils.upperCase(locale.getLanguage());
         SareftjLibUtilPK pk = new SareftjLibUtilPK(lang, input.getCdeUtil());
         SareftjLibutil sareftjLibutil = sareftjLibutilDao.findOne(pk);
-  
+
         String libAbrgUtil = sareftjLibutil.getLibAbrgUtil();
         input.setLibelleUtilisateur(sareftjLibutil.getCdeUtil() + (Strings.isNullOrEmpty(libAbrgUtil) ? "" :  " - " + libAbrgUtil));
         input.setUtilisateur(userDTO.getUserId());
-        
+
         ligneProgrammeService.ajouterOeuvreManuel(input);
-         
+
          return new SelectionDto();
     }
-    
-  
+
+
     @RequestMapping(value = "ligneProgramme/durdifAllSelect",
       method = RequestMethod.POST,
       consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -261,30 +247,30 @@ public class LigneProgrammeResource {
     public Map<String, Long> calculerDureeAllSelection(@RequestBody ValdierSelectionProgrammeInput input) {
       return ligneProgrammeService.calculerDureeAllSelection(input.getNumProg(), input.getSelected(), input.isAll());
     }
-  
+
   @RequestMapping(value = "ligneProgramme/selection/enregistrerEdition",
     method = RequestMethod.POST,
     consumes = MediaType.APPLICATION_JSON_VALUE)
   public void enregistrerEdition(@RequestBody ValdierSelectionProgrammeInput input) {
     if(input == null || input.getNumProg() == null || input.getNumProg().isEmpty())
       throw new RuntimeException("input or num programme must not be null !");
-  
+
     ProgrammeDto programmeDTO = new ProgrammeDto();
     programmeDTO.setNumProg(input.getNumProg());
-  
+
     Programme programme = programmeService.invaliderProgramme(programmeDTO);
-  
+
     ligneProgrammeService.enregistrerEdition(input.getNumProg());
   }
-  
-  
+
+
   @RequestMapping(value = "ligneProgramme/selection/annulerEdition",
     method = RequestMethod.POST,
     consumes = MediaType.APPLICATION_JSON_VALUE)
   public void annulerEdition(@RequestBody ValdierSelectionProgrammeInput input) {
     ligneProgrammeService.annulerEdition(input.getNumProg());
   }
-  
+
 
 
 }

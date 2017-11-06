@@ -12,7 +12,12 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "PRIAM_FICHIER")
-public class Fichier implements Serializable {
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(
+        name="TYPE_FICHIER",
+        discriminatorType=DiscriminatorType.STRING
+)
+public abstract class Fichier implements Serializable {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

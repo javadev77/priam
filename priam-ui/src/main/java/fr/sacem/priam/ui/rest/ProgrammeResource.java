@@ -3,7 +3,7 @@ package fr.sacem.priam.ui.rest;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
-import fr.sacem.priam.model.domain.Fichier;
+import fr.sacem.priam.model.domain.cp.FichierCP;
 import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.StatutProgramme;
 import fr.sacem.priam.model.domain.TypeRepart;
@@ -36,10 +36,10 @@ public class ProgrammeResource {
 
     @Autowired
     private ProgrammeService programmeService;
-    
+
     @Autowired
     private FichierService fichierService;
-    
+
     @Autowired
     private ProgrammeViewDao programmeViewDao;
 
@@ -143,7 +143,7 @@ public class ProgrammeResource {
 
         ProgrammeDto programmeDto = null;
         String numProg=affectationDto.getNumProg();
-        List<Fichier> fichiers = affectationDto.getFichiers();
+        List<FichierCP> fichiers = affectationDto.getFichiers();
 
         if(!Strings.isNullOrEmpty(numProg)){
             fichierService.majFichiersAffectesAuProgramme(numProg, fichiers, currentUser.getDisplayName());

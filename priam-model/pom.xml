@@ -5,7 +5,7 @@
     <parent>
         <artifactId>priam-parent</artifactId>
         <groupId>fr.sacem.priam</groupId>
-        <version>0.8.0-SNAPSHOT</version>
+        <version>2.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -69,12 +69,6 @@
             <version>2.4</version>
         </dependency>
 
-        <!-- Add H2 database support [for running with local profile] -->
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>1.4.190</version>
-        </dependency>
         <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
@@ -89,7 +83,7 @@
         <dependency>
             <groupId>fr.sacem.priam</groupId>
             <artifactId>priam-common</artifactId>
-            <version>0.8.0-SNAPSHOT</version>
+            <version>2.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.modelmapper</groupId>
@@ -108,7 +102,16 @@
             <artifactId>hibernate-validator</artifactId>
             <version>5.3.4.Final</version>
         </dependency>
-
+        <dependency>
+            <groupId>ch.vorburger.mariaDB4j</groupId>
+            <artifactId>mariaDB4j</artifactId>
+            <version>2.2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mariadb.jdbc</groupId>
+            <artifactId>mariadb-java-client</artifactId>
+            <version>2.1.2</version>
+        </dependency>
     </dependencies>
 
     <build>

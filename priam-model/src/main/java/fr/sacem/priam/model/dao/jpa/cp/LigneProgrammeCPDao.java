@@ -1,7 +1,7 @@
-package fr.sacem.priam.model.dao.jpa;
+package fr.sacem.priam.model.dao.jpa.cp;
 
 import fr.sacem.priam.model.domain.LignePreprep;
-import fr.sacem.priam.model.domain.LigneProgramme;
+import fr.sacem.priam.model.domain.cp.LigneProgrammeCP;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.SelectionDto;
 import org.springframework.data.domain.Page;
@@ -18,29 +18,29 @@ import java.util.List;
  * Created by benmerzoukah on 29/05/2017.
  */
 @Transactional(readOnly = true)
-public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
+public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Long> {
 
     @Transactional
     @Modifying(clearAutomatically = true)
-    @Query("DELETE FROM LigneProgramme lp WHERE lp.fichier.id = :fichierId")
+    @Query("DELETE FROM LigneProgrammeCP lp WHERE lp.fichier.id = :fichierId")
     void deleteAllByFichierId(@Param("fichierId") Long fileId);
 
-    List<LigneProgramme> findByFichierId(Long fileId);
+    List<LigneProgrammeCP> findByFichierId(Long fileId);
 
 
     @Transactional
     @Query(value="SELECT l " +
-            "FROM LigneProgramme l join l.fichier as f "+
+            "FROM LigneProgrammeCP l join l.fichier as f "+
             "WHERE l.fichier = f.id " +
             "AND f.programme.numProg = :numProg ")
-    Page<LigneProgramme> findLigneProgrammeByProgrammeId(@Param("numProg") String numProg, Pageable pageable);
+    Page<LigneProgrammeCP> findLigneProgrammeByProgrammeId(@Param("numProg") String numProg, Pageable pageable);
     
     @Transactional
     @Query(value="SELECT l " +
-                     "FROM LigneProgramme l join l.fichier as f "+
+                     "FROM LigneProgrammeCP l join l.fichier as f "+
                      "WHERE l.fichier = f.id " +
                      "AND f.programme.numProg = :numProg ")
-    List<LigneProgramme> findLigneProgrammeByNumProg(@Param("numProg") String numProg);
+    List<LigneProgrammeCP> findLigneProgrammeByNumProg(@Param("numProg") String numProg);
 
     @Transactional
     @Query(value="SELECT new fr.sacem.priam.model.domain.dto.SelectionDto("+
@@ -55,7 +55,7 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
                     "ligneProgramme.libelleUtilisateur, " +
                     "ligneProgramme.cdeUtil) " +
                     //"CONCAT(ligneProgramme.cdeUtil, CASE WHEN lu.libAbrgUtil is null THEN '' ELSE ' - ' END, COALESCE(lu.libAbrgUtil,''))) " +
-            "FROM LigneProgramme ligneProgramme join ligneProgramme.fichier  f " +
+            "FROM LigneProgrammeCP ligneProgramme join ligneProgramme.fichier  f " +
             //"SareftjLibutil lu "+
             "WHERE ligneProgramme.fichier = f.id " +
             //"AND lu.cdeUtil = ligneProgramme.cdeUtil "+
@@ -103,7 +103,7 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
                      "ligneProgramme.cdeLng, " +
                      "ligneProgramme.indDoubSsTit, " +
                      "ligneProgramme.tax) " +
-                     "FROM LigneProgramme ligneProgramme inner join ligneProgramme.fichier  f " +
+                     "FROM LigneProgrammeCP ligneProgramme inner join ligneProgramme.fichier  f " +
                      "inner join f.programme prog " +
                      "WHERE prog.numProg = :numProg " +
                      "AND ligneProgramme.selection = true " +
@@ -119,7 +119,7 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
             "SELECT " +
                     " distinct  new fr.sacem.priam.model.domain.dto.KeyValueDto(l.ide12) " +
                     "FROM " +
-                    "LigneProgramme l " +
+                    "LigneProgrammeCP l " +
                     "WHERE " +
                     "l.fichier in (" +
                     " select f.id from Fichier f where f.programme.numProg like :programme" +
@@ -134,7 +134,7 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
             "SELECT " +
                     " distinct new fr.sacem.priam.model.domain.dto.KeyValueDto(l.titreOeuvre) " +
                     "FROM " +
-                    "LigneProgramme l " +
+                    "LigneProgrammeCP l " +
                     "WHERE " +
                     "l.fichier in (" +
                     " select f.id from Fichier f where f.programme.numProg like :programme" +
@@ -146,7 +146,7 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
     @Transactional(readOnly = true)
     @Query(value =
                "SELECT distinct CONCAT(lu.cdeUtil, CASE WHEN lu.libAbrgUtil is null THEN '' ELSE ' - ' END, COALESCE(lu.libAbrgUtil,'')) " +
-                   "FROM LigneProgramme ligneProgramme join ligneProgramme.fichier  f , " +
+                   "FROM LigneProgrammeCP ligneProgramme join ligneProgramme.fichier  f , " +
                    "SareftjLibutil lu "+
                    "WHERE ligneProgramme.fichier = f.id " +
                    "AND lu.cdeUtil = ligneProgramme.cdeUtil "+
@@ -157,7 +157,7 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
     @Modifying(clearAutomatically = true)
     @Transactional
     @Query(nativeQuery = true, value="update " +
-            "  PRIAM_LIGNE_PROGRAMME p " +
+            "  PRIAM_LIGNE_PROGRAMME_CP p " +
             "INNER JOIN " +
             "  PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
             "set " +
@@ -169,21 +169,7 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
     @Modifying(clearAutomatically = true)
     @Transactional
     @Query(nativeQuery = true, value="update " +
-            "  PRIAM_LIGNE_PROGRAMME p " +
-            "INNER JOIN " +
-            "  PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
-            "set " +
-            "  p.SEL_EN_COURS=1 " +
-            "where " +
-            "  f.NUMPROG = ?1" +
-            " AND p.ide12 <> ?2 " +
-            " AND p.cdeUtil not like ?3")
-    void updateSelectionByNumProgrammeExcept(@Param("numProg") String numProg, @Param("ide12") Long ide12, @Param("cdeUtil") String cdeUtil);
-
-    @Modifying(clearAutomatically = true)
-    @Transactional
-    @Query(nativeQuery = true, value="update " +
-            "  PRIAM_LIGNE_PROGRAMME p " +
+            "  PRIAM_LIGNE_PROGRAMME_CP p " +
             "INNER JOIN " +
             "  PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
             "set " +
@@ -200,7 +186,7 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
     @Transactional
     @Modifying(clearAutomatically = true)
     @Query(nativeQuery = true, value = "DELETE FROM " +
-            "PRIAM_LIGNE_PROGRAMME p " +
+            "PRIAM_LIGNE_PROGRAMME_CP p " +
             "INNER JOIN " +
             "PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
             "WHERE  "+
@@ -211,36 +197,36 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
     
     
     @Query(value="SELECT l " +
-                     "FROM LigneProgramme l join l.fichier as f "+
+                     "FROM LigneProgrammeCP l join l.fichier as f "+
                      "WHERE l.fichier = f.id " +
                      "AND f.programme.numProg = :numProg " +
                      "AND l.ide12 = :ide12 " +
                      "AND l.cdeUtil = :cdeUtil " +
                      "AND l.oeuvreManuel IS NULL " +
                      "AND l.ajout = 'Automatique' ")
-    List<LigneProgramme> findOeuvresAutoByIde12AndCdeUtil(@Param("numProg") String numProg, @Param("ide12") Long ide12, @Param("cdeUtil") String cdeUtil);
+    List<LigneProgrammeCP> findOeuvresAutoByIde12AndCdeUtil(@Param("numProg") String numProg, @Param("ide12") Long ide12, @Param("cdeUtil") String cdeUtil);
     
     @Query(value="SELECT l " +
-                     "FROM LigneProgramme l join l.fichier as f "+
+                     "FROM LigneProgrammeCP l join l.fichier as f "+
                      "WHERE l.fichier = f.id " +
                      "AND f.programme.numProg = :numProg " +
                      "AND l.ide12 = :ide12 " +
                      "AND l.cdeUtil = :cdeUtil " +
                      "AND l.oeuvreManuel IS NULL " +
                      "AND l.ajout = 'Manuel' ")
-    LigneProgramme findOeuvreManuelByIde12AndCdeUtil(@Param("numProg") String numProg, @Param("ide12") Long ide12, @Param("cdeUtil") String cdeUtil);
+    LigneProgrammeCP findOeuvreManuelByIde12AndCdeUtil(@Param("numProg") String numProg, @Param("ide12") Long ide12, @Param("cdeUtil") String cdeUtil);
     
     @Query(value="SELECT l " +
-                     "FROM LigneProgramme l " +
+                     "FROM LigneProgrammeCP l " +
                      "WHERE l.oeuvreManuel.id = :idOeuvreManuel  " +
                      "AND l.ajout = 'Automatique' ")
-    List<LigneProgramme> findOeuvresAutoByIdOeuvreManuel(@Param("idOeuvreManuel")Long idOeuvreManuel);
+    List<LigneProgrammeCP> findOeuvresAutoByIdOeuvreManuel(@Param("idOeuvreManuel")Long idOeuvreManuel);
     
     
     @Transactional
     @Modifying(clearAutomatically = true)
     @Query(nativeQuery = true, value = "update " +
-             "PRIAM_LIGNE_PROGRAMME p " +
+             "PRIAM_LIGNE_PROGRAMME_CP p " +
               "INNER JOIN " +
                 "PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
                 "set  p.selection=?2 " +
@@ -251,7 +237,7 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
     @Transactional
     @Modifying(clearAutomatically = true)
     @Query(nativeQuery = true, value = "update " +
-                                           "PRIAM_LIGNE_PROGRAMME p " +
+                                           "PRIAM_LIGNE_PROGRAMME_CP p " +
                                            "INNER JOIN " +
                                            "PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
                                            "set  p.SEL_EN_COURS=?2 " +
@@ -262,7 +248,7 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
     @Transactional
     @Modifying(clearAutomatically = true)
     @Query(nativeQuery = true, value = "DELETE p.* FROM " +
-                                           "PRIAM_LIGNE_PROGRAMME p " +
+                                           "PRIAM_LIGNE_PROGRAMME_CP p " +
                                            "INNER JOIN " +
                                            "PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
                                            "WHERE  "+
@@ -272,24 +258,24 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
     void deleteOeuvresManuels(@Param("numProg") String numProg, @Param("selection") boolean value);
     
     @Query(value="SELECT l " +
-                     "FROM LigneProgramme l join l.fichier as f "+
+                     "FROM LigneProgrammeCP l join l.fichier as f "+
                      "WHERE l.fichier = f.id " +
                      "AND f.programme.numProg = :numProg " +
                      "AND l.selection = :selection " +
                      "AND l.ajout = 'Manuel' ")
-    List<LigneProgramme> findOeuvresManuelsEnCoursEdition(@Param("numProg") String numProg, @Param("selection") boolean value);
+    List<LigneProgrammeCP> findOeuvresManuelsEnCoursEdition(@Param("numProg") String numProg, @Param("selection") boolean value);
     
     @Query(value="SELECT l " +
-                     "FROM LigneProgramme l join l.fichier as f "+
+                     "FROM LigneProgrammeCP l join l.fichier as f "+
                      "WHERE l.fichier = f.id " +
                      "AND f.programme.numProg = :numProg " +
                      "AND l.ajout = 'Manuel' ")
-    List<LigneProgramme> findAllOeuvresManuelsByNumProg(@Param("numProg") String numProg);
+    List<LigneProgrammeCP> findAllOeuvresManuelsByNumProg(@Param("numProg") String numProg);
     
     @Transactional
     @Modifying(clearAutomatically = true)
     @Query(nativeQuery = true, value = "DELETE p.* FROM " +
-                                           "PRIAM_LIGNE_PROGRAMME p " +
+                                           "PRIAM_LIGNE_PROGRAMME_CP p " +
                                            "INNER JOIN " +
                                            "PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
                                            "WHERE  "+
@@ -301,7 +287,7 @@ public interface LigneProgrammeDao extends JpaRepository<LigneProgramme, Long> {
     @Modifying(clearAutomatically = true)
     @Transactional
     @Query(nativeQuery = true, value="update " +
-                                         "  PRIAM_LIGNE_PROGRAMME p " +
+                                         "  PRIAM_LIGNE_PROGRAMME_CP p " +
                                          "INNER JOIN " +
                                          "  PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
                                          "set " +

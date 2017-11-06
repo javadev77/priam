@@ -341,62 +341,6 @@ CREATE TABLE `PRIAM_LIGNE_PREPREP` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `PRIAM_LIGNE_PROGRAMME`
---
-
-DROP TABLE IF EXISTS `PRIAM_LIGNE_PROGRAMME_CP`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `PRIAM_LIGNE_PROGRAMME` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `cdeCisac` varchar(3) DEFAULT NULL,
-  `cdeFamilTypUtil` varchar(45) DEFAULT NULL,
-  `numProg` int(11) DEFAULT NULL,
-  `cdeUtil` varchar(45) DEFAULT NULL,
-  `cdeTypUtil` varchar(45) DEFAULT NULL,
-  `cdeGreDif` varchar(45) DEFAULT NULL,
-  `cdeModDif` varchar(45) DEFAULT NULL,
-  `cdeTypIde12` varchar(45) DEFAULT NULL,
-  `ide12` bigint(20) DEFAULT NULL,
-  `durDif` int(11) DEFAULT NULL,
-  `nbrDif` int(11) DEFAULT NULL,
-  `libelleUtilisateur` varchar(255) DEFAULT NULL,
-  `mt` double DEFAULT NULL,
-  `ctna` varchar(45) DEFAULT NULL,
-  `paramCoefHor` varchar(10) DEFAULT NULL,
-  `durDifCtna` int(11) DEFAULT NULL,
-  `cdeLng` varchar(45) DEFAULT NULL,
-  `indDoubSsTit` varchar(45) DEFAULT NULL,
-  `tax` double DEFAULT NULL,
-  `typMt` varchar(45) DEFAULT NULL,
-  `ID_FICHIER` bigint(20) DEFAULT NULL,
-  `cdeGreIde12Cmplx` varchar(45) DEFAULT NULL,
-  `cdeGreIde12` varchar(45) DEFAULT NULL,
-  `titreAltOeuvPereCmplx` varchar(250) DEFAULT NULL,
-  `titreAltPppalCmplx` varchar(250) DEFAULT NULL,
-  `titreOriOeuvPereCmplx` varchar(250) DEFAULT NULL,
-  `titreOriCmplx` varchar(250) DEFAULT NULL,
-  `titreOeuvre` varchar(250) DEFAULT NULL,
-  `cdePaysOriIso4NCmplx` varchar(45) DEFAULT NULL,
-  `realisateurCmplx` varchar(250) DEFAULT NULL,
-  `roleParticipant1` varchar(250) DEFAULT NULL,
-  `nomParticipant1` varchar(250) DEFAULT NULL,
-  `cdeTypUtilOri` varchar(45) DEFAULT NULL,
-  `cdeFamilTypUtilOri` varchar(45) DEFAULT NULL,
-  `utilisateur` varchar(250) DEFAULT 'Batch Extraction',
-  `date_insertion` datetime DEFAULT CURRENT_TIMESTAMP,
-  `ajout` varchar(45) DEFAULT 'Automatique',
-  `selection` tinyint(1) DEFAULT '0',
-  `idOeuvreManuel` int(11) DEFAULT NULL,
-  `SEL_EN_COURS` tinyint(4) DEFAULT '1',
-  PRIMARY KEY (`id`),
-  KEY `FK_ID_FICHIER` (`ID_FICHIER`),
-  KEY `IDX_CDE_UTIL` (`cdeUtil`),
-  CONSTRAINT `FK_ID_FICHIER` FOREIGN KEY (`ID_FICHIER`) REFERENCES `PRIAM_FICHIER` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `PRIAM_PARAMAPPLI`
 --
 
@@ -481,46 +425,36 @@ CREATE TABLE `PRIAM_PROGRAMME_SEQUENCE` (
   `CODESEQUENCE` bigint(20) NOT NULL,
   PRIMARY KEY (`CODESEQUENCE`,`ANNEE`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Temporary view structure for view `PRIAM_PROG_VIEW`
---
-
-DROP TABLE IF EXISTS `PRIAM_PROG_VIEW`;
-/*!50001 DROP VIEW IF EXISTS `PRIAM_PROG_VIEW`*/;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-/*!50001 CREATE VIEW `PRIAM_PROG_VIEW` AS SELECT
- 1 AS `NUMPROG`,
- 1 AS `NOM`,
- 1 AS `RION_THEORIQUE`,
- 1 AS `CDEFAMILTYPUTIL`,
- 1 AS `CDETYPUTIL`,
- 1 AS `TYPE_REPART`,
- 1 AS `DATE_CREATION`,
- 1 AS `STATUT_PROG_CODE`,
- 1 AS `RION_PAIEMENT`,
- 1 AS `USERCRE`,
- 1 AS `DATMAJ`,
- 1 AS `USERMAJ`,
- 1 AS `DATAFFECT`,
- 1 AS `USERAFFECT`,
- 1 AS `fichiers`,
- 1 AS `DATEDBTPRG`,
- 1 AS `DATEFINPRG`,
- 1 AS `CDETER`,
- 1 AS `USERVALIDATION`,
- 1 AS `DATEVALIDATION`,
- 1 AS `STATUT_FICHIER_FELIX`,
- 1 AS `DATE_REPARTITION`*/;
-SET character_set_client = @saved_cs_client;
-
-
---
--- Table structure for table `PRIAM_ROLE`
---
-
+create view PRIAM_PROG_VIEW as
+  SELECT DISTINCT
+    `pr`.`NUMPROG`                                                         AS `NUMPROG`,
+    `pr`.`NOM`                                                             AS `NOM`,
+    `pr`.`RION_THEORIQUE`                                                  AS `RION_THEORIQUE`,
+    `pr`.`CDEFAMILTYPUTIL`                                                 AS `CDEFAMILTYPUTIL`,
+    `pr`.`CDETYPUTIL`                                                      AS `CDETYPUTIL`,
+    `pr`.`TYPE_REPART`                                                     AS `TYPE_REPART`,
+    `pr`.`DATE_CREATION`                                                   AS `DATE_CREATION`,
+    `pr`.`STATUT_PROG_CODE`                                                AS `STATUT_PROG_CODE`,
+    `pr`.`RION_PAIEMENT`                                                   AS `RION_PAIEMENT`,
+    `pr`.`USERCRE`                                                         AS `USERCRE`,
+    `pr`.`DATMAJ`                                                          AS `DATMAJ`,
+    `pr`.`USERMAJ`                                                         AS `USERMAJ`,
+    `pr`.`DATAFFECT`                                                       AS `DATAFFECT`,
+    `pr`.`USERAFFECT`                                                      AS `USERAFFECT`,
+    (SELECT count(`f`.`NUMPROG`)
+     FROM `priam_app`.`PRIAM_FICHIER` `f`
+     WHERE ((`pr`.`NUMPROG` = `f`.`NUMPROG`) AND (`f`.`SOURCE_AUTO` = 1))) AS `fichiers`,
+    `pr`.`DATE_DBT_PRG`                                                    AS `DATEDBTPRG`,
+    `pr`.`DATE_FIN_PRG`                                                    AS `DATEFINPRG`,
+    `pr`.`CDE_TER`                                                         AS `CDETER`,
+    `pr`.`USER_VALIDATION`                                                 AS `USERVALIDATION`,
+    `pr`.`DATE_VALIDATION`                                                 AS `DATEVALIDATION`,
+    `ff`.`STATUT`                                                          AS `STATUT_FICHIER_FELIX`,
+    `pr`.`DATE_REPARTITION`                                                AS `DATE_REPARTITION`
+  FROM (`priam_app`.`PRIAM_PROGRAMME` `pr` LEFT JOIN `priam_app`.`PRIAM_FICHIER_FELIX` `ff`
+      ON ((`ff`.`NUMPROG` = `pr`.`NUMPROG`)))
+  GROUP BY `pr`.`NUMPROG`;
 DROP TABLE IF EXISTS `PRIAM_ROLE`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -762,33 +696,501 @@ CREATE TABLE `SAREFTR_TYPUTIL` (
   `TYPUTILREMPL` varchar(10) DEFAULT NULL COMMENT 'valeur de remplacement pour interrogation de la documentation si le type d¿utilisation n¿est plus valide',
   PRIMARY KEY (`CDETYPUTIL`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Type d utilisation';
+
+
+ALTER TABLE PRIAM_FICHIER
+  ADD `TYPE_FICHIER` varchar(25) DEFAULT NULL COMMENT 'type de fichier peut etre CP CMD FV pour differencier l envoi';
+
+DROP TABLE IF EXISTS `PRIAM_LIGNE_PROGRAMME_CMS`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `PRIAM_LIGNE_PROGRAMME_CMS` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `cdeCisac` varchar(3) DEFAULT NULL,
+  `cdeFamilTypUtil` varchar(45) DEFAULT NULL,
+  `numProg` int(11) DEFAULT NULL,
+  `cdeUtil` varchar(45) DEFAULT NULL,
+  `cdeTypUtil` varchar(45) DEFAULT NULL,
+  `cdeGreDif` varchar(45) DEFAULT NULL,
+  `cdeModDif` varchar(45) DEFAULT NULL,
+  `cdeTypIde12` varchar(45) DEFAULT NULL,
+  `ide12` bigint(20) DEFAULT NULL,
+  `durDif` int(11) DEFAULT NULL,
+  `nbrDif` int(11) DEFAULT NULL,
+  `libelleUtilisateur` varchar(255) DEFAULT NULL,
+  `mt` double DEFAULT NULL,
+  `ctna` varchar(45) DEFAULT NULL,
+  `paramCoefHor` varchar(10) DEFAULT NULL,
+  `durDifCtna` int(11) DEFAULT NULL,
+  `cdeLng` varchar(45) DEFAULT NULL,
+  `indDoubSsTit` varchar(45) DEFAULT NULL,
+  `tax` double DEFAULT NULL,
+  `typMt` varchar(45) DEFAULT NULL,
+  `ID_FICHIER` bigint(20) DEFAULT NULL,
+  `cdeGreIde12Cmplx` varchar(45) DEFAULT NULL,
+  `cdeGreIde12` varchar(45) DEFAULT NULL,
+  `titreAltOeuvPereCmplx` varchar(250) DEFAULT NULL,
+  `titreAltPppalCmplx` varchar(250) DEFAULT NULL,
+  `titreOriOeuvPereCmplx` varchar(250) DEFAULT NULL,
+  `titreOriCmplx` varchar(250) DEFAULT NULL,
+  `titreOeuvre` varchar(250) DEFAULT NULL,
+  `cdePaysOriIso4NCmplx` varchar(45) DEFAULT NULL,
+  `realisateurCmplx` varchar(250) DEFAULT NULL,
+  `roleParticipant1` varchar(250) DEFAULT NULL,
+  `nomParticipant1` varchar(250) DEFAULT NULL,
+  `cdeTypUtilOri` varchar(45) DEFAULT NULL,
+  `cdeFamilTypUtilOri` varchar(45) DEFAULT NULL,
+  `utilisateur` varchar(250) DEFAULT 'Batch Extraction',
+  `date_insertion` datetime DEFAULT CURRENT_TIMESTAMP,
+  `ajout` varchar(45) DEFAULT 'Automatique',
+  `selection` tinyint(1) DEFAULT '0',
+  `idOeuvreManuel` int(11) DEFAULT NULL,
+  `SEL_EN_COURS` tinyint(4) DEFAULT '1',
+  PRIMARY KEY (`id`),
+  KEY `FK_ID_FICHIER_CMS` (`ID_FICHIER`),
+  KEY `IDX_CDE_UTIL` (`cdeUtil`),
+  CONSTRAINT `FK_ID_FICHIER_CMS` FOREIGN KEY (`ID_FICHIER`) REFERENCES `PRIAM_FICHIER` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Final view structure for view `PRIAM_PROG_VIEW`
---
 
-/*!50001 DROP VIEW IF EXISTS `PRIAM_PROG_VIEW`*/;
-/*!50001 SET @saved_cs_client          = @@character_set_client */;
-/*!50001 SET @saved_cs_results         = @@character_set_results */;
-/*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8 */;
-/*!50001 SET character_set_results     = utf8 */;
-/*!50001 SET collation_connection      = utf8_general_ci */;
-/*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`priam_app`@`%` SQL SECURITY DEFINER */
-/*!50001 VIEW `PRIAM_PROG_VIEW` AS select distinct `pr`.`NUMPROG` AS `NUMPROG`,`pr`.`NOM` AS `NOM`,`pr`.`RION_THEORIQUE` AS `RION_THEORIQUE`,`pr`.`CDEFAMILTYPUTIL` AS `CDEFAMILTYPUTIL`,`pr`.`CDETYPUTIL` AS `CDETYPUTIL`,`pr`.`TYPE_REPART` AS `TYPE_REPART`,`pr`.`DATE_CREATION` AS `DATE_CREATION`,`pr`.`STATUT_PROG_CODE` AS `STATUT_PROG_CODE`,`pr`.`RION_PAIEMENT` AS `RION_PAIEMENT`,`pr`.`USERCRE` AS `USERCRE`,`pr`.`DATMAJ` AS `DATMAJ`,`pr`.`USERMAJ` AS `USERMAJ`,`pr`.`DATAFFECT` AS `DATAFFECT`,`pr`.`USERAFFECT` AS `USERAFFECT`,(select count(`f`.`NUMPROG`) from `PRIAM_FICHIER` `f` where ((`pr`.`NUMPROG` = `f`.`NUMPROG`) and (`f`.`SOURCE_AUTO` = 1))) AS `fichiers`,`pr`.`DATE_DBT_PRG` AS `DATEDBTPRG`,`pr`.`DATE_FIN_PRG` AS `DATEFINPRG`,`pr`.`CDE_TER` AS `CDETER`,`pr`.`USER_VALIDATION` AS `USERVALIDATION`,`pr`.`DATE_VALIDATION` AS `DATEVALIDATION`,`ff`.`STATUT` AS `STATUT_FICHIER_FELIX`,`pr`.`DATE_REPARTITION` AS `DATE_REPARTITION` from (`PRIAM_PROGRAMME` `pr` left join `PRIAM_FICHIER_FELIX` `ff` on((`ff`.`NUMPROG` = `pr`.`NUMPROG`))) group by `pr`.`NUMPROG` */;
-/*!50001 SET character_set_client      = @saved_cs_client */;
-/*!50001 SET character_set_results     = @saved_cs_results */;
-/*!50001 SET collation_connection      = @saved_col_connection */;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+DROP TABLE IF EXISTS `PRIAM_LIGNE_PROGRAMME_CP`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `PRIAM_LIGNE_PROGRAMME_CP` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `cdeCisac` varchar(3) DEFAULT NULL,
+  `cdeFamilTypUtil` varchar(45) DEFAULT NULL,
+  `numProg` int(11) DEFAULT NULL,
+  `cdeUtil` varchar(45) DEFAULT NULL,
+  `cdeTypUtil` varchar(45) DEFAULT NULL,
+  `cdeGreDif` varchar(45) DEFAULT NULL,
+  `cdeModDif` varchar(45) DEFAULT NULL,
+  `cdeTypIde12` varchar(45) DEFAULT NULL,
+  `ide12` bigint(20) DEFAULT NULL,
+  `durDif` int(11) DEFAULT NULL,
+  `nbrDif` int(11) DEFAULT NULL,
+  `libelleUtilisateur` varchar(255) DEFAULT NULL,
+  `mt` double DEFAULT NULL,
+  `ctna` varchar(45) DEFAULT NULL,
+  `paramCoefHor` varchar(10) DEFAULT NULL,
+  `durDifCtna` int(11) DEFAULT NULL,
+  `cdeLng` varchar(45) DEFAULT NULL,
+  `indDoubSsTit` varchar(45) DEFAULT NULL,
+  `tax` double DEFAULT NULL,
+  `typMt` varchar(45) DEFAULT NULL,
+  `ID_FICHIER` bigint(20) DEFAULT NULL,
+  `cdeGreIde12Cmplx` varchar(45) DEFAULT NULL,
+  `cdeGreIde12` varchar(45) DEFAULT NULL,
+  `titreAltOeuvPereCmplx` varchar(250) DEFAULT NULL,
+  `titreAltPppalCmplx` varchar(250) DEFAULT NULL,
+  `titreOriOeuvPereCmplx` varchar(250) DEFAULT NULL,
+  `titreOriCmplx` varchar(250) DEFAULT NULL,
+  `titreOeuvre` varchar(250) DEFAULT NULL,
+  `cdePaysOriIso4NCmplx` varchar(45) DEFAULT NULL,
+  `realisateurCmplx` varchar(250) DEFAULT NULL,
+  `roleParticipant1` varchar(250) DEFAULT NULL,
+  `nomParticipant1` varchar(250) DEFAULT NULL,
+  `cdeTypUtilOri` varchar(45) DEFAULT NULL,
+  `cdeFamilTypUtilOri` varchar(45) DEFAULT NULL,
+  `utilisateur` varchar(250) DEFAULT 'Batch Extraction',
+  `date_insertion` datetime DEFAULT CURRENT_TIMESTAMP,
+  `ajout` varchar(45) DEFAULT 'Automatique',
+  `selection` tinyint(1) DEFAULT '0',
+  `idOeuvreManuel` int(11) DEFAULT NULL,
+  `SEL_EN_COURS` tinyint(4) DEFAULT '1',
+  PRIMARY KEY (`id`),
+  KEY `FK_ID_FICHIER_CP` (`ID_FICHIER`),
+  KEY `IDX_CDE_UTIL` (`cdeUtil`),
+  CONSTRAINT `FK_ID_FICHIER_CP` FOREIGN KEY (`ID_FICHIER`) REFERENCES `PRIAM_FICHIER` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+DROP TABLE IF EXISTS `PRIAM_LIGNE_PROGRAMME_FV`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `PRIAM_LIGNE_PROGRAMME_FV` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `cdeCisac` varchar(3) DEFAULT NULL,
+  `cdeFamilTypUtil` varchar(45) DEFAULT NULL,
+  `numProg` int(11) DEFAULT NULL,
+  `cdeUtil` varchar(45) DEFAULT NULL,
+  `cdeTypUtil` varchar(45) DEFAULT NULL,
+  `cdeGreDif` varchar(45) DEFAULT NULL,
+  `cdeModDif` varchar(45) DEFAULT NULL,
+  `cdeTypIde12` varchar(45) DEFAULT NULL,
+  `ide12` bigint(20) DEFAULT NULL,
+  `durDif` int(11) DEFAULT NULL,
+  `nbrDif` int(11) DEFAULT NULL,
+  `libelleUtilisateur` varchar(255) DEFAULT NULL,
+  `mt` double DEFAULT NULL,
+  `ctna` varchar(45) DEFAULT NULL,
+  `paramCoefHor` varchar(10) DEFAULT NULL,
+  `durDifCtna` int(11) DEFAULT NULL,
+  `cdeLng` varchar(45) DEFAULT NULL,
+  `indDoubSsTit` varchar(45) DEFAULT NULL,
+  `tax` double DEFAULT NULL,
+  `typMt` varchar(45) DEFAULT NULL,
+  `ID_FICHIER` bigint(20) DEFAULT NULL,
+  `cdeGreIde12Cmplx` varchar(45) DEFAULT NULL,
+  `cdeGreIde12` varchar(45) DEFAULT NULL,
+  `titreAltOeuvPereCmplx` varchar(250) DEFAULT NULL,
+  `titreAltPppalCmplx` varchar(250) DEFAULT NULL,
+  `titreOriOeuvPereCmplx` varchar(250) DEFAULT NULL,
+  `titreOriCmplx` varchar(250) DEFAULT NULL,
+  `titreOeuvre` varchar(250) DEFAULT NULL,
+  `cdePaysOriIso4NCmplx` varchar(45) DEFAULT NULL,
+  `realisateurCmplx` varchar(250) DEFAULT NULL,
+  `roleParticipant1` varchar(250) DEFAULT NULL,
+  `nomParticipant1` varchar(250) DEFAULT NULL,
+  `cdeTypUtilOri` varchar(45) DEFAULT NULL,
+  `cdeFamilTypUtilOri` varchar(45) DEFAULT NULL,
+  `utilisateur` varchar(250) DEFAULT 'Batch Extraction',
+  `date_insertion` datetime DEFAULT CURRENT_TIMESTAMP,
+  `ajout` varchar(45) DEFAULT 'Automatique',
+  `selection` tinyint(1) DEFAULT '0',
+  `idOeuvreManuel` int(11) DEFAULT NULL,
+  `SEL_EN_COURS` tinyint(4) DEFAULT '1',
+  PRIMARY KEY (`id`),
+  KEY `FK_ID_FICHIER_FV` (`ID_FICHIER`),
+  KEY `IDX_CDE_UTIL` (`cdeUtil`),
+  CONSTRAINT `FK_ID_FICHIER_FV` FOREIGN KEY (`ID_FICHIER`) REFERENCES `PRIAM_FICHIER` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- Dump completed on 2017-10-12 16:50:58
+
+INSERT INTO PRIAM_STATUT
+(CODE, LIBELLE) VALUES
+  ('EN_COURS', 'En cours');
+
+INSERT INTO PRIAM_STATUT
+(CODE, LIBELLE) VALUES
+  ('CHARGEMENT_OK', 'Chargement OK');
+
+INSERT INTO PRIAM_STATUT
+(CODE, LIBELLE) VALUES
+  ('CHARGEMENT_KO', 'Chargement KO');
+
+INSERT INTO PRIAM_STATUT
+(CODE, LIBELLE) VALUES
+  ('AFFECTE', 'Affecté');
+
+INSERT INTO PRIAM_STATUT
+(CODE, LIBELLE) VALUES
+  ('ABANDONNE', 'Abandonné');
+INSERT INTO PRIAM_PROGRAMME_SEQUENCE(ANNEE,CODESEQUENCE) VALUES ('2017',1);
+INSERT INTO PRIAM_PROGRAMME_SEQUENCE(ANNEE,CODESEQUENCE) VALUES ('2017',2);
+INSERT INTO PRIAM_PARAMAPPLI(CDEPARAM,LIBSTAT,VAL)
+VALUES ('ANNEE_SEQ_PROGRAMME','année en cours utilisé pour generer id programme','2017');
+
+-- ---------------------------------------------------
+-- ------ TABLE SAREFTJ_LIBFAMITYPUTIL --------------
+-- -------------------------------------------------
+INSERT INTO SAREFTJ_LIBFAMILTYPUTIL (CDEFAMILTYPUTIL, LIBABRGFAMILTYPUTIL, CDELNG) VALUES
+  ('COPIEPRIV', 'Copie Privée', 'FR');
+
+INSERT INTO SAREFTJ_LIBFAMILTYPUTIL (CDEFAMILTYPUTIL, LIBABRGFAMILTYPUTIL, CDELNG) VALUES
+  ('FDSVAL', 'Valorisation', 'FR');
+
+INSERT INTO SAREFTJ_LIBFAMILTYPUTIL (CDEFAMILTYPUTIL, LIBABRGFAMILTYPUTIL, CDELNG) VALUES
+  ('CMS', 'CMS', 'FR');
+
+
+-- ---------------------------------------------------
+-- ------ TABLE SAREFTJ_LIBTYPUTIL ------------------------
+-- ---------------------------------------------------
+INSERT INTO SAREFTJ_LIBTYPUTIL (CDETYPUTIL, LIBABRGTYPUTIL, CDELNG)
+VALUES ('CPRIVSONPH', 'Copie privée sonore Phono', 'FR');
+
+INSERT INTO SAREFTJ_LIBTYPUTIL (CDETYPUTIL, LIBABRGTYPUTIL, CDELNG)
+VALUES ('CPRIVAUDV', 'Copie Privée Audiovisuelle', 'FR');
+
+INSERT INTO SAREFTJ_LIBTYPUTIL (CDETYPUTIL, LIBABRGTYPUTIL, CDELNG)
+VALUES ('CPRIVSONRD', 'Copie Privée Sonore radio', 'FR');
+
+INSERT INTO SAREFTJ_LIBTYPUTIL (CDETYPUTIL, LIBABRGTYPUTIL, CDELNG)
+VALUES ('COPRIVSON', 'Copie Privée Sonore', 'FR');
+
+INSERT INTO SAREFTJ_LIBTYPUTIL (CDETYPUTIL, LIBABRGTYPUTIL, CDELNG)
+VALUES ('CPRIVAUDPL', 'Copie Privée Audiovisuel - Part Littéraire', 'FR');
+
+INSERT INTO SAREFTJ_LIBTYPUTIL (CDETYPUTIL, LIBABRGTYPUTIL, CDELNG)
+VALUES ('CPRIVSONPH', 'Private copy sound (PHONO)', 'EN');
+
+INSERT INTO SAREFTJ_LIBTYPUTIL (CDETYPUTIL, LIBABRGTYPUTIL, CDELNG)
+VALUES ('CPRIVAUDV',  'Private copy audiovisual', 'EN');
+
+INSERT INTO SAREFTJ_LIBTYPUTIL (CDETYPUTIL, LIBABRGTYPUTIL, CDELNG)
+VALUES ('CPRIVSONRD', 'Private copy sound', 'EN');
+
+INSERT INTO SAREFTJ_LIBTYPUTIL (CDETYPUTIL, LIBABRGTYPUTIL, CDELNG)
+VALUES ('COPRIVSON', 'Copie Privée Sonore', 'EN');
+
+INSERT INTO SAREFTJ_LIBTYPUTIL (CDETYPUTIL, LIBABRGTYPUTIL, CDELNG)
+VALUES ('PRIME', 'Prime', 'FR');
+
+INSERT INTO SAREFTJ_LIBTYPUTIL (CDETYPUTIL, LIBABRGTYPUTIL, CDELNG)
+VALUES ('VALORIS', 'Fonds de valorisation', 'FR');
+
+INSERT INTO SAREFTJ_LIBTYPUTIL (CDETYPUTIL, LIBABRGTYPUTIL, CDELNG)
+VALUES ('ENCOURG', 'Encouragement', 'FR');
+
+-- ---------------------------------------------------
+-- ------ TABLE SAREFTR_FAMILTYPUTIL -------------------
+-- ---------------------------------------------------
+INSERT INTO SAREFTR_FAMILTYPUTIL(CDEFAMILTYPUTIL, DATDBTVLD, DATFINVLD)
+VALUES ('COPIEPRIV', CURDATE(), NULL);
+
+INSERT INTO SAREFTR_FAMILTYPUTIL(CDEFAMILTYPUTIL, DATDBTVLD, DATFINVLD)
+VALUES ('FDSVAL', CURDATE(), NULL);
+
+INSERT INTO SAREFTR_FAMILTYPUTIL(CDEFAMILTYPUTIL, DATDBTVLD, DATFINVLD)
+VALUES ('CMS', CURDATE(), NULL);
+
+
+-- ---------------------------------------------------
+-- ------ TABLE SAREFTR_TYPUTIL -------------------
+-- ---------------------------------------------------
+INSERT INTO SAREFTR_TYPUTIL(CDETYPUTIL, CDEFAMILTYPUTIL, DATDBTVLD, DATFINVLD)
+VALUES ('CPRIVSONPH','COPIEPRIV', CURDATE(), NULL);
+
+INSERT INTO SAREFTR_TYPUTIL(CDETYPUTIL, CDEFAMILTYPUTIL, DATDBTVLD, DATFINVLD)
+VALUES ('CPRIVAUDV','COPIEPRIV', CURDATE(), NULL);
+
+INSERT INTO SAREFTR_TYPUTIL(CDETYPUTIL, CDEFAMILTYPUTIL, DATDBTVLD, DATFINVLD)
+VALUES ('CPRIVSONRD','COPIEPRIV', CURDATE(), NULL);
+
+INSERT INTO SAREFTR_TYPUTIL(CDETYPUTIL, CDEFAMILTYPUTIL, DATDBTVLD, DATFINVLD)
+VALUES ('COPRIVSON','COPIEPRIV', CURDATE(), '2017-05-04');
+
+INSERT INTO SAREFTR_TYPUTIL(CDETYPUTIL, CDEFAMILTYPUTIL, DATDBTVLD, DATFINVLD)
+VALUES ('CPRIVAUDPL','COPIEPRIV', CURDATE(), NULL);
+
+INSERT INTO SAREFTR_TYPUTIL(CDETYPUTIL, CDEFAMILTYPUTIL, DATDBTVLD, DATFINVLD)
+VALUES ('PRIME','FDSVAL', CURDATE(), NULL);
+
+INSERT INTO SAREFTR_TYPUTIL(CDETYPUTIL, CDEFAMILTYPUTIL, DATDBTVLD, DATFINVLD)
+VALUES ('VALORIS','FDSVAL', CURDATE(), NULL);
+
+
+INSERT INTO SAREFTR_TYPUTIL(CDETYPUTIL, CDEFAMILTYPUTIL, DATDBTVLD, DATFINVLD)
+VALUES ('ENCOURG','CMS', CURDATE(), NULL);
+
+
+-- ---------------------------------------------------
+-- ------ TABLE PRIAM_FICHIER -------------------
+-- ---------------------------------------------------
+
+INSERT INTO PRIAM_FICHIER
+(NOM, CDEFAMILTYPUTIL, CDETYPUTIL, DATE_DEBUT_CHGT, DATE_FIN_CHGT, NB_LIGNES, STATUT_CODE, SOURCE_AUTO,TYPE_FICHIER)
+VALUES ('Fichier 01', 'COPIEPRIV', 'COPRIVSON', '2017-02-04 17:15:14', NULL, 3000, 'EN_COURS', 1,'CP');
+
+INSERT INTO PRIAM_FICHIER
+(NOM, CDEFAMILTYPUTIL, CDETYPUTIL, DATE_DEBUT_CHGT, DATE_FIN_CHGT, NB_LIGNES, STATUT_CODE, SOURCE_AUTO,TYPE_FICHIER)
+VALUES ('Fichier 02', 'COPIEPRIV', 'COPRIVSON', '2017-02-03 17:15:14', NULL, 9500, 'EN_COURS', 1,'CP');
+
+
+INSERT INTO PRIAM_FICHIER
+(NOM, CDEFAMILTYPUTIL, CDETYPUTIL, DATE_DEBUT_CHGT, DATE_FIN_CHGT, NB_LIGNES, STATUT_CODE, SOURCE_AUTO,TYPE_FICHIER)
+VALUES ('Fichier 03', 'COPIEPRIV', 'COPRIVSON', '2017-02-01 17:15:14', NULL, 6500, 'EN_COURS', 1,'CP');
+
+
+INSERT INTO PRIAM_FICHIER
+(NOM, CDEFAMILTYPUTIL, CDETYPUTIL, DATE_DEBUT_CHGT, DATE_FIN_CHGT, NB_LIGNES, STATUT_CODE, SOURCE_AUTO,TYPE_FICHIER)
+VALUES ('Fichier 04', 'COPIEPRIV', 'COPRIVSON', '2017-04-01 17:15:14', NULL, 1478, 'EN_COURS', 1,'CP');
+
+
+INSERT INTO PRIAM_FICHIER
+(NOM, CDEFAMILTYPUTIL, CDETYPUTIL, DATE_DEBUT_CHGT, DATE_FIN_CHGT, NB_LIGNES, STATUT_CODE, SOURCE_AUTO,TYPE_FICHIER)
+VALUES ('Fichier 05', 'COPIEPRIV', 'COPRIVSON', '2017-05-01 17:10:14', NULL, 7451, 'EN_COURS', 1,'CP');
+
+
+INSERT INTO PRIAM_FICHIER
+(NOM, CDEFAMILTYPUTIL, CDETYPUTIL, DATE_DEBUT_CHGT, DATE_FIN_CHGT, NB_LIGNES, STATUT_CODE, SOURCE_AUTO,TYPE_FICHIER)
+VALUES ('Fichier 06', 'COPIEPRIV', 'COPRIVSON', '2017-05-02 18:15:14', NULL, 15000, 'EN_COURS', 1,'CP');
+
+
+INSERT INTO PRIAM_FICHIER
+(NOM, CDEFAMILTYPUTIL, CDETYPUTIL, DATE_DEBUT_CHGT, DATE_FIN_CHGT, NB_LIGNES, STATUT_CODE, SOURCE_AUTO,TYPE_FICHIER)
+VALUES ('Fichier 08', 'COPIEPRIV', 'COPRIVSON', '2017-02-01 17:15:14', NULL, 6500, 'EN_COURS', 1,'CP');
+
+
+INSERT INTO PRIAM_FICHIER
+(NOM, CDEFAMILTYPUTIL, CDETYPUTIL, DATE_DEBUT_CHGT, DATE_FIN_CHGT, NB_LIGNES, STATUT_CODE, SOURCE_AUTO,TYPE_FICHIER)
+VALUES ('Fichier 09', 'COPIEPRIV', 'COPRIVSON', '2017-04-01 17:15:14', '2017-04-01 22:10:11', 22000, 'CHARGEMENT_OK', 1,'CP');
+
+
+INSERT INTO PRIAM_FICHIER
+(NOM, CDEFAMILTYPUTIL, CDETYPUTIL, DATE_DEBUT_CHGT, DATE_FIN_CHGT, NB_LIGNES, STATUT_CODE, SOURCE_AUTO,TYPE_FICHIER)
+VALUES ('Fichier 11', 'COPIEPRIV', 'COPRIVSON', '2017-05-01 17:10:14', '2017-05-02 01:10:00', 45789, 'CHARGEMENT_OK', 1,'CP');
+
+
+INSERT INTO PRIAM_FICHIER
+(NOM, CDEFAMILTYPUTIL, CDETYPUTIL, DATE_DEBUT_CHGT, DATE_FIN_CHGT, NB_LIGNES, STATUT_CODE, SOURCE_AUTO,TYPE_FICHIER)
+VALUES ('Fichier 12', 'COPIEPRIV', 'COPRIVSON', '2017-05-02 18:15:14', '2017-05-01 18:50:04', 15000, 'CHARGEMENT_KO', 1,'CP');
+
+
+INSERT INTO PRIAM_FICHIER
+(NOM, CDEFAMILTYPUTIL, CDETYPUTIL, DATE_DEBUT_CHGT, DATE_FIN_CHGT, NB_LIGNES, STATUT_CODE, SOURCE_AUTO,TYPE_FICHIER)
+VALUES ('Fichier 13', 'COPIEPRIV', 'COPRIVSON', '2017-05-04 18:15:14', '2017-05-04 22:57:04', 15000, 'CHARGEMENT_KO', 1,'CP');
+
+INSERT INTO PRIAM_FICHIER
+(NOM, CDEFAMILTYPUTIL, CDETYPUTIL, DATE_DEBUT_CHGT, DATE_FIN_CHGT, NB_LIGNES, STATUT_CODE, SOURCE_AUTO,TYPE_FICHIER)
+VALUES ('Fichier 15', 'COPIEPRIV', 'COPRIVSON', '2017-05-24 16:00:14', '2017-05-24 22:57:04', 150780, 'AFFECTE', 1,'CP');
+
+INSERT INTO PRIAM_FICHIER
+(NOM, CDEFAMILTYPUTIL, CDETYPUTIL, DATE_DEBUT_CHGT, DATE_FIN_CHGT, NB_LIGNES, STATUT_CODE, SOURCE_AUTO,TYPE_FICHIER)
+VALUES ('Fichier 17', 'COPIEPRIV', 'COPRIVSON', '2017-05-24 16:00:14', '2017-05-24 22:57:04', 150780, 'ABANDONNE', 1,'CP');
+
+
+
+
+-- ---------------------------------------------------
+-- ------ TABLE PRIAM_LIGNE_PROGRAMME -------------------
+-- ---------------------------------------------------
+/*
+INSERT INTO PRIAM_LIGNE_PROGRAMME (cdeFamilTypUtil, ID_FICHIER)
+    VALUES ('COPIEPRIV', SELECT ID FROM PRIAM_FICHIER WHERE NOM ='Fichier 01');
+
+INSERT INTO PRIAM_LIGNE_PROGRAMME (cdeFamilTypUtil, ID_FICHIER)
+VALUES ('COPIEPRIV', SELECT ID FROM PRIAM_FICHIER WHERE NOM ='Fichier 02');
+*/
+
+INSERT INTO PRIAM_STATUT_PROGRAMME
+(CODE, LIBELLE) VALUES
+  ('EN_COURS', 'En cours');
+
+INSERT INTO PRIAM_STATUT_PROGRAMME
+(CODE, LIBELLE) VALUES
+  ('CREE', 'Créé');
+
+INSERT INTO PRIAM_STATUT_PROGRAMME
+(CODE, LIBELLE) VALUES
+  ('AFFECTE', 'Affecté');
+
+INSERT INTO PRIAM_STATUT_PROGRAMME
+(CODE, LIBELLE) VALUES
+  ('VALIDE', 'Validé');
+
+INSERT INTO PRIAM_STATUT_PROGRAMME
+(CODE, LIBELLE) VALUES
+  ('ABANDONNE', 'Abandonné');
+
+
+
+Insert into SAREFTR_RION (RION,DATCALC,DATRGLMT,FILTRE,ORDAFF,COM,DATCRE,USERCRE,DATMAJ,USERMAJ)
+values ('619','2012-03-29', '2012-07-05', '9223372036854775807','0','Répartition 2ème Trimestre 2012.', '2011-11-17','bautistaf', '2012-04-08','BUISSONF');
+
+Insert into SAREFTR_RION (RION,DATCALC,DATRGLMT,FILTRE,ORDAFF,COM,DATCRE,USERCRE,DATMAJ,USERMAJ) values ('600','2013-07-23','2013-07-05','9223372036854775807','0','SareftrRion 600','2013-07-23','GUEST','2013-07-23','GUEST');
+Insert into SAREFTR_RION (RION,DATCALC,DATRGLMT,FILTRE,ORDAFF,COM,DATCRE,USERCRE,DATMAJ,USERMAJ) values ('629','2014-11-19','2015-01-05','9223372036854775807','0','sareftrRion 629','2014-11-19','ROMEIBRIGITTE','2014-11-19','ROMEIBRIGITTE');
+Insert into SAREFTR_RION (RION,DATCALC,DATRGLMT,FILTRE,ORDAFF,COM,DATCRE,USERCRE,DATMAJ,USERMAJ) values ('630','2015-01-06','2015-04-06','9223372036854775807','0','Répartition Avril 2015','2015-01-06','LIETH','2015-01-06','LIETH');
+Insert into SAREFTR_RION (RION,DATCALC,DATRGLMT,FILTRE,ORDAFF,COM,DATCRE,USERCRE,DATMAJ,USERMAJ) values ('639','2017-04-03','2018-07-05','4','0','Répartition Juillet 2017','2017-04-25','ROUCOULESG','2017-04-25','ROUCOULESG');
+
+INSERT INTO `SAREFTJ_LIBUTIL` VALUES ('FR','0002','RIR','RIR','2009-07-08','GOLLIONB','2015-05-19','FRIESP',NULL);
+
+
+INSERT INTO PRIAM_PROGRAMME(NUMPROG, NOM, RION_THEORIQUE, CDEFAMILTYPUTIL, CDETYPUTIL, TYPE_REPART, DATE_CREATION, STATUT_PROG_CODE, RION_PAIEMENT)
+VALUES ('170001', 'Programme 01', 619, 'COPIEPRIV','CPRIVAUDPL', 'OEUVRE', CURDATE(), 'VALIDE', NULL);
+
+INSERT INTO PRIAM_PROGRAMME(NUMPROG, NOM, RION_THEORIQUE, CDEFAMILTYPUTIL, CDETYPUTIL, TYPE_REPART, DATE_CREATION, STATUT_PROG_CODE, RION_PAIEMENT)
+VALUES ('170002', 'Programme 02', 619, 'COPIEPRIV','CPRIVAUDPL', 'OEUVRE', CURDATE(), 'EN_COURS', NULL);
+
+INSERT INTO PRIAM_PROGRAMME(NUMPROG, NOM, RION_THEORIQUE, CDEFAMILTYPUTIL, CDETYPUTIL, TYPE_REPART, DATE_CREATION, STATUT_PROG_CODE, RION_PAIEMENT)
+VALUES ('170003', 'Programme 03', 619, 'COPIEPRIV','CPRIVAUDPL', 'OEUVRE', CURDATE(), 'EN_COURS', NULL);
+
+
+INSERT INTO PRIAM_PROGRAMME(NUMPROG, NOM, RION_THEORIQUE, CDEFAMILTYPUTIL, CDETYPUTIL, TYPE_REPART, DATE_CREATION, STATUT_PROG_CODE, RION_PAIEMENT)
+VALUES ('170004', 'Programme 04', 619, 'COPIEPRIV','CPRIVAUDPL', 'OEUVRE', CURDATE(), 'EN_COURS', NULL);
+
+INSERT INTO PRIAM_PROGRAMME(NUMPROG, NOM, RION_THEORIQUE, CDEFAMILTYPUTIL, CDETYPUTIL, TYPE_REPART, DATE_CREATION, STATUT_PROG_CODE, RION_PAIEMENT)
+VALUES ('170005', 'Programme 05', 619, 'COPIEPRIV','CPRIVAUDPL', 'OEUVRE', CURDATE(), 'EN_COURS', NULL);
+
+INSERT INTO PRIAM_PROGRAMME(NUMPROG, NOM, RION_THEORIQUE, CDEFAMILTYPUTIL, CDETYPUTIL, TYPE_REPART, DATE_CREATION, STATUT_PROG_CODE, RION_PAIEMENT)
+VALUES ('170006', 'Programme 01', 619, 'COPIEPRIV','CPRIVAUDPL', 'OEUVRE', CURDATE(), 'EN_COURS', NULL);
+
+/*INSERT INTO PRIAM_PROGRAMME(NUMPROG, NOM, RION_THEORIQUE, CDEFAMILTYPUTIL, CDETYPUTIL, TYPE_REPART, DATE_CREATION, STATUT_PROG_CODE, RION_PAIEMENT)
+VALUES ('PR170008', 'Programme 01', 619, 'COPIEPRIV','CPRIVAUDPL', 'OEUVRE', '2017-06-19 00:00:00', 'EN_COURS', NULL);*/
+
+INSERT INTO PRIAM_FICHIER
+(NOM, CDEFAMILTYPUTIL, CDETYPUTIL, DATE_DEBUT_CHGT, DATE_FIN_CHGT, NB_LIGNES, STATUT_CODE, NUMPROG,TYPE_FICHIER)
+VALUES ('Fichier 125', 'COPIEPRIV', 'COPRIVSON', '2017-05-24 16:00:14', '2017-05-24 22:57:04', 150780, 'AFFECTE', '170001','CP');
+
+INSERT INTO PRIAM_FICHIER
+(NOM, CDEFAMILTYPUTIL, CDETYPUTIL, DATE_DEBUT_CHGT, DATE_FIN_CHGT, NB_LIGNES, STATUT_CODE, NUMPROG,TYPE_FICHIER)
+VALUES ('Fichier 126', 'COPIEPRIV', 'COPRIVSON', '2017-05-24 16:00:14', '2017-05-24 22:57:04', 150780, 'AFFECTE', '170001','CP');
+
+INSERT INTO PRIAM_FICHIER
+(NOM, CDEFAMILTYPUTIL, CDETYPUTIL, DATE_DEBUT_CHGT, DATE_FIN_CHGT, NB_LIGNES, STATUT_CODE, NUMPROG,TYPE_FICHIER)
+VALUES ('Fichier 127', 'COPIEPRIV', 'COPRIVSON', '2017-05-24 16:00:14', '2017-05-24 22:57:04', 150780, 'AFFECTE', '170001','CP');
+INSERT INTO PRIAM_FICHIER
+(NOM, CDEFAMILTYPUTIL, CDETYPUTIL, DATE_DEBUT_CHGT, DATE_FIN_CHGT, NB_LIGNES, STATUT_CODE, NUMPROG,TYPE_FICHIER)
+VALUES ('Fichier 128', 'COPIEPRIV', 'COPRIVSON', '2017-05-24 16:00:14', '2017-05-24 22:57:04', 150780, 'AFFECTE', '170001','CP');
+
+/*
+INSERT INTO PRIAM_LIGNE_PROGRAMME (cdeCisac, cdeTer, rionEffet, cdeFamilTypUtil, cdeModFac, numProg, keyLigPenel, cdeUtil, cdeTypUtil, cdeTypProg, cdeCompl, libProg, compLibProg, datDbtProg, datFinProg, hrDbt, hrFin, cdeGreDif, cdeModDif, cdeTypIde12, ide12, datDif, hrDif, durDif, nbrDif, mt, ctna, paramCoefHor, durDifCtna, cdeLng, indDoubSsTit, tax, typMt, ID_FICHIER)
+VALUES ('58', 250, 639, 'COPIEPRIV', '', null, null, 'LU1', 'CPRIVAUDPL', 'PRINC', 'SANS', 'COPIEPRIV PRINC 639 250', '', '2017-05-24 22:57:04', '2017-05-24 22:57:04', null, null, '', '', 'COCV', 6829877211, null, null, null, 10, 71.52, '', '', null, '', '', null, 'MB', SELECT ID FROM PRIAM_FICHIER WHERE NOM ='Fichier 125');
+INSERT INTO PRIAM_LIGNE_PROGRAMME (cdeCisac, cdeTer, rionEffet, cdeFamilTypUtil, cdeModFac, numProg, keyLigPenel, cdeUtil, cdeTypUtil, cdeTypProg, cdeCompl, libProg, compLibProg, datDbtProg, datFinProg, hrDbt, hrFin, cdeGreDif, cdeModDif, cdeTypIde12, ide12, datDif, hrDif, durDif, nbrDif, mt, ctna, paramCoefHor, durDifCtna, cdeLng, indDoubSsTit, tax, typMt, ID_FICHIER)
+VALUES ('58', 250, 640, 'COPIEPRIV', '', null, null, 'RT2', 'CPRIVAUDPL', 'PRINC', 'SANS', 'COPIEPRIV PRINC 639 250', '', '2017-05-24 22:57:04', '2017-05-24 22:57:04', null, null, '', '', 'COCV', 8028354411, null, null, null, 2, 1.26, '', '', null, '', '', null, 'MB', SELECT ID FROM PRIAM_FICHIER WHERE NOM ='Fichier 125');
+INSERT INTO PRIAM_LIGNE_PROGRAMME (cdeCisac, cdeTer, rionEffet, cdeFamilTypUtil, cdeModFac, numProg, keyLigPenel, cdeUtil, cdeTypUtil, cdeTypProg, cdeCompl, libProg, compLibProg, datDbtProg, datFinProg, hrDbt, hrFin, cdeGreDif, cdeModDif, cdeTypIde12, ide12, datDif, hrDif, durDif, nbrDif, mt, ctna, paramCoefHor, durDifCtna, cdeLng, indDoubSsTit, tax, typMt, ID_FICHIER)
+VALUES ('58', 250, 641, 'COPIEPRIV', '', null, null, 'RIR', 'CPRIVAUDPL', 'PRINC', 'SANS', 'COPIEPRIV PRINC 639 250', '', '2017-05-24 22:57:04', '2017-05-24 22:57:04', null, null, '', '', 'COCV', 8028354411, null, null, null, 8, 1.74, '', '', null, '', '', null, 'MB', SELECT ID FROM PRIAM_FICHIER WHERE NOM ='Fichier 125');
+*/
+INSERT INTO PRIAM_LIGNE_PROGRAMME_CP (cdeCisac, cdeFamilTypUtil, numProg, cdeUtil, cdeTypUtil, cdeGreDif, cdeModDif, cdeTypIde12, ide12, durDif, nbrDif, mt, ctna, paramCoefHor, durDifCtna, cdeLng, indDoubSsTit, tax, typMt, cdeGreIde12Cmplx, cdeGreIde12, titreOriCmplx, titreAltPppalCmplx, titreOriOeuvPereCmplx, titreAltOeuvPereCmplx, titreOeuvre, cdePaysOriIso4NCmplx, realisateurCmplx, roleParticipant1, nomParticipant1, cdeTypUtilOri, cdeFamilTypUtilOri,ID_FICHIER) VALUES ('58', 'COPIEPRIV', '170001', '0002', 'CPRIVAUDPL', '', '', 'COCV', 6829877211, null,10, 71.52, '', '', null, '', '', null, 'MB', 19, null, null, null, null, null, 'Test Titre', null, null, null, null, null, null, (SELECT ID FROM PRIAM_FICHIER WHERE NOM ='Fichier 125'));
+INSERT INTO PRIAM_LIGNE_PROGRAMME_CP (cdeCisac, cdeFamilTypUtil, numProg, cdeUtil, cdeTypUtil, cdeGreDif, cdeModDif, cdeTypIde12, ide12, durDif, nbrDif, mt, ctna, paramCoefHor, durDifCtna, cdeLng, indDoubSsTit, tax, typMt, cdeGreIde12Cmplx, cdeGreIde12, titreOriCmplx, titreAltPppalCmplx, titreOriOeuvPereCmplx, titreAltOeuvPereCmplx, titreOeuvre, cdePaysOriIso4NCmplx, realisateurCmplx, roleParticipant1, nomParticipant1, cdeTypUtilOri, cdeFamilTypUtilOri,ID_FICHIER) VALUES ('58', 'COPIEPRIV', null, 'RT2', 'CPRIVAUDPL', '', '', 'COCV', 8028354411, null, 2,1.26, '', '', null, '', '', null, 'MB', 19, null, null, null, null, null, null, null, null, null, null, null, null, (SELECT ID FROM PRIAM_FICHIER WHERE NOM ='Fichier 125'));
+INSERT INTO PRIAM_LIGNE_PROGRAMME_CP (cdeCisac, cdeFamilTypUtil, numProg, cdeUtil, cdeTypUtil, cdeGreDif, cdeModDif, cdeTypIde12, ide12, durDif, nbrDif, mt, ctna, paramCoefHor, durDifCtna, cdeLng, indDoubSsTit, tax, typMt, cdeGreIde12Cmplx, cdeGreIde12, titreOriCmplx, titreAltPppalCmplx, titreOriOeuvPereCmplx, titreAltOeuvPereCmplx, titreOeuvre, cdePaysOriIso4NCmplx, realisateurCmplx, roleParticipant1, nomParticipant1, cdeTypUtilOri, cdeFamilTypUtilOri,ID_FICHIER) VALUES ('58', 'COPIEPRIV', null, 'RIR', 'CPRIVAUDPL', '', '', 'COCV', 8028354411,null, 8,1.74, '', '', null, '', '', null, 'MB', 19, null, null, null, null, null, null, null, null, null, null, null, null, (SELECT ID FROM PRIAM_FICHIER WHERE NOM ='Fichier 125'));
+
+-- ---------------------------------------------------
+-- ------ TABLE PRIAM_ROLE -------------------
+-- ---------------------------------------------------
+INSERT INTO PRIAM_ROLE
+(EXTERNAL_ID, ROLE)
+values ('ADM','ADM');
+
+INSERT INTO PRIAM_ROLE
+(EXTERNAL_ID, ROLE)
+values ('GST','GST');
+
+INSERT INTO PRIAM_ROLE
+(EXTERNAL_ID, ROLE)
+values ('INV','INV');
+
+-- ---------------------------------------------------
+-- ------ TABLE PRIAM_ROLE_RIGHTS -------------------
+-- ---------------------------------------------------
+INSERT INTO PRIAM_ROLE_RIGHTS
+(ROLE_ID,RIGHTS,LIBELLE)
+VALUES (1,'CRTPRG','Creation de programme');
+
+INSERT INTO PRIAM_ROLE_RIGHTS
+(ROLE_ID,RIGHTS,LIBELLE)
+VALUES (1,'READPRG','Acces ecran programme');
+
+INSERT INTO PRIAM_ROLE_RIGHTS
+(ROLE_ID,RIGHTS,LIBELLE)
+VALUES (1,'MDYPRG','Modification de programme');
+
+INSERT INTO PRIAM_ROLE_RIGHTS
+(ROLE_ID,RIGHTS,LIBELLE)
+VALUES (1,'ABDPRG','Abandon de programme');
+
+INSERT INTO PRIAM_ROLE_RIGHTS
+(ROLE_ID,RIGHTS,LIBELLE)
+VALUES (2,'CRTPRG','Creation de programme');
+
+INSERT INTO PRIAM_ROLE_RIGHTS
+(ROLE_ID,RIGHTS,LIBELLE)
+VALUES (2,'READPRG','Acces ecran programme');
+
+INSERT INTO PRIAM_ROLE_RIGHTS
+(ROLE_ID,RIGHTS,LIBELLE)
+VALUES (2,'MDYPRG','Modification de programme');
+
+INSERT INTO PRIAM_ROLE_RIGHTS
+(ROLE_ID,RIGHTS,LIBELLE)
+VALUES (2,'ABDPRG','Abandon de programme');
+
+INSERT INTO PRIAM_ROLE_RIGHTS
+(ROLE_ID,RIGHTS,LIBELLE)
+VALUES (3,'READPRG','Acces ecran programme');
+
+
+commit;

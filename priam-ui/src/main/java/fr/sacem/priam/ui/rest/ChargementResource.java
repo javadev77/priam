@@ -2,7 +2,7 @@ package fr.sacem.priam.ui.rest;
 
 
 import com.google.common.collect.Lists;
-import fr.sacem.priam.model.dao.jpa.FichierDao;
+import fr.sacem.priam.model.dao.jpa.cp.FichierCPDao;
 import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.dto.FileDto;
 import fr.sacem.priam.services.FichierService;
@@ -30,7 +30,7 @@ public class ChargementResource {
     private static Logger logger = LoggerFactory.getLogger(ChargementResource.class);
 
     @Autowired
-    FichierDao fichierDao;
+    FichierCPDao fichierCPDao;
 
     @Autowired
     FichierService fichierService;
@@ -47,7 +47,7 @@ public class ChargementResource {
 
         String codeTypeUtil = typeUtilisationCriterion(input);
 
-        return fichierDao.findAllFichiersByCriteria(codeFamille, codeTypeUtil, status,pageable);
+        return fichierCPDao.findAllFichiersByCriteria(codeFamille, codeTypeUtil, status,pageable);
     }
 
   private String familleCriterion(@RequestBody InputChgtCriteria input) {
@@ -69,7 +69,7 @@ public class ChargementResource {
         String codeTypeUtil = typeUtilisationCriterion(input);
         String numProg = input.getNumProg();
 
-        return fichierDao.findFichiersAffectes(codeFamille, codeTypeUtil, status, numProg);
+        return fichierCPDao.findFichiersAffectes(codeFamille, codeTypeUtil, status, numProg);
 
     }
 
@@ -98,7 +98,7 @@ public class ChargementResource {
     public FileDto deleteDonneesFichiers(@RequestBody FileDto fileDtoBody) {
         Long fileId = fileDtoBody.getId();
         fichierService.deleteDonneesFichiers(fileId);
-        FileDto fileDto = fichierDao.findById(fileId);
+        FileDto fileDto = fichierCPDao.findById(fileId);
         logger.info("File = " + fileDto.getNomFichier());
         return fileDto;
     }

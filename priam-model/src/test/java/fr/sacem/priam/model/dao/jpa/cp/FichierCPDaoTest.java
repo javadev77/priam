@@ -1,8 +1,9 @@
-package fr.sacem.priam.model.dao.jpa;
+package fr.sacem.priam.model.dao.jpa.cp;
 
 import fr.sacem.priam.model.dao.JpaConfigurationTest;
-import fr.sacem.priam.model.domain.Fichier;
+import fr.sacem.priam.model.dao.jpa.SareftrTyputilDao;
 import fr.sacem.priam.model.domain.Status;
+import fr.sacem.priam.model.domain.cp.FichierCP;
 import fr.sacem.priam.model.domain.dto.FileDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes={JpaConfigurationTest.class})
-public class FichierDaoTest {
+public class FichierCPDaoTest {
     
     public static final Pageable PAGEABLE = new Pageable() {
         @Override
@@ -71,17 +72,18 @@ public class FichierDaoTest {
     };
     
     @Autowired
-    private FichierDao fichierDao;
+    private FichierCPDao fichierCPDao;
     
     @Autowired
     private SareftrTyputilDao sareftrTyputilDao;
     @Autowired
-    private ProgrammeDao programmeDao;
+    private ProgrammeCPDao programmeCPDao;
     
     @Test
+    @Transactional
     public void should_find_all_fichiers_affectes() {
         List<Status> status = Arrays.asList(Status.values());
-        List<FileDto> all = fichierDao.findFichiersAffectes(null, null, status, null);
+        List<FileDto> all = fichierCPDao.findFichiersAffectes(null, null, status, null);
     
         assertThat(all)
             .isNotNull()
@@ -90,31 +92,34 @@ public class FichierDaoTest {
     }
     
     @Test
+    @Transactional
     public void should_find_all_fichiers_by_status() {
         List<Status> status = Arrays.asList(Status.values());
-        Page<FileDto> allFichiersByStatus = fichierDao.findAllFichiersByStatus(status, PAGEABLE);
+        Page<FileDto> allFichiersByStatus = fichierCPDao.findAllFichiersByStatus(status, PAGEABLE);
     
         assertThat(allFichiersByStatus).isNotNull().isNotEmpty();
         assertThat(allFichiersByStatus.getContent()).isNotEmpty().hasSize(3);
     }
     
     @Test
+    @Transactional
     public void should_find_all_fichiers_with_null_criteria() {
         List<Status> status = Arrays.asList(Status.values());
-        Page<FileDto> allFichiersByStatus = fichierDao.findAllFichiersByCriteria(null, null, status, PAGEABLE);
+        Page<FileDto> allFichiersByStatus = fichierCPDao.findAllFichiersByCriteria(null, null, status, PAGEABLE);
         
         assertThat(allFichiersByStatus).isNotNull().isNotEmpty();
-        assertThat(allFichiersByStatus.getTotalElements()).isEqualTo(fichierDao.findAll().size());
+        assertThat(allFichiersByStatus.getTotalElements()).isEqualTo(fichierCPDao.findAll().size());
         assertThat(allFichiersByStatus.getContent()).isNotEmpty().hasSize(3);
     
         
     }
     
     @Test
+    @Transactional
     public void should_find_all_fichiers_by_famille_COPIEPRIVEE() {
         List<Status> status = Arrays.asList(Status.values());
         String copiepriv = "COPIEPRIV";
-        Page<FileDto> allFichiersByStatus = fichierDao.findAllFichiersByCriteria(copiepriv, null, status, PAGEABLE);
+        Page<FileDto> allFichiersByStatus = fichierCPDao.findAllFichiersByCriteria(copiepriv, null, status, PAGEABLE);
         
         assertThat(allFichiersByStatus).isNotNull().isNotEmpty();
         
@@ -129,8 +134,8 @@ public class FichierDaoTest {
     @Test
     @Transactional
     public void clearSelectedFichiersTest(){
-        fichierDao.clearSelectedFichiers("170001",Status.AFFECTE);
-        List<Fichier> all = fichierDao.findFichiersByIdProgramme("170001",Status.AFFECTE);
+        fichierCPDao.clearSelectedFichiers("170001",Status.AFFECTE);
+        List<FichierCP> all = fichierCPDao.findFichiersByIdProgramme("170001",Status.AFFECTE);
 
         assertThat(all)
                 .hasSize(0);
@@ -143,8 +148,8 @@ public class FichierDaoTest {
         idFichiers.add(126l);
         idFichiers.add(127l);
         idFichiers.add(128l);
-        fichierDao.updateStatusFichiersAffectes("170001",Status.AFFECTE,idFichiers);
-        List<Fichier> all = fichierDao.findFichiersByIdProgramme("170001",Status.AFFECTE);
+        fichierCPDao.updateStatusFichiersAffectes("170001",Status.AFFECTE,idFichiers);
+        List<FichierCP> all = fichierCPDao.findFichiersByIdProgramme("170001",Status.AFFECTE);
 
         assertThat(all)
                 .hasSize(4);
@@ -152,7 +157,7 @@ public class FichierDaoTest {
     @Test
     @Transactional
     public void findFichiersByIdProgrammeTest(){
-        List<Fichier> all = fichierDao.findFichiersByIdProgramme("170001",Status.AFFECTE);
+        List<FichierCP> all = fichierCPDao.findFichiersByIdProgramme("170001",Status.AFFECTE);
         assertThat(all)
                 .isNotNull()
                 .isNotEmpty()
