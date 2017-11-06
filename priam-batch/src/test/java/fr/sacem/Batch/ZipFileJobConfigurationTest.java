@@ -30,7 +30,7 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles("batch-test")
-public class git add ZipFileJobConfigurationTest {
+public class ZipFileJobConfigurationTest {
 
     /**
      * Logger.
