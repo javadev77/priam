@@ -187,7 +187,8 @@
         <filtering>true</filtering>
         <directory>src/main/resources</directory>
         <excludes>
-          <exclude>logback*.xml</exclude>
+          <!--<exclude>logback*.xml</exclude>-->
+          <!--<exclude>dev/**</exclude>-->
         </excludes>
       </resource>
     </resources>
@@ -227,14 +228,6 @@
 
         <configuration>
           <warSourceDirectory>${project.basedir}/dist</warSourceDirectory>
-          <!--<packagingIncludes>
-            ${project.basedir}/src/main/webapp/resources/urlrewrite.xml
-          </packagingIncludes>
-          <webResources>
-            <webResource>
-
-              /WEB-INF/urlrewrite.xml</webResource>
-          </webResources>-->
         </configuration>
 
       </plugin>
