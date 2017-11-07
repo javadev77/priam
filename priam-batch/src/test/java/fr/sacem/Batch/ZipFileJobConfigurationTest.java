@@ -101,8 +101,8 @@ public class ZipFileJobConfigurationTest {
         //JobExecution execution = jobLauncher.run(job, jobParameters);
         // launch the job
         JobExecution jobExecution = jobLauncherTestUtils.launchJob(jobParameters);
-        File f = new File(inputDirectory + "\\" + ZIP_FILE_EN_COURS_DE_TRAITEMENT);
-        f.delete();
+        File repertoireOutput = new File(outputDirectory);
+        emptyDirectory(repertoireOutput);
         // assert job run status
         if(BatchStatus.STOPPED== jobExecution.getStatus()){
             jobExecution.getAllFailureExceptions();
@@ -116,6 +116,13 @@ public class ZipFileJobConfigurationTest {
                     10, step.getReadCount());
         }
     }
-
+    public void emptyDirectory(File folder){
+        for(File file : folder.listFiles()){
+            if(file.isDirectory()){
+                emptyDirectory(file);
+            }
+            file.delete();
+        }
+    }
 
 }
