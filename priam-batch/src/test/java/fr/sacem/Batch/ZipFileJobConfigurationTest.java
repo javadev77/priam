@@ -63,8 +63,6 @@ public class ZipFileJobConfigurationTest {
         // Job parameters
         Map<String, JobParameter> jobParametersMap = new HashMap<String, JobParameter>();
         jobParametersMap.put("time", new JobParameter(System.currentTimeMillis()));
-        //String inputDirectory = String.valueOf(EnvConstants.PENEF_ZIP_IN);
-        //String outputDirectory = String.valueOf(EnvConstants.PENEF_ZIP_ARCHIVES);
         jobParametersMap.put("input.archives", new JobParameter(inputDirectory));
         jobParametersMap.put("output.archives", new JobParameter(outputDirectory));
         JobParameters jobParameters = new JobParameters(jobParametersMap);
@@ -106,6 +104,9 @@ public class ZipFileJobConfigurationTest {
         File f = new File(inputDirectory + "\\" + ZIP_FILE_EN_COURS_DE_TRAITEMENT);
         f.delete();
         // assert job run status
+        if(BatchStatus.STOPPED== jobExecution.getStatus()){
+            jobExecution.getAllFailureExceptions();
+        }
         assertEquals(BatchStatus.COMPLETED, jobExecution.getStatus());
 
         // output step summaries
