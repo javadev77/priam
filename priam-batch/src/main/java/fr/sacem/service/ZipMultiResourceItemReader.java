@@ -54,6 +54,8 @@ public class ZipMultiResourceItemReader<T> extends MultiResourceItemReader<T> {
         // really used with archives?
         if (inputDirectory != null && outputDirectory != null) {
             String rep = inputDirectory;
+            LOG.debug("=== inputDirectory : "+ inputDirectory + "===");
+
             FileSystemResource repertoireBase = new FileSystemResource(rep);
             this.setArchives(new Resource[]{repertoireBase});
             if (archives != null) {
@@ -82,6 +84,7 @@ public class ZipMultiResourceItemReader<T> extends MultiResourceItemReader<T> {
                             for (int j = 0; j < nbrDeFichierDansLeRepertoire; j++) {
                             //if(fichiersDansLeRepertoire.get(0)!=null || !fichiersDansLeRepertoire.get(0).equals("")) {
                                 File file = fichiersDansLeRepertoire.get(j);
+                                LOG.debug("=== fichiers Dans Le Repertoire : "+file.getName()+" ===");
                                 //on traite qu'un seul fichier zip par lancement de batch
                                 if (file.getName().matches(EXTENTION_ZIP) && nbrDeFichierZipATraiter < 1) {
 
