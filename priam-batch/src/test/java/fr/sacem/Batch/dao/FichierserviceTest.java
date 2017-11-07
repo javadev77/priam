@@ -21,7 +21,7 @@ import java.io.InputStream;
  * Created by soufi on 28/05/2017.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ActiveProfiles({"batch-test"})
+@ActiveProfiles({"test"})
 public class FichierserviceTest {
     private ApplicationContext context;
     private static final String SINGLE_FILE = "src/test/resources/zipDirectory/FF_PENEF_EXTRANA_EXTCPRIVSONRD_20170406140540.csv";

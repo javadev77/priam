@@ -17,7 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  * Created by soufi on 28/05/2017.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ActiveProfiles({"batch-test"})
+@ActiveProfiles({"test"})
 public class FichierRepositoryTest {
 
     private ApplicationContext context;

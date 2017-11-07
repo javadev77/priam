@@ -16,7 +16,7 @@ import java.io.InputStream;
 /**
  * Created by soufi on 29/05/2017.
  */
-@ActiveProfiles({"batch-test"})
+@ActiveProfiles({"test"})
 @RunWith(SpringJUnit4ClassRunner.class)
 
 public class UtilFileTest {
