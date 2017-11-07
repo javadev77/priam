@@ -121,6 +121,7 @@ public class ZipMultiResourceItemReader<T> extends MultiResourceItemReader<T> {
                                     Set<String> errorSet = (Set<String>) executionContext.get("ligne-programme-errors");
                                     errorSet.add(MESSAGE_NOM_FICHIER_INCORRECTE);
                                     this.stepExecution.getJobExecution().stop();
+                                    LOG.debug("============ Batch stoped ===============");
                                 }
                             }
                         }
