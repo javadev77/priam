@@ -121,7 +121,7 @@ public class ZipMultiResourceItemReader<T> extends MultiResourceItemReader<T> {
                                 JobParameter jobParameterIdFichier = new JobParameter(fichier.getId());
                                 this.stepExecution.getExecutionContext().put("idFichier", jobParameterIdFichier);
 
-                                if((!file.getName().startsWith(FileUtils.PREFIX_PRIV_SON_RD) && !file.getName().startsWith(FileUtils.PREFIX_PRIV_SON_PH)) || (!file.getName().startsWith(FileUtils.PREFIX_PRIV_SON_RD_HACK_LINIX) && !file.getName().startsWith(FileUtils.PREFIX_PRIV_SON_PH_HACK_LINUX))) {
+                                if((!file.getName().startsWith(FileUtils.PREFIX_PRIV_SON_RD) && !file.getName().startsWith(FileUtils.PREFIX_PRIV_SON_PH)) || (!file.getName().startsWith(FileUtils.PREFIX_PRIV_SON_RD,1) && !file.getName().startsWith(FileUtils.PREFIX_PRIV_SON_PH,1))) {
                                     Set<String> errorSet = (Set<String>) executionContext.get("ligne-programme-errors");
                                     errorSet.add(MESSAGE_NOM_FICHIER_INCORRECTE);
                                     LOG.debug("==== "+file.getName()+" ===");
