@@ -120,8 +120,10 @@ public class ZipMultiResourceItemReader<T> extends MultiResourceItemReader<T> {
                                 if(!file.getName().startsWith(FileUtils.PREFIX_PRIV_SON_RD) && !file.getName().startsWith(FileUtils.PREFIX_PRIV_SON_PH)) {
                                     Set<String> errorSet = (Set<String>) executionContext.get("ligne-programme-errors");
                                     errorSet.add(MESSAGE_NOM_FICHIER_INCORRECTE);
-                                    this.stepExecution.getJobExecution().stop();
+                                    LOG.debug("==== "+file.getName()+" ===");
                                     LOG.debug("============ Batch stoped ===============");
+                                    this.stepExecution.getJobExecution().stop();
+
                                 }
                             }
                         }
