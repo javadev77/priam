@@ -29,7 +29,7 @@ import static org.junit.Assert.assertEquals;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ActiveProfiles("batch-test")
+@ActiveProfiles("test")
 public class ZipFileJobConfigurationTest {
 
     /**
