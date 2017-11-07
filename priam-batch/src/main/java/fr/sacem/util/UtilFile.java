@@ -130,14 +130,13 @@ public class UtilFile {
                 InputStreamResource inputStreamResourceForBDD = new InputStreamResource(csvInputStream,zipEntry.getName());
                 idFichier = fichierService.addFichier(inputStreamResourceForBDD.getInputStream(), zipEntry.getName());
                 extractedResources.add(inputStreamResourceForExtraction);
-                nomFichier = zipEntry.getName();
                 LOG.info("using extracted file:" + zipEntry.getName());
             }
         }
         return idFichier;
     }
 
-    public static void addToZipFile(String fileName, ZipOutputStream zos) throws FileNotFoundException, IOException {
+    public static void addToZipFile(String fileName, ZipOutputStream zos) throws IOException {
 
         System.out.println("Writing '" + fileName + "' to zip file");
 
@@ -151,7 +150,6 @@ public class UtilFile {
         while ((length = fis.read(bytes)) >= 0) {
             zos.write(bytes, 0, length);
         }
-
         zos.closeEntry();
         fis.close();
     }
