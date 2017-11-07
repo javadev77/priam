@@ -86,6 +86,7 @@ public class ZipMultiResourceItemReader<T> extends MultiResourceItemReader<T> {
                                 if (file.getName().matches(EXTENTION_ZIP) && nbrDeFichierZipATraiter < 1) {
 
                                     File fichierEnCoursDeTraitement = new File(rep + file.getName() + FILE_ZIP_EN_COURS_DE_TRAITEMENT);
+                                    LOG.debug("=== renomer le fichier en : "+fichierEnCoursDeTraitement.getName()+" ===");
                                     JobParameter jobParameterFichierZipEnCours = new JobParameter(fichierEnCoursDeTraitement.getAbsolutePath());
                                     JobParameter jobParameterNomFichierOriginal = new JobParameter(file.getName());
 
