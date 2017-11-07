@@ -16,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -62,6 +63,9 @@ public class GeneralResource {
 
     @Autowired
     private SareftjLibutilDao sareftjLibutilDao;
+    
+    @Value("${project.version}")
+    private String priamVersion;
 
     @RequestMapping(value = "/libellefamille",
                     method = RequestMethod.GET,
@@ -263,7 +267,17 @@ public class GeneralResource {
     for (Map.Entry<String, String> entry: parametres.entrySet()) {
       parametrageService.save(new Parametrage( entry.getValue(), entry.getKey(), currentUser.getUser().getUserId()));
     }
-
+  }
+  
+  @RequestMapping(value = "/appinfo",
+                  method = RequestMethod.GET,
+                  produces = MediaType.APPLICATION_JSON_VALUE)
+  public Map<String, String> appInfoContext() {
+      Map<String, String> appInfo = new HashMap<>();
+      
+      appInfo.put("priam.version", this.priamVersion);
+      
+      return appInfo;
   }
 
   private SsoAuthenticationToken getSsoAuthenticationToken() {

@@ -16,7 +16,9 @@ const state = {
     libelleUtilisateur : [],
 
 
-   currentUser : {}
+   currentUser : {},
+
+    appInfo :{}
 
 }
 
@@ -48,6 +50,12 @@ const mutations = {
     }
 
   },
+
+  'SET_APP_INFO' (state, appInfo) {
+
+    state.appInfo = appInfo;
+
+  }
 
 };
 
@@ -86,6 +94,10 @@ const getters = {
 
   getCurrentUser : state => {
     return state.currentUser;
+  },
+
+  appInfo : state => {
+    return state.appInfo;
   }
 
 };

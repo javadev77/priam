@@ -27,7 +27,7 @@
                   </ul>
                 </li>
                     <li>
-                      <p class="homerversion">Version : 1.0.2</p>
+                      <p class="homerversion">v{{ priamVersion }}</p>
                     </li>
               </ul>
             </div><!-- /.navbar-collapse -->
@@ -86,7 +86,6 @@
     created()  {
 
         let currentRoute = this.$route.matched;
-        console.log('currentRoute =  ' + currentRoute[0].name);
         this.setCurrentActiveMenu(currentRoute[0].name);
 
     },
@@ -96,7 +95,10 @@
       displayName() {
         let currentUser = this.$store.getters.getCurrentUser;
         return currentUser.displayName;
+      },
 
+      priamVersion() {
+          return this.$store.getters.appInfo['priam.version'];
       }
     },
 

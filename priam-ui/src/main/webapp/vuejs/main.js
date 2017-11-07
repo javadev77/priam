@@ -56,7 +56,8 @@ const router = new VueRouter({
 
 
 var waitingData = ['LIBELLE_UTILISATEUR', 'LIBELLE_FAMILLE', 'LIBELLE_TYPE_UTILSATION',
-                    'FAMILLE_TYPE_UTILSATION_MAP', 'RIONS', 'TERRITOIRE_MAP', 'MIPSA_CONFIG', 'RIONS_CREATION', 'CURRENT_USER', 'SELECT_PAGE_SIZE'];
+                   'FAMILLE_TYPE_UTILSATION_MAP', 'RIONS', 'TERRITOIRE_MAP', 'MIPSA_CONFIG',
+                   'RIONS_CREATION', 'CURRENT_USER', 'SELECT_PAGE_SIZE', 'APP_INFO'];
 function bootstrapIfReady(type) {
   var index = waitingData.indexOf(type);
   if (index > -1) {
@@ -184,6 +185,16 @@ function fetchInitData() {
         });
       }
     });
+
+  Vue.http.get('app/rest/general/appinfo')
+    .then(response => response.json())
+    .then(data => {
+      if (data) {
+        store.commit('SET_APP_INFO', data);
+        bootstrapIfReady('APP_INFO');
+      }
+    });
+
 }
 
 fetchInitData();
