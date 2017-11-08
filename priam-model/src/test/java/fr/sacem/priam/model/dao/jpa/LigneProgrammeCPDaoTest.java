@@ -8,7 +8,7 @@ import fr.sacem.priam.model.domain.LignePreprep;
 import fr.sacem.priam.model.domain.cp.LigneProgrammeCP;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.SelectionDto;
-import fr.sacem.priam.model.services.LigneProgrammeServiceImpl;
+
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -37,10 +37,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class LigneProgrammeCPDaoTest {
 
     private static final String CDE_UTIL = "";
+
     @Autowired
     LigneProgrammeCPDao ligneProgrammeCPDao;
-    LigneProgrammeServiceImpl ligneProgrammeServiceImpl = new LigneProgrammeServiceImpl();
-    
+
     @Autowired
     FichierCPDao fichierCPDao;
 
@@ -93,12 +93,7 @@ public class LigneProgrammeCPDaoTest {
     private static final String INITIAL_TITRES = "Tes";
 
 
-    @Before
-    public void setUp() throws Exception{
-        ligneProgrammeServiceImpl.setLigneProgrammeCPDao(ligneProgrammeCPDao);
-        ligneProgrammeServiceImpl.setFichierCPDao(fichierCPDao);
-    }
-    
+
     @Test
     public void should_delete_all_data_ligne_programme() {
         List<FichierCP> fichiers = fichierCPDao.findAll();
@@ -108,18 +103,8 @@ public class LigneProgrammeCPDaoTest {
         
         assertThat(all).isNotNull().isEmpty();
     }
-    /*
-    @Test
-    public void get_one_ligne_programme(){
 
-        LigneProgrammeCP ligneProgramme = ligneProgrammeDao.findOne(2l);
-        assertThat(ligneProgramme).isNotNull();
-    }*/
-    @Test
-    public void get_ligne_programme_by_programme(){
-        //List<LigneProgrammeCP> ligneProgrammes = ligneProgrammeDao.findLigneProgrammeByProgrammeId("PR170001",pageable);
-        //assertThat(ligneProgrammes.size()).isEqualTo(3);
-    }
+
     @Ignore
     @Test
     @Transactional
@@ -166,25 +151,6 @@ public class LigneProgrammeCPDaoTest {
         List<String> utilisateursByProgramme = ligneProgrammeCPDao.findUtilisateursByProgramme(NUM_PROG);
         assertThat(utilisateursByProgramme).isNotNull().isNotEmpty();
     }
-
-
-    /***
-     * impossible d'executer cette requete sur la base de test (h2)
-     * org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "UPDATE   PRIAM_LIGNE_PROGRAMME P INNER[*] JOIN   PRIAM_FICHIER F ON P.ID_FICHIER = F.ID SET   P.SELECTION=? WHERE   F.NUMPROG = ? ";
-     * @throws Exception
-     */
-   /* @Test
-    @Transactional
-    public void supprimerLigneProgramme() throws Exception {
-        boolean flag = true;
-        try{
-            ligneProgrammeDao.deleteLigneProgrammeByIde12AndNumProg(NUM_PROG, IDE12, selectedLigneProgramme.getLibAbrgUtil().split(" - ")[0]);
-        } catch (Exception e ) {
-            flag = false;
-        }
-
-        assertThat(flag).isEqualTo(false);
-    }*/
 
 
     @Test

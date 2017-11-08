@@ -203,7 +203,13 @@
               //
               console.log('ok ajout');
               this.rechercher();
-            });
+            })
+            .catch(error => {
+
+                alert("Erreur technique lors l'ajout d'oeuvre !!!");
+
+              }
+            );
 
       }
     },

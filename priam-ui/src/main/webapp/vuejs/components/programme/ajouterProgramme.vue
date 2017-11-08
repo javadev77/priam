@@ -49,34 +49,34 @@
             <div class="row">
 
               <div class="form-group col-md-6" :class="{'has-error': errors.has('Nom programme') }">
-                <label class="col-md-9 control-label">Nom programme</label>
+                <label class="col-md-9 control-label">Nom programme <span class="mandatory">*</span></label>
                 <div class="col-md-15">
-                  <input maxlength="20" name="Nom programme" v-model="nom" v-validate="'required|max:20'" class="form-control" :class="{'has-error': errors.has('Nom programme') }"  type="text" >
+                  <input maxlength="20" name="Nom programme" v-model="nom" v-validate.disable="'required|max:20'" class="form-control" :class="{'has-error': errors.has('Nom programme') }"  type="text" >
                 </div>
               </div>
 
               <div class="form-group col-md-6" :class="{'has-error': errors.has('rion.theorique') }">
-                <label class="col-md-8 control-label">Rion statutaire</label>
+                <label class="col-md-8 control-label">Rion statutaire <span class="mandatory">*</span></label>
                 <div class="col-md-16">
-                  <v-select name="rion.theorique" v-validate="'required'" :searchable="false" label="value" v-model="rionTheoriqueSelected"
-                            :options="rionTheoriqueOptions" :classValidate="{'has-error': errors.has('Rion statuaire') }">
+                  <v-select name="rion.theorique" v-validate.disable="'required'" :searchable="false" label="value" v-model="rionTheoriqueSelected"
+                            :options="rionTheoriqueOptions" :classValidate="{'has-error': errors.has('rion.theorique') }">
                   </v-select>
                 </div>
               </div>
 
               <div class="form-group col-md-5"  :class="{'has-error': errors.has('Famille') }">
-                <label class="col-md-8 control-label">Famille</label>
+                <label class="col-md-8 control-label">Famille <span class="mandatory">*</span></label>
                 <div class="col-md-16">
-                  <v-select name="Famille" v-validate="'required'" :searchable="false" label="value" v-model="familleSelected" :options="familleOptions"
+                  <v-select name="Famille" v-validate.disable="'required'" :searchable="false" label="value" v-model="familleSelected" :options="familleOptions"
                             :on-change="loadTypeUtilisation" :classValidate="{'has-error': errors.has('Famille') }">
                   </v-select>
                 </div>
               </div>
 
               <div class="form-group col-md-7" :class="{'has-error': errors.has('typeUtilisation') }">
-                <label class="col-md-6 control-label">Type d'utilisation</label>
+                <label class="col-md-6 control-label">Type d'utilisation <span class="mandatory">*</span></label>
                 <div class="col-md-16">
-                  <v-select name="typeUtilisation" v-validate="'required'" :searchable="false" label="value" v-model="typeUtilisationSelected"
+                  <v-select name="typeUtilisation" v-validate.disable="'required'" :searchable="false" label="value" v-model="typeUtilisationSelected"
                             :options="typeUtilisationOptions" :classValidate="{'has-error': errors.has('typeUtilisation') }">
                   </v-select>
                 </div>
@@ -86,26 +86,45 @@
             <!-- Date Debut / Fin et territoire programme -->
             <div class="row  espacement">
               <div class="form-group col-md-6" :class="{'has-error': errors.has('dateDebutProgramme') }">
-                <label class="col-md-9 control-label">Date de début</label>
+                <label class="col-md-9 control-label">Date de début <span class="mandatory">*</span></label>
                 <div class="col-md-15">
-                  <date-picker @update-date="updateDebutProgramme" name="dateDebutProgramme" :value="dateDebutProgramme" date-format="dd/mm/yy" :zeroHour="true" ></date-picker>
-                </div>
-              </div>
-
-              <div class="form-group col-md-6" :class="{'has-error': errors.has('dateFinProgramme') }">
-                <label class="col-md-8 control-label">Date de fin</label>
-                <div class="col-md-16">
-                  <date-picker @update-date="updateDateFinProgramme" name="dateFinProgramme" :value="dateFinProgramme" date-format="dd/mm/yy" :zeroHour="true">
+                  <!--<date-picker @update-date="updateDebutProgramme" name="dateDebutProgramme" :value="dateDebutProgramme" date-format="dd/mm/yy" :zeroHour="true" ></date-picker>-->
+                  <date-picker v-validate.disable="'required|date_format:DD/MM/YYYY|before:dateFinProgramme'"
+                               data-vv-value-path="innerDateDebutProgrammeValue"
+                               data-vv-name="dateDebutProgramme"
+                               name="dateDebutProgramme"
+                               v-model="dateDebutProgramme"
+                               date-format="dd/mm/yy"
+                               :zeroHour="true" >
                   </date-picker>
                 </div>
               </div>
 
-              <div class="form-group col-md-5" :class="{'has-error': errors.has('territoire') }">
-                <label class="col-md-8 control-label">Territoire</label>
+              <div class="form-group col-md-6" :class="{'has-error': errors.has('dateFinProgramme') }">
+                <label class="col-md-8 control-label">Date de fin <span class="mandatory">*</span></label>
                 <div class="col-md-16">
-                  <v-select name="territoire" v-validate="'required'" :searchable="true" label="value" v-model="territoireSelected"
-                            :options="territoireOptions" :classValidate="{'has-error': errors.has('territoire') }">
-                  </v-select>
+                  <date-picker v-validate.disable="'required|date_format:DD/MM/YYYY'"
+                               data-vv-value-path="innerDateFinProgrammeValue"
+                               data-vv-name="dateFinProgramme"
+                               name="dateFinProgramme"
+                               v-model="dateFinProgramme"
+                               date-format="dd/mm/yy"
+                               :zeroHour="true">
+                  </date-picker>
+                </div>
+              </div>
+
+              <div class="form-group col-md-10" :class="{'has-error': errors.has('territoire') }">
+                <label class="col-md-4 control-label">Territoire <span class="mandatory">*</span></label>
+                <div class="col-md-10">
+                    <select2 class="form-control"
+                             name="territoire"
+                             v-validate.disable="'required'"
+                             :searchable="true"
+                             v-model="territoireSelected"
+                             :options="territoireOptions"
+                             :class="{'has-error': errors.has('territoire') }" >
+                    </select2>
                 </div>
               </div>
 
@@ -175,8 +194,10 @@
   import vSelect from '../common/Select.vue';
   import Modal from '../common/Modal.vue';
   import DatePicker from '../common/DatePicker.vue';
+  import Select2 from '../common/Select2.vue';
 
   const ID_FRANCE = 250;
+
 
   export default {
     data(){
@@ -188,7 +209,7 @@
         resource: '',
         nom : '',
         rionTheoriqueSelected : null,
-        familleSelected: this.$store.getters.userFamille,
+        familleSelected: this.$store.getters.familleOptionsVide[0],
         typeUtilisationSelected: null,
         typeRepart:'OEUVRE',
         programmeData: {
@@ -253,20 +274,6 @@
       },
 
       verifierEtAjouterLeProgramme(){
-
-        if(this.dateDebutProgramme == null) {
-          this.$validator.errorBag.errors.push({"field":"dateDebutProgramme","msg":"Le champ 'Date de debut' est obligatoire et non renseigné.","rule":"required","scope":"__global__"});
-        }
-
-        if(this.dateFinProgramme == null) {
-          this.$validator.errorBag.errors.push({"field":"dateFinProgramme","msg":"Le champ 'Date de fin' est obligatoire et non renseigné.","rule":"required","scope":"__global__"});
-        }
-
-        if(this.$validator.errorBag.errors.length != 0)
-        {
-            return;
-        }
-
         this.resource.searchProgramme({nom : this.nom})
             .then(response => {
               this.programmeExist = response.body;
@@ -291,7 +298,7 @@
           this.programmeData.rionTheorique=this.rionTheoriqueSelected.id;
           this.programmeData.dateDbtPrg=this.dateDebutProgramme;
           this.programmeData.dateFinPrg=this.dateFinProgramme;
-          this.programmeData.cdeTer=this.territoireSelected.id;
+          this.programmeData.cdeTer=this.territoireSelected;
 
           this.resource.addProgramme(this.programmeData).then(response => {
             console.log("ajout ok");
@@ -391,6 +398,7 @@
       vSelect: vSelect,
       modal : Modal,
       datePicker : DatePicker,
+      select2 : Select2
     },
     created(){
       const customActions = {
@@ -405,7 +413,7 @@
 
         if(territoire.id == ID_FRANCE)
           {
-            this.territoireSelected = territoire;
+            this.territoireSelected = territoire.id;
           }
       })
     }
@@ -444,5 +452,9 @@
 
   .has-error {
     color: #a94442;
+  }
+
+  .mandatory {
+    color: #FF0000;
   }
 </style>

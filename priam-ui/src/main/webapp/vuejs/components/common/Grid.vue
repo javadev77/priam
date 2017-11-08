@@ -31,7 +31,7 @@
                     </th>
                   </template>
                   <template v-else>
-                    <th>
+                    <th v-if="entry.sortable">
                       <a v-if="!isLocalSort" @click="serverSortBy(entry)">
                         <span>{{ entry.name }}</span>
                         <span v-if="entry.sortable"
@@ -51,6 +51,9 @@
                               >
                         </span>
                       </a>
+                    </th>
+                    <th v-else>
+                      <span>{{ entry.name }}</span>
                     </th>
                   </template>
                 </template>
@@ -73,7 +76,7 @@
                   </template>
                   <template v-else-if="entryColumn.type === 'numeric'">
                     <td class="columnRight">
-                      {{ entry[entryColumn.id] }}
+                      {{ entry[entryColumn.id] | numberFormat }}
                     </td>
                   </template>
                   <template v-else-if="entryColumn.type === 'code-value'">
@@ -305,7 +308,6 @@
 
       filteredData() {
         var sortKey = this.sortKey
-        var filterKey = this.filterKey && this.filterKey.toLowerCase()
         var order = this.sortOrders[sortKey] || 1;
         var data = this.data.content;
 

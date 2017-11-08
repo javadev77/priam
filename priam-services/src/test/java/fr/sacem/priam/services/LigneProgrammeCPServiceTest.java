@@ -100,11 +100,7 @@ public class LigneProgrammeCPServiceTest {
         assertThat(titresByProgramme.stream().anyMatch(keyValue -> keyValue.getValue().toString().contains(INITIAL_TITRES))).isEqualTo(true);
     }
 
-    /**
-     *
-     * @throws Exception
-     */
-    @Test()
+    @Test
     public void getUtilisateursByProgramme() throws Exception {
         List<String> utilisateursByProgramme = ligneProgrammeService.getUtilisateursByProgramme(NUM_PROG);
         assertThat(utilisateursByProgramme).isNotNull().isNotEmpty();

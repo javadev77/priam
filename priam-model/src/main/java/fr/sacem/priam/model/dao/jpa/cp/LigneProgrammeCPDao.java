@@ -4,6 +4,7 @@ import fr.sacem.priam.model.domain.LignePreprep;
 import fr.sacem.priam.model.domain.cp.LigneProgrammeCP;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.SelectionDto;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -145,17 +146,13 @@ public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Lon
 
     @Transactional(readOnly = true)
     @Query(value =
-               "SELECT distinct CONCAT(lu.cdeUtil, CASE WHEN lu.libAbrgUtil is null THEN '' ELSE ' - ' END, COALESCE(lu.libAbrgUtil,'')) " +
-                   "FROM LigneProgrammeCP ligneProgramme join ligneProgramme.fichier  f , " +
-                   "SareftjLibutil lu "+
-                   "WHERE ligneProgramme.fichier = f.id " +
-                   "AND lu.cdeUtil = ligneProgramme.cdeUtil "+
-                   "AND f.programme.numProg = :programme " +
-                   "ORDER BY ligneProgramme.cdeUtil")
+               "SELECT distinct ligneProgramme.libelleUtilisateur " +
+                   "FROM LigneProgrammeCP ligneProgramme inner join ligneProgramme.fichier as f "+
+                   "WHERE f.programme.numProg = :programme " +
+                   "ORDER BY ligneProgramme.libelleUtilisateur")
     List<String> findUtilisateursByProgramme(@Param("programme") String programme);
 
     @Modifying(clearAutomatically = true)
-    @Transactional
     @Query(nativeQuery = true, value="update " +
             "  PRIAM_LIGNE_PROGRAMME_CP p " +
             "INNER JOIN " +
@@ -168,6 +165,19 @@ public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Lon
 
     @Modifying(clearAutomatically = true)
     @Transactional
+    @Query(nativeQuery = true, value="update " +
+            "  PRIAM_LIGNE_PROGRAMME_CP p " +
+            "INNER JOIN " +
+            "  PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
+            "set " +
+            "  p.SEL_EN_COURS=1 " +
+            "where " +
+            "  f.NUMPROG = ?1" +
+            " AND p.ide12 <> ?2 " +
+            " AND p.cdeUtil not like ?3")
+    void updateSelectionByNumProgrammeExcept(@Param("numProg") String numProg, @Param("ide12") Long ide12, @Param("cdeUtil") String cdeUtil);
+
+    @Modifying(clearAutomatically = true)
     @Query(nativeQuery = true, value="update " +
             "  PRIAM_LIGNE_PROGRAMME_CP p " +
             "INNER JOIN " +
@@ -223,7 +233,7 @@ public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Lon
     List<LigneProgrammeCP> findOeuvresAutoByIdOeuvreManuel(@Param("idOeuvreManuel")Long idOeuvreManuel);
     
     
-    @Transactional
+    
     @Modifying(clearAutomatically = true)
     @Query(nativeQuery = true, value = "update " +
              "PRIAM_LIGNE_PROGRAMME_CP p " +
@@ -234,7 +244,7 @@ public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Lon
                "f.NUMPROG = ?1 AND p.SEL_EN_COURS=?2")
     void updateSelection(@Param("numProg") String numProg, @Param("selection") boolean value);
     
-    @Transactional
+    
     @Modifying(clearAutomatically = true)
     @Query(nativeQuery = true, value = "update " +
                                            "PRIAM_LIGNE_PROGRAMME_CP p " +
@@ -295,4 +305,15 @@ public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Lon
                                          "where " +
                                          "  f.NUMPROG = ?1")
     void deselectAllByNumProgramme(@Param("numProg") String numProg, @Param("selection") boolean selection);
+    
+    
+    
+    @Query(value="SELECT l " +
+                     "FROM LigneProgrammeCP l inner join l.fichier as f "+
+                     "WHERE l.fichier = f.id " +
+                     "AND f.programme.numProg = :numProg " +
+                     "AND l.ide12 = :ide12 " +
+                     "AND l.cdeUtil = :cdeUtil " +
+                     "AND l.oeuvreManuel IS NULL ")
+    LigneProgrammeCP findByIde12AndCdeUtil(@Param("numProg") String numProg, @Param("ide12") Long ide12, @Param("cdeUtil") String cdeUtil);
 }

@@ -16,36 +16,46 @@
                   <i v-show="errors.has('Nom programme')" class="fa fa-warning"></i>
                   <label v-show="errors.has('Nom programme')" :class="{'has-error': errors.has('Nom programme') }">{{ errors.first('Nom programme') }}</label>
                 </li>
-                <li v-if="errors.has('Rion statuaire')">
-                  <i v-show="errors.has('Rion statuaire')" class="fa fa-warning"></i>
-                  <label v-show="errors.has('Rion statuaire')" :class="{'has-error': errors.has('Rion statuaire') }">{{ errors.first('Rion statuaire') }}</label>
-                </li>
-                <li v-if="errors.has('Famille')">
-                  <i v-show="errors.has('Famille')" class="fa fa-warning"></i>
-                  <label v-show="errors.has('Famille')" :class="{'has-error': errors.has('Famille') }">{{ errors.first('Famille') }}</label>
-                </li>
-                <li v-if="errors.has('Type utilisation')">
-                  <i v-show="errors.has('Type utilisation')" class="fa fa-warning"></i>
-                  <label v-show="errors.has('Type utilisation')" :class="{'has-error': errors.has('Type utilisation') }">{{ errors.first('Type utilisation') }}</label>
-                </li>
-                <li v-if="errors.has('dateDebutProgramme')">
-                  <i v-show="errors.has('dateDebutProgramme')" class="fa fa-warning"></i>
-                  <label v-show="errors.has('dateDebutProgramme')" :class="{'has-error': errors.has('dateDebutProgramme') }">{{ errors.first('dateDebutProgramme') }}</label>
-                </li>
-                <li v-if="errors.has('dateFinProgramme')">
-                  <i v-show="errors.has('dateFinProgramme')" class="fa fa-warning"></i>
-                  <label v-show="errors.has('dateFinProgramme')" :class="{'has-error': errors.has('dateFinProgramme') }">{{ errors.first('dateFinProgramme') }}</label>
-                </li>
+                <template v-if="!isNonModifiable">
+                  <li v-if="errors.has('rion.theorique')">
+                    <i v-show="errors.has('rion.theorique')" class="fa fa-warning"></i>
+                    <label v-show="errors.has('rion.theorique')" :class="{'has-error': errors.has('rion.theorique') }">{{ errors.first('rion.theorique') }}</label>
+                  </li>
 
-                <li v-if="errors.has('territoire')">
-                  <i v-show="errors.has('territoire')" class="fa fa-warning"></i>
-                  <label v-show="errors.has('territoire')" :class="{'has-error': errors.has('territoire') }">{{ errors.first('territoire') }}</label>
-                </li>
+                  <li v-if="errors.has('Famille')">
+                    <i v-show="errors.has('Famille')" class="fa fa-warning"></i>
+                    <label v-show="errors.has('Famille')" :class="{'has-error': errors.has('Famille') }">{{ errors.first('Famille') }}</label>
+                  </li>
+
+                  <li v-if="errors.has('typeUtilisation')">
+                    <i v-show="errors.has('typeUtilisation')" class="fa fa-warning"></i>
+                    <label v-show="errors.has('typeUtilisation')" :class="{'has-error': errors.has('typeUtilisation') }">{{ errors.first('typeUtilisation') }}</label>
+                  </li>
+
+                  <li v-if="errors.has('dateDebutProgramme')">
+                    <i v-show="errors.has('dateDebutProgramme')" class="fa fa-warning"></i>
+                    <label v-show="errors.has('dateDebutProgramme')" :class="{'has-error': errors.has('dateDebutProgramme') }">{{ errors.first('dateDebutProgramme') }}</label>
+                  </li>
+
+                  <li v-if="errors.has('dateFinProgramme')">
+                    <i v-show="errors.has('dateFinProgramme')" class="fa fa-warning"></i>
+                    <label v-show="errors.has('dateFinProgramme')" :class="{'has-error': errors.has('dateFinProgramme') }">{{ errors.first('dateFinProgramme') }}</label>
+                  </li>
+
+                  <li v-if="errors.has('territoire')">
+                    <i v-show="errors.has('territoire')" class="fa fa-warning"></i>
+                    <label v-show="errors.has('territoire')" :class="{'has-error': errors.has('territoire') }">{{ errors.first('territoire') }}</label>
+                  </li>
+                </template>
               </ul>
             </div>
 
 
             <div class="row">
+
+              <!-- ========================================================================= -->
+              <!-- ========================== numProgramme  ================================ -->
+              <!-- ========================================================================= -->
 
               <div class="form-group col-md-6">
                 <label class="col-md-9 control-label">N° programme</label>
@@ -57,80 +67,219 @@
 
             <div class="row espacement">
 
+              <!-- ========================================================================= -->
+              <!-- ========================== Nom programme ================================ -->
+              <!-- ========================================================================= -->
+
               <div class="form-group col-md-6" :class="{'has-error': errors.has('Nom programme') }">
-                <label class="col-md-9 control-label">Nom programme</label>
+                <label class="col-md-9 control-label">Nom programme <span class="mandatory">*</span></label>
                 <div class="col-md-15">
-                  <input maxlength="20" name="Nom programme" v-model="nom" v-validate="'required|max:20'" class="form-control" :class="{'has-error': errors.has('Nom programme') }"  type="text" >
+                  <input maxlength="20"
+                         name="Nom programme"
+                         v-model="nom"
+                         v-validate.disable="'required|max:20'"
+                         class="form-control"
+                         :class="{'has-error': errors.has('Nom programme') }"
+                         type="text" >
                 </div>
               </div>
 
-              <div class="form-group col-md-6" :class="{'has-error': errors.has('rion.theorique') }">
-                <label class="col-md-8 control-label">Rion statutaire</label>
-                <div class="col-md-16">
-                  <v-select name="Rion statuaire"
-                            v-validate="'required'"
-                            :searchable="false"
-                            label="value"
-                            v-model="rionTheoriqueSelected"
-                            :options="rionTheoriqueOptions"
-                            :disabled="isNonModifiable">
-                  </v-select>
-                </div>
-              </div>
+              <!-- ========================================================================= -->
+              <!-- ========================== Rion Theorique================================ -->
+              <!-- ========================================================================= -->
 
-              <div class="form-group col-md-5"  :class="{'has-error': errors.has('Famille') }">
-                <label class="col-md-8 control-label">Famille</label>
-                <div class="col-md-16">
-                  <v-select name="Famille"
-                            v-validate="'required'"
-                            :searchable="false" label="value"
-                            v-model="familleSelected"
-                            :options="familleOptions"
-                            :on-change="loadTypeUtilisation"
-                            :disabled="isNonModifiable">
-                  </v-select>
+              <template v-if="!isNonModifiable">
+                <div class="form-group col-md-6" :class="{'has-error': errors.has('rion.theorique') }">
+                  <label class="col-md-8 control-label">Rion statutaire <span class="mandatory">*</span></label>
+                  <div class="col-md-16">
+                    <v-select name="rion.theorique"
+                              v-validate.disable="'required'"
+                              :searchable="false"
+                              label="value"
+                              v-model="rionTheoriqueSelected"
+                              :options="rionTheoriqueOptions">
+                    </v-select>
+                  </div>
                 </div>
-              </div>
 
-              <div class="form-group col-md-7" :class="{'has-error': errors.has('typeUtilisation') }">
-                <label class="col-md-6 control-label">Type d'utilisation</label>
-                <div class="col-md-16">
-                  <v-select name="Type utilisation"
-                            v-validate="'required'"
-                            :searchable="false"
-                            label="value"
-                            v-model="typeUtilisationSelected"
-                            :options="typeUtilisationOptions"
-                            :disabled="isNonModifiable">
-                  </v-select>
+              </template>
+              <template v-else>
+                <div class="form-group col-md-6">
+                  <label class="col-md-8 control-label">Rion statutaire</label>
+                  <div class="col-md-16">
+                    <v-select name="rion.theorique"
+                              :searchable="false"
+                              label="value"
+                              v-model="rionTheoriqueSelected"
+                              :options="rionTheoriqueOptions"
+                              :disabled="isNonModifiable">
+                    </v-select>
+                  </div>
                 </div>
-              </div>
-            </div>
+              </template>
+
+              <!-- ========================================================================= -->
+              <!-- ========================== Famille ====================================== -->
+              <!-- ========================================================================= -->
+
+              <template v-if="!isNonModifiable">
+                <div class="form-group col-md-5"  :class="{'has-error': errors.has('Famille') }">
+                  <label class="col-md-8 control-label">Famille <span class="mandatory">*</span></label>
+                  <div class="col-md-16">
+                    <v-select name="Famille"
+                              v-validate.disable="'required'"
+                              :searchable="false" label="value"
+                              v-model="familleSelected"
+                              :options="familleOptions"
+                              :on-change="loadTypeUtilisation" >
+                    </v-select>
+                  </div>
+                </div>
+              </template>
+              <template v-else>
+                <div class="form-group col-md-5">
+                  <label class="col-md-8 control-label">Famille</label>
+                  <div class="col-md-16">
+                    <v-select name="Famille"
+                              :searchable="false"
+                              label="value"
+                              v-model="familleSelected"
+                              :options="familleOptions"
+                              :on-change="loadTypeUtilisation"
+                              :disabled="isNonModifiable">
+                    </v-select>
+                  </div>
+                </div>
+              </template>
+
+              <!-- ========================================================================= -->
+              <!-- ========================== typeUtilisation ============================== -->
+              <!-- ========================================================================= -->
+
+              <template v-if="!isNonModifiable">
+                <div class="form-group col-md-7" :class="{'has-error': errors.has('typeUtilisation') }">
+                  <label class="col-md-6 control-label">Type d'utilisation <span class="mandatory">*</span></label>
+                  <div class="col-md-16">
+                    <v-select name="typeUtilisation"
+                              v-validate.disable="'required'"
+                              :searchable="false"
+                              label="value"
+                              v-model="typeUtilisationSelected"
+                              :options="typeUtilisationOptions">
+                    </v-select>
+                  </div>
+                </div>
+
+              </template>
+              <template v-else>
+                <div class="form-group col-md-7">
+                  <label class="col-md-6 control-label">Type d'utilisation</label>
+                  <div class="col-md-16">
+                    <v-select name="typeUtilisation"
+                              :searchable="false"
+                              label="value"
+                              v-model="typeUtilisationSelected"
+                              :options="typeUtilisationOptions"
+                              :disabled="isNonModifiable">
+                    </v-select>
+                  </div>
+                </div>
+              </template>
+            </div> <!-- </row> -->
 
             <!-- Date Debut / Fin et territoire programme -->
             <div class="row espacement">
-              <div class="form-group col-md-6" :class="{'has-error': errors.has('dateDebutProgramme') }">
-                <label class="col-md-9 control-label">Date de début</label>
-                <div class="col-md-15">
-                  <date-picker @update-date="updateDebutProgramme" :value="dateDebutProgramme" date-format="dd/mm/yy" :zeroHour="true" :disabled="isNonModifiable"></date-picker>
+              <template v-if="!isNonModifiable">
+                <div class="form-group col-md-6" :class="{'has-error': errors.has('dateDebutProgramme') }">
+                  <label class="col-md-9 control-label">Date de début <span class="mandatory">*</span></label>
+                  <div class="col-md-15">
+                    <date-picker v-validate.disable="'required|date_format:DD/MM/YYYY|before:dateFinProgramme'"
+                                 data-vv-value-path="innerDateDebutProgrammeValue"
+                                 data-vv-name="dateDebutProgramme"
+                                 name="dateDebutProgramme"
+                                 v-model="dateDebutProgramme"
+                                 date-format="dd/mm/yy"
+                                 :zeroHour="true" >
+                    </date-picker>
+                  </div>
                 </div>
-              </div>
+              </template>
+              <template v-else>
+                <div class="form-group col-md-6">
+                  <label class="col-md-9 control-label">Date de début</label>
+                  <div class="col-md-15">
+                    <date-picker name="dateDebutProgramme"
+                                 v-model="dateDebutProgramme"
+                                 date-format="dd/mm/yy"
+                                 :zeroHour="true"
+                                 :disabled="isNonModifiable">
+                    </date-picker>
+                  </div>
+                </div>
+              </template>
 
-              <div class="form-group col-md-6" :class="{'has-error': errors.has('dateFinProgramme') }">
-                <label class="col-md-8 control-label">Date de fin</label>
-                <div class="col-md-16">
-                  <date-picker @update-date="updateDateFinProgramme" :value="dateFinProgramme" date-format="dd/mm/yy" :zeroHour="true" :disabled="isNonModifiable"></date-picker>
+              <template v-if="!isNonModifiable">
+                <div class="form-group col-md-6" :class="{'has-error': errors.has('dateFinProgramme') }">
+                  <label class="col-md-8 control-label">Date de fin <span class="mandatory">*</span></label>
+                  <div class="col-md-16">
+                    <date-picker v-validate.disable="'required|date_format:DD/MM/YYYY'"
+                                 data-vv-value-path="innerDateFinProgrammeValue"
+                                 data-vv-name="dateFinProgramme"
+                                 name="dateFinProgramme"
+                                 v-model="dateFinProgramme"
+                                 date-format="dd/mm/yy"
+                                 :zeroHour="true" >
+                    </date-picker>
+                  </div>
                 </div>
-              </div>
+              </template>
+              <template v-else>
+                <div class="form-group col-md-6">
+                  <label class="col-md-8 control-label">Date de fin</label>
+                  <div class="col-md-16">
+                    <date-picker name="dateFinProgramme"
+                                 v-model="dateFinProgramme"
+                                 date-format="dd/mm/yy"
+                                 :zeroHour="true"
+                                 :disabled="isNonModifiable" >
+                    </date-picker>
+                  </div>
+                </div>
+              </template>
 
-              <div class="form-group col-md-5" :class="{'has-error': errors.has('territoire') }">
-                <label class="col-md-8 control-label">Territoire</label>
-                <div class="col-md-16">
-                  <v-select name="territoire" v-validate="'required'" :searchable="true" label="value" v-model="territoireSelected"
-                            :options="territoireOptions" :classValidate="{'has-error': errors.has('territoire') }" :disabled="isNonModifiable">
-                  </v-select>
+              <!-- ========================================================================= -->
+              <!-- =============================== territoire ============================== -->
+              <!-- ========================================================================= -->
+
+              <template v-if="!isNonModifiable">
+                <div class="form-group col-md-10" :class="{'has-error': errors.has('territoire') }">
+                  <label class="col-md-4 control-label">Territoire <span class="mandatory">*</span></label>
+                  <div class="col-md-10">
+                    <select2 class="form-control"
+                             name="territoire"
+                             v-validate.disable="'required'"
+                             :searchable="true"
+                             v-model="territoireSelected"
+                             :options="territoireOptions">
+                    </select2>
+
+                  </div>
                 </div>
-              </div>
+              </template>
+              <template v-else>
+                <div class="form-group col-md-10">
+                  <label class="col-md-4 control-label">Territoire</label>
+                  <div class="col-md-10">
+                    <select2 class="form-control"
+                             :searchable="true"
+                             v-model="territoireSelected"
+                             :options="territoireOptions"
+                             :disabled="isNonModifiable">
+                    </select2>
+
+                  </div>
+                </div>
+              </template>
 
             </div>
 
@@ -197,9 +346,11 @@
 </template>
 <script>
   import vSelect from '../common/Select.vue';
-  import messagesfr from 'vee-validate/dist/locale/fr';
   import Modal from '../common/Modal.vue';
   import DatePicker from '../common/DatePicker.vue';
+  import moment from 'moment';
+  import Select2 from '../common/Select2.vue';
+
 
   export default {
 
@@ -300,21 +451,6 @@
       },
 
       verifierEtModifierLeProgramme() {
-
-
-        if(this.dateDebutProgramme == null) {
-          this.$validator.errorBag.errors.push({"field":"dateDebutProgramme","msg":"Le champ 'Date de debut' est obligatoire et non renseigné.","rule":"required","scope":"__global__"});
-        }
-
-        if(this.dateFinProgramme == null) {
-          this.$validator.errorBag.errors.push({"field":"dateFinProgramme","msg":"Le champ 'Date de fin' est obligatoire et non renseigné.","rule":"required","scope":"__global__"});
-        }
-
-        if(this.$validator.errorBag.errors.length != 0)
-        {
-          return;
-        }
-
         if(this.programmeToModify.nom !== this.nom) {
           this.resource.searchProgramme({nom: this.nom})
             .then(response => {
@@ -347,7 +483,7 @@
 
         this.programmeData.dateDbtPrg=this.dateDebutProgramme;
         this.programmeData.dateFinPrg=this.dateFinProgramme;
-        this.programmeData.cdeTer=this.territoireSelected.id;
+        this.programmeData.cdeTer=this.territoireSelected;
 
         this.resource.updateProgramme(this.programmeData)
             .then(response => {
@@ -415,6 +551,19 @@
         this.modifierProgramme();
       },
 
+
+      stringToDate(str) {
+        if (typeof str === 'string' && str.length > 3 && str.length < 11) {
+          var parts = str.split("/");
+          var date = null;
+
+          date = moment.utc([parts[2], parts[1] - 1, parts[0], 0, 0, 0, 0]).toDate();
+
+          return date;
+        }
+        return null;
+      },
+
       initData() {
           if(this.programmeToModify !== undefined && this.programmeToModify !== null) {
 
@@ -436,43 +585,19 @@
             let dateDbtPrg = this.programmeToModify.dateDbtPrg;
             let dateFinPrg = this.programmeToModify.dateFinPrg;
 
-            this.dateDebutProgramme = dateDbtPrg ? dateDbtPrg.substring(6) + '-' + dateDbtPrg.substring(3, 5) + '-' + dateDbtPrg.substring(0, 2) : null;
-            this.dateFinProgramme = dateFinPrg ? dateFinPrg.substring(6) + '-' + dateFinPrg.substring(3,5) + '-' + dateFinPrg.substring(0,2) : null;
+
+            this.dateDebutProgramme = this.stringToDate(dateDbtPrg);
+            this.dateFinProgramme = this.stringToDate(dateFinPrg);
 
             var cdeTer = this.programmeToModify.cdeTer;
 
-            this.territoireSelected = this.$store.getters.territoire.find(function (element) {
+            var cdeTerElem = this.$store.getters.territoire.find(function (element) {
               return Number.parseInt(element.id) === cdeTer;
             });
 
-            console.log('rionTheoriqueSelected=' + this.rionTheoriqueSelected)
+            this.territoireSelected = cdeTerElem.id;
+
           }
-
-      },
-
-      updateDebutProgramme(date) {
-        this.dateDebutProgramme = date;
-        var error = {"field":"dateDebutProgramme","msg":"Le champ 'Date de debut' est obligatoire et non renseigné.","rule":"required","scope":"__global__"};
-
-        if(this.dateDebutProgramme == null) {
-          this.$validator.errorBag.errors.push(error);
-        }else {
-          let number = this.indexOf(this.$validator.errorBag.errors, error);
-          this.$validator.errorBag.errors.splice(number, 1);
-        }
-      },
-
-      updateDateFinProgramme(date) {
-        this.dateFinProgramme = date;
-
-        var error = {"field":"dateFinProgramme","msg":"Le champ 'Date de fin' est obligatoire et non renseigné.","rule":"required","scope":"__global__"};
-
-        if(this.dateFinProgramme == null) {
-          this.$validator.errorBag.errors.push(error);
-        }else {
-          let number = this.indexOf(this.$validator.errorBag.errors, error);
-          this.$validator.errorBag.errors.splice(number, 1);
-        }
 
       },
 
@@ -492,9 +617,11 @@
       vSelect: vSelect,
       modal : Modal,
       datePicker : DatePicker,
+      select2 : Select2
     },
 
     created(){
+
       const customActions = {
           searchProgramme : {method : 'GET', url :'app/rest/programme/nom/{nom}'},
           findByNumProg : {method : 'GET', url : 'app/rest/programme/numProg/{numProg}'},
@@ -548,4 +675,9 @@
   .has-error {
     color: #a94442;
   }
+
+  .mandatory {
+    color: #FF0000;
+  }
+
 </style>

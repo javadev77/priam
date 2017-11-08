@@ -3,6 +3,8 @@ package fr.sacem;
 import fr.sacem.config.ConfigurationPriam;
 import fr.sacem.domain.Admap;
 import fr.sacem.priam.common.constants.EnvConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameter;
@@ -23,6 +25,8 @@ import java.util.Properties;
  * Created by fandis on 23/05/2017.
  */
 public class AppRepartition {
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppRepartition.class);
 
     public static void main(String[] args) {
 
@@ -42,7 +46,7 @@ public class AppRepartition {
             System.out.println("Exit Status : " + execution.getStatus());
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("Execution error ", e);
         }
 
         System.out.println("Done");

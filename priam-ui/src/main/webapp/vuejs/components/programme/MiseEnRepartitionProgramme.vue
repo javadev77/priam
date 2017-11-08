@@ -83,7 +83,7 @@
               value="MISE_EN_REPART"
               v-model="modeRepartition"
               :disabled="!isRightMSEREP"
-              > Mise en répatition
+              > Mise en répartition
             <span class="icons"><span class="first-icon fui-radio-unchecked"></span><span class="second-icon fui-radio-checked"></span></span>
           </label>
         </div>
