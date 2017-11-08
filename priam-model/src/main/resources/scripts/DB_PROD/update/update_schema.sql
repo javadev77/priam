@@ -1,11 +1,12 @@
+USE priam_app;
 ALTER TABLE PRIAM_FICHIER
 ADD `TYPE_FICHIER` varchar(25) DEFAULT NULL COMMENT 'type de fichier peut etre CP CMD FV pour differencier l envoi';
+
+update PRIAM_FICHIER SET TYPE_FICHIER ='CP';
 
 RENAME TABLE `PRIAM_LIGNE_PROGRAMME` TO `PRIAM_LIGNE_PROGRAMME_CP`;
 
 DROP TABLE IF EXISTS `PRIAM_LIGNE_PROGRAMME_CMS`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `PRIAM_LIGNE_PROGRAMME_CMS` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cdeCisac` varchar(3) DEFAULT NULL,
@@ -53,12 +54,9 @@ CREATE TABLE `PRIAM_LIGNE_PROGRAMME_CMS` (
   KEY `IDX_CDE_UTIL` (`cdeUtil`),
   CONSTRAINT `FK_ID_FICHIER_CMS` FOREIGN KEY (`ID_FICHIER`) REFERENCES `PRIAM_FICHIER` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 
 DROP TABLE IF EXISTS `PRIAM_LIGNE_PROGRAMME_FV`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `PRIAM_LIGNE_PROGRAMME_FV` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cdeCisac` varchar(3) DEFAULT NULL,
@@ -106,6 +104,5 @@ CREATE TABLE `PRIAM_LIGNE_PROGRAMME_FV` (
   KEY `IDX_CDE_UTIL` (`cdeUtil`),
   CONSTRAINT `FK_ID_FICHIER_FV` FOREIGN KEY (`ID_FICHIER`) REFERENCES `PRIAM_FICHIER` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
-
+commit;
