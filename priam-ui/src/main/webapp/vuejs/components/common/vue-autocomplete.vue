@@ -119,6 +119,13 @@
       onAjaxProgress: Function,
       onAjaxLoaded: Function,
     },
+
+
+    mounted() {
+
+      this.resizeWidthComponent();
+    },
+
     data() {
       return {
         showList: false,
@@ -127,7 +134,17 @@
         focusList: ""
       };
     },
+
+
     methods: {
+
+      resizeWidthComponent() {
+        var element = $(this.$el);
+        var domEL = element.find('div.has-feedback').get(0);
+
+        $(element.find('ul').get(0)).css('min-width' , $(domEL).css('width'));
+      },
+
       // Netralize Autocomplete
       clearInput() {
         this.showList = false;
@@ -149,7 +166,8 @@
           this.debouncedGetData = this.debounce ? debounce(this.getData.bind(this), this.debounce) : this.getData;
         }
         // Get The Data
-        this.debouncedGetData(val)
+        this.debouncedGetData(val);
+        this.resizeWidthComponent();
       },
       showAll(){
         this.json = [];
@@ -157,6 +175,7 @@
         // Callback Event
         this.onShow ? this.onShow() : null;
         this.showList = true;
+        this.resizeWidthComponent();
       },
       hideAll(e){
         // Callback Event
@@ -263,7 +282,7 @@
 
 <style>
   body > div > div:nth-child(2) > div > div:nth-child(1) > div:nth-child(3) > div.panel.panel-default > div.panel-collapse > div > form > div > div.form-group.col-md-6 > div > div > div.autocomplete.transition.autocomplete-list {
-    position: fixed;
+    /*position: fixed;*/
     text-align: left;
   }
 

@@ -320,14 +320,16 @@
           }
           this.resource= this.$resource('', {}, customActions);
 
-        this.resource.findByNumProg({numProg:  this.$route.params.numProg})
-          .then(response => {
-            return response.json();
-          })
-          .then(data => {
-            this.programmeInfo = data;
-            this.initData();
-          });
+          this.$store.commit('TOUT_DESACTIVER', false);
+
+          this.resource.findByNumProg({numProg:  this.$route.params.numProg})
+            .then(response => {
+              return response.json();
+            })
+            .then(data => {
+              this.programmeInfo = data;
+              this.initData();
+            });
 
 
 
@@ -576,7 +578,7 @@
 
               console.log("length this.fichiersChecked=" + this.fichiersChecked.length);
 
-
+              this.$store.dispatch('toutDesactiver', this.fichiersChecked.length === this.priamGrid.gridData.content.length)
 
             });
 

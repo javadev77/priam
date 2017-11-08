@@ -47,11 +47,21 @@
                   <label class="control-label pull-right">Date de création</label>
                 </div>
                 <div class="col-sm-2">
-                  <date-picker @update-date="updateDateDebutCreation" :value="critereRechercheData.dateCreationDebut" date-format="dd/mm/yy" :zeroHour="true" place-holder="De" ></date-picker>
+                  <date-picker v-model="critereRechercheData.dateCreationDebut"
+                               date-format="dd/mm/yy"
+                               :zeroHour="true"
+                               place-holder="De" >
+
+                  </date-picker>
 
                 </div>
                 <div class="col-sm-2">
-                  <date-picker @update-date="updateDateFinCreation" :value="critereRechercheData.dateCreationFin" date-format="dd/mm/yy" :zeroHour="false" place-holder="A" ></date-picker>
+                  <date-picker v-model="critereRechercheData.dateCreationFin"
+                               date-format="dd/mm/yy"
+                               :zeroHour="false"
+                               place-holder="A" >
+
+                  </date-picker>
                 </div>
 
                 <div class="col-sm-2">
@@ -272,7 +282,7 @@
             familleSelected : this.$store.getters.userFamille,
             typeUtilisationSelected : {'id' : 'ALL', 'value' : 'Tous'},
             rionTheoriqueSelected :  'ALL',//{'id' : 'ALL', 'value' : 'Toutes'},
-            rionPaiementSelected : {'id' : 'ALL', 'value' : 'Toutes'},
+            rionPaiementSelected : 'ALL', //{'id' : 'ALL', 'value' : 'Toutes'},
             typeRepartSelected : {'id' : 'ALL', 'value' : 'Tous'},
             numProgSelected: 'ALL',
             nomProgSelected: 'ALL',
@@ -289,6 +299,7 @@
                 dateCreationFin : null,
                 statutCode : ['EN_COURS', 'AFFECTE', 'CREE', 'VALIDE', 'MIS_EN_REPART', 'EN_COURS_MISE_EN_REPART']
             },
+
 
             priamGrid : {
               gridColumns : [
@@ -400,6 +411,15 @@
                   sortable : true,
                   type : 'code-value',
                   cell : {
+                    /*cellTemplate : function(programme) {
+                      var result  = getters.statutProgramme.find(function (element) {
+                        return element.code === programme.statut;
+                      });
+
+                      var template = result !== undefined ? result.libelle + '<span class="glyphicon glyphicon-info-sign" aria-hidden="true" style="padding-left: 0px;" title="Répartition KO"></span>': '';
+                      return template;
+                    }*/
+
                     toText : function(cellValue) {
                       var result  = getters.statutProgramme.find(function (element) {
                         return element.code === cellValue;
@@ -667,8 +687,8 @@
 
 
               this.typeUtilisationSelected = {'id' : 'ALL', 'value' : 'Tous'};
-              this.rionTheoriqueSelected = 'ALL';//{'id' : 'ALL', 'value' : 'Toutes'};
-              this.rionPaiementSelected = {'id' : 'ALL', 'value' : 'Toutes'};
+              this.rionTheoriqueSelected = 'ALL';
+              this.rionPaiementSelected = 'ALL';
               this.typeRepartSelected = {'id' : 'ALL', 'value' : 'Tous'};
 
               this.rechercherProgrammes();
@@ -684,13 +704,10 @@
           },
 
           loadPage: function(pageNum, size, sort) {
+            this.defaultPageable.size = size;
             let pageSize = this.defaultPageable.size;
-            if(size !== undefined) {
-              pageSize = size;
-            }
 
-            this.launchRequest(pageNum, pageSize,
-              sort.property, sort.direction);
+            this.launchRequest(pageNum, pageSize, sort.property, sort.direction);
 
           },
 
@@ -701,55 +718,11 @@
                 return response.json();
               })
               .then(data => {
-
-
-                //Clear timers
-                //let content = data.content;
-                /*for(var i in content) {
-                    let numProg = content[i].numProg;
-                    if(this.statusTimers.indexOf(numProg) !== -1) {
-                      clearInterval(this.statusTimers[numProg]);
+                /*for(var i in  data.content) {
+                    if(data.content[i].statut === 'MIS_EN_REPART') {
+                        this.$store.commit('SAVE_LAST_PROGRAMME',data.content[i]);
                     }
                 }*/
-
-                /*this.statusTimers = [];
-                var self = this;
-                for(var i in content) {
-                  let numProg = content[i].numProg;
-                  if(content[i].statut == 'VALIDE') {
-                    //this.statusTimers[numProg] = setInterval(function () {
-
-                      self.resource.checkIfDone({numProg: numProg})
-                        .then(response => {
-                          return response.json();
-                        })
-                        .then(data => {
-
-                            var fichierFelix = data;
-                            if(fichierFelix !== undefined && fichierFelix.statut !== 'EN_COURS') {
-                                //clearInterval(self.statusTimers[numProg]);
-                                self.programmesEnCoursTraitement.splice(self.programmesEnCoursTraitement.indexOf(numProg), 1);
-                            }
-
-                            if(fichierFelix !== undefined && fichierFelix.statut == 'EN_COURS') {
-                              self.programmesEnCoursTraitement.push(numProg);
-                            } else if(fichierFelix.statut == 'GENERE') {
-                              if(fichierFelix.logs !== undefined && fichierFelix.logs.length > 0) {
-                                self.programmesEnErreur.push(numProg);
-                                self.fichierFelixErrors = fichierFelix.logs;
-                              }
-                            } else if(fichierFelix.statut == 'EN_ERREUR') {
-                                self.programmesEnErreur.push(numProg);
-                                self.fichierFelixErrors = fichierFelix.logs;
-                            }
-
-
-                        });
-
-                    //}, 1000 * 5);
-                  }
-                }*/
-
                 this.priamGrid.gridData = data;
                 this.priamGrid.gridData.number = data.number + 1;
 
@@ -813,7 +786,7 @@
               this.critereRechercheData.typeUtilisation = this.typeUtilisationSelected !== undefined ? this.typeUtilisationSelected.id : null;
               this.critereRechercheData.famille = this.familleSelected !== undefined ? this.familleSelected.id : null;
               this.critereRechercheData.rionTheorique= this.rionTheoriqueSelected !== undefined ? this.rionTheoriqueSelected : null;
-              this.critereRechercheData.rionPaiement= this.rionPaiementSelected !== undefined ? this.rionPaiementSelected.id : null;
+              this.critereRechercheData.rionPaiement= this.rionPaiementSelected !== undefined ? this.rionPaiementSelected : null;
               this.critereRechercheData.typeRepart = this.typeRepartSelected !== undefined ? this.typeRepartSelected.id : null;
 
               this.launchRequest(this.defaultPageable.page, this.defaultPageable.size,
@@ -829,14 +802,13 @@
 
           },
 
-          updateDateDebutCreation(date) {
-              console.log("dateCreationDebut="+date)
+          /*updateDateDebutCreation(date) {
               this.critereRechercheData.dateCreationDebut = date;
           },
 
           updateDateFinCreation(date) {
               this.critereRechercheData.dateCreationFin = date;
-          },
+          },*/
 
           isChecked (code) {
             var result = this.critereRechercheData.statutCode.find(function (element) {

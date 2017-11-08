@@ -7,7 +7,7 @@
   <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
       <charset>utf-8</charset>
-      <Pattern>[UI] %d{yyyy/MM/dd HH:mm:ss.SSS} [%thread] %-5level %logger: %msg%n</Pattern>
+      <Pattern>[Batch-Repartition] %d{yyyy/MM/dd HH:mm:ss.SSS} [%thread] %-5level %logger: %msg%n</Pattern>
     </encoder>
   </appender>
 

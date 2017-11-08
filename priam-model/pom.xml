@@ -6,6 +6,7 @@
         <artifactId>priam-parent</artifactId>
         <groupId>fr.sacem.priam</groupId>
         <version>2.0.0-SNAPSHOT</version>
+
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -84,6 +85,7 @@
             <groupId>fr.sacem.priam</groupId>
             <artifactId>priam-common</artifactId>
             <version>2.0.0-SNAPSHOT</version>
+
         </dependency>
         <dependency>
             <groupId>org.modelmapper</groupId>

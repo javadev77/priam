@@ -1,44 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-  <script src="https://unpkg.com/vue/dist/vue.js"></script>
-
-  <base href="https://cdn.rawgit.com/download/polymer-cdn/1.5.0/lib/">
-  <script src="webcomponentsjs/webcomponents-lite.min.js"></script>
-  <link rel="import" href="iron-icon/iron-icon.html">
-  <link rel="import" href="iron-icons/communication-icons.html">
-
+  <title>Dev login</title>
 </head>
-<body>
-
-<div id="app">
-        <span>
-        {{ message }}
-        </span>
-  <div>
-    <paper-button v-once id="textButton" toggles>
-      <iron-icon icon="communication:email"></iron-icon>
-    </paper-button>
-  </div>
+<body style="margin: 0; padding: 0; text-align: center; display: block;">
+<div style="margin: 50px auto; padding: 0; width: 120px;font-size: 13px;">
+  <h3>Select your role: </h3>
+  <select id="changeRole" onchange="changeRole()">
+    <option value="sacemadm" selected>Administrateur fonctionnel</option>
+    <option value="sacemadm" selected>Administrateur fonctionnel</option>
+  </select>
 </div>
-<paper-button id="textButton" toggles>
-  <iron-icon icon="communication:email"></iron-icon>
-</paper-button>
-<script>
-  Vue.config.ignoredElements = [
-    'paper-button', 'iron-icon'
-  ];
-  var app = new Vue({
-    el: '#app',
-    data: {
-      message: 'Why iron-icons get repeated two times inside the vuejs app ?'
+<script type="text/javascript">
+
+  function changeRole(){
+    var e = document.getElementById("changeRole");
+    var role = e.options[e.selectedIndex].value;
+    eraseCookie("JSESSIONID");
+    createCookie("iPlanetDirectoryPro", role);
+    createCookie("iPlanetDirectoryProDev", role);
+    var url = document.URL;
+    url = url.substring(0, url.lastIndexOf("/"));
+    window.location.replace("/priam/logout?goto=" + url);
+  }
+
+  function createCookie(name,value,days) {
+    if (days) {
+      var date = new Date();
+      date.setTime(date.getTime()+(days*24*60*60*1000));
+      var expires = "; expires="+date.toGMTString();
     }
-  })
+    else var expires = "";
+    document.cookie = name+"="+value+expires+"; path=/";
+    document.cookie = name+"="+value+expires+"; path=/priam";
+  }
+
+  function eraseCookie(name) {
+    createCookie(name,"",-1);
+  }
 </script>
 </body>
 </html>
-
-
-

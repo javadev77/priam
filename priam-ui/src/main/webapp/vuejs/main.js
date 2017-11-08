@@ -12,27 +12,33 @@ import './utils/Arrays'
 import VeeValidate from 'vee-validate';
 import vueShortkey from 'vue-shortkey'
 
-
-Vue.use(vueShortkey);
-
+import moment from 'moment';
+import { Validator } from 'vee-validate';
 
 Vue.use(VeeValidate, {
   locale: 'fr',
   dictionary: {
     fr: {
+      attributes: {
+        'rion.theorique' : 'Rion statuaire',
+        'typeUtilisation' : "Type d'utilisation",
+        'dateDebutProgramme' : 'Date de début',
+        'dateFinProgramme' : 'Date de fin'
+      },
+
       messages: {
         required : (e) => "Le champ '" + e + "' est obligatoire et non renseigné.",
         max: (e, n) => e + " ne peut pas contenir plus de " + n[0] + " caractères.",
-        numeric: (e) => "Le champ '" + e +  "' ne peut contenir que des chiffres."
-      },
+        numeric: (e) => "Le champ '" + e +  "' ne peut contenir que des chiffres.",
+        before: (e,n) => "La date de début doit être antérieure à la date de fin."
 
-      attributes : {
-        'rion.theorique' : 'Rion statuaire',
-        'typeUtilisation' : "Type d'utilisation"
       }
     }
   }
 });
+Validator.installDateTimeValidators(moment);
+
+Vue.use(vueShortkey);
 
 Vue.use(VueRouter);
 Vue.use(VueResource);
@@ -50,7 +56,8 @@ const router = new VueRouter({
 
 
 var waitingData = ['LIBELLE_UTILISATEUR', 'LIBELLE_FAMILLE', 'LIBELLE_TYPE_UTILSATION',
-                    'FAMILLE_TYPE_UTILSATION_MAP', 'RIONS', 'TERRITOIRE_MAP', 'MIPSA_CONFIG', 'RIONS_CREATION', 'CURRENT_USER', 'SELECT_PAGE_SIZE'];
+                   'FAMILLE_TYPE_UTILSATION_MAP', 'RIONS', 'TERRITOIRE_MAP', 'MIPSA_CONFIG',
+                   'RIONS_CREATION', 'CURRENT_USER', 'SELECT_PAGE_SIZE', 'APP_INFO'];
 function bootstrapIfReady(type) {
   var index = waitingData.indexOf(type);
   if (index > -1) {
@@ -178,6 +185,16 @@ function fetchInitData() {
         });
       }
     });
+
+  Vue.http.get('app/rest/general/appinfo')
+    .then(response => response.json())
+    .then(data => {
+      if (data) {
+        store.commit('SET_APP_INFO', data);
+        bootstrapIfReady('APP_INFO');
+      }
+    });
+
 }
 
 fetchInitData();

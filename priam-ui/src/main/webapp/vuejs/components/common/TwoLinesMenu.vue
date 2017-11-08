@@ -6,21 +6,21 @@
         <template v-for="menu in menuData">
           <!--<router-link  :to="{name : routeName(menu)}" :activeClass="menuClass(menu)" tag="li" @click.native="selectMenu(menu)"><a >{{ menu.label }}</a></router-link>-->
           <li :class="menuClass(menu)">
-            <a :href="resolveUrl(menu.name)" @click="selectMenu(menu)">{{ menu.label }}</a>
+            <a @click="selectMenu(menu)">{{ menu.label }}</a>
           </li>
         </template>
 
       </ul>
     </div>
     <div class="submenu">
-      <template v-for="menu in menus" v-if="menu.items">
+      <template v-for="menu in menuData" v-if="menu.items">
       <ul  :class="subMenuClass(menu)">
 
 
         <template v-for="item in menu.items">
 
           <li :class="menuClass2(menu, item)">
-            <a :href="resolveUrl(item.name)" @click="selectItem(menu, item)">{{ item.label }}</a>
+            <a @click="selectItem(menu, item)">{{ item.label }}</a>
           </li>
         </template>
       </ul>
@@ -40,10 +40,12 @@
         },
 
         activeMenu : {
+            type: String,
             required: false
         },
 
         activeSubMenu : {
+            type: String,
             required : false
         }
 
@@ -52,15 +54,15 @@
       data() {
 
           return {
-              activatedMenu : {},
-              activatedSubMenu : {}
+              //activeMenu : {},
+              //activatedSubMenu : {}
           }
 
       },
 
       created() {
-          this.activatedMenu = this.activeMenu;
-          this.activatedSubMenu = this.activeSubMenu;
+          //this.activatedMenu = this.activeMenu;
+          //this.activeSubMenu = this.activeSubMenu;
       },
 
       computed :{
@@ -80,12 +82,12 @@
           },
 
           isActive(menu, item) {
-              console.log("activatedMenu=" + this.activatedMenu.id)
-             console.log("menu=" + menu.id)
-              var isActiveMenu = this.activatedMenu && menu && this.activatedMenu.id === menu.id;
+              console.log("activeMenu=" + this.activeMenu)
+              console.log("menu=" + menu.id)
+              var isActiveMenu = this.activeMenu && menu && this.activeMenu === menu.id;
               console.log("isActiveMenu=" + isActiveMenu)
               if (isActiveMenu && item !== undefined )  {
-                var isActive = this.activatedSubMenu && item && this.activatedSubMenu.id === item.id;
+                var isActive = this.activeSubMenu && item && this.activeSubMenu === item.id;
                 return isActive;
               } else {
                 return isActiveMenu;
@@ -117,13 +119,14 @@
 
           selectItem(menu, item) {
               if(item != null) {
+                this.activeSubMenu = item.id;
                 this.$router.push({name : item.name})
               } else {
                 this.$router.push({name : menu.name})
               }
 
-              this.activatedMenu = menu || null;
-              this.activatedSubMenu = item || null;
+              this.activeMenu = menu.id;
+
           },
 
           routeName(menu) {

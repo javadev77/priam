@@ -2,12 +2,12 @@
   <div class="row sacem-pager">
     <div class="col-sm-24">
       <div class="results pull-left">
-        {{ totalItems || 0 }} résultat{{ totalItems > 1 ? 's' : '' }}
+        {{ (totalItems || 0) | numberFormat}} résultat{{ totalItems > 1 ? 's' : '' }}
         - Page <input
                       style="width: 20px; height: 20px;" :value="currentPage"
                       type="number"
                       ref="input"
-                      @keyup.enter="gotoInputPage($event.target.value)"> / {{ totalPages }}
+                      @keyup.enter="gotoInputPage($event.target.value)"> / {{ totalPages | numberFormat }}
         <!--@input="updateValue($event.target.value)"-->
             <span>
                 - Résultats par page
@@ -39,7 +39,7 @@
       </div>
 
       <div class="pull-right second-message">
-        </span>&#160; &#160;</span>
+        <span>&#160; &#160;</span>
       </div>
     </div>
   </div>

@@ -7,7 +7,6 @@ import fr.sacem.priam.model.domain.TypeRepart;
 import fr.sacem.priam.model.domain.saref.SareftrFamiltyputil;
 import fr.sacem.priam.model.domain.saref.SareftrRion;
 import fr.sacem.priam.model.domain.saref.SareftrTyputil;
-import fr.sacem.priam.model.util.CustomDateSerializer;
 import fr.sacem.priam.model.util.DateRepartitionSerializer;
 import fr.sacem.priam.model.util.SimpleDateSerializer;
 
@@ -48,7 +47,7 @@ public class ProgrammeDto {
  
 	private String userValidation;
     	
-      @JsonSerialize(using = CustomDateSerializer.class)
+      //@JsonSerialize(using = CustomDateSerializer.class)
 	private Date dateValidation;
     	
     	private StatutFichierFelix statutFichierFelix;

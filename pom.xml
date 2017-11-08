@@ -13,6 +13,7 @@
 
     <groupId>fr.sacem.priam</groupId>
     <artifactId>priam-parent</artifactId>
+
     <version>2.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
@@ -60,6 +61,9 @@
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
         <sonar.jacoco.reportPaths>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPaths>
         <sonar.language>java</sonar.language>
+
+        <priam.project.version>${project.version}</priam.project.version>
+        <priam.project.security.name.ui>PRIAMInt1.0.X</priam.project.security.name.ui>
     </properties>
 
 
@@ -163,6 +167,16 @@
 
 
     <build>
+
+        <resources>
+            <resource>
+                <filtering>true</filtering>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>logback*.xml</exclude>
+                </excludes>
+            </resource>
+        </resources>
 
         <pluginManagement>
 

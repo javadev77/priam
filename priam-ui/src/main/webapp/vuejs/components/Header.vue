@@ -8,7 +8,7 @@
               </a>
             </div>
 
-             <two-lines-menu :menus="menus" :activeMenu="currentActiveMenu" :activeSubMenu="currentSubMenu"></two-lines-menu>
+             <two-lines-menu :menus="menus" :activeMenu="currentActiveMenu.id" :activeSubMenu="currentSubMenu.id"></two-lines-menu>
 
             <div class="nav navbar-nav navbar-right">
               <ul class="nav navbar-nav navbar-right">
@@ -27,7 +27,7 @@
                   </ul>
                 </li>
                     <li>
-                      <p class="homerversion">Version : 1.0.0</p>
+                      <p class="homerversion">v{{ priamVersion }}</p>
                     </li>
               </ul>
             </div><!-- /.navbar-collapse -->
@@ -49,6 +49,7 @@
             id : 'programme',
             name : 'programme',
             label : 'Programme',
+            routes : ['programme', 'selection', 'affectation', 'ListePrg'],
             items : [
               {
                 id : 'ListePrg',
@@ -60,42 +61,32 @@
           {
             id : 'chargement',
             name : 'chargement',
-            label : 'Chargement'
+            label : 'Chargement',
+            routes : ['chargement']
           },
           {
             id : 'parametrage',
             name : 'parametrage',
-            label : 'Paramétrage'
+            label : 'Paramétrage',
+            routes : ['parametrage']
           },
 
         ],
-       currentActiveMenu :  {
+        currentActiveMenu :  {
           id : ''
         },
         currentSubMenu :  {
           id : ''
         },
 
-        isDropdownOpen: false,
-
-        //displayName: ''
+        isDropdownOpen: false
       }
     },
 
     created()  {
 
-      const customActions = {
-        searchUser : {method : 'GET', url :'app/rest/general/currentUser'}
-      }
-      this.resource= this.$resource('', {}, customActions);
-
         let currentRoute = this.$route.matched;
-        console.log('currentRoute =  ' + currentRoute[0].name);
-        this.currentActiveMenu.id = currentRoute[0].name;
-        this.currentSubMenu.id = currentRoute.length > 1 && currentRoute[1] !== undefined ? currentRoute[1].name : '';
-
-        console.log('currentActiveMenu ' + this.currentActiveMenu.id);
-        console.log('currentSubMenu ' + this.currentSubMenu.id);
+        this.setCurrentActiveMenu(currentRoute[0].name);
 
     },
 
@@ -104,23 +95,46 @@
       displayName() {
         let currentUser = this.$store.getters.getCurrentUser;
         return currentUser.displayName;
+      },
 
+      priamVersion() {
+          return this.$store.getters.appInfo['priam.version'];
       }
     },
 
-    methods: {
-      getDisplayName() {
-        this.resource.searchUser()
-          .then(response => {
-            return response.json();
-          })
-          .then(data => {
-            console.log('data = ' + data);
-            debugger;
-            //this.displayName = data.displayName;
-          });
+    methods : {
+
+        findMenu(routeViewName) {
+            let menu = this.menus.find(elem => {
+              return elem.routes && elem.routes.indexOf(routeViewName) > -1;
+            });
+
+            return menu;
+        },
+
+        setCurrentActiveMenu(currentRouteViewName) {
+          let foundMenu = this.findMenu(currentRouteViewName);
+          if(foundMenu && foundMenu !== undefined) {
+            this.currentActiveMenu.id = foundMenu.id;
+            this.currentSubMenu.id = foundMenu.items !== undefined &&
+                                     foundMenu.items.length >= 1 &&
+                                     foundMenu.items[0] !== undefined ?
+                                     foundMenu.items[0].id : '';
+          }
+        }
+
+    },
+
+    watch : {
+
+      '$route' (to, from) {
+        console.log('from route =  ' + from.path);
+        console.log('to route =  ' + to.path);
+        let newRoute = to.matched;
+        this.setCurrentActiveMenu(newRoute[0].name);
 
       }
+
     },
 
     components :    {

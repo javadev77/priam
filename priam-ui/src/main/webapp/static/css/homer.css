@@ -94,8 +94,7 @@
 }
 .bg-ico-context-manual {
   background: url(../images/iconescontextes/icoEdit.png) no-repeat;
-}
-.bg-ico-context-running {
+}.bg-ico-context-running {
   background: url(../images/iconescontextes/icoQuestion.png) no-repeat;
 }
 .bg-ico-context-red-cross {

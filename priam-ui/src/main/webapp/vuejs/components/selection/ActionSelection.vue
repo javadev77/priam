@@ -6,7 +6,7 @@
 
     <div class="row formula-buttons" v-if="programmeInfo.statut == 'MIS_EN_REPART' || programmeInfo.statut == 'REPARTI'">
       <span class="pull-right">
-        Validé par {{programmeInfo.userValidation}} le {{dateValidation}}
+        {{ userValidation }} {{ programmeInfo.dateValidation | dateAffectation}}
       </span>
     </div>
     <div class="row formula-buttons" v-if="programmeInfo.statut != 'MIS_EN_REPART' && programmeInfo.statut != 'REPARTI'">
@@ -29,31 +29,31 @@
         <div v-if="programmeInfo.statut == 'AFFECTE'">
 
           <div class="pull-right" :title="listSelectionVide ? 'Il faut sélectionner au moins une oeuvre' : ''">
-            <button class="btn btn-default btn-primary width-140" type="button" @click.prevent="valider()" :disabled="inProcess || listSelectionVide || !isRightVLDSEL">Valider Sélection</button>
+            <button class="btn btn-default btn-primary width-140" type="button" @click.prevent="valider()" :disabled="isLoadingDuree || inProcess || listSelectionVide || !isRightVLDSEL">Valider Sélection</button>
           </div>
 
-          <button class="btn btn-default btn-primary pull-right width-140" type="button" @click.prevent="editer()" :disabled="inProcess || !isRightEDTSEL">Editer Sélection</button>
+          <button class="btn btn-default btn-primary pull-right width-140" type="button" @click.prevent="editer()" :disabled="isLoadingDuree || inProcess || !isRightEDTSEL">Editer Sélection</button>
         </div>
 
         <div v-else-if="programmeInfo.statut == 'EN_COURS'">
-          <button class="btn btn-default btn-primary width-140" type="button" @click.prevent="annulerSelection()" :disabled="inProcess || !isRightCLDSEL">Annuler Sélection</button>
+          <button class="btn btn-default btn-primary width-140" type="button" @click.prevent="annulerSelection()" :disabled="isLoadingDuree || inProcess || !isRightCLDSEL">Annuler Sélection</button>
           <div class="pull-right" :title="listSelectionVide ? 'Il faut sélectionner au moins une oeuvre' : ''">
-            <button class="btn btn-default btn-primary width-140" type="button" @click.prevent="valider()" :disabled="inProcess || listSelectionVide || !isRightVLDSEL">Valider Sélection</button>
+            <button class="btn btn-default btn-primary width-140" type="button" @click.prevent="valider()" :disabled="isLoadingDuree || inProcess || listSelectionVide || !isRightVLDSEL">Valider Sélection</button>
           </div>
-          <button class="btn btn-default btn-primary pull-right width-140" type="button" @click.prevent="editer()" :disabled="inProcess || !isRightEDTSEL">Editer Sélection</button>
+          <button class="btn btn-default btn-primary pull-right width-140" type="button" @click.prevent="editer()" :disabled="isLoadingDuree || inProcess || !isRightEDTSEL">Editer Sélection</button>
         </div>
 
         <div v-else-if="programmeInfo.statut == 'VALIDE'">
-          <button class="btn btn-default btn-primary pull-right width-140" type="button" @click.prevent="invalider()" :disabled="!isRightINVSEL">Invalider</button>
+          <button class="btn btn-default btn-primary pull-right width-140" type="button" @click.prevent="invalider()" :disabled="isLoadingDuree || !isRightINVSEL">Invalider</button>
           <span class="pull-right">
-            Validé par {{ programmeInfo.userValidation }} {{ programmeInfo.dateValidation | dateAffectation }}
+             {{ userValidation }} {{ programmeInfo.dateValidation | dateAffectation}}
           </span>
         </div>
       </div>
 
       <div v-else-if="edition">
-        <button class="btn btn-default btn-primary pull-right width-140" type="button" @click.prevent="enregistrerEdition()" :disabled="inProcess">Enregistrer</button>
-        <button class="btn btn-default btn-primary pull-right width-140" type="button" @click.prevent="annulerEdition()" :disabled="inProcess">Annuler</button>
+        <button class="btn btn-default btn-primary pull-right width-140" type="button" @click.prevent="enregistrerEdition()" :disabled="isLoadingDuree || inProcess">Enregistrer</button>
+        <button class="btn btn-default btn-primary pull-right width-140" type="button" @click.prevent="annulerEdition()" :disabled="isLoadingDuree || inProcess">Annuler</button>
       </div>
 
     </div>
@@ -81,13 +81,13 @@
         annulerEdition : Function,
         edition : Boolean,
         inProcess : Boolean,
-        annulerSelection : Function
+        annulerSelection : Function,
+        isLoadingDuree : Boolean
       },
 
      computed :{
-       dateValidation () {
-
-         return new Date(this.programmeInfo.dateValidation).toLocaleDateString() + " à " + new Date(this.programmeInfo.dateValidation).toLocaleTimeString().slice(0,5);
+       userValidation () {
+         return 'Validé par ' + this.programmeInfo.userValidation;
        },
 
        isRightEDTSEL() {

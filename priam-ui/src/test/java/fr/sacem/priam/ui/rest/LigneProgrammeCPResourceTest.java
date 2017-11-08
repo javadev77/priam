@@ -127,10 +127,6 @@ public class LigneProgrammeCPResourceTest extends RestResourceTest{
       .andExpect(status().isOk());
   }
 
-  /**
-   * La base de donnée de test ne supporte pas la fonction COALESCE et CASE WHEN
-   * @throws Exception
-   */
   @Test
   public void getUtilisateursByProgramme() throws Exception {
     List<String> titresByProgramme = ligneProgrammeViewDao.findUtilisateursByProgramme(NUM_PROG);
@@ -193,7 +189,8 @@ public class LigneProgrammeCPResourceTest extends RestResourceTest{
       .contentType(contentType))
       .andExpect(status().isOk());
   }
-@Ignore
+
+  @Ignore
   @Test
   public void supprimerLigneProgramme() throws Exception {
     mockMvc.perform(delete(APP_REST_SUPPRIMER_LIGNE_PROGRAMME)

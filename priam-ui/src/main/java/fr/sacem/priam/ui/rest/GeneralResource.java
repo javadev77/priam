@@ -7,6 +7,7 @@ import fr.sacem.priam.model.dao.jpa.*;
 import fr.sacem.priam.model.domain.Parametrage;
 import fr.sacem.priam.model.domain.saref.*;
 import fr.sacem.priam.model.util.FamillePriam;
+import fr.sacem.priam.model.util.GlobalConstants;
 import fr.sacem.priam.model.util.TypeUtilisationPriam;
 import fr.sacem.priam.services.ParametrageService;
 import fr.sacem.priam.ui.rest.dto.UserDTO;
@@ -15,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -61,12 +63,15 @@ public class GeneralResource {
 
     @Autowired
     private SareftjLibutilDao sareftjLibutilDao;
+    
+    @Value("${project.version}")
+    private String priamVersion;
 
     @RequestMapping(value = "/libellefamille",
                     method = RequestMethod.GET,
                     produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, String> [] getAllLibelleFamille(Locale locale) {
-      String lang = StringUtils.upperCase(locale.getLanguage());
+      String lang = GlobalConstants.FR_LANG;
       List<SareftjLibfamiltyputil> labels = libelleFamilleDao.findByLang(lang, FamillePriam.getCodes());
       List<Map<String, String>> result = new ArrayList<>(labels.size());
 
@@ -82,7 +87,7 @@ public class GeneralResource {
                     method = RequestMethod.GET,
                     produces = MediaType.APPLICATION_JSON_VALUE)
     public  Map<String, String> [] getAllLibelleTypeUtilisation(Locale locale) {
-      String lang = StringUtils.upperCase(locale.getLanguage());
+      String lang = GlobalConstants.FR_LANG;
       List<SareftjLibtyputil> labels = sareftjLibtyputilDao.findByCodeAndLang(TypeUtilisationPriam.getCodes(), lang);
 
         List<Map<String, String>> result = new ArrayList<>(labels.size());
@@ -101,7 +106,7 @@ public class GeneralResource {
 
         Map<String, Map<String, String> []> result = new HashMap<>();
 
-        String lang = StringUtils.upperCase(locale.getLanguage());
+        String lang = GlobalConstants.FR_LANG;
         all.forEach( famille -> {
             List<String> collect = famille.getSareftrTyputils()
                                      .stream()
@@ -139,9 +144,13 @@ public class GeneralResource {
     public Map<String, String>[] getRions(Locale locale) {
         List<SareftrRion> sareftrRions = sareftrRionDao.findAfterRion(RION_639);
         List<Map<String, String>> result = new ArrayList<>(sareftrRions.size());
+        SimpleDateFormat sdf = new SimpleDateFormat("MMMM YYYY", Locale.FRANCE);
         sareftrRions.forEach(rion -> {
           String rionValue = String.valueOf(rion.getRion());
-          String formattedRion = rion.getDatrglmt() != null ? String.format("%s - %s", rionValue, new SimpleDateFormat("MMMM YYYY", locale).format(rion.getDatrglmt())) : rionValue;
+          
+          String formattedRion = rion.getDatrglmt() != null ?
+                                   String.format("%s - %s", rionValue, sdf.format(rion.getDatrglmt())) :
+                                   rionValue;
           result.add(createStringMap(rionValue, formattedRion));
         });
 
@@ -154,9 +163,11 @@ public class GeneralResource {
   public Map<String, String>[] getRionsCreation(Locale locale) {
     List<SareftrRion> sareftrRions = sareftrRionDao.findAllByDateRglmtAfterCurrentDate();
     List<Map<String, String>> result = new ArrayList<>(sareftrRions.size());
+    SimpleDateFormat sdf = new SimpleDateFormat("MMMM YYYY", Locale.FRANCE);
     sareftrRions.forEach(rion -> {
       String rionValue = String.valueOf(rion.getRion());
-      String formattedRion = rion.getDatrglmt() != null ? String.format("%s - %s", rionValue, new SimpleDateFormat("MMMM YYYY", locale).format(rion.getDatrglmt())) : rionValue;
+      
+      String formattedRion = rion.getDatrglmt() != null ? String.format("%s - %s", rionValue, sdf.format(rion.getDatrglmt())) : rionValue;
       result.add(createStringMap(rionValue, formattedRion));
     });
 
@@ -167,7 +178,7 @@ public class GeneralResource {
                    method = RequestMethod.GET,
                    produces = MediaType.APPLICATION_JSON_VALUE)
     public  Map<String, String> [] getAllTerritoire(Locale locale) {
-        List<SareftjLibter> sareftjLibters = sareftjLibterDao.findByLang(StringUtils.upperCase(locale.getLanguage()));
+        List<SareftjLibter> sareftjLibters = sareftjLibterDao.findByLang(GlobalConstants.FR_LANG);
 
         List<Map<String, String>> result = new ArrayList<>(sareftjLibters.size());
         sareftjLibters.forEach(libelle -> {
@@ -214,7 +225,7 @@ public class GeneralResource {
                     method = RequestMethod.GET,
                     produces = MediaType.APPLICATION_JSON_VALUE)
    public  Map<String, String> [] getLibelleCdeUtilisateur(Locale locale) {
-      List<SareftjLibutil> labels = sareftjLibutilDao.findByLang(StringUtils.upperCase(locale.getLanguage()));
+      List<SareftjLibutil> labels = sareftjLibutilDao.findByLang(GlobalConstants.FR_LANG);
 
       List<Map<String, String>> result = new ArrayList<>(labels.size());
       labels.forEach(libelle -> {
@@ -256,7 +267,17 @@ public class GeneralResource {
     for (Map.Entry<String, String> entry: parametres.entrySet()) {
       parametrageService.save(new Parametrage( entry.getValue(), entry.getKey(), currentUser.getUser().getUserId()));
     }
-
+  }
+  
+  @RequestMapping(value = "/appinfo",
+                  method = RequestMethod.GET,
+                  produces = MediaType.APPLICATION_JSON_VALUE)
+  public Map<String, String> appInfoContext() {
+      Map<String, String> appInfo = new HashMap<>();
+      
+      appInfo.put("priam.version", this.priamVersion);
+      
+      return appInfo;
   }
 
   private SsoAuthenticationToken getSsoAuthenticationToken() {
