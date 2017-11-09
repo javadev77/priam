@@ -13,7 +13,7 @@ import javax.sql.DataSource;
 @Configuration
 @ComponentScan(basePackages = "fr.sacem.*")
 @ImportResource(value = "classpath:config/job-configuration.xml")
-@Profile({"dev","local","integ"})
+@Profile({"dev","local","integ","dev2"})
 public class ConfigurationPriamLocal {
     @Value("${spring.datasource.url}")
     String urlDb;
