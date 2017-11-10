@@ -1,6 +1,7 @@
 package fr.sacem.priam.model.domain.saref;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -10,7 +11,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "SAREFTR_RION")
-public class SareftrRion {
+public class SareftrRion implements Serializable {
     
     private Integer rion;
     private Date datcalc;
