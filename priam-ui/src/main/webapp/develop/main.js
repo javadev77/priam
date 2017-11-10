@@ -12,7 +12,16 @@ Vue.use(vueShortkey);
 Vue.use(VueResource);
 
 if(process.env.DEBUG_MODE) {
-  Vue.http.options.root="http://localhost:8080/priam"
+
+  Vue.http.options.root="http://localhost:8080/priambenmerzoukah";
+  Vue.http.headers.common['Access-Control-Allow-Origin'] = 'http://localhost:8085';
+  Vue.http.headers.common['Access-Control-Request-Method'] = '*';
+
+  Vue.http.interceptors.push((request, next) => {
+    request.credentials = true;
+    next();
+  });
+
 } else {
   Vue.http.options.root = process.env.CONTEXT_ROOT;
 }
@@ -50,7 +59,7 @@ function fetchInitData() {
     .then(response => response.json())
     .then(data => {
       if (data) {
-
+        debugger;
         store.commit('SET_LIBELLE_FAMILLE', data);
         bootstrapIfReady('LIBELLE_FAMILLE');
       }

@@ -47,7 +47,7 @@ public class SsoPreAuthenticatedProcessingFilter extends AbstractPreAuthenticate
 
     //// S'assurer d'un comportement prédictible sur l'invalidation de session
     // AbstractPreAuthenticatedProcessingFilter#invalidateSessionOnPrincipalChange default value: true
-    setInvalidateSessionOnPrincipalChange(false);
+    setInvalidateSessionOnPrincipalChange(true);
   }
 
   @Override

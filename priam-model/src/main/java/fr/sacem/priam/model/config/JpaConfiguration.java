@@ -1,5 +1,6 @@
 package fr.sacem.priam.model.config;
 
+import fr.sacem.priam.common.constants.EnvConstants;
 import org.hibernate.dialect.MySQLInnoDBDialect;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +35,7 @@ public class JpaConfiguration {
     
     @Autowired
     private Environment environment;
-    
-    @Value("${priam.db.jndi:jdbc/priamMariaDbDataSource}")
+
     private String priamDatasourceJndi;
     
     
@@ -53,6 +53,7 @@ public class JpaConfiguration {
     public DataSource dataSource() {
         JndiDataSourceLookup jndiDataSourceLookup = new JndiDataSourceLookup();
         jndiDataSourceLookup.setResourceRef(Boolean.TRUE);
+        this.priamDatasourceJndi = EnvConstants.PRIAM_DB_JNDI.toString();
         DataSource dataSource = jndiDataSourceLookup.getDataSource(priamDatasourceJndi);
         
         return dataSource;

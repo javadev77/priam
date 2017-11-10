@@ -715,11 +715,6 @@
                 return response.json();
               })
               .then(data => {
-                /*for(var i in  data.content) {
-                    if(data.content[i].statut === 'MIS_EN_REPART') {
-                        this.$store.commit('SAVE_LAST_PROGRAMME',data.content[i]);
-                    }
-                }*/
                 this.priamGrid.gridData = data;
                 this.priamGrid.gridData.number = data.number + 1;
 
@@ -727,18 +722,15 @@
           },
 
           openEcranAjouterProgramme() {
-              console.log("openEcranAjouterProgramme()");
               this.ecranAjouterProgramme = true;
               this.showEcranModal = true;
           },
 
           close() {
-              console.log("Close Modal Dialog");
             this.showEcranModal = false;
           },
 
           onUpdateProgramme(row, column) {
-            console.log("onUpdateProgramme()");
              this.selectedProgramme = row;
 
             this.ecranAjouterProgramme = false;
@@ -746,7 +738,6 @@
           },
 
           onAbondonProgramme(row, column) {
-              console.log("onAbondonProgramme()");
               this.showPopupAbandon = true;
               this.selectedProgramme = row;
 
@@ -776,9 +767,7 @@
           },
 
           rechercherProgrammes() {
-
               this.critereRechercheData.numProg = this.numProgSelected !== undefined && this.numProgSelected !== 'ALL' ? this.numProgSelected : null;
-              console.log(" this.critereRechercheData.numProg = " +  this.critereRechercheData.numProg)
               this.critereRechercheData.nom = this.nomProgSelected !== undefined && this.nomProgSelected !== 'ALL' ? this.nomProgSelected : null;
               this.critereRechercheData.typeUtilisation = this.typeUtilisationSelected !== undefined ? this.typeUtilisationSelected.id : null;
               this.critereRechercheData.famille = this.familleSelected !== undefined ? this.familleSelected.id : null;

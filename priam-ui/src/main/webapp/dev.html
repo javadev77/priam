@@ -6,8 +6,9 @@
 <div style="margin: 50px auto; padding: 0; width: 120px;font-size: 13px;">
   <h3>Select your role: </h3>
   <select id="changeRole" onchange="changeRole()">
-    <option value="sacemadm" selected>Administrateur fonctionnel</option>
-    <option value="sacemadm" selected>Administrateur fonctionnel</option>
+    <option value="">Select Role</option>
+    <option value="AQIC5wM2LY4Sfcw_tCrB1LpSikbDSn7llmeATYWiCnFUv4I.*AAJTSQACMDIAAlMxAAIwMQ..*">ADM</option>
+    <option value="AQIC5wM2LY4Sfczmprsedb1zMYx2Tt65bzngr_eofd_NwIw.*AAJTSQACMDIAAlMxAAIwMQ..*">INV</option>
   </select>
 </div>
 <script type="text/javascript">
@@ -20,7 +21,8 @@
     createCookie("iPlanetDirectoryProDev", role);
     var url = document.URL;
     url = url.substring(0, url.lastIndexOf("/"));
-    window.location.replace("/priam/logout?goto=" + url);
+    //window.location.replace("/priambenmerzoukah/logout?goto=" + url);
+    window.location.replace(url);
   }
 
   function createCookie(name,value,days) {
@@ -31,7 +33,7 @@
     }
     else var expires = "";
     document.cookie = name+"="+value+expires+"; path=/";
-    document.cookie = name+"="+value+expires+"; path=/priam";
+    document.cookie = name+"="+value+expires+"; path=/priambenmerzoukah";
   }
 
   function eraseCookie(name) {
