@@ -1,19 +1,24 @@
 package fr.sacem.priam.ui.rest;
 
 import fr.sacem.priam.model.dao.jpa.cp.LigneProgrammeCPDao;
+import fr.sacem.priam.model.domain.cp.LigneProgrammeCP;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.SelectionDto;
+import fr.sacem.priam.services.LigneProgrammeService;
 import fr.sacem.priam.ui.rest.dto.LigneProgrammeCritereRecherche;
 import fr.sacem.priam.ui.rest.dto.ValdierSelectionProgrammeInput;
+import org.fest.assertions.Assertions;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
+import static org.fest.assertions.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -76,7 +81,8 @@ public class LigneProgrammeCPResourceTest extends RestResourceTest{
   public static final String APP_REST_MODIFIER_SELECTION = "/app/rest/ligneProgramme/selection/modifier";
   public static final String APP_REST_INVALIDER_SELECTION = "/app/rest/ligneProgramme/selection/invalider";
   public static final String APP_REST_ANNULER_SELECTION = "/app/rest/ligneProgramme/selection/annuler";
-  public static final String APP_REST_SUPPRIMER_LIGNE_PROGRAMME = "/app/rest/ligneProgramme/170001/682987721";
+  public static final String APP_REST_SUPPRIMER_LIGNE_PROGRAMME = "/app/rest/ligneProgramme/";
+  public static final String APP_REST_AJOUTER_OEUVRE_MANUEL = "/app/rest/ligneProgramme/selection/ajoutOeuvre";
 
 
 
@@ -84,6 +90,9 @@ public class LigneProgrammeCPResourceTest extends RestResourceTest{
   private static final Long INITIAL_IDE12 = 772L;
   private static final Long IDE12 = 6829877211L;
   private static final String INITIAL_TITRES = "Tes";
+
+  @Autowired
+  private LigneProgrammeService ligneProgrammeService;
 
 
   @Autowired
@@ -190,12 +199,50 @@ public class LigneProgrammeCPResourceTest extends RestResourceTest{
       .andExpect(status().isOk());
   }
 
-  @Ignore
   @Test
   public void supprimerLigneProgramme() throws Exception {
-    mockMvc.perform(delete(APP_REST_SUPPRIMER_LIGNE_PROGRAMME)
+
+    LigneProgrammeCP input = createLigneProgramme("170001", 1454545L, "LU1");
+
+    ligneProgrammeService.ajouterOeuvreManuel(input);
+
+    SelectionDto se = new SelectionDto();
+    se.setIde12(1454545L);
+    se.setCdeUtil("LU1");
+
+    mockMvc.perform(
+      delete(APP_REST_SUPPRIMER_LIGNE_PROGRAMME + "170001/" + String.valueOf(se.getIde12()))
+        .content(this.json(se))
       .contentType(contentType))
       .andExpect(status().isOk());
+
+    LigneProgrammeCP lu1 = ligneProgrammeViewDao.findOeuvreManuelByIde12AndCdeUtil("170001", 1454545L, "LU1");
+    assertThat(lu1).isNull();
   }
 
+  @Test
+  @Transactional
+  public void testAjouterOeuvreManuel() throws Exception {
+    long ide12 = 124578L;
+    LigneProgrammeCP input = createLigneProgramme("170001", ide12, "LU1");
+
+    mockMvc.perform(
+      post(APP_REST_AJOUTER_OEUVRE_MANUEL)
+        .content(this.json(input))
+        .contentType(contentType))
+      .andExpect(status().isOk());
+
+    LigneProgrammeCP lu1 = ligneProgrammeViewDao.findOeuvreManuelByIde12AndCdeUtil("170001", ide12, "LU1");
+    assertThat(lu1).isNotNull();
+    assertThat(lu1.getIde12()).isEqualTo(ide12);
+  }
+
+  private LigneProgrammeCP createLigneProgramme(String numProg, Long ide12, String cdeUtil) {
+    LigneProgrammeCP input = new LigneProgrammeCP();
+    input.setIde12(ide12);
+    input.setCdeUtil(cdeUtil);
+    input.setNumProg(numProg);
+
+    return input;
+  }
 }

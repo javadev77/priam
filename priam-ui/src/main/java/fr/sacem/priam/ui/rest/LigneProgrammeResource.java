@@ -16,8 +16,6 @@ import fr.sacem.priam.services.ProgrammeService;
 import fr.sacem.priam.ui.rest.dto.LigneProgrammeCritereRecherche;
 import fr.sacem.priam.ui.rest.dto.UserDTO;
 import fr.sacem.priam.ui.rest.dto.ValdierSelectionProgrammeInput;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -201,7 +199,6 @@ public class LigneProgrammeResource {
     Programme programme = programmeService.updateStatutProgrammeToAffecte(programmeDTO);
     ligneProgrammeService.annulerSelection(programme.getNumProg());
 
-    //modifierSelection(input, programme.getNumProg());
 
     return new ArrayList<>();
   }
@@ -224,7 +221,7 @@ public class LigneProgrammeResource {
                     method = RequestMethod.POST,
                     produces = MediaType.APPLICATION_JSON_VALUE,
                     consumes = MediaType.APPLICATION_JSON_VALUE)
-    public SelectionDto ajouterOeuvreManuel(@RequestBody LigneProgrammeCP input, UserDTO userDTO, Locale locale) {
+    public SelectionDto ajouterOeuvreManuel(@RequestBody LigneProgrammeCP input, UserDTO userDTO) {
         String lang = GlobalConstants.FR_LANG;
         SareftjLibUtilPK pk = new SareftjLibUtilPK(lang, input.getCdeUtil());
         SareftjLibutil sareftjLibutil = sareftjLibutilDao.findOne(pk);
