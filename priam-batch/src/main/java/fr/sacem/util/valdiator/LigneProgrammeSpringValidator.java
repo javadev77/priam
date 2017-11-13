@@ -75,20 +75,19 @@ public class LigneProgrammeSpringValidator implements Validator {
 		if(cdeTypUtil == null || cdeTypUtil.isEmpty()) {
 			errors.rejectValue("cdeTypUtil", "error.cdeTypUtil");
 		}
-		else if(!cdeTypUtil.equals(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_PHONO.getCode()) && !cdeTypUtil.equals(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode())) {
+		else if(!TypeUtilisationEnum.COPIE_PRIVEE_SONORE_PHONO.getCode().equals(cdeTypUtil)
+				&& !TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode().equals(cdeTypUtil)) {
 			errors.rejectValue("cdeTypUtil", "format.error.cdeTypUtil");
 		}
 
-		try{
 
-			if(cdeFamilTypUtil == null || cdeFamilTypUtil.isEmpty()) {
-				errors.rejectValue("cdeFamilTypUtil", "error.cdeFamilTypUtil");
-			}else if(!cdeTypUtil.isEmpty() && !cdeFamilTypUtil.equals(TypeUtilisationEnum.getValue(cdeTypUtil).getCodeFamille())) {
-				errors.rejectValue("cdeFamilTypUtil", "format.error.cdeFamilTypUtil");
-			}
-		}catch (Exception e) {
-
+		if(cdeFamilTypUtil == null || cdeFamilTypUtil.isEmpty()) {
+			errors.rejectValue("cdeFamilTypUtil", "error.cdeFamilTypUtil");
+		}else if(cdeTypUtil != null && !cdeTypUtil.isEmpty() &&
+				!cdeFamilTypUtil.equals(TypeUtilisationEnum.getValue(cdeTypUtil).getCodeFamille())) {
+			errors.rejectValue("cdeFamilTypUtil", "format.error.cdeFamilTypUtil");
 		}
+
 
 		validateNumericFields(errors, (LigneProgramme) o);
     }
@@ -97,25 +96,25 @@ public class LigneProgrammeSpringValidator implements Validator {
 
 		Double ide12 = validateNumericField(errors, o.getIde12(), "ide12");
 		if(ide12 != null)
-			o.setIde12(ide12.longValue()+"");
+			o.setIde12(Long.toString(ide12.longValue()));
 		else
 			o.setIde12(null);
 
 		Double durDif = validateNumericField(errors, o.getDurDif(), "durDif");
 		if(durDif != null)
-			o.setDurDif(durDif.longValue()+"");
+			o.setDurDif(Long.toString(durDif.longValue()));
 		else
 			o.setDurDif(null);
 
 		Double nbrDif = validateNumericField(errors, o.getNbrDif(), "nbrDif");
 		if(nbrDif != null)
-			o.setNbrDif(nbrDif.longValue()+"");
+			o.setNbrDif(Long.toString(nbrDif.longValue()));
 		else
 			o.setNbrDif(null);
 
 		Double durDifCtna = validateNumericField(errors, o.getDurDifCtna(), "durDifCtna");
 		if(durDifCtna != null)
-			o.setDurDifCtna(durDifCtna.longValue()+"");
+			o.setDurDifCtna(Long.toString(durDifCtna.longValue()));
 		else
 			o.setDurDifCtna(null);
 

@@ -1,6 +1,7 @@
 package fr.sacem.priam.ui.rest;
 
 import com.google.common.base.Strings;
+import fr.sacem.priam.common.exception.TechnicalException;
 import fr.sacem.priam.model.dao.jpa.SareftjLibutilDao;
 import fr.sacem.priam.model.domain.cp.LigneProgrammeCP;
 import fr.sacem.priam.model.domain.Programme;
@@ -16,7 +17,6 @@ import fr.sacem.priam.services.ProgrammeService;
 import fr.sacem.priam.ui.rest.dto.LigneProgrammeCritereRecherche;
 import fr.sacem.priam.ui.rest.dto.UserDTO;
 import fr.sacem.priam.ui.rest.dto.ValdierSelectionProgrammeInput;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -124,7 +124,7 @@ public class LigneProgrammeResource {
   public List<String> validerSelection(@RequestBody ValdierSelectionProgrammeInput input, UserDTO userDTO) {
 
     if(input == null || input.getNumProg() == null || input.getNumProg().isEmpty())
-      throw new RuntimeException("input or num programme must not be null !");
+      throw new IllegalArgumentException("input or num programme must not be null !");
 
     ProgrammeDto programmeDTO = new ProgrammeDto();
     programmeDTO.setNumProg(input.getNumProg());
@@ -147,7 +147,7 @@ public class LigneProgrammeResource {
   public List<String> modifierSelection(@RequestBody ValdierSelectionProgrammeInput input) {
 
     if(input == null || input.getNumProg() == null || input.getNumProg().isEmpty())
-      throw new RuntimeException("input or num programme must not be null !");
+      throw new IllegalArgumentException("input or num programme must not be null !");
 
     ProgrammeDto programmeDTO = new ProgrammeDto();
     programmeDTO.setNumProg(input.getNumProg());
@@ -176,7 +176,7 @@ public class LigneProgrammeResource {
   public List<String> invaliderSelection(@RequestBody String numProg) {
 
     if(numProg == null || numProg.isEmpty())
-      throw new RuntimeException("num programme must not be empty !");
+      throw new IllegalArgumentException("num programme must not be empty !");
 
     ProgrammeDto programmeDTO = new ProgrammeDto();
     programmeDTO.setNumProg(numProg);
@@ -194,7 +194,7 @@ public class LigneProgrammeResource {
   public List<String> annulerSelection(@RequestBody ValdierSelectionProgrammeInput input, UserDTO userDTO) {
 
     if(input == null || input.getNumProg() == null || input.getNumProg().isEmpty())
-      throw new RuntimeException("input or num programme must not be null !");
+      throw new IllegalArgumentException("input or num programme must not be null !");
 
     ProgrammeDto programmeDTO = new ProgrammeDto();
     programmeDTO.setNumProg(input.getNumProg());
@@ -254,7 +254,7 @@ public class LigneProgrammeResource {
     consumes = MediaType.APPLICATION_JSON_VALUE)
   public void enregistrerEdition(@RequestBody ValdierSelectionProgrammeInput input) {
     if(input == null || input.getNumProg() == null || input.getNumProg().isEmpty())
-      throw new RuntimeException("input or num programme must not be null !");
+      throw new IllegalArgumentException("input or num programme must not be null !");
 
     ProgrammeDto programmeDTO = new ProgrammeDto();
     programmeDTO.setNumProg(input.getNumProg());

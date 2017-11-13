@@ -117,7 +117,7 @@ public class GeneralResource {
 
     private Map<String, String> [] getLibelleTypeUtilisationByCodes(List<String> typeUtilCodes, String lang) {
         List<SareftjLibtyputil> byCodeAndLang = sareftjLibtyputilDao.findByCodeAndLang(typeUtilCodes != null && !typeUtilCodes.isEmpty() ? typeUtilCodes : null, lang);
-        List<Map<String, String>> result = new ArrayList<>(typeUtilCodes.size());
+        List<Map<String, String>> result = new ArrayList<>(typeUtilCodes != null && !typeUtilCodes.isEmpty() ? typeUtilCodes.size() : 0);
         byCodeAndLang.forEach(libelle -> result.add(createStringMap(libelle.getCode(), libelle.getLibelle())));
 
         return result.toArray(new Map[0]);
