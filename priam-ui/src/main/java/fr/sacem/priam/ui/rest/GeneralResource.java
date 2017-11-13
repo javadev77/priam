@@ -89,9 +89,7 @@ public class GeneralResource {
       List<SareftjLibtyputil> labels = sareftjLibtyputilDao.findByCodeAndLang(TypeUtilisationPriam.getCodes(), lang);
 
         List<Map<String, String>> result = new ArrayList<>(labels.size());
-        labels.forEach(libelle -> {
-          result.add(createStringMap(libelle.getCode(), libelle.getLibelle()));
-        });
+        labels.forEach(libelle -> result.add(createStringMap(libelle.getCode(), libelle.getLibelle())));
 
       return result.toArray(new Map[0]);
     }
@@ -120,9 +118,7 @@ public class GeneralResource {
     private Map<String, String> [] getLibelleTypeUtilisationByCodes(List<String> typeUtilCodes, String lang) {
         List<SareftjLibtyputil> byCodeAndLang = sareftjLibtyputilDao.findByCodeAndLang(typeUtilCodes != null && !typeUtilCodes.isEmpty() ? typeUtilCodes : null, lang);
         List<Map<String, String>> result = new ArrayList<>(typeUtilCodes.size());
-        byCodeAndLang.forEach(libelle -> {
-            result.add(createStringMap(libelle.getCode(), libelle.getLibelle()));
-        });
+        byCodeAndLang.forEach(libelle -> result.add(createStringMap(libelle.getCode(), libelle.getLibelle())));
 
         return result.toArray(new Map[0]);
     }
@@ -179,25 +175,16 @@ public class GeneralResource {
         List<SareftjLibter> sareftjLibters = sareftjLibterDao.findByLang(GlobalConstants.FR_LANG);
 
         List<Map<String, String>> result = new ArrayList<>(sareftjLibters.size());
-        sareftjLibters.forEach(libelle -> {
-
-          result.add(createStringMap(libelle.getCdePaysIso4N() + "",
-                                      new StringBuilder()
-                                        .append(libelle.getCdePaysIso4N())
-                                        .append(" - ")
-                                        .append(libelle.getNomPaysAbr())
-                                        .toString()));
-        });
+        sareftjLibters.forEach(libelle -> result.add(createStringMap(libelle.getCdePaysIso4N() + "",
+                                    new StringBuilder()
+                                      .append(libelle.getCdePaysIso4N())
+                                      .append(" - ")
+                                      .append(libelle.getNomPaysAbr())
+                                      .toString())));
 
         return result.toArray(new Map[0]);
     }
 
-    @RequestMapping(value = "/ssotoken",
-                    method = RequestMethod.GET,
-                    produces = MediaType.APPLICATION_JSON_VALUE)
-    public String getSsoToken() {
-        return SsoUtils.getSsoToken() ;
-    }
 
     @RequestMapping(value = "/config/mipsa",
                     method = RequestMethod.GET,
@@ -258,12 +245,11 @@ public class GeneralResource {
     method = RequestMethod.PUT,
     consumes = MediaType.APPLICATION_JSON_VALUE,
     produces = MediaType.APPLICATION_JSON_VALUE)
-  public void setParametrageByUser(@RequestBody Map<String, String> parametres) {
+  public void setParametrageByUser(UserDTO currentUser, @RequestBody Map<String, String> parametres) {
 
-    SsoAuthenticationToken currentUser = getSsoAuthenticationToken();
 
     for (Map.Entry<String, String> entry: parametres.entrySet()) {
-      parametrageService.save(new Parametrage( entry.getValue(), entry.getKey(), currentUser.getUser().getUserId()));
+      parametrageService.save(new Parametrage( entry.getValue(), entry.getKey(), currentUser.getUserId()));
     }
   }
 

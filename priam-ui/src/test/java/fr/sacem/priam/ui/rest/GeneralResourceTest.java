@@ -1,14 +1,25 @@
 package fr.sacem.priam.ui.rest;
 
+import fr.sacem.priam.model.dao.jpa.SareftjLibterDao;
+import fr.sacem.priam.model.dao.jpa.SareftjLibutilDao;
 import fr.sacem.priam.model.dao.jpa.SareftrRionDao;
+import fr.sacem.priam.model.domain.saref.SareftjLibter;
+import fr.sacem.priam.model.domain.saref.SareftjLibutil;
 import fr.sacem.priam.model.domain.saref.SareftrRion;
+import fr.sacem.priam.model.util.GlobalConstants;
+import fr.sacem.priam.ui.rest.dto.UserDTO;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import static fr.sacem.priam.common.constants.EnvConstants.MIPSA_WEB_COMPONENT_HTML_URL;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -16,8 +27,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Created by benmerzoukah on 13/11/2017.
  */
 public class GeneralResourceTest extends RestResourceTest {
+
   @Autowired
   SareftrRionDao sareftrRionDao;
+
+  @Autowired
+  private SareftjLibterDao sareftjLibterDao;
+
+  @Autowired
+  private SareftjLibutilDao sareftjLibutilDao;
 
   @Test
   public void getAllLibelleFamille() throws Exception {
@@ -76,34 +94,78 @@ public class GeneralResourceTest extends RestResourceTest {
 
   @Test
   public void getAllTerritoire() throws Exception {
-  }
+    List<SareftjLibter> sareftjLibters = sareftjLibterDao.findByLang(GlobalConstants.FR_LANG);
+    mockMvc.perform(
+      get("/app/rest/general/territoire")
+        .contentType(contentType))
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.length()", is(sareftjLibters.size())))
+      .andExpect(jsonPath("$[0].id", is(String.valueOf(sareftjLibters.get(0).getCdePaysIso4N()))));
 
-  @Test
-  public void getSsoToken() throws Exception {
   }
 
   @Test
   public void getMipsaConfig() throws Exception {
+
+    mockMvc.perform(
+      get("/app/rest/general/config/mipsa")
+        .contentType(contentType))
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$['" + MIPSA_WEB_COMPONENT_HTML_URL.property() +  "']", is(String.valueOf(MIPSA_WEB_COMPONENT_HTML_URL))));
   }
 
   @Test
   public void getLibelleCdeUtilisateur() throws Exception {
+    List<SareftjLibutil> labels = sareftjLibutilDao.findByLang(GlobalConstants.FR_LANG);
+    mockMvc.perform(
+      get("/app/rest/general/libelleUtilisateur")
+        .contentType(contentType))
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.length()", is(labels.size())))
+      .andExpect(jsonPath("$[0].id", is(String.valueOf(labels.get(0).getCdeUtil()))));
   }
 
   @Test
   public void getCurrentUser() throws Exception {
+
+    mockMvc.perform(
+      get("/app/rest/general/currentUser")
+        .contentType(contentType))
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.userId", is(UserDTO.GUEST.getUserId())))
+      .andExpect(jsonPath("$.displayName", is(UserDTO.GUEST.getDisplayName())));
   }
 
   @Test
   public void getParametrageByUser() throws Exception {
+
+    mockMvc.perform(
+      get("/app/rest/general/parametres")
+        .contentType(contentType))
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$['USER_PAGE_SIZE']", is("25")))
+      .andExpect(jsonPath("$['USER_FAMILLE']", is("COPIEPRIV,Copie Privée")));
   }
 
   @Test
+  @Transactional
   public void setParametrageByUser() throws Exception {
+    Map<String, String> params = new HashMap<>();
+    params.put("USER_PAGE_SIZE", "30");
+
+    mockMvc.perform(
+      put("/app/rest/general/parametres")
+        .content(this.json(params))
+        .contentType(contentType))
+      .andExpect(status().isOk());
   }
 
   @Test
   public void appInfoContext() throws Exception {
+    mockMvc.perform(
+      get("/app/rest/general/appinfo")
+        .contentType(contentType))
+      .andExpect(status().isOk());
   }
 
 }
