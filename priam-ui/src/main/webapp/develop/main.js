@@ -1,5 +1,4 @@
 import Vue from 'vue'
-import VueResource from 'vue-resource';
 import vueShortkey from 'vue-shortkey'
 import { App } from './app';
 import router from './router';
@@ -7,26 +6,9 @@ import store from './store';
 import './utils'
 import './filters'
 import './validators'
+import './httpConfig'
 
 Vue.use(vueShortkey);
-Vue.use(VueResource);
-
-if(process.env.DEBUG_MODE) {
-
-  Vue.http.options.root="http://localhost:8080/priambenmerzoukah";
-  Vue.http.headers.common['Access-Control-Allow-Origin'] = 'http://localhost:8085';
-  Vue.http.headers.common['Access-Control-Request-Method'] = '*';
-
-  Vue.http.interceptors.push((request, next) => {
-    request.credentials = true;
-    next();
-  });
-
-} else {
-  Vue.http.options.root = process.env.CONTEXT_ROOT;
-}
-
-
 
 var waitingData = ['LIBELLE_UTILISATEUR', 'LIBELLE_FAMILLE', 'LIBELLE_TYPE_UTILSATION',
                    'FAMILLE_TYPE_UTILSATION_MAP', 'RIONS', 'TERRITOIRE_MAP', 'MIPSA_CONFIG',
@@ -59,7 +41,6 @@ function fetchInitData() {
     .then(response => response.json())
     .then(data => {
       if (data) {
-        debugger;
         store.commit('SET_LIBELLE_FAMILLE', data);
         bootstrapIfReady('LIBELLE_FAMILLE');
       }
