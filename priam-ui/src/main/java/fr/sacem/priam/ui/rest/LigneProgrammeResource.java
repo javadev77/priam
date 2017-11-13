@@ -1,7 +1,6 @@
 package fr.sacem.priam.ui.rest;
 
 import com.google.common.base.Strings;
-import fr.sacem.priam.common.exception.TechnicalException;
 import fr.sacem.priam.model.dao.jpa.SareftjLibutilDao;
 import fr.sacem.priam.model.domain.cp.LigneProgrammeCP;
 import fr.sacem.priam.model.domain.Programme;
@@ -49,7 +48,6 @@ public class LigneProgrammeResource {
   @Autowired
   private SareftjLibutilDao sareftjLibutilDao;
 
-  private static Logger logger = LoggerFactory.getLogger(LigneProgrammeResource.class);
 
   @RequestMapping(value = "ligneProgramme/search",
     method = RequestMethod.POST,

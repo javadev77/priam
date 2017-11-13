@@ -2,7 +2,6 @@ package fr.sacem.priam.ui.rest;
 
 
 import com.google.common.collect.Maps;
-import fr.sacem.priam.common.util.SsoUtils;
 import fr.sacem.priam.model.dao.jpa.*;
 import fr.sacem.priam.model.domain.Parametrage;
 import fr.sacem.priam.model.domain.saref.*;
@@ -263,10 +262,4 @@ public class GeneralResource {
 
       return appInfo;
   }
-
-  private SsoAuthenticationToken getSsoAuthenticationToken() {
-    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    return (SsoAuthenticationToken) auth;
-  }
-
 }
