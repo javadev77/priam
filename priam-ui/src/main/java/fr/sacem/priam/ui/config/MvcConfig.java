@@ -100,7 +100,7 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
                    status.equals(HttpStatus.SC_FORBIDDEN) ||
                    status.equals(HttpStatus.SC_UNAUTHORIZED))) {
             request.getServletContext().getRequestDispatcher("/404.html").forward(request, response);
-          }else {
+          } else {
             request.getServletContext().getRequestDispatcher("/error.html").forward(request, response);
           }
         }

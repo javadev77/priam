@@ -92,7 +92,7 @@ public class LigneProgrammeSpringValidator implements Validator {
 		validateNumericFields(errors, (LigneProgramme) o);
     }
 
-	private void validateNumericFields(Errors errors, LigneProgramme o) {
+	protected void validateNumericFields(Errors errors, LigneProgramme o) {
 
 		Double ide12 = validateNumericField(errors, o.getIde12(), "ide12");
 		if(ide12 != null)
@@ -132,7 +132,7 @@ public class LigneProgrammeSpringValidator implements Validator {
 	}
 
 
-	public Double validateNumericField(Errors errors, String text, String field) {
+	protected Double validateNumericField(Errors errors, String text, String field) {
 		if (StringUtils.hasText(text)) {
 			NumberFormat nf = NumberFormat.getInstance(Locale.FRANCE);
 			try {
