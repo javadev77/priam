@@ -236,17 +236,9 @@ public class LigneProgrammeResource {
     }
 
 
-    @RequestMapping(value = "ligneProgramme/durdifAllSelect",
-      method = RequestMethod.POST,
-      consumes = MediaType.APPLICATION_JSON_VALUE,
-      produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Long> calculerDureeAllSelection(@RequestBody ValdierSelectionProgrammeInput input) {
-      return ligneProgrammeService.calculerDureeAllSelection(input.getNumProg(), input.getSelected(), input.isAll());
-    }
-
   @RequestMapping(value = "ligneProgramme/selection/enregistrerEdition",
-    method = RequestMethod.POST,
-    consumes = MediaType.APPLICATION_JSON_VALUE)
+                  method = RequestMethod.POST,
+                  consumes = MediaType.APPLICATION_JSON_VALUE)
   public void enregistrerEdition(@RequestBody ValdierSelectionProgrammeInput input) {
     if(input == null || input.getNumProg() == null || input.getNumProg().isEmpty())
       throw new IllegalArgumentException("input or num programme must not be null !");

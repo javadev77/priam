@@ -11,6 +11,7 @@ import org.fest.assertions.Assertions;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -83,6 +84,9 @@ public class LigneProgrammeCPResourceTest extends RestResourceTest{
   public static final String APP_REST_ANNULER_SELECTION = "/app/rest/ligneProgramme/selection/annuler";
   public static final String APP_REST_SUPPRIMER_LIGNE_PROGRAMME = "/app/rest/ligneProgramme/";
   public static final String APP_REST_AJOUTER_OEUVRE_MANUEL = "/app/rest/ligneProgramme/selection/ajoutOeuvre";
+  public static final String APP_REST_ENREGISTRER_EDITION = "/app/rest/ligneProgramme/selection/enregistrerEdition";
+  public static final String APP_REST_ANNULER_EDITION = "/app/rest/ligneProgramme/selection/annulerEdition";
+
 
 
 
@@ -218,6 +222,8 @@ public class LigneProgrammeCPResourceTest extends RestResourceTest{
 
     LigneProgrammeCP lu1 = ligneProgrammeViewDao.findOeuvreManuelByIde12AndCdeUtil("170001", 1454545L, "LU1");
     assertThat(lu1).isNull();
+
+    ligneProgrammeService.supprimerLigneProgramme(input.getNumProg(), input.getIde12(), se);
   }
 
   @Test
@@ -235,6 +241,34 @@ public class LigneProgrammeCPResourceTest extends RestResourceTest{
     LigneProgrammeCP lu1 = ligneProgrammeViewDao.findOeuvreManuelByIde12AndCdeUtil("170001", ide12, "LU1");
     assertThat(lu1).isNotNull();
     assertThat(lu1.getIde12()).isEqualTo(ide12);
+  }
+
+  @Test
+  @Transactional
+  public void testEnregistrerEdition() throws Exception {
+
+    ValdierSelectionProgrammeInput input = new ValdierSelectionProgrammeInput();
+    input.setNumProg("170001");
+    mockMvc.perform(
+      post(APP_REST_ENREGISTRER_EDITION)
+        .content(this.json(input))
+        .contentType(contentType))
+      .andExpect(status().isOk());
+
+  }
+
+  @Test
+  @Transactional
+  public void testAnnulerEdition() throws Exception {
+
+    ValdierSelectionProgrammeInput input = new ValdierSelectionProgrammeInput();
+    input.setNumProg("170001");
+    mockMvc.perform(
+      post(APP_REST_ANNULER_EDITION)
+        .content(this.json(input))
+        .contentType(contentType))
+      .andExpect(status().isOk());
+
   }
 
   private LigneProgrammeCP createLigneProgramme(String numProg, Long ide12, String cdeUtil) {

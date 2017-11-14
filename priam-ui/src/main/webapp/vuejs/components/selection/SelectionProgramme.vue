@@ -644,7 +644,6 @@
           dureeProgramme: {method: 'GET', url: 'app/rest/programme/durdif?numProg={numProg}&statut={statut}'},
           annulerSelection: {method: 'POST', url: 'app/rest/ligneProgramme/selection/annuler'},
           supprimerLigneProgramme: {method: 'DELETE', url: 'app/rest/ligneProgramme/{numProg}/{ide12}/'},
-          calculerDureeAllSelection: {method: 'POST', url: 'app/rest/ligneProgramme/durdifAllSelect'},
           enregistrerEdition : {method: 'POST', url: 'app/rest/ligneProgramme/selection/enregistrerEdition'},
           annulerEdition : {method: 'POST', url: 'app/rest/ligneProgramme/selection/annulerEdition'}
         }
