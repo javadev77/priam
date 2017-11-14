@@ -184,8 +184,20 @@ public class LigneProgrammeCPResourceTest extends RestResourceTest{
   public void testModifierSelectionEmptyOrNullInput() throws Exception {
 
     exception.expect(NestedServletException.class);
-     mockMvc.perform(post(APP_REST_MODIFIER_SELECTION)
-      .content(this.json(new ValdierSelectionProgrammeInput()))
+    mockMvc.perform(post(APP_REST_MODIFIER_SELECTION)
+      .content(json(null))
+      .contentType(contentType))
+      .andExpect(status().is4xxClientError());
+
+    ValdierSelectionProgrammeInput in = new ValdierSelectionProgrammeInput();
+    mockMvc.perform(post(APP_REST_MODIFIER_SELECTION)
+      .content(this.json(in))
+      .contentType(contentType))
+      .andExpect(status().isInternalServerError());
+
+    in.setNumProg("");
+    mockMvc.perform(post(APP_REST_MODIFIER_SELECTION)
+      .content(this.json(in))
       .contentType(contentType))
       .andExpect(status().isInternalServerError());
 
