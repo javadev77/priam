@@ -112,14 +112,16 @@ public class LigneProgrammeCPResourceTest extends RestResourceTest{
 
     LigneProgrammeCritereRecherche ligneProgrammeCritereRecherche = new LigneProgrammeCritereRecherche();
     ligneProgrammeCritereRecherche.setNumProg(NUM_PROG);
-
-    Page<SelectionDto> ligneProgrammeByCriteria = ligneProgrammeViewDao.findLigneProgrammeByCriteria(NUM_PROG, null, null, null, null, null, pageable);
+    ligneProgrammeCritereRecherche.setTitre("Titre");
+    ligneProgrammeCritereRecherche.setAjout("Manuel");
+    ligneProgrammeCritereRecherche.setSelection("Sélectionné");
+    ligneProgrammeCritereRecherche.setUtilisateur("LU1-GG");
 
     mockMvc.perform(post(APP_REST_LIGNE_PROGRAMME_SEARCH)
       .content(this.json(ligneProgrammeCritereRecherche))
       .contentType(contentType))
-      .andExpect(status().isOk())
-      /*.andExpect(jsonPath("$.content", hasSize(ligneProgrammeByCriteria.getSize())))*/;
+      .andExpect(status().isOk());
+
   }
 
   @Test
