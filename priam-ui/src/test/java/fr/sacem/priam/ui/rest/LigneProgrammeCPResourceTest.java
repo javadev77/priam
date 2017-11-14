@@ -197,7 +197,7 @@ public class LigneProgrammeCPResourceTest extends RestResourceTest{
 
     exception.expect(NestedServletException.class);
     mockMvc.perform(post(APP_REST_INVALIDER_SELECTION)
-      .content(this.json(new ValdierSelectionProgrammeInput()))
+      .content(this.json(""))
       .contentType(contentType))
       .andExpect(status().isInternalServerError());
   }
@@ -322,6 +322,29 @@ public class LigneProgrammeCPResourceTest extends RestResourceTest{
       .andExpect(status().isOk());
 
   }
+
+  @Test
+  public void testAnnulerSelectionnEmptyOrNullInput() throws Exception {
+
+    exception.expect(NestedServletException.class);
+    mockMvc.perform(post(APP_REST_ANNULER_SELECTION)
+      .content(this.json(new ValdierSelectionProgrammeInput ()))
+      .contentType(contentType))
+      .andExpect(status().isInternalServerError());
+  }
+
+  @Test
+  public void testGetListIDE12ParseError() throws Exception {
+
+    List<KeyValueDto> ide12sByProgramme = ligneProgrammeViewDao.findIDE12sByProgramme(INITIAL_IDE12, NUM_PROG);
+
+    mockMvc.perform(get(APP_REST_LIGNE_PROGRAMME_IDE12+"?q=&programme="+NUM_PROG)
+      .content(this.json(ide12sByProgramme))
+      .contentType(contentType))
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.length()", is(0)));
+  }
+
 
   private LigneProgrammeCP createLigneProgramme(String numProg, Long ide12, String cdeUtil) {
     LigneProgrammeCP input = new LigneProgrammeCP();
