@@ -1,5 +1,6 @@
 package fr.sacem.priam.ui.rest;
 
+import fr.sacem.priam.common.exception.InputValidationException;
 import fr.sacem.priam.model.dao.jpa.cp.LigneProgrammeCPDao;
 import fr.sacem.priam.model.domain.cp.LigneProgrammeCP;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
@@ -7,15 +8,15 @@ import fr.sacem.priam.model.domain.dto.SelectionDto;
 import fr.sacem.priam.services.LigneProgrammeService;
 import fr.sacem.priam.ui.rest.dto.LigneProgrammeCritereRecherche;
 import fr.sacem.priam.ui.rest.dto.ValdierSelectionProgrammeInput;
-import org.fest.assertions.Assertions;
-import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.util.NestedServletException;
 
 import java.util.*;
 
@@ -29,6 +30,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Created by belwidanej on 10/08/2017.
  */
 public class LigneProgrammeCPResourceTest extends RestResourceTest{
+
+  @Rule
+  public ExpectedException exception = ExpectedException.none();
 
   private static final Pageable pageable = new Pageable() {
 
@@ -164,6 +168,42 @@ public class LigneProgrammeCPResourceTest extends RestResourceTest{
   }
 
   @Test
+  public void testValiderSelectionEmptyOrNullInput() throws Exception {
+
+    exception.expect(NestedServletException.class);
+    ValdierSelectionProgrammeInput in = new ValdierSelectionProgrammeInput();
+    mockMvc.perform(post(APP_REST_VALIDER_SELECTION)
+      .content(json(in))
+      .contentType(contentType))
+      .andExpect(status().isInternalServerError());
+
+
+  }
+
+  @Test
+  public void testModifierSelectionEmptyOrNullInput() throws Exception {
+
+    exception.expect(NestedServletException.class);
+     mockMvc.perform(post(APP_REST_MODIFIER_SELECTION)
+      .content(this.json(new ValdierSelectionProgrammeInput()))
+      .contentType(contentType))
+      .andExpect(status().isInternalServerError());
+
+  }
+
+
+  @Test
+  public void testInvaliderSelectionnEmptyOrNullInput() throws Exception {
+
+    exception.expect(NestedServletException.class);
+    mockMvc.perform(post(APP_REST_INVALIDER_SELECTION)
+      .content(this.json(new ValdierSelectionProgrammeInput()))
+      .contentType(contentType))
+      .andExpect(status().isInternalServerError());
+  }
+
+
+  @Test
   public void modifierSelection() throws Exception {
 
     ValdierSelectionProgrammeInput input = new ValdierSelectionProgrammeInput();
@@ -255,6 +295,18 @@ public class LigneProgrammeCPResourceTest extends RestResourceTest{
         .contentType(contentType))
       .andExpect(status().isOk());
 
+  }
+
+
+
+  @Test
+  public void testEnregistrerEditionEmptyOrNullInput() throws Exception {
+
+    exception.expect(NestedServletException.class);
+    mockMvc.perform(post(APP_REST_ENREGISTRER_EDITION)
+      .content(this.json(new ValdierSelectionProgrammeInput()))
+      .contentType(contentType))
+      .andExpect(status().isInternalServerError());
   }
 
   @Test
