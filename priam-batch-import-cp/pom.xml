@@ -4,12 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>fr.sacem.priam</groupId>
-    <artifactId>priam-batch-repartition</artifactId>
+    <artifactId>priam-batch-import-cp</artifactId>
 
     <packaging>jar</packaging>
 
-    <name>priam-batch-repartition</name>
-    <description>Batch de repartition</description>
+    <name>priam-batch</name>
+    <description>Batch d&#39;extraction Penef pour les copies privees</description>
 
     <parent>
         <artifactId>priam-parent</artifactId>
@@ -35,15 +35,9 @@
             <version>2.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>fr.sacem.priam</groupId>
-            <artifactId>priam-common</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.batch</groupId>
             <artifactId>spring-batch-infrastructure</artifactId>
         </dependency>
-
         <dependency>
             <groupId>net.sf.opencsv</groupId>
             <artifactId>opencsv</artifactId>
@@ -139,26 +133,12 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>fr.sacem.AppRepartition</mainClass>
+                            <mainClass>fr.sacem.App</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
             </plugin>
-           <!-- <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.7.9</version>
-                <executions>
-                    <execution>
-                        <id>report-aggregate</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>report-aggregate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>-->
+
         </plugins>
     </build>
-
 </project>

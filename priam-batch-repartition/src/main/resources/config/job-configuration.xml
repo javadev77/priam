@@ -30,10 +30,10 @@
     </job>
 
 
-    <bean id="listenerCompletition" class="fr.sacem.config.JobCompletionNotificationLigneProgrammeListener">
+    <bean id="listenerCompletition" class="fr.sacem.listener.repartition.JobCompletionNotificationLigneProgrammeRepartitionListener">
     </bean>
     <bean id="readerPriamCsv"
-          class="fr.sacem.service.CsvMultiResourceItemReader" scope="step">
+          class="fr.sacem.service.repartition.CsvMultiResourceItemReader" scope="step">
         <property name="delegate" ref="flatFileItemReader"/>
         <property name="strict" value="false"/>
     </bean>
@@ -61,12 +61,12 @@
             <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
         </property>
     </bean>
-    <bean id="repartitionItemProcessor" class="fr.sacem.service.RepartitionItemProcessor"/>
+    <bean id="repartitionItemProcessor" class="fr.sacem.service.repartition.RepartitionItemProcessor"/>
 
     <bean id="flatFileItemReader"
-          class="fr.sacem.util.mapper.CsvPriamFileItemReader">
+          class="fr.sacem.util.mapper.repartition.CsvPriamFileItemReader">
         <property name="lineMapper">
-            <bean class="fr.sacem.util.mapper.CsvPriamLineMapper">
+            <bean class="fr.sacem.util.mapper.repartition.CsvPriamLineMapper">
                 <property name="lineTokenizer">
                     <bean class="org.springframework.batch.item.file.transform.DelimitedLineTokenizer">
                         <property name="names" value="numeroProgramme,datcalc,rion,status"/>

@@ -20,9 +20,11 @@
     <name>PRIAM</name>
 
     <modules>
-        <module>priam-batch</module>
+        <module>priam-batch-import-cp</module>
         <module>priam-batch-repartition</module>
+		<module>priam-batch-import-cms</module>
         <module>priam-common</module>
+		<module>priam-common-batch</module>
         <module>priam-model</module>
         <module>priam-services</module>
         <module>priam-ui</module>

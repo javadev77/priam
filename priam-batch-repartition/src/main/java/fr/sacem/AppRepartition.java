@@ -2,7 +2,6 @@ package fr.sacem;
 
 import fr.sacem.config.ConfigurationPriam;
 import fr.sacem.domain.Admap;
-import fr.sacem.priam.common.constants.EnvConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
@@ -12,14 +11,9 @@ import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.core.env.Environment;
 
-import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * Created by fandis on 23/05/2017.
