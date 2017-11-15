@@ -121,13 +121,22 @@ public enum EnvConstants implements ConfigurableProperty {
         }
     },
     
-    FELIX_ACQT_ARCHIVES_DIR{
+    FELIX_ACQT_ARCHIVES_DIR {
         @Override
         public String property() {
             return "priam.felix.acquittement.archives";
         }
         
+    },
+
+    PRIAM_DB_JNDI {
+        @Override
+        public String property() {
+            return "priam.db.jndi";
+        }
+
     };
+
     @Override
     public String toString() {
         

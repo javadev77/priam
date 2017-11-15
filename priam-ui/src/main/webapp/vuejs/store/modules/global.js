@@ -16,7 +16,7 @@ const state = {
     libelleUtilisateur : [],
 
 
-   currentUser : {},
+    currentUser : {},
 
     appInfo :{}
 
@@ -41,7 +41,6 @@ const mutations = {
 
   'SET_CURRENT_USER' (state, userDto) {
     state.currentUser = userDto;
-    console.log('state.currentUser = ' + state.currentUser.displayName);
   },
 
   'SELECT_FAMILLE' (state, userFamille) {

@@ -63,33 +63,32 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        //TODO Ajouter un check en fonction du mode de l'application
 
-      webappMode = Environment.getParameter("webapp.mode");
+        webappMode = Environment.getParameter("webapp.mode");
 
         if("dev".equalsIgnoreCase(webappMode)) {
             registry.addMapping("/app/rest/**")
-                    .allowedMethods("PUT", "DELETE", "GET", "POST")
+                    .allowedMethods("PUT", "DELETE", "GET", "POST", "OPTIONS")
                     .allowedOrigins(vuejsDevServerUrl);
         }
 
     }
-  
+
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
        argumentResolvers.add(new UserDTOHandlerMethodArgumentResolver());
     }
-  
+
     @Bean(name = "error")
     @Primary
     public View defaultErrorView() {
       return new View() {
-        
+
         @Override
         public String getContentType() {
           return MediaType.TEXT_HTML_VALUE;
         }
-        
+
         @Override
         public void render(Map<String, ?> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
           if (response.getContentType() == null) {
@@ -101,7 +100,7 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
                    status.equals(HttpStatus.SC_FORBIDDEN) ||
                    status.equals(HttpStatus.SC_UNAUTHORIZED))) {
             request.getServletContext().getRequestDispatcher("/404.html").forward(request, response);
-          }else {
+          } else {
             request.getServletContext().getRequestDispatcher("/error.html").forward(request, response);
           }
         }

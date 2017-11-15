@@ -9,7 +9,7 @@ function resolve (dir) {
 
 module.exports = {
   entry: {
-    app: './src/main/webapp/vuejs/main.js'
+    app: './src/main/webapp/develop/main.js'
   },
   output: {
     path: config.build.assetsRoot,

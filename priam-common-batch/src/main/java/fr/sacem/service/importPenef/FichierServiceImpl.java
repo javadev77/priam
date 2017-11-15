@@ -68,6 +68,7 @@ public class FichierServiceImpl implements FichierService {
     }
 
 
+    @Override
     public void creerlog(Long idFichier, String log) {
         fichierRepository.enregistrerLog(idFichier, Stream.of(log).collect(Collectors.toSet()));
     }

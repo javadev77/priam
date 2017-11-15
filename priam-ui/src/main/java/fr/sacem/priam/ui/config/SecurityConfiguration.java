@@ -1,5 +1,6 @@
 package fr.sacem.priam.ui.config;
 
+import fr.sacem.fwk.config.Environment;
 import fr.sacem.fwk.security.SecurityManager;
 import fr.sacem.priam.ui.security.AjaxLogoutSuccessHandler;
 import fr.sacem.priam.ui.security.Http401UnauthorizedEntryPoint;
@@ -26,6 +27,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
+import org.springframework.security.config.annotation.web.configurers.CorsConfigurer;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -46,10 +48,15 @@ import java.util.List;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SecurityConfiguration.class);
-  private static final String STATIC_RESOURCES_REGEX = ".*(/(develop|bower_components|fonts|images|scripts|css|views|i18n|sacem|_mock)/.*)|(/app/rest/notification.*)|/(error|404|health).*";
+  private static final String STATIC_RESOURCES_REGEX = ".*(/static/.*)|/(error|404).*";
 
   @Override
   protected void  configure(HttpSecurity http) throws Exception {
+
+    String webappMode = Environment.getParameter("webapp.mode");
+    if("dev".equalsIgnoreCase(webappMode)) {
+      http.cors().and();
+    }
     http.csrf().disable()
       .exceptionHandling()
       .accessDeniedPage("/404.html")

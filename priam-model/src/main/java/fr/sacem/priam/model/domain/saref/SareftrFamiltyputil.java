@@ -1,6 +1,7 @@
 package fr.sacem.priam.model.domain.saref;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -9,7 +10,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "SAREFTR_FAMILTYPUTIL")
-public class SareftrFamiltyputil {
+public class SareftrFamiltyputil implements Serializable {
     
     private String code;
     private Date dateDebut;
