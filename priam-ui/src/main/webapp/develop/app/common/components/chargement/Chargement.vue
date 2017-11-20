@@ -329,8 +329,8 @@
 
     created() {
       const customActions = {
-        search : {method : 'POST', url :'app/rest/chargement/search?page={page}&size={size}&sort={sort},{dir}'},
-        deleteFichier : {method : 'PUT', url :'app/rest/chargement/deleteFichier'}
+        search : {method : 'POST', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/chargement/search?page={page}&size={size}&sort={sort},{dir}'},
+        deleteFichier : {method : 'PUT', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/chargement/deleteFichier'}
       }
       this.resource= this.$resource('', {}, customActions);
 

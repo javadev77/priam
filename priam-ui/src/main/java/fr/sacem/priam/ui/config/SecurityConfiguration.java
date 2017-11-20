@@ -2,10 +2,10 @@ package fr.sacem.priam.ui.config;
 
 import fr.sacem.fwk.config.Environment;
 import fr.sacem.fwk.security.SecurityManager;
-import fr.sacem.priam.ui.security.AjaxLogoutSuccessHandler;
-import fr.sacem.priam.ui.security.Http401UnauthorizedEntryPoint;
-import fr.sacem.priam.ui.security.SsoAuthenticationProvider;
-import fr.sacem.priam.ui.security.SsoPreAuthenticatedProcessingFilter;
+import fr.sacem.priam.security.config.AjaxLogoutSuccessHandler;
+import fr.sacem.priam.security.config.Http401UnauthorizedEntryPoint;
+import fr.sacem.priam.security.config.SsoAuthenticationProvider;
+import fr.sacem.priam.security.config.SsoPreAuthenticatedProcessingFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
@@ -27,7 +27,6 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
-import org.springframework.security.config.annotation.web.configurers.CorsConfigurer;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.web.AuthenticationEntryPoint;

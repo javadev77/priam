@@ -1,10 +1,10 @@
 package fr.sacem.priam.services;
 
 import fr.sacem.priam.common.TypeUtilisationEnum;
-import fr.sacem.priam.model.dao.jpa.cp.FichierCPDao;
+import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.dao.jpa.cp.LigneProgrammeCPDao;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeCPDao;
-import fr.sacem.priam.model.domain.cp.FichierCP;
+import fr.sacem.priam.model.domain.Fichier;
 import fr.sacem.priam.model.domain.cp.LigneProgrammeCP;
 import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.criteria.LigneProgrammeCriteria;
@@ -44,7 +44,7 @@ public class LigneProgrammeService {
     private ProgrammeCPDao programmeCPDao;
     
     @Autowired
-    private FichierCPDao fichierCPDao;
+    private FichierDao fichierDao;
     
     @Autowired
     private ProgrammeService programmeService;
@@ -237,22 +237,22 @@ public class LigneProgrammeService {
     }
     
     private LigneProgrammeCP createOeuvreManuel(LigneProgrammeCP input, Programme programme) {
-        FichierCP probe = new FichierCP();
+        Fichier probe = new Fichier();
         probe.setAutomatique(false);
         Programme programme1 = new Programme();
         programme1.setNumProg(input.getNumProg());
         probe.setProgramme(programme1);
         
-        Example<FichierCP> of = Example.of(probe);
-        FichierCP f = fichierCPDao.findOne(of);
+        Example<Fichier> of = Example.of(probe);
+        Fichier f = fichierDao.findOne(of);
         
         if(f == null) {
-		f = new FichierCP();
+		f = new Fichier();
   
 		f.setProgramme(programme);
 		f.setAutomatique(false);
   
-		fichierCPDao.saveAndFlush(f);
+		fichierDao.saveAndFlush(f);
 	  }
         
         input.setFichier(f);

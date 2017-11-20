@@ -75,7 +75,7 @@
 
       created() {
         const customActions = {
-          enregistrerParametrage : {method: 'PUT', url: 'app/rest/general/parametres'}
+          enregistrerParametrage : {method: 'PUT', url: process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/general/parametres'}
         }
 
         this.resource = this.$resource('', {}, customActions);

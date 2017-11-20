@@ -8,7 +8,9 @@ import java.util.List;
  */
 public enum  FamillePriam {
     
-    COPIE_PRIVEE("COPIEPRIV");
+    COPIE_PRIVEE("COPIEPRIV"),
+
+    CMS("UC");
     
     private final String code;
     

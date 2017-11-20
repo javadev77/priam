@@ -249,8 +249,9 @@
 
           let nUrl = `${this.url}?${this.param}=${val}${params}`;
 
-          ajax.open('GET', Vue.http.options.root + '/app/rest/' + nUrl, true);
+          ajax.open('GET', nUrl, true);
 
+          ajax.withCredentials = true;
           ajax.setRequestHeader("Access-Control-Allow-Origin", "*");
           ajax.setRequestHeader("Content-Type", "application/json");
           ajax.send();

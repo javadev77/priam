@@ -234,6 +234,7 @@
 
   import ChargementMixin from '../../mixins/chargementMixin';
   import programmeMixin from '../../mixins/programmeMixin';
+  import { FAMILLES_PRIAM } from '../../../../consts';
 
 
   export default {
@@ -542,13 +543,13 @@
 
       created() {
         const customActions = {
-            searchProgramme : {method : 'POST', url :'app/rest/programme/search?page={page}&size={size}&sort={sort},{dir}'},
-            abandonnerProgramme : {method : 'PUT', url :'app/rest/programme/abandon'},
-            getAllNumProgForAutocmplete : {method : 'GET', url :'app/rest/programme/numprog/autocomplete'},
-            getAllNomProgForAutocmplete : {method : 'GET', url :'app/rest/programme/nomprog/autocomplete'},
-            validateFelixData : {method : 'GET', url : 'app/rest/repartition/validateFelixData/{numProg}'},
-            generateFelixData : {method : 'POST', url : 'app/rest/repartition/generateFelixData'},
-            checkIfDone : {method : 'GET', url : 'app/rest/repartition/fichierfelix/{numProg}'}
+            searchProgramme : {method : 'POST', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/programme/search?page={page}&size={size}&sort={sort},{dir}'},
+            abandonnerProgramme : {method : 'PUT', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/programme/abandon'},
+            getAllNumProgForAutocmplete : {method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/programme/numprog/autocomplete'},
+            getAllNomProgForAutocmplete : {method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/programme/nomprog/autocomplete'},
+            validateFelixData : {method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/repartition/validateFelixData/{numProg}'},
+            generateFelixData : {method : 'POST', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/repartition/generateFelixData'},
+            checkIfDone : {method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/repartition/fichierfelix/{numProg}'}
 
         }
         this.resource= this.$resource('', {}, customActions);
@@ -747,7 +748,12 @@
               console.log("Clicked row row=" + row.numProg + ", column="+column.id )
               if(column.id !== undefined && column.id === 'fichiers') {
                   //redirect to Affectation.vue
-                this.$router.push({ name: 'affectation', params: { numProg: row.numProg }});
+
+                if (row.famille === FAMILLES_PRIAM['UC']) { //CMS
+                  this.$router.push({ name: 'affectation-cms', params: { numProg: row.numProg }});
+                } else if (row.famille === FAMILLES_PRIAM['COPIE_PRIVEE']) { //CP
+                  this.$router.push({ name: 'affectation', params: { numProg: row.numProg }});
+                }
               } else if(column.id !== undefined && column.id === 'numProg') {
                 this.$router.push({ name: 'selection', params: { numProg: row.numProg }});
               } else if(column.id !== undefined && column.id === 'repartition') {

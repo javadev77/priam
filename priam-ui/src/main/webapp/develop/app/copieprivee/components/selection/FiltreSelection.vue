@@ -32,7 +32,7 @@
                 <div class="col-md-18 control-label">
                   <autocomplete
                     id="filterIde12"
-                    url="ligneProgramme/ide12"
+                    :url="urlAutoCompleteIDE12"
                     :custom-params="{ programme: $route.params.numProg }"
                     anchor="code"
                     :min="3"
@@ -48,7 +48,7 @@
                 <div class="col-md-18 control-label">
                   <autocomplete
                     id="filterTitreOeuvre"
-                    url="ligneProgramme/titreOeuvre"
+                    :url="urlAutoCompleteTitreOeuvre"
                     :custom-params="{ programme: $route.params.numProg }"
                     anchor="value"
                     :min="3"
@@ -110,7 +110,10 @@
 
       return {
         showMipsa : false,
-        utilisateursOptions : []
+        utilisateursOptions : [],
+        urlAutoCompleteIDE12 : process.env.CONTEXT_ROOT_PRIAM_CP + 'app/rest/ligneProgramme/ide12',
+        urlAutoCompleteTitreOeuvre : process.env.CONTEXT_ROOT_PRIAM_CP + 'app/rest/ligneProgramme/titreOeuvre'
+
 
       }
     },
@@ -223,8 +226,8 @@
 
     created() {
       const customActions = {
-        getUtilisateursByProgramme : {method : 'GET', url :'app/rest/ligneProgramme/utilisateurs?programme='+this.$route.params.numProg},
-        ajouterOeuvreManuel : {method : 'POST', url :'app/rest/ligneProgramme/selection/ajoutOeuvre'}
+        getUtilisateursByProgramme : {method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_CP + 'app/rest/ligneProgramme/utilisateurs?programme='+this.$route.params.numProg},
+        ajouterOeuvreManuel : {method : 'POST', url : process.env.CONTEXT_ROOT_PRIAM_CP + 'app/rest/ligneProgramme/selection/ajoutOeuvre'}
       }
       this.resource= this.$resource('', {}, customActions);
 

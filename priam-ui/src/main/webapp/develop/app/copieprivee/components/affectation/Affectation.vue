@@ -311,12 +311,10 @@
       created() {
           console.log("router params numProg = " + this.$route.params.numProg)
           const customActions = {
-              findByNumProg : {method : 'GET', url : 'app/rest/programme/numProg/{numProg}'},
-              affectationProgramme : {method: 'PUT', url : 'app/rest/programme/affectation'},
-              toutDeaffecterProg : {method: 'PUT', url : 'app/rest/programme/toutDesaffecter'},
-              findAllFichiers : {method : 'POST', url :'app/rest/chargement/allFichiers'},
-
-
+              findByNumProg : {method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/programme/numProg/{numProg}'},
+              affectationProgramme : {method: 'PUT', url : process.env.CONTEXT_ROOT_PRIAM_CP + 'app/rest/programme/affectation'},
+              toutDeaffecterProg : {method: 'PUT', url : process.env.CONTEXT_ROOT_PRIAM_CP + 'app/rest/programme/toutDesaffecter'},
+              findAllFichiers : {method : 'POST', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/chargement/allFichiers'}
           }
           this.resource= this.$resource('', {}, customActions);
 

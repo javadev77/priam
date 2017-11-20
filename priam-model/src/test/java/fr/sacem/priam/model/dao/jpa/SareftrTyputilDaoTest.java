@@ -33,7 +33,7 @@ public class SareftrTyputilDaoTest {
         List<SareftrTyputil> all = sareftrTyputilDao.findAll();
     
         assertThat(all).isNotNull().isNotEmpty();
-        assertThat(all).extracting("code").containsExactly("COPRIVSON", "CPRIVAUDPL", "CPRIVAUDV","CPRIVSONPH", "CPRIVSONRD", "ENCOURG", "PRIME", "VALORIS");
+        assertThat(all).extracting("code").contains("COPRIVSON", "CPRIVAUDPL", "CPRIVAUDV","CPRIVSONPH", "CPRIVSONRD", "ENCOURG", "PRIME", "VALORIS");
     }
     
     @Test
@@ -42,23 +42,16 @@ public class SareftrTyputilDaoTest {
         List<SareftrTyputil> all = sareftrTyputilDao.findByCodeFamille("COPIEPRIV");
         
         assertThat(all).isNotNull().isNotEmpty();
-        List list = new ArrayList();
-        list.add("CPRIVAUDPL");
-        list.add("CPRIVAUDV");
-        list.add("CPRIVSONPH");
-        list.add("CPRIVSONRD");
-
-
-        assertThat(all).extracting("code").containsExactlyElementsOf(list);
+        assertThat(all).extracting("code").contains("CPRIVAUDPL","CPRIVAUDV", "CPRIVSONPH", "CPRIVSONRD");
     }
     
     @Test
     public void should_return_type_utilisation_by_code_famille_CMS() {
         
-        List<SareftrTyputil> all = sareftrTyputilDao.findByCodeFamille("CMS");
+        List<SareftrTyputil> all = sareftrTyputilDao.findByCodeFamille("UC");
         
         assertThat(all).isNotNull().isNotEmpty();
-        assertThat(all).extracting("code").containsExactly("ENCOURG");
+        assertThat(all).extracting("code").contains("AUTREUC");
     }
 
 }

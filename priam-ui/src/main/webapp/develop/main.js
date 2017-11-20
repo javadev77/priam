@@ -37,7 +37,7 @@ function bootstrapIfReady(type) {
 
 function fetchInitData() {
 
-  Vue.http.get('app/rest/general/libellefamille')
+  Vue.http.get(process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/general/libellefamille')
     .then(response => response.json())
     .then(data => {
       if (data) {
@@ -46,7 +46,7 @@ function fetchInitData() {
       }
     });
 
-  Vue.http.get('app/rest/general/libelletypeutil')
+  Vue.http.get(process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/general/libelletypeutil')
     .then(response => response.json())
     .then(data => {
       if (data) {
@@ -56,7 +56,7 @@ function fetchInitData() {
       }
     });
 
-  Vue.http.get('app/rest/general/familleByTypeUil')
+  Vue.http.get(process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/general/familleByTypeUil')
     .then(response => response.json())
     .then(data => {
       if (data) {
@@ -65,7 +65,7 @@ function fetchInitData() {
       }
     });
 
-  Vue.http.get('app/rest/general/rions')
+  Vue.http.get(process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/general/rions')
     .then(response => response.json())
     .then(data => {
       if (data) {
@@ -74,7 +74,7 @@ function fetchInitData() {
       }
     });
 
-  Vue.http.get('app/rest/general/rions_creation')
+  Vue.http.get(process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/general/rions_creation')
     .then(response => response.json())
     .then(data => {
       if (data) {
@@ -83,7 +83,7 @@ function fetchInitData() {
       }
     });
 
-  Vue.http.get('app/rest/general/territoire')
+  Vue.http.get(process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/general/territoire')
     .then(response => response.json())
     .then(data => {
       if (data) {
@@ -92,7 +92,7 @@ function fetchInitData() {
       }
     });
 
-  Vue.http.get('app/rest/general/config/mipsa')
+  Vue.http.get(process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/general/config/mipsa')
     .then(response => response.json())
     .then(data => {
       if (data) {
@@ -102,7 +102,7 @@ function fetchInitData() {
     });
 
 
-  Vue.http.get('app/rest/general/libelleUtilisateur')
+  Vue.http.get(process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/general/libelleUtilisateur')
     .then(response => response.json())
     .then(data => {
       if (data) {
@@ -111,14 +111,14 @@ function fetchInitData() {
       }
     });
 
-  Vue.http.get('app/rest/general/currentUser')
+  Vue.http.get(process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/general/currentUser')
     .then(response => response.json())
     .then(data => {
       if (data) {
         store.commit('SET_CURRENT_USER', data);
         bootstrapIfReady('CURRENT_USER');
 
-        Vue.http.get('app/rest/general/parametres')
+        Vue.http.get(process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/general/parametres')
           .then(response => response.json())
           .then(data => {
           if (data) {
@@ -130,7 +130,7 @@ function fetchInitData() {
       }
     });
 
-  Vue.http.get('app/rest/general/appinfo')
+  Vue.http.get(process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/general/appinfo')
     .then(response => response.json())
     .then(data => {
       if (data) {

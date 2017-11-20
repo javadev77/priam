@@ -3,12 +3,17 @@ package fr.sacem.priam.services;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.FilterType;
 
 /**
  * Created by benmerzoukah on 28/06/2017.
  */
 @Configuration
-@ComponentScan(basePackages = {"fr.sacem.priam.services", "fr.sacem.priam.common"})
+@ComponentScan(basePackages = {"fr.sacem.priam.services", "fr.sacem.priam.common", "fr.sacem.priam.model"},
+        excludeFilters = {
+                @ComponentScan.Filter(type = FilterType.REGEX, pattern = "fr.sacem.priam.common.web.*"),
+                @ComponentScan.Filter(type = FilterType.REGEX, pattern = "fr.sacem.priam.model.config.*")
+})
 public class ConfigurationTest {
 	
     @Bean

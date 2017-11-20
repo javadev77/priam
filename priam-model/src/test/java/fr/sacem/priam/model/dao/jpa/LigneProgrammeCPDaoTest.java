@@ -1,15 +1,13 @@
 package fr.sacem.priam.model.dao.jpa;
 
 import fr.sacem.priam.model.dao.JpaConfigurationTest;
-import fr.sacem.priam.model.dao.jpa.cp.FichierCPDao;
 import fr.sacem.priam.model.dao.jpa.cp.LigneProgrammeCPDao;
-import fr.sacem.priam.model.domain.cp.FichierCP;
+import fr.sacem.priam.model.domain.Fichier;
 import fr.sacem.priam.model.domain.LignePreprep;
 import fr.sacem.priam.model.domain.cp.LigneProgrammeCP;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.SelectionDto;
 
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,7 +40,7 @@ public class LigneProgrammeCPDaoTest {
     LigneProgrammeCPDao ligneProgrammeCPDao;
 
     @Autowired
-    FichierCPDao fichierCPDao;
+    FichierDao fichierDao;
 
     private static final Pageable pageable = new Pageable() {
 
@@ -96,7 +94,7 @@ public class LigneProgrammeCPDaoTest {
 
     @Test
     public void should_delete_all_data_ligne_programme() {
-        List<FichierCP> fichiers = fichierCPDao.findAll();
+        List<Fichier> fichiers = fichierDao.findAll();
         long fileId = fichiers.get(0).getId();
         ligneProgrammeCPDao.deleteAllByFichierId(fileId);
         List<LigneProgrammeCP> all = ligneProgrammeCPDao.findByFichierId(fileId);

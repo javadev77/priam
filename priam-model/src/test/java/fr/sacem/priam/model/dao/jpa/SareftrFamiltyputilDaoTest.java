@@ -31,7 +31,7 @@ public class SareftrFamiltyputilDaoTest {
         List<SareftrFamiltyputil> all = sareftrFamiltyputilDao.findByFamilles(FamillePriam.getCodes());
     
         assertThat(all).isNotNull().isNotEmpty();
-        assertThat(all).extracting("code").containsExactly("COPIEPRIV");
+        assertThat(all).extracting("code").contains("COPIEPRIV", "UC");
     }
 
 }

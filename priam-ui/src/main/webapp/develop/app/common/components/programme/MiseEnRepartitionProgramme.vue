@@ -154,10 +154,10 @@
         console.log("numProg = " + this.numProg);
 
         const customActions = {
-          findByNumProg : {method : 'GET', url : 'app/rest/programme/numProg/{numProg}'},
-          validateFelixData : {method : 'GET', url : 'app/rest/repartition/validateFelixData/{numProg}'},
-          generateFelixData : {method : 'POST', url : 'app/rest/repartition/generateFelixData'},
-          checkIfDone : {method : 'GET', url : 'app/rest/repartition/fichierfelix/{numProg}'}
+          findByNumProg : {method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_COMMON +  'app/rest/programme/numProg/{numProg}'},
+          validateFelixData : {method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/repartition/validateFelixData/{numProg}'},
+          generateFelixData : {method : 'POST', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/repartition/generateFelixData'},
+          checkIfDone : {method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/repartition/fichierfelix/{numProg}'}
         }
         this.resource= this.$resource('', {}, customActions);
 

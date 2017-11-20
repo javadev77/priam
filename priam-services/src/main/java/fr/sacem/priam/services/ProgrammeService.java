@@ -2,7 +2,7 @@ package fr.sacem.priam.services;
 
 import fr.sacem.priam.common.TypeUtilisationEnum;
 import fr.sacem.priam.model.dao.jpa.*;
-import fr.sacem.priam.model.dao.jpa.cp.FichierCPDao;
+import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeCPDao;
 import fr.sacem.priam.model.domain.*;
 import fr.sacem.priam.model.domain.criteria.ProgrammeCriteria;
@@ -43,7 +43,7 @@ public class ProgrammeService {
 	ProgrammeCPDao programmeCPDao;
 	
 	@Autowired
-	FichierCPDao fichierCPDao;
+	FichierDao fichierDao;
 	
 	@Autowired
 	ParamAppliDao paramAppliDao;
@@ -164,7 +164,7 @@ public class ProgrammeService {
 	@Transactional
 	public void toutDeaffecter(String numProg, String user) {
 		LOG.info("Debut :Deaffecter les fichiers lies au programme (" + numProg + ")");
-		fichierCPDao.clearSelectedFichiers(numProg, Status.CHARGEMENT_OK);
+		fichierDao.clearSelectedFichiers(numProg, Status.CHARGEMENT_OK);
 		Programme programme = programmeCPDao.findOne(numProg);
 		programme.setStatut(StatutProgramme.CREE);
 		programme.setUsermaj(user);

@@ -54,7 +54,7 @@
         const customActions = {
           findLigneProgrammeByProgramme: {
             method: 'POST',
-            url: 'app/rest/ligneProgramme/search'
+            url: process.env.CONTEXT_ROOT_PRIAM_CP + 'app/rest/ligneProgramme/search'
           }
         }
         this.resource = this.$resource('', {}, customActions);

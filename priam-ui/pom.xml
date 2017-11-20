@@ -68,20 +68,10 @@
       <version>2.4.0</version>
     </dependency>
 
-      <dependency>
+    <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
         <version>2.4</version>
-      </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-integration</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.springframework.integration</groupId>
-      <artifactId>spring-integration-sftp</artifactId>
-      <scope>compile</scope>
     </dependency>
 
     <dependency>
@@ -99,6 +89,12 @@
     <dependency>
       <groupId>fr.sacem.priam</groupId>
       <artifactId>priam-common</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>fr.sacem.priam</groupId>
+      <artifactId>priam-security</artifactId>
       <version>${project.version}</version>
     </dependency>
 

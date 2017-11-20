@@ -623,10 +623,10 @@
     created(){
 
       const customActions = {
-          searchProgramme : {method : 'GET', url :'app/rest/programme/nom/{nom}'},
-          findByNumProg : {method : 'GET', url : 'app/rest/programme/numProg/{numProg}'},
-          updateProgramme : {method: 'PUT', url : 'app/rest/programme/'},
-          searchAllProgramme : {method : 'POST', url :'app/rest/programme/search?page={page}&size={size}&sort={sort},{dir}'}
+          searchProgramme : {method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/programme/nom/{nom}'},
+          findByNumProg : {method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/programme/numProg/{numProg}'},
+          updateProgramme : {method: 'PUT', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/programme/'},
+          searchAllProgramme : {method : 'POST', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/programme/search?page={page}&size={size}&sort={sort},{dir}'}
       }
       this.resource= this.$resource('', {}, customActions);
 

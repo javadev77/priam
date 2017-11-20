@@ -56,7 +56,7 @@
     created() {
 
       const customActions = {
-        findLogByFichier : {method : 'GET', url : 'app/rest/chargement/{idFichier}/log'},
+        findLogByFichier : {method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/chargement/{idFichier}/log'},
       }
       this.resource= this.$resource('', {}, customActions);
 

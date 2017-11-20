@@ -6,11 +6,10 @@ import VueResource from 'vue-resource';
 
 
 Vue.use(VueResource);
-Vue.http.options.root = process.env.CONTEXT_ROOT;
+
 
 if(process.env.DEBUG_MODE) {
   // Only for DEV MODE
-  Vue.http.options.root= process.env.CONTEXT_ROOT;
   Vue.http.headers.common['Access-Control-Allow-Origin'] = 'http://localhost:8085';
   Vue.http.headers.common['Access-Control-Request-Method'] = '*';
 
@@ -19,4 +18,6 @@ if(process.env.DEBUG_MODE) {
     next();
   });
 
+} else {
+  //Vue.http.options.root = process.env.CONTEXT_ROOT;
 }
