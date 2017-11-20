@@ -7,7 +7,7 @@
             <Pattern>[%p] %c - %m%n</Pattern>
         </encoder>
     </appender>
-    <logger name="fr.sacem.priam.rest.api.copieprivee" level="DEBUG"/>
+    <logger name="fr.sacem.priam.rest.api.cms" level="DEBUG"/>
     <logger name="org.hibernate" level="ERROR"/>
     <logger name="org.apache.catalina" level="ERROR"/>
     <logger name="org.springframework" level="ERROR"/>
