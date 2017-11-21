@@ -8,12 +8,12 @@ var path = require('path')
 var chalk = require('chalk')
 var webpack = require('webpack')
 var config = require('../config')
-var webpackConfig = require('./webpack.re7.conf')
+var webpackConfig = require('./webpack.devsacem.conf')
 
-var spinner = ora('building for re7 sacem...')
+var spinner = ora('building for DEV sacem...')
 spinner.start()
 
-rm(path.join(config.re7.assetsRoot, config.re7.assetsSubDirectory), err => {
+rm(path.join(config.devsacem.assetsRoot, config.devsacem.assetsSubDirectory), err => {
   if (err) throw err
   webpack(webpackConfig, function (err, stats) {
     spinner.stop()

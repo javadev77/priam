@@ -20,4 +20,12 @@ if(process.env.DEBUG_MODE) {
 
 } else {
   //Vue.http.options.root = process.env.CONTEXT_ROOT;
+  // Only for DEV MODE
+  Vue.http.headers.common['Access-Control-Allow-Origin'] = 'http://dev.sacem.fr';
+  Vue.http.headers.common['Access-Control-Request-Method'] = '*';
+
+  Vue.http.interceptors.push((request, next) => {
+    request.credentials = true;
+    next();
+  });
 }

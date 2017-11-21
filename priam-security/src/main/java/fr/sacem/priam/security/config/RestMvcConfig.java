@@ -56,7 +56,7 @@ public class RestMvcConfig extends WebMvcConfigurerAdapter {
         if("dev".equalsIgnoreCase(webappMode)) {
             registry.addMapping("/app/rest/**")
                     .allowedMethods("PUT", "DELETE", "GET", "POST", "OPTIONS")
-                    .allowedOrigins(vuejsDevServerUrl);
+                    .allowedOrigins("*");
         }
 
     }
