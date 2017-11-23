@@ -175,7 +175,7 @@ public class ProgrammeService {
 	}
 
 	@Transactional
-	public List<String> findAllNomProgByCriteria(){
+	public List<String> findAllNomProgByCriteria() {
 		return programmeViewDao.findAllNomProgByCriteria();
 	}
 

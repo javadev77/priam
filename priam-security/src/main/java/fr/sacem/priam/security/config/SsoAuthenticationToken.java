@@ -75,6 +75,7 @@ public class SsoAuthenticationToken extends AbstractAuthenticationToken {
         displayName = value == null ? "" : String.valueOf(value);
       }
       this.user = new UserDTO(userProfile.getUserId());
+      this.user.setRoleList(userProfile.getRoleList());
       this.user.setDisplayName(displayName);
       for(GrantedAuthority ga : getAuthorities()){
         RoleRight r = ((SsoAuthority)ga).getRight();

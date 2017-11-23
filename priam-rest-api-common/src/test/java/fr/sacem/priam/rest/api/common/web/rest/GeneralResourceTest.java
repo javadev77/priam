@@ -42,7 +42,8 @@ public class GeneralResourceTest extends RestResourceTest {
   public void getAllLibelleFamille() throws Exception {
       mockMvc.perform(
         get("/app/rest/general/libellefamille")
-          .contentType(contentType))
+          .contentType(contentType)
+          )
         .andExpect(status().isOk())
         .andExpect(jsonPath("$[0].id", is("COPIEPRIV")))
         .andExpect(jsonPath("$[0].value", is("Copie Privée")));

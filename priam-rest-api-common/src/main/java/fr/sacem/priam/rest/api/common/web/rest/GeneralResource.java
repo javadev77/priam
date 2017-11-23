@@ -66,23 +66,26 @@ public class GeneralResource {
     @RequestMapping(value = "/libellefamille",
                     method = RequestMethod.GET,
                     produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, String> [] getAllLibelleFamille() {
-      String lang = GlobalConstants.FR_LANG;
-      List<SareftjLibfamiltyputil> labels = libelleFamilleDao.findByLang(lang, FamillePriam.getCodes());
-      List<Map<String, String>> result = new ArrayList<>(labels.size());
+    public Map<String, String> [] getAllLibelleFamille(UserDTO currentUser) {
 
-      labels.forEach(libelle -> result.add(createStringMap(libelle.getCode(), libelle.getLibelle())));
+        String lang = GlobalConstants.FR_LANG;
+        List<String> familles = FamillePriam.authorizedFamillesByRole(currentUser.getRoleList());
+        List<SareftjLibfamiltyputil> labels = libelleFamilleDao.findByLang(lang, familles);
+        List<Map<String, String>> result = new ArrayList<>(labels.size());
+
+          labels.forEach(libelle -> result.add(createStringMap(libelle.getCode(), libelle.getLibelle())));
 
 
-      return result.toArray(new Map[0]);
+        return result.toArray(new Map[0]);
     }
 
     @RequestMapping(value = "/libelletypeutil",
                     method = RequestMethod.GET,
                     produces = MediaType.APPLICATION_JSON_VALUE)
-    public  Map<String, String> [] getAllLibelleTypeUtilisation() {
-      String lang = GlobalConstants.FR_LANG;
-      List<SareftjLibtyputil> labels = sareftjLibtyputilDao.findByCodeAndLang(TypeUtilisationPriam.getCodes(), lang);
+    public  Map<String, String> [] getAllLibelleTypeUtilisation(UserDTO currentUser) {
+        String lang = GlobalConstants.FR_LANG;
+        List<String> typeUtilisations = TypeUtilisationPriam.authorizedTypeUtilisationsByRole(currentUser.getRoleList());
+        List<SareftjLibtyputil> labels = sareftjLibtyputilDao.findByCodeAndLang(typeUtilisations, lang);
 
         List<Map<String, String>> result = new ArrayList<>(labels.size());
         labels.forEach(libelle -> result.add(createStringMap(libelle.getCode(), libelle.getLibelle())));
@@ -93,17 +96,19 @@ public class GeneralResource {
     @RequestMapping(value = "/familleByTypeUil",
                     method = RequestMethod.GET,
                     produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Map<String, String> []> getFamilleByTypeUtilisation() {
-        List<SareftrFamiltyputil> all = sareftrFamiltyputilDao.findByFamilles(FamillePriam.getCodes());
+    public Map<String, Map<String, String> []> getFamilleByTypeUtilisation(UserDTO currentUser) {
+        List<String> familles = FamillePriam.authorizedFamillesByRole(currentUser.getRoleList());
+        List<SareftrFamiltyputil> all = sareftrFamiltyputilDao.findByFamilles(familles);
 
         Map<String, Map<String, String> []> result = new HashMap<>();
 
         String lang = GlobalConstants.FR_LANG;
+        List<String> typeUtilisations = TypeUtilisationPriam.authorizedTypeUtilisationsByRole(currentUser.getRoleList());
         all.forEach( famille -> {
             List<String> collect = famille.getSareftrTyputils()
                                      .stream()
                                       .map(s -> s.getCode())
-                                     .filter(in(TypeUtilisationPriam.getCodes()))
+                                     .filter(in(typeUtilisations))
                                      .collect(Collectors.toList());
             result.put(famille.getCode(), getLibelleTypeUtilisationByCodes(collect, lang));
         });
@@ -242,8 +247,6 @@ public class GeneralResource {
     consumes = MediaType.APPLICATION_JSON_VALUE,
     produces = MediaType.APPLICATION_JSON_VALUE)
   public void setParametrageByUser(UserDTO currentUser, @RequestBody Map<String, String> parametres) {
-
-
     for (Map.Entry<String, String> entry: parametres.entrySet()) {
       parametrageService.save(new Parametrage( entry.getValue(), entry.getKey(), currentUser.getUserId()));
     }

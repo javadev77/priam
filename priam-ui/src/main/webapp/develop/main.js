@@ -1,12 +1,12 @@
+import './utils'
 import Vue from 'vue'
 import vueShortkey from 'vue-shortkey'
-import { App } from './app';
-import router from './router';
-import store from './store';
-import './utils'
 import './filters'
 import './validators'
 import './httpConfig'
+import { App } from './app';
+import router from './router';
+import store from './store';
 
 Vue.use(vueShortkey);
 
@@ -30,6 +30,8 @@ function bootstrapIfReady(type) {
      });
   }
 }
+
+
 /*********************************************
  * ******** Fetch init Data only Once ********
  * ********************************************/

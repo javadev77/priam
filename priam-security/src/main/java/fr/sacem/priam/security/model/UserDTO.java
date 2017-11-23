@@ -1,9 +1,7 @@
 package fr.sacem.priam.security.model;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by embouazzar on 23/08/2017.
@@ -11,22 +9,31 @@ import java.util.Set;
 public class UserDTO implements Serializable{
 
   public static final UserDTO GUEST = new UserDTO(){
+
     @Override
     public void setDisplayName(String displayName) {}
 
     @Override
     public void setRights(Set<String> rights) {}
+
     @Override
     public String getDisplayName() {
       return "Guest";
     }
+
     @Override
     public String getUserId() {
       return "guest";
     }
+
     @Override
     public Set<String> getRights() {
       return Collections.emptySet();
+    }
+
+    @Override
+    public List<String> getRoleList() {
+      return Arrays.asList("Gest_CP");
     }
   };
 
@@ -35,6 +42,9 @@ public class UserDTO implements Serializable{
     private Set<String> rights;
 
     private String displayName;
+
+    private List<String> roleList;
+
 
     public UserDTO() {
     }
@@ -64,7 +74,15 @@ public class UserDTO implements Serializable{
       return displayName;
     }
 
-    @Override
+    public List<String> getRoleList() {
+      return roleList;
+    }
+
+  public void setRoleList(List<String> roleList) {
+    this.roleList = roleList;
+  }
+
+  @Override
     public boolean equals(Object o) {
       if (this == o) return true;
       if (o == null || getClass() != o.getClass()) return false;

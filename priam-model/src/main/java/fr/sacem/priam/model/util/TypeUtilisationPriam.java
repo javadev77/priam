@@ -33,4 +33,23 @@ public enum TypeUtilisationPriam {
 	  
 	  return codes;
     }
+
+    public static List<String> authorizedTypeUtilisationsByRole(List<String> roleList) {
+        List<String> codes = new ArrayList<>();
+        if(roleList != null && !roleList.isEmpty()) {
+            for(String role : roleList) {
+                switch (role) {
+                    case "Gest_CP" :
+                        codes.add(COPIE_PRIVEE_SONORE_PHONO.getCode());
+                        codes.add(COPIE_PRIVEE_SONORE_RADIO.getCode());
+                        break;
+                    case "Gest_CMS" :
+                        codes.add(SONOANT.getCode());
+                        break;
+                }
+            }
+        }
+
+        return codes;
+    }
 }

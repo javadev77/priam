@@ -20,6 +20,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -58,7 +59,8 @@ public class SecurityRestConfiguration extends WebSecurityConfigurerAdapter {
       .logoutSuccessHandler(logoutSuccessHandler())
       .and()
       .addFilter(ssoPreAuthenticatedProcessingFilter())
-      .sessionManagement().maximumSessions(10).sessionRegistry(sessionRegistry()).and().sessionFixation().migrateSession()
+      .sessionManagement()//.maximumSessions(10).sessionRegistry(sessionRegistry()).and().sessionFixation().migrateSession()
+      .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
       .and()
       .authorizeRequests()
       .accessDecisionManager(affirmativeBased())

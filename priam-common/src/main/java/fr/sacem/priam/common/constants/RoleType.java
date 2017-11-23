@@ -7,4 +7,6 @@ public enum RoleType {
     ADM, // Administrateur fonctionnel
     GST, // Gestionnaire
     INV, // Invité
+    Gest_CP,
+    Gest_CMS
 }
