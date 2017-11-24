@@ -3,6 +3,12 @@ package fr.sacem.priam.security.model;
 import java.io.Serializable;
 import java.util.*;
 
+import static fr.sacem.priam.model.util.FamillePriam.CMS;
+import static fr.sacem.priam.model.util.FamillePriam.COPIE_PRIVEE;
+import static fr.sacem.priam.model.util.TypeUtilisationPriam.SONOANT;
+import static fr.sacem.priam.model.util.TypeUtilisationPriam.COPIE_PRIVEE_SONORE_PHONO;
+import static fr.sacem.priam.model.util.TypeUtilisationPriam.COPIE_PRIVEE_SONORE_RADIO;
+
 /**
  * Created by embouazzar on 23/08/2017.
  */
@@ -78,11 +84,51 @@ public class UserDTO implements Serializable{
       return roleList;
     }
 
-  public void setRoleList(List<String> roleList) {
-    this.roleList = roleList;
+    public void setRoleList(List<String> roleList) {
+
+      this.roleList = roleList;
+    }
+
+    public List<String> authorizedTypeUtilisations() {
+      List<String> codes = new ArrayList<>();
+      List<String> roleList = getRoleList();
+      if(roleList != null && !roleList.isEmpty()) {
+        for(String role : roleList) {
+          switch (role) {
+            case "Gest_CP" :
+              codes.add(COPIE_PRIVEE_SONORE_PHONO.getCode());
+              codes.add(COPIE_PRIVEE_SONORE_RADIO.getCode());
+              break;
+            case "Gest_CMS" :
+              codes.add(SONOANT.getCode());
+              break;
+          }
+        }
+      }
+
+      return codes;
+    }
+
+  public List<String> authorizedFamilles() {
+    List<String> codes = new ArrayList<>();
+    List<String> roleList = getRoleList();
+    if(roleList != null && !roleList.isEmpty()) {
+      for(String role : roleList) {
+        switch (role) {
+          case "Gest_CP" :
+            codes.add(COPIE_PRIVEE.getCode());
+            break;
+          case "Gest_CMS" :
+            codes.add(CMS.getCode());
+            break;
+        }
+      }
+    }
+
+    return codes;
   }
 
-  @Override
+    @Override
     public boolean equals(Object o) {
       if (this == o) return true;
       if (o == null || getClass() != o.getClass()) return false;

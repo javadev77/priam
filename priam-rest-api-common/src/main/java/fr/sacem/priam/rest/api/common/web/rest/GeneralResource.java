@@ -5,9 +5,7 @@ import com.google.common.collect.Maps;
 import fr.sacem.priam.model.dao.jpa.*;
 import fr.sacem.priam.model.domain.Parametrage;
 import fr.sacem.priam.model.domain.saref.*;
-import fr.sacem.priam.model.util.FamillePriam;
 import fr.sacem.priam.model.util.GlobalConstants;
-import fr.sacem.priam.model.util.TypeUtilisationPriam;
 import fr.sacem.priam.security.model.UserDTO;
 import fr.sacem.priam.services.ParametrageService;
 import org.apache.commons.lang3.StringUtils;
@@ -69,7 +67,7 @@ public class GeneralResource {
     public Map<String, String> [] getAllLibelleFamille(UserDTO currentUser) {
 
         String lang = GlobalConstants.FR_LANG;
-        List<String> familles = FamillePriam.authorizedFamillesByRole(currentUser.getRoleList());
+        List<String> familles = currentUser.authorizedFamilles();
         List<SareftjLibfamiltyputil> labels = libelleFamilleDao.findByLang(lang, familles);
         List<Map<String, String>> result = new ArrayList<>(labels.size());
 
@@ -84,7 +82,7 @@ public class GeneralResource {
                     produces = MediaType.APPLICATION_JSON_VALUE)
     public  Map<String, String> [] getAllLibelleTypeUtilisation(UserDTO currentUser) {
         String lang = GlobalConstants.FR_LANG;
-        List<String> typeUtilisations = TypeUtilisationPriam.authorizedTypeUtilisationsByRole(currentUser.getRoleList());
+        List<String> typeUtilisations = currentUser.authorizedTypeUtilisations();
         List<SareftjLibtyputil> labels = sareftjLibtyputilDao.findByCodeAndLang(typeUtilisations, lang);
 
         List<Map<String, String>> result = new ArrayList<>(labels.size());
@@ -97,13 +95,13 @@ public class GeneralResource {
                     method = RequestMethod.GET,
                     produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Map<String, String> []> getFamilleByTypeUtilisation(UserDTO currentUser) {
-        List<String> familles = FamillePriam.authorizedFamillesByRole(currentUser.getRoleList());
+        List<String> familles = currentUser.authorizedFamilles();
         List<SareftrFamiltyputil> all = sareftrFamiltyputilDao.findByFamilles(familles);
 
         Map<String, Map<String, String> []> result = new HashMap<>();
 
         String lang = GlobalConstants.FR_LANG;
-        List<String> typeUtilisations = TypeUtilisationPriam.authorizedTypeUtilisationsByRole(currentUser.getRoleList());
+        List<String> typeUtilisations = currentUser.authorizedTypeUtilisations();
         all.forEach( famille -> {
             List<String> collect = famille.getSareftrTyputils()
                                      .stream()

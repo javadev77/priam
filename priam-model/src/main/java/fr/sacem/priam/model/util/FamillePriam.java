@@ -30,22 +30,4 @@ public enum  FamillePriam {
 	  
 	  return codes;
     }
-
-    public static List<String> authorizedFamillesByRole(List<String> roleList) {
-        List<String> codes = new ArrayList<>();
-        if(roleList != null && !roleList.isEmpty()) {
-            for(String role : roleList) {
-                switch (role) {
-                    case "Gest_CP" :
-                        codes.add(COPIE_PRIVEE.getCode());
-                        break;
-                    case "Gest_CMS" :
-                        codes.add(CMS.getCode());
-                        break;
-                }
-            }
-        }
-
-        return codes;
-    }
 }
