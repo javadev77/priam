@@ -7,6 +7,7 @@ import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.dto.FileDto;
 import fr.sacem.priam.rest.api.common.web.rest.dto.AffectationCriteria;
 import fr.sacem.priam.rest.api.common.web.rest.dto.InputChgtCriteria;
+import fr.sacem.priam.security.model.UserDTO;
 import fr.sacem.priam.services.FichierService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,45 +41,44 @@ public class ChargementResource {
                     method = RequestMethod.POST,
                     consumes = MediaType.APPLICATION_JSON_VALUE,
                     produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<FileDto> rechercheFichiers(@RequestBody InputChgtCriteria input, Pageable pageable) {
+    public Page<FileDto> rechercheFichiers(@RequestBody InputChgtCriteria input, UserDTO currentUser, Pageable pageable) {
         List<Status> status = statusCriterion(input);
 
-        String codeFamille = familleCriterion(input);
+        List<String> codeFamille = familleCriterion(input, currentUser);
 
-        String codeTypeUtil = typeUtilisationCriterion(input);
+        List<String> codeTypeUtil = typeUtilisationCriterion(input, currentUser);
 
         return fichierDao.findAllFichiersByCriteria(codeFamille, codeTypeUtil, status,pageable);
     }
 
-  private String familleCriterion(@RequestBody InputChgtCriteria input) {
-    String codeFamille = null;
-    if(!"ALL".equals(input.getFamilleCode())) {
-        codeFamille = input.getFamilleCode();
+    private List<String> familleCriterion(@RequestBody InputChgtCriteria input, UserDTO currentUser) {
+        if(!"ALL".equals(input.getFamilleCode())) {
+            return Lists.newArrayList(input.getFamilleCode());
+        } else {
+            return currentUser.authorizedFamilles();
+        }
     }
-    return codeFamille;
-  }
 
     @RequestMapping(value = "/allFichiers",
                     method = RequestMethod.POST,
                     consumes = MediaType.APPLICATION_JSON_VALUE,
                     produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<FileDto> findFichiersAffectes(@RequestBody AffectationCriteria input) {
+    public List<FileDto> findFichiersAffectes(@RequestBody AffectationCriteria input, UserDTO currentUser) {
         logger.info("findFichiersAffectes() - numProg=[" + input.getNumProg() + "]");
         List<Status> status = statusCriterion(input);
-        String codeFamille = familleCriterion(input);
-        String codeTypeUtil = typeUtilisationCriterion(input);
+        List<String> codeFamille = familleCriterion(input, currentUser);
+        List<String> codeTypeUtil = typeUtilisationCriterion(input, currentUser);
         String numProg = input.getNumProg();
 
         return fichierDao.findFichiersAffectes(codeFamille, codeTypeUtil, status, numProg);
 
     }
 
-  private String typeUtilisationCriterion(@RequestBody InputChgtCriteria input) {
-    String codeTypeUtil = null;
+  private List<String> typeUtilisationCriterion(@RequestBody InputChgtCriteria input, UserDTO currentUser) {
     if(!"ALL".equals(input.getTypeUtilisationCode())) {
-      codeTypeUtil = input.getTypeUtilisationCode();
+      return Lists.newArrayList(input.getTypeUtilisationCode());
     }
-    return codeTypeUtil;
+    return currentUser.authorizedTypeUtilisations();
   }
 
   private List<Status> statusCriterion(@RequestBody InputChgtCriteria input) {

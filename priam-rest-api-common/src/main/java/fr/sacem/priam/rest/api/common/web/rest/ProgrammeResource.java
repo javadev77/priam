@@ -1,6 +1,7 @@
 package fr.sacem.priam.rest.api.common.web.rest;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
 import fr.sacem.priam.model.domain.Programme;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -40,7 +42,7 @@ public class ProgrammeResource {
                     method = RequestMethod.POST,
                     consumes = MediaType.APPLICATION_JSON_VALUE,
                     produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<ProgrammeDto> rechercheProgramme(@RequestBody ProgrammeCritereRecherche input, Pageable pageable) {
+    public Page<ProgrammeDto> rechercheProgramme(@RequestBody ProgrammeCritereRecherche input, UserDTO currentUser, Pageable pageable) {
         logger.info("input criteria : " + input);
         ProgrammeCriteria criteria = new ProgrammeCriteria();
 
@@ -52,12 +54,16 @@ public class ProgrammeResource {
 
         String codeFamille = input.getFamille();
         if (codeFamille != null && !"ALL".equals(codeFamille)) {
-          criteria.setSareftrFamiltyputil(codeFamille);
+          criteria.setSareftrFamiltyputil(Lists.newArrayList(codeFamille));
+        } else {
+            criteria.setSareftrFamiltyputil(currentUser.authorizedFamilles());
         }
 
         String codeTypeUtil = input.getTypeUtilisation();
         if (codeTypeUtil != null && !"ALL".equals(codeTypeUtil)) {
-          criteria.setTypeUtilisation(codeTypeUtil);
+          criteria.setTypeUtilisation(Lists.newArrayList(codeFamille));
+        } else {
+            criteria.setTypeUtilisation(currentUser.authorizedTypeUtilisations());
         }
 
         criteria.setNumProg(Strings.emptyToNull(input.getNumProg()));

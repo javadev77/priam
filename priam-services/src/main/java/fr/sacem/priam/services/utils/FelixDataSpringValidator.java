@@ -21,35 +21,35 @@ public class FelixDataSpringValidator implements Validator {
     
     @Override
     public void validate(Object o, Errors errors) {
-	  String cdeTypUtil = ((FelixData)o).getCdeTypUtil();
-   
-	  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeCisac", "error.cdeCisac");
-	  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeTer", "error.cdeTer");
-	  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "rionEffet", "error.rionEffet");
-	  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeFamilTypUtil", "error.cdeFamilTypUtil");
-	  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "numProg", "error.numProg");
-	  //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "keyLigPenel", "error.keyLigPenel");
-	  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeUtil", "error.cdeUtil");
-	  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeTypUtil", "error.cdeTypUtil");
-	  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeModFac", "error.cdeModFac");
-	  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeTypProg", "error.cdeTypProg");
-	  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeCompl", "error.cdeCompl");
-	  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "libProg", "error.libProg");
-	  
-	  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "datDbtProg", "error.datDbtProg");
-	  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "datFinProg", "error.datFinProg");
-	  
-	  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeTypIde12", "error.cdeTypIde12");
-	  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "ide12", "error.ide12");
-   
-	  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "nbrDif", "error.nbrDif");
-	  
-	  if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode().equalsIgnoreCase(cdeTypUtil))  {
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "durDif", "error.durDif");
-	  
-	  } else if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_PHONO.getCode().equalsIgnoreCase(cdeTypUtil)) {
-	  
-	  }
+		  String cdeTypUtil = ((FelixData)o).getCdeTypUtil();
+
+		  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeCisac", "error.cdeCisac");
+		  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeTer", "error.cdeTer");
+		  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "rionEffet", "error.rionEffet");
+		  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeFamilTypUtil", "error.cdeFamilTypUtil");
+		  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "numProg", "error.numProg");
+		  //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "keyLigPenel", "error.keyLigPenel");
+		  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeUtil", "error.cdeUtil");
+		  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeTypUtil", "error.cdeTypUtil");
+		  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeModFac", "error.cdeModFac");
+		  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeTypProg", "error.cdeTypProg");
+		  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeCompl", "error.cdeCompl");
+		  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "libProg", "error.libProg");
+
+		  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "datDbtProg", "error.datDbtProg");
+		  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "datFinProg", "error.datFinProg");
+
+		  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeTypIde12", "error.cdeTypIde12");
+		  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "ide12", "error.ide12");
+
+		  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "nbrDif", "error.nbrDif");
+
+		  if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode().equalsIgnoreCase(cdeTypUtil))  {
+			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "durDif", "error.durDif");
+
+		  } else if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_PHONO.getCode().equalsIgnoreCase(cdeTypUtil)) {
+
+		  }
 	  
 	  
     }

@@ -13,8 +13,8 @@ import java.util.List;
 public class ProgrammeCriteria {
     private String numProg;
     private String nom;
-    private String sareftrFamiltyputil;
-    private String typeUtilisation;
+    private List<String> sareftrFamiltyputil;
+    private List<String> typeUtilisation;
     private Integer sareftrRionTheorique;
     private Date dateCreationDebut;
     private Date dateCreationFin;
@@ -42,19 +42,19 @@ public class ProgrammeCriteria {
         this.nom = nom;
     }
     
-    public String getSareftrFamiltyputil() {
+    public List<String> getSareftrFamiltyputil() {
         return sareftrFamiltyputil;
     }
     
-    public void setSareftrFamiltyputil(String sareftrFamiltyputil) {
+    public void setSareftrFamiltyputil(List<String> sareftrFamiltyputil) {
         this.sareftrFamiltyputil = sareftrFamiltyputil;
     }
     
-    public String getTypeUtilisation() {
+    public List<String> getTypeUtilisation() {
         return typeUtilisation;
     }
     
-    public void setTypeUtilisation(String typeUtilisation) {
+    public void setTypeUtilisation(List<String> typeUtilisation) {
         this.typeUtilisation = typeUtilisation;
     }
     

@@ -1,5 +1,6 @@
 package fr.sacem.priam.model.dao.jpa;
 
+import com.google.common.collect.Lists;
 import fr.sacem.priam.model.dao.JpaConfigurationTest;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeCPDao;
 import fr.sacem.priam.model.domain.Fichier;
@@ -120,7 +121,7 @@ public class FichierDaoTest {
     @Transactional
     public void should_find_all_fichiers_by_famille_COPIEPRIVEE() {
         List<Status> status = Arrays.asList(Status.values());
-        String copiepriv = "COPIEPRIV";
+        List<String> copiepriv = Lists.newArrayList("COPIEPRIV");
         Page<FileDto> allFichiersByStatus = fichierDao.findAllFichiersByCriteria(copiepriv, null, status, PAGEABLE);
         
         assertThat(allFichiersByStatus).isNotNull().isNotEmpty();
@@ -128,7 +129,7 @@ public class FichierDaoTest {
     
         List<String> typeUtilCode = Arrays.asList("COPRIVSON", "CPRIVSONPH", "CPRIVAUDV", "CPRIVSONRD", "CPRIVAUDPL");
         allFichiersByStatus.getContent().forEach( fileDto -> {
-            assertThat(fileDto.getFamille()).isEqualTo(copiepriv);
+            assertThat(fileDto.getFamille()).isEqualTo("COPIEPRIV");
             assertThat(fileDto.getTypeUtilisation()).isIn(typeUtilCode);
         });
     

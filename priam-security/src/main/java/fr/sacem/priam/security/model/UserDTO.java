@@ -1,5 +1,7 @@
 package fr.sacem.priam.security.model;
 
+import com.google.common.collect.Lists;
+
 import java.io.Serializable;
 import java.util.*;
 
@@ -14,34 +16,38 @@ import static fr.sacem.priam.model.util.TypeUtilisationPriam.COPIE_PRIVEE_SONORE
  */
 public class UserDTO implements Serializable{
 
-  public static final UserDTO GUEST = new UserDTO(){
+    public static final UserDTO GUEST = new UserDTO(){
 
-    @Override
-    public void setDisplayName(String displayName) {}
+      @Override
+      public void setDisplayName(String displayName) {}
 
-    @Override
-    public void setRights(Set<String> rights) {}
+      @Override
+      public void setRights(Set<String> rights) {}
 
-    @Override
-    public String getDisplayName() {
-      return "Guest";
-    }
+      @Override
+      public String getDisplayName() {
+        return "Guest";
+      }
 
-    @Override
-    public String getUserId() {
-      return "guest";
-    }
+      @Override
+      public String getUserId() {
+        return "guest";
+      }
 
-    @Override
-    public Set<String> getRights() {
-      return Collections.emptySet();
-    }
+      @Override
+      public Set<String> getRights() {
+        return Collections.emptySet();
+      }
 
-    @Override
-    public List<String> getRoleList() {
-      return Arrays.asList("Gest_CP");
-    }
-  };
+      @Override
+      public List<String> getRoleList() {
+        return Lists.newArrayList(ROLE_GEST_CP, ROLE_GEST_CMS);
+      }
+    };
+
+
+    public static final String ROLE_GEST_CP = "Gest_CP";
+    public static final String ROLE_GEST_CMS = "Gest_CMS";
 
     private String userId;
 
@@ -95,11 +101,11 @@ public class UserDTO implements Serializable{
       if(roleList != null && !roleList.isEmpty()) {
         for(String role : roleList) {
           switch (role) {
-            case "Gest_CP" :
+            case ROLE_GEST_CP:
               codes.add(COPIE_PRIVEE_SONORE_PHONO.getCode());
               codes.add(COPIE_PRIVEE_SONORE_RADIO.getCode());
               break;
-            case "Gest_CMS" :
+            case ROLE_GEST_CMS:
               codes.add(SONOANT.getCode());
               break;
           }
@@ -115,10 +121,10 @@ public class UserDTO implements Serializable{
     if(roleList != null && !roleList.isEmpty()) {
       for(String role : roleList) {
         switch (role) {
-          case "Gest_CP" :
+          case ROLE_GEST_CP :
             codes.add(COPIE_PRIVEE.getCode());
             break;
-          case "Gest_CMS" :
+          case ROLE_GEST_CMS :
             codes.add(CMS.getCode());
             break;
         }
