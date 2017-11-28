@@ -28,8 +28,8 @@ public interface FichierDao extends JpaRepository<Fichier, Long> {
     @Query("SELECT DISTINCT new fr.sacem.priam.model.domain.dto.FileDto(f.id, f.nomFichier, fam.code, typu.code, f.dateDebutChargt, f.dateFinChargt, f.nbLignes, f.statut) " +
             "FROM Fichier AS f LEFT JOIN f.famille AS fam LEFT JOIN f.typeUtilisation AS typu " +
             "WHERE f.statut IN (:status) " +
-            "AND (:familleCode IS NULL OR fam.code IN (:familleCode)) " +
-            "AND (:typeUtilisationCode IS NULL OR typu.code IN (:typeUtilisationCode)) " +
+            "AND (fam.code IN (:familleCode)) " +
+            "AND (typu.code IN (:typeUtilisationCode)) " +
             "AND f.automatique = true ")
     Page<FileDto> findAllFichiersByCriteria(@Param("familleCode") List<String> familleCode, @Param("typeUtilisationCode") List<String> typeUtilisationCode, @Param("status") List<Status> status, Pageable pageable);
     
@@ -55,9 +55,9 @@ public interface FichierDao extends JpaRepository<Fichier, Long> {
     @Query("SELECT DISTINCT new fr.sacem.priam.model.domain.dto.FileDto(f.id, f.nomFichier, fam.code, typu.code, f.dateDebutChargt, f.dateFinChargt, f.nbLignes, f.statut) " +
         "FROM Fichier AS f JOIN f.famille AS fam JOIN f.typeUtilisation AS typu " +
         "WHERE f.statut IN (:status) " +
-        "AND (:familleCode IS NULL OR fam.code IN (:familleCode)) " +
+        "AND (fam.code IN (:familleCode)) " +
         "AND (f.programme.numProg IS NULL OR f.programme.numProg = :numProg) " +
-        "AND (:typeUtilisationCode IS NULL OR typu.code IN (:typeUtilisationCode)) " +
+        "AND (typu.code IN (:typeUtilisationCode)) " +
         "AND f.automatique = true " +
         "ORDER BY f.dateFinChargt DESC ")
     List<FileDto> findFichiersAffectes(@Param("familleCode") List<String> familleCode, @Param("typeUtilisationCode") List<String> typeUtilisationCode,

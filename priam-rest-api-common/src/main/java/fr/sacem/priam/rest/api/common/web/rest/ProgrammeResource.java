@@ -61,7 +61,7 @@ public class ProgrammeResource {
 
         String codeTypeUtil = input.getTypeUtilisation();
         if (codeTypeUtil != null && !"ALL".equals(codeTypeUtil)) {
-          criteria.setTypeUtilisation(Lists.newArrayList(codeFamille));
+          criteria.setTypeUtilisation(Lists.newArrayList(codeTypeUtil));
         } else {
             criteria.setTypeUtilisation(currentUser.authorizedTypeUtilisations());
         }

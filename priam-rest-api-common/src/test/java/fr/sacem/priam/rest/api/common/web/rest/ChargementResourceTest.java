@@ -42,8 +42,10 @@ public class ChargementResourceTest extends RestResourceTest {
     @Test
     public void find_fichiers_affectes_by_numprog() throws Exception {
       AffectationCriteria criteria = new AffectationCriteria();
-      criteria.setNumProg("PR170001");
+      criteria.setNumProg("170001");
       criteria.setStatutCode(newArrayList(Status.AFFECTE.name()));
+      criteria.setFamilleCode("ALL");
+      criteria.setTypeUtilisationCode("ALL");
 
       mockMvc.perform(
         post("/app/rest/chargement/allFichiers")

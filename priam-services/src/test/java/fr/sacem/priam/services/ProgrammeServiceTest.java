@@ -101,6 +101,9 @@ public class ProgrammeServiceTest {
 		
 		ProgrammeCriteria criteria = new ProgrammeCriteria();
 		criteria.setNumProg(NUM_PROG);
+
+		criteria.setSareftrFamiltyputil(Lists.newArrayList("COPIEPRIV"));
+		criteria.setTypeUtilisation(Lists.newArrayList("CPRIVSONPH"));
 		
 		Page<ProgrammeDto> programmeByCriteria = programmeService.findProgrammeByCriteria(criteria, pageable);
 		

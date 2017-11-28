@@ -6,6 +6,8 @@ import fr.sacem.priam.model.dao.jpa.cp.ProgrammeCPDao;
 import fr.sacem.priam.model.domain.Fichier;
 import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.dto.FileDto;
+import fr.sacem.priam.model.util.FamillePriam;
+import fr.sacem.priam.model.util.TypeUtilisationPriam;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -86,7 +88,8 @@ public class FichierDaoTest {
     @Transactional
     public void should_find_all_fichiers_affectes() {
         List<Status> status = Arrays.asList(Status.values());
-        List<FileDto> all = fichierDao.findFichiersAffectes(null, null, status, null);
+        List<FileDto> all = fichierDao.findFichiersAffectes(Lists.newArrayList("COPIEPRIV"),
+                Lists.newArrayList("COPRIVSON"), status, null);
     
         assertThat(all)
             .isNotNull()
@@ -108,11 +111,12 @@ public class FichierDaoTest {
     @Transactional
     public void should_find_all_fichiers_with_null_criteria() {
         List<Status> status = Arrays.asList(Status.values());
-        Page<FileDto> allFichiersByStatus = fichierDao.findAllFichiersByCriteria(null, null, status, PAGEABLE);
+        List<String> typeUtilCode = Arrays.asList("COPRIVSON", "CPRIVSONPH", "CPRIVAUDV", "CPRIVSONRD", "CPRIVAUDPL");
+        Page<FileDto> allFichiersByStatus = fichierDao.findAllFichiersByCriteria(Lists.newArrayList("COPIEPRIV"),
+                typeUtilCode, status, PAGEABLE);
         
         assertThat(allFichiersByStatus).isNotNull().isNotEmpty();
         assertThat(allFichiersByStatus.getTotalElements()).isEqualTo(fichierDao.findAll().size());
-        assertThat(allFichiersByStatus.getContent()).isNotEmpty().hasSize(3);
     
         
     }
@@ -122,12 +126,13 @@ public class FichierDaoTest {
     public void should_find_all_fichiers_by_famille_COPIEPRIVEE() {
         List<Status> status = Arrays.asList(Status.values());
         List<String> copiepriv = Lists.newArrayList("COPIEPRIV");
-        Page<FileDto> allFichiersByStatus = fichierDao.findAllFichiersByCriteria(copiepriv, null, status, PAGEABLE);
+
+        List<String> typeUtilCode = Arrays.asList("COPRIVSON", "CPRIVSONPH", "CPRIVAUDV", "CPRIVSONRD", "CPRIVAUDPL");
+        Page<FileDto> allFichiersByStatus = fichierDao.findAllFichiersByCriteria(copiepriv, typeUtilCode, status, PAGEABLE);
         
         assertThat(allFichiersByStatus).isNotNull().isNotEmpty();
         
-    
-        List<String> typeUtilCode = Arrays.asList("COPRIVSON", "CPRIVSONPH", "CPRIVAUDV", "CPRIVSONRD", "CPRIVAUDPL");
+
         allFichiersByStatus.getContent().forEach( fileDto -> {
             assertThat(fileDto.getFamille()).isEqualTo("COPIEPRIV");
             assertThat(fileDto.getTypeUtilisation()).isIn(typeUtilCode);

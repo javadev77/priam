@@ -160,6 +160,6 @@
     </dependencies>
 
     <build>
-        <finalName>priam-rest-api-common</finalName>
+        <finalName>priam-common</finalName>
     </build>
 </project>

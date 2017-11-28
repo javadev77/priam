@@ -31,8 +31,8 @@ public interface ProgrammeViewDao extends JpaRepository<ProgrammeView, String> {
                     "AND (pr.nom like %:nom% OR :nom IS NULL) " +
                     "AND (pr.dateCreation >= :dateCreationDebut OR :dateCreationDebut IS NULL ) " +
                     "AND (pr.dateCreation <= :dateCreationFin OR :dateCreationFin IS NULL ) " +
-                    "AND (pr.famille IN (:famille) OR :famille IS NULL) " +
-                    "AND (pr.typeUtilisation IN (:typeUtilisation) OR :typeUtilisation IS NULL) " +
+                    "AND (pr.famille IN (:famille)) " +
+                    "AND (pr.typeUtilisation IN (:typeUtilisation)) " +
                     "AND (pr.typeRepart = :typeRepart OR :typeRepart IS NULL) " +
                     "AND (pr.rionTheorique = :rionTheorique OR :rionTheorique IS NULL) " +
                     "AND (pr.rionPaiement = :rionPaiement OR :rionPaiement IS NULL) " +

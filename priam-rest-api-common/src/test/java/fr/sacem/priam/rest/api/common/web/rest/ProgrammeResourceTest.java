@@ -34,11 +34,14 @@ public class ProgrammeResourceTest extends RestResourceTest {
 
     @Test
     public void search_programmes() throws Exception {
+        ProgrammeCritereRecherche o = new ProgrammeCritereRecherche();
+        o.setFamille("ALL");
+        o.setTypeUtilisation("ALL");
         mockMvc.perform(post(APP_REST_PROGRAMME_SEARCH)
-               .content(this.json(new ProgrammeCritereRecherche()))
+               .content(this.json(o))
                .contentType(contentType))
                .andExpect(status().isOk())
-               .andExpect(jsonPath("$.content", hasSize(programmeViewDao.findAll().size())));
+               .andExpect(jsonPath("$.content", hasSize(1)));
     }
 
     @Test
@@ -63,11 +66,7 @@ public class ProgrammeResourceTest extends RestResourceTest {
                 .content(this.json(critereRecherche))
                 .contentType(contentType))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content[0].rionTheorique", is(expectedRion)))
-                .andExpect(jsonPath("$.content[1].rionTheorique", is(expectedRion)))
-                .andExpect(jsonPath("$.content[2].rionTheorique", is(expectedRion)))
-                .andExpect(jsonPath("$.content[3].rionTheorique", is(expectedRion)))
-                .andExpect(jsonPath("$.content[4].rionTheorique", is(expectedRion)));
+                .andExpect(jsonPath("$.content[0].rionTheorique", is(expectedRion)));
     }
 
 
@@ -82,11 +81,7 @@ public class ProgrammeResourceTest extends RestResourceTest {
           .content(this.json(critereRecherche))
           .contentType(contentType))
           .andExpect(status().isOk())
-          .andExpect(jsonPath("$.content[0].famille", is(copiepriv)))
-          .andExpect(jsonPath("$.content[1].famille", is(copiepriv)))
-          .andExpect(jsonPath("$.content[2].famille", is(copiepriv)))
-          .andExpect(jsonPath("$.content[3].famille", is(copiepriv)))
-          .andExpect(jsonPath("$.content[4].famille", is(copiepriv)));
+          .andExpect(jsonPath("$.content[0].famille", is(copiepriv)));
     }
 
 

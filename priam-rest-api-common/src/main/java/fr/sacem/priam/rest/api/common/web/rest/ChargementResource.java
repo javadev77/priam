@@ -52,7 +52,7 @@ public class ChargementResource {
     }
 
     private List<String> familleCriterion(@RequestBody InputChgtCriteria input, UserDTO currentUser) {
-        if(!"ALL".equals(input.getFamilleCode())) {
+        if(input.getFamilleCode() != null && !"ALL".equals(input.getFamilleCode())) {
             return Lists.newArrayList(input.getFamilleCode());
         } else {
             return currentUser.authorizedFamilles();
@@ -75,7 +75,7 @@ public class ChargementResource {
     }
 
   private List<String> typeUtilisationCriterion(@RequestBody InputChgtCriteria input, UserDTO currentUser) {
-    if(!"ALL".equals(input.getTypeUtilisationCode())) {
+    if(input.getTypeUtilisationCode() != null && !"ALL".equals(input.getTypeUtilisationCode())) {
       return Lists.newArrayList(input.getTypeUtilisationCode());
     }
     return currentUser.authorizedTypeUtilisations();

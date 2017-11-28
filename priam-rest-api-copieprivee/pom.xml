@@ -159,6 +159,6 @@
         </dependency>
     </dependencies>
     <build>
-        <finalName>priam-rest-api-copieprivee</finalName>
+        <finalName>priam-cp</finalName>
     </build>
 </project>
