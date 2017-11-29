@@ -36,11 +36,13 @@
         <property name="fichierService" ref="fichierService"/>
     </bean>
     <bean id="readerPriamZip"
-          class="fr.sacem.service.importPenef.ZipMultiResourceItemReader" scope="step">
+          class="fr.sacem.service.importPenef.ZipMultiResourceCPItemReader" scope="step">
         <property name="delegate" ref="flatFileItemReader"/>
         <property name="strict" value="false"/>
         <property name="utilFile" ref="utilFile"/>
     </bean>
+
+
 
     <bean id="writerPriam" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
         <property name="dataSource" ref="dataSource"/>
@@ -128,7 +130,7 @@
             <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
         </property>
     </bean>
-    <bean id="ligneProgrammeItemProcessor" class="fr.sacem.service.importPenef.LigneProgrammeItemProcessor"/>
+    <bean id="ligneProgrammeItemProcessor" class="fr.sacem.service.importPenef.LigneProgrammeCPItemProcessor"/>
 
     <bean id="flatFileItemReader"
           class="fr.sacem.util.mapper.importPenef.PriamFileItemReader">

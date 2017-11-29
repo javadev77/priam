@@ -1,7 +1,7 @@
 package fr.sacem.service.importPenef;
 
 import fr.sacem.domain.LigneProgramme;
-import fr.sacem.util.valdiator.importPenef.LigneProgrammeSpringValidator;
+import fr.sacem.util.valdiator.importPenef.LigneProgrammeCPSpringValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.JobParameter;
@@ -20,9 +20,9 @@ import java.util.Set;
  * Created by fandis on 04/05/2017.
  */
 
-public class LigneProgrammeItemProcessor implements ItemProcessor<LigneProgramme, LigneProgramme> {
+public class LigneProgrammeCPItemProcessor implements ItemProcessor<LigneProgramme, LigneProgramme> {
 
-    private static final Logger log = LoggerFactory.getLogger(LigneProgrammeItemProcessor.class);
+    private static final Logger log = LoggerFactory.getLogger(LigneProgrammeCPItemProcessor.class);
 
     public static final String MESSAGE_FORMAT = "Ligne '%s': Le champ \"%s\" avec la valeur \"%s\" n'a pas le bon format attendu";
     public static final String MESSAGE_CHAMPS_OBLIGATOIRE = "Ligne '%s': Le champ %s est obligatoire et non renseigné";
@@ -31,7 +31,7 @@ public class LigneProgrammeItemProcessor implements ItemProcessor<LigneProgramme
     private ExecutionContext executionContext;
 
     @Autowired
-    private LigneProgrammeSpringValidator validator;
+    private LigneProgrammeCPSpringValidator validator;
 
     @Override
     public LigneProgramme process(final LigneProgramme ligneProgramme) throws Exception {

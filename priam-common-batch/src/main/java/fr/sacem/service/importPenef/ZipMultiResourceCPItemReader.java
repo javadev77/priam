@@ -21,9 +21,9 @@ import java.io.IOException;
 import java.util.*;
 import java.util.zip.ZipFile;
 
-public class ZipMultiResourceItemReader<T> extends MultiResourceItemReader<T> {
+public class ZipMultiResourceCPItemReader<T> extends MultiResourceItemReader<T> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ZipMultiResourceItemReader.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ZipMultiResourceCPItemReader.class);
     private static final String EXTENTION_ZIP = "^(.*\\.((zip|ZIP)$))?[^.]*$";
     public static final String MESSAGE_NOM_FICHIER_INCORRECTE = "Le fichier ne peut être chargé car son nom n'a pas le bon format";
     private Resource[] archives;

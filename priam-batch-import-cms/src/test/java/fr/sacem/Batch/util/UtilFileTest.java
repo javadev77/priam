@@ -20,8 +20,8 @@ import java.io.InputStream;
 @RunWith(SpringJUnit4ClassRunner.class)
 
 public class UtilFileTest {
-    private static final String SINGLE_FILE = "src/test/resources/zipDirectory/FF_PENEF_EXTRANA_EXTCPRIVSONRD_20170406140540.csv";
-    private static final String NOM_FICHIER_CSV = "FF_PENEF_EXTRANA_EXTCPRIVSONRD_20170406140540.csv";
+    private static final String SINGLE_FILE = "src/test/resources/zipDirectory/FF_PENEF_EXTRANA_EXTUCSONANT_RION-4_20171016172353.csv";
+    private static final String NOM_FICHIER_CSV = "FF_PENEF_EXTRANA_EXTUCSONANT_RION-4_20171016172353.csv";
 
     @Test
     public void nombreDeLignes() throws IOException {
@@ -29,7 +29,7 @@ public class UtilFileTest {
         File file = new File(SINGLE_FILE);
         InputStream targetStream = new FileInputStream(file);
         Long nombreDeLignes = utilFile.nombreDeLignes(targetStream);
-        Assert.assertEquals(nombreDeLignes.longValue(), 10);
+        Assert.assertEquals(nombreDeLignes.longValue(), 2558);
     }
 
     @Test
@@ -39,8 +39,8 @@ public class UtilFileTest {
         InputStream targetStream = new FileInputStream(file);
         Fichier fichier = utilFile.chargerLesDonnees(targetStream, NOM_FICHIER_CSV);
         Assert.assertEquals(fichier.getNom(), NOM_FICHIER_CSV);
-        Assert.assertEquals(fichier.getFamille(), "COPIEPRIV");
-        Assert.assertEquals(fichier.getTypeUtilisation(), "CPRIVSONRD");
+        Assert.assertEquals(fichier.getFamille(), "UC");
+        Assert.assertEquals(fichier.getTypeUtilisation(), "SONOFRA");
         Assert.assertNotNull(fichier.getDateDebutChargt());
 
     }

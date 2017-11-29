@@ -20,7 +20,7 @@ public class LigneProgramme implements Serializable {
     private String ide12;
     private String durDif;
     private String nbrDif;
-    private String mt;
+    private Double mt;
     private String ctna;
     private String paramCoefHor;
     private String durDifCtna;
@@ -46,6 +46,7 @@ public class LigneProgramme implements Serializable {
     private String ajout;
     private String selection;
     private Integer lineNumber;
+    private String libelleUtilisateur;
     private Exception exception;
 
 
@@ -84,7 +85,7 @@ public class LigneProgramme implements Serializable {
     public LigneProgramme() {
     }
 
-    public LigneProgramme(String cdeCisac, String cdeFamilTypUtil, Long numProg, String cdeUtil, String cdeTypUtil, String cdeGreDif, String cdeModDif, String cdeTypIde12, String ide12, String durDif, String nbrDif, String mt, String ctna, String paramCoefHor, String durDifCtna, String cdeLng, String indDoubSsTit, String tax, String typMt, String cdeGreIde12Cmplx, String cdeGreIde12, String titreOriCmplx, String titreAltPppalCmplx, String titreOriOeuvPereCmplx, String titreAltOeuvPereCmplx, String titreOeuvre, String cdePaysOriIso4NCmplx, String realisateurCmplx, String roleParticipant1, String nomParticipant1, String cdeTypUtilOri, String cdeFamilTypUtilOri) {
+    public LigneProgramme(String cdeCisac, String cdeFamilTypUtil, Long numProg, String cdeUtil, String cdeTypUtil, String cdeGreDif, String cdeModDif, String cdeTypIde12, String ide12, String durDif, String nbrDif, Double mt, String ctna, String paramCoefHor, String durDifCtna, String cdeLng, String indDoubSsTit, String tax, String typMt, String cdeGreIde12Cmplx, String cdeGreIde12, String titreOriCmplx, String titreAltPppalCmplx, String titreOriOeuvPereCmplx, String titreAltOeuvPereCmplx, String titreOeuvre, String cdePaysOriIso4NCmplx, String realisateurCmplx, String roleParticipant1, String nomParticipant1, String cdeTypUtilOri, String cdeFamilTypUtilOri) {
         this.cdeCisac = cdeCisac;
         this.cdeFamilTypUtil = cdeFamilTypUtil;
         this.numProg = numProg;
@@ -219,11 +220,11 @@ public class LigneProgramme implements Serializable {
         this.nbrDif = nbrDif;
     }
 
-    public String getMt() {
+    public Double getMt() {
         return mt;
     }
 
-    public void setMt(String mt) {
+    public void setMt(Double mt) {
         this.mt = mt;
     }
 
@@ -394,4 +395,12 @@ public class LigneProgramme implements Serializable {
     public Exception getException() { return exception; }
 
     public void setException(Exception exception) { this.exception = exception; }
+
+    public String getLibelleUtilisateur() {
+        return libelleUtilisateur;
+    }
+
+    public void setLibelleUtilisateur(String libelleUtilisateur) {
+        this.libelleUtilisateur = libelleUtilisateur;
+    }
 }

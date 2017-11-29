@@ -8,7 +8,7 @@
 
     <packaging>jar</packaging>
 
-    <name>priam-batch</name>
+    <name>priam-batch-import-cp</name>
     <description>Batch d&#39;extraction Penef pour les copies privees</description>
 
     <parent>

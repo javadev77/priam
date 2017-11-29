@@ -42,10 +42,9 @@ public class ZipFileJobConfigurationTest {
     private ApplicationContext context;
     private String inputDirectory = "src/test/resources/zipDirectory/";
     private String outputDirectory = "src/test/resources/zipDirectoryVide/";
-    private static final String SINGLE_FILE = "src/test/resources/zipDirectory/FF_PENEF_EXTRANA_EXTCPRIVSONRD_20170406140540.csv";
-    private static final String ZIP_FILE = "FF_PENEF_EXTRANA_EXTCPRIVSONRD_20170406140540.zip";
-    private static final String ZIP_FILE_EN_COURS_DE_TRAITEMENT = "FF_PENEF_EXTRANA_EXTCPRIVSONRD_20170406140540.zip_en_cours_de_traitement";
-    static Properties p = new Properties();
+    private static final String SINGLE_FILE = "src/test/resources/zipDirectory/FF_PENEF_EXTRANA_EXTUCSONANT_RION-4_20171016172353.csv";
+    private static final String ZIP_FILE = "FF_PENEF_EXTRANA_EXTUCSONANT_RION-4_20171016172353.zip";
+    private static final String ZIP_FILE_EN_COURS_DE_TRAITEMENT = "FF_PENEF_EXTRANA_EXTUCSONANT_RION-4_20171016172353.zip_en_cours_de_traitement";
 
     @Before
     public void setUp() {
@@ -110,7 +109,7 @@ public class ZipFileJobConfigurationTest {
         for (StepExecution step : jobExecution.getStepExecutions()) {
             LOG.debug(step.getSummary());
             assertEquals("Read Count mismatch, changed input?",
-                    10, step.getReadCount());
+                    2558, step.getReadCount());
         }
     }
 

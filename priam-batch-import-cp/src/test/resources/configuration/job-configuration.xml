@@ -33,7 +33,7 @@
         <property name="fichierService" ref="fichierService"/>
     </bean>
     <bean id="readerPriamZip"
-          class="fr.sacem.service.importPenef.ZipMultiResourceItemReader" scope="step">
+          class="fr.sacem.service.importPenef.ZipMultiResourceCPItemReader" scope="step">
         <property name="delegate" ref="flatFileItemReader"/>
         <property name="strict" value="false"/>
         <property name="utilFile" ref="utilFile"/>
@@ -77,7 +77,8 @@
                             roleParticipant1,
                             nomParticipant1,
                             cdeTypUtilOri,
-                            cdeFamilTypUtilOri
+                            cdeFamilTypUtilOri,
+                            libelleUtilisateur
                         )
                         VALUES (
                             :idFichier,
@@ -112,7 +113,10 @@
                             :roleParticipant1,
                             :nomParticipant1,
                             :cdeTypUtilOri,
-                            :cdeFamilTypUtilOri
+                            :cdeFamilTypUtilOri,
+                            (SELECT concat(libUtil.CDEUTIL, case when libUtil.LIBABRGUTIL is null then '' else ' - ' end, coalesce(libUtil.LIBABRGUTIL, ''))
+                             FROM SAREFTJ_LIBUTIL libUtil
+                              WHERE libUtil.CDEUTIL = :cdeUtil )
                         )
                 ]]>
             </value>
@@ -121,7 +125,7 @@
             <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
         </property>
     </bean>
-    <bean id="ligneProgrammeItemProcessor" class="fr.sacem.service.importPenef.LigneProgrammeItemProcessor"/>
+    <bean id="ligneProgrammeItemProcessor" class="fr.sacem.service.importPenef.LigneProgrammeCPItemProcessor"/>
 
     <bean id="flatFileItemReader"
           class="fr.sacem.util.mapper.importPenef.PriamFileItemReader">
@@ -173,10 +177,6 @@
                             <map>
                                 <entry key="java.time.LocalDate">
                                     <bean class="fr.sacem.util.LocalDatePropertyEditor">
-                                    </bean>
-                                </entry>
-                                <entry key="java.lang.Double">
-                                    <bean class="fr.sacem.util.DoublePropertyEditor">
                                     </bean>
                                 </entry>
                             </map>

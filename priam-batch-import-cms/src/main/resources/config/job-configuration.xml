@@ -2,14 +2,15 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
        xsi:schemaLocation="http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-"
+        http://www.springframework.org/schema/jdbc
+        http://www.springframework.org/schema/jdbc/spring-jdbc-3.1.xsd"
 >
-<!--
-    <import resource="classpath:/config/job-database.xml"/>
-        <context:component-scan base-package="fr.sacem.*"/>
--->
+    <jdbc:initialize-database data-source="dataSource">
+        <jdbc:script location="classpath:config/sql/initial-query.sql" />
+    </jdbc:initialize-database>
 
     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
            <property name="searchSystemEnvironment" value="true"/>
@@ -18,12 +19,22 @@
      <property name="location" value="classpath:config/application-${spring.profiles.active}.properties"/>
     </bean>
     <job id="archiveFlatFileReaderJob" xmlns="http://www.springframework.org/schema/batch">
-        <step id="archiveFlatFileReaderStep">
+        <step id="archiveFlatFileReaderStep" next="dedoublonnageStep">
             <tasklet>
                 <chunk
                         reader="readerPriamZip"
                         writer="writerPriam"
-                        processor="ligneProgrammeItemProcessor"
+                        processor="ligneProgrammeDedoublonnageStepOneProcessor"
+                        commit-interval="${commit-interval}">
+                </chunk>
+            </tasklet>
+        </step>
+        <step id="dedoublonnageStep" parent="archiveFlatFileReaderStep">
+            <tasklet>
+                <chunk
+                        reader="readerPriamFromTable"
+                        writer="writerDedoublonnagePriam"
+                        processor="ligneProgrammeDedoublonnageStepTwoProcessor"
                         commit-interval="${commit-interval}">
                 </chunk>
             </tasklet>
@@ -32,11 +43,164 @@
             <listener ref="listenerCompletition"/>
         </listeners>
     </job>
+
+    <!-- Debut : Elements essentielle pour le step de dedoublonnage -->
+
+    <bean id="queryProvider" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean">
+        <property name="selectClause" value="select
+                            id_fichier,
+                            cdeCisac,
+                            cdeFamilTypUtil,
+                            numProg,
+                            cdeUtil,
+                            cdeTypUtil,
+                            cdeGreDif,
+                            cdeModDif,
+                            cdeTypIde12,
+                            ide12,
+                            durDif,
+                            nbrDif,
+                            sum(mt) mt,
+                            ctna,
+                            paramCoefHor,
+                            durDifCtna,
+                            cdeLng,
+                            indDoubSsTit,
+                            tax,
+                            typMt,
+                            cdeGreIde12Cmplx,
+                            cdeGreIde12,
+                            titreOriCmplx,
+                            titreAltPppalCmplx,
+                            titreOriOeuvPereCmplx,
+                            titreAltOeuvPereCmplx,
+                            titreOeuvre,
+                            cdePaysOriIso4NCmplx,
+                            realisateurCmplx,
+                            roleParticipant1,
+                            nomParticipant1,
+                            cdeTypUtilOri,
+                            cdeFamilTypUtilOri,
+                            libelleUtilisateur,
+                            utilisateur,
+                            date_insertion,
+                            ajout,
+                            selection"/>
+        <property name="fromClause" value="from PRIAM_LIGNE_PROGRAMME_TRAITEMENT_BATCH l "/>
+        <property name="groupClause" value="group by l.ide12 "/>
+        <property name="databaseType" value="MySQL" />
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sortKey" value="ide12"/>
+    </bean>
+    <bean id="readerPriamFromTable"
+          class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="queryProvider" ref="queryProvider"/>
+        <property name="pageSize" value="${commit-interval}"/>
+        <property name="rowMapper" ref="ligneProgrammeRowMapper"/>
+
+    </bean>
+    <bean id="ligneProgrammeRowMapper" class="fr.sacem.util.mapper.importPenef.PriamLigneProgrammeSQLMapper"/>
+    <bean id="writerDedoublonnagePriam" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    INSERT INTO PRIAM_LIGNE_PROGRAMME_CMS (
+                            id_fichier,
+                            cdeCisac,
+                            cdeFamilTypUtil,
+                            numProg,
+                            cdeUtil,
+                            cdeTypUtil,
+                            cdeGreDif,
+                            cdeModDif,
+                            cdeTypIde12,
+                            ide12,
+                            durDif,
+                            nbrDif,
+                            mt,
+                            ctna,
+                            paramCoefHor,
+                            durDifCtna,
+                            cdeLng,
+                            indDoubSsTit,
+                            tax,
+                            typMt,
+                            cdeGreIde12Cmplx,
+                            cdeGreIde12,
+                            titreOriCmplx,
+                            titreAltPppalCmplx,
+                            titreOriOeuvPereCmplx,
+                            titreAltOeuvPereCmplx,
+                            titreOeuvre,
+                            cdePaysOriIso4NCmplx,
+                            realisateurCmplx,
+                            roleParticipant1,
+                            nomParticipant1,
+                            cdeTypUtilOri,
+                            cdeFamilTypUtilOri,
+                            libelleUtilisateur,
+                            utilisateur,
+                            date_insertion,
+                            ajout,
+                            selection
+                        )
+                        VALUES (
+                            :idFichier,
+                            :cdeCisac,
+                            :cdeFamilTypUtil,
+                            :numProg,
+                            :cdeUtil,
+                            :cdeTypUtil,
+                            :cdeGreDif,
+                            :cdeModDif,
+                            :cdeTypIde12,
+                            :ide12,
+                            :durDif,
+                            :nbrDif,
+                            :mt,
+                            :ctna,
+                            :paramCoefHor,
+                            :durDifCtna,
+                            :cdeLng,
+                            :indDoubSsTit,
+                            :tax,
+                            :typMt,
+                            :cdeGreIde12Cmplx,
+                            :cdeGreIde12,
+                            :titreOriCmplx,
+                            :titreAltPppalCmplx,
+                            :titreOriOeuvPereCmplx,
+                            :titreAltOeuvPereCmplx,
+                            :titreOeuvre,
+                            :cdePaysOriIso4NCmplx,
+                            :realisateurCmplx,
+                            :roleParticipant1,
+                            :nomParticipant1,
+                            :cdeTypUtilOri,
+                            :cdeFamilTypUtilOri,
+                            :libelleUtilisateur,
+                            :utilisateur,
+                            :date_insertion,
+                            :ajout,
+                            :selection
+                        )
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
+    <bean id="ligneProgrammeDedoublonnageStepTwoProcessor" class="fr.sacem.service.importPenef.LigneProgrammeDedoublonnageStepTwoProcessor"/>
+
+    <!-- Fin : Elements essentielle pour le step de dedoublonnage -->
     <bean id="listenerCompletition" class="fr.sacem.listener.importPenef.JobCompletionNotificationLigneProgrammeImportPenefListener">
         <property name="fichierService" ref="fichierService"/>
     </bean>
     <bean id="readerPriamZip"
-          class="fr.sacem.service.importPenef.ZipMultiResourceItemReader" scope="step">
+          class="fr.sacem.service.importPenef.ZipMultiResourceCMSItemReader" scope="step">
         <property name="delegate" ref="flatFileItemReader"/>
         <property name="strict" value="false"/>
         <property name="utilFile" ref="utilFile"/>
@@ -47,7 +211,7 @@
         <property name="sql">
             <value>
                 <![CDATA[
-                    INSERT INTO PRIAM_LIGNE_PROGRAMME_CMS (
+                    INSERT INTO PRIAM_LIGNE_PROGRAMME_TRAITEMENT_BATCH (
                             id_fichier,
                             cdeCisac,
                             cdeFamilTypUtil,
@@ -128,8 +292,7 @@
             <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
         </property>
     </bean>
-    <bean id="ligneProgrammeItemProcessor" class="fr.sacem.service.importPenef.LigneProgrammeItemProcessor"/>
-
+    <bean id="ligneProgrammeDedoublonnageStepOneProcessor" class="fr.sacem.service.importPenef.LigneProgrammeDedoublonnageStepOneProcessor"/>
     <bean id="flatFileItemReader"
           class="fr.sacem.util.mapper.importPenef.PriamFileItemReader">
         <property name="lineMapper">
@@ -182,6 +345,10 @@
                                     <bean class="fr.sacem.util.LocalDatePropertyEditor">
                                     </bean>
                                 </entry>
+                                <entry key="java.lang.Double">
+                                    <bean class="fr.sacem.util.DoublePropertyEditor">
+                                    </bean>
+                                </entry>
                             </map>
                         </property>
                     </bean>
@@ -224,20 +391,4 @@
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
     </bean>
-    <!--
-    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
-        <property name="driverClassName" value="${spring.datasource.driver-class-name}"/>
-
-        <property name="driverClassName" value="#{systemProperties['BDD_DRIVER_PRIAM']}"/>
-        <property name="url" value="#{systemProperties['BDD_URL_PRIAM']}"/>
-        <property name="username" value="#{systemProperties['BDD_USER_PRIAM']}"/>
-        <property name="password" value="#{systemProperties['BDD_PASSWORD_PRIAM']}"/>
-
-        <property name="url" value="${spring.datasource.url}"/>
-        <property name="username" value="${spring.datasource.username}"/>
-        <property name="password" value="${spring.datasource.password}"/>
-
-    </bean>
-    -->
-
 </beans>

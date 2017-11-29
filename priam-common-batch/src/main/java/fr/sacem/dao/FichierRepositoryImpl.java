@@ -146,7 +146,12 @@ public class FichierRepositoryImpl implements FichierRepository {
             result.append(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_PHONO.getCode());
         else if(nom.startsWith(FileUtils.PREFIX_PRIV_SON_RD))
             result.append(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode());
-
+        else if(nom.startsWith(FileUtils.PREFIX_FRA))
+            result.append(TypeUtilisationEnum.CMS_FRA.getCode());
+        else if(nom.startsWith(FileUtils.PREFIX_ANT_RION2))
+            result.append(TypeUtilisationEnum.CMS_ANT.getCode());
+        else if(nom.startsWith(FileUtils.PREFIX_ANT_RION4))
+            result.append(TypeUtilisationEnum.CMS_ANT.getCode());
         if(result.toString().isEmpty())
         {
             return null;

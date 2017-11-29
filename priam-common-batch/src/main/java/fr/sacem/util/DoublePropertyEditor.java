@@ -1,6 +1,6 @@
 package fr.sacem.util;
 
-import fr.sacem.util.valdiator.importPenef.LigneProgrammeSpringValidator;
+import fr.sacem.util.valdiator.importPenef.LigneProgrammeCPSpringValidator;
 import org.springframework.util.StringUtils;
 
 import java.beans.PropertyEditorSupport;
@@ -24,7 +24,7 @@ public class DoublePropertyEditor extends PropertyEditorSupport {
                 setValue(nf.parse(text).doubleValue());
 
             } catch (ParseException e) {
-                setValue(LigneProgrammeSpringValidator.ERROR_DECIMAL_BINDING+text);
+                setValue(LigneProgrammeCPSpringValidator.ERROR_DECIMAL_BINDING+text);
             }
         } else {
             setValue(null);

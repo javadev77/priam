@@ -16,7 +16,7 @@ import java.util.Locale;
  * Created by belwidanej on 28/08/2017.
  */
 @Component
-public class LigneProgrammeSpringValidator implements Validator {
+public class LigneProgrammeCPSpringValidator implements Validator {
 
 
 	public static final int IDE12_LENGTH_MAX = 12;
@@ -124,9 +124,8 @@ public class LigneProgrammeSpringValidator implements Validator {
 		else
 			o.setTax(null);
 
-		Double mt = validateNumericField(errors, o.getMt(), "mt");
-		if(mt != null)
-			o.setMt(mt.toString());
+		if(o.getMt() != null)
+			o.setMt(o.getMt());
 		else
 			o.setMt(null);
 	}

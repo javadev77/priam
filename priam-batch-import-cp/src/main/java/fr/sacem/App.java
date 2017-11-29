@@ -1,5 +1,6 @@
 package fr.sacem;
 
+import fr.sacem.config.ConfigurationPriam;
 import fr.sacem.config.ConfigurationPriamLocal;
 import fr.sacem.config.ConfigurationPriamProd;
 import fr.sacem.domain.Admap;
@@ -24,9 +25,9 @@ public class App {
     private static  final Logger LOGGER = LoggerFactory.getLogger(App.class);
     
     public static void main(String[] args) {
-        
 
-        ApplicationContext context = new AnnotationConfigApplicationContext(ConfigurationPriamProd.class, ConfigurationPriamLocal.class);
+
+        ApplicationContext context = new AnnotationConfigApplicationContext(ConfigurationPriam.class);
 
         JobLauncher jobLauncher = (JobLauncher) context.getBean("jobLauncher");
         Job job = (Job) context.getBean("archiveFlatFileReaderJob");
