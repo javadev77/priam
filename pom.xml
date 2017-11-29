@@ -26,8 +26,12 @@
         <module>priam-common</module>
 		<module>priam-common-batch</module>
         <module>priam-model</module>
+        <module>priam-security</module>
         <module>priam-services</module>
         <module>priam-ui</module>
+        <module>priam-rest-api-common</module>
+        <module>priam-rest-api-copieprivee</module>
+        <module>priam-rest-api-cms</module>
     </modules>
 
     <organization>
@@ -37,8 +41,8 @@
 
     <scm>
         <url>http://git.sacem.fr/priam/priam</url>
-        <connection>scm:git:ssh:/git@git.sacem.fr:repositories/priam/priam.git</connection>
-        <developerConnection>scm:git:ssh://git@git.sacem.fr:repositories/priam/priam.git</developerConnection>
+        <connection>scm:git:ssh://git@git.sacem.fr:priam/priam.git</connection>
+        <developerConnection>scm:git:ssh://git@git.sacem.fr:priam/priam.git</developerConnection>
     </scm>
 
     <ciManagement>
@@ -117,6 +121,12 @@
             <artifactId>jacoco-maven-plugin</artifactId>
             <version>0.7.9</version>
         </dependency>
+        <dependency>
+            <groupId>ch.vorburger.mariaDB4j</groupId>
+            <artifactId>mariaDB4j</artifactId>
+            <version>2.2.3</version>
+            <scope>test</scope>
+        </dependency>
         <!--<dependency>-->
             <!--<groupId>net.sourceforge.cobertura</groupId>-->
             <!--<artifactId>cobertura</artifactId>-->
@@ -175,7 +185,7 @@
                 <filtering>true</filtering>
                 <directory>src/main/resources</directory>
                 <excludes>
-                    <exclude>logback*.xml</exclude>
+                    <!--<exclude>logback*.xml</exclude>-->
                 </excludes>
             </resource>
         </resources>

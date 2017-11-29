@@ -633,19 +633,19 @@
         console.log("router params numProg = " + this.$route.params.numProg);
 
         const customActions = {
-          findByNumProg: {method: 'GET', url: 'app/rest/programme/numProg/{numProg}'},
+          findByNumProg: {method: 'GET', url: process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/programme/numProg/{numProg}'},
           findLigneProgrammeByProgramme: {
             method: 'POST',
-            url: 'app/rest/ligneProgramme/search?page={page}&size={size}&sort={sort},{dir}'
+            url: process.env.CONTEXT_ROOT_PRIAM_CP +  'app/rest/ligneProgramme/search?page={page}&size={size}&sort={sort},{dir}'
           },
-          validerSelection: {method: 'POST', url: 'app/rest/ligneProgramme/selection/valider'},
-          modifierSelection: {method: 'POST', url: 'app/rest/ligneProgramme/selection/modifier'},
-          invaliderSelection: {method: 'POST', url: 'app/rest/ligneProgramme/selection/invalider'},
-          dureeProgramme: {method: 'GET', url: 'app/rest/programme/durdif?numProg={numProg}&statut={statut}'},
-          annulerSelection: {method: 'POST', url: 'app/rest/ligneProgramme/selection/annuler'},
-          supprimerLigneProgramme: {method: 'DELETE', url: 'app/rest/ligneProgramme/{numProg}/{ide12}/'},
-          enregistrerEdition : {method: 'POST', url: 'app/rest/ligneProgramme/selection/enregistrerEdition'},
-          annulerEdition : {method: 'POST', url: 'app/rest/ligneProgramme/selection/annulerEdition'}
+          validerSelection: {method: 'POST', url: process.env.CONTEXT_ROOT_PRIAM_CP +  'app/rest/ligneProgramme/selection/valider'},
+          modifierSelection: {method: 'POST', url: process.env.CONTEXT_ROOT_PRIAM_CP +  'app/rest/ligneProgramme/selection/modifier'},
+          invaliderSelection: {method: 'POST', url: process.env.CONTEXT_ROOT_PRIAM_CP + 'app/rest/ligneProgramme/selection/invalider'},
+          dureeProgramme: {method: 'GET', url: process.env.CONTEXT_ROOT_PRIAM_CP + 'app/rest/ligneProgramme/selection/durdif?numProg={numProg}&statut={statut}'},
+          annulerSelection: {method: 'POST', url: process.env.CONTEXT_ROOT_PRIAM_CP + 'app/rest/ligneProgramme/selection/annuler'},
+          supprimerLigneProgramme: {method: 'DELETE', url: process.env.CONTEXT_ROOT_PRIAM_CP + 'app/rest/ligneProgramme/{numProg}/{ide12}/'},
+          enregistrerEdition : {method: 'POST', url: process.env.CONTEXT_ROOT_PRIAM_CP + 'app/rest/ligneProgramme/selection/enregistrerEdition'},
+          annulerEdition : {method: 'POST', url: process.env.CONTEXT_ROOT_PRIAM_CP + 'app/rest/ligneProgramme/selection/annulerEdition'}
         }
 
         this.resource = this.$resource('', {}, customActions);

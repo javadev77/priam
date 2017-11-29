@@ -9,6 +9,7 @@ import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.model.domain.saref.SareftrFamiltyputil;
 import fr.sacem.priam.model.domain.saref.SareftrRion;
 import fr.sacem.priam.model.domain.saref.SareftrTyputil;
+import org.assertj.core.util.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -106,6 +107,9 @@ public class ProgrammeViewDaoTest {
     public void should_find_programmes_rion_619() {
         ProgrammeCriteria criteria = new ProgrammeCriteria();
         criteria.setStatut(Arrays.asList(StatutProgramme.values()));
+        criteria.setSareftrFamiltyputil(Lists.newArrayList("COPIEPRIV"));
+        criteria.setTypeUtilisation(Lists.newArrayList("CPRIVSONPH"));
+
         Page<ProgrammeDto> all = programmeViewDao.findAllProgrammeByCriteria(criteria.getNumProg(), criteria.getNom(), criteria.getStatut(),
                 criteria.getDateCreationDebut(), criteria.getDateCreationFin(),
                 criteria.getSareftrFamiltyputil(), criteria.getTypeUtilisation(),
@@ -123,13 +127,14 @@ public class ProgrammeViewDaoTest {
     @Test
     public void count_nb_fichiers_par_programme() {
         ProgrammeCriteria criteria = new ProgrammeCriteria();
-        //criteria.setNumProg("PR170001");
         criteria.setStatut(Arrays.asList(StatutProgramme.values()));
-        
+        criteria.setSareftrFamiltyputil(Lists.newArrayList("COPIEPRIV"));
+        criteria.setTypeUtilisation(Lists.newArrayList("CPRIVSONPH"));
+
         Page<ProgrammeDto> all = programmeViewDao.findAllProgrammeByCriteria(criteria.getNumProg(), criteria.getNom(), criteria.getStatut(), criteria.getDateCreationDebut(), criteria.getDateCreationFin(), criteria.getSareftrFamiltyputil(), criteria.getTypeUtilisation(), criteria.getSareftrRionTheorique(), criteria.getSareftrRionPaiement(), criteria.getTypeRepart(), PAGEABLE);
         
         assertThat(all).isNotNull();
-        assertThat(all.getContent()).extracting("fichiers").isEqualTo(Arrays.asList(0L,0L,0L, 0L, 0L, 4L));
+        assertThat(all.getContent()).extracting("fichiers").isEqualTo(Arrays.asList(4L));
     
     }
     
@@ -138,7 +143,9 @@ public class ProgrammeViewDaoTest {
         ProgrammeCriteria criteria = new ProgrammeCriteria();
         criteria.setNumProg("170001");
         criteria.setStatut(Arrays.asList(StatutProgramme.values()));
-        
+        criteria.setSareftrFamiltyputil(Lists.newArrayList("COPIEPRIV"));
+        criteria.setTypeUtilisation(Lists.newArrayList("CPRIVSONPH"));
+
         Page<ProgrammeDto> all = programmeViewDao.findAllProgrammeByCriteria(criteria.getNumProg(), criteria.getNom(), criteria.getStatut(), criteria.getDateCreationDebut(), criteria.getDateCreationFin(), criteria.getSareftrFamiltyputil(), criteria.getTypeUtilisation(), criteria.getSareftrRionTheorique(), criteria.getSareftrRionPaiement(), criteria.getTypeRepart(), PAGEABLE);
         
         assertThat(all).isNotNull();
@@ -151,6 +158,8 @@ public class ProgrammeViewDaoTest {
         ProgrammeCriteria criteria = new ProgrammeCriteria();
         criteria.setNom("Programme 01");
         criteria.setStatut(Arrays.asList(StatutProgramme.values()));
+        criteria.setSareftrFamiltyputil(Lists.newArrayList("COPIEPRIV"));
+        criteria.setTypeUtilisation(Lists.newArrayList("CPRIVSONPH"));
         
         Page<ProgrammeDto> all = programmeViewDao.findAllProgrammeByCriteria(criteria.getNumProg(), criteria.getNom(), criteria.getStatut(), criteria.getDateCreationDebut(), criteria.getDateCreationFin(), criteria.getSareftrFamiltyputil(), criteria.getTypeUtilisation(), criteria.getSareftrRionTheorique(), criteria.getSareftrRionPaiement(), criteria.getTypeRepart(), PAGEABLE);
         
@@ -169,7 +178,9 @@ public class ProgrammeViewDaoTest {
         criteria.setDateCreationDebut(currentDate);
     
         criteria.setStatut(Arrays.asList(StatutProgramme.values()));
-        
+        criteria.setSareftrFamiltyputil(Lists.newArrayList("COPIEPRIV"));
+        criteria.setTypeUtilisation(Lists.newArrayList("CPRIVSONPH"));
+
         Page<ProgrammeDto> all = programmeViewDao.findAllProgrammeByCriteria(criteria.getNumProg(), criteria.getNom(), criteria.getStatut(), criteria.getDateCreationDebut(), criteria.getDateCreationFin(), criteria.getSareftrFamiltyputil(), criteria.getTypeUtilisation(), criteria.getSareftrRionTheorique(), criteria.getSareftrRionPaiement(), criteria.getTypeRepart(), PAGEABLE);
         
         assertThat(all).isNotNull();
@@ -192,6 +203,9 @@ public class ProgrammeViewDaoTest {
         
         
         criteria.setStatut(Arrays.asList(StatutProgramme.values()));
+
+        criteria.setSareftrFamiltyputil(Lists.newArrayList("COPIEPRIV"));
+        criteria.setTypeUtilisation(Lists.newArrayList("CPRIVSONPH"));
         
         Page<ProgrammeDto> all = programmeViewDao.findAllProgrammeByCriteria(criteria.getNumProg(), criteria.getNom(), criteria.getStatut(), criteria.getDateCreationDebut(), criteria.getDateCreationFin(), criteria.getSareftrFamiltyputil(), criteria.getTypeUtilisation(), criteria.getSareftrRionTheorique(), criteria.getSareftrRionPaiement(), criteria.getTypeRepart(), PAGEABLE);
         

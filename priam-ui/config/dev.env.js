@@ -4,5 +4,7 @@ var prodEnv = require('./prod.env')
 module.exports = merge(prodEnv, {
   NODE_ENV: '"development"',
   DEBUG_MODE: true,
-  CONTEXT_ROOT : '"http://localhost:8080/priamfandis"'
+  CONTEXT_ROOT_PRIAM_COMMON : '"http://localhost:8081/priam-rest-common/"',
+  CONTEXT_ROOT_PRIAM_CP : '"http://localhost:8082/priam-rest-cp/"',
+  CONTEXT_ROOT_PRIAM_CMS : '"http://localhost:8083/priam-rest-cms/"'
 })

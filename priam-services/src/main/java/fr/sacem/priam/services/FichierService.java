@@ -1,9 +1,9 @@
 package fr.sacem.priam.services;
 
-import fr.sacem.priam.model.dao.jpa.cp.FichierCPDao;
+import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.dao.jpa.cp.LigneProgrammeCPDao;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeCPDao;
-import fr.sacem.priam.model.domain.cp.FichierCP;
+import fr.sacem.priam.model.domain.Fichier;
 import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.StatutProgramme;
@@ -24,7 +24,7 @@ public class FichierService {
     
     public static final String GUEST = "GUEST";
     @Autowired
-    private FichierCPDao fichierCPDao;
+    private FichierDao fichierDao;
     
     @Autowired
     private LigneProgrammeCPDao ligneProgrammeCPDao;
@@ -35,20 +35,20 @@ public class FichierService {
     @Transactional
     public void deleteDonneesFichiers(Long fileId) {
         ligneProgrammeCPDao.deleteAllByFichierId(fileId);
-        fichierCPDao.updateFichierStatus(fileId, Status.ABANDONNE);
+        fichierDao.updateFichierStatus(fileId, Status.ABANDONNE);
     }
     
     
     @Transactional
-    public void majFichiersAffectesAuProgramme(String numProg, List<FichierCP> nouveauxfichiersAffectes, String currentUserName){
+    public void majFichiersAffectesAuProgramme(String numProg, List<Fichier> nouveauxfichiersAffectes, String currentUserName){
         List<Long> idsNouveauxFichiersAffectes=new ArrayList<>();
-        for(FichierCP fichier : nouveauxfichiersAffectes){
+        for(Fichier fichier : nouveauxfichiersAffectes){
             idsNouveauxFichiersAffectes.add(fichier.getId());
         }
 
-        fichierCPDao.clearSelectedFichiers(numProg, Status.CHARGEMENT_OK);
+        fichierDao.clearSelectedFichiers(numProg, Status.CHARGEMENT_OK);
         if(!idsNouveauxFichiersAffectes.isEmpty()) {
-            fichierCPDao.updateStatusFichiersAffectes(numProg, Status.AFFECTE, idsNouveauxFichiersAffectes);
+            fichierDao.updateStatusFichiersAffectes(numProg, Status.AFFECTE, idsNouveauxFichiersAffectes);
         }
         
         
@@ -72,6 +72,6 @@ public class FichierService {
     }
 
     public Set<String> getChargementLog(Long idFichier) {
-        return fichierCPDao.getChargementLog(idFichier);
+        return fichierDao.getChargementLog(idFichier);
     }
 }

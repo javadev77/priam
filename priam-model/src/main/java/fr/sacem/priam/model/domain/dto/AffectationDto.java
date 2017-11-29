@@ -1,7 +1,7 @@
 package fr.sacem.priam.model.domain.dto;
 
 
-import fr.sacem.priam.model.domain.cp.FichierCP;
+import fr.sacem.priam.model.domain.Fichier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,10 +11,10 @@ import java.util.List;
  */
 public class AffectationDto {
     private String numProg;
-    private List<FichierCP> fichiers= new ArrayList<>();
+    private List<Fichier> fichiers= new ArrayList<>();
 
 
-    public AffectationDto(String numProg, List<FichierCP> fichiers) {
+    public AffectationDto(String numProg, List<Fichier> fichiers) {
         this.numProg = numProg;
         this.fichiers = fichiers;
     }
@@ -27,11 +27,11 @@ public class AffectationDto {
         this.numProg = numProg;
     }
 
-    public List<FichierCP> getFichiers() {
+    public List<Fichier> getFichiers() {
         return fichiers;
     }
 
-    public void setFichiers(List<FichierCP> fichiers) {
+    public void setFichiers(List<Fichier> fichiers) {
         this.fichiers = fichiers;
     }
 

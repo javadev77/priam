@@ -1,7 +1,7 @@
 package fr.sacem.priam.model.domain.cms;
 
 import com.google.common.base.Objects;
-import fr.sacem.priam.model.domain.cms.FichierCMS;
+import fr.sacem.priam.model.domain.Fichier;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -21,7 +21,7 @@ public class LigneProgrammeCMS implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "ID_FICHIER")
-    private FichierCMS fichier;
+    private Fichier fichier;
 
     @Column(name = "cdeCisac")
     private String cdeCisac;
@@ -171,11 +171,11 @@ public class LigneProgrammeCMS implements Serializable {
         this.selection = selection;
     }
 
-    public FichierCMS getFichier() {
+    public Fichier getFichier() {
         return fichier;
     }
 
-    public void setFichier(FichierCMS fichier) {
+    public void setFichier(Fichier fichier) {
         this.fichier = fichier;
     }
 

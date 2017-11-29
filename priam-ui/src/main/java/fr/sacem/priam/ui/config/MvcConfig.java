@@ -1,6 +1,7 @@
 package fr.sacem.priam.ui.config;
 
 import fr.sacem.fwk.config.Environment;
+import fr.sacem.priam.security.config.UserDTOHandlerMethodArgumentResolver;
 import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,6 +95,7 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
           if (response.getContentType() == null) {
             response.setContentType(MediaType.TEXT_HTML_VALUE);
           }
+
           Object status = model.get("status");
           if (status != null &&
                 (status.equals(HttpStatus.SC_NOT_FOUND) ||
@@ -103,6 +105,7 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
           } else {
             request.getServletContext().getRequestDispatcher("/error.html").forward(request, response);
           }
+
         }
       };
     }

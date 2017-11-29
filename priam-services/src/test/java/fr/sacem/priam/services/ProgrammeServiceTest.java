@@ -2,10 +2,10 @@ package fr.sacem.priam.services;
 
 import com.google.common.collect.Lists;
 import fr.sacem.priam.model.dao.JpaConfigurationTest;
-import fr.sacem.priam.model.dao.jpa.cp.FichierCPDao;
+import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeCPDao;
 import fr.sacem.priam.model.dao.jpa.ProgrammeSequnceDao;
-import fr.sacem.priam.model.domain.cp.FichierCP;
+import fr.sacem.priam.model.domain.Fichier;
 import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.StatutProgramme;
@@ -47,7 +47,7 @@ public class ProgrammeServiceTest {
 	ProgrammeCPDao programmeCPDao;
 	
 	@Autowired
-	FichierCPDao fichierCPDao;
+	FichierDao fichierDao;
 	
 	private static final Pageable pageable = new Pageable() {
 		
@@ -101,6 +101,9 @@ public class ProgrammeServiceTest {
 		
 		ProgrammeCriteria criteria = new ProgrammeCriteria();
 		criteria.setNumProg(NUM_PROG);
+
+		criteria.setSareftrFamiltyputil(Lists.newArrayList("COPIEPRIV"));
+		criteria.setTypeUtilisation(Lists.newArrayList("CPRIVSONPH"));
 		
 		Page<ProgrammeDto> programmeByCriteria = programmeService.findProgrammeByCriteria(criteria, pageable);
 		
@@ -174,7 +177,7 @@ public class ProgrammeServiceTest {
 	@Transactional
 	public void test_tout_desaffecter() throws Exception {
 		String pr170001 = NUM_PROG;
-		List<FichierCP> fichiersAffectes = fichierCPDao.findFichiersByIdProgramme(pr170001, Status.AFFECTE);
+		List<Fichier> fichiersAffectes = fichierDao.findFichiersByIdProgramme(pr170001, Status.AFFECTE);
 		programmeService.toutDeaffecter(pr170001, "GUEST");
 		
 		Programme programme = programmeCPDao.findOne(pr170001);
@@ -184,7 +187,7 @@ public class ProgrammeServiceTest {
 		
 		
 		
-		List<FichierCP> expectedFichiersOK = fichierCPDao.findAll(Lists.transform(fichiersAffectes, FichierCP::getId));
+		List<Fichier> expectedFichiersOK = fichierDao.findAll(Lists.transform(fichiersAffectes, Fichier::getId));
 		assertThat(expectedFichiersOK).isNotEmpty();
 		assertThat(expectedFichiersOK).extracting("statut").contains(Status.CHARGEMENT_OK);
 	}

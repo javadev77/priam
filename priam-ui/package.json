@@ -7,7 +7,9 @@
   "scripts": {
     "dev": "node build/dev-server.js",
     "start": "node build/dev-server.js",
-    "build": "node build/build.js"
+    "build": "node build/build.js",
+    "re7": "node build/build-re7.js",
+    "devsacem" : "node build/build-devsacem.js"
   },
   "dependencies": {
     "bootstrap": "3.3.7",

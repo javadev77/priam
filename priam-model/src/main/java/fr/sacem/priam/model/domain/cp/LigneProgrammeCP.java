@@ -1,7 +1,7 @@
 package fr.sacem.priam.model.domain.cp;
 
 import com.google.common.base.Objects;
-import fr.sacem.priam.model.domain.cp.FichierCP;
+import fr.sacem.priam.model.domain.Fichier;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -21,7 +21,7 @@ public class LigneProgrammeCP implements Serializable {
     
     @ManyToOne
     @JoinColumn(name = "ID_FICHIER")
-    private FichierCP fichier;
+    private Fichier fichier;
     
     @Column(name = "cdeCisac")
     private String cdeCisac;
@@ -171,11 +171,11 @@ public class LigneProgrammeCP implements Serializable {
         this.selection = selection;
     }
 
-    public FichierCP getFichier() {
+    public Fichier getFichier() {
         return fichier;
     }
 
-    public void setFichier(FichierCP fichier) {
+    public void setFichier(Fichier fichier) {
         this.fichier = fichier;
     }
 

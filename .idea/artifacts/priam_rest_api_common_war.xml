@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="priam-rest-api-common:war">
+    <output-path>$PROJECT_DIR$/priam-rest-api-common/target</output-path>
+    <root id="archive" name="priam-common.war">
+      <element id="artifact" artifact-name="priam-rest-api-common:war exploded" />
+    </root>
+  </artifact>
+</component>

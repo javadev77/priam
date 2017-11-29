@@ -10,7 +10,9 @@ public enum TypeUtilisationPriam {
     
     COPIE_PRIVEE_SONORE_PHONO("CPRIVSONPH"),
     
-    COPIE_PRIVEE_SONORE_RADIO("CPRIVSONRD");
+    COPIE_PRIVEE_SONORE_RADIO("CPRIVSONRD"),
+
+    SONOANT("SONOANT");
     
     
     private final String code;
