@@ -19,6 +19,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.FileOutputStream;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -88,6 +89,7 @@ public class ZipFileJobConfigurationTest {
         Map<String, JobParameter> jobParametersMap = new HashMap<String, JobParameter>();
         jobParametersMap.put("time", new JobParameter(System.currentTimeMillis()));
         FileOutputStream fos = new FileOutputStream(inputDirectory + "\\" + ZIP_FILE);
+        Charset cs = Charset.forName("IBM437");
         ZipOutputStream zos = new ZipOutputStream(fos);
         UtilFile.addToZipFile(SINGLE_FILE, zos);
 

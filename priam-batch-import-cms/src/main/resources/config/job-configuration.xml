@@ -11,7 +11,6 @@
     <jdbc:initialize-database data-source="dataSource">
         <jdbc:script location="classpath:config/sql/initial-query.sql" />
     </jdbc:initialize-database>
-
     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
            <property name="searchSystemEnvironment" value="true"/>
         <property name="ignoreResourceNotFound" value="true"/>

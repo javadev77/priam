@@ -19,9 +19,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.FileOutputStream;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.zip.ZipOutputStream;
 
 import static org.junit.Assert.assertEquals;
@@ -44,7 +44,6 @@ public class ZipFileJobConfigurationTest {
     private String outputDirectory = "src/test/resources/zipDirectoryVide/";
     private static final String SINGLE_FILE = "src/test/resources/zipDirectory/FF_PENEF_EXTRANA_EXTUCSONANT_RION-4_20171016172353.csv";
     private static final String ZIP_FILE = "FF_PENEF_EXTRANA_EXTUCSONANT_RION-4_20171016172353.zip";
-    private static final String ZIP_FILE_EN_COURS_DE_TRAITEMENT = "FF_PENEF_EXTRANA_EXTUCSONANT_RION-4_20171016172353.zip_en_cours_de_traitement";
 
     @Before
     public void setUp() {
@@ -80,14 +79,12 @@ public class ZipFileJobConfigurationTest {
     }
     @Test
     public void launchJobOneArchiveAvecDixElement() throws Exception {
-        //String filtre = "*_en_cours_de_traitement";
-        //Pattern p = Pattern.compile(filtre);
-        //String [] s = new File(inputDirectory).list();
         // Job parameters
         Map<String, JobParameter> jobParametersMap = new HashMap<String, JobParameter>();
         jobParametersMap.put("time", new JobParameter(System.currentTimeMillis()));
         FileOutputStream fos = new FileOutputStream(inputDirectory + "\\" + ZIP_FILE);
-        ZipOutputStream zos = new ZipOutputStream(fos);
+        Charset cs = Charset.forName("IBM437");
+        ZipOutputStream zos = new ZipOutputStream(fos,cs);
         UtilFile.addToZipFile(SINGLE_FILE, zos);
 
         jobParametersMap.put("input.archives", new JobParameter(inputDirectory));

@@ -27,7 +27,7 @@ public class App {
     public static void main(String[] args) {
         
 
-        ApplicationContext context = new AnnotationConfigApplicationContext(ConfigurationPriam.class);
+        ApplicationContext context = new AnnotationConfigApplicationContext(ConfigurationPriamLocal.class,ConfigurationPriamProd.class);
 
         JobLauncher jobLauncher = (JobLauncher) context.getBean("jobLauncher");
         Job job = (Job) context.getBean("archiveFlatFileReaderJob");

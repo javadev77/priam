@@ -18,6 +18,7 @@ import org.springframework.core.io.Resource;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.*;
 import java.util.zip.ZipFile;
 
@@ -110,7 +111,8 @@ public class ZipMultiResourceCMSItemReader<T> extends MultiResourceItemReader<T>
                             if (fichiersZipDansLeRepertoire.size() >= 1) {
                                 //on traite qu'un seul fichier zip par operation, ce fichier zip va etre déplacer si le batch est complet
                                 File file = fichiersZipDansLeRepertoire.get(0);
-                                zipFile = new ZipFile(file);
+                                Charset cs = Charset.forName("IBM437");
+                                zipFile = new ZipFile(file,cs);
                                 // find files inside the current zip resource
                                 //La fonction extractFiles traite le fichier csv et retourne son nom
                                 //Le nom du fichier est entregister dans le context du step pour pouvoir l'utiliser dans le itemWriter
