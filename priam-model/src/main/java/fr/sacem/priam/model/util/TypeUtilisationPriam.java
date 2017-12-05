@@ -12,6 +12,8 @@ public enum TypeUtilisationPriam {
     
     COPIE_PRIVEE_SONORE_RADIO("CPRIVSONRD"),
 
+    SONOFRA("SONOFRA"),
+
     SONOANT("SONOANT");
     
     

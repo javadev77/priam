@@ -1,27 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-
-    <groupId>fr.sacem.priam</groupId>
-    <artifactId>priam-batch-import-cp</artifactId>
-
-    <packaging>jar</packaging>
-
-    <name>priam-batch-import-cp</name>
-    <description>Batch d&#39;extraction Penef pour les copies privees</description>
-
     <parent>
         <artifactId>priam-parent</artifactId>
         <groupId>fr.sacem.priam</groupId>
         <version>2.0.0-SNAPSHOT</version>
     </parent>
+    <modelVersion>4.0.0</modelVersion>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.8</java.version>
-    </properties>
+    <artifactId>priam-batch-affectation-cms</artifactId>
+
+    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
@@ -70,11 +60,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>22.0-rc1</version>
-        </dependency>
-        <dependency>
             <groupId>commons-collections</groupId>
             <artifactId>commons-collections</artifactId>
             <version>3.2.1</version>
@@ -120,6 +105,7 @@
             <version>2.1.2</version>
         </dependency>
     </dependencies>
+
     <build>
         <plugins>
             <plugin>
@@ -141,4 +127,6 @@
 
         </plugins>
     </build>
+
+
 </project>

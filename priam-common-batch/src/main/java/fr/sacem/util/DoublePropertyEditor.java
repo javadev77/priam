@@ -24,7 +24,7 @@ public class DoublePropertyEditor extends PropertyEditorSupport {
                 setValue(nf.parse(text).doubleValue());
 
             } catch (ParseException e) {
-                setValue(LigneProgrammeCPSpringValidator.ERROR_DECIMAL_BINDING+text);
+                setValue(LigneProgrammeCPSpringValidator.ERROR_DECIMAL_BINDING + text);
             }
         } else {
             setValue(null);

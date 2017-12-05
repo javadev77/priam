@@ -1,12 +1,8 @@
 <template>
   <div class="container-fluid">
-    <div class="navbar navbar-default navbar-sm breadcrumb">
-      <div class="titre-page">
-        <span>Programme <span class="glyphicon glyphicon-chevron-right"></span>
-              Liste programmes
-            </span>
-      </div>
-    </div>
+
+    <navbar titre1="Programme" titre2="Liste programmes"></navbar>
+
     <div class="container-fluid sacem-formula">
 
       <div class="panel panel-default">
@@ -28,10 +24,6 @@
                   <label class="control-label pull-right">N° programme</label>
                 </div>
                 <div class="col-sm-3">
-                  <!--<autocomplete :suggestions="numProgItems" :selection="critereRechercheData.numProg" @selected-value="updateValue"></autocomplete>-->
-                  <!--<input type="text" class="form-control" v-model="critereRechercheData.numProg">-->
-                 <!-- <v-select :searchable="true" v-model="critereRechercheData.numProg" :options="numProgItems">
-                  </v-select>-->
 
                   <select2 class="form-control" :options="numProgOptions" v-model="numProgSelected" :searchable="true">
                   </select2>
@@ -235,6 +227,7 @@
   import ChargementMixin from '../../mixins/chargementMixin';
   import programmeMixin from '../../mixins/programmeMixin';
   import { FAMILLES_PRIAM } from '../../../../consts';
+  import Navbar from '../../../common/components/ui/priam-navbar.vue';
 
 
   export default {
@@ -942,7 +935,8 @@
           modal: Modal,
           autocomplete : Autocomplete,
           select2 :Select2,
-          miseEnRepartitionProgramme : MiseEnRepartitionProgramme
+          miseEnRepartitionProgramme : MiseEnRepartitionProgramme,
+          navbar : Navbar
       }
 
   }

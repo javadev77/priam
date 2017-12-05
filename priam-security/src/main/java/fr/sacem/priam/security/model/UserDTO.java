@@ -7,9 +7,7 @@ import java.util.*;
 
 import static fr.sacem.priam.model.util.FamillePriam.CMS;
 import static fr.sacem.priam.model.util.FamillePriam.COPIE_PRIVEE;
-import static fr.sacem.priam.model.util.TypeUtilisationPriam.SONOANT;
-import static fr.sacem.priam.model.util.TypeUtilisationPriam.COPIE_PRIVEE_SONORE_PHONO;
-import static fr.sacem.priam.model.util.TypeUtilisationPriam.COPIE_PRIVEE_SONORE_RADIO;
+import static fr.sacem.priam.model.util.TypeUtilisationPriam.*;
 
 /**
  * Created by embouazzar on 23/08/2017.
@@ -107,6 +105,7 @@ public class UserDTO implements Serializable{
               break;
             case ROLE_GEST_CMS:
               codes.add(SONOANT.getCode());
+              codes.add(SONOFRA.getCode());
               break;
           }
         }

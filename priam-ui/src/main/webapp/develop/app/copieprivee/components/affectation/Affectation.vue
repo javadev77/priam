@@ -33,7 +33,7 @@
       </div>
   </div>
 
-  <div class="container-fluid sacem-formula">
+    <div class="container-fluid sacem-formula">
     <div class="panel panel-default">
       <div class="panel-heading">
         <h5 class="panel-title">
