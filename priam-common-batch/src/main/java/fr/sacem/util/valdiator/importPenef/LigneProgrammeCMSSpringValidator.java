@@ -21,9 +21,6 @@ public class LigneProgrammeCMSSpringValidator implements Validator {
 
 	public static final int IDE12_LENGTH_MAX = 12;
 	public static final int IDE12_LENGTH_MIN = 6;
-	public static final String NOMPARTICIPANT_VIDE = "COMPTE DE RESERVE";
-	public static final String ROLEPARTICIPANT_VIDE = "CR";
-	public static final String ERROR_DECIMAL_BINDING = "PARSIN-ERROR-";
 
 	@Override
     public boolean supports(Class<?> clazz) {
@@ -34,54 +31,28 @@ public class LigneProgrammeCMSSpringValidator implements Validator {
     @Override
     public void validate(Object o, Errors errors) {
 
-		String cdeTypUtil = ((LigneProgramme)o).getCdeTypUtil();
-		//String cdeFamilTypUtil = ((LigneProgramme)o).getCdeFamilTypUtil();
+		String cdeTypUtil = ((LigneProgramme) o).getCdeTypUtil();
 		String ide12 = ((LigneProgramme) o).getIde12();
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeTypIde12", "error.cdeTypIde12");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "ide12", "error.ide12");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "titreOeuvre", "error.titreOeuvre");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeTypUtilOri", "error.cdeTypUtilOri");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeFamilTypUtilOri", "error.cdeFamilTypUtilOri");
-		if(TypeUtilisationEnum.CMS_FRA.getCode().equals(cdeTypUtil)) {
-			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeCisac", "error.cdeCisac");
-			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeFamilTypUtil", "error.cdeFamilTypUtil");
-			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeTypUtil", "error.cdeTypUtil");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeFamilTypUtil", "error.cdeFamilTypUtil");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeUtil", "error.cdeUtil");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeCisac", "error.cdeCisac");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeTypUtil", "error.cdeTypUtil");
+
+		if(!cdeTypUtil.equals("") && TypeUtilisationEnum.CMS_ANT.getCode().equals(cdeTypUtil)) {
+			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "nbrDif", "error.nbrDif");
+		}
+		if(!cdeTypUtil.equals("") && TypeUtilisationEnum.CMS_FRA.getCode().equals(cdeTypUtil)) {
 			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "mt", "error.mt");
 		}
 
-		if(ide12 != null && !ide12.isEmpty() && (ide12.length() < IDE12_LENGTH_MIN || ide12.length() > IDE12_LENGTH_MAX)) {
-			errors.rejectValue("ide12", "format.error.ide12");
+		if (ide12 != null && !ide12.isEmpty() && (ide12.length() < IDE12_LENGTH_MIN || ide12.length() > IDE12_LENGTH_MAX)) {
+				errors.rejectValue("ide12", "format.error.ide12");
 		}
-
-/*
-		if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode().equals(cdeTypUtil)) {
-			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "durDif", "error.durDif");
-		}
-
-		if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_PHONO.getCode().equals(cdeTypUtil)) {
-			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "nbrDif", "error. nbrDif");
-		}
-		if(cdeTypUtil == null || cdeTypUtil.isEmpty()) {
-			errors.rejectValue("cdeTypUtil", "error.cdeTypUtil");
-		}
-		else if(!TypeUtilisationEnum.CMS_ANT.getCode().equals(cdeTypUtil)
-				&& !TypeUtilisationEnum.CMS_FRA.getCode().equals(cdeTypUtil)) {
-			errors.rejectValue("cdeTypUtil", "format.error.cdeTypUtil");
-		}
-
-		if(cdeFamilTypUtil == null || cdeFamilTypUtil.isEmpty()) {
-			errors.rejectValue("cdeFamilTypUtil", "error.cdeFamilTypUtil");
-		}else if(cdeTypUtil != null && !cdeTypUtil.isEmpty() &&
-				!cdeFamilTypUtil.equals(TypeUtilisationEnum.getValue(cdeTypUtil).getCodeFamille())) {
-			errors.rejectValue("cdeFamilTypUtil", "format.error.cdeFamilTypUtil");
-		}
-*/
-
-
-
-
-
-
 
 		validateNumericFields(errors, (LigneProgramme) o);
     }

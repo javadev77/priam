@@ -45,7 +45,6 @@ public class ZipFileJobConfigurationTest {
     private String outputDirectory = "src/test/resources/zipDirectoryVide/";
     private static final String SINGLE_FILE = "src/test/resources/zipDirectory/FF_PENEF_EXTRANA_EXTCPRIVSONRD_20170406140540.csv";
     private static final String ZIP_FILE = "FF_PENEF_EXTRANA_EXTCPRIVSONRD_20170406140540.zip";
-    private static final String ZIP_FILE_EN_COURS_DE_TRAITEMENT = "FF_PENEF_EXTRANA_EXTCPRIVSONRD_20170406140540.zip_en_cours_de_traitement";
     static Properties p = new Properties();
 
     @Before
