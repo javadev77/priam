@@ -18,7 +18,7 @@
 
     <job id="jobEligibiliteOctav" xmlns="http://www.springframework.org/schema/batch">
 
-        <step id="chargerCatalogueOctav">
+        <step id="chargerCatalogueOctav" next="eligibiliteStep">
             <tasklet>
                 <chunk
                         reader="catalogueOctavReader"
@@ -70,6 +70,7 @@
                                               ) "/>
         <property name="databaseType" value="MySQL" />
         <property name="dataSource" ref="dataSource"/>
+        <property name="sortKey" value="l.ide12"/>
     </bean>
     <!--<bean id="readerPriamFromTable"-->
           <!--class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">-->

@@ -15,6 +15,7 @@ import javax.sql.DataSource;
 @ComponentScan(basePackages = "fr.sacem.*")
 @ImportResource(value = "classpath:config/job-configuration.xml")
 @Profile({"dev","local","integ","dev2"})
+@PropertySource("classpath:config/application-${spring.profiles.active}.properties")
 public class ConfigurationPriamLocal {
     @Value("${spring.datasource.url}")
     String urlDb;

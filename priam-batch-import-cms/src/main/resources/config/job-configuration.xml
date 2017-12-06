@@ -11,12 +11,12 @@
     <jdbc:initialize-database data-source="dataSource">
         <jdbc:script location="classpath:config/sql/initial-query.sql" />
     </jdbc:initialize-database>
-    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-           <property name="searchSystemEnvironment" value="true"/>
-        <property name="ignoreResourceNotFound" value="true"/>
-        <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
-     <property name="location" value="classpath:config/application-${spring.profiles.active}.properties"/>
-    </bean>
+    <!--<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">-->
+           <!--<property name="searchSystemEnvironment" value="true"/>-->
+        <!--<property name="ignoreResourceNotFound" value="true"/>-->
+        <!--<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>-->
+     <!--<property name="location" value="classpath:config/application-local.properties"/>-->
+    <!--</bean>-->
     <job id="archiveFlatFileReaderJob" xmlns="http://www.springframework.org/schema/batch">
         <step id="archiveFlatFileReaderStep" next="dedoublonnageStep">
             <tasklet>
