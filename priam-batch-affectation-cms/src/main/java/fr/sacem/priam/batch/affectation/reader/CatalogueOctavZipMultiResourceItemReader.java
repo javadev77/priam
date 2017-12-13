@@ -1,23 +1,27 @@
 package fr.sacem.priam.batch.affectation.reader;
 
+import fr.sacem.domain.Fichier;
 import fr.sacem.priam.common.util.FileUtils;
+import fr.sacem.service.importPenef.FichierService;
+import fr.sacem.util.UtilFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.JobParameter;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemStreamException;
 import org.springframework.batch.item.file.MultiResourceItemReader;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Enumeration;
-import java.util.List;
+import java.nio.charset.Charset;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -26,68 +30,129 @@ import java.util.zip.ZipFile;
  */
 public class CatalogueOctavZipMultiResourceItemReader<T> extends MultiResourceItemReader<T> {
     private static final Logger LOG = LoggerFactory.getLogger(CatalogueOctavZipMultiResourceItemReader.class);
+    private static final String EXTENTION_ZIP = "^(.*\\.((zip|ZIP)$))?[^.]*$";
+    public static final String MESSAGE_NOM_FICHIER_INCORRECTE = "Le fichier ne peut être chargé car son nom n'a pas le bon format";
     private Resource[] archives;
     private ZipFile[] zipFiles;
     private StepExecution stepExecution;
+    @Autowired
+    private UtilFile utilFile;
+    private ZipFile zipFile;
+    @Autowired
+    private FichierService fichierService;
+    private static String FILE_ZIP_EN_COURS_DE_TRAITEMENT = "_en_cours_de_traitement";
+
 
 
     @Override
     public void open(ExecutionContext executionContext) throws ItemStreamException {
 
         JobParameters jobParameters = stepExecution.getJobParameters();
+        JobParameter catalogueOactavDir =jobParameters.getParameters().get("input.catalog.octav");
+        JobParameter catalogueOactavArchivesDir =jobParameters.getParameters().get("archives.catalog.octav");
 
-        File catalogueOactavDir = new File(jobParameters.getParameters().get("input.catalog.octav").toString());
-        File catalogueOactavArchivesDir = new File(jobParameters.getParameters().get("archives.catalog.octav").toString());
+        String inputDirectory = (String)catalogueOactavDir.getValue();
+        String outputDirectory = (String)catalogueOactavArchivesDir.getValue();
         // really used with archives?
-        if (catalogueOactavDir != null && catalogueOactavDir.isDirectory()) {
-            // overwrite the comparator to use description
-            // instead of filename, the itemStream can only
-            // have that description
-            this.setComparator(new Comparator<Resource>() {
+        if (inputDirectory != null && outputDirectory != null) {
+            String rep = inputDirectory;
+            LOG.debug("=== inputDirectory : "+ inputDirectory + "===");
 
-                /** Compares resource descriptions. */
-                @Override
-                public int compare(Resource r1, Resource r2) {
-                    return r1.getDescription().compareTo(r2.getDescription());
-                }
-            });
+            FileSystemResource repertoireBase = new FileSystemResource(rep);
+            this.setArchives(new Resource[]{repertoireBase});
+            if (archives != null) {
+                // overwrite the comparator to use description
+                // instead of filename, the itemStream can only
+                // have that description
+                this.setComparator(new Comparator<Resource>() {
+                    /**
+                     * Compares resource descriptions.
+                     */
+                    @Override
+                    public int compare(Resource r1, Resource r2) {
+                        return r1.getDescription().compareTo(r2.getDescription());
+                    }
+                });
 
-            //filter zip files
-            File[] filtredFiles = catalogueOactavDir.listFiles((dir, name) -> {
-                if (name.startsWith(FileUtils.PREFIX_OCTAV_CATALOGUE_FR) && name.endsWith(".zip")) {
-                    return true;
-                }
-                return false;
-            });
-
-
-            if(filtredFiles != null && filtredFiles.length == 1) {
-                File fileToProcess = new File(catalogueOactavArchivesDir.getAbsolutePath() + File.separator + filtredFiles[0].getName());
-                boolean isMoveOK = filtredFiles[0].renameTo(fileToProcess);
-                // get the inputStreams from all files inside the archives
-                zipFiles = new ZipFile[filtredFiles.length];
-                List<Resource> extractedResources = new ArrayList<>();
+                List<Resource> extractedResources = new ArrayList<Resource>();
                 try {
-                    for (int i = 0; i < filtredFiles.length; i++) {
-                        // find files inside the current zip resource
-                        zipFiles[i] = new ZipFile(fileToProcess);
-                        extractFiles(zipFiles[i], extractedResources);
+                    // controle le nombre de repertoires passé, pour refuser le traitement des sous repertoires
+                    if (archives.length >= 1) {
+                        if (archives[0] != null) {
+                            Integer nbrDeFichierDansLeRepertoire = archives[0].getFile().listFiles().length;
+                            List<File> fichiersDansLeRepertoire = Arrays.asList(archives[0].getFile().listFiles());
+                            List<File> fichiersZipDansLeRepertoire = new ArrayList<File>();
+                            Integer nbrDeFichierZipATraiter=0;
+                            for (int j = 0; j < nbrDeFichierDansLeRepertoire; j++) {
+                                File file = fichiersDansLeRepertoire.get(j);
+                                LOG.debug("=== fichiers Dans Le Repertoire : "+file.getName()+" ===");
+                                //on traite qu'un seul fichier zip par lancement de batch
+                                if (file.getName().matches(EXTENTION_ZIP) && nbrDeFichierZipATraiter < 1) {
+
+                                    File fichierEnCoursDeTraitement = new File(rep + file.getName() + FILE_ZIP_EN_COURS_DE_TRAITEMENT);
+                                    LOG.debug("=== renomer le fichier en : "+fichierEnCoursDeTraitement.getName()+" ===");
+                                    JobParameter jobParameterFichierZipEnCours = new JobParameter(fichierEnCoursDeTraitement.getAbsolutePath());
+                                    JobParameter jobParameterNomFichierOriginal = new JobParameter(file.getName());
+
+
+                                    boolean renommageOk = file.renameTo(fichierEnCoursDeTraitement);
+                                    if (renommageOk) {
+                                        fichiersZipDansLeRepertoire.add(fichierEnCoursDeTraitement);
+                                        this.stepExecution.getExecutionContext().put("nomFichierOriginal", jobParameterNomFichierOriginal);
+                                        this.stepExecution.getExecutionContext().put("fichierZipEnCours", jobParameterFichierZipEnCours);
+                                        this.stepExecution.getExecutionContext().put("outputArchives", outputDirectory);
+                                        this.stepExecution.getExecutionContext().put("ligne-programme-errors", new HashSet<>());
+                                    }
+
+                                    nbrDeFichierZipATraiter = nbrDeFichierZipATraiter + 1;
+                                }
+                                //}
+                            }
+                            if (fichiersZipDansLeRepertoire.size() >= 1) {
+                                //on traite qu'un seul fichier zip par operation, ce fichier zip va etre déplacer si le batch est complet
+                                File file = fichiersZipDansLeRepertoire.get(0);
+                                Charset cs = Charset.forName("IBM437");
+                                zipFile = new ZipFile(file,cs);
+                                // find files inside the current zip resource
+                                //La fonction extractFiles traite le fichier csv et retourne son nom
+                                //Le nom du fichier est entregister dans le context du step pour pouvoir l'utiliser dans le itemWriter
+                                Long idFichier = utilFile.extractFiles(zipFile, extractedResources);
+                                Fichier fichier = fichierService.findById(idFichier);
+                                JobParameter jobParameterNomDuFichier = new JobParameter(fichier.getNom());
+                                this.stepExecution.getExecutionContext().put("nomFichier", jobParameterNomDuFichier);
+                                JobParameter jobParameterIdFichier = new JobParameter(fichier.getId());
+                                this.stepExecution.getExecutionContext().put("idFichier", jobParameterIdFichier);
+                                // utilisation de offset a 1 est pour cause la creation des fichier dans les zip avec un / sous linux, c'est un hack pour les fichiers creer sous linux
+                                String fileName = file.getName();
+                                if((!fileName.startsWith(FileUtils.PREFIX_OCTAV_CATALOGUE_FR)) && (!fileName.startsWith(FileUtils.PREFIX_OCTAV_CATALOGUE_FR,1))) {
+
+                                    LOG.debug("==== offsite 1 ===");
+                                    Set<String> errorSet = (Set<String>) executionContext.get("ligne-programme-errors");
+                                    errorSet.add(MESSAGE_NOM_FICHIER_INCORRECTE);
+                                    LOG.debug("==== "+file.getName()+" ===");
+                                    LOG.debug("============ Batch stoped ===============");
+                                    this.stepExecution.getJobExecution().stop();
+
+                                }
+                            }
+                        }
                     }
                 } catch (Exception ex) {
                     throw new ItemStreamException(ex);
                 }
+
                 // propagate extracted resources
                 this.setResources(extractedResources.toArray(new Resource[extractedResources.size()]));
-            } else {
-                //throw new ItemStreamException("");
-                this.setResources(new Resource[0]);
             }
-
-
-
+            super.open(executionContext);
+        } else {
+            LOG.error("Les parametres output.archives et input.archives ne doit pas être nulls");
         }
-        super.open(executionContext);
     }
+    public void setArchives(Resource[] archives) {
+        this.archives = archives;
+    }
+
 
     @Override
     public void close() throws ItemStreamException {

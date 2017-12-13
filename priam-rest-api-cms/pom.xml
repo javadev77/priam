@@ -17,6 +17,11 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>fr.sacem.priam</groupId>
+            <artifactId>priam-batch-affectation-cms</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
