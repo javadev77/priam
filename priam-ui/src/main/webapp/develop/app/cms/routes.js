@@ -5,6 +5,7 @@ import * as components from './components';
 
 export default [
 
-  { path: '/programme/cms/affectation/:numProg', name: 'affectation-cms', component: components.EcranAffectationCMS }
+  { path: '/programme/cms/affectation/:numProg', name: 'affectation-cms', component: components.EcranAffectationCMS },
+  { path: '/programme/cms/selection/:numProg', name: 'selection-cms', component: components.EcranSelectionCMS }
 
 ]

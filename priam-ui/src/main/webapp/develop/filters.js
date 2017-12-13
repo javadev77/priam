@@ -9,5 +9,6 @@ Vue.filter('dateAffectation', function (date) {
 });
 
 Vue.filter('numberFormat', function (number) {
-  return new Intl.NumberFormat("fr-FR").format(number);
+  return new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 2 }).format(number);
 });
+

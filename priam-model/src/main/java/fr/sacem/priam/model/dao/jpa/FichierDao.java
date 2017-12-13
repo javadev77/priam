@@ -28,8 +28,8 @@ public interface FichierDao extends JpaRepository<Fichier, Long> {
     @Query("SELECT DISTINCT new fr.sacem.priam.model.domain.dto.FileDto(f.id, f.nomFichier, fam.code, typu.code, f.dateDebutChargt, f.dateFinChargt, f.nbLignes, f.statut) " +
             "FROM Fichier AS f LEFT JOIN f.famille AS fam LEFT JOIN f.typeUtilisation AS typu " +
             "WHERE f.statut IN (:status) " +
-            "AND (fam.code IN (:familleCode)) " +
-            "AND (typu.code IN (:typeUtilisationCode)) " +
+            "AND (fam.code IN (:familleCode) OR fam.code IS NULL) " +
+            "AND (typu.code IN (:typeUtilisationCode) OR typu.code IS NULL) " +
             "AND f.automatique = true ")
     Page<FileDto> findAllFichiersByCriteria(@Param("familleCode") List<String> familleCode, @Param("typeUtilisationCode") List<String> typeUtilisationCode, @Param("status") List<Status> status, Pageable pageable);
     

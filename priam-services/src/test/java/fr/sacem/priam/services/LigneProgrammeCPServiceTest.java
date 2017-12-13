@@ -30,7 +30,7 @@ public class LigneProgrammeCPServiceTest {
 
     public static final String CDE_UTIL = "";
     @Autowired
-    LigneProgrammeService ligneProgrammeService;
+    LigneProgrammeCPServiceImpl ligneProgrammeService;
 
     private static final String NUM_PROG = "170001";
     private static final Long INITIAL_IDE12 = 772L;
@@ -116,19 +116,6 @@ public class LigneProgrammeCPServiceTest {
     }
 
     /***
-     * impossible d'executer cette requete sur la base de test (h2)
-     * org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "UPDATE   PRIAM_LIGNE_PROGRAMME P INNER[*] JOIN   PRIAM_FICHIER F ON P.ID_FICHIER = F.ID SET   P.SELECTION=? WHERE   F.NUMPROG = ? ";
-     * @throws Exception
-     */
-    @Ignore
-    @Test
-    @Transactional
-    public void selectAll() throws Exception {
-
-            ligneProgrammeService.selectAll(NUM_PROG);
-    }
-
-    /***
      *
      * org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "UPDATE   PRIAM_LIGNE_PROGRAMME P INNER[*] JOIN   PRIAM_FICHIER F ON P.ID_FICHIER = F.ID SET   P.SELECTION=? WHERE   F.NUMPROG = ? ";
      * @throws Exception
@@ -152,25 +139,7 @@ public class LigneProgrammeCPServiceTest {
         assertThat(flag).isEqualTo(true);
     }
 
-    /***
-     * impossible d'executer cette requete sur la base de test (h2)
-     * org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "UPDATE   PRIAM_LIGNE_PROGRAMME P INNER[*] JOIN   PRIAM_FICHIER F ON P.ID_FICHIER = F.ID SET   P.SELECTION=? WHERE   F.NUMPROG = ? ";
-     * @throws Exception
-     */
-    @Ignore
-    @Test
-    @Transactional
-    public void deselectAll() throws Exception {
-        boolean flag = true;
-        try{
-            ligneProgrammeService.deselectAll(NUM_PROG);
-        } catch (Exception e ) {
-            e.printStackTrace();
 
-        }
-
-        assertThat(flag).isEqualTo(false);
-    }
 
     /***
      * impossible d'executer cette requete sur la base de test (h2)

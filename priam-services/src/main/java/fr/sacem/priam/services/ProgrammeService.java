@@ -31,10 +31,7 @@ import java.util.*;
 @Component
 public class ProgrammeService {
 
-	private static final String SOMME = "SOMME";
 	public static final int SELECTION = 1;
-	public static final String AUTOMATIQUE = "Automatique";
-	public static final String MANUEL = "Manuel";
 
 	@Autowired
 	ProgrammeViewDao programmeViewDao;
@@ -204,33 +201,6 @@ public class ProgrammeService {
 		
 		
 	    return programmeCPDao.saveAndFlush(programme);
-	}
-
-	public Map<String, Long> getDurDifProgramme(String numProg, String statut){
-
-		Map<String, Long> result = new HashMap<>();
-		result.put(AUTOMATIQUE, 0L);
-		result.put(MANUEL, 0L);
-		result.put(SOMME, 0L);
-
-		Programme programme = programmeCPDao.findOne(numProg);
-
-		Integer selection = SELECTION;
-
-		List<Object> prog = programmeCPDao.compterOuvres(numProg, selection);
-
-		for (Object indicateur : prog) {
-			Object[] indObjects = (Object[]) indicateur;
-			result.put((String) indObjects[1], ((BigInteger) indObjects[0]).longValue());
-		}
-
-		if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_PHONO.getCode().equals(programme.getTypeUtilisation().getCode())) {
-			result.put(SOMME, programmeCPDao.calculerQuantiteOeuvres(numProg, selection));
-		} else if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode().equals(programme.getTypeUtilisation().getCode())) {
-			result.put(SOMME, programmeCPDao.calculerDureeOeuvres(numProg, selection));
-		}
-
-    		return result;
 	}
 
 	@Transactional

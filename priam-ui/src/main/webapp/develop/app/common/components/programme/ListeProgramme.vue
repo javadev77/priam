@@ -50,7 +50,7 @@
                 <div class="col-sm-2">
                   <date-picker v-model="critereRechercheData.dateCreationFin"
                                date-format="dd/mm/yy"
-                               :zeroHour="false"
+                               :zeroHour="true"
                                place-holder="A" >
 
                   </date-picker>
@@ -743,12 +743,17 @@
                   //redirect to Affectation.vue
 
                 if (row.famille === FAMILLES_PRIAM['UC']) { //CMS
-                  this.$router.push({ name: 'affectation-cms', params: { numProg: row.numProg }});
+                    this.$router.push({ name: 'affectation-cms', params: { numProg: row.numProg }});
+                } else if (row.famille === FAMILLES_PRIAM['COPIE_PRIVEE']) { //CP
+                    this.$router.push({ name: 'affectation', params: { numProg: row.numProg }});
+                }
+              } else if(column.id !== undefined && column.id === 'numProg') {
+                if (row.famille === FAMILLES_PRIAM['UC']) { //CMS
+                  this.$router.push({ name: 'selection-cms', params: { numProg: row.numProg }});
                 } else if (row.famille === FAMILLES_PRIAM['COPIE_PRIVEE']) { //CP
                   this.$router.push({ name: 'affectation', params: { numProg: row.numProg }});
                 }
-              } else if(column.id !== undefined && column.id === 'numProg') {
-                this.$router.push({ name: 'selection', params: { numProg: row.numProg }});
+
               } else if(column.id !== undefined && column.id === 'repartition') {
                  var statutFichierFelix = row.statutFichierFelix !== null && row.statutFichierFelix !== undefined ? row.statutFichierFelix : undefined;
                  if(statutFichierFelix !== undefined && statutFichierFelix == 'EN_ERREUR') {

@@ -10,7 +10,7 @@ var webpack = require('webpack')
 var config = require('../config')
 var webpackConfig = require('./webpack.devsacem.conf')
 
-var spinner = ora('building for DEV sacem...')
+var spinner = ora('building for environment "SACEM DEV" ...')
 spinner.start()
 
 rm(path.join(config.devsacem.assetsRoot, config.devsacem.assetsSubDirectory), err => {

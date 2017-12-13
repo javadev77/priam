@@ -7,7 +7,7 @@ import fr.sacem.priam.model.domain.dto.SelectionDto;
 import fr.sacem.priam.rest.api.copieprivee.RestResourceTest;
 import fr.sacem.priam.rest.api.copieprivee.web.rest.dto.LigneProgrammeCritereRecherche;
 import fr.sacem.priam.rest.api.copieprivee.web.rest.dto.ValdierSelectionProgrammeInput;
-import fr.sacem.priam.services.LigneProgrammeService;
+import fr.sacem.priam.services.LigneProgrammeCPServiceImpl;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -99,7 +99,7 @@ public class LigneProgrammeCPResourceTest extends RestResourceTest {
   private static final String INITIAL_TITRES = "Tes";
 
   @Autowired
-  private LigneProgrammeService ligneProgrammeService;
+  private LigneProgrammeCPServiceImpl ligneProgrammeService;
 
 
   @Autowired

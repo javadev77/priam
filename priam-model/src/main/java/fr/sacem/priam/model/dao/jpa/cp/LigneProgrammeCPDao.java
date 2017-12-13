@@ -316,4 +316,55 @@ public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Lon
                      "AND l.cdeUtil = :cdeUtil " +
                      "AND l.oeuvreManuel IS NULL ")
     LigneProgrammeCP findByIde12AndCdeUtil(@Param("numProg") String numProg, @Param("ide12") Long ide12, @Param("cdeUtil") String cdeUtil);
+
+
+    @Transactional(readOnly = true)
+    @Query(nativeQuery = true, value =
+            "SELECT " +
+                    "count(duree), ajout" +
+                    " from ( " +
+                    "       SELECT " +
+                    "           count(l.durDif) duree, l.ide12, l.ajout " +
+                    "       FROM " +
+                    "           PRIAM_LIGNE_PROGRAMME_CP l " +
+                    "       inner join " +
+                    "           PRIAM_FICHIER as f on l.ID_FICHIER=f.ID " +
+                    "       WHERE " +
+                    "           f.numProg = ?1 " +
+                    "AND (?2 IS NULL OR l.SEL_EN_COURS = ?2) " +
+                    "AND l.idOeuvreManuel IS NULL " +
+                    "       GROUP BY " +
+                    "           l.ide12, l.ajout, l.cdeUtil" +
+                    "       ) result " +
+                    "GROUP BY ajout")
+    List<Object> compterOuvres(@Param("numProg") String numProg, @Param("selection") Integer selection);
+
+    @Transactional(readOnly = true)
+    @Query(nativeQuery = true, value =
+            "SELECT sum(duree) from ( SELECT " +
+                    "sum(l.durDif) duree, l.ide12 " +
+                    "FROM " +
+                    "PRIAM_LIGNE_PROGRAMME_CP l inner join PRIAM_FICHIER as f " +
+                    "on l.ID_FICHIER=f.ID " +
+                    "WHERE " +
+                    "f.numProg = ?1 " +
+                    "AND (?2 IS NULL OR l.SEL_EN_COURS = ?2) " +
+                    "AND l.idOeuvreManuel IS NULL " +
+                    "GROUP BY l.ide12, l.cdeUtil) result ")
+    Long calculerDureeOeuvres(@Param("numProg") String numProg, @Param("selection") Integer selection);
+
+    @Transactional(readOnly = true)
+    @Query(nativeQuery = true, value =
+            "SELECT sum(quantite) from ( SELECT " +
+                    "sum(l.nbrDif) quantite, l.ide12 " +
+                    "FROM " +
+                    "PRIAM_LIGNE_PROGRAMME_CP l " +
+                    "inner join PRIAM_FICHIER as f " +
+                    "on l.ID_FICHIER=f.ID " +
+                    "WHERE f.numProg = ?1 " +
+                    "AND (?2 IS NULL OR l.SEL_EN_COURS = ?2) " +
+                    "AND l.idOeuvreManuel IS NULL " +
+                    "GROUP BY l.ide12, l.cdeUtil) result")
+    Long calculerQuantiteOeuvres(@Param("numProg") String numProg, @Param("selection") Integer selection);
+
 }

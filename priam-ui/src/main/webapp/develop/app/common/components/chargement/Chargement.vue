@@ -220,13 +220,6 @@
               type : 'date',
               cell : {
                 toText : function (entry) {
-                  /*if(entry.dateFinChargt !== null) {
-                    var m = moment(entry.dateFinChargt);
-                    return m.format("DD/MM/YYYY HH:mm");
-
-                  } else {
-                    return '';
-                  }*/
                   return entry.dateFinChargt;
                 }
               }
@@ -235,7 +228,12 @@
               id :  'nbLignes',
               name :   "Nb lignes",
               sortable : true,
-              type : 'numeric'
+              type : 'numeric',
+              cell : {
+                toText: function (entry) {
+                    return entry.nbLignes;
+                }
+              }
             },
             {
               id :  'statut',

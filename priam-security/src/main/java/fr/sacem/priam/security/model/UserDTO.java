@@ -104,8 +104,8 @@ public class UserDTO implements Serializable{
               codes.add(COPIE_PRIVEE_SONORE_RADIO.getCode());
               break;
             case ROLE_GEST_CMS:
-              codes.add(SONOANT.getCode());
               codes.add(SONOFRA.getCode());
+              codes.add(SONOANT.getCode());
               break;
           }
         }

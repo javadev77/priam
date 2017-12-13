@@ -11,11 +11,13 @@ import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.StatutProgramme;
 import fr.sacem.priam.model.domain.criteria.ProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
+import fr.sacem.priam.services.api.LigneProgrammeService;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -37,9 +39,15 @@ public class ProgrammeServiceTest {
 
 	public static final String NUM_PROG = "170001";
 	public static final String AFFECTE = "AFFECTE";
+
 	@Autowired
 	ProgrammeService programmeService;
-	
+
+	@Qualifier("ligneProgrammeCPService")
+	@Autowired
+	LigneProgrammeService ligneProgrammeService;
+
+
 	@Autowired
 	ProgrammeSequnceDao programmeSequnceDao;
 	
@@ -223,7 +231,7 @@ public class ProgrammeServiceTest {
 
 	@Test
 	public void getDurDifProgramme(){
-		Map<String, Long> durDifProgramme = programmeService.getDurDifProgramme(NUM_PROG, AFFECTE);
+		Map<String, Long> durDifProgramme = ((LigneProgrammeCPServiceImpl)ligneProgrammeService).getDurDifProgramme(NUM_PROG, AFFECTE);
 		assertThat(durDifProgramme).isNotEmpty();
 		assertThat(durDifProgramme.size()).isEqualTo(3);
 	}
