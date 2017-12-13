@@ -1,4 +1,4 @@
-package fr.sacem.priam.batch.affectation.reader;
+package fr.sacem.priam.rest.cms.batch.reader;
 
 import fr.sacem.domain.Fichier;
 import fr.sacem.priam.common.util.FileUtils;

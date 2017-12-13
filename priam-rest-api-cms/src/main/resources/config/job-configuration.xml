@@ -21,16 +21,16 @@
 
     <job id="jobEligibiliteOctav" xmlns="http://www.springframework.org/schema/batch">
 
-        <step id="chargerCatalogueOctav" next="eligibiliteStep">
-            <tasklet>
-                <chunk
-                        reader="catalogueOctavReader"
-                        writer="catalogueOctavWriter"
-                        processor="catalogueOctavProcessor"
-                        commit-interval="${commit-interval}">
-                </chunk>
-            </tasklet>
-        </step>
+        <!--<step id="chargerCatalogueOctav" next="eligibiliteStep">-->
+            <!--<tasklet>-->
+                <!--<chunk-->
+                        <!--reader="catalogueOctavReader"-->
+                        <!--writer="catalogueOctavWriter"-->
+                        <!--processor="catalogueOctavProcessor"-->
+                        <!--commit-interval="${commit-interval}">-->
+                <!--</chunk>-->
+            <!--</tasklet>-->
+        <!--</step>-->
 
         <step id="eligibiliteStep">
             <tasklet>
@@ -108,7 +108,7 @@
             <value>
                 <![CDATA[
                    DELETE FROM PRIAM_LIGNE_PROGRAMME_CMS l
-                        WHERE l.ide12 = :ide12 AND l.ID_FICHIER = :idFichier
+                        WHERE l.ide12 = :ide12
                 ]]>
             </value>
         </property>
@@ -118,7 +118,7 @@
     </bean>
 
     <bean id="catalogueOctavReader"
-          class="fr.sacem.priam.batch.affectation.reader.CatalogueOctavZipMultiResourceItemReader" scope="step">
+          class="fr.sacem.priam.rest.cms.batch.reader.CatalogueOctavZipMultiResourceItemReader" scope="step">
         <property name="delegate" ref="flatFileItemReader"/>
         <property name="strict" value="false"/>
     </bean>
@@ -220,8 +220,8 @@
         <!--</property>-->
     <!--</bean>-->
 
-    <bean id="catalogueOctavProcessor" class="fr.sacem.priam.batch.affectation.processor.CatalogueOctavProcessor"/>
-    <bean id="eligibiliteProcessor" class="fr.sacem.priam.batch.affectation.processor.EligibiliteProcessor"/>
+    <bean id="catalogueOctavProcessor" class="fr.sacem.priam.rest.cms.batch.processor.CatalogueOctavProcessor"/>
+    <bean id="eligibiliteProcessor" class="fr.sacem.priam.rest.cms.batch.processor.EligibiliteProcessor"/>
 
     <bean id="flatFileItemReader"
           class="org.springframework.batch.item.file.FlatFileItemReader">
@@ -242,7 +242,7 @@
                 </property>
                 <property name="fieldSetMapper">
                     <bean class="org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper">
-                        <property name="targetType" value="fr.sacem.priam.batch.affectation.domain.CatalogueOctavItem"/>
+                        <property name="targetType" value="fr.sacem.priam.rest.cms.batch.domain.CatalogueOctavItem"/>
                         <property name="customEditors">
                             <map>
                                 <entry key="java.time.LocalDate">
