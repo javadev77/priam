@@ -21,6 +21,16 @@
           <div class="panel-collapse" :class="{collapse : isCollapsed}">
             <app-programme-info
               :programmeInfo="programmeInfo">
+              <template slot="extra-info">
+                <div class="form-group col-md-6">
+                  <label class="col-md-9 control-label blueText text-right">Fin traitement CMS</label>
+                  <div class="col-md-10 control-label">
+                    <a @click="openPopupInfoTraitementCMS">
+                      {{ infoTraitementCMS.dateDebutTmt | formatDate('DD/MM/YYYY à HH:mm')}}
+                    </a>
+                  </div>
+                </div>
+              </template>
             </app-programme-info>
           </div>
         </div>
@@ -145,6 +155,24 @@
     </modal>
 
 
+    <modal v-if="showPopupInfoTmtCMS">
+      <label class="homer-prompt-q control-label" slot="body">
+        Démarrage traitement le {{ infoTraitementCMS.dateDebutTmt | formatDate('DD/MM/YYYY à HH:mm') }}<br/>
+          <ul>
+            <li>Oeuvres extraites : XXX</li>
+            <li>Oeuvres catalogue : XXX</li>
+            <li>Oeuvres retenues : XXX</li>
+            <li>Somme points : XXX</li>
+          </ul>
+        Fin traitement le {{ infoTraitementCMS.dateFinTmt | formatDate(' DD/MM/YYYY à HH:mm') }}
+      </label>
+      <template slot="footer">
+        <button class="btn btn-default btn-primary pull-right no" @click="showPopupInfoTmtCMS = false">Fermer</button>
+      </template>
+    </modal>
+
+
+
   </div>
 </template>
 
@@ -168,6 +196,15 @@
       var $this =this;
 
       return {
+
+        infoTraitementCMS : {
+
+            dateDebutTmt : Date,
+            dateFinTmt : Date
+
+        },
+
+        showPopupInfoTmtCMS : false,
 
         all : false,
         edition : false,
@@ -367,12 +404,15 @@
     },
 
     created() {
-      this.initProgramme();
+        this.infoTraitementCMS.dateDebutTmt = new Date();
+        this.infoTraitementCMS.dateFinTmt = new Date();
+        this.initProgramme();
     },
 
     methods :{
-      goBack() {
-        this.$router.back();
+      openPopupInfoTraitementCMS() {
+          this.showPopupInfoTmtCMS = true;
+
       },
 
       retablirFiltre() {

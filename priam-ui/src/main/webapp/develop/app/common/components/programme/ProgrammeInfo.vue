@@ -111,6 +111,9 @@
         </div>
       </div>
 
+
+      <slot name="extra-info"></slot>
+
     </div>
 
   </div>

@@ -320,11 +320,11 @@
         },
         affectationProgramme: {
           method: 'PUT',
-          url: process.env.CONTEXT_ROOT_PRIAM_CP + 'app/rest/programme/affectation'
+          url: process.env.CONTEXT_ROOT_PRIAM_CMS + 'app/rest/programme/affectation'
         },
         toutDeaffecterProg: {
           method: 'PUT',
-          url: process.env.CONTEXT_ROOT_PRIAM_CP + 'app/rest/programme/toutDesaffecter'
+          url: process.env.CONTEXT_ROOT_PRIAM_CMS + 'app/rest/programme/toutDesaffecter'
         },
         findAllFichiers: {
           method: 'POST',
