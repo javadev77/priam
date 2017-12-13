@@ -27,8 +27,8 @@ public class ConfigurationTest {
     }
     
     @Bean
-    public LigneProgrammeService ligneProgrammeService() {
-	  return new LigneProgrammeService();
+    public LigneProgrammeCPServiceImpl ligneProgrammeService() {
+	  return new LigneProgrammeCPServiceImpl();
     }
     
     @Bean

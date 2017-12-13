@@ -117,6 +117,8 @@
       <span v-if="isStatusProgrammeAffecte()" class="pull-right">
         Affecté par {{ programmeInfo.useraffecte }} {{ programmeInfo.dataffecte | dateAffectation }}
       </span>
+
+      <button class="btn btn-default btn-primary pull-right" type="button" @click="lancerAffectation()">Lancer Affectation</button>
     </div>
 
 
@@ -320,15 +322,20 @@
         },
         affectationProgramme: {
           method: 'PUT',
-          url: process.env.CONTEXT_ROOT_PRIAM_CP + 'app/rest/programme/affectation'
+          url: process.env.CONTEXT_ROOT_PRIAM_CMS + 'app/rest/programme/affectation'
         },
         toutDeaffecterProg: {
           method: 'PUT',
-          url: process.env.CONTEXT_ROOT_PRIAM_CP + 'app/rest/programme/toutDesaffecter'
+          url: process.env.CONTEXT_ROOT_PRIAM_CMS + 'app/rest/programme/toutDesaffecter'
         },
         findAllFichiers: {
           method: 'POST',
           url: process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/chargement/allFichiers'
+        },
+
+        lancerTraitementAffectationCMS : {
+          method: 'GET',
+          url: process.env.CONTEXT_ROOT_PRIAM_CMS + 'app/rest/programme/eligibilite/{numProg}'
         }
       }
       this.resource = this.$resource('', {}, customActions);
@@ -400,6 +407,17 @@
     },
 
     methods: {
+
+      lancerAffectation() {
+          debugger;
+        this.resource.lancerTraitementAffectationCMS({numProg: this.$route.params.numProg})
+          .then(response => {
+            return response.json();
+          })
+          .then(data => {
+              console.log("Traitement OK");
+          });
+      },
 
       goBack() {
         this.$router.back();

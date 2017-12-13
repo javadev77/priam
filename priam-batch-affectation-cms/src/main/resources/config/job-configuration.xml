@@ -53,7 +53,7 @@
     <property name="fromClause" value="FROM PRIAM_LIGNE_PROGRAMME_CMS l
                                             INNER JOIN PRIAM_FICHIER f ON l.ID_FICHIER=f.ID
                                             INNER JOIN PRIAM_PROGRAMME p ON p.NUMPROG=f.NUMPROG "/>
-    <property name="whereClause" value="WHERE (p.STATUT_PROG_CODE = 'EN_ATTENTE_ELIGIBILITE' or p.STATUS_PROG_CODE='EN_COURS_ELIGIBILITE')
+    <property name="whereClause" value="WHERE p.STATUT_PROG_CODE = 'EN_ATTENTE_ELIGIBILITE'
                                               AND l.ide12 NOT IN (
                                                   SELECT cat.IDE12
                                                   FROM PRIAM_CATALOGUE_OCTAV cat

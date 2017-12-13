@@ -76,9 +76,10 @@
                   </template>
                   <template v-else-if="entryColumn.type === 'numeric'">
                     <td class="columnRight">
-                      {{ entry[entryColumn.id] | numberFormat }}
+                      {{ entryColumn.cell.toText(entry) | numberFormat }}
                     </td>
                   </template>
+
                   <template v-else-if="entryColumn.type === 'code-value'">
                     <td class="columnCenter">
                       {{entryColumn.cell.toText(entry[entryColumn.id])}}
@@ -223,6 +224,7 @@
 <script>
 
   import Paginator from './Pagination.vue';
+  import moment from 'moment';
 
   export default {
 
@@ -271,13 +273,6 @@
         currentPage : 1,
         pageSize : 25
 
-        /*pagination: {
-          currentPage: this.data.number,
-          totalPages: this.data.totalPages,
-          totalElements : this.data.totalElements,
-          numberOfElements : this.data.numberOfElements,
-          size : this.data.size
-        }*/
       }
     },
 
@@ -310,20 +305,32 @@
         var sortKey = this.sortKey
         var order = this.sortOrders[sortKey] || 1;
         var data = this.data.content;
+        var $this = this;
 
-        /*if (filterKey) {
-          data = data.filter(function (row) {
-            return Object.keys(row).some(function (key) {
-              return String(row[key]).toLowerCase().indexOf(filterKey) > -1
-            })
-          })
-        }*/
         if (sortKey) {
-          data = data.slice().sort(function (a, b) {
-            a = a[sortKey]
-            b = b[sortKey]
-            return (a === b ? 0 : a > b ? 1 : -1) * order
-          })
+            let columnDef = this.columns.find(function (elem) {
+              return elem.id === sortKey;
+            });
+            if(columnDef !== undefined && columnDef.type === 'date') {
+              data = data.slice().sort(function (a, b) {
+                a = a[sortKey];
+                b = b[sortKey];
+                console.log("typeof a "+  typeof a);
+                let date1 = moment(a, "DD/MM/YYYY HH:mm");
+                let date2 = moment(b, "DD/MM/YYYY HH:mm");
+                debugger;
+                return (date1.isSame(date2) ? 0 : date1.isAfter(date2) ? 1 : -1) * order;
+              });
+            } else {
+
+              data = data.slice().sort(function (a, b) {
+                a = a[sortKey];
+                b = b[sortKey];
+                return (a === b ? 0 : a > b ? 1 : -1) * order
+              });
+
+            }
+
         }
         return data
       }

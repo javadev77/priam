@@ -50,7 +50,7 @@
             id : 'programme',
             name : 'programme',
             label : 'Programme',
-            routes : ['programme', 'selection', 'affectation', 'ListePrg'],
+            routes : ['programme', 'selection', 'selection-cms','affectation', 'affectation-cms', 'ListePrg'],
             items : [
               {
                 id : 'ListePrg',

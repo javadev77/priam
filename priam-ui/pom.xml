@@ -169,7 +169,7 @@
 
   <build>
 
-    <!--<finalName>priam</finalName>-->
+    <finalName>priam</finalName>
 
     <resources>
       <resource>

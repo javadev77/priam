@@ -10,6 +10,8 @@ import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.criteria.LigneProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.SelectionDto;
+import fr.sacem.priam.services.api.LigneProgrammeService;
+import fr.sacem.priam.services.cp.LigneProgrammeCPService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +20,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.JpaSort;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigInteger;
 import java.util.*;
 
 import static java.lang.Boolean.FALSE;
@@ -29,14 +32,18 @@ import static java.lang.Boolean.TRUE;
 /**
  * Created by jbelwidane on 25/07/2017.
  */
-@Component
-public class LigneProgrammeService {
+@Service("ligneProgrammeCPService")
+public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, LigneProgrammeCPService {
 
     public static final String IDE_12 = "ide12";
     public static final String CDE_UTIL = "libAbrgUtil";
     public static final String CDE_CISAC_058 = "058";
     public static final String MANUEL = "Manuel";
-    
+    public static final String AUTOMATIQUE = "Automatique";
+    private static final String SOMME = "SOMME";
+    public static final int SELECTION = 1;
+
+
     @Autowired
     private LigneProgrammeCPDao ligneProgrammeCPDao;
 
@@ -46,27 +53,28 @@ public class LigneProgrammeService {
     @Autowired
     private FichierDao fichierDao;
     
-    @Autowired
-    private ProgrammeService programmeService;
-
-    private static final Logger LOG = LoggerFactory.getLogger(LigneProgrammeService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LigneProgrammeCPServiceImpl.class);
 
     @Transactional
+    @Override
     public List<KeyValueDto> getListIDE12ByProgramme(Long ide12, String programme) {
         return ligneProgrammeCPDao.findIDE12sByProgramme(ide12, programme);
     }
 
     @Transactional
+    @Override
     public List<KeyValueDto> getTitresByProgramme(String titre, String programme) {
         return ligneProgrammeCPDao.findTitresByProgramme(titre.toUpperCase(), programme);
     }
 
     @Transactional
+    @Override
     public List<String> getUtilisateursByProgramme(String programme) {
         return ligneProgrammeCPDao.findUtilisateursByProgramme(programme);
     }
 
     @Transactional
+    @Override
     public Page<SelectionDto> findLigneProgrammeByCriteria(LigneProgrammeCriteria criteria, Pageable pageable) {
 
         Programme programme = programmeCPDao.findOne(criteria.getNumProg());
@@ -147,14 +155,7 @@ public class LigneProgrammeService {
     }
 
     @Transactional
-    public void selectAll(String numProg) {
-        ligneProgrammeCPDao.updateSelectionTemporaireByNumProgramme(numProg, true);
-        ligneProgrammeCPDao.updateSelection(numProg, true);
-        
-        ligneProgrammeCPDao.flush();
-    }
-
-    @Transactional
+    @Override
     public void selectLigneProgramme(String numProg, Set<Map<String, String>> idLingesProgrammes) {
         //ligneProgrammeDao.updateSelectionTemporaireByNumProgramme(numProg, false);
 
@@ -166,14 +167,10 @@ public class LigneProgrammeService {
 
 
     }
-
-    @Transactional
-    public void deselectAll(String numProg) {
-        ligneProgrammeCPDao.updateSelectionTemporaireByNumProgramme(numProg, false);
-    }
     
     
     @Transactional
+    @Override
     public void supprimerLigneProgramme(String numProg, Long ide12, SelectionDto selectedLigneProgramme) {
     
         String cdeUtil = selectedLigneProgramme.getCdeUtil();
@@ -181,8 +178,7 @@ public class LigneProgrammeService {
         doDeleteOeuvreManuel(oeuvreManuelFound);
     
     }
-    
-    @Transactional
+
     private void doDeleteOeuvreManuel(LigneProgrammeCP oeuvreManuelFound) {
         if(oeuvreManuelFound != null) {
     
@@ -202,6 +198,7 @@ public class LigneProgrammeService {
     
     
     @Transactional
+    @Override
     public void ajouterOeuvreManuel(LigneProgrammeCP input) {
         Programme programme = programmeCPDao.findOne(input.getNumProg());
     
@@ -271,8 +268,8 @@ public class LigneProgrammeService {
     }
     
     @Transactional
+    @Override
     public void deselectLigneProgramme(String numProg, Set<Map<String, String>> unselected) {
-        List<LigneProgrammeCP> toUpdate = new ArrayList<>();
         for (Map<String, String>  obj:  unselected) {
             if(obj != null && !obj.isEmpty()) {
                 ligneProgrammeCPDao.updateSelectionTemporaireByNumProgramme(numProg, Long.parseLong(obj.get(IDE_12)), obj.get(CDE_UTIL).split(" - ")[0], 0);
@@ -280,28 +277,9 @@ public class LigneProgrammeService {
         }
     }
     
+
     @Transactional
-    public Map<String, Long> calculerDureeAllSelection(String numProg, Set<Map<String, String>> lignesProg, boolean isSelectAll) {
-        Programme programme = programmeCPDao.findOne(numProg);
-        if(isSelectAll) {
-           selectLigneProgramme(numProg, lignesProg);
-        } else {
-           deselectLigneProgramme(numProg, lignesProg);
-        }
-    
-        Map<String, Long> durDifProgramme = programmeService.getDurDifProgramme(numProg, programme.getStatut().name());
-       
-       //Rollback les modif de avant calcul
-        if(isSelectAll) {
-            deselectLigneProgramme(numProg, lignesProg);
-        } else {
-            selectLigneProgramme(numProg, lignesProg);
-        }
-        
-        return durDifProgramme;
-    }
-    
-    @Transactional
+    @Override
     public void enregistrerEdition(String numProg) {
         
         ligneProgrammeCPDao.updateSelection(numProg, TRUE);
@@ -311,6 +289,7 @@ public class LigneProgrammeService {
     }
     
     @Transactional
+    @Override
     public void annulerEdition(String numProg) {
         List<LigneProgrammeCP> oeuvresManuelsEnCoursEdition = ligneProgrammeCPDao.findOeuvresManuelsEnCoursEdition(numProg, FALSE);
         oeuvresManuelsEnCoursEdition.forEach( oeuvreManuel -> doDeleteOeuvreManuel(oeuvreManuel));
@@ -322,6 +301,7 @@ public class LigneProgrammeService {
     }
     
     @Transactional
+    @Override
     public void annulerSelection(String numProg) {
         List<LigneProgrammeCP> allOeuvresManuelsByNumProg = ligneProgrammeCPDao.findAllOeuvresManuelsByNumProg(numProg);
         allOeuvresManuelsByNumProg.forEach( oeuvreManuel -> doDeleteOeuvreManuel(oeuvreManuel));
@@ -330,5 +310,33 @@ public class LigneProgrammeService {
         ligneProgrammeCPDao.updateSelection(numProg, TRUE);
         
         ligneProgrammeCPDao.flush();
+    }
+
+    @Override
+    public Map<String, Long> getDurDifProgramme(String numProg, String statut){
+
+        Map<String, Long> result = new HashMap<>();
+        result.put(AUTOMATIQUE, 0L);
+        result.put(MANUEL, 0L);
+        result.put(SOMME, 0L);
+
+        Programme programme = programmeCPDao.findOne(numProg);
+
+        Integer selection = SELECTION;
+
+        List<Object> prog = ligneProgrammeCPDao.compterOuvres(numProg, selection);
+
+        for (Object indicateur : prog) {
+            Object[] indObjects = (Object[]) indicateur;
+            result.put((String) indObjects[1], ((BigInteger) indObjects[0]).longValue());
+        }
+
+        if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_PHONO.getCode().equals(programme.getTypeUtilisation().getCode())) {
+            result.put(SOMME, ligneProgrammeCPDao.calculerQuantiteOeuvres(numProg, selection));
+        } else if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode().equals(programme.getTypeUtilisation().getCode())) {
+            result.put(SOMME, ligneProgrammeCPDao.calculerDureeOeuvres(numProg, selection));
+        }
+
+        return result;
     }
 }

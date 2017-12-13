@@ -17,18 +17,25 @@ import javax.sql.DataSource;
 @Profile({"dev","local","integ","dev2"})
 @PropertySource("classpath:config/application-${spring.profiles.active}.properties")
 public class ConfigurationPriamLocal {
+
     @Value("${spring.datasource.url}")
     String urlDb;
+
     @Value("${spring.datasource.username}")
     String usernameDb;
+
     @Value("${spring.datasource.driver-class-name}")
     String driverDb;
+
     @Value("${spring.datasource.password}")
     String passwordDb;
+
     @Value("${input.archives}")
     String inputDirectory;
+
     @Value("${output.archives}")
     String outputDirectory;
+
     @Bean
     public DataSource dataSource() {
         return DataSourceBuilder
@@ -39,6 +46,7 @@ public class ConfigurationPriamLocal {
                 .driverClassName(driverDb)
                 .build();
     }
+
     @Bean
     public Admap admap(){
         Admap admap = new Admap();
@@ -46,6 +54,7 @@ public class ConfigurationPriamLocal {
         admap.setOutputFile(outputDirectory);
         return admap;
     }
+
     ConfigurationPriamLocal(){
 
     }

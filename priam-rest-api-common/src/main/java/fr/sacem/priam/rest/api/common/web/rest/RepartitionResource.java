@@ -36,9 +36,6 @@ public class RepartitionResource {
     private FelixDataService felixDataService;
 
     @Autowired
-    private ProgrammeCPDao programmeCPDao;
-
-    @Autowired
     private FichierFelixDao fichierFelixDao;
 
 

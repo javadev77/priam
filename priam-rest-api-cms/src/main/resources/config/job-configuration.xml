@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xsi:schemaLocation="http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/jdbc
+        http://www.springframework.org/schema/jdbc/spring-jdbc-3.1.xsd">
+<!--
+    <jdbc:initialize-database data-source="dataSource">
+        <jdbc:script location="classpath:config/sql/initial-query.sql" />
+    </jdbc:initialize-database>
+-->
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="searchSystemEnvironment" value="true"/>
+        <property name="ignoreResourceNotFound" value="true"/>
+        <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+        <property name="location" value="classpath:config/application-dev.properties"/>
+    </bean>
+
+    <job id="jobEligibiliteOctav" xmlns="http://www.springframework.org/schema/batch">
+
+        <!--<step id="chargerCatalogueOctav" next="eligibiliteStep">-->
+            <!--<tasklet>-->
+                <!--<chunk-->
+                        <!--reader="catalogueOctavReader"-->
+                        <!--writer="catalogueOctavWriter"-->
+                        <!--processor="catalogueOctavProcessor"-->
+                        <!--commit-interval="${commit-interval}">-->
+                <!--</chunk>-->
+            <!--</tasklet>-->
+        <!--</step>-->
+
+        <step id="eligibiliteStep">
+            <tasklet>
+                <chunk
+                        reader="eligibiliteReader"
+                        writer="eligibiliteWriter"
+                        processor="eligibiliteProcessor"
+                        commit-interval="${commit-interval}">
+                </chunk>
+            </tasklet>
+        </step>
+    </job>
+
+    <!-- Debut : Elements essentielle pour le step de dedoublonnage -->
+
+
+    <bean id="queryProvider" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean">
+        <property name="databaseType" value="MySQL" />
+        <property name="selectClause" value="select l.* "/>
+    <property name="fromClause" value="FROM PRIAM_LIGNE_PROGRAMME_CMS l
+                                            INNER JOIN PRIAM_FICHIER f ON l.ID_FICHIER=f.ID
+                                            INNER JOIN PRIAM_PROGRAMME p ON p.NUMPROG=f.NUMPROG "/>
+    <property name="whereClause" value="WHERE p.STATUT_PROG_CODE = 'EN_ATTENTE_ELIGIBILITE'
+                                              AND l.ide12 NOT IN (
+                                                  SELECT cat.IDE12
+                                                  FROM PRIAM_CATALOGUE_OCTAV cat
+                                                  GROUP BY cat.IDE12
+                                              ) "/>
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sortKey" value="l.ide12"/>
+    </bean>
+    <bean id="readerPriamFromTable"
+          class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="queryProvider" ref="queryProvider"/>
+        <property name="pageSize" value="${commit-interval}"/>
+        <property name="rowMapper" ref="ligneProgrammeRowMapper"/>
+
+    </bean>
+
+   <!---->
+
+    <bean id="ligneProgrammeRowMapper" class="fr.sacem.util.mapper.importPenef.PriamLigneProgrammeSQLMapper"/>
+
+    <bean id="catalogueOctavWriter" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    INSERT INTO PRIAM_CATALOGUE_OCTAV (
+                            TYPE_CMS,
+                            IDE12,
+                            TITRE,
+                            ROLE,
+                            PARTICIPANT
+                        )
+                        VALUES (
+                            :typeCMS,
+                            :ide12,
+                            :titre,
+                            :role,
+                            :participant
+                        )
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
+
+    <bean id="eligibiliteWriter" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                   DELETE FROM PRIAM_LIGNE_PROGRAMME_CMS l
+                        WHERE l.ide12 = :ide12
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
+
+    <bean id="catalogueOctavReader"
+          class="fr.sacem.priam.rest.cms.batch.reader.CatalogueOctavZipMultiResourceItemReader" scope="step">
+        <property name="delegate" ref="flatFileItemReader"/>
+        <property name="strict" value="false"/>
+    </bean>
+
+
+    <bean id="eligibiliteReader"
+            class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="queryProvider" ref="queryProvider"/>
+        <property name="pageSize" value="${commit-interval}"/>
+        <property name="rowMapper" ref="ligneProgrammeRowMapper"/>
+
+    </bean>
+
+    <!--<bean id="catalogueOctavWriter2" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">-->
+        <!--<property name="dataSource" ref="dataSource"/>-->
+        <!--<property name="sql">-->
+            <!--<value>-->
+                <!--<![CDATA[-->
+                    <!--INSERT INTO PRIAM_LIGNE_PROGRAMME_TRAITEMENT_BATCH (-->
+                            <!--id_fichier,-->
+                            <!--cdeCisac,-->
+                            <!--cdeFamilTypUtil,-->
+                            <!--numProg,-->
+                            <!--cdeUtil,-->
+                            <!--cdeTypUtil,-->
+                            <!--cdeGreDif,-->
+                            <!--cdeModDif,-->
+                            <!--cdeTypIde12,-->
+                            <!--ide12,-->
+                            <!--durDif,-->
+                            <!--nbrDif,-->
+                            <!--mt,-->
+                            <!--ctna,-->
+                            <!--paramCoefHor,-->
+                            <!--durDifCtna,-->
+                            <!--cdeLng,-->
+                            <!--indDoubSsTit,-->
+                            <!--tax,-->
+                            <!--typMt,-->
+                            <!--cdeGreIde12Cmplx,-->
+                            <!--cdeGreIde12,-->
+                            <!--titreOriCmplx,-->
+                            <!--titreAltPppalCmplx,-->
+                            <!--titreOriOeuvPereCmplx,-->
+                            <!--titreAltOeuvPereCmplx,-->
+                            <!--titreOeuvre,-->
+                            <!--cdePaysOriIso4NCmplx,-->
+                            <!--realisateurCmplx,-->
+                            <!--roleParticipant1,-->
+                            <!--nomParticipant1,-->
+                            <!--cdeTypUtilOri,-->
+                            <!--cdeFamilTypUtilOri,-->
+                            <!--libelleUtilisateur-->
+                        <!--)-->
+                        <!--VALUES (-->
+                            <!--:idFichier,-->
+                            <!--:cdeCisac,-->
+                            <!--:cdeFamilTypUtil,-->
+                            <!--:numProg,-->
+                            <!--:cdeUtil,-->
+                            <!--:cdeTypUtil,-->
+                            <!--:cdeGreDif,-->
+                            <!--:cdeModDif,-->
+                            <!--:cdeTypIde12,-->
+                            <!--:ide12,-->
+                            <!--:durDif,-->
+                            <!--:nbrDif,-->
+                            <!--:mt,-->
+                            <!--:ctna,-->
+                            <!--:paramCoefHor,-->
+                            <!--:durDifCtna,-->
+                            <!--:cdeLng,-->
+                            <!--:indDoubSsTit,-->
+                            <!--:tax,-->
+                            <!--:typMt,-->
+                            <!--:cdeGreIde12Cmplx,-->
+                            <!--:cdeGreIde12,-->
+                            <!--:titreOriCmplx,-->
+                            <!--:titreAltPppalCmplx,-->
+                            <!--:titreOriOeuvPereCmplx,-->
+                            <!--:titreAltOeuvPereCmplx,-->
+                            <!--:titreOeuvre,-->
+                            <!--:cdePaysOriIso4NCmplx,-->
+                            <!--:realisateurCmplx,-->
+                            <!--:roleParticipant1,-->
+                            <!--:nomParticipant1,-->
+                            <!--:cdeTypUtilOri,-->
+                            <!--:cdeFamilTypUtilOri,-->
+                            <!--(SELECT concat(libUtil.CDEUTIL, case when libUtil.LIBABRGUTIL is null then '' else ' - ' end, coalesce(libUtil.LIBABRGUTIL, ''))-->
+                             <!--FROM SAREFTJ_LIBUTIL libUtil-->
+                              <!--WHERE libUtil.CDEUTIL = :cdeUtil )-->
+                        <!--)-->
+                <!--]]>-->
+            <!--</value>-->
+        <!--</property>-->
+        <!--<property name="itemSqlParameterSourceProvider">-->
+            <!--<bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>-->
+        <!--</property>-->
+    <!--</bean>-->
+
+    <bean id="catalogueOctavProcessor" class="fr.sacem.priam.rest.cms.batch.processor.CatalogueOctavProcessor"/>
+    <bean id="eligibiliteProcessor" class="fr.sacem.priam.rest.cms.batch.processor.EligibiliteProcessor"/>
+
+    <bean id="flatFileItemReader"
+          class="org.springframework.batch.item.file.FlatFileItemReader">
+        <property name="lineMapper">
+            <bean class="org.springframework.batch.item.file.mapping.DefaultLineMapper">
+                <property name="lineTokenizer">
+                    <bean class="org.springframework.batch.item.file.transform.DelimitedLineTokenizer">
+                        <property name="names"
+                                  value="
+                            typeCMS,
+                            ide12,
+                            titre,
+                            participant,
+                            role"
+                           />
+                        <property name="delimiter" value=";"/>
+                    </bean>
+                </property>
+                <property name="fieldSetMapper">
+                    <bean class="org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper">
+                        <property name="targetType" value="fr.sacem.priam.rest.cms.batch.domain.CatalogueOctavItem"/>
+                        <property name="customEditors">
+                            <map>
+                                <entry key="java.time.LocalDate">
+                                    <bean class="fr.sacem.util.LocalDatePropertyEditor">
+                                    </bean>
+                                </entry>
+                                <entry key="java.lang.Double">
+                                    <bean class="fr.sacem.util.DoublePropertyEditor">
+                                    </bean>
+                                </entry>
+                            </map>
+                        </property>
+                    </bean>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="jobOperator" class="org.springframework.batch.core.launch.support.SimpleJobOperator"
+          p:jobLauncher-ref="jobLauncher" p:jobExplorer-ref="jobExplorer"
+          p:jobRepository-ref="jobRepository" p:jobRegistry-ref="jobRegistry"/>
+
+    <bean id="jobExplorer" class="org.springframework.batch.core.explore.support.JobExplorerFactoryBean"
+          p:dataSource-ref="dataSource"/>
+
+    <bean id="jobRegistry" class="org.springframework.batch.core.configuration.support.MapJobRegistry"/>
+
+    <bean class="org.springframework.batch.core.configuration.support.JobRegistryBeanPostProcessor"
+          p:jobRegistry-ref="jobRegistry"/>
+
+    <bean id="jobLauncher" class="org.springframework.batch.core.launch.support.SimpleJobLauncher"
+          p:jobRepository-ref="jobRepository"/>
+
+    <bean id="jobRepository" class="org.springframework.batch.core.repository.support.JobRepositoryFactoryBean"
+          p:dataSource-ref="dataSource"
+          p:transactionManager-ref="transactionManager"/>
+
+    <bean id="fichierService" class="fr.sacem.service.importPenef.FichierServiceImpl">
+        <constructor-arg ref="fichierRepository"/>
+    </bean>
+
+    <bean id="fichierRepository" class="fr.sacem.dao.FichierRepositoryImpl">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="nomTableFichier" value="${nom.table.fichier}"/>
+        <property name="nomTableLigneProgramme" value="${nom.table.ligneprogramme}"/>
+        <property name="nomTableLigneProgrammeLog" value="${nom.table.fichierlog}"/>
+        <property name="typeFichier" value="${type.fichier}"/>
+    </bean>
+
+    <bean id="utilFile" class="fr.sacem.util.UtilFile">
+        <property name="fichierService" ref="fichierService"/>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+</beans>

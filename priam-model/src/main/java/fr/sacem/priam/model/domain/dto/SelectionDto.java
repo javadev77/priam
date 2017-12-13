@@ -96,6 +96,17 @@ public class SelectionDto {
   public SelectionDto() {
   }
 
+  public SelectionDto(Long ide12, String titreOeuvre, String roleParticipant1, String nomParticipant1,String ajout, boolean selection, String utilisateur, String cdeUtil) {
+    this.ide12 = ide12;
+    this.titreOeuvre = titreOeuvre;
+    this.roleParticipant1 = roleParticipant1;
+    this.nomParticipant1 = nomParticipant1;
+    this.ajout = ajout;
+    this.libAbrgUtil = utilisateur;
+    this.selection = selection;
+    this.cdeUtil = cdeUtil;
+  }
+
   public SelectionDto(Long ide12, String titreOeuvre, String roleParticipant1, String nomParticipant1,String ajout,Long durDif, Long quantite,
                       boolean selection, String utilisateur, String cdeUtil) {
     this.ide12 = ide12;
