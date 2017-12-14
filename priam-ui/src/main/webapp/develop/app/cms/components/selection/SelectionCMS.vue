@@ -159,10 +159,10 @@
       <label class="homer-prompt-q control-label" slot="body">
         Démarrage traitement le {{ infoTraitementCMS.dateDebutTmt | formatDate('DD/MM/YYYY à HH:mm') }}<br/>
           <ul>
-            <li>Oeuvres extraites : XXX</li>
-            <li>Oeuvres catalogue : XXX</li>
-            <li>Oeuvres retenues : XXX</li>
-            <li>Somme points : XXX</li>
+            <li>Oeuvres extraites : {{ infoTraitementCMS.nbOeuvresExtraction }}</li>
+            <li>Oeuvres catalogue : {{ infoTraitementCMS.nbOeuvresCatalogue }}</li>
+            <li>Oeuvres retenues : {{ infoTraitementCMS.nbOeuvresRetenues }}</li>
+            <li>Somme points :{{  infoTraitementCMS.sommePoints }}</li>
           </ul>
         Fin traitement le {{ infoTraitementCMS.dateFinTmt | formatDate(' DD/MM/YYYY à HH:mm') }}
       </label>
@@ -199,8 +199,15 @@
 
         infoTraitementCMS : {
 
-            dateDebutTmt : Date,
-            dateFinTmt : Date
+          dateDebutTmt : Date,
+          dateFinTmt : Date,
+
+          nbOeuvresCatalogue : Number,
+          nbOeuvresRetenues : Number,
+
+          nbOeuvresExtraction : Number,
+
+          sommePoints : Number
 
         },
 
@@ -404,8 +411,7 @@
     },
 
     created() {
-        this.infoTraitementCMS.dateDebutTmt = new Date();
-        this.infoTraitementCMS.dateFinTmt = new Date();
+
         this.initProgramme();
     },
 
@@ -465,10 +471,28 @@
           annulerSelection: {method: 'POST', url: process.env.CONTEXT_ROOT_PRIAM_CMS + 'app/rest/ligneProgramme/selection/annuler'},
           supprimerLigneProgramme: {method: 'DELETE', url: process.env.CONTEXT_ROOT_PRIAM_CMS + 'app/rest/ligneProgramme/{numProg}/{ide12}/'},
           enregistrerEdition : {method: 'POST', url: process.env.CONTEXT_ROOT_PRIAM_CMS + 'app/rest/ligneProgramme/selection/enregistrerEdition'},
-          annulerEdition : {method: 'POST', url: process.env.CONTEXT_ROOT_PRIAM_CMS + 'app/rest/ligneProgramme/selection/annulerEdition'}
+          annulerEdition : {method: 'POST', url: process.env.CONTEXT_ROOT_PRIAM_CMS + 'app/rest/ligneProgramme/selection/annulerEdition'},
+          getLastFinished : {method: 'GET', url: process.env.CONTEXT_ROOT_PRIAM_CMS + 'app/rest/programme/eligibilite/tmt/{numProg}'}
         }
 
         this.resource = this.$resource('', {}, customActions);
+
+        this.resource.getLastFinished({numProg: this.$route.params.numProg})
+          .then(response => {
+            return response.json();
+          })
+          .then(data => {
+              debugger;
+              this.infoTraitementCMS.dateFinTmt = data.dateFinTmt;
+              this.infoTraitementCMS.dateDebutTmt = data.dateDebutTmt;
+
+              this.infoTraitementCMS.nbOeuvresCatalogue = data.nbOeuvresCatalogue;
+              this.infoTraitementCMS.nbOeuvresExtraction = data.nbOeuvresExtraction;
+              this.infoTraitementCMS.nbOeuvresRetenues = data.nbOeuvresRetenues;
+              this.infoTraitementCMS.sommePoints = data.sommePoints;
+
+          }
+          );
 
         this.resource.findByNumProg({numProg: this.$route.params.numProg})
           .then(response => {
