@@ -21,6 +21,16 @@
           <div class="panel-collapse" :class="{collapse : isCollapsed}">
             <app-programme-info
               :programmeInfo="programmeInfo">
+              <template slot="extra-info">
+                <div class="form-group col-md-6">
+                  <label class="col-md-9 control-label blueText text-right">Fin traitement CMS</label>
+                  <div class="col-md-10 control-label">
+                    <a @click="openPopupInfoTraitementCMS">
+                      {{ infoTraitementCMS.dateDebutTmt | formatDate('DD/MM/YYYY à HH:mm')}}
+                    </a>
+                  </div>
+                </div>
+              </template>
             </app-programme-info>
           </div>
         </div>
@@ -145,6 +155,24 @@
     </modal>
 
 
+    <modal v-if="showPopupInfoTmtCMS">
+      <label class="homer-prompt-q control-label" slot="body">
+        Démarrage traitement le {{ infoTraitementCMS.dateDebutTmt | formatDate('DD/MM/YYYY à HH:mm') }}<br/>
+          <ul>
+            <li>Oeuvres extraites : {{ infoTraitementCMS.nbOeuvresExtraction }}</li>
+            <li>Oeuvres catalogue : {{ infoTraitementCMS.nbOeuvresCatalogue }}</li>
+            <li>Oeuvres retenues : {{ infoTraitementCMS.nbOeuvresRetenues }}</li>
+            <li>Somme points :{{  infoTraitementCMS.sommePoints }}</li>
+          </ul>
+        Fin traitement le {{ infoTraitementCMS.dateFinTmt | formatDate(' DD/MM/YYYY à HH:mm') }}
+      </label>
+      <template slot="footer">
+        <button class="btn btn-default btn-primary pull-right no" @click="showPopupInfoTmtCMS = false">Fermer</button>
+      </template>
+    </modal>
+
+
+
   </div>
 </template>
 
@@ -168,6 +196,22 @@
       var $this =this;
 
       return {
+
+        infoTraitementCMS : {
+
+          dateDebutTmt : Date,
+          dateFinTmt : Date,
+
+          nbOeuvresCatalogue : Number,
+          nbOeuvresRetenues : Number,
+
+          nbOeuvresExtraction : Number,
+
+          sommePoints : Number
+
+        },
+
+        showPopupInfoTmtCMS : false,
 
         all : false,
         edition : false,
@@ -367,12 +411,14 @@
     },
 
     created() {
-      this.initProgramme();
+
+        this.initProgramme();
     },
 
     methods :{
-      goBack() {
-        this.$router.back();
+      openPopupInfoTraitementCMS() {
+          this.showPopupInfoTmtCMS = true;
+
       },
 
       retablirFiltre() {
@@ -425,10 +471,28 @@
           annulerSelection: {method: 'POST', url: process.env.CONTEXT_ROOT_PRIAM_CMS + 'app/rest/ligneProgramme/selection/annuler'},
           supprimerLigneProgramme: {method: 'DELETE', url: process.env.CONTEXT_ROOT_PRIAM_CMS + 'app/rest/ligneProgramme/{numProg}/{ide12}/'},
           enregistrerEdition : {method: 'POST', url: process.env.CONTEXT_ROOT_PRIAM_CMS + 'app/rest/ligneProgramme/selection/enregistrerEdition'},
-          annulerEdition : {method: 'POST', url: process.env.CONTEXT_ROOT_PRIAM_CMS + 'app/rest/ligneProgramme/selection/annulerEdition'}
+          annulerEdition : {method: 'POST', url: process.env.CONTEXT_ROOT_PRIAM_CMS + 'app/rest/ligneProgramme/selection/annulerEdition'},
+          getLastFinished : {method: 'GET', url: process.env.CONTEXT_ROOT_PRIAM_CMS + 'app/rest/programme/eligibilite/tmt/{numProg}'}
         }
 
         this.resource = this.$resource('', {}, customActions);
+
+        this.resource.getLastFinished({numProg: this.$route.params.numProg})
+          .then(response => {
+            return response.json();
+          })
+          .then(data => {
+              debugger;
+              this.infoTraitementCMS.dateFinTmt = data.dateFinTmt;
+              this.infoTraitementCMS.dateDebutTmt = data.dateDebutTmt;
+
+              this.infoTraitementCMS.nbOeuvresCatalogue = data.nbOeuvresCatalogue;
+              this.infoTraitementCMS.nbOeuvresExtraction = data.nbOeuvresExtraction;
+              this.infoTraitementCMS.nbOeuvresRetenues = data.nbOeuvresRetenues;
+              this.infoTraitementCMS.sommePoints = data.sommePoints;
+
+          }
+          );
 
         this.resource.findByNumProg({numProg: this.$route.params.numProg})
           .then(response => {

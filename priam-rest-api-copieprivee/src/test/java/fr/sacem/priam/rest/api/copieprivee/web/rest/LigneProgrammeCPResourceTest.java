@@ -8,10 +8,13 @@ import fr.sacem.priam.rest.api.copieprivee.RestResourceTest;
 import fr.sacem.priam.rest.api.copieprivee.web.rest.dto.LigneProgrammeCritereRecherche;
 import fr.sacem.priam.rest.api.copieprivee.web.rest.dto.ValdierSelectionProgrammeInput;
 import fr.sacem.priam.services.LigneProgrammeCPServiceImpl;
+import fr.sacem.priam.services.api.LigneProgrammeService;
+import fr.sacem.priam.services.cp.LigneProgrammeCPService;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
@@ -99,7 +102,12 @@ public class LigneProgrammeCPResourceTest extends RestResourceTest {
   private static final String INITIAL_TITRES = "Tes";
 
   @Autowired
-  private LigneProgrammeCPServiceImpl ligneProgrammeService;
+  @Qualifier("ligneProgrammeCPService")
+  private LigneProgrammeService ligneProgrammeService;
+
+
+  @Autowired
+  private LigneProgrammeCPService ligneProgrammeCPService;
 
 
   @Autowired
@@ -261,7 +269,7 @@ public class LigneProgrammeCPResourceTest extends RestResourceTest {
 
     LigneProgrammeCP input = createLigneProgramme("170001", 1454545L, "LU1");
 
-    ligneProgrammeService.ajouterOeuvreManuel(input);
+    ligneProgrammeCPService.ajouterOeuvreManuel(input);
 
     SelectionDto se = new SelectionDto();
     se.setIde12(1454545L);

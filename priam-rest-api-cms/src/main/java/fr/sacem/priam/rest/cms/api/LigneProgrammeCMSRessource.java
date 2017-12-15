@@ -1,6 +1,8 @@
 package fr.sacem.priam.rest.cms.api;
 
 import fr.sacem.domain.Admap;
+import fr.sacem.priam.model.dao.jpa.cms.TraitementEligibiliteCMSDao;
+import fr.sacem.priam.model.domain.cms.TraitementEligibiliteCMS;
 import fr.sacem.priam.services.api.LigneProgrammeResource;
 import fr.sacem.priam.services.api.LigneProgrammeService;
 import fr.sacem.priam.services.cms.LigneProgrammeCMSService;
@@ -16,6 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,6 +52,9 @@ public class LigneProgrammeCMSRessource extends LigneProgrammeResource {
 
     @Autowired
     Admap admap;
+
+    @Autowired
+    TraitementEligibiliteCMSDao traitementEligibiliteCMSDao;
 
     @Autowired
     public LigneProgrammeCMSRessource(@Qualifier("ligneProgrammeCMSService") LigneProgrammeService ligneProgrammeService) {
@@ -88,6 +97,18 @@ public class LigneProgrammeCMSRessource extends LigneProgrammeResource {
         LOGGER.info("Fin de Traitement ");
 
 
+
+    }
+
+    @RequestMapping(value = "programme/eligibilite/tmt/{numProg}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public TraitementEligibiliteCMS getLastFinished(@PathVariable(value = "numProg") String numProg) {
+        PageRequest pageRequest = new PageRequest(0, 1);
+
+        Page<TraitementEligibiliteCMS> finishedTmtByNumProg = traitementEligibiliteCMSDao.findFinishedTmtByNumProg(numProg, pageRequest);
+
+        return finishedTmtByNumProg !=null && !finishedTmtByNumProg.getContent().isEmpty() ? finishedTmtByNumProg.getContent().get(0) : null;
 
     }
 
