@@ -1,5 +1,8 @@
-package fr.sacem.listener.importPenef;
+package fr.sacem.priam.batch.affectation.listener;
 
+import fr.sacem.dao.LigneProgrammeBatchDao;
+import fr.sacem.dao.ProgrammeBatchDao;
+import fr.sacem.dao.TraitementCmsDao;
 import fr.sacem.service.importPenef.FichierBatchServiceImpl;
 import fr.sacem.util.UtilFile;
 import fr.sacem.util.exception.PriamValidationException;
@@ -24,7 +27,7 @@ import static fr.sacem.util.exception.PriamValidationException.ErrorType;
 
 
 @Component
-public class JobCompletionNotificationLigneProgrammeImportPenefListener extends JobExecutionListenerSupport {
+public class JobCompletionNotificationAffectationCMSListener extends JobExecutionListenerSupport {
     public static final String LIGNE_PROGRAMME_ERRORS = "ligne-programme-errors";
     public static final String MESSAGE_ERREUR_TECHNIQUE = "Le chargement a été interrompu à cause d'un problème technique";
     public static final String MESSAGE_FICHIER_CHARGE = " - Le fichier \"%s\" a bien été chargé";
@@ -33,17 +36,37 @@ public class JobCompletionNotificationLigneProgrammeImportPenefListener extends 
     private static String NOM_FICHIER_CSV_EN_COURS = "nomFichier";
     private static String FICHIER_ZIP_EN_COURS = "fichierZipEnCours";
     private static String NOM_ORIGINAL_FICHIER_ZIP = "nomFichierOriginal";
-    private static String REPERTOIRE_DE_DESTINATION = "output.archives";
+    private static String REPERTOIRE_DE_DESTINATION = "archives.catalog.octav";
     private static String FILE_ERREUR = "erreur" ;
     private ExecutionContext executionContext;
     private FichierBatchServiceImpl fichierBatchService;
     private UtilFile utilFile;
-    private static final Logger LOG = LoggerFactory.getLogger(JobCompletionNotificationLigneProgrammeImportPenefListener.class);
+    private static final Logger LOG = LoggerFactory.getLogger(JobCompletionNotificationAffectationCMSListener.class);
 
     @Autowired
-    public JobCompletionNotificationLigneProgrammeImportPenefListener() {
+    ProgrammeBatchDao programmeBatchDao;
+
+    @Autowired
+    TraitementCmsDao traitementCmsDao;
+
+    @Autowired
+    LigneProgrammeBatchDao ligneProgrammeBatchDao;
+
+    @Autowired
+    public JobCompletionNotificationAffectationCMSListener() {
 
         utilFile = new UtilFile();
+    }
+
+    @Override
+    public void beforeJob(JobExecution jobExecution) {
+        //Creer un traitement CMS
+
+        String numProg = jobExecution.getJobParameters().getString("numProg");
+        Long nbOeuvres = ligneProgrammeBatchDao.countNbOeuvres(numProg);
+        long traitementID = traitementCmsDao.createTraitement(numProg, nbOeuvres);
+
+        jobExecution.getExecutionContext().put("ID_TMT_CMS", traitementID);
     }
 
     @Override
@@ -83,6 +106,14 @@ public class JobCompletionNotificationLigneProgrammeImportPenefListener extends 
                     }
 
                     utilFile.deplacerFichier(parameterFichierZipEnCours, parameterNomFichierOriginal, outputDirectory);
+
+                    String numProg = jobExecution.getJobParameters().getString("numProg");
+                    programmeBatchDao.majStattutEligibilite(numProg, "FIN_ELIGIBILITE");
+                    Long idTraitementCMS = jobExecution.getExecutionContext().getLong("ID_TMT_CMS");
+                    Long nbOeuvresRetenues = ligneProgrammeBatchDao.countNbOeuvres(numProg);
+                    Long nbOeuvresCatalogue = ligneProgrammeBatchDao.countNbOeuvresCatalogue();
+                    Double sommePoints = ligneProgrammeBatchDao.countSommePoints(numProg);
+                    traitementCmsDao.majTraitment(idTraitementCMS, nbOeuvresCatalogue,nbOeuvresRetenues, sommePoints);
                 } else {
                     LOG.debug("Pas de excution context pour le step en cours : " + myStepExecution.getStepName());
                 }

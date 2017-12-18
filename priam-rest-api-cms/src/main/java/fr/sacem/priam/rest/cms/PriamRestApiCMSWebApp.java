@@ -2,7 +2,7 @@ package fr.sacem.priam.rest.cms;
 
 import fr.sacem.priam.common.config.PropertiesWithJavaConfig;
 import fr.sacem.priam.model.config.JpaConfiguration;
-import fr.sacem.priam.rest.cms.batch.config.BatchConfig;
+import fr.sacem.priam.batch.affectation.config.BatchConfig;
 import fr.sacem.priam.security.config.RestMvcConfig;
 import fr.sacem.priam.security.config.SecurityRestConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

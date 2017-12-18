@@ -27,7 +27,7 @@
                         reader="catalogueOctavReader"
                         writer="catalogueOctavWriter"
                         processor="catalogueOctavProcessor"
-                        commit-interval="${commit-interval}">
+                        commit-interval="2000">
                 </chunk>
             </tasklet>
         </step>
@@ -70,8 +70,17 @@
 
         </step>
 
+
+        <listeners merge="true">
+            <listener ref="listenerCompletition"/>
+        </listeners>
+
     </job>
 
+
+    <bean id="listenerCompletition" class="fr.sacem.priam.batch.affectation.listener.JobCompletionNotificationAffectationCMSListener">
+        <property name="fichierBatchService" ref="fichierBatchService"/>
+    </bean>
 
     <bean id="listnerDeleteAfterDedoublonnage" class="fr.sacem.priam.batch.affectation.listener.ListnerDeleteAfterDedoublonnage"></bean>
 
@@ -84,10 +93,10 @@
     <bean id="queryProvider" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
         <property name="databaseType" value="MySQL" />
         <property name="selectClause" value="select l.* "/>
-    <property name="fromClause" value="FROM PRIAM_LIGNE_PROGRAMME_CMS l
+        <property name="fromClause" value="FROM PRIAM_LIGNE_PROGRAMME_CMS l
                                             INNER JOIN PRIAM_FICHIER f ON l.ID_FICHIER=f.ID
                                             INNER JOIN PRIAM_PROGRAMME p ON p.NUMPROG=f.NUMPROG"/>
-    <property name="whereClause" value="WHERE p.NUMPROG='#{jobParameters[numProg]}'
+        <property name="whereClause" value="WHERE p.NUMPROG='#{jobParameters[numProg]}'
                                               AND p.STATUT_ELIGIBILITE = 'EN_ATTENTE_ELIGIBILITE'
                                               AND l.ide12 NOT IN (
                                                   SELECT cat.IDE12
@@ -97,8 +106,9 @@
                                               ) "/>
 
         <property name="dataSource" ref="dataSource"/>
-        <property name="sortKey" value="l.ide12"/>
+        <property name="sortKey" value="ide12"/>
     </bean>
+
     <bean id="readerPriamFromTable"
           class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
         <property name="dataSource" ref="dataSource"/>
@@ -107,6 +117,7 @@
         <property name="rowMapper" ref="ligneProgrammeRowMapper"/>
 
     </bean>
+
     <bean id="jobParametersExtractor" class="org.springframework.batch.core.step.job.DefaultJobParametersExtractor">
         <property name="keys" value="numProg" />
     </bean>
@@ -286,7 +297,7 @@
         <property name="groupClause" value="group by l.ide12, l.cdeFamilTypUtilOri "/>
         <property name="databaseType" value="MySQL" />
         <property name="dataSource" ref="dataSource"/>
-        <property name="sortKey" value="l.ide12"/>
+        <property name="sortKey" value="ide12"/>
     </bean>
 
 
@@ -301,12 +312,12 @@
     </bean>
 
     <bean id="queryProviderStep4" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
-        <property name="selectClause" value="select l.id as id,  min(l.mt) as mt "/>
+        <property name="selectClause" value="SELECT  * FROM (select l.id as id,  min(l.mt) as mt "/>
         <property name="fromClause" value="from PRIAM_LIGNE_PROGRAMME_CMS l
                                             INNER JOIN PRIAM_FICHIER f ON l.ID_FICHIER=f.ID
                                             INNER JOIN PRIAM_PROGRAMME p ON p.NUMPROG=f.NUMPROG
                                             INNER JOIN PRIAM_LIGNE_PROGRAMME_CMS l2 on l.ide12=l2.ide12"/>
-        <property name="whereClause" value="WHERE p.NUMPROG='#{jobParameters[numProg]}' AND l.cdeFamilTypUtilOri &lt;&gt; l2.cdeFamilTypUtilOri "/>
+        <property name="whereClause" value="WHERE p.NUMPROG='#{jobParameters[numProg]}' AND l.cdeFamilTypUtilOri &lt;&gt; l2.cdeFamilTypUtilOri) temp  WHERE temp.id IS NOT NULL "/>
         <property name="databaseType" value="MySQL" />
         <property name="dataSource" ref="dataSource"/>
         <property name="sortKey" value="id"/>
@@ -369,9 +380,18 @@
     </bean>
 
 
-    <bean id="ligneProgrammeDao" class="fr.sacem.dao.LigneProgrammeDao">
+    <bean id="ligneProgrammeBatchDao" class="fr.sacem.dao.LigneProgrammeBatchDao">
         <property name="dataSource" ref="dataSource"/>
         <property name="nomTableLigneProgramme" value="${nom.table.ligneprogramme}"/>
+    </bean>
+
+    <bean id="programmeBatchDao" class="fr.sacem.dao.ProgrammeBatchDao">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="nomTableLigneProgramme" value="${nom.table.ligneprogramme}"/>
+    </bean>
+
+    <bean id="traitementCmsDao" class="fr.sacem.dao.TraitementCmsDao">
+        <property name="dataSource" ref="dataSource"/>
     </bean>
 
     <bean id="utilFile" class="fr.sacem.util.UtilFile">

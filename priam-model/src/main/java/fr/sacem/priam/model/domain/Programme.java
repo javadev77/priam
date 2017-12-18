@@ -38,6 +38,7 @@ public class Programme implements Serializable {
 	private Integer cdeTer;
 	
 	private Date dateRepartition;
+	private StatutEligibilite statutEligibilite;
 	
 	public Programme() {
 	}
@@ -140,13 +141,19 @@ public class Programme implements Serializable {
 	@Column(name = "CDE_TER")
 	public Integer getCdeTer() { return cdeTer; }
    
-	  @Column(name = "DATE_REPARTITION")
-	  @Temporal(TemporalType.TIMESTAMP)
-	  public Date getDateRepartition() {
+	@Column(name = "DATE_REPARTITION")
+	@Temporal(TemporalType.TIMESTAMP)
+	public Date getDateRepartition() {
 		return dateRepartition;
 	  }
-    
-    public void setUsercre(String usercre) {
+
+	@Column(name = "STATUT_ELIGIBILITE")
+	@Enumerated(EnumType.STRING)
+	public StatutEligibilite getStatutEligibilite() {
+		return statutEligibilite;
+	}
+
+	public void setUsercre(String usercre) {
 		this.usercre = usercre;
 	}
 	
@@ -215,4 +222,8 @@ public class Programme implements Serializable {
     public void setDateRepartition(Date dateRepartition) {
 	  this.dateRepartition = dateRepartition;
     }
+
+	public void setStatutEligibilite(StatutEligibilite statutEligibilite) {
+		this.statutEligibilite = statutEligibilite;
+	}
 }

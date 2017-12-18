@@ -1,18 +1,21 @@
 package fr.sacem.priam.rest.cms.api;
 
 import com.google.common.base.Strings;
+import fr.sacem.domain.Admap;
 import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
 import fr.sacem.priam.model.dao.jpa.cms.TraitementEligibiliteCMSDao;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.priam.model.domain.Fichier;
-import fr.sacem.priam.model.domain.StatutEligibilite;
-import fr.sacem.priam.model.domain.cms.TraitementEligibiliteCMS;
 import fr.sacem.priam.model.domain.dto.AffectationDto;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.security.model.UserDTO;
 import fr.sacem.priam.services.FichierService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobParameter;
+import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,8 +23,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Date;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by benmerzoukah on 16/11/2017.
@@ -43,6 +48,15 @@ public class AffectationCMSResource {
     @Autowired
     private ProgrammeDao programmeDao;
 
+    @Autowired
+    JobLauncher jobLauncher;
+
+    @Autowired
+    Job jobEligibiliteOctav;
+
+    @Autowired
+    Admap admap;
+
     @RequestMapping(value = "programme/affectation",
             method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -59,24 +73,25 @@ public class AffectationCMSResource {
         }
 
         //Lancer le traitement CMS
-        TraitementEligibiliteCMS tmt = new TraitementEligibiliteCMS();
+        /*TraitementEligibiliteCMS tmt = new TraitementEligibiliteCMS();
         tmt.setProgramme(programmeDao.findOne(numProg));
         tmt.setStatutEligibilite(StatutEligibilite.EN_ATTENTE_ELIGIBILITE);
         tmt.setDateDebutTmt(new Date());
 
-        traitementEligibiliteCMSDao.saveAndFlush(tmt);
+        traitementEligibiliteCMSDao.saveAndFlush(tmt);*/
 
         //lancer le job
 
         LOGGER.info("Lancement du Batch Affectation CMS ");
 
 
-       /* try {
+        try {
 
             Map<String, JobParameter> jobParametersMap = new HashMap<String, JobParameter>();
             jobParametersMap.put("time", new JobParameter(System.currentTimeMillis()));
             jobParametersMap.put("input.catalog.octav", new JobParameter(admap.getInputFile()));
             jobParametersMap.put("archives.catalog.octav", new JobParameter(admap.getOutputFile()));
+            jobParametersMap.put("numProg", new JobParameter(numProg));
 
             JobParameters jobParameters = new JobParameters(jobParametersMap);
 
@@ -86,7 +101,7 @@ public class AffectationCMSResource {
             LOGGER.error("Error execution", e);
         }
 
-        LOGGER.info("Fin de Traitement ");*/
+        LOGGER.info("Fin de Traitement ");
 
         return programmeDto;
     }

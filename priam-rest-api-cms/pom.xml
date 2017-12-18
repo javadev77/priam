@@ -173,6 +173,16 @@
             <type>jar</type>
         </dependency>
 
+
+        <dependency>
+            <groupId>fr.sacem.priam</groupId>
+            <artifactId>priam-batch-affectation-cms</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+
+
+
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-all</artifactId>

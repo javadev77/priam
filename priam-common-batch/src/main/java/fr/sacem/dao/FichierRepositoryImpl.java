@@ -224,11 +224,11 @@ public class FichierRepositoryImpl implements FichierRepository {
 
     }
 
-    public String getnomTableFichier() {
+    public String getNomTableFichier() {
         return this.nomTableFichier;
     }
 
-    public void setnomTableFichier(String nomTableFichier) {
+    public void setNomTableFichier(String nomTableFichier) {
         this.nomTableFichier = nomTableFichier;
     }
 

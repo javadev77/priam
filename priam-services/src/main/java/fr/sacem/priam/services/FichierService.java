@@ -4,10 +4,7 @@ import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.dao.jpa.cms.LigneProgrammeCMSDao;
 import fr.sacem.priam.model.dao.jpa.cp.LigneProgrammeCPDao;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
-import fr.sacem.priam.model.domain.Fichier;
-import fr.sacem.priam.model.domain.Programme;
-import fr.sacem.priam.model.domain.Status;
-import fr.sacem.priam.model.domain.StatutProgramme;
+import fr.sacem.priam.model.domain.*;
 import fr.sacem.priam.model.util.FamillePriam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -61,7 +58,7 @@ public class FichierService {
             //Mettre par defaut les oeuvre à  selectionne
             ligneProgrammeCMSDao.updateSelectionTemporaireByNumProgramme(numProg, true);
             ligneProgrammeCMSDao.deselectAllByNumProgramme(numProg, false);
-
+            programme.setStatutEligibilite(StatutEligibilite.EN_ATTENTE_ELIGIBILITE);
         } else if(programme.getFamille().getCode().equals(FamillePriam.COPIE_PRIVEE.getCode())) {
             //Mettre par defaut les oeuvre à  selectionne
             ligneProgrammeCPDao.updateSelectionTemporaireByNumProgramme(numProg, true);

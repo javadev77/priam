@@ -1,6 +1,7 @@
-package fr.sacem.priam.model.dao.jpa;
+package fr.sacem.priam.model.dao.jpa.cp;
 
 import fr.sacem.priam.model.dao.JpaConfigurationTest;
+import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.dao.jpa.cp.LigneProgrammeCPDao;
 import fr.sacem.priam.model.domain.Fichier;
 import fr.sacem.priam.model.domain.LignePreprep;
@@ -32,7 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ContextConfiguration(classes={JpaConfigurationTest.class})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @Transactional
-public class LigneProgrammeDaoTest {
+public class LigneProgrammeCPDaoTest {
 
     private static final String CDE_UTIL = "";
 

@@ -1,6 +1,6 @@
 package fr.sacem.priam.batch.affectation.listener;
 
-import fr.sacem.dao.LigneProgrammeDao;
+import fr.sacem.dao.LigneProgrammeBatchDao;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.listener.StepExecutionListenerSupport;
@@ -12,12 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class ListnerDeleteAfterDedoublonnage extends StepExecutionListenerSupport {
 
     @Autowired
-    LigneProgrammeDao ligneProgrammeDao;
+    LigneProgrammeBatchDao ligneProgrammeBatchDao;
 
     @Override
     public ExitStatus afterStep(StepExecution stepExecution) {
         String numProg = stepExecution.getJobParameters().getString("numProg");
-        this.ligneProgrammeDao.deleteDedoublonnage(numProg);
+        this.ligneProgrammeBatchDao.deleteDedoublonnage(numProg);
 
         return stepExecution.getExitStatus();
     }

@@ -1,9 +1,8 @@
 package fr.sacem.dao;
 
-import fr.sacem.util.UtilFile;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 
@@ -11,27 +10,21 @@ import javax.sql.DataSource;
  * Created by fandis on 15/12/2017.
  */
 @Repository
-public class LigneProgrammeDao {
+public class ProgrammeBatchDao {
 
     private JdbcTemplate jdbcTemplate;
 
     private String nomTableLigneProgramme;
 
-    public LigneProgrammeDao() {
+    public ProgrammeBatchDao() {
 
     }
 
-    public void deleteDedoublonnage(String numProg) {
-        String sql =  "DELETE FROM " + this.nomTableLigneProgramme + " WHERE id NOT IN (SELECT * from (" +
-                "select min(l.id) as id " +
-                "from " + this.nomTableLigneProgramme + " l" +
-                "  INNER JOIN PRIAM_FICHIER f ON l.ID_FICHIER=f.ID " +
-                "  INNER JOIN PRIAM_PROGRAMME p ON p.NUMPROG=f.NUMPROG " +
-                "WHERE p.NUMPROG=? " +
-                "group by l.ide12, l.cdeFamilTypUtilOri) as  temp) ";
+    public void majStattutEligibilite(String numProg, String statut) {
+        String sql =  "UPDATE PRIAM_PROGRAMME SET STATUT_ELIGIBILITE = ? WHERE NUMPROG = ?";
         jdbcTemplate.update(sql, stmt -> {
-            stmt.setString(1, numProg);
-
+            stmt.setString(1, statut);
+            stmt.setString(2, numProg);
         });
     }
 

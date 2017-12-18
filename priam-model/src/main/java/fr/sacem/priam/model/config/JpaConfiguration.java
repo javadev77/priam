@@ -1,6 +1,7 @@
 package fr.sacem.priam.model.config;
 
 import fr.sacem.priam.common.constants.EnvConstants;
+import org.hibernate.dialect.MySQL5InnoDBDialect;
 import org.hibernate.dialect.MySQLInnoDBDialect;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,7 +83,7 @@ public class JpaConfiguration {
         Map<String, Object> properties = new HashMap<>();
         
         properties.put("hibernate.show_sql", true);
-        properties.put("hibernate.dialect", MySQLInnoDBDialect.class.getName());
+        properties.put("hibernate.dialect", MySQL5InnoDBDialect.class.getName());
         properties.put("hibernate.bytecode.use_reflection_optimizer", true);
         properties.put("hibernate.jdbc.batch_size", 50);
         properties.put("hibernate.order_inserts", true);

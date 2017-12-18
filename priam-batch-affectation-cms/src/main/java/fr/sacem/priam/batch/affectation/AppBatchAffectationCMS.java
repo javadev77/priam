@@ -32,11 +32,13 @@ public class AppBatchAffectationCMS {
         Job jobEligibiliteOctav = (Job) context.getBean("jobEligibiliteOctav");
         Admap admap =(Admap) context.getBean("admap");
         try {
+
             Map<String, JobParameter> jobParametersMap = new HashMap<String, JobParameter>();
             jobParametersMap.put("time", new JobParameter(System.currentTimeMillis()));
             jobParametersMap.put("input.catalog.octav", new JobParameter(admap.getInputFile()));
             jobParametersMap.put("archives.catalog.octav", new JobParameter(admap.getOutputFile()));
-            jobParametersMap.put("numProg", new JobParameter("170011"));
+            jobParametersMap.put("numProg", new JobParameter("170012"));
+            jobParametersMap.put("ID_TMT_CMS", new JobParameter(0L));
             JobParameters jobParameters = new JobParameters(jobParametersMap);
 
             JobExecution execution = jobLauncher.run(jobEligibiliteOctav, jobParameters);
