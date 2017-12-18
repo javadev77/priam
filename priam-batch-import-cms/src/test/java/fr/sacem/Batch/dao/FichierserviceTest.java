@@ -33,7 +33,7 @@ public class FichierserviceTest {
         // Create the test configuration for the application from one file
         context = new ClassPathXmlApplicationContext(new String[]{"configuration/job-configuration.xml"});
         // Get the bean to use to invoke the application
-        fichierService = (FichierBatchServiceImpl) context.getBean("fichierService");
+        fichierService = (FichierBatchServiceImpl) context.getBean("fichierBatchService");
     }
 
     @Test
