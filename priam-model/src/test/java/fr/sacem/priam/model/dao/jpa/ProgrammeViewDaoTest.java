@@ -83,12 +83,16 @@ public class ProgrammeViewDaoTest {
     
     @Autowired
     private ProgrammeViewDao programmeViewDao;
+
     @Autowired
     private ProgrammeDao programmeDao;
+
     @Autowired
     private SareftrRionDao sareftrRionDao;
+
     @Autowired
     private SareftrTyputilDao sareftrTyputilDao;
+
     @Autowired
     private SareftrFamiltyputilDao sareftrFamiltyputilDao;
     
