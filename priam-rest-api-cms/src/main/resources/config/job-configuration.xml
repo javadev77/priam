@@ -7,11 +7,11 @@
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/jdbc
         http://www.springframework.org/schema/jdbc/spring-jdbc-3.1.xsd">
-<!--
+
     <jdbc:initialize-database data-source="dataSource">
         <jdbc:script location="classpath:config/sql/initial-query.sql" />
     </jdbc:initialize-database>
--->
+
     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="searchSystemEnvironment" value="true"/>
         <property name="ignoreResourceNotFound" value="true"/>
@@ -21,23 +21,33 @@
 
     <job id="jobEligibiliteOctav" xmlns="http://www.springframework.org/schema/batch">
 
-        <!--<step id="chargerCatalogueOctav" next="eligibiliteStep">-->
-            <!--<tasklet>-->
-                <!--<chunk-->
-                        <!--reader="catalogueOctavReader"-->
-                        <!--writer="catalogueOctavWriter"-->
-                        <!--processor="catalogueOctavProcessor"-->
-                        <!--commit-interval="${commit-interval}">-->
-                <!--</chunk>-->
-            <!--</tasklet>-->
-        <!--</step>-->
+        <step id="chargerCatalogueOctav" next="eligibiliteStep">
+            <tasklet>
+                <chunk
+                        reader="catalogueOctavReader"
+                        writer="catalogueOctavWriter"
+                        processor="catalogueOctavProcessor"
+                        commit-interval="${commit-interval}">
+                </chunk>
+            </tasklet>
+        </step>
 
-        <step id="eligibiliteStep">
+       <step id="eligibiliteStep" next="dedoublonnageStep" >
             <tasklet>
                 <chunk
                         reader="eligibiliteReader"
                         writer="eligibiliteWriter"
                         processor="eligibiliteProcessor"
+                        commit-interval="${commit-interval}">
+                </chunk>
+            </tasklet>
+        </step>-->
+
+        <step id="dedoublonnageStep" parent="eligibiliteStep">
+            <tasklet>
+                <chunk
+                        reader="readerDedoublonage"
+                        writer="writerDedoublonnage"
                         commit-interval="${commit-interval}">
                 </chunk>
             </tasklet>
@@ -47,18 +57,21 @@
     <!-- Debut : Elements essentielle pour le step de dedoublonnage -->
 
 
-    <bean id="queryProvider" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean">
+    <bean id="queryProvider" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
         <property name="databaseType" value="MySQL" />
         <property name="selectClause" value="select l.* "/>
     <property name="fromClause" value="FROM PRIAM_LIGNE_PROGRAMME_CMS l
                                             INNER JOIN PRIAM_FICHIER f ON l.ID_FICHIER=f.ID
-                                            INNER JOIN PRIAM_PROGRAMME p ON p.NUMPROG=f.NUMPROG "/>
-    <property name="whereClause" value="WHERE p.STATUT_PROG_CODE = 'EN_ATTENTE_ELIGIBILITE'
+                                            INNER JOIN PRIAM_PROGRAMME p ON p.NUMPROG=f.NUMPROG"/>
+    <property name="whereClause" value="WHERE p.NUMPROG='#{jobParameters[numProg]}'
+                                              AND p.STATUT_ELIGIBILITE = 'EN_ATTENTE_ELIGIBILITE'
                                               AND l.ide12 NOT IN (
                                                   SELECT cat.IDE12
                                                   FROM PRIAM_CATALOGUE_OCTAV cat
+                                                  WHERE cat.IDE12 IS NOT NULL
                                                   GROUP BY cat.IDE12
                                               ) "/>
+
         <property name="dataSource" ref="dataSource"/>
         <property name="sortKey" value="l.ide12"/>
     </bean>
@@ -70,10 +83,12 @@
         <property name="rowMapper" ref="ligneProgrammeRowMapper"/>
 
     </bean>
-
+    <bean id="jobParametersExtractor" class="org.springframework.batch.core.step.job.DefaultJobParametersExtractor">
+        <property name="keys" value="numProg" />
+    </bean>
    <!---->
 
-    <bean id="ligneProgrammeRowMapper" class="fr.sacem.util.mapper.importPenef.PriamLigneProgrammeSQLMapper"/>
+    <bean id="ligneProgrammeRowMapper" class="fr.sacem.util.mapper.importPenef.PriamLigneProgrammeCMSSQLMapper"/>
 
     <bean id="catalogueOctavWriter" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
         <property name="dataSource" ref="dataSource"/>
@@ -107,8 +122,23 @@
         <property name="sql">
             <value>
                 <![CDATA[
-                   DELETE FROM PRIAM_LIGNE_PROGRAMME_CMS l
-                        WHERE l.ide12 = :ide12
+                   DELETE FROM PRIAM_LIGNE_PROGRAMME_CMS WHERE ide12 = :ide12
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
+
+
+
+   <bean id="writerDedoublonnage" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                   UPDATE PRIAM_LIGNE_PROGRAMME_CMS SET mt = :mt WHERE ide12 = :ide12
                 ]]>
             </value>
         </property>
@@ -133,95 +163,8 @@
 
     </bean>
 
-    <!--<bean id="catalogueOctavWriter2" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">-->
-        <!--<property name="dataSource" ref="dataSource"/>-->
-        <!--<property name="sql">-->
-            <!--<value>-->
-                <!--<![CDATA[-->
-                    <!--INSERT INTO PRIAM_LIGNE_PROGRAMME_TRAITEMENT_BATCH (-->
-                            <!--id_fichier,-->
-                            <!--cdeCisac,-->
-                            <!--cdeFamilTypUtil,-->
-                            <!--numProg,-->
-                            <!--cdeUtil,-->
-                            <!--cdeTypUtil,-->
-                            <!--cdeGreDif,-->
-                            <!--cdeModDif,-->
-                            <!--cdeTypIde12,-->
-                            <!--ide12,-->
-                            <!--durDif,-->
-                            <!--nbrDif,-->
-                            <!--mt,-->
-                            <!--ctna,-->
-                            <!--paramCoefHor,-->
-                            <!--durDifCtna,-->
-                            <!--cdeLng,-->
-                            <!--indDoubSsTit,-->
-                            <!--tax,-->
-                            <!--typMt,-->
-                            <!--cdeGreIde12Cmplx,-->
-                            <!--cdeGreIde12,-->
-                            <!--titreOriCmplx,-->
-                            <!--titreAltPppalCmplx,-->
-                            <!--titreOriOeuvPereCmplx,-->
-                            <!--titreAltOeuvPereCmplx,-->
-                            <!--titreOeuvre,-->
-                            <!--cdePaysOriIso4NCmplx,-->
-                            <!--realisateurCmplx,-->
-                            <!--roleParticipant1,-->
-                            <!--nomParticipant1,-->
-                            <!--cdeTypUtilOri,-->
-                            <!--cdeFamilTypUtilOri,-->
-                            <!--libelleUtilisateur-->
-                        <!--)-->
-                        <!--VALUES (-->
-                            <!--:idFichier,-->
-                            <!--:cdeCisac,-->
-                            <!--:cdeFamilTypUtil,-->
-                            <!--:numProg,-->
-                            <!--:cdeUtil,-->
-                            <!--:cdeTypUtil,-->
-                            <!--:cdeGreDif,-->
-                            <!--:cdeModDif,-->
-                            <!--:cdeTypIde12,-->
-                            <!--:ide12,-->
-                            <!--:durDif,-->
-                            <!--:nbrDif,-->
-                            <!--:mt,-->
-                            <!--:ctna,-->
-                            <!--:paramCoefHor,-->
-                            <!--:durDifCtna,-->
-                            <!--:cdeLng,-->
-                            <!--:indDoubSsTit,-->
-                            <!--:tax,-->
-                            <!--:typMt,-->
-                            <!--:cdeGreIde12Cmplx,-->
-                            <!--:cdeGreIde12,-->
-                            <!--:titreOriCmplx,-->
-                            <!--:titreAltPppalCmplx,-->
-                            <!--:titreOriOeuvPereCmplx,-->
-                            <!--:titreAltOeuvPereCmplx,-->
-                            <!--:titreOeuvre,-->
-                            <!--:cdePaysOriIso4NCmplx,-->
-                            <!--:realisateurCmplx,-->
-                            <!--:roleParticipant1,-->
-                            <!--:nomParticipant1,-->
-                            <!--:cdeTypUtilOri,-->
-                            <!--:cdeFamilTypUtilOri,-->
-                            <!--(SELECT concat(libUtil.CDEUTIL, case when libUtil.LIBABRGUTIL is null then '' else ' - ' end, coalesce(libUtil.LIBABRGUTIL, ''))-->
-                             <!--FROM SAREFTJ_LIBUTIL libUtil-->
-                              <!--WHERE libUtil.CDEUTIL = :cdeUtil )-->
-                        <!--)-->
-                <!--]]>-->
-            <!--</value>-->
-        <!--</property>-->
-        <!--<property name="itemSqlParameterSourceProvider">-->
-            <!--<bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>-->
-        <!--</property>-->
-    <!--</bean>-->
-
-    <bean id="catalogueOctavProcessor" class="fr.sacem.priam.rest.cms.batch.processor.CatalogueOctavProcessor"/>
-    <bean id="eligibiliteProcessor" class="fr.sacem.priam.rest.cms.batch.processor.EligibiliteProcessor"/>
+    <bean id="catalogueOctavProcessor" class="fr.sacem.priam.batch.affectation.processor.CatalogueOctavProcessor"/>
+    <bean id="eligibiliteProcessor" class="fr.sacem.priam.batch.affectation.processor.EligibiliteProcessor"/>
 
     <bean id="flatFileItemReader"
           class="org.springframework.batch.item.file.FlatFileItemReader">
@@ -242,7 +185,7 @@
                 </property>
                 <property name="fieldSetMapper">
                     <bean class="org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper">
-                        <property name="targetType" value="fr.sacem.priam.rest.cms.batch.domain.CatalogueOctavItem"/>
+                        <property name="targetType" value="fr.sacem.priam.batch.affectation .domain.CatalogueOctavItem"/>
                         <property name="customEditors">
                             <map>
                                 <entry key="java.time.LocalDate">
@@ -261,6 +204,65 @@
         </property>
     </bean>
 
+    <bean id="readerDedoublonage"
+          class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="queryProvider" ref="queryProviderStep3"/>
+        <property name="pageSize" value="${commit-interval}"/>
+        <property name="rowMapper" ref="ligneProgrammeRowMapper"/>
+
+    </bean>
+
+    <bean id="queryProviderStep3" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
+        <property name="selectClause" value="select
+                            l.id_fichier,
+                            l.cdeCisac,
+                            l.cdeFamilTypUtil,
+                            l.numProg,
+                            l.cdeUtil,
+                            l.cdeTypUtil,
+                           l.cdeGreDif,
+                           l.cdeModDif,
+                           l.cdeTypIde12,
+                           l.ide12,
+                           l.durDif,
+                           l.nbrDif,
+                           sum(l.mt) mt,
+                           l.ctna,
+                           l.paramCoefHor,
+                           l.durDifCtna,
+                           l.cdeLng,
+                           l.indDoubSsTit,
+                           l.tax,
+                           l.typMt,
+                           l.cdeGreIde12Cmplx,
+                           l.cdeGreIde12,
+                           l.titreOriCmplx,
+                           l.titreAltPppalCmplx,
+                           l.titreOriOeuvPereCmplx,
+                           l.titreAltOeuvPereCmplx,
+                           l.titreOeuvre,
+                           l.cdePaysOriIso4NCmplx,
+                           l.realisateurCmplx,
+                           l.roleParticipant1,
+                           l.nomParticipant1,
+                           l.cdeTypUtilOri,
+                           l.cdeFamilTypUtilOri,
+                           l.libelleUtilisateur,
+                           l.utilisateur,
+                           l.date_insertion,
+                           l.ajout,
+                           l.selection"/>
+        <property name="fromClause" value="from PRIAM_LIGNE_PROGRAMME_CMS l
+                                            INNER JOIN PRIAM_FICHIER f ON l.ID_FICHIER=f.ID
+                                            INNER JOIN PRIAM_PROGRAMME p ON p.NUMPROG=f.NUMPROG"/>
+        <property name="whereClause" value="WHERE p.NUMPROG='#{jobParameters[numProg]}' "/>
+        <property name="groupClause" value="group by l.ide12, l.cdeFamilTypUtil "/>
+        <property name="databaseType" value="MySQL" />
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sortKey" value="ide12"/>
+    </bean>
+
     <bean id="jobOperator" class="org.springframework.batch.core.launch.support.SimpleJobOperator"
           p:jobLauncher-ref="jobLauncher" p:jobExplorer-ref="jobExplorer"
           p:jobRepository-ref="jobRepository" p:jobRegistry-ref="jobRegistry"/>
@@ -274,7 +276,13 @@
           p:jobRegistry-ref="jobRegistry"/>
 
     <bean id="jobLauncher" class="org.springframework.batch.core.launch.support.SimpleJobLauncher"
-          p:jobRepository-ref="jobRepository"/>
+          p:jobRepository-ref="jobRepository"
+          p:taskExecutor-ref="taskExecutor"
+    />
+
+    <bean id="taskExecutor"
+        class="org.springframework.core.task.SimpleAsyncTaskExecutor" >
+    </bean>
 
     <bean id="jobRepository" class="org.springframework.batch.core.repository.support.JobRepositoryFactoryBean"
           p:dataSource-ref="dataSource"

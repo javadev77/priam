@@ -70,9 +70,9 @@ public class LigneProgrammeCMSRessource extends LigneProgrammeResource {
 
 
     @RequestMapping(value = "programme/eligibilite/{numProg}",
-            method = RequestMethod.GET,
+            method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public Boolean lancerTraitementAffectationCMS(@PathVariable(value = "numProg") String numProg) {
+    public void lancerTraitementAffectationCMS(@PathVariable(value = "numProg") String numProg) {
         LOGGER.info("Lancement du Batch Affectation CMS ");
 
 
@@ -83,18 +83,18 @@ public class LigneProgrammeCMSRessource extends LigneProgrammeResource {
             jobParametersMap.put("time", new JobParameter(System.currentTimeMillis()));
             jobParametersMap.put("input.catalog.octav", new JobParameter(admap.getInputFile()));
             jobParametersMap.put("archives.catalog.octav", new JobParameter(admap.getOutputFile()));
-
+            jobParametersMap.put("numProg", new JobParameter(numProg));
             JobParameters jobParameters = new JobParameters(jobParametersMap);
 
-            JobExecution execution = jobLauncher.run(jobEligibiliteOctav, jobParameters);
-            LOGGER.info("Exit Status : " + execution.getStatus());
+            jobLauncher.run(jobEligibiliteOctav, jobParameters);
+            //LOGGER.info("Exit Status : " + execution.getStatus());
         } catch (Exception e) {
             LOGGER.error("Error execution", e);
         }
 
         LOGGER.info("Fin de Traitement ");
 
-        return Boolean.TRUE;
+
 
     }
 
