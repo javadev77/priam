@@ -14,6 +14,6 @@ import java.util.List;
 /**
  * Created by fandis on 14/06/2017.
  */
-public interface ProgrammeCPDao extends JpaRepository<Programme, String> {
+public interface ProgrammeDao extends JpaRepository<Programme, String> {
 
 }

@@ -12,7 +12,7 @@ import fr.sacem.priam.common.util.SftpUtil;
 import fr.sacem.priam.common.util.csv.*;
 import fr.sacem.priam.model.dao.jpa.*;
 import fr.sacem.priam.model.dao.jpa.cp.LigneProgrammeCPDao;
-import fr.sacem.priam.model.dao.jpa.cp.ProgrammeCPDao;
+import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.priam.model.domain.*;
 import fr.sacem.priam.model.domain.dto.FelixData;
 import fr.sacem.priam.model.domain.dto.FichierFelixError;
@@ -90,7 +90,7 @@ public class FelixDataService {
     private long nbLine = 0;
     
     @Autowired
-    private ProgrammeCPDao programmeCPDao;
+    private ProgrammeDao programmeDao;
     
     @Autowired
     private LignePreprepDao lignePreprepDao;
@@ -195,7 +195,7 @@ public class FelixDataService {
     public FichierFelixError createFichierFelixWithErrors(String numProg,
                                                           List<LignePreprep> lignePrepreps
                                                           ) throws IOException {
-        Programme programme = programmeCPDao.findOne(numProg);
+        Programme programme = programmeDao.findOne(numProg);
         if(programme == null) {
             TechnicalException technicalException = new TechnicalException(String.format("Impossible de trouver le programme %s", numProg));
             LOGGER.error(technicalException.getMessage(), technicalException);
@@ -299,10 +299,10 @@ public class FelixDataService {
     }
     
     private void majStatut(String numProg, StatutProgramme statutProgramme) {
-        Programme prog = programmeCPDao.findOne(numProg);
+        Programme prog = programmeDao.findOne(numProg);
         prog.setStatut(statutProgramme);
-        programmeCPDao.save(prog);
-        programmeCPDao.flush();
+        programmeDao.save(prog);
+        programmeDao.flush();
     }
 }
 

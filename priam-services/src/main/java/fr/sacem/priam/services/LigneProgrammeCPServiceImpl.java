@@ -3,7 +3,7 @@ package fr.sacem.priam.services;
 import fr.sacem.priam.common.TypeUtilisationEnum;
 import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.dao.jpa.cp.LigneProgrammeCPDao;
-import fr.sacem.priam.model.dao.jpa.cp.ProgrammeCPDao;
+import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.priam.model.domain.Fichier;
 import fr.sacem.priam.model.domain.cp.LigneProgrammeCP;
 import fr.sacem.priam.model.domain.Programme;
@@ -48,7 +48,7 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
     private LigneProgrammeCPDao ligneProgrammeCPDao;
 
     @Autowired
-    private ProgrammeCPDao programmeCPDao;
+    private ProgrammeDao programmeDao;
     
     @Autowired
     private FichierDao fichierDao;
@@ -77,7 +77,7 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
     @Override
     public Page<SelectionDto> findLigneProgrammeByCriteria(LigneProgrammeCriteria criteria, Pageable pageable) {
 
-        Programme programme = programmeCPDao.findOne(criteria.getNumProg());
+        Programme programme = programmeDao.findOne(criteria.getNumProg());
 
         Pageable queryPageable = new Pageable() {
 
@@ -200,7 +200,7 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
     @Transactional
     @Override
     public void ajouterOeuvreManuel(LigneProgrammeCP input) {
-        Programme programme = programmeCPDao.findOne(input.getNumProg());
+        Programme programme = programmeDao.findOne(input.getNumProg());
     
         LigneProgrammeCP oeuvreManuelFound = ligneProgrammeCPDao.findOeuvreManuelByIde12AndCdeUtil(input.getNumProg(), input.getIde12(), input.getCdeUtil());
         if(oeuvreManuelFound != null) {
@@ -320,7 +320,7 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
         result.put(MANUEL, 0L);
         result.put(SOMME, 0L);
 
-        Programme programme = programmeCPDao.findOne(numProg);
+        Programme programme = programmeDao.findOne(numProg);
 
         Integer selection = SELECTION;
 

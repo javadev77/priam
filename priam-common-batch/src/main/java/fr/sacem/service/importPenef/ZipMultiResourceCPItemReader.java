@@ -33,7 +33,7 @@ public class ZipMultiResourceCPItemReader<T> extends MultiResourceItemReader<T> 
     private UtilFile utilFile;
     private static String FILE_ZIP_EN_COURS_DE_TRAITEMENT = "_en_cours_de_traitement";
     @Autowired
-    private FichierService fichierService;
+    private FichierBatchService fichierBatchService;
 
 
     /**
@@ -117,7 +117,7 @@ public class ZipMultiResourceCPItemReader<T> extends MultiResourceItemReader<T> 
                                 //La fonction extractFiles traite le fichier csv et retourne son nom
                                 //Le nom du fichier est entregister dans le context du step pour pouvoir l'utiliser dans le itemWriter
                                 Long idFichier = utilFile.extractFiles(zipFile, extractedResources);
-                                Fichier fichier = fichierService.findById(idFichier);
+                                Fichier fichier = fichierBatchService.findById(idFichier);
                                 JobParameter jobParameterNomDuFichier = new JobParameter(fichier.getNom());
                                 this.stepExecution.getExecutionContext().put("nomFichier", jobParameterNomDuFichier);
                                 JobParameter jobParameterIdFichier = new JobParameter(fichier.getId());

@@ -280,7 +280,7 @@
           p:dataSource-ref="dataSource"
           p:transactionManager-ref="transactionManager"/>
 
-    <bean id="fichierService" class="fr.sacem.service.importPenef.FichierServiceImpl">
+    <bean id="fichierBatchService" class="fr.sacem.service.importPenef.FichierBatchServiceImpl">
         <constructor-arg ref="fichierRepository"/>
     </bean>
 
@@ -293,7 +293,7 @@
     </bean>
 
     <bean id="utilFile" class="fr.sacem.util.UtilFile">
-        <property name="fichierService" ref="fichierService"/>
+        <property name="fichierBatchService" ref="fichierBatchService"/>
     </bean>
 
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">

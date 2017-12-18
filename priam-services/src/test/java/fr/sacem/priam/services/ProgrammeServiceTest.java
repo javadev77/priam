@@ -3,7 +3,7 @@ package fr.sacem.priam.services;
 import com.google.common.collect.Lists;
 import fr.sacem.priam.model.dao.JpaConfigurationTest;
 import fr.sacem.priam.model.dao.jpa.FichierDao;
-import fr.sacem.priam.model.dao.jpa.cp.ProgrammeCPDao;
+import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.priam.model.dao.jpa.ProgrammeSequnceDao;
 import fr.sacem.priam.model.domain.Fichier;
 import fr.sacem.priam.model.domain.Programme;
@@ -52,7 +52,7 @@ public class ProgrammeServiceTest {
 	ProgrammeSequnceDao programmeSequnceDao;
 	
 	@Autowired
-	ProgrammeCPDao programmeCPDao;
+	ProgrammeDao programmeDao;
 	
 	@Autowired
 	FichierDao fichierDao;
@@ -188,7 +188,7 @@ public class ProgrammeServiceTest {
 		List<Fichier> fichiersAffectes = fichierDao.findFichiersByIdProgramme(pr170001, Status.AFFECTE);
 		programmeService.toutDeaffecter(pr170001, "GUEST");
 		
-		Programme programme = programmeCPDao.findOne(pr170001);
+		Programme programme = programmeDao.findOne(pr170001);
 		
 		assertThat(programme).isNotNull();
 		assertThat(programme.getStatut()).isEqualTo(StatutProgramme.CREE);

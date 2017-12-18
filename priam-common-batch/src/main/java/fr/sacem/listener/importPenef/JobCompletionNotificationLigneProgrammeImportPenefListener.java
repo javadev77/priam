@@ -1,6 +1,6 @@
 package fr.sacem.listener.importPenef;
 
-import fr.sacem.service.importPenef.FichierServiceImpl;
+import fr.sacem.service.importPenef.FichierBatchServiceImpl;
 import fr.sacem.util.UtilFile;
 import fr.sacem.util.exception.PriamValidationException;
 import org.slf4j.Logger;
@@ -36,7 +36,7 @@ public class JobCompletionNotificationLigneProgrammeImportPenefListener extends 
     private static String REPERTOIRE_DE_DESTINATION = "output.archives";
     private static String FILE_ERREUR = "erreur" ;
     private ExecutionContext executionContext;
-    private FichierServiceImpl fichierService;
+    private FichierBatchServiceImpl fichierService;
     private UtilFile utilFile;
     private static final Logger LOG = LoggerFactory.getLogger(JobCompletionNotificationLigneProgrammeImportPenefListener.class);
 
@@ -144,7 +144,7 @@ public class JobCompletionNotificationLigneProgrammeImportPenefListener extends 
 
     }
 
-    public void setFichierService(FichierServiceImpl fichierService) {
+    public void setFichierService(FichierBatchServiceImpl fichierService) {
         this.fichierService = fichierService;
     }
 }

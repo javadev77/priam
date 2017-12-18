@@ -30,7 +30,7 @@
         </listeners>
     </job>
     <bean id="listenerCompletition" class="fr.sacem.listener.importPenef.JobCompletionNotificationLigneProgrammeImportPenefListener">
-        <property name="fichierService" ref="fichierService"/>
+        <property name="fichierBatchService" ref="fichierBatchService"/>
     </bean>
     <bean id="readerPriamZip"
           class="fr.sacem.service.importPenef.ZipMultiResourceCPItemReader" scope="step">
@@ -205,7 +205,7 @@
           p:dataSource-ref="dataSource"
           p:transactionManager-ref="transactionManager"/>
 
-    <bean id="fichierService" class="fr.sacem.service.importPenef.FichierServiceImpl">
+    <bean id="fichierBatchService" class="fr.sacem.service.importPenef.FichierBatchServiceImpl">
         <constructor-arg ref="fichierRepository"/>
     </bean>
     <bean id="fichierRepository" class="fr.sacem.dao.FichierRepositoryImpl">
@@ -217,7 +217,7 @@
 
     </bean>
     <bean id="utilFile" class="fr.sacem.util.UtilFile">
-        <property name="fichierService" ref="fichierService"/>
+        <property name="fichierBatchService" ref="fichierBatchService"/>
     </bean>
 
 </beans>

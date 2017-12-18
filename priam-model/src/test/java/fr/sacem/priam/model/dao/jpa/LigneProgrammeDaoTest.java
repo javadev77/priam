@@ -32,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ContextConfiguration(classes={JpaConfigurationTest.class})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @Transactional
-public class LigneProgrammeCPDaoTest {
+public class LigneProgrammeDaoTest {
 
     private static final String CDE_UTIL = "";
 

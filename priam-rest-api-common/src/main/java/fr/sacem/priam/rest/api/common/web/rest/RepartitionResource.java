@@ -3,7 +3,6 @@ package fr.sacem.priam.rest.api.common.web.rest;
 import fr.sacem.priam.common.constants.EnvConstants;
 import fr.sacem.priam.common.exception.TechnicalException;
 import fr.sacem.priam.model.dao.jpa.FichierFelixDao;
-import fr.sacem.priam.model.dao.jpa.cp.ProgrammeCPDao;
 import fr.sacem.priam.model.domain.FichierFelix;
 import fr.sacem.priam.model.domain.StatutFichierFelix;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;

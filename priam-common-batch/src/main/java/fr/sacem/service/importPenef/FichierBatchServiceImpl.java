@@ -17,9 +17,9 @@ import java.util.stream.Stream;
  * Created by fandis on 17/05/2017.
  */
 @Service
-public class FichierServiceImpl implements FichierService {
+public class FichierBatchServiceImpl implements FichierBatchService {
     private FichierRepository fichierRepository;
-    private static final Logger LOG = LoggerFactory.getLogger(FichierServiceImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(FichierBatchServiceImpl.class);
 
     @Override
     public Long addFichier(InputStream inputStream, String nomFichier) throws PriamValidationException {
@@ -59,7 +59,7 @@ public class FichierServiceImpl implements FichierService {
         fichierRepository.enregistrerLog(idFichier, errors);
     }
 
-    public FichierServiceImpl(FichierRepository fichierRepository) {
+    public FichierBatchServiceImpl(FichierRepository fichierRepository) {
         this.fichierRepository = fichierRepository;
     }
 

@@ -1,14 +1,17 @@
 package fr.sacem.priam.services;
 
 import fr.sacem.priam.model.dao.jpa.FichierDao;
+import fr.sacem.priam.model.dao.jpa.cms.LigneProgrammeCMSDao;
 import fr.sacem.priam.model.dao.jpa.cp.LigneProgrammeCPDao;
-import fr.sacem.priam.model.dao.jpa.cp.ProgrammeCPDao;
+import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.priam.model.domain.Fichier;
 import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.StatutProgramme;
+import fr.sacem.priam.model.util.FamillePriam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -19,10 +22,8 @@ import java.util.Set;
 /**
  * Created by benmerzoukah on 29/05/2017.
  */
-@Component
+@Service
 public class FichierService {
-    
-    public static final String GUEST = "GUEST";
     @Autowired
     private FichierDao fichierDao;
     
@@ -30,8 +31,11 @@ public class FichierService {
     private LigneProgrammeCPDao ligneProgrammeCPDao;
     
     @Autowired
-    private ProgrammeCPDao programmeCPDao;
-    
+    private ProgrammeDao programmeDao;
+
+    @Autowired
+    private LigneProgrammeCMSDao ligneProgrammeCMSDao;
+
     @Transactional
     public void deleteDonneesFichiers(Long fileId) {
         ligneProgrammeCPDao.deleteAllByFichierId(fileId);
@@ -50,14 +54,24 @@ public class FichierService {
         if(!idsNouveauxFichiersAffectes.isEmpty()) {
             fichierDao.updateStatusFichiersAffectes(numProg, Status.AFFECTE, idsNouveauxFichiersAffectes);
         }
+
+        Programme programme = programmeDao.findOne(numProg);
+
+        if(programme.getFamille().getCode().equals(FamillePriam.CMS.getCode())) {
+            //Mettre par defaut les oeuvre à  selectionne
+            ligneProgrammeCMSDao.updateSelectionTemporaireByNumProgramme(numProg, true);
+            ligneProgrammeCMSDao.deselectAllByNumProgramme(numProg, false);
+
+        } else if(programme.getFamille().getCode().equals(FamillePriam.COPIE_PRIVEE.getCode())) {
+            //Mettre par defaut les oeuvre à  selectionne
+            ligneProgrammeCPDao.updateSelectionTemporaireByNumProgramme(numProg, true);
+            ligneProgrammeCPDao.deselectAllByNumProgramme(numProg, false);
+
+        }
         
-        
-        //Mettre par defaut les oeuvre à  selectionne
-        ligneProgrammeCPDao.updateSelectionTemporaireByNumProgramme(numProg, true);
-        ligneProgrammeCPDao.deselectAllByNumProgramme(numProg, false);
-        
+
     
-        Programme programme = programmeCPDao.findOne(numProg);
+
         if(idsNouveauxFichiersAffectes.isEmpty()) {
             programme.setStatut(StatutProgramme.CREE);
         } else {
@@ -68,7 +82,7 @@ public class FichierService {
         programme.setUseraffect(currentUserName);
         programme.setDataffect(new Date());
         
-        programmeCPDao.saveAndFlush(programme);
+        programmeDao.saveAndFlush(programme);
     }
 
     public Set<String> getChargementLog(Long idFichier) {

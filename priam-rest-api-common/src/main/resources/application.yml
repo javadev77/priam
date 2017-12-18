@@ -6,37 +6,3 @@ spring:
   profiles: dev,default
   jmx:
     enabled: false
-
-#datasource:
-#  priam:
-#    url: jdbc:mysql://msqdev08:3306/priam_app
-#    username: priam_app
-#    password: bidon
-##    url : jdbc:mysql://msqrec08:3306/priam_app
-##    username : priam_app
-##    password : rct
-#
-#    driverClassName: com.mysql.jdbc.Driver
-#    defaultSchema: priam_app
-#    maxPoolSize: 20
-#    hibernate:
-#      show_sql: true
-#      format_sql: true
-#      dialect: org.hibernate.dialect.MySQL5InnoDBDialect
-
----
-#spring:
-#  profiles: local,default
-#datasource:
-#  priam:
-#    url: jdbc:h2:mem:priam;MODE=MySQL;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS PRIAM_APP\;RUNSCRIPT FROM 'classpath:/scripts/init-schema.sql'\;RUNSCRIPT FROM 'classpath:scripts/data.sql'
-#    username: sa
-#    password:
-#    driverClassName: org.h2.Driver
-#    defaultSchema:
-#    maxPoolSize: 10
-#    hibernate:
-#
-#      show_sql: true
-#      format_sql: true
-#      dialect: org.hibernate.dialect.H2Dialect

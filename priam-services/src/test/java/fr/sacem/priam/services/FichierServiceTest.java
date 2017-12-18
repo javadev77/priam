@@ -2,7 +2,7 @@ package fr.sacem.priam.services;
 
 import fr.sacem.priam.model.dao.JpaConfigurationTest;
 import fr.sacem.priam.model.dao.jpa.FichierDao;
-import fr.sacem.priam.model.dao.jpa.cp.ProgrammeCPDao;
+import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.StatutProgramme;
@@ -35,7 +35,7 @@ public class FichierServiceTest {
 	FichierDao fichierDao;
 	
 	@Autowired
-	ProgrammeCPDao programmeCPDao;
+    ProgrammeDao programmeDao;
 	
 	@Test
 	@Transactional
@@ -57,7 +57,7 @@ public class FichierServiceTest {
 		
 		fichierService.majFichiersAffectesAuProgramme("170001", Collections.emptyList(), "GUEST");
 		
-		Programme pr170001 = programmeCPDao.findOne("170001");
+		Programme pr170001 = programmeDao.findOne("170001");
 		
 		assertThat(pr170001).isNotNull();
 		assertThat(pr170001.getStatut()).isEqualTo(StatutProgramme.CREE);

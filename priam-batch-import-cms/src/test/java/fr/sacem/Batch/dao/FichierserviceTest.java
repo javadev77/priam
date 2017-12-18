@@ -1,7 +1,7 @@
 package fr.sacem.Batch.dao;
 
 import fr.sacem.domain.Fichier;
-import fr.sacem.service.importPenef.FichierServiceImpl;
+import fr.sacem.service.importPenef.FichierBatchServiceImpl;
 import fr.sacem.util.exception.PriamValidationException;
 import org.junit.Assert;
 import org.junit.Before;
@@ -26,14 +26,14 @@ public class FichierserviceTest {
     private ApplicationContext context;
     private static final String SINGLE_FILE = "src/test/resources/zipDirectory/FF_PENEF_EXTRANA_EXTUCSONANT_RION-4_20171016172353.csv";
     private static final String NOM_FICHIER_CSV = "FF_PENEF_EXTRANA_EXTUCSONANT_RION-4_20171016172353.csv";
-    private FichierServiceImpl fichierService;
+    private FichierBatchServiceImpl fichierService;
 
     @Before
     public void setUp() {
         // Create the test configuration for the application from one file
         context = new ClassPathXmlApplicationContext(new String[]{"configuration/job-configuration.xml"});
         // Get the bean to use to invoke the application
-        fichierService = (FichierServiceImpl) context.getBean("fichierService");
+        fichierService = (FichierBatchServiceImpl) context.getBean("fichierService");
     }
 
     @Test

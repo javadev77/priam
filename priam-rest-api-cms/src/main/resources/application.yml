@@ -1,4 +1,7 @@
-
+server:
+  port: 8080
+  contextPath: /priam
+---
 spring:
   profiles: dev,default
   jmx:

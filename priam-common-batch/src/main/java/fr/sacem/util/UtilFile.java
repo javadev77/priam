@@ -2,7 +2,7 @@ package fr.sacem.util;
 
 import au.com.bytecode.opencsv.CSVReader;
 import fr.sacem.domain.Fichier;
-import fr.sacem.service.importPenef.FichierService;
+import fr.sacem.service.importPenef.FichierBatchService;
 import fr.sacem.util.exception.PriamValidationException;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -13,7 +13,6 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 
 import java.io.*;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -30,7 +29,7 @@ public class UtilFile {
     private static final String MON_FILTER = "TRACABILITE";
     private static final String STATUT_EN_COURS = "EN_COURS";
     private static final String EXTENTION_CSV = ".csv";
-    private FichierService fichierService;
+    private FichierBatchService fichierBatchService;
 
     @Autowired
     public static Long nombreDeLignes(InputStream inputStream) {
@@ -130,7 +129,7 @@ public class UtilFile {
                 InputStreamResource inputStreamResourceForExtraction = new InputStreamResource(currentZipFile.getInputStream(zipEntry), zipEntry.getName());
                 InputStream csvInputStream = currentZipFile.getInputStream(zipEntry);
                 InputStreamResource inputStreamResourceForBDD = new InputStreamResource(csvInputStream,zipEntry.getName());
-                idFichier = fichierService.addFichier(inputStreamResourceForBDD.getInputStream(), zipEntry.getName());
+                idFichier = fichierBatchService.addFichier(inputStreamResourceForBDD.getInputStream(), zipEntry.getName());
                 extractedResources.add(inputStreamResourceForExtraction);
                 LOG.info("using extracted file:" + zipEntry.getName());
             }
@@ -170,19 +169,19 @@ public class UtilFile {
             }
         }
     }
-    public UtilFile(FichierService fichierService) {
-        this.fichierService = fichierService;
+    public UtilFile(FichierBatchService fichierBatchService) {
+        this.fichierBatchService = fichierBatchService;
     }
 
     public UtilFile() {
     }
 
-    public FichierService getFichierService() {
-        return fichierService;
+    public FichierBatchService getFichierBatchService() {
+        return fichierBatchService;
     }
 
-    public void setFichierService(FichierService fichierService) {
-        this.fichierService = fichierService;
+    public void setFichierBatchService(FichierBatchService fichierBatchService) {
+        this.fichierBatchService = fichierBatchService;
     }
 
 }

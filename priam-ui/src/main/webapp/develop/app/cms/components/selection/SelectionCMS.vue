@@ -21,12 +21,12 @@
           <div class="panel-collapse" :class="{collapse : isCollapsed}">
             <app-programme-info
               :programmeInfo="programmeInfo">
-              <template slot="extra-info">
+              <template slot="extra-info" v-if="infoTraitementCMS.dateFinTmt !== null">
                 <div class="form-group col-md-6">
                   <label class="col-md-9 control-label blueText text-right">Fin traitement CMS</label>
                   <div class="col-md-10 control-label">
-                    <a @click="openPopupInfoTraitementCMS">
-                      {{ infoTraitementCMS.dateDebutTmt | formatDate('DD/MM/YYYY à HH:mm')}}
+                    <a @click="openPopupInfoTraitementCMS" style="text-decoration: underline;">
+                      {{ infoTraitementCMS.dateFinTmt | formatDate('DD/MM/YYYY à HH:mm')}}
                     </a>
                   </div>
                 </div>
@@ -71,9 +71,6 @@
                 <div class="rect5"></div>
               </div>
             </div>
-
-
-
 
             <div v-if = "!dataLoading && this.programmeInfo.typeUtilisation=='SONOANT'">
               <priam-grid
@@ -157,12 +154,12 @@
 
     <modal v-if="showPopupInfoTmtCMS">
       <label class="homer-prompt-q control-label" slot="body">
-        Démarrage traitement le {{ infoTraitementCMS.dateDebutTmt | formatDate('DD/MM/YYYY à HH:mm') }}<br/>
+        Démarrage traitement le {{ infoTraitementCMS.dateDebutTmt | formatDate('DD/MM/YYYY à HH:mm') }}<br/><br/>
           <ul>
-            <li>Oeuvres extraites : {{ infoTraitementCMS.nbOeuvresExtraction }}</li>
-            <li>Oeuvres catalogue : {{ infoTraitementCMS.nbOeuvresCatalogue }}</li>
-            <li>Oeuvres retenues : {{ infoTraitementCMS.nbOeuvresRetenues }}</li>
-            <li>Somme points :{{  infoTraitementCMS.sommePoints }}</li>
+            <li>Oeuvres extraites : {{ infoTraitementCMS.nbOeuvresExtraction | numberFormat}}</li>
+            <li>Oeuvres catalogue : {{ infoTraitementCMS.nbOeuvresCatalogue | numberFormat}}</li>
+            <li>Oeuvres retenues : {{ infoTraitementCMS.nbOeuvresRetenues | numberFormat}}</li>
+            <li>Somme points :{{  infoTraitementCMS.sommePoints | numberFormat}}</li>
           </ul>
         Fin traitement le {{ infoTraitementCMS.dateFinTmt | formatDate(' DD/MM/YYYY à HH:mm') }}
       </label>
@@ -482,7 +479,6 @@
             return response.json();
           })
           .then(data => {
-              debugger;
               this.infoTraitementCMS.dateFinTmt = data.dateFinTmt;
               this.infoTraitementCMS.dateDebutTmt = data.dateDebutTmt;
 
@@ -491,8 +487,7 @@
               this.infoTraitementCMS.nbOeuvresRetenues = data.nbOeuvresRetenues;
               this.infoTraitementCMS.sommePoints = data.sommePoints;
 
-          }
-          );
+          });
 
         this.resource.findByNumProg({numProg: this.$route.params.numProg})
           .then(response => {

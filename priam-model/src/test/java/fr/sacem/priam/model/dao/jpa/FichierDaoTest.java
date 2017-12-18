@@ -2,13 +2,10 @@ package fr.sacem.priam.model.dao.jpa;
 
 import com.google.common.collect.Lists;
 import fr.sacem.priam.model.dao.JpaConfigurationTest;
-import fr.sacem.priam.model.dao.jpa.cp.ProgrammeCPDao;
+import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.priam.model.domain.Fichier;
 import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.dto.FileDto;
-import fr.sacem.priam.model.util.FamillePriam;
-import fr.sacem.priam.model.util.TypeUtilisationPriam;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,7 +79,7 @@ public class FichierDaoTest {
     private SareftrTyputilDao sareftrTyputilDao;
 
     @Autowired
-    private ProgrammeCPDao programmeCPDao;
+    private ProgrammeDao programmeDao;
     
     @Test
     @Transactional

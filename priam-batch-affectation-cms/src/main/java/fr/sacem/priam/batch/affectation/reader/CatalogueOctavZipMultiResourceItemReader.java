@@ -2,7 +2,7 @@ package fr.sacem.priam.batch.affectation.reader;
 
 import fr.sacem.domain.Fichier;
 import fr.sacem.priam.common.util.FileUtils;
-import fr.sacem.service.importPenef.FichierService;
+import fr.sacem.service.importPenef.FichierBatchService;
 import fr.sacem.util.UtilFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +39,7 @@ public class CatalogueOctavZipMultiResourceItemReader<T> extends MultiResourceIt
     private UtilFile utilFile;
     private ZipFile zipFile;
     @Autowired
-    private FichierService fichierService;
+    private FichierBatchService fichierBatchService;
     private static String FILE_ZIP_EN_COURS_DE_TRAITEMENT = "_en_cours_de_traitement";
 
 
@@ -117,7 +117,7 @@ public class CatalogueOctavZipMultiResourceItemReader<T> extends MultiResourceIt
                                 //La fonction extractFiles traite le fichier csv et retourne son nom
                                 //Le nom du fichier est entregister dans le context du step pour pouvoir l'utiliser dans le itemWriter
                                 Long idFichier = utilFile.extractFiles(zipFile, extractedResources);
-                                Fichier fichier = fichierService.findById(idFichier);
+                                Fichier fichier = fichierBatchService.findById(idFichier);
                                 JobParameter jobParameterNomDuFichier = new JobParameter(fichier.getNom());
                                 this.stepExecution.getExecutionContext().put("nomFichier", jobParameterNomDuFichier);
                                 JobParameter jobParameterIdFichier = new JobParameter(fichier.getId());

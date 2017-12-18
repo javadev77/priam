@@ -2,7 +2,7 @@ package fr.sacem.priam.services;
 
 import fr.sacem.priam.common.TypeUtilisationEnum;
 import fr.sacem.priam.model.dao.jpa.cms.LigneProgrammeCMSDao;
-import fr.sacem.priam.model.dao.jpa.cp.ProgrammeCPDao;
+import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.cms.LigneProgrammeCMS;
 import fr.sacem.priam.model.domain.criteria.LigneProgrammeCriteria;
@@ -45,7 +45,7 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
     private LigneProgrammeCMSDao ligneProgrammeCMSDao;
 
     @Autowired
-    private ProgrammeCPDao programmeCPDao;
+    private ProgrammeDao programmeDao;
 
     @Override
     public List<KeyValueDto> getListIDE12ByProgramme(Long ide12, String programme) {
@@ -60,7 +60,7 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
     @Override
     @Transactional
     public Page<SelectionCMSDto> findLigneProgrammeByCriteria(LigneProgrammeCriteria criteria, Pageable pageable) {
-        Programme programme = programmeCPDao.findOne(criteria.getNumProg());
+        Programme programme = programmeDao.findOne(criteria.getNumProg());
 
         Pageable queryPageable = new Pageable() {
 
@@ -218,7 +218,7 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
         result.put(MANUEL, 0L);
         result.put(SOMME, 0.0d);
 
-        Programme programme = programmeCPDao.findOne(numProg);
+        Programme programme = programmeDao.findOne(numProg);
 
         Integer selection = SELECTION;
 

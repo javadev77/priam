@@ -9,7 +9,7 @@ import java.util.Set;
 /**
  * Created by fandis on 17/05/2017.
  */
-public interface FichierService {
+public interface FichierBatchService {
     Long addFichier(InputStream inputStream, String nomFichier) throws PriamValidationException;
 
     void updateFichierDate(String nomFichier);

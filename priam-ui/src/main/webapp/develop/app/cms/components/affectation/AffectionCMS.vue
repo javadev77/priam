@@ -326,7 +326,7 @@
         },
         toutDeaffecterProg: {
           method: 'PUT',
-          url: process.env.CONTEXT_ROOT_PRIAM_CMS + 'app/rest/programme/toutDesaffecter'
+          url: process.env.CONTEXT_ROOT_PRIAM_CP + 'app/rest/programme/toutDesaffecter'
         },
         findAllFichiers: {
           method: 'POST',
