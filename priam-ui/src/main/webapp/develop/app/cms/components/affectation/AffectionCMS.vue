@@ -118,7 +118,7 @@
         Affecté par {{ programmeInfo.useraffecte }} {{ programmeInfo.dataffecte | dateAffectation }}
       </span>
 
-      <button class="btn btn-default btn-primary pull-right" type="button" @click="lancerAffectation()">Lancer Affectation</button>
+      <!--<button class="btn btn-default btn-primary pull-right" type="button" @click="lancerAffectation()">Lancer Affectation</button>-->
     </div>
 
     <modal v-if="showModalAffectation">
@@ -321,7 +321,7 @@
         },
         affectationProgramme: {
           method: 'PUT',
-          url: process.env.CONTEXT_ROOT_PRIAM_CP + 'app/rest/programme/affectation'
+          url: process.env.CONTEXT_ROOT_PRIAM_CMS + 'app/rest/programme/affectation'
         },
         toutDeaffecterProg: {
           method: 'PUT',

@@ -36,6 +36,8 @@ public class ProgrammeView {
     
     private Date dateRepartition;
 
+    private StatutEligibilite statutEligibilite;
+
     
     public ProgrammeView() {
     }
@@ -153,7 +155,13 @@ public class ProgrammeView {
     public Date getDateRepartition() {
         return dateRepartition;
     }
-    
+
+    @Column(name = "STATUT_ELIGIBILITE")
+    @Enumerated(EnumType.STRING)
+    public StatutEligibilite getStatutEligibilite() {
+        return statutEligibilite;
+    }
+
     public void setNumProg(String numProg) {
         this.numProg = numProg;
     }
@@ -230,5 +238,9 @@ public class ProgrammeView {
     
     public void setDateRepartition(Date dateRepartition) {
         this.dateRepartition = dateRepartition;
+    }
+
+    public void setStatutEligibilite(StatutEligibilite statutEligibilite) {
+        this.statutEligibilite = statutEligibilite;
     }
 }

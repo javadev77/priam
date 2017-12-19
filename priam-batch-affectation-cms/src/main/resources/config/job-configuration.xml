@@ -8,9 +8,9 @@
         http://www.springframework.org/schema/jdbc
         http://www.springframework.org/schema/jdbc/spring-jdbc-3.1.xsd">
 
-    <jdbc:initialize-database data-source="dataSource">
+    <!--<jdbc:initialize-database data-source="dataSource">
         <jdbc:script location="classpath:config/sql/initial-query.sql" />
-    </jdbc:initialize-database>
+    </jdbc:initialize-database>-->
 
     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="searchSystemEnvironment" value="true"/>
@@ -293,7 +293,7 @@
         <property name="fromClause" value="from PRIAM_LIGNE_PROGRAMME_CMS l
                                             INNER JOIN PRIAM_FICHIER f ON l.ID_FICHIER=f.ID
                                             INNER JOIN PRIAM_PROGRAMME p ON p.NUMPROG=f.NUMPROG"/>
-        <property name="whereClause" value="WHERE p.NUMPROG='#{jobParameters[numProg]}' "/>
+        <property name="whereClause" value="WHERE p.NUMPROG='#{jobParameters[numProg]}' AND p.STATUT_ELIGIBILITE = 'EN_ATTENTE_ELIGIBILITE' "/>
         <property name="groupClause" value="group by l.ide12, l.cdeFamilTypUtilOri "/>
         <property name="databaseType" value="MySQL" />
         <property name="dataSource" ref="dataSource"/>
@@ -317,7 +317,7 @@
                                             INNER JOIN PRIAM_FICHIER f ON l.ID_FICHIER=f.ID
                                             INNER JOIN PRIAM_PROGRAMME p ON p.NUMPROG=f.NUMPROG
                                             INNER JOIN PRIAM_LIGNE_PROGRAMME_CMS l2 on l.ide12=l2.ide12"/>
-        <property name="whereClause" value="WHERE p.NUMPROG='#{jobParameters[numProg]}' AND l.cdeFamilTypUtilOri &lt;&gt; l2.cdeFamilTypUtilOri) temp  WHERE temp.id IS NOT NULL "/>
+        <property name="whereClause" value="WHERE p.NUMPROG='#{jobParameters[numProg]}' AND p.STATUT_ELIGIBILITE = 'EN_ATTENTE_ELIGIBILITE' AND l.cdeFamilTypUtilOri &lt;&gt; l2.cdeFamilTypUtilOri) temp  WHERE temp.id IS NOT NULL "/>
         <property name="databaseType" value="MySQL" />
         <property name="dataSource" ref="dataSource"/>
         <property name="sortKey" value="id"/>
@@ -354,14 +354,12 @@
           p:jobRegistry-ref="jobRegistry"/>
 
     <bean id="jobLauncher" class="org.springframework.batch.core.launch.support.SimpleJobLauncher"
-          p:jobRepository-ref="jobRepository"
-    />
+          p:jobRepository-ref="jobRepository" p:taskExecutor-ref="taskExecutor"  />
 
-   <!--
-    p:taskExecutor-ref="taskExecutor"
+
    <bean id="taskExecutor"
         class="org.springframework.core.task.SimpleAsyncTaskExecutor" >
-    </bean>-->
+    </bean>
 
     <bean id="jobRepository" class="org.springframework.batch.core.repository.support.JobRepositoryFactoryBean"
           p:dataSource-ref="dataSource"

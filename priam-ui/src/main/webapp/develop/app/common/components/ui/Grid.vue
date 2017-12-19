@@ -1,10 +1,10 @@
 <template>
   <div class="container-fluid">
-        <template v-if="emptyResult">
+    <template v-if="emptyResult">
           <div class="row text-center ng-binding"  v-html="this.noResultText">
           </div>
         </template>
-    <template v-else>
+      <template v-else>
           <paginator v-if="isPaginable"
                      :current-page="this.data.number"
                      :total-pages="this.data.totalPages"
@@ -61,128 +61,134 @@
               </tr>
               </thead>
               <tbody>
-              <tr v-for="entry in filteredData">
-                <template v-for="entryColumn in columns">
-                  <template v-if="entryColumn.type === 'date'">
-                    <td class="columnCenter">
-                      <template v-if="entryColumn.cell">
-                        {{ entryColumn.cell.toText(entry) }}
-                      </template>
-                      <template v-else>
-                        {{ entry[entryColumn.id] }}
-                      </template>
 
-                    </td>
-                  </template>
-                  <template v-else-if="entryColumn.type === 'numeric'">
-                    <td class="columnRight">
-                      {{ entryColumn.cell.toText(entry) | numberFormat }}
-                    </td>
-                  </template>
-
-                  <template v-else-if="entryColumn.type === 'code-value'">
-                    <td class="columnCenter">
-                      {{entryColumn.cell.toText(entry[entryColumn.id])}}
-                    </td>
-                  </template>
-                  <template v-else-if="entryColumn.type === 'code-value-hightlight'">
-                    <td>
-                      <div v-html="entryColumn.cell.cellTemplate(entry)"></div>
-                    </td>
-                  </template>
-                  <template v-else-if="entryColumn.type === 'clickable-icon'">
-                    <td class="columnCenter">
-                      <a v-html="entryColumn.cell.cellTemplate(entry)" @click="emitCellClick(entry, entryColumn)">
-                      </a>
-                    </td>
-                  </template>
-                  <template v-else-if="entryColumn.type === 'clickable-icons'">
-                    <td class="columnCenter">
-
-                         <ul class="iconList">
-                           <template v-for="elem in entryColumn.cell.cellTemplate(entry)">
-                              <li>
-                               <a v-html="elem.template" @click="emitIconCellClick(elem.event, entry, entryColumn)">
-                               </a>
-                              </li>
-                           </template>
-
-                         </ul>
-
-                    </td>
-                  </template>
-                  <template v-else-if="entryColumn.type === 'clickable-icons-or-text'">
-                    <td class="columnCenter"  v-if="!entryColumn.cell.isText(entry)">
-                      <ul class="iconList">
-                        <template v-for="elem in entryColumn.cell.cellTemplate(entry)">
-                          <li>
-                            <a v-html="elem.template" @click="emitIconCellClick(elem.event, entry, entryColumn)">
-                            </a>
-                          </li>
+              <template v-for="entry in filteredData">
+                <tr v-if="entry['numProg'] !== undefined" class="special-row" :id="entry['numProg']"
+                    :style="{'background-color' : entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE' || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE' ? 'grey': ''}"
+                  :title="afficherTootlip(entry)">
+                  <template v-for="entryColumn in columns">
+                    <template v-if="entryColumn.type === 'date'">
+                      <td class="columnCenter" :style="{'background-color' : entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE' || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE' ? 'grey': ''}">
+                        <template v-if="entryColumn.cell">
+                          {{ entryColumn.cell.toText(entry) }}
+                        </template>
+                        <template v-else>
+                          {{ entry[entryColumn.id] }}
                         </template>
 
-                      </ul>
-                    </td>
-                    <td class="columnCenter" v-else>
-                      <template v-if="entryColumn.cell.toText(entry).isLink" >
-                        <a @click="emitCellClick(entry, entryColumn)">
+                      </td>
+                    </template>
+                    <template v-else-if="entryColumn.type === 'numeric'">
+                      <td class="columnRight" :style="{'background-color' : entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE' || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE' ? 'grey': ''}">
+                        {{ entryColumn.cell.toText(entry) | numberFormat }}
+                      </td>
+                    </template>
+
+                    <template v-else-if="entryColumn.type === 'code-value'">
+                      <td class="columnCenter" :style="{'background-color' : entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE' || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE' ? 'grey': ''}">
+                        {{entryColumn.cell.toText(entry[entryColumn.id])}}
+                      </td>
+                    </template>
+                    <template v-else-if="entryColumn.type === 'code-value-hightlight'">
+                      <td :style="{'background-color' : entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE' || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE' ? 'grey': ''}">
+                        <div v-html="entryColumn.cell.cellTemplate(entry)"></div>
+                      </td>
+                    </template>
+                    <template v-else-if="entryColumn.type === 'clickable-icon'">
+                      <td class="columnCenter" :style="{'background-color' : entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE' || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE' ? 'grey': ''}">
+                        <a v-html="entryColumn.cell.cellTemplate(entry)" @click="emitCellClick(entry, entryColumn)">
+                        </a>
+                      </td>
+                    </template>
+                    <template v-else-if="entryColumn.type === 'clickable-icons'">
+                      <td class="columnCenter" :style="{'background-color' : entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE' || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE' ? 'grey': ''}">
+
+                        <ul class="iconList">
+                          <template v-for="elem in entryColumn.cell.cellTemplate(entry)">
+                            <li>
+                              <a v-html="elem.template" @click="emitIconCellClick(elem.event, entry, entryColumn)">
+                              </a>
+                            </li>
+                          </template>
+
+                        </ul>
+
+                      </td>
+                    </template>
+                    <template v-else-if="entryColumn.type === 'clickable-icons-or-text'">
+                      <td class="columnCenter"   v-if="!entryColumn.cell.isText(entry)"
+                          :style="{'background-color' : entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE' || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE' ? 'grey': ''}">
+                        <ul class="iconList">
+                          <template v-for="elem in entryColumn.cell.cellTemplate(entry)">
+                            <li>
+                              <a v-html="elem.template" @click="emitIconCellClick(elem.event, entry, entryColumn)">
+                              </a>
+                            </li>
+                          </template>
+
+                        </ul>
+                      </td>
+                      <td class="columnCenter" :style="{'background-color' : entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE' || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE' ? 'grey': ''}" v-else>
+                        <template v-if="entryColumn.cell.toText(entry).isLink" >
+                          <a @click="emitCellClick(entry, entryColumn)">
+                            {{ entryColumn.cell.toText(entry).value }}
+                          </a>
+                        </template>
+                        <template v-else>
                           {{ entryColumn.cell.toText(entry).value }}
-                        </a>
-                      </template>
-                      <template v-else>
-                        {{ entryColumn.cell.toText(entry).value }}
-                      </template>
-                    </td>
-                  </template>
-                  <template v-else-if="entryColumn.type === 'numeric-link'">
-                    <td class="columnRight">
-                      <template v-if="entryColumn.cell.toText(entry).isLink" >
-                        <a @click="emitCellClick(entry, entryColumn)">
+                        </template>
+                      </td>
+                    </template>
+                    <template v-else-if="entryColumn.type === 'numeric-link'">
+                      <td class="columnRight" :style="{'background-color' : entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE' || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE' ? 'grey': ''}">
+                        <template v-if="entryColumn.cell.toText(entry).isLink" >
+                          <a @click="emitCellClick(entry, entryColumn)">
+                            {{ entry[entryColumn.id] }}
+                          </a>
+                        </template>
+                        <template v-else>
                           {{ entry[entryColumn.id] }}
-                        </a>
-                      </template>
-                      <template v-else>
-                        {{ entry[entryColumn.id] }}
-                      </template>
+                        </template>
 
-                    </td>
-                  </template>
-                  <template v-else-if="entryColumn.type === 'checkbox'">
-                    <td class="columnCenter">
-                      <input :disabled="entryColumn.cell.isDisabled()"
-                             type="checkbox"
-                             ref="checkbox"
-                             :value="entryColumn.cell.toText(entry)"
-                             :checked="entryColumn.cell.isChecked(entry)"
-                             @click="emitCheckbox(entry, entryColumn.cell.toText(entry), entryColumn.cell.isChecked(entry))" />
-
-                      <!--<label class="checkbox checkbox-inline" :class="{'checked' : entryColumn.cell.isChecked(entry) == 1}">
-                        <input class="checkbox checkbox-inline"
-                                :disabled="entryColumn.cell.isDisabled()"
+                      </td>
+                    </template>
+                    <template v-else-if="entryColumn.type === 'checkbox'">
+                      <td class="columnCenter" :style="{'background-color' : entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE' || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE' ? 'grey': ''}">
+                        <input :disabled="entryColumn.cell.isDisabled()"
                                type="checkbox"
                                ref="checkbox"
                                :value="entryColumn.cell.toText(entry)"
                                :checked="entryColumn.cell.isChecked(entry)"
-                               @click="emitCheckbox(entry)" />
+                               @click="emitCheckbox(entry, entryColumn.cell.toText(entry), entryColumn.cell.isChecked(entry))" />
 
-                        <span class="icons"><span class="first-icon fui-checkbox-unchecked"></span><span class="second-icon fui-checkbox-checked"></span></span>
-                      </label>-->
+                        <!--<label class="checkbox checkbox-inline" :class="{'checked' : entryColumn.cell.isChecked(entry) == 1}">
+                          <input class="checkbox checkbox-inline"
+                                  :disabled="entryColumn.cell.isDisabled()"
+                                 type="checkbox"
+                                 ref="checkbox"
+                                 :value="entryColumn.cell.toText(entry)"
+                                 :checked="entryColumn.cell.isChecked(entry)"
+                                 @click="emitCheckbox(entry)" />
 
-                    </td>
-                  </template>
-                  <template v-else-if="entryColumn.type === 'seconds-as-time'">
-                    <td class="columnCenter">
-                      {{ dureeFormattee(entry[entryColumn.id]) }}
-                    </td>
-                  </template>
-                  <template v-else-if="entryColumn.type === 'text-centre'">
-                    <td class="columnCenter">
-                      {{ entry[entryColumn.id] }}
-                    </td>
-                  </template>
+                          <span class="icons"><span class="first-icon fui-checkbox-unchecked"></span><span class="second-icon fui-checkbox-checked"></span></span>
+                        </label>-->
 
-                  <template v-else-if="entryColumn.type === 'text-with-action'">
-                    <td class="columnCenter" v-if="entryColumn.cell.toText(entry).action">
+                      </td>
+                    </template>
+                    <template v-else-if="entryColumn.type === 'seconds-as-time'">
+                      <td class="columnCenter" :style="{'background-color' : entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE' || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE' ? 'grey': ''}">
+                        {{ dureeFormattee(entry[entryColumn.id]) }}
+                      </td>
+                    </template>
+                    <template v-else-if="entryColumn.type === 'text-centre'">
+                      <td class="columnCenter" :style="{'background-color' : entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE' || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE' ? 'grey': ''}">
+                        {{ entry[entryColumn.id] }}
+                      </td>
+                    </template>
+
+                    <template v-else-if="entryColumn.type === 'text-with-action'">
+                      <td class="columnCenter" v-if="entryColumn.cell.toText(entry).action"
+                          :style="{'background-color' : entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE' || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE' ? 'grey': ''}">
 
                         {{entryColumn.cell.toText(entry).value}}
                         <template v-for="elem in entryColumn.cell.toText(entry).template">
@@ -190,21 +196,165 @@
                           <a v-html="elem.template" v-if="!elem.disabled" @click="emitIconCellClick(elem.event, entry, entryColumn)"></a>
                         </template>
 
-                    </td>
-                    <td class="columnCenter" v-if="!entryColumn.cell.toText(entry).action">
-                      {{ entryColumn.cell.toText(entry.ajout).value }}
-                    </td>
+                      </td>
+                      <td class="columnCenter" :style="{'background-color' : entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE' || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE' ? 'grey': ''}"
+                          v-if="!entryColumn.cell.toText(entry).action">
+                        {{ entryColumn.cell.toText(entry.ajout).value }}
+                      </td>
+                    </template>
+
+                    <template  v-else>
+                      <td :style="{'background-color' : entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE' || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE' ? 'grey': ''}">
+                        {{ entry[entryColumn.id] }}
+                      </td>
+                    </template>
+
                   </template>
+                </tr>
+                <tr v-else>
+                  <template v-for="entryColumn in columns">
+                    <template v-if="entryColumn.type === 'date'">
+                      <td class="columnCenter">
+                        <template v-if="entryColumn.cell">
+                          {{ entryColumn.cell.toText(entry) }}
+                        </template>
+                        <template v-else>
+                          {{ entry[entryColumn.id] }}
+                        </template>
 
-                  <template  v-else>
-                    <td>
-                      {{ entry[entryColumn.id] }}
-                    </td>
+                      </td>
+                    </template>
+                    <template v-else-if="entryColumn.type === 'numeric'">
+                      <td class="columnRight">
+                        {{ entryColumn.cell.toText(entry) | numberFormat }}
+                      </td>
+                    </template>
+
+                    <template v-else-if="entryColumn.type === 'code-value'">
+                      <td class="columnCenter">
+                        {{entryColumn.cell.toText(entry[entryColumn.id])}}
+                      </td>
+                    </template>
+                    <template v-else-if="entryColumn.type === 'code-value-hightlight'">
+                      <td>
+                        <div v-html="entryColumn.cell.cellTemplate(entry)"></div>
+                      </td>
+                    </template>
+                    <template v-else-if="entryColumn.type === 'clickable-icon'">
+                      <td class="columnCenter">
+                        <a v-html="entryColumn.cell.cellTemplate(entry)" @click="emitCellClick(entry, entryColumn)">
+                        </a>
+                      </td>
+                    </template>
+                    <template v-else-if="entryColumn.type === 'clickable-icons'">
+                      <td class="columnCenter">
+
+                        <ul class="iconList">
+                          <template v-for="elem in entryColumn.cell.cellTemplate(entry)">
+                            <li>
+                              <a v-html="elem.template" @click="emitIconCellClick(elem.event, entry, entryColumn)">
+                              </a>
+                            </li>
+                          </template>
+
+                        </ul>
+
+                      </td>
+                    </template>
+                    <template v-else-if="entryColumn.type === 'clickable-icons-or-text'">
+                      <td class="columnCenter"  v-if="!entryColumn.cell.isText(entry)">
+                        <ul class="iconList">
+                          <template v-for="elem in entryColumn.cell.cellTemplate(entry)">
+                            <li>
+                              <a v-html="elem.template" @click="emitIconCellClick(elem.event, entry, entryColumn)">
+                              </a>
+                            </li>
+                          </template>
+
+                        </ul>
+                      </td>
+                      <td class="columnCenter" v-else>
+                        <template v-if="entryColumn.cell.toText(entry).isLink" >
+                          <a @click="emitCellClick(entry, entryColumn)">
+                            {{ entryColumn.cell.toText(entry).value }}
+                          </a>
+                        </template>
+                        <template v-else>
+                          {{ entryColumn.cell.toText(entry).value }}
+                        </template>
+                      </td>
+                    </template>
+                    <template v-else-if="entryColumn.type === 'numeric-link'">
+                      <td class="columnRight">
+                        <template v-if="entryColumn.cell.toText(entry).isLink" >
+                          <a @click="emitCellClick(entry, entryColumn)">
+                            {{ entry[entryColumn.id] }}
+                          </a>
+                        </template>
+                        <template v-else>
+                          {{ entry[entryColumn.id] }}
+                        </template>
+
+                      </td>
+                    </template>
+                    <template v-else-if="entryColumn.type === 'checkbox'">
+                      <td class="columnCenter">
+                        <input :disabled="entryColumn.cell.isDisabled()"
+                               type="checkbox"
+                               ref="checkbox"
+                               :value="entryColumn.cell.toText(entry)"
+                               :checked="entryColumn.cell.isChecked(entry)"
+                               @click="emitCheckbox(entry, entryColumn.cell.toText(entry), entryColumn.cell.isChecked(entry))" />
+
+                        <!--<label class="checkbox checkbox-inline" :class="{'checked' : entryColumn.cell.isChecked(entry) == 1}">
+                          <input class="checkbox checkbox-inline"
+                                  :disabled="entryColumn.cell.isDisabled()"
+                                 type="checkbox"
+                                 ref="checkbox"
+                                 :value="entryColumn.cell.toText(entry)"
+                                 :checked="entryColumn.cell.isChecked(entry)"
+                                 @click="emitCheckbox(entry)" />
+
+                          <span class="icons"><span class="first-icon fui-checkbox-unchecked"></span><span class="second-icon fui-checkbox-checked"></span></span>
+                        </label>-->
+
+                      </td>
+                    </template>
+                    <template v-else-if="entryColumn.type === 'seconds-as-time'">
+                      <td class="columnCenter">
+                        {{ dureeFormattee(entry[entryColumn.id]) }}
+                      </td>
+                    </template>
+                    <template v-else-if="entryColumn.type === 'text-centre'">
+                      <td class="columnCenter">
+                        {{ entry[entryColumn.id] }}
+                      </td>
+                    </template>
+
+                    <template v-else-if="entryColumn.type === 'text-with-action'">
+                      <td class="columnCenter" v-if="entryColumn.cell.toText(entry).action">
+
+                        {{entryColumn.cell.toText(entry).value}}
+                        <template v-for="elem in entryColumn.cell.toText(entry).template">
+                          <a v-html="elem.template" v-if="elem.disabled" class="disabled"></a>
+                          <a v-html="elem.template" v-if="!elem.disabled" @click="emitIconCellClick(elem.event, entry, entryColumn)"></a>
+                        </template>
+
+                      </td>
+                      <td class="columnCenter" v-if="!entryColumn.cell.toText(entry).action">
+                        {{ entryColumn.cell.toText(entry.ajout).value }}
+                      </td>
+                    </template>
+
+                    <template  v-else>
+                      <td>
+                        {{ entry[entryColumn.id] }}
+                      </td>
+                    </template>
+
                   </template>
-
-                </template>
-
-              </tr>
+                </tr>
+              </template>
               </tbody>
           </table>
 
@@ -357,6 +507,13 @@
 
 
     methods: {
+
+      afficherTootlip(entry) {
+
+        return  entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE' || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE' ? "Le programme est en cours de traitement d'éligibilité et de dédoublonnage" : '';
+      },
+
+
 
       isSorted(entryColumn) {
         if(this.sort !== undefined && this.sort!== null) {
@@ -577,4 +734,9 @@
     cursor: default;
     color: gray;
   }
+
+  tr.special-row > td {
+    background-color: gray;
+  }
+
 </style>

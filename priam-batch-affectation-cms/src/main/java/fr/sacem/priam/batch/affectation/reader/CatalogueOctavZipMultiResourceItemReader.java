@@ -1,5 +1,6 @@
 package fr.sacem.priam.batch.affectation.reader;
 
+import fr.sacem.dao.TraitementCmsDao;
 import fr.sacem.domain.Fichier;
 import fr.sacem.priam.common.util.FileUtils;
 import fr.sacem.service.importPenef.FichierBatchService;
@@ -42,6 +43,8 @@ public class CatalogueOctavZipMultiResourceItemReader<T> extends MultiResourceIt
     private FichierBatchService fichierBatchService;
     private static String FILE_ZIP_EN_COURS_DE_TRAITEMENT = "_en_cours_de_traitement";
 
+    @Autowired
+    TraitementCmsDao traitementCmsDao;
 
 
     @Override
@@ -111,29 +114,31 @@ public class CatalogueOctavZipMultiResourceItemReader<T> extends MultiResourceIt
                             if (fichiersZipDansLeRepertoire.size() >= 1) {
                                 //on traite qu'un seul fichier zip par operation, ce fichier zip va etre déplacer si le batch est complet
                                 File file = fichiersZipDansLeRepertoire.get(0);
-                                Charset cs = Charset.forName("IBM437");
-                                zipFile = new ZipFile(file,cs);
-                                // find files inside the current zip resource
-                                //La fonction extractFiles traite le fichier csv et retourne son nom
-                                //Le nom du fichier est entregister dans le context du step pour pouvoir l'utiliser dans le itemWriter
-                                Long idFichier = utilFile.extractFiles(zipFile, extractedResources);
-                                Fichier fichier = fichierBatchService.findById(idFichier);
-                                JobParameter jobParameterNomDuFichier = new JobParameter(fichier.getNom());
-                                this.stepExecution.getExecutionContext().put("nomFichier", jobParameterNomDuFichier);
-                                JobParameter jobParameterIdFichier = new JobParameter(fichier.getId());
-                                this.stepExecution.getExecutionContext().put("idFichier", jobParameterIdFichier);
-                                // utilisation de offset a 1 est pour cause la creation des fichier dans les zip avec un / sous linux, c'est un hack pour les fichiers creer sous linux
+
                                 String fileName = file.getName();
-                                if((!fileName.startsWith(FileUtils.PREFIX_OCTAV_CATALOGUE_FR)) && (!fileName.startsWith(FileUtils.PREFIX_OCTAV_CATALOGUE_FR,1))) {
+                                if((fileName.startsWith(FileUtils.PREFIX_OCTAV_CATALOGUE_FR)) || (fileName.startsWith(FileUtils.PREFIX_OCTAV_CATALOGUE_FR,1))) {
+                                    // vider la baser et lancer le chargement
+                                    traitementCmsDao.viderCatalogueOctav();
 
-                                    LOG.debug("==== offsite 1 ===");
-                                    Set<String> errorSet = (Set<String>) executionContext.get("ligne-programme-errors");
-                                    errorSet.add(MESSAGE_NOM_FICHIER_INCORRECTE);
-                                    LOG.debug("==== "+file.getName()+" ===");
-                                    LOG.debug("============ Batch stoped ===============");
-                                    this.stepExecution.getJobExecution().stop();
+                                    Charset cs = Charset.forName("IBM437");
+                                    zipFile = new ZipFile(file,cs);
+                                    // find files inside the current zip resource
+                                    //La fonction extractFiles traite le fichier csv et retourne son nom
+                                    //Le nom du fichier est entregister dans le context du step pour pouvoir l'utiliser dans le itemWriter
 
+
+                                    Long idFichier = utilFile.extractFiles(zipFile, extractedResources);
+                                    Fichier fichier = fichierBatchService.findById(idFichier);
+
+                                    JobParameter jobParameterNomDuFichier = new JobParameter(fichier.getNom());
+                                    this.stepExecution.getExecutionContext().put("nomFichier", jobParameterNomDuFichier);
+
+                                    JobParameter jobParameterIdFichier = new JobParameter(fichier.getId());
+                                    this.stepExecution.getExecutionContext().put("idFichier", jobParameterIdFichier);
+                                    // utilisation de offset a 1 est pour cause la creation des fichier dans les zip avec un / sous linux, c'est un hack pour les fichiers creer sous linux
                                 }
+
+
                             }
                         }
                     }
