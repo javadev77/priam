@@ -58,7 +58,7 @@
         </step>
 
 
-        <step id="calculPointsStep" parent="dedoublonnageStep">
+        <step id="calculPointsStep">
             <tasklet>
                 <chunk
                         reader="readerCalculPoints"
@@ -159,7 +159,7 @@
         <property name="sql">
             <value>
                 <![CDATA[
-                   DELETE FROM PRIAM_LIGNE_PROGRAMME_CMS WHERE ide12 = :ide12
+                   DELETE FROM PRIAM_LIGNE_PROGRAMME_CMS WHERE id = :id
                 ]]>
             </value>
         </property>
@@ -175,7 +175,13 @@
         <property name="sql">
             <value>
                 <![CDATA[
-                   UPDATE PRIAM_LIGNE_PROGRAMME_CMS SET mt = :mt WHERE ide12 = :ide12 AND cdeFamilTypUtilOri = :cdeFamilTypUtilOri
+                   UPDATE PRIAM_LIGNE_PROGRAMME_CMS SET mt = :mt
+                    WHERE ide12 = :ide12 AND cdeFamilTypUtilOri = :cdeFamilTypUtilOri
+                          AND ide12 IN (
+                      SELECT l.ide12
+                      FROM (SELECT * FROM PRIAM_LIGNE_PROGRAMME_CMS) as  l
+                        INNER JOIN PRIAM_FICHIER f on f.ID=l.ID_FICHIER
+                      WHERE f.NUMPROG = '#{jobParameters[numProg]}')
                 ]]>
             </value>
         </property>
@@ -251,7 +257,7 @@
     </bean>
 
     <bean id="queryProviderStep3" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
-        <property name="selectClause" value="select
+        <property name="selectClause" value="select l.id,
                             l.id_fichier,
                             l.cdeCisac,
                             l.cdeFamilTypUtil,
@@ -312,15 +318,15 @@
     </bean>
 
     <bean id="queryProviderStep4" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
-        <property name="selectClause" value="SELECT  * FROM (select l.id as id,  min(l.mt) as mt "/>
+        <property name="selectClause" value="SELECT  * FROM (select l.ide12 as ide12,  min(l.mt) as mt "/>
         <property name="fromClause" value="from PRIAM_LIGNE_PROGRAMME_CMS l
                                             INNER JOIN PRIAM_FICHIER f ON l.ID_FICHIER=f.ID
                                             INNER JOIN PRIAM_PROGRAMME p ON p.NUMPROG=f.NUMPROG
                                             INNER JOIN PRIAM_LIGNE_PROGRAMME_CMS l2 on l.ide12=l2.ide12"/>
-        <property name="whereClause" value="WHERE p.NUMPROG='#{jobParameters[numProg]}' AND p.STATUT_ELIGIBILITE = 'EN_ATTENTE_ELIGIBILITE' AND l.cdeFamilTypUtilOri &lt;&gt; l2.cdeFamilTypUtilOri) temp  WHERE temp.id IS NOT NULL "/>
+        <property name="whereClause" value="WHERE p.NUMPROG='#{jobParameters[numProg]}' AND p.STATUT_ELIGIBILITE = 'EN_ATTENTE_ELIGIBILITE' AND l.cdeFamilTypUtilOri &lt;&gt; l2.cdeFamilTypUtilOri GROUP BY l.ide12) temp  WHERE temp.ide12 IS NOT NULL "/>
         <property name="databaseType" value="MySQL" />
         <property name="dataSource" ref="dataSource"/>
-        <property name="sortKey" value="id"/>
+        <property name="sortKey" value="ide12"/>
     </bean>
 
 
@@ -330,7 +336,13 @@
         <property name="sql">
             <value>
                 <![CDATA[
-                   DELETE FROM PRIAM_LIGNE_PROGRAMME_CMS WHERE id = :id
+                   DELETE FROM PRIAM_LIGNE_PROGRAMME_CMS
+                   WHERE ide12 = :ide12 AND mt = :mt
+                   AND ide12 IN (
+                      SELECT l.ide12
+                      FROM (SELECT * FROM PRIAM_LIGNE_PROGRAMME_CMS) as  l
+                        INNER JOIN PRIAM_FICHIER f on f.ID=l.ID_FICHIER
+                        WHERE f.NUMPROG = '#{jobParameters[numProg]}')
                 ]]>
             </value>
         </property>

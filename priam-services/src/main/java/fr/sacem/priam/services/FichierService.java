@@ -7,7 +7,6 @@ import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.priam.model.domain.*;
 import fr.sacem.priam.model.util.FamillePriam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,7 +71,9 @@ public class FichierService {
         if(idsNouveauxFichiersAffectes.isEmpty()) {
             programme.setStatut(StatutProgramme.CREE);
         } else {
-            programme.setStatut(StatutProgramme.AFFECTE);
+            if(programme.getFamille().getCode().equals(FamillePriam.COPIE_PRIVEE.getCode())) {
+                programme.setStatut(StatutProgramme.AFFECTE);
+            }
         }
         programme.setUsermaj(currentUserName);
         programme.setDatmaj(new Date());

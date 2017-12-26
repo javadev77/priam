@@ -86,7 +86,7 @@
                             ajout,
                             selection"/>
         <property name="fromClause" value="from PRIAM_LIGNE_PROGRAMME_TRAITEMENT_BATCH l "/>
-        <property name="groupClause" value="group by l.ide12 "/>
+        <property name="groupClause" value="group by l.ide12,  l.cdeFamilTypUtilOri"/>
         <property name="databaseType" value="MySQL" />
         <property name="dataSource" ref="dataSource"/>
         <property name="sortKey" value="ide12"/>
@@ -280,9 +280,7 @@
                             :nomParticipant1,
                             :cdeTypUtilOri,
                             :cdeFamilTypUtilOri,
-                            (SELECT concat(libUtil.CDEUTIL, case when libUtil.LIBABRGUTIL is null then '' else ' - ' end, coalesce(libUtil.LIBABRGUTIL, ''))
-                             FROM SAREFTJ_LIBUTIL libUtil
-                              WHERE libUtil.CDEUTIL = :cdeUtil )
+                            :cdeUtil
                         )
                 ]]>
             </value>

@@ -500,7 +500,7 @@
 
                       var tempalte = [];
 
-                      if(cellValue.statutEligibilite === 'FIN_ELIGIBILITE') {
+                      if(cellValue.statutEligibilite === 'FIN_ELIGIBILITE' || cellValue.statutEligibilite === null) {
                         if(statusCode !== undefined && ('CREE' === statusCode || 'AFFECTE' === statusCode
                           || 'EN_COURS' === statusCode || 'VALIDE' === statusCode) ) {
                           if($this.isRightMDYPRG){

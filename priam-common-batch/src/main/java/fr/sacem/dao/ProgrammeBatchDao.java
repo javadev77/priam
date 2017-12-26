@@ -21,10 +21,11 @@ public class ProgrammeBatchDao {
     }
 
     public void majStattutEligibilite(String numProg, String statut) {
-        String sql =  "UPDATE PRIAM_PROGRAMME SET STATUT_ELIGIBILITE = ? WHERE NUMPROG = ?";
+        String sql =  "UPDATE PRIAM_PROGRAMME SET STATUT_ELIGIBILITE = ?, STATUT_PROG_CODE=? WHERE NUMPROG = ?";
         jdbcTemplate.update(sql, stmt -> {
             stmt.setString(1, statut);
-            stmt.setString(2, numProg);
+            stmt.setString(2, "AFFECTE");
+            stmt.setString(3, numProg);
         });
     }
 

@@ -8,6 +8,7 @@ import java.io.Serializable;
 
 public class LigneProgrammeCMS implements Serializable {
 
+    private Long id;
     private Long idFichier;
     private String cdeCisac;
     private String cdeFamilTypUtil;
@@ -402,5 +403,13 @@ public class LigneProgrammeCMS implements Serializable {
 
     public void setLibelleUtilisateur(String libelleUtilisateur) {
         this.libelleUtilisateur = libelleUtilisateur;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

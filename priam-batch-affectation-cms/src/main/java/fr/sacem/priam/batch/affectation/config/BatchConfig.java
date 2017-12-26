@@ -50,6 +50,7 @@ public class BatchConfig {
         Admap admap = new Admap();
         admap.setInputFile(inputDirectory);
         admap.setOutputFile(outputDirectory);
+
         return admap;
     }
 }

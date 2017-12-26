@@ -22,6 +22,7 @@ public class ConfigurationPriamProd {
     private Enum ConfigurationFromAdMap = EnvConstants.BATCH_CONFIG_PROPERTIES;
     private String inputDirectory = String.valueOf(EnvConstants.PENEF_ZIP_IN);
     private String outputDirectory = String.valueOf(EnvConstants.PENEF_ZIP_ARCHIVES);
+
     @Bean
     public DataSource dataSource() {
             Properties defaultProps = new Properties();
