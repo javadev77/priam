@@ -55,7 +55,7 @@ public class FichierBatchServiceImpl implements FichierBatchService {
     @Override
     public void rejeterFichier(Long idFichier, Set<String> errors) {
         fichierRepository.rejeterFichier(idFichier, errors);
-        fichierRepository.supprimerLigneProgrammeParIdFichier(idFichier, errors);
+        fichierRepository.supprimerLigneProgrammeParIdFichier(idFichier);
         fichierRepository.enregistrerLog(idFichier, errors);
     }
 

@@ -37,7 +37,7 @@ public class AppBatchAffectationCMS {
             jobParametersMap.put("time", new JobParameter(System.currentTimeMillis()));
             jobParametersMap.put("input.catalog.octav", new JobParameter(admap.getInputFile()));
             jobParametersMap.put("archives.catalog.octav", new JobParameter(admap.getOutputFile()));
-            jobParametersMap.put("numProg", new JobParameter("170004"));
+            jobParametersMap.put("numProg", new JobParameter("170040"));
             JobParameters jobParameters = new JobParameters(jobParametersMap);
 
             JobExecution execution = jobLauncher.run(jobEligibiliteOctav, jobParameters);

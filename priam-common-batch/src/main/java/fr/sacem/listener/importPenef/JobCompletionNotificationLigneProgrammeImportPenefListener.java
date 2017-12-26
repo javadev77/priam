@@ -1,8 +1,10 @@
 package fr.sacem.listener.importPenef;
 
+import fr.sacem.dao.FichierRepository;
 import fr.sacem.service.importPenef.FichierBatchServiceImpl;
 import fr.sacem.util.UtilFile;
 import fr.sacem.util.exception.PriamValidationException;
+import org.omg.CORBA.FREE_MEM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.BatchStatus;
@@ -41,6 +43,9 @@ public class JobCompletionNotificationLigneProgrammeImportPenefListener extends 
     private static final Logger LOG = LoggerFactory.getLogger(JobCompletionNotificationLigneProgrammeImportPenefListener.class);
 
     @Autowired
+    FichierRepository fichierRepository;
+
+    @Autowired
     public JobCompletionNotificationLigneProgrammeImportPenefListener() {
 
         utilFile = new UtilFile();
@@ -53,9 +58,11 @@ public class JobCompletionNotificationLigneProgrammeImportPenefListener extends 
 
             Collection<StepExecution> stepExecutions = jobExecution.getStepExecutions();
             Iterator it = stepExecutions.iterator();
+            JobParameter idFichier = null;
             while (it.hasNext()) {
                 StepExecution myStepExecution = (StepExecution) it.next();
                 executionContext = myStepExecution.getExecutionContext();
+
                 if (executionContext != null) {
                     JobParameter parameterNomFichierCSV = (JobParameter) executionContext.get(NOM_FICHIER_CSV_EN_COURS);
                     JobParameter parameterFichierZipEnCours = (JobParameter) executionContext.get(FICHIER_ZIP_EN_COURS);
@@ -66,8 +73,7 @@ public class JobCompletionNotificationLigneProgrammeImportPenefListener extends 
 
                     if(errors == null || errors.isEmpty()) {
                         if (parameterNomFichierCSV != null) {
-                            String nomFichier = (String) parameterNomFichierCSV.getValue();
-                            JobParameter idFichier =(JobParameter) executionContext.get("idFichier");
+                            idFichier = (JobParameter)executionContext.get("idFichier");
                             fichierBatchService.updateFichierById((Long)idFichier.getValue());
 
                             StringBuilder log = new StringBuilder();
@@ -78,7 +84,7 @@ public class JobCompletionNotificationLigneProgrammeImportPenefListener extends 
                             LOG.debug("Pas de ficiher CSV traité ");
                         }
                     } else {
-                        JobParameter idFichier =(JobParameter) executionContext.get("idFichier");
+                        idFichier =(JobParameter) executionContext.get("idFichier");
                         fichierBatchService.rejeterFichier((Long)idFichier.getValue(), errors);
                     }
 
@@ -86,10 +92,19 @@ public class JobCompletionNotificationLigneProgrammeImportPenefListener extends 
                 } else {
                     LOG.debug("Pas de excution context pour le step en cours : " + myStepExecution.getStepName());
                 }
+
+                if(idFichier != null) {
+                    fichierRepository.supprimerLigneProgrammeParIdFichier((Long)idFichier.getValue());
+                }
+
             }
+
         } else {
             Collection<StepExecution> stepExecutions = jobExecution.getStepExecutions();
             Iterator it = stepExecutions.iterator();
+            JobParameter idFichier = null;
+
+            Long idFile = null;
             while (it.hasNext()) {
                 StepExecution myStepExecution = (StepExecution) it.next();
                 executionContext = myStepExecution.getExecutionContext();
@@ -100,8 +115,8 @@ public class JobCompletionNotificationLigneProgrammeImportPenefListener extends 
                 Set<String> errors = (Set<String>) executionContext.get("ligne-programme-errors");
                 if(myStepExecution.getStatus() == BatchStatus.STOPPED){
                     if( ! errors.isEmpty()) {
-                        JobParameter idFichier = (JobParameter) executionContext.get("idFichier");
-                        fichierBatchService.rejeterFichier((Long) idFichier.getValue(), errors);
+                        idFichier = (JobParameter)executionContext.get("idFichier");
+                        fichierBatchService.rejeterFichier((Long)idFichier.getValue(), errors);
                     }
                 } else if("FAILED".equals(myStepExecution.getExitStatus().getExitCode()))
                 {
@@ -123,21 +138,25 @@ public class JobCompletionNotificationLigneProgrammeImportPenefListener extends 
 
                     JobParameter jobParameter = (JobParameter) executionContext.get("idFichier");
 
-                    Long idFichier;
                     if(jobParameter == null) {
-                        idFichier = ((PriamValidationException)exception.getCause()).getIdFichier();
+                        idFile = ((PriamValidationException)exception.getCause()).getIdFichier();
                         errors.clear();
                         errors.add(MESSAGE_FORMAT_FICHIER);
                     } else {
-                        idFichier = (Long) jobParameter.getValue();
+                        idFile = (Long) jobParameter.getValue();
                     }
 
-                    fichierBatchService.rejeterFichier(idFichier, errors);
+                    fichierBatchService.rejeterFichier(idFile, errors);
 
                 }
                 utilFile.deplacerFichier(parameterFichierZipEnCours, parameterNomFichierOriginal, outputDirectory);
             }
+
+            if(idFile != null) {
+                fichierRepository.supprimerLigneProgrammeParIdFichier(idFile);
+            }
         }
+
     }
 
 

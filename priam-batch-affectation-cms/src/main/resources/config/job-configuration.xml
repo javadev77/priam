@@ -322,8 +322,9 @@
         <property name="fromClause" value="from PRIAM_LIGNE_PROGRAMME_CMS l
                                             INNER JOIN PRIAM_FICHIER f ON l.ID_FICHIER=f.ID
                                             INNER JOIN PRIAM_PROGRAMME p ON p.NUMPROG=f.NUMPROG
-                                            INNER JOIN PRIAM_LIGNE_PROGRAMME_CMS l2 on l.ide12=l2.ide12"/>
-        <property name="whereClause" value="WHERE p.NUMPROG='#{jobParameters[numProg]}' AND p.STATUT_ELIGIBILITE = 'EN_ATTENTE_ELIGIBILITE' AND l.cdeFamilTypUtilOri &lt;&gt; l2.cdeFamilTypUtilOri GROUP BY l.ide12) temp  WHERE temp.ide12 IS NOT NULL "/>
+                                            INNER JOIN PRIAM_LIGNE_PROGRAMME_CMS l2 on l.ide12=l2.ide12
+                                                AND l.cdeFamilTypUtilOri &lt;&gt; l2.cdeFamilTypUtilOri AND l2.ID_FICHIER=f.ID "/>
+        <property name="whereClause" value="WHERE p.NUMPROG='#{jobParameters[numProg]}' AND p.STATUT_ELIGIBILITE = 'EN_ATTENTE_ELIGIBILITE') temp  WHERE temp.ide12 IS NOT NULL "/>
         <property name="databaseType" value="MySQL" />
         <property name="dataSource" ref="dataSource"/>
         <property name="sortKey" value="ide12"/>
