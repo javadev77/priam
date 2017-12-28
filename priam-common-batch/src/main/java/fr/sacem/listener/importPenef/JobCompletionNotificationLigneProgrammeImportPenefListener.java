@@ -14,6 +14,7 @@ import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -44,6 +45,9 @@ public class JobCompletionNotificationLigneProgrammeImportPenefListener extends 
 
     @Autowired
     FichierRepository fichierRepository;
+
+    @Value("${type.fichier}")
+    String typeFichier;
 
     @Autowired
     public JobCompletionNotificationLigneProgrammeImportPenefListener() {
@@ -93,7 +97,7 @@ public class JobCompletionNotificationLigneProgrammeImportPenefListener extends 
                     LOG.debug("Pas de excution context pour le step en cours : " + myStepExecution.getStepName());
                 }
 
-                if(idFichier != null) {
+                if(idFichier != null && "CMS".equalsIgnoreCase(typeFichier)) {
                     fichierRepository.supprimerLigneProgrammeParIdFichier((Long)idFichier.getValue());
                 }
 
@@ -152,7 +156,7 @@ public class JobCompletionNotificationLigneProgrammeImportPenefListener extends 
                 utilFile.deplacerFichier(parameterFichierZipEnCours, parameterNomFichierOriginal, outputDirectory);
             }
 
-            if(idFile != null) {
+            if(idFichier != null && "CMS".equalsIgnoreCase(typeFichier)) {
                 fichierRepository.supprimerLigneProgrammeParIdFichier(idFile);
             }
         }

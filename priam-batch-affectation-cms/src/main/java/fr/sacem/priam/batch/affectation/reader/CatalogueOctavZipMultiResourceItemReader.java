@@ -135,6 +135,7 @@ public class CatalogueOctavZipMultiResourceItemReader<T> extends MultiResourceIt
 
                                     JobParameter jobParameterIdFichier = new JobParameter(fichier.getId());
                                     this.stepExecution.getExecutionContext().put("idFichier", jobParameterIdFichier);
+
                                     // utilisation de offset a 1 est pour cause la creation des fichier dans les zip avec un / sous linux, c'est un hack pour les fichiers creer sous linux
                                 }
 

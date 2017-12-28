@@ -72,16 +72,7 @@ public class AffectationCMSResource {
             programmeDto = programmeViewDao.findByNumProg(numProg);
         }
 
-        //Lancer le traitement CMS
-        /*TraitementEligibiliteCMS tmt = new TraitementEligibiliteCMS();
-        tmt.setProgramme(programmeDao.findOne(numProg));
-        tmt.setStatutEligibilite(StatutEligibilite.EN_ATTENTE_ELIGIBILITE);
-        tmt.setDateDebutTmt(new Date());
-
-        traitementEligibiliteCMSDao.saveAndFlush(tmt);*/
-
         //lancer le job
-
         LOGGER.info("Lancement du Batch Affectation CMS ");
 
 
