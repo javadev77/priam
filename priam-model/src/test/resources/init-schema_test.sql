@@ -1371,9 +1371,6 @@ INSERT INTO PRIAM_FICHIER
 (NOM, CDEFAMILTYPUTIL, CDETYPUTIL, DATE_DEBUT_CHGT, DATE_FIN_CHGT, NB_LIGNES, STATUT_CODE, SOURCE_AUTO)
 VALUES ('Fichier 17', 'COPIEPRIV', 'COPRIVSON', '2017-05-24 16:00:14', '2017-05-24 22:57:04', 150780, 'ABANDONNE', 1);
 
-
-
-
 -- ---------------------------------------------------
 -- ------ TABLE PRIAM_LIGNE_PROGRAMME -------------------
 -- ---------------------------------------------------
@@ -1463,9 +1460,12 @@ VALUES ('58', 250, 640, 'COPIEPRIV', '', null, null, 'RT2', 'CPRIVAUDPL', 'PRINC
 INSERT INTO PRIAM_LIGNE_PROGRAMME (cdeCisac, cdeTer, rionEffet, cdeFamilTypUtil, cdeModFac, numProg, keyLigPenel, cdeUtil, cdeTypUtil, cdeTypProg, cdeCompl, libProg, compLibProg, datDbtProg, datFinProg, hrDbt, hrFin, cdeGreDif, cdeModDif, cdeTypIde12, ide12, datDif, hrDif, durDif, nbrDif, mt, ctna, paramCoefHor, durDifCtna, cdeLng, indDoubSsTit, tax, typMt, ID_FICHIER)
 VALUES ('58', 250, 641, 'COPIEPRIV', '', null, null, 'RIR', 'CPRIVAUDPL', 'PRINC', 'SANS', 'COPIEPRIV PRINC 639 250', '', '2017-05-24 22:57:04', '2017-05-24 22:57:04', null, null, '', '', 'COCV', 8028354411, null, null, null, 8, 1.74, '', '', null, '', '', null, 'MB', SELECT ID FROM PRIAM_FICHIER WHERE NOM ='Fichier 125');
 */
-INSERT INTO PRIAM_LIGNE_PROGRAMME_CP (cdeCisac, cdeFamilTypUtil, numProg, cdeUtil, cdeTypUtil, cdeGreDif, cdeModDif, cdeTypIde12, ide12, durDif, nbrDif, mt, ctna, paramCoefHor, durDifCtna, cdeLng, indDoubSsTit, tax, typMt, cdeGreIde12Cmplx, cdeGreIde12, titreOriCmplx, titreAltPppalCmplx, titreOriOeuvPereCmplx, titreAltOeuvPereCmplx, titreOeuvre, cdePaysOriIso4NCmplx, realisateurCmplx, roleParticipant1, nomParticipant1, cdeTypUtilOri, cdeFamilTypUtilOri,ID_FICHIER) VALUES ('58', 'COPIEPRIV', '170001', '0002', 'CPRIVAUDPL', '', '', 'COCV', 6829877211, null,10, 71.52, '', '', null, '', '', null, 'MB', 19, null, null, null, null, null, 'Test Titre', null, null, null, null, null, null, (SELECT ID FROM PRIAM_FICHIER WHERE NOM ='Fichier 125'));
-INSERT INTO PRIAM_LIGNE_PROGRAMME_CP (cdeCisac, cdeFamilTypUtil, numProg, cdeUtil, cdeTypUtil, cdeGreDif, cdeModDif, cdeTypIde12, ide12, durDif, nbrDif, mt, ctna, paramCoefHor, durDifCtna, cdeLng, indDoubSsTit, tax, typMt, cdeGreIde12Cmplx, cdeGreIde12, titreOriCmplx, titreAltPppalCmplx, titreOriOeuvPereCmplx, titreAltOeuvPereCmplx, titreOeuvre, cdePaysOriIso4NCmplx, realisateurCmplx, roleParticipant1, nomParticipant1, cdeTypUtilOri, cdeFamilTypUtilOri,ID_FICHIER) VALUES ('58', 'COPIEPRIV', null, 'RT2', 'CPRIVAUDPL', '', '', 'COCV', 8028354411, null, 2,1.26, '', '', null, '', '', null, 'MB', 19, null, null, null, null, null, null, null, null, null, null, null, null, (SELECT ID FROM PRIAM_FICHIER WHERE NOM ='Fichier 125'));
-INSERT INTO PRIAM_LIGNE_PROGRAMME_CP (cdeCisac, cdeFamilTypUtil, numProg, cdeUtil, cdeTypUtil, cdeGreDif, cdeModDif, cdeTypIde12, ide12, durDif, nbrDif, mt, ctna, paramCoefHor, durDifCtna, cdeLng, indDoubSsTit, tax, typMt, cdeGreIde12Cmplx, cdeGreIde12, titreOriCmplx, titreAltPppalCmplx, titreOriOeuvPereCmplx, titreAltOeuvPereCmplx, titreOeuvre, cdePaysOriIso4NCmplx, realisateurCmplx, roleParticipant1, nomParticipant1, cdeTypUtilOri, cdeFamilTypUtilOri,ID_FICHIER) VALUES ('58', 'COPIEPRIV', null, 'RIR', 'CPRIVAUDPL', '', '', 'COCV', 8028354411,null, 8,1.74, '', '', null, '', '', null, 'MB', 19, null, null, null, null, null, null, null, null, null, null, null, null, (SELECT ID FROM PRIAM_FICHIER WHERE NOM ='Fichier 125'));
+INSERT INTO PRIAM_LIGNE_PROGRAMME_CP (cdeCisac, cdeFamilTypUtil, numProg, cdeUtil, cdeTypUtil, cdeGreDif, cdeModDif, cdeTypIde12, ide12, durDif, nbrDif, mt, ctna, paramCoefHor, durDifCtna, cdeLng, indDoubSsTit, tax, typMt, cdeGreIde12Cmplx, cdeGreIde12, titreOriCmplx, titreAltPppalCmplx, titreOriOeuvPereCmplx, titreAltOeuvPereCmplx, titreOeuvre, cdePaysOriIso4NCmplx, realisateurCmplx, roleParticipant1, nomParticipant1, cdeTypUtilOri, cdeFamilTypUtilOri,ID_FICHIER)
+VALUES ('58', 'COPIEPRIV', '170001', '0002', 'CPRIVAUDPL', '', '', 'COCV', 6829877211, null,10, 71.52, '', '', null, '', '', null, 'MB', 19, null, null, null, null, null, 'Test Titre', null, null, null, null, null, null, (SELECT ID FROM PRIAM_FICHIER WHERE NOM ='Fichier 125'));
+INSERT INTO PRIAM_LIGNE_PROGRAMME_CP (cdeCisac, cdeFamilTypUtil, numProg, cdeUtil, cdeTypUtil, cdeGreDif, cdeModDif, cdeTypIde12, ide12, durDif, nbrDif, mt, ctna, paramCoefHor, durDifCtna, cdeLng, indDoubSsTit, tax, typMt, cdeGreIde12Cmplx, cdeGreIde12, titreOriCmplx, titreAltPppalCmplx, titreOriOeuvPereCmplx, titreAltOeuvPereCmplx, titreOeuvre, cdePaysOriIso4NCmplx, realisateurCmplx, roleParticipant1, nomParticipant1, cdeTypUtilOri, cdeFamilTypUtilOri,ID_FICHIER)
+VALUES ('58', 'COPIEPRIV', null, 'RT2', 'CPRIVAUDPL', '', '', 'COCV', 8028354411, null, 2,1.26, '', '', null, '', '', null, 'MB', 19, null, null, null, null, null, null, null, null, null, null, null, null, (SELECT ID FROM PRIAM_FICHIER WHERE NOM ='Fichier 125'));
+INSERT INTO PRIAM_LIGNE_PROGRAMME_CP (cdeCisac, cdeFamilTypUtil, numProg, cdeUtil, cdeTypUtil, cdeGreDif, cdeModDif, cdeTypIde12, ide12, durDif, nbrDif, mt, ctna, paramCoefHor, durDifCtna, cdeLng, indDoubSsTit, tax, typMt, cdeGreIde12Cmplx, cdeGreIde12, titreOriCmplx, titreAltPppalCmplx, titreOriOeuvPereCmplx, titreAltOeuvPereCmplx, titreOeuvre, cdePaysOriIso4NCmplx, realisateurCmplx, roleParticipant1, nomParticipant1, cdeTypUtilOri, cdeFamilTypUtilOri,ID_FICHIER)
+VALUES ('58', 'COPIEPRIV', null, 'RIR', 'CPRIVAUDPL', '', '', 'COCV', 8028354411,null, 8,1.74, '', '', null, '', '', null, 'MB', 19, null, null, null, null, null, null, null, null, null, null, null, null, (SELECT ID FROM PRIAM_FICHIER WHERE NOM ='Fichier 125'));
 
 -- ---------------------------------------------------
 -- ------ TABLE PRIAM_ROLE -------------------
@@ -2333,6 +2333,139 @@ INSERT INTO `PRIAM_ELIGIBILITE_STATUT_PROGRAMME` (`CODE`, `LIBELLE`) VALUES ('EN
 INSERT INTO `PRIAM_ELIGIBILITE_STATUT_PROGRAMME` (`CODE`, `LIBELLE`) VALUES ('EN_COURS_ELIGIBILITE','en cours eligibilité');
 INSERT INTO `PRIAM_ELIGIBILITE_STATUT_PROGRAMME` (`CODE`, `LIBELLE`) VALUES ('FIN_ELIGIBILITE','fin traitement eligibilité');
 
+
+/*------------------------------------Data CMS-----------------------------------*/
+/*CP*/
+INSERT INTO PRIAM_PROGRAMME(NUMPROG, NOM, RION_THEORIQUE, CDEFAMILTYPUTIL, CDETYPUTIL, TYPE_REPART, DATE_CREATION, STATUT_PROG_CODE, RION_PAIEMENT)
+VALUES ('170001', 'Programme 01', 619, 'COPIEPRIV','CPRIVSONPH', 'OEUVRE', CURDATE(), 'VALIDE', NULL);
+
+INSERT INTO PRIAM_FICHIER
+(NOM, CDEFAMILTYPUTIL, CDETYPUTIL, DATE_DEBUT_CHGT, DATE_FIN_CHGT, NB_LIGNES, STATUT_CODE, NUMPROG)
+VALUES ('Fichier 125', 'COPIEPRIV', 'CPRIVSONPH', '2017-05-24 16:00:14', '2017-05-24 22:57:04', 150780, 'AFFECTE', '170001');
+
+INSERT INTO PRIAM_LIGNE_PROGRAMME_CP (cdeCisac, cdeFamilTypUtil, numProg, cdeUtil, cdeTypUtil, cdeGreDif, cdeModDif, cdeTypIde12, ide12, durDif, nbrDif, mt, ctna, paramCoefHor, durDifCtna, cdeLng, indDoubSsTit, tax, typMt, cdeGreIde12Cmplx, cdeGreIde12, titreOriCmplx, titreAltPppalCmplx, titreOriOeuvPereCmplx, titreAltOeuvPereCmplx, titreOeuvre, cdePaysOriIso4NCmplx, realisateurCmplx, roleParticipant1, nomParticipant1, cdeTypUtilOri, cdeFamilTypUtilOri,ID_FICHIER)
+VALUES ('58', 'COPIEPRIV', '170001', '0002', 'CPRIVAUDPL', '', '', 'COCV', 6829877211, null,10, 71.52, '', '', null, '', '', null, 'MB', 19, null, null, null, null, null, 'Test Titre', null, null, null, null, null, null, (SELECT ID FROM PRIAM_FICHIER WHERE NOM ='Fichier 125'));
+
+/*CMS*/
+INSERT INTO PRIAM_PROGRAMME(NUMPROG, NOM, RION_THEORIQUE, CDEFAMILTYPUTIL, CDETYPUTIL, TYPE_REPART, DATE_CREATION, STATUT_PROG_CODE, RION_PAIEMENT)
+VALUES ('200001', 'Programme UC 01', 641, 'UC','SONOFRA', 'OEUVRE', CURDATE(), 'VALIDE', NULL);
+
+INSERT INTO PRIAM_FICHIER
+(NOM, CDEFAMILTYPUTIL, CDETYPUTIL, DATE_DEBUT_CHGT, DATE_FIN_CHGT, NB_LIGNES, STATUT_CODE, SOURCE_AUTO, NUMPROG)
+VALUES ('Fichier 18', 'UC', 'SONOFRA', '28/11/2017  15:00:40', NULL, 100, 'AFFECTE', 1, '200001');
+
+INSERT INTO 'PRIAM_LIGNE_PROGRAMME_CMS' ('cdeCisac','cdeFamilTypUtil','numProg','cdeUtil','cdeTypUtil','cdeTypIde12','ide12','nbrDif','mt','cdeLng','typMt','ID_FICHIER','cdeGreIde12Cmplx','cdeGreIde12','titreOeuvre','roleParticipant1','nomParticipant1','cdeTypUtilOri','cdeFamilTypUtilOri')
+VALUES ('58', 'UC', '200001', 'XXX', 'SONOFRA', 'COCV', 2198031311, 154, 70.99, 'FR', 'MB', (SELECT ID FROM PRIAM_FICHIER WHERE NOM ='Fichier 18'),null,'ML','KISS','C','NESTORET GUILLAUME','RDHRZ','RADIO');
+
+
+/* PRIAM_PROGRAMME */
+INSERT INTO PRIAM_PROGRAMME(NUMPROG, NOM, RION_THEORIQUE, CDEFAMILTYPUTIL, CDETYPUTIL, TYPE_REPART, DATE_CREATION, STATUT_PROG_CODE, RION_PAIEMENT)
+VALUES ('200002', 'Programme UC 02', 641, 'UC','SONOFRA', 'OEUVRE', CURDATE(), 'EN_COURS', NULL);
+
+INSERT INTO PRIAM_PROGRAMME(NUMPROG, NOM, RION_THEORIQUE, CDEFAMILTYPUTIL, CDETYPUTIL, TYPE_REPART, DATE_CREATION, STATUT_PROG_CODE, RION_PAIEMENT)
+VALUES ('200003', 'Programme UC 03', 641, 'UC','SONOFRA', 'OEUVRE', CURDATE(), 'EN_COURS', NULL);
+
+INSERT INTO PRIAM_PROGRAMME(NUMPROG, NOM, RION_THEORIQUE, CDEFAMILTYPUTIL, CDETYPUTIL, TYPE_REPART, DATE_CREATION, STATUT_PROG_CODE, RION_PAIEMENT)
+VALUES ('200004', 'Programme UC 04', 641, 'UC','SONOANT', 'OEUVRE', CURDATE(), 'EN_COURS', NULL);
+
+INSERT INTO PRIAM_PROGRAMME(NUMPROG, NOM, RION_THEORIQUE, CDEFAMILTYPUTIL, CDETYPUTIL, TYPE_REPART, DATE_CREATION, STATUT_PROG_CODE, RION_PAIEMENT)
+VALUES ('200005', 'Programme UC 05', 641, 'UC','SONOANT', 'OEUVRE', CURDATE(), 'EN_COURS', NULL);
+
+INSERT INTO PRIAM_PROGRAMME(NUMPROG, NOM, RION_THEORIQUE, CDEFAMILTYPUTIL, CDETYPUTIL, TYPE_REPART, DATE_CREATION, STATUT_PROG_CODE, RION_PAIEMENT)
+VALUES ('200006', 'Programme UC 06', 641, 'UC','SONOANT', 'OEUVRE', CURDATE(), 'EN_COURS', NULL);
+
+/* PRIAM_FICHIER */
+INSERT INTO PRIAM_FICHIER
+(NOM, CDEFAMILTYPUTIL, CDETYPUTIL, DATE_DEBUT_CHGT, DATE_FIN_CHGT, NB_LIGNES, STATUT_CODE, SOURCE_AUTO, NUMPROG)
+VALUES ('Fichier 18', 'UC', 'SONOFRA', '28/11/2017  15:00:40', NULL, 100, 'AFFECTE', 1, '200001');
+
+INSERT INTO PRIAM_FICHIER
+(NOM, CDEFAMILTYPUTIL, CDETYPUTIL, DATE_DEBUT_CHGT, DATE_FIN_CHGT, NB_LIGNES, STATUT_CODE, SOURCE_AUTO, NUMPROG)
+VALUES ('Fichier 19', 'UC', 'SONOFRA', '28/11/2017  15:34:18', '28/11/2017  22:34:18', 100, 'CHARGEMENT_OK', 1, '200001');
+
+INSERT INTO PRIAM_FICHIER
+(NOM, CDEFAMILTYPUTIL, CDETYPUTIL, DATE_DEBUT_CHGT, DATE_FIN_CHGT, NB_LIGNES, STATUT_CODE, SOURCE_AUTO, NUMPROG)
+VALUES ('Fichier 20', 'UC', 'SONOFRA', '28/11/2017  15:35:18', '28/11/2017  22:35:18', 100, 'CHARGEMENT_KO', 1, '200002');
+
+INSERT INTO PRIAM_FICHIER
+(NOM, CDEFAMILTYPUTIL, CDETYPUTIL, DATE_DEBUT_CHGT, DATE_FIN_CHGT, NB_LIGNES, STATUT_CODE, SOURCE_AUTO, NUMPROG)
+VALUES ('Fichier 21', 'UC', 'SONOFRA', '2017-05-24 16:00:14', '2017-05-24 22:57:04', 100, 'AFFECTE', 1, '200002');
+
+INSERT INTO PRIAM_FICHIER
+(NOM, CDEFAMILTYPUTIL, CDETYPUTIL, DATE_DEBUT_CHGT, DATE_FIN_CHGT, NB_LIGNES, STATUT_CODE, SOURCE_AUTO, NUMPROG)
+VALUES ('Fichier 22', 'UC', 'SONOFRA', '2017-05-24 16:00:14', '2017-05-24 22:57:04', 100, 'ABANDONNE', 1, '200003');
+
+INSERT INTO PRIAM_FICHIER
+(NOM, CDEFAMILTYPUTIL, CDETYPUTIL, DATE_DEBUT_CHGT, DATE_FIN_CHGT, NB_LIGNES, STATUT_CODE, SOURCE_AUTO, NUMPROG)
+VALUES ('Fichier 23', 'UC', 'SONOANT', '28/11/2017  15:00:40', NULL, 100, 'EN_COURS', 1, '200003');
+
+INSERT INTO PRIAM_FICHIER
+(NOM, CDEFAMILTYPUTIL, CDETYPUTIL, DATE_DEBUT_CHGT, DATE_FIN_CHGT, NB_LIGNES, STATUT_CODE, SOURCE_AUTO, NUMPROG)
+VALUES ('Fichier 24', 'UC', 'SONOANT', '28/11/2017  15:34:18', '28/11/2017  22:34:18', 100, 'CHARGEMENT_OK', 1, '200004');
+
+INSERT INTO PRIAM_FICHIER
+(NOM, CDEFAMILTYPUTIL, CDETYPUTIL, DATE_DEBUT_CHGT, DATE_FIN_CHGT, NB_LIGNES, STATUT_CODE, SOURCE_AUTO, NUMPROG)
+VALUES ('Fichier 25', 'UC', 'SONOANT', '28/11/2017  15:35:18', '28/11/2017  22:35:18', 100, 'CHARGEMENT_KO', 1, '200004');
+
+INSERT INTO PRIAM_FICHIER
+(NOM, CDEFAMILTYPUTIL, CDETYPUTIL, DATE_DEBUT_CHGT, DATE_FIN_CHGT, NB_LIGNES, STATUT_CODE, SOURCE_AUTO, NUMPROG)
+VALUES ('Fichier 26', 'UC', 'SONOANT', '2017-05-24 16:00:14', '2017-05-24 22:57:04', 100, 'AFFECTE', 1, '200005');
+
+INSERT INTO PRIAM_FICHIER
+(NOM, CDEFAMILTYPUTIL, CDETYPUTIL, DATE_DEBUT_CHGT, DATE_FIN_CHGT, NB_LIGNES, STATUT_CODE, SOURCE_AUTO, NUMPROG)
+VALUES ('Fichier 27', 'UC', 'SONOANT', '2017-05-24 16:00:14', '2017-05-24 22:57:04', 100, 'ABANDONNE', 1, '200006');
+
+
+INSERT INTO 'PRIAM_LIGNE_PROGRAMME_CMS' ('cdeCisac','cdeFamilTypUtil','numProg','cdeUtil','cdeTypUtil','cdeTypIde12','ide12','nbrDif','mt','cdeLng','typMt','ID_FICHIER','cdeGreIde12Cmplx','cdeGreIde12','titreOeuvre','roleParticipant1','nomParticipant1','cdeTypUtilOri','cdeFamilTypUtilOri')
+VALUES ('58','UC',200001,'XXX','SONOFRA','COCV',2198031311,154,70.99,'FR','MB',(SELECT ID FROM PRIAM_FICHIER WHERE NOM ='Fichier 18'),null,'ML','KISS','C','NESTORET GUILLAUME','RDHRZ','RADIO');
+INSERT INTO 'PRIAM_LIGNE_PROGRAMME_CMS' ('cdeCisac','cdeFamilTypUtil','numProg','cdeUtil','cdeTypUtil','cdeTypIde12','ide12','nbrDif','mt','cdeLng','typMt','ID_FICHIER','cdeGreIde12Cmplx','cdeGreIde12','titreOeuvre','roleParticipant1','nomParticipant1','cdeTypUtilOri','cdeFamilTypUtilOri','utilisateur','date_insertion','ajout','selection','SEL_EN_COURS')
+VALUES ('58','UC',200001,'XXX','SONOFRA','COCV',2258526811,154,70.99,'FR','MB',18,null,'ML','KISS','C','NESTORET GUILLAUME','RDHRZ','RADIO','Batch Extraction',43088,512025463,'Automatique',1,1);
+INSERT INTO 'PRIAM_LIGNE_PROGRAMME_CMS' ('cdeCisac','cdeFamilTypUtil','numProg','cdeUtil','cdeTypUtil','cdeTypIde12','ide12','nbrDif','mt','cdeLng','typMt','ID_FICHIER','cdeGreIde12Cmplx','cdeGreIde12','titreOeuvre','roleParticipant1','nomParticipant1','cdeTypUtilOri','cdeFamilTypUtilOri','utilisateur','date_insertion','ajout','selection','SEL_EN_COURS')
+VALUES ('58','UC',1,'XXX','SONOFRA','COCV',2288231811,1361,147.28,'FR','MB',14,null,'HA','JINGLE ORLANE LONG','C','B J KALAHANN','RDHRZ','SONO','Batch Extraction',43088,512025463,'Automatique',1,1);
+INSERT INTO 'PRIAM_LIGNE_PROGRAMME_CMS' ('cdeCisac','cdeFamilTypUtil','numProg','cdeUtil','cdeTypUtil','cdeTypIde12','ide12','nbrDif','mt','cdeLng','typMt','ID_FICHIER','cdeGreIde12Cmplx','cdeGreIde12','titreOeuvre','roleParticipant1','nomParticipant1','cdeTypUtilOri','cdeFamilTypUtilOri','utilisateur','date_insertion','ajout','selection','SEL_EN_COURS')
+VALUES ('58','UC',1,'XXX','SONOFRA','COCV',8030903211,738,266.36,'FR','MB',14,null,'OF','TOU LE JOU','CA','VJ BEN FEAT T K','RDHRZ','RADIO','Batch Extraction',43088,512025463,'Automatique',0,0);
+INSERT INTO 'PRIAM_LIGNE_PROGRAMME_CMS' ('cdeCisac','cdeFamilTypUtil','numProg','cdeUtil','cdeTypUtil','cdeTypIde12','ide12','nbrDif','mt','cdeLng','typMt','ID_FICHIER','cdeGreIde12Cmplx','cdeGreIde12','titreOeuvre','roleParticipant1','nomParticipant1','cdeTypUtilOri','cdeFamilTypUtilOri','utilisateur','date_insertion','ajout','selection','SEL_EN_COURS')
+VALUES ('58','UC',1,'XXX','SONOFRA','COCV',8515530611,19,41.19,'FR','MB',15,null,'ML','CALL ME','C','CEIDE DENER','RDHRZ','RADIO','Batch Extraction',43088,512025463,'Automatique',1,1);
+INSERT INTO 'PRIAM_LIGNE_PROGRAMME_CMS' ('cdeCisac','cdeFamilTypUtil','numProg','cdeUtil','cdeTypUtil','cdeTypIde12','ide12','nbrDif','mt','cdeLng','typMt','ID_FICHIER','cdeGreIde12Cmplx','cdeGreIde12','titreOeuvre','roleParticipant1','nomParticipant1','cdeTypUtilOri','cdeFamilTypUtilOri','utilisateur','date_insertion','ajout','selection','SEL_EN_COURS')
+VALUES ('58','UC',1,'XXX','SONOFRA','COCV',8702263311,1361,147.28,'FR','MB',15,null,'HA','JINGLE ORLANE LONG','C','B J KALAHANN','RDHRZ','RADIO','Batch Extraction',43088,512025463,'Automatique',1,1);
+INSERT INTO 'PRIAM_LIGNE_PROGRAMME_CMS' ('cdeCisac','cdeFamilTypUtil','numProg','cdeUtil','cdeTypUtil','cdeTypIde12','ide12','nbrDif','mt','cdeLng','typMt','ID_FICHIER','cdeGreIde12Cmplx','cdeGreIde12','titreOeuvre','roleParticipant1','nomParticipant1','cdeTypUtilOri','cdeFamilTypUtilOri','utilisateur','date_insertion','ajout','selection','SEL_EN_COURS')
+VALUES ('58','UC',1,'XXX','SONOFRA','COCV',8710155311,19,41.19,'FR','MB',15,null,'ML','CALL ME','C','CEIDE DENER','RDHRZ','RADIO','Batch Extraction',43088,512025463,'Automatique',1,1);
+INSERT INTO 'PRIAM_LIGNE_PROGRAMME_CMS' ('cdeCisac','cdeFamilTypUtil','numProg','cdeUtil','cdeTypUtil','cdeTypIde12','ide12','nbrDif','mt','cdeLng','typMt','ID_FICHIER','cdeGreIde12Cmplx','cdeGreIde12','titreOeuvre','roleParticipant1','nomParticipant1','cdeTypUtilOri','cdeFamilTypUtilOri','utilisateur','date_insertion','ajout','selection','SEL_EN_COURS')
+VALUES ('58','UC',1,'XXX','SONOFRA','COCV',9303718711,738,147.28,'FR','MB',15,null,'OF','TOU LE JOU','CA','VJ BEN FEAT T K','RDHRZ','RADIO','Batch Extraction',43088,512025463,'Automatique',0,0);
+INSERT INTO 'PRIAM_LIGNE_PROGRAMME_CMS' ('cdeCisac','cdeFamilTypUtil','numProg','cdeUtil','cdeTypUtil','cdeTypIde12','ide12','nbrDif','mt','cdeLng','typMt','ID_FICHIER','cdeGreIde12Cmplx','cdeGreIde12','titreOeuvre','roleParticipant1','nomParticipant1','cdeTypUtilOri','cdeFamilTypUtilOri','utilisateur','date_insertion','ajout','selection','SEL_EN_COURS')
+VALUES ('58','UC',1,'XXX','SONOFRA','COCV',9320447311,154,70.99,'FR','MB',16,null,'ML','KISS','C','NESTORET GUILLAUME','RDHRZ','SONO','Batch Extraction',43088,512025463,'Automatique',1,1);
+INSERT INTO 'PRIAM_LIGNE_PROGRAMME_CMS' ('cdeCisac','cdeFamilTypUtil','numProg','cdeUtil','cdeTypUtil','cdeTypIde12','ide12','nbrDif','mt','cdeLng','typMt','ID_FICHIER','cdeGreIde12Cmplx','cdeGreIde12','titreOeuvre','roleParticipant1','nomParticipant1','cdeTypUtilOri','cdeFamilTypUtilOri','utilisateur','date_insertion','ajout','selection','SEL_EN_COURS')
+VALUES ('58','UC',1,'XXX','SONOFRA','COCV',2198031311,154,70.99,'FR','MB',16,null,'ML','KISS','C','NESTORET GUILLAUME','RDHRZ','RADIO','Batch Extraction',43088,5812384259,'Automatique',0,1);
+INSERT INTO 'PRIAM_LIGNE_PROGRAMME_CMS' ('cdeCisac','cdeFamilTypUtil','numProg','cdeUtil','cdeTypUtil','cdeTypIde12','ide12','nbrDif','mt','cdeLng','typMt','ID_FICHIER','cdeGreIde12Cmplx','cdeGreIde12','titreOeuvre','roleParticipant1','nomParticipant1','cdeTypUtilOri','cdeFamilTypUtilOri','utilisateur','date_insertion','ajout','selection','SEL_EN_COURS')
+VALUES ('58','UC',1,'XXX','SONOFRA','COCV',2258526811,154,70.99,'FR','MB',16,null,'ML','KISS','C','NESTORET GUILLAUME','RDHRZ','RADIO','Batch Extraction',43088,5812384259,'Automatique',0,1);
+INSERT INTO 'PRIAM_LIGNE_PROGRAMME_CMS' ('cdeCisac','cdeFamilTypUtil','numProg','cdeUtil','cdeTypUtil','cdeTypIde12','ide12','nbrDif','mt','cdeLng','typMt','ID_FICHIER','cdeGreIde12Cmplx','cdeGreIde12','titreOeuvre','roleParticipant1','nomParticipant1','cdeTypUtilOri','cdeFamilTypUtilOri','utilisateur','date_insertion','ajout','selection','SEL_EN_COURS')
+VALUES ('58','UC',1,'XXX','SONOFRA','COCV',2288231811,1361,147.28,'FR','MB',16,null,'HA','JINGLE ORLANE LONG','C','B J KALAHANN','RDHRZ','SONO','Batch Extraction',43088,5812384259,'Automatique',0,1);
+INSERT INTO 'PRIAM_LIGNE_PROGRAMME_CMS' ('cdeCisac','cdeFamilTypUtil','numProg','cdeUtil','cdeTypUtil','cdeTypIde12','ide12','nbrDif','mt','cdeLng','typMt','ID_FICHIER','cdeGreIde12Cmplx','cdeGreIde12','titreOeuvre','roleParticipant1','nomParticipant1','cdeTypUtilOri','cdeFamilTypUtilOri','utilisateur','date_insertion','ajout','selection','SEL_EN_COURS')
+VALUES ('58','UC',1,'XXX','SONOFRA','COCV',8030903211,738,266.36,'FR','MB',17,null,'OF','TOU LE JOU','CA','VJ BEN FEAT T K','RDHRZ','RADIO','Batch Extraction',43088,5812384259,'Automatique',0,1);
+INSERT INTO 'PRIAM_LIGNE_PROGRAMME_CMS' ('cdeCisac','cdeFamilTypUtil','numProg','cdeUtil','cdeTypUtil','cdeTypIde12','ide12','nbrDif','mt','cdeLng','typMt','ID_FICHIER','cdeGreIde12Cmplx','cdeGreIde12','titreOeuvre','roleParticipant1','nomParticipant1','cdeTypUtilOri','cdeFamilTypUtilOri','utilisateur','date_insertion','ajout','selection','SEL_EN_COURS')
+VALUES ('58','UC',1,'XXX','SONOFRA','COCV',8515530611,19,41.19,'FR','MB',17,null,'ML','CALL ME','C','CEIDE DENER','RDHRZ','RADIO','Batch Extraction',43088,5812384259,'Automatique',0,1);
+INSERT INTO 'PRIAM_LIGNE_PROGRAMME_CMS' ('cdeCisac','cdeFamilTypUtil','numProg','cdeUtil','cdeTypUtil','cdeTypIde12','ide12','nbrDif','mt','cdeLng','typMt','ID_FICHIER','cdeGreIde12Cmplx','cdeGreIde12','titreOeuvre','roleParticipant1','nomParticipant1','cdeTypUtilOri','cdeFamilTypUtilOri','utilisateur','date_insertion','ajout','selection','SEL_EN_COURS')
+VALUES ('58','UC',1,'XXX','SONOFRA','COCV',8702263311,1361,147.28,'FR','MB',17,null,'HA','JINGLE ORLANE LONG','C','B J KALAHANN','RDHRZ','RADIO','Batch Extraction',43088,5812384259,'Automatique',0,1);
+INSERT INTO 'PRIAM_LIGNE_PROGRAMME_CMS' ('cdeCisac','cdeFamilTypUtil','numProg','cdeUtil','cdeTypUtil','cdeTypIde12','ide12','nbrDif','mt','cdeLng','typMt','ID_FICHIER','cdeGreIde12Cmplx','cdeGreIde12','titreOeuvre','roleParticipant1','nomParticipant1','cdeTypUtilOri','cdeFamilTypUtilOri','utilisateur','date_insertion','ajout','selection','SEL_EN_COURS') VALUES ('58','UC',1,'XXX','SONOFRA','COCV',8710155311,19,41.19,'FR','MB',17,null,'ML','CALL ME','C','CEIDE DENER','RDHRZ','RADIO','Batch Extraction',43088,5812384259,'Automatique',0,1);
+INSERT INTO 'PRIAM_LIGNE_PROGRAMME_CMS' ('cdeCisac','cdeFamilTypUtil','numProg','cdeUtil','cdeTypUtil','cdeTypIde12','ide12','nbrDif','mt','cdeLng','typMt','ID_FICHIER','cdeGreIde12Cmplx','cdeGreIde12','titreOeuvre','roleParticipant1','nomParticipant1','cdeTypUtilOri','cdeFamilTypUtilOri','utilisateur','date_insertion','ajout','selection','SEL_EN_COURS') VALUES ('58','UC',1,'XXX','SONOFRA','COCV',8807061811,738,266.36,'FR','MB',18,null,'OF','TOU LE JOU','CA','VJ BEN FEAT T K','RDHRZ','RADIO','Batch Extraction',43088,5812384259,'Automatique',0,1);
+INSERT INTO 'PRIAM_LIGNE_PROGRAMME_CMS' ('cdeCisac','cdeFamilTypUtil','numProg','cdeUtil','cdeTypUtil','cdeTypIde12','ide12','nbrDif','mt','cdeLng','typMt','ID_FICHIER','cdeGreIde12Cmplx','cdeGreIde12','titreOeuvre','roleParticipant1','nomParticipant1','cdeTypUtilOri','cdeFamilTypUtilOri','utilisateur','date_insertion','ajout','selection','SEL_EN_COURS') VALUES ('58','UC',1,'XXX','SONOFRA','COCV',9032199111,19,41.19,'FR','MB',18,null,'ML','CALL ME','C','CEIDE DENER','RDHRZ','SONO','Batch Extraction',43088,5812384259,'Automatique',0,1);
+INSERT INTO 'PRIAM_LIGNE_PROGRAMME_CMS' ('cdeCisac','cdeFamilTypUtil','numProg','cdeUtil','cdeTypUtil','cdeTypIde12','ide12','nbrDif','mt','cdeLng','typMt','ID_FICHIER','cdeGreIde12Cmplx','cdeGreIde12','titreOeuvre','roleParticipant1','nomParticipant1','cdeTypUtilOri','cdeFamilTypUtilOri','utilisateur','date_insertion','ajout','selection','SEL_EN_COURS') VALUES ('58','UC',1,'XXX','SONOFRA','COCV',9200204911,154,70.99,'FR','MB',18,null,'ML','KISS','C','NESTORET GUILLAUME','RDHRZ','RADIO','Batch Extraction',43088,5812384259,'Automatique',0,1);
+INSERT INTO 'PRIAM_LIGNE_PROGRAMME_CMS' ('cdeCisac','cdeFamilTypUtil','numProg','cdeUtil','cdeTypUtil','cdeTypIde12','ide12','nbrDif','mt','cdeLng','typMt','ID_FICHIER','cdeGreIde12Cmplx','cdeGreIde12','titreOeuvre','roleParticipant1','nomParticipant1','cdeTypUtilOri','cdeFamilTypUtilOri','utilisateur','date_insertion','ajout','selection','SEL_EN_COURS') VALUES ('58','UC',1,'XXX','SONOFRA','COCV',9303718711,1361,147.28,'FR','MB',18,null,'HA','JINGLE ORLANE LONG','C','B J KALAHANN','RDHRZ','RADIO','Batch Extraction',43088,5812384259,'Automatique',0,1);
+INSERT INTO 'PRIAM_LIGNE_PROGRAMME_CMS' ('cdeCisac','cdeFamilTypUtil','numProg','cdeUtil','cdeTypUtil','cdeTypIde12','ide12','nbrDif','mt','cdeLng','typMt','ID_FICHIER','cdeGreIde12Cmplx','cdeGreIde12','titreOeuvre','roleParticipant1','nomParticipant1','cdeTypUtilOri','cdeFamilTypUtilOri','utilisateur','date_insertion','ajout','selection','SEL_EN_COURS') VALUES ('58','UC',1,'XXX','SONOFRA','COCV',9320447311,154,70.99,'FR','MB',19,null,'ML','KISS','C','NESTORET GUILLAUME','RDHRZ','SONO','Batch Extraction',43088,5812384259,'Automatique',0,1);
+INSERT INTO 'PRIAM_LIGNE_PROGRAMME_CMS' ('cdeCisac','cdeFamilTypUtil','numProg','cdeUtil','cdeTypUtil','cdeTypIde12','ide12','nbrDif','mt','cdeLng','typMt','ID_FICHIER','cdeGreIde12Cmplx','cdeGreIde12','titreOeuvre','roleParticipant1','nomParticipant1','cdeTypUtilOri','cdeFamilTypUtilOri','utilisateur','date_insertion','ajout','selection','SEL_EN_COURS') VALUES ('58','UC',1,'XXX','SONOFRA','COCV',9532572111,738,266.36,'FR','MB',19,null,'OF','TOU LE JOU','CA','VJ BEN FEAT T K','RDHRZ','SONO','Batch Extraction',43088,5812384259,'Automatique',0,1);
+INSERT INTO 'PRIAM_LIGNE_PROGRAMME_CMS' ('cdeCisac','cdeFamilTypUtil','numProg','cdeUtil','cdeTypUtil','cdeTypIde12','ide12','nbrDif','mt','cdeLng','typMt','ID_FICHIER','cdeGreIde12Cmplx','cdeGreIde12','titreOeuvre','roleParticipant1','nomParticipant1','cdeTypUtilOri','cdeFamilTypUtilOri','utilisateur','date_insertion','ajout','selection','SEL_EN_COURS') VALUES ('58','UC',1,'XXX','SONOFRA','COCV',2198031311,154,70.99,'FR','MB',19,null,'ML','KISS','C','NESTORET GUILLAUME','RDHRZ','RADIO','Batch Extraction',43088,6139583333,'Automatique',0,1);
+INSERT INTO 'PRIAM_LIGNE_PROGRAMME_CMS' ('cdeCisac','cdeFamilTypUtil','numProg','cdeUtil','cdeTypUtil','cdeTypIde12','ide12','nbrDif','mt','cdeLng','typMt','ID_FICHIER','cdeGreIde12Cmplx','cdeGreIde12','titreOeuvre','roleParticipant1','nomParticipant1','cdeTypUtilOri','cdeFamilTypUtilOri','utilisateur','date_insertion','ajout','selection','SEL_EN_COURS') VALUES ('58','UC',1,'XXX','SONOFRA','COCV',2258526811,154,70.99,'FR','MB',20,null,'ML','KISS','C','NESTORET GUILLAUME','RDHRZ','RADIO','Batch Extraction',43088,6139583333,'Automatique',0,1);
+INSERT INTO 'PRIAM_LIGNE_PROGRAMME_CMS' ('cdeCisac','cdeFamilTypUtil','numProg','cdeUtil','cdeTypUtil','cdeTypIde12','ide12','nbrDif','mt','cdeLng','typMt','ID_FICHIER','cdeGreIde12Cmplx','cdeGreIde12','titreOeuvre','roleParticipant1','nomParticipant1','cdeTypUtilOri','cdeFamilTypUtilOri','utilisateur','date_insertion','ajout','selection','SEL_EN_COURS') VALUES ('58','UC',1,'XXX','SONOFRA','COCV',2288231811,1361,147.28,'FR','MB',20,null,'HA','JINGLE ORLANE LONG','C','B J KALAHANN','RDHRZ','SONO','Batch Extraction',43088,6139583333,'Automatique',0,1);
+INSERT INTO 'PRIAM_LIGNE_PROGRAMME_CMS' ('cdeCisac','cdeFamilTypUtil','numProg','cdeUtil','cdeTypUtil','cdeTypIde12','ide12','nbrDif','mt','cdeLng','typMt','ID_FICHIER','cdeGreIde12Cmplx','cdeGreIde12','titreOeuvre','roleParticipant1','nomParticipant1','cdeTypUtilOri','cdeFamilTypUtilOri','utilisateur','date_insertion','ajout','selection','SEL_EN_COURS') VALUES ('58','UC',1,'XXX','SONOFRA','COCV',8030903211,738,266.36,'FR','MB',20,null,'OF','TOU LE JOU','CA','VJ BEN FEAT T K','RDHRZ','RADIO','Batch Extraction',43088,6139583333,'Automatique',0,1);
+INSERT INTO 'PRIAM_LIGNE_PROGRAMME_CMS' ('cdeCisac','cdeFamilTypUtil','numProg','cdeUtil','cdeTypUtil','cdeTypIde12','ide12','nbrDif','mt','cdeLng','typMt','ID_FICHIER','cdeGreIde12Cmplx','cdeGreIde12','titreOeuvre','roleParticipant1','nomParticipant1','cdeTypUtilOri','cdeFamilTypUtilOri','utilisateur','date_insertion','ajout','selection','SEL_EN_COURS') VALUES ('58','UC',1,'XXX','SONOFRA','COCV',8515530611,19,41.19,'FR','MB',20,null,'ML','CALL ME','C','CEIDE DENER','RDHRZ','RADIO','Batch Extraction',43088,6139583333,'Automatique',0,1);
+INSERT INTO 'PRIAM_LIGNE_PROGRAMME_CMS' ('cdeCisac','cdeFamilTypUtil','numProg','cdeUtil','cdeTypUtil','cdeTypIde12','ide12','nbrDif','mt','cdeLng','typMt','ID_FICHIER','cdeGreIde12Cmplx','cdeGreIde12','titreOeuvre','roleParticipant1','nomParticipant1','cdeTypUtilOri','cdeFamilTypUtilOri','utilisateur','date_insertion','ajout','selection','SEL_EN_COURS') VALUES ('58','UC',1,'XXX','SONOFRA','COCV',8702263311,1361,147.28,'FR','MB',21,null,'HA','JINGLE ORLANE LONG','C','B J KALAHANN','RDHRZ','RADIO','Batch Extraction',43088,6139583333,'Automatique',0,1);
+INSERT INTO 'PRIAM_LIGNE_PROGRAMME_CMS' ('cdeCisac','cdeFamilTypUtil','numProg','cdeUtil','cdeTypUtil','cdeTypIde12','ide12','nbrDif','mt','cdeLng','typMt','ID_FICHIER','cdeGreIde12Cmplx','cdeGreIde12','titreOeuvre','roleParticipant1','nomParticipant1','cdeTypUtilOri','cdeFamilTypUtilOri','utilisateur','date_insertion','ajout','selection','SEL_EN_COURS') VALUES ('58','UC',1,'XXX','SONOFRA','COCV',8710155311,19,41.19,'FR','MB',21,null,'ML','CALL ME','C','CEIDE DENER','RDHRZ','RADIO','Batch Extraction',43088,6139583333,'Automatique',0,1);
+INSERT INTO 'PRIAM_LIGNE_PROGRAMME_CMS' ('cdeCisac','cdeFamilTypUtil','numProg','cdeUtil','cdeTypUtil','cdeTypIde12','ide12','nbrDif','mt','cdeLng','typMt','ID_FICHIER','cdeGreIde12Cmplx','cdeGreIde12','titreOeuvre','roleParticipant1','nomParticipant1','cdeTypUtilOri','cdeFamilTypUtilOri','utilisateur','date_insertion','ajout','selection','SEL_EN_COURS') VALUES ('58','UC',1,'XXX','SONOFRA','COCV',8807061811,738,266.36,'FR','MB',21,null,'OF','TOU LE JOU','CA','VJ BEN FEAT T K','RDHRZ','RADIO','Batch Extraction',43088,6139583333,'Automatique',0,1);
+INSERT INTO 'PRIAM_LIGNE_PROGRAMME_CMS' ('cdeCisac','cdeFamilTypUtil','numProg','cdeUtil','cdeTypUtil','cdeTypIde12','ide12','nbrDif','mt','cdeLng','typMt','ID_FICHIER','cdeGreIde12Cmplx','cdeGreIde12','titreOeuvre','roleParticipant1','nomParticipant1','cdeTypUtilOri','cdeFamilTypUtilOri','utilisateur','date_insertion','ajout','selection','SEL_EN_COURS') VALUES ('58','UC',1,'XXX','SONOFRA','COCV',9032199111,19,41.19,'FR','MB',22,null,'ML','CALL ME','C','CEIDE DENER','RDHRZ','SONO','Batch Extraction',43088,6139583333,'Automatique',0,1);
+INSERT INTO 'PRIAM_LIGNE_PROGRAMME_CMS' ('cdeCisac','cdeFamilTypUtil','numProg','cdeUtil','cdeTypUtil','cdeTypIde12','ide12','nbrDif','mt','cdeLng','typMt','ID_FICHIER','cdeGreIde12Cmplx','cdeGreIde12','titreOeuvre','roleParticipant1','nomParticipant1','cdeTypUtilOri','cdeFamilTypUtilOri','utilisateur','date_insertion','ajout','selection','SEL_EN_COURS') VALUES ('58','UC',1,'XXX','SONOFRA','COCV',9200204911,154,70.99,'FR','MB',22,null,'ML','KISS','C','NESTORET GUILLAUME','RDHRZ','RADIO','Batch Extraction',43088,6139583333,'Automatique',0,1);
+INSERT INTO 'PRIAM_LIGNE_PROGRAMME_CMS' ('cdeCisac','cdeFamilTypUtil','numProg','cdeUtil','cdeTypUtil','cdeTypIde12','ide12','nbrDif','mt','cdeLng','typMt','ID_FICHIER','cdeGreIde12Cmplx','cdeGreIde12','titreOeuvre','roleParticipant1','nomParticipant1','cdeTypUtilOri','cdeFamilTypUtilOri','utilisateur','date_insertion','ajout','selection','SEL_EN_COURS') VALUES ('58','UC',1,'XXX','SONOFRA','COCV',9303718711,1361,147.28,'FR','MB',22,null,'HA','JINGLE ORLANE LONG','C','B J KALAHANN','RDHRZ','RADIO','Batch Extraction',43088,6139583333,'Automatique',0,1);
+INSERT INTO 'PRIAM_LIGNE_PROGRAMME_CMS' ('cdeCisac','cdeFamilTypUtil','numProg','cdeUtil','cdeTypUtil','cdeTypIde12','ide12','nbrDif','mt','cdeLng','typMt','ID_FICHIER','cdeGreIde12Cmplx','cdeGreIde12','titreOeuvre','roleParticipant1','nomParticipant1','cdeTypUtilOri','cdeFamilTypUtilOri','utilisateur','date_insertion','ajout','selection','SEL_EN_COURS') VALUES ('58','UC',1,'XXX','SONOFRA','COCV',9320447311,154,70.99,'FR','MB',23,null,'ML','KISS','C','NESTORET GUILLAUME','RDHRZ','SONO','Batch Extraction',43088,6139583333,'Automatique',0,1);
+INSERT INTO 'PRIAM_LIGNE_PROGRAMME_CMS' ('cdeCisac','cdeFamilTypUtil','numProg','cdeUtil','cdeTypUtil','cdeTypIde12','ide12','nbrDif','mt','cdeLng','typMt','ID_FICHIER','cdeGreIde12Cmplx','cdeGreIde12','titreOeuvre','roleParticipant1','nomParticipant1','cdeTypUtilOri','cdeFamilTypUtilOri','utilisateur','date_insertion','ajout','selection','SEL_EN_COURS') VALUES ('58','UC',1,'XXX','SONOFRA','COCV',9532572111,738,266.36,'FR','MB',23,null,'OF','TOU LE JOU','CA','VJ BEN FEAT T K','RDHRZ','SONO','Batch Extraction',43088,6139583333,'Automatique',0,1);
 
 
 commit;

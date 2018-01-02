@@ -72,7 +72,7 @@
           </div>
 
 
-          <div class="form-group col-md-7" :class="{'has-error': errors.has('Utilisateur') }">
+          <!--<div class="form-group col-md-7" :class="{'has-error': errors.has('Utilisateur') }">
             <label class="col-md-6 control-label blueText text-right">Utilisateur <span class="mandatory">*</span></label>
             <div class="col-md-18">
               <select2 v-if="oeuvreManuelToCreate.utilisateur"
@@ -87,7 +87,7 @@
                        :class="{'has-error': errors.has('Utilisateur') }">
               </select2>
             </div>
-          </div>
+          </div>-->
 
 
             <div class="form-group col-md-5" v-if="programme.typeUtilisation == 'CPRIVSONRD'" :class="{'has-error': errors.has('duree') }">
@@ -105,11 +105,27 @@
               <label class="col-md-6 control-label blueText text-right">Quantité <span class="mandatory">*</span></label>
               <div class="col-md-18">
                 <input v-validate.disable="'required|numeric'"
-                       :class="{'has-error': errors.has('quantite') }" n
+                       :class="{'has-error': errors.has('quantite') }"
                        name="quantite"
                        class="form-control"
                        type="text"
                        v-model="oeuvreManuelToCreate.quantite">
+              </div>
+            </div>
+            <div class="form-group col-md-5" v-if="programme.typeUtilisation == 'SONOFRA'">
+              <label class="col-md-6 control-label blueText text-right">Points <span class="mandatory">*</span></label>
+              <div class="col-md-18">
+                <!--<input v-validate.disable="'required|decimal:2'"
+                       :class="{'has-error': errors.has('points') }" n
+                       name="points"
+                       class="form-control"
+                       type="number"
+                       v-model="oeuvreManuelToCreate.points"
+                        v-on:keyup="isDisabled">-->
+                <vueNumeric
+                  v-bind:precision="2"
+                  v-model="oeuvreManuelToCreate.points">
+                </vueNumeric>
               </div>
             </div>
 
@@ -131,6 +147,8 @@
 
   import Select2 from '../../../../common/components/ui/Select2.vue';
   import {Validator} from 'vee-validate';
+  import VueNumeric from 'vue-numeric';
+
 
   const dictionary = {
 
@@ -152,25 +170,17 @@
       },
 
      data() {
-
           return {
               oeuvreManuelToCreate : {
-                  utilisateur : null,
-                  duree : '',
-                  quantite : '',
                   titre : '',
                   ide12 : '',
                   roleParticipant1 : '',
                   nomParticipant1: '',
                   cdeTypeIde12 :'',
-                  libelleUtilisateur : ''
+                  points: 0
               },
-
-
               utilisateursOptions : [],
-
               programme : {}
-
           }
      },
 
@@ -207,13 +217,12 @@
               //debugger;
             });*/
 
-        this.oeuvreManuelToCreate.utilisateur = this.$store.getters.libelleUtilisateur[0].id;
+        //this.oeuvreManuelToCreate.utilisateur = this.$store.getters.libelleUtilisateur[0].id;
     },
 
     methods : {
 
       onClickAjouterOeuvre() {
-
         let sef = this;
         sef.$validator.validateAll().then(() => {
             sef.oeuvreManuelToCreate.ide12 = sef.oeuvre.ide12;
@@ -221,10 +230,6 @@
             sef.oeuvreManuelToCreate.roleParticipant1 = sef.oeuvre.roleParticipant1;
             sef.oeuvreManuelToCreate.nomParticipant1 = sef.oeuvre.nomParticipant1;
             sef.oeuvreManuelToCreate.cdeTypeIde12 = sef.oeuvre.cdeTypeIde12;
-            var libUtil = sef.$store.getters.libelleUtilisateur.find(function (element) {
-                return element.id == sef.oeuvreManuelToCreate.utilisateur;
-            });
-            sef.oeuvreManuelToCreate.libelleUtilisateur = libUtil.value;
             sef.$emit('ajout-oeuvre', sef.oeuvreManuelToCreate);
         }).catch(() => {
           console.log('Correct them errors!');
@@ -249,7 +254,8 @@
     },
 
     components : {
-        select2 :Select2
+        select2: Select2,
+        VueNumeric
     }
 
   }

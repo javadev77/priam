@@ -27,21 +27,6 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
 
     List<LigneProgrammeCMS> findByFichierId(Long fileId);
 
-
-    @Transactional
-    @Query(value="SELECT l " +
-            "FROM LigneProgrammeCMS l join l.fichier as f "+
-            "WHERE l.fichier = f.id " +
-            "AND f.programme.numProg = :numProg ")
-    Page<LigneProgrammeCMS> findLigneProgrammeByProgrammeId(@Param("numProg") String numProg, Pageable pageable);
-
-    @Transactional
-    @Query(value="SELECT l " +
-                     "FROM LigneProgrammeCMS l join l.fichier as f "+
-                     "WHERE l.fichier = f.id " +
-                     "AND f.programme.numProg = :numProg ")
-    List<LigneProgrammeCMS> findLigneProgrammeByNumProg(@Param("numProg") String numProg);
-
     @Transactional
     @Query(value="SELECT new fr.sacem.priam.model.domain.dto.SelectionCMSDto("+
                     "ligneProgramme.ide12, " +
@@ -200,10 +185,9 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
                      "WHERE l.fichier = f.id " +
                      "AND f.programme.numProg = :numProg " +
                      "AND l.ide12 = :ide12 " +
-                     "AND l.cdeUtil = :cdeUtil " +
                      "AND l.oeuvreManuel IS NULL " +
                      "AND l.ajout = 'Automatique' ")
-    List<LigneProgrammeCMS> findOeuvresAutoByIde12AndCdeUtil(@Param("numProg") String numProg, @Param("ide12") Long ide12, @Param("cdeUtil") String cdeUtil);
+    List<LigneProgrammeCMS> findOeuvresAutoByIde12AndCdeUtil(@Param("numProg") String numProg, @Param("ide12") Long ide12);
 
     @Query(value="SELECT l " +
                      "FROM LigneProgrammeCMS l join l.fichier as f "+
@@ -340,4 +324,13 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
                     "AND l.idOeuvreManuel IS NULL " +
                     "GROUP BY l.ide12) result ")
     Double calculerPointsMontantOeuvres(@Param("numProg") String numProg, @Param("selection") Integer selection);
+
+    @Query(value="SELECT l " +
+            "FROM LigneProgrammeCMS l join l.fichier as f "+
+            "WHERE l.fichier = f.id " +
+            "AND f.programme.numProg = :numProg " +
+            "AND l.ide12 = :ide12 " +
+            "AND l.oeuvreManuel IS NULL " +
+            "AND l.ajout = 'Manuel' ")
+    LigneProgrammeCMS findOeuvreManuelByIde12AndCdeUtil(@Param("numProg")String numProg, @Param("ide12") Long ide12);
 }

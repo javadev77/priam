@@ -23,12 +23,12 @@
 
     <modal v-if="showPopup">
 
-        <template slot="body" v-if="programme.typeUtilisation === 'CPRIVSONPH'">
-          <div style="text-align: justify" v-html="messagePhono">
+        <template slot="body" v-if="programme.typeUtilisation === 'SONOFRA'">
+          <div style="text-align: justify" v-html="messageSonoFra">
           </div>
         </template>
-        <template  slot="body" v-if="programme.typeUtilisation === 'CPRIVSONRD'">
-          <div style="text-align: justify" v-html="messageRadio">
+        <template  slot="body" v-if="programme.typeUtilisation === 'SONOANT'">
+          <div style="text-align: justify" v-html="messageSonoAnt">
           </div>
         </template>
 
@@ -54,7 +54,7 @@
         const customActions = {
           findLigneProgrammeByProgramme: {
             method: 'POST',
-            url: process.env.CONTEXT_ROOT_PRIAM_CP + 'app/rest/ligneProgramme/search'
+            url: process.env.CONTEXT_ROOT_PRIAM_CMS + 'app/rest/ligneProgramme/search'
           }
         }
         this.resource = this.$resource('', {}, customActions);
@@ -100,9 +100,9 @@
 
             programme : null,
 
-            messagePhono : '',
+            messageSonoFra : '',
 
-            messageRadio : '',
+            messageSonoAnt : '',
 
             showPopup : false,
 
@@ -202,8 +202,8 @@
         onAjouterOeuvre(oeuvre) {
             this.oeuvreToAdd = oeuvre;
             this.programme = this.$store.getters.programmeEnSelection;
-            debugger;
-            this.resource.findLigneProgrammeByProgramme({ide12 : oeuvre.ide12, utilisateur : oeuvre.utilisateur, numProg : this.programme.numProg})
+
+            this.resource.findLigneProgrammeByProgramme({ide12 : oeuvre.ide12, numProg : this.programme.numProg})
               .then(response => {
                   return response.json();
               })
@@ -212,16 +212,15 @@
                       // CDEUTIL et IDE12 existe Afficher un warning
                       let ligneProg = data.content[0];
                       this.showPopup = true;
-                      if(this.programme.typeUtilisation === 'CPRIVSONPH') {
-                          this.messagePhono = 'Attention, cette oeuvre est déjà présente au niveau du programme avec la quantité '
-                            + ligneProg.nbrDif + ', êtes-vous sûr de vouloir la remplacer avec la quantité saisie ?';
+                      if(this.programme.typeUtilisation === 'SONOFRA') {
+                          this.messageSonoFra = 'Attention, cette oeuvre est déjà présente au niveau du programme avec Points = '
+                            + ligneProg.pointsMontant + ', êtes-vous sûr de vouloir la remplacer ?';
 
                       } else if(this.programme.typeUtilisation === 'CPRIVSONRD') {
-                          this.messageRadio = 'Attention, cette oeuvre est déjà présente au niveau du programme avec la durée '
+                          this.messageSonoAnt = 'Attention, cette oeuvre est déjà présente au niveau du programme avec la durée '
                             + ligneProg.durDif + ', êtes-vous sûr de vouloir la remplacer avec la durée saisie ?';
                       }
                   } else {
-
                     this.$emit('validate-ajout-oeuvre', this.oeuvreToAdd);
                   }
               });

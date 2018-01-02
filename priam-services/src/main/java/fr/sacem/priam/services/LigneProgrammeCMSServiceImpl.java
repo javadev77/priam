@@ -1,17 +1,22 @@
 package fr.sacem.priam.services;
 
 import fr.sacem.priam.common.TypeUtilisationEnum;
+import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.dao.jpa.cms.LigneProgrammeCMSDao;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
+import fr.sacem.priam.model.domain.Fichier;
 import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.cms.LigneProgrammeCMS;
+import fr.sacem.priam.model.domain.cp.LigneProgrammeCP;
 import fr.sacem.priam.model.domain.criteria.LigneProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.SelectionCMSDto;
 import fr.sacem.priam.model.domain.dto.SelectionDto;
+import fr.sacem.priam.model.util.TypeUtilisationPriam;
 import fr.sacem.priam.services.api.LigneProgrammeService;
 import fr.sacem.priam.services.cms.LigneProgrammeCMSService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -20,10 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
@@ -34,11 +36,12 @@ import static java.lang.Boolean.TRUE;
 @Service("ligneProgrammeCMSService")
 public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, LigneProgrammeCMSService {
     public static final String IDE_12 = "ide12";
-    public static final String CDE_UTIL = "libAbrgUtil";
+    public static final String CDE_UTIL = "XXX";
     public static final String CDE_CISAC_058 = "058";
     public static final String MANUEL = "Manuel";
     public static final String AUTOMATIQUE = "Automatique";
     private static final String SOMME = "SOMME";
+    public static final Long NBRDIF_SONOFRA = 1L;
     public static final int SELECTION = 1;
 
     @Autowired
@@ -46,6 +49,9 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
 
     @Autowired
     private ProgrammeDao programmeDao;
+
+    @Autowired
+    private FichierDao fichierDao;
 
     @Override
     public List<KeyValueDto> getListIDE12ByProgramme(Long ide12, String programme) {
@@ -234,5 +240,77 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
         }
 
         return result;
+    }
+
+    @Transactional
+    @Override
+    public void ajouterOeuvreManuel(LigneProgrammeCMS input) {
+        Programme programme = programmeDao.findOne(input.getNumProg());
+
+        LigneProgrammeCMS oeuvreManuelFound = ligneProgrammeCMSDao.findOeuvreManuelByIde12AndCdeUtil(input.getNumProg(), input.getIde12());
+        if(oeuvreManuelFound != null) {
+            oeuvreManuelFound.setCdeCisac(CDE_CISAC_058);
+            oeuvreManuelFound.setCdeFamilTypUtil(programme.getFamille().getCode());
+            oeuvreManuelFound.setCdeTypUtil(programme.getTypeUtilisation().getCode());
+            oeuvreManuelFound.setAjout(MANUEL);
+            oeuvreManuelFound.setMt(input.getMt());
+            oeuvreManuelFound.setOeuvreManuel(null);
+            oeuvreManuelFound.setDateInsertion(new Date());
+            oeuvreManuelFound.setCdeTypIde12(input.getCdeTypIde12());
+            // oeuvreManuelFound.setSelectionEnCours(true);
+        } else {
+            List<LigneProgrammeCMS> founds = ligneProgrammeCMSDao.findOeuvresAutoByIde12AndCdeUtil(input.getNumProg(), input.getIde12());
+            if(founds != null && !founds.isEmpty()) {
+                LigneProgrammeCMS oeuvreManuel = createOeuvreManuel(input, programme);
+                founds.forEach( found -> {
+                    found.setOeuvreManuel(oeuvreManuel);
+                    //found.setSelectionEnCours(FALSE);
+                    found.setSelection(FALSE);
+                    ligneProgrammeCMSDao.save(found);
+                });
+
+            } else {
+                createOeuvreManuel(input, programme);
+            }
+        }
+
+    }
+
+    private LigneProgrammeCMS createOeuvreManuel(LigneProgrammeCMS input, Programme programme) {
+        Fichier probe = new Fichier();
+        probe.setAutomatique(false);
+        Programme programme1 = new Programme();
+        programme1.setNumProg(input.getNumProg());
+        probe.setProgramme(programme1);
+
+        Example<Fichier> of = Example.of(probe);
+        Fichier f = fichierDao.findOne(of);
+
+        if(f == null) {
+            f = new Fichier();
+
+            f.setProgramme(programme);
+            f.setAutomatique(false);
+
+            fichierDao.saveAndFlush(f);
+        }
+
+        input.setFichier(f);
+        input.setCdeCisac(CDE_CISAC_058);
+        input.setCdeFamilTypUtil(programme.getFamille().getCode());
+        input.setCdeUtil(CDE_UTIL);
+        input.setCdeTypUtil(programme.getTypeUtilisation().getCode());
+        if(programme.getTypeUtilisation().getCode().equals(TypeUtilisationPriam.SONOFRA.toString())) {
+            input.setNbrDif(NBRDIF_SONOFRA);
+        }
+        input.setAjout(MANUEL);
+        input.setSelection(TRUE);
+        input.setDateInsertion(new Date());
+        input.setCdeTypIde12(input.getCdeTypIde12());
+        input.setSelectionEnCours(TRUE);
+        input.setSelection(FALSE);
+        //input.setLibelleUtilisateur(sareftjLibutilDao.find);
+
+        return ligneProgrammeCMSDao.saveAndFlush(input);
     }
 }
