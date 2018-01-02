@@ -1,5 +1,7 @@
 package fr.sacem.dao;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
@@ -14,7 +16,7 @@ import java.sql.Statement;
  */
 @Repository
 public class TraitementCmsDao {
-
+    private static final Logger LOG = LoggerFactory.getLogger(TraitementCmsDao.class);
     private JdbcTemplate jdbcTemplate;
 
     public TraitementCmsDao() {
@@ -55,6 +57,13 @@ public class TraitementCmsDao {
             stmt.setDouble(5, sommePoints);
             stmt.setLong(6, idTraitementCMS);
         });
+    }
+
+    public void viderCatalogueOctav() {
+        LOG.info("=== Suppression du contenu de la table PRIAM_CATALOGUE_OCTAV ====");
+        String sql =  "TRUNCATE PRIAM_CATALOGUE_OCTAV";
+
+        jdbcTemplate.update(sql);
     }
 
 

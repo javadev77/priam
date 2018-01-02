@@ -128,44 +128,11 @@ public class JobCompletionNotificationAffectationCMSListener extends JobExecutio
                 JobParameter parameterNomFichierOriginal = (JobParameter) executionContext.get(NOM_ORIGINAL_FICHIER_ZIP);
                 JobParameter outputDirectory = jobExecution.getJobParameters().getParameters().get(REPERTOIRE_DE_DESTINATION);
 
-                Set<String> errors = (Set<String>) executionContext.get("ligne-programme-errors");
-                if(myStepExecution.getStatus() == BatchStatus.STOPPED){
-                    if( ! errors.isEmpty()) {
-                        JobParameter idFichier = (JobParameter) executionContext.get("idFichier");
-                        fichierBatchService.rejeterFichier((Long) idFichier.getValue(), errors);
-                    }
-                } else if("FAILED".equals(myStepExecution.getExitStatus().getExitCode()))
-                {
-                    System.out.println("--------------------------------");
-                    Throwable exception = myStepExecution.getFailureExceptions().iterator().next();
-                    if(exception instanceof PriamValidationException) {
-                        ErrorType errorType = ((PriamValidationException) exception).getErrorType();
 
-                        if(ErrorType.FORMAT_FICHIER.equals(errorType)) {
-                            errors.add(MESSAGE_FORMAT_FICHIER);
-                        }
-                        else if(ErrorType.FORMAT_ATTRIBUT.equals(errorType)) {
-                            errors.add(exception.getMessage());
-                        }
+                JobParameter jobParameter = (JobParameter) executionContext.get("idFichier");
 
-                    } else if(errors.isEmpty()) {
-                        errors.add(MESSAGE_ERREUR_TECHNIQUE);
-                    }
+                Long idFichier = (Long) jobParameter.getValue();
 
-                    JobParameter jobParameter = (JobParameter) executionContext.get("idFichier");
-
-                    Long idFichier;
-                    if(jobParameter == null) {
-                        idFichier = ((PriamValidationException)exception.getCause()).getIdFichier();
-                        errors.clear();
-                        errors.add(MESSAGE_FORMAT_FICHIER);
-                    } else {
-                        idFichier = (Long) jobParameter.getValue();
-                    }
-
-                    fichierBatchService.rejeterFichier(idFichier, errors);
-
-                }
                 utilFile.deplacerFichier(parameterFichierZipEnCours, parameterNomFichierOriginal, outputDirectory);
             }
         }

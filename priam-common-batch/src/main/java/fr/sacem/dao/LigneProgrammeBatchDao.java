@@ -1,10 +1,15 @@
 package fr.sacem.dao;
 
+import com.google.common.base.Joiner;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
 
 /**
  * Created by fandis on 15/12/2017.
@@ -21,17 +26,29 @@ public class LigneProgrammeBatchDao {
     }
 
     public void deleteDedoublonnage(String numProg) {
-        String sql =  "DELETE FROM " + this.nomTableLigneProgramme + " WHERE id NOT IN (SELECT * from (" +
-                "select min(l.id) as id " +
-                "from " + this.nomTableLigneProgramme + " l" +
-                "  INNER JOIN PRIAM_FICHIER f ON l.ID_FICHIER=f.ID " +
-                "  INNER JOIN PRIAM_PROGRAMME p ON p.NUMPROG=f.NUMPROG " +
-                "WHERE p.NUMPROG=? " +
+        String selectSql = "SELECT l2.id as id " +
+        "FROM PRIAM_LIGNE_PROGRAMME_CMS l2 " +
+                "INNER JOIN PRIAM_FICHIER f ON l2.ID_FICHIER=f.ID " +
+                "INNER JOIN PRIAM_PROGRAMME p ON p.NUMPROG=f.NUMPROG "+
+                "WHERE p.NUMPROG=? AND p.STATUT_ELIGIBILITE = 'EN_ATTENTE_ELIGIBILITE' "+
+                "AND l2.id not IN (SELECT temp.id3 "+
+                "from ( "+
+                "select min(l.id) as id3 "+
+                "from PRIAM_LIGNE_PROGRAMME_CMS l "+
+                "INNER JOIN PRIAM_FICHIER f ON l.ID_FICHIER=f.ID "+
+                "INNER JOIN PRIAM_PROGRAMME p ON p.NUMPROG=f.NUMPROG "+
+                "WHERE p.NUMPROG=? AND p.STATUT_ELIGIBILITE = 'EN_ATTENTE_ELIGIBILITE' "+
                 "group by l.ide12, l.cdeFamilTypUtilOri) as  temp) ";
-        jdbcTemplate.update(sql, stmt -> {
-            stmt.setString(1, numProg);
 
-        });
+
+
+        List<Long> ids = jdbcTemplate.query(selectSql,
+                (resultSet, i) -> resultSet.getLong("id"), numProg, numProg);
+
+        if(ids != null && !ids.isEmpty()) {
+            String sql =  "DELETE FROM " + this.nomTableLigneProgramme + " WHERE id IN (" + Joiner.on(",").join(ids).toString() + ") ";
+            jdbcTemplate.update(sql);
+        }
     }
 
 

@@ -16,6 +16,8 @@ public class ListnerDeleteAfterDedoublonnage extends StepExecutionListenerSuppor
 
     @Override
     public ExitStatus afterStep(StepExecution stepExecution) {
+
+        System.out.println("ListnerDeleteAfterDedoublonnage = " + stepExecution.getStepName());
         String numProg = stepExecution.getJobParameters().getString("numProg");
         this.ligneProgrammeBatchDao.deleteDedoublonnage(numProg);
 

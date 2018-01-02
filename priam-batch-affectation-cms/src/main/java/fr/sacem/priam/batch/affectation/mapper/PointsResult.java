@@ -9,6 +9,7 @@ public class PointsResult {
 
     private Long id;
     private Double mt;
+    private Long ide12;
 
     public PointsResult() {
 
@@ -28,5 +29,13 @@ public class PointsResult {
 
     public void setMt(Double mt) {
         this.mt = mt;
+    }
+
+    public Long getIde12() {
+        return ide12;
+    }
+
+    public void setIde12(Long ide12) {
+        this.ide12 = ide12;
     }
 }

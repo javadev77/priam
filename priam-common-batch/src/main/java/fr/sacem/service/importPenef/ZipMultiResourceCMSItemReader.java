@@ -122,6 +122,8 @@ public class ZipMultiResourceCMSItemReader<T> extends MultiResourceItemReader<T>
                                 this.stepExecution.getExecutionContext().put("nomFichier", jobParameterNomDuFichier);
                                 JobParameter jobParameterIdFichier = new JobParameter(fichier.getId());
                                 this.stepExecution.getExecutionContext().put("idFichier", jobParameterIdFichier);
+                                executionContext.put("ID_FICHIER", idFichier);
+                                this.stepExecution.getJobParameters().getParameters().put("ID_FICHIER_2", jobParameterIdFichier);
                                 // utilisation de offset a 1 est pour cause la creation des fichier dans les zip avec un / sous linux, c'est un hack pour les fichiers creer sous linux
                                 if((!file.getName().startsWith(FileUtils.PREFIX_FRA) && !file.getName().startsWith(FileUtils.PREFIX_ANT_RION2) && !file.getName().startsWith(FileUtils.PREFIX_ANT_RION4) &(!file.getName().startsWith(FileUtils.PREFIX_FRA,1)) && (!file.getName().startsWith(FileUtils.PREFIX_ANT_RION2,1) && (!file.getName().startsWith(FileUtils.PREFIX_ANT_RION4,1))))) {
                                     LOG.debug("==== offsite 1 ===");

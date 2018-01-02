@@ -1,6 +1,8 @@
 package fr.sacem.util.mapper.importPenef;
 
 import fr.sacem.domain.LigneProgrammeCMS;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
@@ -12,8 +14,11 @@ import java.sql.SQLException;
 public class PriamLigneProgrammeCMSSQLMapper implements RowMapper<LigneProgrammeCMS> {
 
 
+    private static  final Logger LOGGER = LoggerFactory.getLogger(PriamLigneProgrammeCMSSQLMapper.class);
+
     public LigneProgrammeCMS mapRow(ResultSet rs, int rowNum) throws SQLException {
         LigneProgrammeCMS ligneProgramme = new LigneProgrammeCMS();
+        ligneProgramme.setId(rs.getLong("id"));
         ligneProgramme.setIdFichier(rs.getLong("ID_FICHIER"));
         ligneProgramme.setCdeCisac(rs.getString("cdeCisac"));
         ligneProgramme.setCdeFamilTypUtil(rs.getString("cdeFamilTypUtil"));
@@ -51,6 +56,9 @@ public class PriamLigneProgrammeCMSSQLMapper implements RowMapper<LigneProgramme
         ligneProgramme.setDate_insertion(rs.getString("date_insertion"));
         ligneProgramme.setAjout(rs.getString("ajout"));
         ligneProgramme.setSelection(rs.getString("selection"));
+
+        LOGGER.info("LigneProgramme ide12= " + ligneProgramme.getIde12() + ", cdeFamilTypUtilOri=" + ligneProgramme.getCdeFamilTypUtilOri());
+
 
         return ligneProgramme;
 

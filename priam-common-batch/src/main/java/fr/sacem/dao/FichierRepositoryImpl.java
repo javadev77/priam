@@ -80,7 +80,7 @@ public class FichierRepositoryImpl implements FichierRepository {
     }
 
     @Override
-    public void supprimerLigneProgrammeParIdFichier(Long idFichier, Set<String> errors) {
+    public void supprimerLigneProgrammeParIdFichier(Long idFichier) {
 
         String sql = "DELETE FROM "+ this.nomTableLigneProgramme + " WHERE ID_FICHIER=?";
 

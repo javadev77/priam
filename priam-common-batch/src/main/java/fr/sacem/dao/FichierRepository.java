@@ -22,7 +22,7 @@ public interface FichierRepository {
 
     void rejeterFichier(Long idFichier, Set<String> errors);
 
-    void supprimerLigneProgrammeParIdFichier(Long idFichier, Set<String> errors);
+    void supprimerLigneProgrammeParIdFichier(Long idFichier);
 
     void enregistrerLog(Long idFichier, Set<String> errors);
 }

@@ -302,11 +302,14 @@
                   cell : {
                     toText : function(entry) {
 
-                        console.log("statut "+entry.statut);
-                        if(entry.statut === 'CREE' || entry.statut === 'ABANDONNE' ) {
-                          return {value: entry.numProg, isLink: false}
-                        }else {
-                        return {value : entry.numProg, isLink : true}
+                        console.log("statut " + entry.statut);
+                        if(entry.statut === 'CREE' || entry.statut === 'ABANDONNE'
+                            ||  entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
+                            || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE') {
+
+                            return {value: entry.numProg, isLink: false}
+                        } else {
+                            return {value : entry.numProg, isLink : true}
                         }
                     }
                   }
@@ -387,7 +390,8 @@
                       var result  = getters.statutProgramme.find(function (element) {
                         return element.code === entry.statut;
                       });
-                      if(result.code === 'ABANDONNE') {
+                      if(result.code === 'ABANDONNE' ||  entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
+                        || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE') {
                         return {value : entry.fichiers, isLink : false}
                       } else {
                         return {value : entry.fichiers, isLink : true}
@@ -402,14 +406,6 @@
                   sortable : true,
                   type : 'code-value',
                   cell : {
-                    /*cellTemplate : function(programme) {
-                      var result  = getters.statutProgramme.find(function (element) {
-                        return element.code === programme.statut;
-                      });
-
-                      var template = result !== undefined ? result.libelle + '<span class="glyphicon glyphicon-info-sign" aria-hidden="true" style="padding-left: 0px;" title="Répartition KO"></span>': '';
-                      return template;
-                    }*/
 
                     toText : function(cellValue) {
                       var result  = getters.statutProgramme.find(function (element) {
@@ -503,18 +499,23 @@
                       var statusCode = cellValue.statut;
 
                       var tempalte = [];
-                      if(statusCode !== undefined && ('CREE' === statusCode || 'AFFECTE' === statusCode
-                        || 'EN_COURS' === statusCode || 'VALIDE' === statusCode) ) {
+
+                      if(cellValue.statutEligibilite === 'FIN_ELIGIBILITE' || cellValue.statutEligibilite === null) {
+                        if(statusCode !== undefined && ('CREE' === statusCode || 'AFFECTE' === statusCode
+                          || 'EN_COURS' === statusCode || 'VALIDE' === statusCode) ) {
                           if($this.isRightMDYPRG){
                             tempalte.push({event : 'update-programme', template : tempalteUpdate});
                           }
-                      }
+                        }
 
-                      if(statusCode !== undefined && 'CREE' === statusCode) {
+                        if(statusCode !== undefined && 'CREE' === statusCode) {
                           if($this.isRightABDPRG){
                             tempalte.push({event : 'abondon-programme', template : tempalteTrash});
                           }
+                        }
+
                       }
+
 
                       if(tempalte.length == 1) {
                         tempalte.push({event : 'no', template : '<span aria-hidden="true" style="padding-left: 0px;"></span>'});
@@ -532,6 +533,21 @@
               searchQuery : ''
             }
           }
+      },
+
+
+      mounted() {
+
+//        for(var i in  this.priamGrid.gridData.content) {
+//
+//          var prog = this.priamGrid.gridData.content[i];
+//          console.log("prog = " + prog);
+//          if(prog.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
+//            || prog.statutEligibilite === 'EN_COURS_ELIGIBILITE') {
+//            $("#" + prog.numProg).css("background-color", "grey");
+//          }
+//        }
+
       },
 
       created() {
@@ -712,7 +728,12 @@
                 this.priamGrid.gridData = data;
                 this.priamGrid.gridData.number = data.number + 1;
 
+
+
+
               });
+
+
           },
 
           openEcranAjouterProgramme() {
@@ -751,7 +772,7 @@
                 if (row.famille === FAMILLES_PRIAM['UC']) { //CMS
                   this.$router.push({ name: 'selection-cms', params: { numProg: row.numProg }});
                 } else if (row.famille === FAMILLES_PRIAM['COPIE_PRIVEE']) { //CP
-                  this.$router.push({ name: 'affectation', params: { numProg: row.numProg }});
+                  this.$router.push({ name: 'selection', params: { numProg: row.numProg }});
                 }
 
               } else if(column.id !== undefined && column.id === 'repartition') {

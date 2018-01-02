@@ -99,7 +99,6 @@ public class LigneProgrammeCMSRessource extends LigneProgrammeResource {
             JobParameters jobParameters = new JobParameters(jobParametersMap);
 
             jobLauncher.run(jobEligibiliteOctav, jobParameters);
-            //LOGGER.info("Exit Status : " + execution.getStatus());
         } catch (Exception e) {
             LOGGER.error("Error execution", e);
         }
