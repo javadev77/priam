@@ -126,6 +126,24 @@ public abstract class LigneProgrammeResource {
         return new ArrayList<>();
     }
 
+    @RequestMapping(value = "ligneProgramme/selection/temporaire/modifier",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public List<String> modifierSelectionTemporaire(@RequestBody ValdierSelectionProgrammeInput input) {
+
+        if(input == null || input.getNumProg() == null || input.getNumProg().isEmpty())
+            throw new InputValidationException("input or num programme must not be null !");
+
+        ProgrammeDto programmeDTO = new ProgrammeDto();
+        programmeDTO.setNumProg(input.getNumProg());
+
+
+        modifierSelection(input, input.getNumProg());
+
+        return new ArrayList<>();
+    }
+
     private void modifierSelection(@RequestBody ValdierSelectionProgrammeInput input, String numProg) {
         if (!input.getSelected().isEmpty()) {
             getLigneProgrammeService().selectLigneProgramme(numProg, input.getSelected());

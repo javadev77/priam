@@ -17,6 +17,7 @@ import org.springframework.batch.core.JobParameter;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,6 +56,9 @@ public class AffectationCMSResource {
     Job jobEligibiliteOctav;
 
     @Autowired
+    Job jobDesaffectation;
+
+    @Autowired
     Admap admap;
 
     @RequestMapping(value = "programme/affectation",
@@ -73,12 +77,11 @@ public class AffectationCMSResource {
         }
 
         //lancer le job
-        LOGGER.info("Lancement du Batch Affectation CMS ");
-
+        LOGGER.info("====== Lancement du job Affectation CMS ======");
 
         try {
 
-            Map<String, JobParameter> jobParametersMap = new HashMap<String, JobParameter>();
+            Map<String, JobParameter> jobParametersMap = new HashMap<>();
             jobParametersMap.put("time", new JobParameter(System.currentTimeMillis()));
             jobParametersMap.put("input.catalog.octav", new JobParameter(admap.getInputFile()));
             jobParametersMap.put("archives.catalog.octav", new JobParameter(admap.getOutputFile()));
@@ -89,12 +92,50 @@ public class AffectationCMSResource {
             jobLauncher.run(jobEligibiliteOctav, jobParameters);
 
         } catch (Exception e) {
-            LOGGER.error("Error execution", e);
+            LOGGER.error("Error d'exécution du Batch Affectation CMS", e);
         }
 
-        LOGGER.info("Fin de Traitement ");
+        LOGGER.info("====== Fin de Traitement ======");
 
         return programmeDto;
+    }
+
+
+    @RequestMapping(value = "programme/toutDesaffecter",
+            method = RequestMethod.PUT,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ProgrammeDto desaffecterFichiers (@RequestBody String numProg, UserDTO userDTO){
+        LOGGER.info("desaffecterFichiers() ==> numProg=" + numProg);
+
+
+        //lancer le job
+        LOGGER.info("====== Lancement du job desaffectation CMS ======");
+
+        try {
+
+            Map<String, JobParameter> jobParametersMap = new HashMap<>();
+            jobParametersMap.put("time", new JobParameter(System.currentTimeMillis()));
+            jobParametersMap.put("numProg", new JobParameter(numProg));
+
+            JobParameters jobParameters = new JobParameters(jobParametersMap);
+
+            jobLauncher.run(jobDesaffectation, jobParameters);
+
+        } catch (Exception e) {
+            LOGGER.error("Error d'exécution du job desaffectation CMS", e);
+        }
+
+        LOGGER.info("====== Fin de Traitement ======");
+
+
+        /*ProgrammeDto programmeDto = null;
+        if(!Strings.isNullOrEmpty(numProg)){
+            programmeService.toutDeaffecter(numProg, userDTO.getDisplayName());
+            programmeDto = programmeViewDao.findByNumProg(numProg);
+        }*/
+
+        return new ProgrammeDto();
     }
 
 

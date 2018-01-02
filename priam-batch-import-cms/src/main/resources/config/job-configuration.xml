@@ -8,9 +8,11 @@
         http://www.springframework.org/schema/jdbc
         http://www.springframework.org/schema/jdbc/spring-jdbc-3.1.xsd"
 >
-    <!--<jdbc:initialize-database data-source="dataSource">
+<!--
+    <jdbc:initialize-database data-source="dataSource">
         <jdbc:script location="classpath:config/sql/initial-query.sql" />
-    </jdbc:initialize-database>-->
+    </jdbc:initialize-database>
+-->
     <!--<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">-->
            <!--<property name="searchSystemEnvironment" value="true"/>-->
         <!--<property name="ignoreResourceNotFound" value="true"/>-->
@@ -28,7 +30,7 @@
                 </chunk>
             </tasklet>
         </step>
-        <step id="dedoublonnageStep" parent="archiveFlatFileReaderStep">
+        <step id="dedoublonnageStep" next="sauvegardeStep">
             <tasklet>
                 <chunk
                         reader="readerPriamFromTable"
@@ -38,10 +40,28 @@
                 </chunk>
             </tasklet>
 
-            <listeners merge="true">
-                <listener ref="dedoublonnageStepListener"></listener>
-            </listeners>
+            <!--<listeners merge="true">-->
+                <!--<listener ref="dedoublonnageStepListener"></listener>-->
+            <!--</listeners>-->
         </step>
+
+        <!-- ======================================================================================== -->
+        <!-- ============== Step de sauvegarde des lignes programmes CMS apres dedooublonnage =========-->
+        <!-- ======================================================================================== -->
+
+        <step id="sauvegardeStep" parent="dedoublonnageStep">
+            <tasklet>
+                <chunk
+                        reader="readerSauvegardeStep"
+                        writer="writerSauvegardeStep"
+                        processor="ligneProgrammeDedoublonnageStepTwoProcessor"
+                        commit-interval="${commit-interval}">
+                </chunk>
+            </tasklet>
+
+
+        </step>
+
         <listeners merge="true">
             <listener ref="listenerCompletition"/>
         </listeners>
@@ -101,6 +121,8 @@
         <property name="dataSource" ref="dataSource"/>
         <property name="sortKey" value="ide12"/>
     </bean>
+
+
     <bean id="readerPriamFromTable"
           class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
         <property name="dataSource" ref="dataSource"/>
@@ -113,9 +135,10 @@
             </map>
         </property>
 
-
     </bean>
+
     <bean id="ligneProgrammeRowMapper" class="fr.sacem.util.mapper.importPenef.PriamLigneProgrammeSQLMapper"/>
+
     <bean id="writerDedoublonnagePriam" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
         <property name="dataSource" ref="dataSource"/>
         <property name="sql">
@@ -369,6 +392,125 @@
             </bean>
         </property>
     </bean>
+
+
+    <bean id="readerSauvegardeStep"
+          class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="queryProvider" ref="queryProvideRreaderSauvegardeStep"/>
+        <property name="pageSize" value="${commit-interval}"/>
+        <property name="rowMapper" ref="ligneProgrammeRowMapper"/>
+        <property name="parameterValues">
+            <map>
+                <entry key="idFichier" value="#{jobExecutionContext[ID_FICHIER]}"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="queryProvideRreaderSauvegardeStep" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
+        <property name="selectClause" value="select l.*"/>
+        <property name="fromClause" value="from PRIAM_LIGNE_PROGRAMME_CMS l"/>
+        <property name="whereClause" value="WHERE l.ID_FICHIER =:idFichier"/>
+        <property name="databaseType" value="MySQL" />
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sortKey" value="ide12"/>
+    </bean>
+
+
+    <bean id="writerSauvegardeStep" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    INSERT INTO PRIAM_LIGNE_PROGRAMME_CMS_COPY (
+                            id_fichier,
+                            cdeCisac,
+                            cdeFamilTypUtil,
+                            numProg,
+                            cdeUtil,
+                            cdeTypUtil,
+                            cdeGreDif,
+                            cdeModDif,
+                            cdeTypIde12,
+                            ide12,
+                            durDif,
+                            nbrDif,
+                            mt,
+                            ctna,
+                            paramCoefHor,
+                            durDifCtna,
+                            cdeLng,
+                            indDoubSsTit,
+                            tax,
+                            typMt,
+                            cdeGreIde12Cmplx,
+                            cdeGreIde12,
+                            titreOriCmplx,
+                            titreAltPppalCmplx,
+                            titreOriOeuvPereCmplx,
+                            titreAltOeuvPereCmplx,
+                            titreOeuvre,
+                            cdePaysOriIso4NCmplx,
+                            realisateurCmplx,
+                            roleParticipant1,
+                            nomParticipant1,
+                            cdeTypUtilOri,
+                            cdeFamilTypUtilOri,
+                            libelleUtilisateur,
+                            utilisateur,
+                            date_insertion,
+                            ajout,
+                            selection
+                        )
+                        VALUES (
+                            :idFichier,
+                            :cdeCisac,
+                            :cdeFamilTypUtil,
+                            :numProg,
+                            :cdeUtil,
+                            :cdeTypUtil,
+                            :cdeGreDif,
+                            :cdeModDif,
+                            :cdeTypIde12,
+                            :ide12,
+                            :durDif,
+                            :nbrDif,
+                            :mt,
+                            :ctna,
+                            :paramCoefHor,
+                            :durDifCtna,
+                            :cdeLng,
+                            :indDoubSsTit,
+                            :tax,
+                            :typMt,
+                            :cdeGreIde12Cmplx,
+                            :cdeGreIde12,
+                            :titreOriCmplx,
+                            :titreAltPppalCmplx,
+                            :titreOriOeuvPereCmplx,
+                            :titreAltOeuvPereCmplx,
+                            :titreOeuvre,
+                            :cdePaysOriIso4NCmplx,
+                            :realisateurCmplx,
+                            :roleParticipant1,
+                            :nomParticipant1,
+                            :cdeTypUtilOri,
+                            :cdeFamilTypUtilOri,
+                            :libelleUtilisateur,
+                            :utilisateur,
+                            :date_insertion,
+                            :ajout,
+                            :selection
+                        )
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
+
+
     <bean id="jobOperator" class="org.springframework.batch.core.launch.support.SimpleJobOperator"
           p:jobLauncher-ref="jobLauncher" p:jobExplorer-ref="jobExplorer"
           p:jobRepository-ref="jobRepository" p:jobRegistry-ref="jobRegistry"/>

@@ -64,9 +64,7 @@ public class FichierService {
             ligneProgrammeCPDao.deselectAllByNumProgramme(numProg, false);
 
         }
-        
 
-    
 
         if(idsNouveauxFichiersAffectes.isEmpty()) {
             programme.setStatut(StatutProgramme.CREE);

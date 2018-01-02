@@ -19,14 +19,15 @@ import fr.sacem.priam.common.constants.EnvConstants;
 @PropertySource("classpath:config/application-production.properties")
 public class ConfigurationPriamProd {
 
-    private Enum ConfigurationFromAdMap = EnvConstants.BATCH_CONFIG_PROPERTIES;
+    private Enum configurationFromAdMap = EnvConstants.BATCH_CONFIG_PROPERTIES;
     private String inputDirectory = String.valueOf(EnvConstants.PENEF_ZIP_IN);
     private String outputDirectory = String.valueOf(EnvConstants.PENEF_ZIP_ARCHIVES);
+
     @Bean
     public DataSource dataSource() {
             Properties defaultProps = new Properties();
             try {
-                FileInputStream in = new FileInputStream(ConfigurationFromAdMap.toString());
+                FileInputStream in = new FileInputStream(configurationFromAdMap.toString());
                 defaultProps.load(in);
                 in.close();
             }catch (IOException e){
@@ -48,6 +49,7 @@ public class ConfigurationPriamProd {
         admap.setOutputFile(outputDirectory);
         return admap;
     }
+
     ConfigurationPriamProd(){
 
     }

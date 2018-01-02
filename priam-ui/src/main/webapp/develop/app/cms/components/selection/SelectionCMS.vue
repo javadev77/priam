@@ -463,6 +463,7 @@
           },
           validerSelection: {method: 'POST', url: process.env.CONTEXT_ROOT_PRIAM_CMS +  'app/rest/ligneProgramme/selection/valider'},
           modifierSelection: {method: 'POST', url: process.env.CONTEXT_ROOT_PRIAM_CMS +  'app/rest/ligneProgramme/selection/modifier'},
+          updateSelectionTemporaire : {method: 'POST', url: process.env.CONTEXT_ROOT_PRIAM_CMS +  'app/rest/ligneProgramme/selection/temporaire/modifier'},
           invaliderSelection: {method: 'POST', url: process.env.CONTEXT_ROOT_PRIAM_CMS + 'app/rest/ligneProgramme/selection/invalider'},
           compteursProgramme: {method: 'GET', url: process.env.CONTEXT_ROOT_PRIAM_CMS + 'app/rest/ligneProgramme/selection/compteurs?numProg={numProg}&statut={statut}'},
           annulerSelection: {method: 'POST', url: process.env.CONTEXT_ROOT_PRIAM_CMS + 'app/rest/ligneProgramme/selection/annuler'},
@@ -578,7 +579,7 @@
         this.dataLoading = true;
         this.modifierSelectionTemporaire();
 
-        this.resource.modifierSelection(this.selection)
+        this.resource.updateSelectionTemporaire(this.selection)
           .then(response => {
             return response.json();
           }).then(data => {
@@ -605,7 +606,7 @@
 
         this.modifierSelectionTemporaire();
 
-        this.resource.modifierSelection(this.selection)
+        this.resource.updateSelectionTemporaire(this.selection)
           .then(response => {
             return response.json();
           }).then(data => {
@@ -686,7 +687,7 @@
         } else {
           this.modifierSelectionTemporaire();
 
-          this.resource.modifierSelection(this.selection)
+          this.resource.updateSelectionTemporaire(this.selection)
             .then(response => {
               return response.json();
             }).then(data => {
@@ -810,15 +811,19 @@
           }
         }
 
-        let duree;
+        let points;
         if(this.programmeInfo.typeUtilisation==="SONOFRA"){
-          duree = entry.pointsMontant;
+          points = entry.pointsMontant;
         }
 
         if(entry.selection) {
-          this.dureeSelection.duree += duree;
+          this.dureeSelection.duree += points;
         } else {
-          this.dureeSelection.duree -= duree;
+          this.dureeSelection.duree -= points;
+        }
+
+        if(this.dureeSelection.duree < 0) {
+          this.dureeSelection.duree  = 0;
         }
       },
 
@@ -966,7 +971,7 @@
         this.tableauSelectionnable = false;
         this.modifierSelectionTemporaire();
 
-        this.resource.modifierSelection(this.selection)
+        this.resource.updateSelectionTemporaire(this.selection)
           .then(response => {
             return response.json();
           })

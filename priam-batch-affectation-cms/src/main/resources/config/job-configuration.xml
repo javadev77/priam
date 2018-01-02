@@ -12,12 +12,32 @@
         <jdbc:script location="classpath:config/sql/initial-query.sql" />
     </jdbc:initialize-database>-->
 
+    <import resource="job-desaffectation-conf.xml"/>
+
     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="searchSystemEnvironment" value="true"/>
         <property name="ignoreResourceNotFound" value="true"/>
         <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
-        <property name="location" value="classpath:config/application-dev.properties"/>
+        <property name="location" value="classpath:config/application-${spring.profiles.active}.properties"/>
     </bean>
+
+    <job id="jobChargementCatalogueOctav" xmlns="http://www.springframework.org/schema/batch">
+
+        <step id="catalogueOctav">
+            <tasklet>
+                <chunk
+                        reader="catalogueOctavReader"
+                        writer="catalogueOctavWriter"
+                        processor="catalogueOctavProcessor"
+                        commit-interval="${commit-interval}">
+                </chunk>
+            </tasklet>
+        </step>
+
+    </job>
+
+
+
 
     <job id="jobEligibiliteOctav" xmlns="http://www.springframework.org/schema/batch">
 
@@ -27,7 +47,7 @@
                         reader="catalogueOctavReader"
                         writer="catalogueOctavWriter"
                         processor="catalogueOctavProcessor"
-                        commit-interval="2000">
+                        commit-interval="${commit-interval}">
                 </chunk>
             </tasklet>
         </step>
@@ -37,7 +57,7 @@
                 <chunk
                         reader="eligibiliteReader"
                         writer="eligibiliteWriter"
-                        processor="eligibiliteProcessor"
+                        processor="ligneCMSProcessor"
                         commit-interval="${commit-interval}">
                 </chunk>
             </tasklet>
@@ -48,7 +68,7 @@
                 <chunk
                         reader="readerDedoublonage"
                         writer="writerDedoublonnage"
-                        processor="eligibiliteProcessor"
+                        processor="ligneCMSProcessor"
                         commit-interval="${commit-interval}">
                 </chunk>
             </tasklet>
@@ -207,7 +227,7 @@
     </bean>
 
     <bean id="catalogueOctavProcessor" class="fr.sacem.priam.batch.affectation.processor.CatalogueOctavProcessor"/>
-    <bean id="eligibiliteProcessor" class="fr.sacem.priam.batch.affectation.processor.EligibiliteProcessor"/>
+    <bean id="ligneCMSProcessor" class="fr.sacem.priam.batch.affectation.processor.LigneCMSProcessor"/>
 
     <bean id="flatFileItemReader"
           class="org.springframework.batch.item.file.FlatFileItemReader">
@@ -351,8 +371,6 @@
             <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
         </property>
     </bean>
-
-
 
     <bean id="jobOperator" class="org.springframework.batch.core.launch.support.SimpleJobOperator"
           p:jobLauncher-ref="jobLauncher" p:jobExplorer-ref="jobExplorer"
