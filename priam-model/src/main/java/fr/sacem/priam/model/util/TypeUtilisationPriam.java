@@ -20,7 +20,7 @@ public enum TypeUtilisationPriam {
     private final String code;
     
     TypeUtilisationPriam(String code) {
-	  this.code = code;
+        this.code = code;
     }
     
     public String getCode() {

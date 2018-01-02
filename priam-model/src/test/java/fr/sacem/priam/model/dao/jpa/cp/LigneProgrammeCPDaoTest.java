@@ -88,7 +88,7 @@ public class LigneProgrammeCPDaoTest {
 
     private static final String NUM_PROG = "170001";
     private static final Long INITIAL_IDE12 = 772L;
-    private static final Long IDE12 = 6829877211L;
+    private static final Long IDE12 = 2198031311L;
     private static final String INITIAL_TITRES = "Tes";
 
 

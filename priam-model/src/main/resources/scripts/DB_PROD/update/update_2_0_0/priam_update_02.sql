@@ -89,4 +89,63 @@ CREATE TABLE PRIAM_TRAITEMENT_ELIGIBILITE_CMS (
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP VIEW IF EXISTS PRIAM_PROG_VIEW ;
+create view PRIAM_PROG_VIEW as
+  SELECT DISTINCT
+    pr.NUMPROG                                                         AS NUMPROG,
+    pr.NOM                                                             AS NOM,
+    pr.RION_THEORIQUE                                                  AS RION_THEORIQUE,
+    pr.CDEFAMILTYPUTIL                                                 AS CDEFAMILTYPUTIL,
+    pr.CDETYPUTIL                                                      AS CDETYPUTIL,
+    pr.TYPE_REPART                                                     AS TYPE_REPART,
+    pr.DATE_CREATION                                                   AS DATE_CREATION,
+    pr.STATUT_PROG_CODE                                                AS STATUT_PROG_CODE,
+    pr.RION_PAIEMENT                                                   AS RION_PAIEMENT,
+    pr.USERCRE                                                         AS USERCRE,
+    pr.DATMAJ                                                          AS DATMAJ,
+    pr.USERMAJ                                                         AS USERMAJ,
+    pr.DATAFFECT                                                       AS DATAFFECT,
+    pr.USERAFFECT                                                      AS USERAFFECT,
+    (SELECT count(f.NUMPROG)
+     FROM PRIAM_FICHIER f
+     WHERE ((pr.NUMPROG = f.NUMPROG) AND (f.SOURCE_AUTO = 1))) AS fichiers,
+    pr.DATE_DBT_PRG                                                    AS DATEDBTPRG,
+    pr.DATE_FIN_PRG                                                    AS DATEFINPRG,
+    pr.CDE_TER                                                         AS CDETER,
+    pr.USER_VALIDATION                                                 AS USERVALIDATION,
+    pr.DATE_VALIDATION                                                 AS DATEVALIDATION,
+    ff.STATUT                                                          AS STATUT_FICHIER_FELIX,
+    pr.DATE_REPARTITION                                                AS DATE_REPARTITION,
+    pr.STATUT_ELIGIBILITE                                              AS STATUT_ELIGIBILITE
+  FROM (PRIAM_PROGRAMME pr LEFT JOIN PRIAM_FICHIER_FELIX ff
+      ON ((ff.NUMPROG = pr.NUMPROG)))
+  GROUP BY pr.NUMPROG;
+
+
+DROP TABLE IF EXISTS `PRIAM_FICHIER_OCTAV`;
+CREATE TABLE `PRIAM_FICHIER_OCTAV` (
+  `ID` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'identifiant technique',
+  `NOM` varchar(255) DEFAULT NULL COMMENT 'Nom du fichier',
+  `CDEFAMILTYPUTIL` varchar(10) DEFAULT NULL COMMENT 'Famille',
+  `CDETYPUTIL` varchar(10) DEFAULT NULL COMMENT 'Type utilisation',
+  `DATE_DEBUT_CHGT` datetime DEFAULT NULL COMMENT 'Dete de Debut de chargement',
+  `DATE_FIN_CHGT` datetime DEFAULT NULL COMMENT 'Dete de Fin de chargement',
+  `NB_LIGNES` bigint(20) DEFAULT NULL COMMENT 'Nombre de lignes dans le fichier',
+  `STATUT_CODE` varchar(255) DEFAULT NULL COMMENT 'Statut primut du fichier',
+  `NUMPROG` varchar(8) DEFAULT NULL,
+   TYPE_FICHIER VARCHAR(5) DEFAULT NULL,
+
+  PRIMARY KEY (`ID`),
+  KEY `FK_FAMILLE_2` (`CDEFAMILTYPUTIL`),
+  KEY `FK_TYPE_UTIL_2` (`CDETYPUTIL`),
+  KEY `FK_STATUT_CODE_2` (`STATUT_CODE`),
+  KEY `PRIAM_FICHIER_OCTAV__index` (`ID`),
+  KEY `FK_NUMPROG_2` (`NUMPROG`),
+  CONSTRAINT `FK_FAMILLE_2` FOREIGN KEY (`CDEFAMILTYPUTIL`) REFERENCES `SAREFTR_FAMILTYPUTIL` (`CDEFAMILTYPUTIL`),
+  CONSTRAINT `FK_TYPE_UTIL_2` FOREIGN KEY (`NUMPROG`) REFERENCES `PRIAM_PROGRAMME` (`NUMPROG`),
+  CONSTRAINT `FK_STATUT_CODE_2` FOREIGN KEY (`STATUT_CODE`) REFERENCES `PRIAM_STATUT` (`CODE`),
+  CONSTRAINT `FK_NUMPROG_2` FOREIGN KEY (`CDETYPUTIL`) REFERENCES `SAREFTR_TYPUTIL` (`CDETYPUTIL`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
 commit;

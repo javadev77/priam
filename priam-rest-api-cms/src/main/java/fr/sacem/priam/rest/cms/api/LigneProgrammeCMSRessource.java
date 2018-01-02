@@ -1,8 +1,17 @@
 package fr.sacem.priam.rest.cms.api;
 
+import com.google.common.base.Strings;
 import fr.sacem.domain.Admap;
+import fr.sacem.priam.model.dao.jpa.SareftjLibutilDao;
 import fr.sacem.priam.model.dao.jpa.cms.TraitementEligibiliteCMSDao;
+import fr.sacem.priam.model.domain.cms.LigneProgrammeCMS;
 import fr.sacem.priam.model.domain.cms.TraitementEligibiliteCMS;
+import fr.sacem.priam.model.domain.cp.LigneProgrammeCP;
+import fr.sacem.priam.model.domain.dto.SelectionDto;
+import fr.sacem.priam.model.domain.saref.SareftjLibUtilPK;
+import fr.sacem.priam.model.domain.saref.SareftjLibutil;
+import fr.sacem.priam.model.util.GlobalConstants;
+import fr.sacem.priam.security.model.UserDTO;
 import fr.sacem.priam.services.api.LigneProgrammeResource;
 import fr.sacem.priam.services.api.LigneProgrammeService;
 import fr.sacem.priam.services.cms.LigneProgrammeCMSService;
@@ -53,6 +62,9 @@ public class LigneProgrammeCMSRessource extends LigneProgrammeResource {
 
     @Autowired
     TraitementEligibiliteCMSDao traitementEligibiliteCMSDao;
+
+    @Autowired
+    private SareftjLibutilDao sareftjLibutilDao;
 
     @Autowired
     public LigneProgrammeCMSRessource(@Qualifier("ligneProgrammeCMSService") LigneProgrammeService ligneProgrammeService) {
@@ -114,5 +126,18 @@ public class LigneProgrammeCMSRessource extends LigneProgrammeResource {
     @Override
     public LigneProgrammeService getLigneProgrammeService() {
         return ligneProgrammeService;
+    }
+
+
+    @RequestMapping(value = "ligneProgramme/selection/ajoutOeuvre",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public SelectionDto ajouterOeuvreManuel(@RequestBody LigneProgrammeCMS input, UserDTO userDTO) {
+        input.setUtilisateur(userDTO.getUserId());
+
+        ligneProgrammeCMSService.ajouterOeuvreManuel(input);
+
+        return new SelectionDto();
     }
 }
