@@ -9,5 +9,10 @@ public enum StatutEligibilite {
 
     EN_COURS_ELIGIBILITE,
 
-    FIN_ELIGIBILITE
+    FIN_ELIGIBILITE,
+
+    EN_COURS_DESAFFECTATION,
+
+    FIN_DESAFFECTATION,
+
 }

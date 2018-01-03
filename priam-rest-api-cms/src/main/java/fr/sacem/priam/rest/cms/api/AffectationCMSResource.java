@@ -6,10 +6,13 @@ import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
 import fr.sacem.priam.model.dao.jpa.cms.TraitementEligibiliteCMSDao;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.priam.model.domain.Fichier;
+import fr.sacem.priam.model.domain.Programme;
+import fr.sacem.priam.model.domain.StatutEligibilite;
 import fr.sacem.priam.model.domain.dto.AffectationDto;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.security.model.UserDTO;
 import fr.sacem.priam.services.FichierService;
+import fr.sacem.priam.services.ProgrammeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
@@ -61,6 +64,9 @@ public class AffectationCMSResource {
     @Autowired
     Admap admap;
 
+    @Autowired
+    ProgrammeService programmeService;
+
     @RequestMapping(value = "programme/affectation",
             method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -108,6 +114,9 @@ public class AffectationCMSResource {
     public ProgrammeDto desaffecterFichiers (@RequestBody String numProg, UserDTO userDTO){
         LOGGER.info("desaffecterFichiers() ==> numProg=" + numProg);
 
+        Programme programme = programmeDao.findOne(numProg);
+        programme.setStatutEligibilite(StatutEligibilite.EN_COURS_DESAFFECTATION);
+        programmeDao.saveAndFlush(programme);
 
         //lancer le job
         LOGGER.info("====== Lancement du job desaffectation CMS ======");
@@ -117,6 +126,7 @@ public class AffectationCMSResource {
             Map<String, JobParameter> jobParametersMap = new HashMap<>();
             jobParametersMap.put("time", new JobParameter(System.currentTimeMillis()));
             jobParametersMap.put("numProg", new JobParameter(numProg));
+            jobParametersMap.put("username", new JobParameter(userDTO.getDisplayName()));
 
             JobParameters jobParameters = new JobParameters(jobParametersMap);
 
@@ -127,13 +137,6 @@ public class AffectationCMSResource {
         }
 
         LOGGER.info("====== Fin de Traitement ======");
-
-
-        /*ProgrammeDto programmeDto = null;
-        if(!Strings.isNullOrEmpty(numProg)){
-            programmeService.toutDeaffecter(numProg, userDTO.getDisplayName());
-            programmeDto = programmeViewDao.findByNumProg(numProg);
-        }*/
 
         return new ProgrammeDto();
     }

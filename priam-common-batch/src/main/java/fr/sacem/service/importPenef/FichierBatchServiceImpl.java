@@ -7,6 +7,7 @@ import fr.sacem.util.exception.PriamValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.InputStream;
 import java.util.Set;
@@ -29,17 +30,20 @@ public class FichierBatchServiceImpl implements FichierBatchService {
         return fichierRepository.addFichier(fichier);
         
     }
-    
+
+    @Override
     public void updateFichierById(Long idFichier) {
         fichierRepository.updateFichierById(idFichier);
     }
-    
+
+    @Override
     public void updateFichierDate(String nomFichier) {
         fichierRepository.updateFichierDate(nomFichier);
         LOG.info("Mise à jour du fichier en cours de traitement avec la date de fin de chargement");
 
     }
 
+    @Override
     public Fichier findByName(String nomFiciher) {
         LOG.info("Recuperation du fichier par le nom:" + nomFiciher);
         return fichierRepository.findByName(nomFiciher);
@@ -71,5 +75,11 @@ public class FichierBatchServiceImpl implements FichierBatchService {
     @Override
     public void creerlog(Long idFichier, String log) {
         fichierRepository.enregistrerLog(idFichier, Stream.of(log).collect(Collectors.toSet()));
+    }
+
+    @Override
+    @Transactional
+    public void clearSelectedFichiers(String numProg, String statut) {
+        fichierRepository.clearSelectedFichiers(numProg, statut);
     }
 }

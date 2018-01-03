@@ -36,9 +36,17 @@
             </tasklet>
         </step>
 
+        <listeners>
+            <listener ref="listenerJobDesaffectation"></listener>
+        </listeners>
+
 
     </job>
 
+
+    <bean id="listenerJobDesaffectation" class="fr.sacem.priam.batch.affectation.listener.JobDesaffectationListener">
+        <property name="fichierBatchService" ref="fichierBatchService"/>
+    </bean>
 
 
     <bean id="ligneProgCMSReader"

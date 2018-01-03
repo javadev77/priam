@@ -109,6 +109,17 @@ public class FichierRepositoryImpl implements FichierRepository {
 
     }
 
+    @Override
+    public void clearSelectedFichiers(String numProg, String statut) {
+        String sql = "UPDATE PRIAM_FICHIER SET NUMPROG = NULL, STATUT_CODE =? WHERE NUMPROG=?";
+
+        jdbcTemplate.update(sql, stmt -> {
+            stmt.setString(1, statut);
+            stmt.setString(2, numProg);
+        });
+
+    }
+
     public Long addFichier(Fichier fichier) throws PriamValidationException {
         // traitement des données d'un ficiher
         // insetion des données de ficiher avec le statut EN COURS

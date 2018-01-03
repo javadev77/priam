@@ -149,6 +149,7 @@
               v-if="priamGrid.gridData.content"
               :data="priamGrid.gridData"
               :columns="priamGrid.gridColumns"
+              :rowTooltip="afficherTootlip"
               noResultText="Aucun résultat."
               @cellClick="onCellClick"
               @update-programme="onUpdateProgramme"
@@ -293,33 +294,57 @@
 
 
             priamGrid : {
+
               gridColumns : [
                 {
-                  id :  'numProg',
-                  name :   'N° programme',
-                  sortable : true,
-                  type : 'numeric-link',
-                  cell : {
-                    toText : function(entry) {
+                  id: 'numProg',
+                  name: 'N° programme',
+                  sortable: true,
+                  type: 'numeric-link',
+                  cell: {
+                    toText: function (entry) {
+                      if (entry.statut === 'CREE' || entry.statut === 'ABANDONNE'
+                        || entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
+                        || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'
+                        || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION') {
 
-                        console.log("statut " + entry.statut);
-                        if(entry.statut === 'CREE' || entry.statut === 'ABANDONNE'
-                            ||  entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
-                            || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE') {
-
-                            return {value: entry.numProg, isLink: false}
-                        } else {
-                            return {value : entry.numProg, isLink : true}
+                        return {value: entry.numProg, isLink: false
                         }
+                      } else {
+                        return {value: entry.numProg, isLink: true}
+                      }
+                    },
+
+                    css: function (entry) {
+                      if ( entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
+                            || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'
+                            || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION') {
+
+                          return {style: {'background-color': 'grey'}}
+                      }
+
+                      return {style: null}
                     }
                   }
-
-                  },
+                },
                 {
                   id :  'nom',
                   name :   'Nom',
                   sortable : true,
-                  type : 'long-text'
+                  type : 'long-text',
+                  cell : {
+
+                    css: function (entry) {
+                      if ( entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
+                        || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'
+                        || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION') {
+                        return {style: {'background-color': 'grey'}}
+                      }
+
+                      return {style: null}
+                    }
+
+                  }
                 },
                 {
                   id :  'rionTheorique',
@@ -329,6 +354,18 @@
                   cell : {
                     toText : function(rionTheorique) {
                       return $this.getLibelleRionById(rionTheorique);
+                    },
+
+                    css: function (entry) {
+                      debugger;
+                      if ( entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
+                        || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'
+                        || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION') {
+
+                        return {style: {'background-color': 'grey'}}
+                      }
+
+                      return {style: null}
                     }
                   }
                 },
@@ -343,6 +380,17 @@
                         return element.id === cellValue;
                       });
                       return result !== undefined && result.value;
+                    },
+
+                    css: function (entry) {
+                      debugger;
+                      if ( entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
+                        || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'
+                        || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION') {
+                        return {style: {'background-color': 'grey'}}
+                      }
+
+                      return {style: null}
                     }
                   }
                 },
@@ -357,6 +405,16 @@
                         return element.id === cellValue;
                       });
                       return result !== undefined && result.value;
+                    },
+
+                    css: function (entry) {
+                      if ( entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
+                        || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'
+                        || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION') {
+                        return {style: {'background-color': 'grey'}}
+                      }
+
+                      return {style: null}
                     }
                   }
                 },
@@ -371,6 +429,16 @@
                         return element.id === cellValue;
                       });
                       return result !== undefined && result.value;
+                    },
+
+                    css: function (entry) {
+                      if ( entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
+                        || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'
+                        || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION') {
+                        return {style: {'background-color': 'grey'}}
+                      }
+
+                      return {style: null}
                     }
                   }
                 },
@@ -378,7 +446,21 @@
                   id :  'dateCreation',
                   name :   "Date création",
                   sortable : true,
-                  type : 'date'
+                  type : 'date',
+                  cell : {
+
+                    css: function (entry) {
+                        debugger;
+                      if ( entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
+                        || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'
+                        || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION') {
+                        return {style: {'background-color': 'grey'}}
+                      }
+
+                      return {style: null}
+                    }
+
+                  }
                 },
                 {
                   id :  'fichiers',
@@ -391,12 +473,24 @@
                         return element.code === entry.statut;
                       });
                       if(result.code === 'ABANDONNE' ||  entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
-                        || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE') {
+                        || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'
+                        || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION') {
                         return {value : entry.fichiers, isLink : false}
                       } else {
                         return {value : entry.fichiers, isLink : true}
                       }
 
+                    },
+
+
+                    css: function (entry) {
+                      if ( entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
+                        || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'
+                        || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION') {
+                        return {style: {'background-color': 'grey'}}
+                      }
+
+                      return {style: null}
                     }
                   }
                 },
@@ -412,6 +506,18 @@
                         return element.code === cellValue;
                       });
                       return result !== undefined && result.libelle;
+                    },
+
+                    css: function (entry) {
+                        debugger;
+                      if ( entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
+                        || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'
+                        || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION') {
+
+                          return {style: {'background-color': 'grey'}}
+                      }
+
+                      return {style: null}
                     }
                   }
                 },
@@ -472,7 +578,19 @@
                         }
                         return {};
 
+                    },
+
+                    css: function (entry) {
+                      debugger;
+                      if ( entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
+                        || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'
+                        || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION') {
+                        return {style: {'background-color': 'grey'}}
+                      }
+
+                      return {style: null}
                     }
+
                   }
 
                 },
@@ -482,6 +600,16 @@
                   sortable : true,
                   type : 'code-value',
                   cell : {
+                    css : function (entry) {
+                      if ( entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
+                        || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'
+                        || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION') {
+                        return {style: {'background-color': 'grey'}}
+                      }
+
+                      return {style: null}
+                    },
+
                     toText : function(rionTheorique) {
                       return $this.getLibelleRionById(rionTheorique);
                     }
@@ -493,6 +621,17 @@
                   sortable: false,
                   type : 'clickable-icons',
                   cell : {
+
+                    css : function (entry) {
+                      if ( entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
+                        || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'
+                        || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION') {
+                        return {style: {'background-color': 'grey'}}
+                      }
+
+                      return {style: null}
+                    },
+
                     cellTemplate: function (cellValue) {
                       var tempalteTrash = '<span class="glyphicon glyphicon-trash" aria-hidden="true" style="padding-left: 0px;" title="Abandonner"></span>';
                       var tempalteUpdate = '<span class="glyphicon glyphicon-pencil" aria-hidden="true" style="padding-left: 0px;" title="Modifier"></span>';
@@ -648,6 +787,19 @@
 
 
       methods : {
+
+        afficherTootlip(entry) {
+
+          if(entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE' || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE' ) {
+
+              return "Le programme est en cours de traitement d'éligibilité et de dédoublonnage";
+          } else if(entry.statutEligibilite === 'EN_COURS_DESAFFECTATION'  ) {
+
+              return "Le programme est en cours de desaffectation";
+          }
+
+          return '';
+        },
 
         getAllNumProgramme() {
             this.resource.getAllNumProgForAutocmplete()

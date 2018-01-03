@@ -3,6 +3,7 @@ package fr.sacem.priam.batch.affectation.listener;
 import fr.sacem.dao.LigneProgrammeBatchDao;
 import fr.sacem.dao.ProgrammeBatchDao;
 import fr.sacem.dao.TraitementCmsDao;
+import fr.sacem.service.importPenef.FichierBatchService;
 import fr.sacem.service.importPenef.FichierBatchServiceImpl;
 import fr.sacem.util.UtilFile;
 import fr.sacem.util.exception.PriamValidationException;
@@ -37,9 +38,12 @@ public class JobCompletionNotificationAffectationCMSListener extends JobExecutio
     private static String FICHIER_ZIP_EN_COURS = "fichierZipEnCours";
     private static String NOM_ORIGINAL_FICHIER_ZIP = "nomFichierOriginal";
     private static String REPERTOIRE_DE_DESTINATION = "archives.catalog.octav";
-    private static String FILE_ERREUR = "erreur" ;
+    private static String FILE_ERREUR = "erreur";
     private ExecutionContext executionContext;
-    private FichierBatchServiceImpl fichierBatchService;
+
+    @Autowired
+    private FichierBatchService fichierBatchService;
+
     private UtilFile utilFile;
     private static final Logger LOG = LoggerFactory.getLogger(JobCompletionNotificationAffectationCMSListener.class);
 
@@ -87,33 +91,34 @@ public class JobCompletionNotificationAffectationCMSListener extends JobExecutio
 
                     Set<String> errors = (Set<String>) executionContext.get(LIGNE_PROGRAMME_ERRORS);
 
-                    if(errors == null || errors.isEmpty()) {
+                    if (errors == null || errors.isEmpty()) {
                         if (parameterNomFichierCSV != null) {
                             String nomFichier = (String) parameterNomFichierCSV.getValue();
-                            JobParameter idFichier =(JobParameter) executionContext.get("idFichier");
-                            fichierBatchService.updateFichierById((Long)idFichier.getValue());
+                            JobParameter idFichier = (JobParameter) executionContext.get("idFichier");
+                            fichierBatchService.updateFichierById((Long) idFichier.getValue());
 
                             StringBuilder log = new StringBuilder();
                             log.append(LocalDateTime.now().format(DateTimeFormatter.ofPattern(FORMAT_DATE))).
-                            append(String.format(MESSAGE_FICHIER_CHARGE, parameterNomFichierCSV));
-                            fichierBatchService.creerlog((Long)idFichier.getValue(), log.toString());
+                                    append(String.format(MESSAGE_FICHIER_CHARGE, parameterNomFichierCSV));
+                            fichierBatchService.creerlog((Long) idFichier.getValue(), log.toString());
                         } else {
                             LOG.debug("Pas de ficiher CSV traité ");
                         }
                     } else {
-                        JobParameter idFichier =(JobParameter) executionContext.get("idFichier");
-                        fichierBatchService.rejeterFichier((Long)idFichier.getValue(), errors);
+                        JobParameter idFichier = (JobParameter) executionContext.get("idFichier");
+                        fichierBatchService.rejeterFichier((Long) idFichier.getValue(), errors);
                     }
 
                     utilFile.deplacerFichier(parameterFichierZipEnCours, parameterNomFichierOriginal, outputDirectory);
 
                     String numProg = jobExecution.getJobParameters().getString("numProg");
                     programmeBatchDao.majStattutEligibilite(numProg, "FIN_ELIGIBILITE");
+                    programmeBatchDao.majStattutProgramme(numProg, "AFFECTE");
                     Long idTraitementCMS = jobExecution.getExecutionContext().getLong("ID_TMT_CMS");
                     Long nbOeuvresRetenues = ligneProgrammeBatchDao.countNbOeuvres(numProg);
                     Long nbOeuvresCatalogue = ligneProgrammeBatchDao.countNbOeuvresCatalogue();
                     Double sommePoints = ligneProgrammeBatchDao.countSommePoints(numProg);
-                    traitementCmsDao.majTraitment(idTraitementCMS, nbOeuvresCatalogue,nbOeuvresRetenues, sommePoints);
+                    traitementCmsDao.majTraitment(idTraitementCMS, nbOeuvresCatalogue, nbOeuvresRetenues, sommePoints);
                 } else {
                     LOG.debug("Pas de excution context pour le step en cours : " + myStepExecution.getStepName());
                 }
@@ -138,12 +143,12 @@ public class JobCompletionNotificationAffectationCMSListener extends JobExecutio
         }
     }
 
-
-    private void renommerFichierEnErreur(){
-
+    public FichierBatchService getFichierBatchService() {
+        return fichierBatchService;
     }
 
-    public void setFichierBatchService(FichierBatchServiceImpl fichierBatchService) {
+    public void setFichierBatchService(FichierBatchService fichierBatchService) {
         this.fichierBatchService = fichierBatchService;
     }
 }
+

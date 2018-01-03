@@ -25,4 +25,6 @@ public interface FichierRepository {
     void supprimerLigneProgrammeParIdFichier(Long idFichier);
 
     void enregistrerLog(Long idFichier, Set<String> errors);
+
+    void clearSelectedFichiers(String numProg, String statut);
 }

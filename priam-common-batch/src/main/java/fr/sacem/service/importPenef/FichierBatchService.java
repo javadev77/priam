@@ -12,6 +12,8 @@ import java.util.Set;
 public interface FichierBatchService {
     Long addFichier(InputStream inputStream, String nomFichier) throws PriamValidationException;
 
+    void updateFichierById(Long idFichier);
+
     void updateFichierDate(String nomFichier);
 
     Fichier findByName(String nomFiciher);
@@ -21,4 +23,6 @@ public interface FichierBatchService {
     void rejeterFichier(Long idFichier, Set<String> logs);
 
     void creerlog(Long idFichier, String log);
+
+    void clearSelectedFichiers(String numProg, String chargement_ok);
 }

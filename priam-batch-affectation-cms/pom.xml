@@ -19,6 +19,7 @@
             <artifactId>priam-common</artifactId>
             <version>${project.version}</version>
         </dependency>
+
         <dependency>
             <groupId>fr.sacem.priam</groupId>
             <artifactId>priam-common-batch</artifactId>

@@ -34,6 +34,10 @@
             </tasklet>
         </step>
 
+        <listeners merge="true">
+            <listener ref="listenerCompletition"/>
+        </listeners>
+
     </job>
 
 

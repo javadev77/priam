@@ -63,18 +63,15 @@
               <tbody>
 
               <template v-for="entry in filteredData">
-                <tr v-if="entry['numProg'] !== undefined" class="special-row" :id="entry['numProg']"
+                <!--<tr v-if="entry['numProg'] !== undefined" class="special-row" :id="entry['numProg']"
                     :style="{'background-color' : entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE' || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE' ? 'grey': ''}"
                   :title="afficherTootlip(entry)">
                   <template v-for="entryColumn in columns">
                     <template v-if="entryColumn.type === 'date'">
-                      <td class="columnCenter" :style="{'background-color' : entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE' || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE' ? 'grey': ''}">
-                        <template v-if="entryColumn.cell">
-                          {{ entryColumn.cell.toText(entry) }}
-                        </template>
-                        <template v-else>
+                      <td class="columnCenter" :style="">
+
                           {{ entry[entryColumn.id] }}
-                        </template>
+
 
                       </td>
                     </template>
@@ -140,7 +137,7 @@
                       </td>
                     </template>
                     <template v-else-if="entryColumn.type === 'numeric-link'">
-                      <td class="columnRight" :style="{'background-color' : entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE' || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE' ? 'grey': ''}">
+                      <td class="columnRight" :style="entryColumn.cell.toText(entry).style">
                         <template v-if="entryColumn.cell.toText(entry).isLink" >
                           <a @click="emitCellClick(entry, entryColumn)">
                             {{ entry[entryColumn.id] }}
@@ -161,7 +158,7 @@
                                :checked="entryColumn.cell.isChecked(entry)"
                                @click="emitCheckbox(entry, entryColumn.cell.toText(entry), entryColumn.cell.isChecked(entry))" />
 
-                        <!--<label class="checkbox checkbox-inline" :class="{'checked' : entryColumn.cell.isChecked(entry) == 1}">
+                        &lt;!&ndash;<label class="checkbox checkbox-inline" :class="{'checked' : entryColumn.cell.isChecked(entry) == 1}">
                           <input class="checkbox checkbox-inline"
                                   :disabled="entryColumn.cell.isDisabled()"
                                  type="checkbox"
@@ -171,7 +168,7 @@
                                  @click="emitCheckbox(entry)" />
 
                           <span class="icons"><span class="first-icon fui-checkbox-unchecked"></span><span class="second-icon fui-checkbox-checked"></span></span>
-                        </label>-->
+                        </label>&ndash;&gt;
 
                       </td>
                     </template>
@@ -210,150 +207,287 @@
                     </template>
 
                   </template>
-                </tr>
-                <tr v-else>
-                  <template v-for="entryColumn in columns">
-                    <template v-if="entryColumn.type === 'date'">
-                      <td class="columnCenter">
-                        <template v-if="entryColumn.cell">
-                          {{ entryColumn.cell.toText(entry) }}
-                        </template>
-                        <template v-else>
+                </tr>-->
+                <template v-if="rowTooltip == undefined">
+                  <tr>
+                    <template v-for="entryColumn in columns">
+                      <template v-if="entryColumn.type === 'date'">
+                        <td class="columnCenter" :style="styleValue(entryColumn, entry)">
                           {{ entry[entryColumn.id] }}
-                        </template>
+                        </td>
+                      </template>
+                      <template v-else-if="entryColumn.type === 'numeric'">
+                        <td class="columnRight" :style="styleValue(entryColumn, entry)">
+                          {{ entryColumn.cell.toText(entry) | numberFormat }}
+                        </td>
+                      </template>
 
-                      </td>
-                    </template>
-                    <template v-else-if="entryColumn.type === 'numeric'">
-                      <td class="columnRight">
-                        {{ entryColumn.cell.toText(entry) | numberFormat }}
-                      </td>
-                    </template>
+                      <template v-else-if="entryColumn.type === 'code-value'">
+                        <td class="columnCenter" :style="styleValue(entryColumn, entry)">
+                          {{entryColumn.cell.toText(entry[entryColumn.id])}}
+                        </td>
+                      </template>
+                      <template v-else-if="entryColumn.type === 'code-value-hightlight'">
+                        <td :style="styleValue(entryColumn, entry)">
+                          <div v-html="entryColumn.cell.cellTemplate(entry)"></div>
+                        </td>
+                      </template>
+                      <template v-else-if="entryColumn.type === 'clickable-icon'">
+                        <td class="columnCenter" :style="styleValue(entryColumn, entry)">
+                          <a v-html="entryColumn.cell.cellTemplate(entry)" @click="emitCellClick(entry, entryColumn)">
+                          </a>
+                        </td>
+                      </template>
+                      <template v-else-if="entryColumn.type === 'clickable-icons'">
+                        <td class="columnCenter" :style="styleValue(entryColumn, entry)">
 
-                    <template v-else-if="entryColumn.type === 'code-value'">
-                      <td class="columnCenter">
-                        {{entryColumn.cell.toText(entry[entryColumn.id])}}
-                      </td>
-                    </template>
-                    <template v-else-if="entryColumn.type === 'code-value-hightlight'">
-                      <td>
-                        <div v-html="entryColumn.cell.cellTemplate(entry)"></div>
-                      </td>
-                    </template>
-                    <template v-else-if="entryColumn.type === 'clickable-icon'">
-                      <td class="columnCenter">
-                        <a v-html="entryColumn.cell.cellTemplate(entry)" @click="emitCellClick(entry, entryColumn)">
-                        </a>
-                      </td>
-                    </template>
-                    <template v-else-if="entryColumn.type === 'clickable-icons'">
-                      <td class="columnCenter">
+                          <ul class="iconList">
+                            <template v-for="elem in entryColumn.cell.cellTemplate(entry)">
+                              <li>
+                                <a v-html="elem.template" @click="emitIconCellClick(elem.event, entry, entryColumn)">
+                                </a>
+                              </li>
+                            </template>
 
-                        <ul class="iconList">
-                          <template v-for="elem in entryColumn.cell.cellTemplate(entry)">
-                            <li>
-                              <a v-html="elem.template" @click="emitIconCellClick(elem.event, entry, entryColumn)">
-                              </a>
-                            </li>
+                          </ul>
+
+                        </td>
+                      </template>
+                      <template v-else-if="entryColumn.type === 'clickable-icons-or-text'">
+                        <td class="columnCenter"  v-if="!entryColumn.cell.isText(entry)" :style="styleValue(entryColumn, entry)">
+                          <ul class="iconList">
+                            <template v-for="elem in entryColumn.cell.cellTemplate(entry)">
+                              <li>
+                                <a v-html="elem.template" @click="emitIconCellClick(elem.event, entry, entryColumn)">
+                                </a>
+                              </li>
+                            </template>
+
+                          </ul>
+                        </td>
+                        <td class="columnCenter"  v-else :style="styleValue(entryColumn, entry)">
+                          <template v-if="entryColumn.cell.toText(entry).isLink" >
+                            <a @click="emitCellClick(entry, entryColumn)">
+                              {{ entryColumn.cell.toText(entry).value }}
+                            </a>
                           </template>
-
-                        </ul>
-
-                      </td>
-                    </template>
-                    <template v-else-if="entryColumn.type === 'clickable-icons-or-text'">
-                      <td class="columnCenter"  v-if="!entryColumn.cell.isText(entry)">
-                        <ul class="iconList">
-                          <template v-for="elem in entryColumn.cell.cellTemplate(entry)">
-                            <li>
-                              <a v-html="elem.template" @click="emitIconCellClick(elem.event, entry, entryColumn)">
-                              </a>
-                            </li>
-                          </template>
-
-                        </ul>
-                      </td>
-                      <td class="columnCenter" v-else>
-                        <template v-if="entryColumn.cell.toText(entry).isLink" >
-                          <a @click="emitCellClick(entry, entryColumn)">
+                          <template v-else>
                             {{ entryColumn.cell.toText(entry).value }}
-                          </a>
-                        </template>
-                        <template v-else>
-                          {{ entryColumn.cell.toText(entry).value }}
-                        </template>
-                      </td>
-                    </template>
-                    <template v-else-if="entryColumn.type === 'numeric-link'">
-                      <td class="columnRight">
-                        <template v-if="entryColumn.cell.toText(entry).isLink" >
-                          <a @click="emitCellClick(entry, entryColumn)">
+                          </template>
+                        </td>
+                      </template>
+                      <template v-else-if="entryColumn.type === 'numeric-link'">
+                        <td class="columnRight" :style="styleValue(entryColumn, entry)">
+                          <template v-if="entryColumn.cell.toText(entry).isLink" >
+                            <a @click="emitCellClick(entry, entryColumn)">
+                              {{ entry[entryColumn.id] }}
+                            </a>
+                          </template>
+                          <template v-else>
                             {{ entry[entryColumn.id] }}
-                          </a>
-                        </template>
-                        <template v-else>
-                          {{ entry[entryColumn.id] }}
-                        </template>
+                          </template>
 
-                      </td>
-                    </template>
-                    <template v-else-if="entryColumn.type === 'checkbox'">
-                      <td class="columnCenter">
-                        <input :disabled="entryColumn.cell.isDisabled()"
-                               type="checkbox"
-                               ref="checkbox"
-                               :value="entryColumn.cell.toText(entry)"
-                               :checked="entryColumn.cell.isChecked(entry)"
-                               @click="emitCheckbox(entry, entryColumn.cell.toText(entry), entryColumn.cell.isChecked(entry))" />
-
-                        <!--<label class="checkbox checkbox-inline" :class="{'checked' : entryColumn.cell.isChecked(entry) == 1}">
-                          <input class="checkbox checkbox-inline"
-                                  :disabled="entryColumn.cell.isDisabled()"
+                        </td>
+                      </template>
+                      <template v-else-if="entryColumn.type === 'checkbox'">
+                        <td class="columnCenter" :style="styleValue(entryColumn, entry)">
+                          <input :disabled="entryColumn.cell.isDisabled()"
                                  type="checkbox"
                                  ref="checkbox"
                                  :value="entryColumn.cell.toText(entry)"
                                  :checked="entryColumn.cell.isChecked(entry)"
-                                 @click="emitCheckbox(entry)" />
+                                 @click="emitCheckbox(entry, entryColumn.cell.toText(entry), entryColumn.cell.isChecked(entry))" />
 
-                          <span class="icons"><span class="first-icon fui-checkbox-unchecked"></span><span class="second-icon fui-checkbox-checked"></span></span>
-                        </label>-->
+                          <!--<label class="checkbox checkbox-inline" :class="{'checked' : entryColumn.cell.isChecked(entry) == 1}">
+                            <input class="checkbox checkbox-inline"
+                                    :disabled="entryColumn.cell.isDisabled()"
+                                   type="checkbox"
+                                   ref="checkbox"
+                                   :value="entryColumn.cell.toText(entry)"
+                                   :checked="entryColumn.cell.isChecked(entry)"
+                                   @click="emitCheckbox(entry)" />
 
-                      </td>
+                            <span class="icons"><span class="first-icon fui-checkbox-unchecked"></span><span class="second-icon fui-checkbox-checked"></span></span>
+                          </label>-->
+
+                        </td>
+                      </template>
+                      <template v-else-if="entryColumn.type === 'seconds-as-time'">
+                        <td class="columnCenter" :style="styleValue(entryColumn, entry)">
+                          {{ dureeFormattee(entry[entryColumn.id]) }}
+                        </td>
+                      </template>
+                      <template v-else-if="entryColumn.type === 'text-centre'">
+                        <td class="columnCenter" :style="styleValue(entryColumn, entry)">
+                          {{ entry[entryColumn.id] }}
+                        </td>
+                      </template>
+
+                      <template v-else-if="entryColumn.type === 'text-with-action'">
+                        <td class="columnCenter" v-if="entryColumn.cell.toText(entry).action" :style="styleValue(entryColumn, entry)">
+
+                          {{entryColumn.cell.toText(entry).value}}
+                          <template v-for="elem in entryColumn.cell.toText(entry).template">
+                            <a v-html="elem.template" v-if="elem.disabled" class="disabled"></a>
+                            <a v-html="elem.template" v-if="!elem.disabled" @click="emitIconCellClick(elem.event, entry, entryColumn)"></a>
+                          </template>
+
+                        </td>
+                        <td class="columnCenter" v-if="!entryColumn.cell.toText(entry).action" :style="styleValue(entryColumn, entry)">
+                          {{ entryColumn.cell.toText(entry.ajout).value }}
+                        </td>
+                      </template>
+
+                      <template  v-else>
+                        <td :style="styleValue(entryColumn, entry)">
+                          {{ entry[entryColumn.id] }}
+                        </td>
+                      </template>
+
                     </template>
-                    <template v-else-if="entryColumn.type === 'seconds-as-time'">
-                      <td class="columnCenter">
-                        {{ dureeFormattee(entry[entryColumn.id]) }}
-                      </td>
+                  </tr>
+                </template>
+                <template v-else>
+                  <tr :title="rowTooltip(entry)">
+                    <template v-for="entryColumn in columns">
+                      <template v-if="entryColumn.type === 'date'">
+                        <td class="columnCenter" :style="styleValue(entryColumn, entry)">
+                          {{ entry[entryColumn.id] }}
+                        </td>
+                      </template>
+                      <template v-else-if="entryColumn.type === 'numeric'">
+                        <td class="columnRight" :style="styleValue(entryColumn, entry)">
+                          {{ entryColumn.cell.toText(entry) | numberFormat }}
+                        </td>
+                      </template>
+
+                      <template v-else-if="entryColumn.type === 'code-value'">
+                        <td class="columnCenter" :style="styleValue(entryColumn, entry)">
+                          {{entryColumn.cell.toText(entry[entryColumn.id])}}
+                        </td>
+                      </template>
+                      <template v-else-if="entryColumn.type === 'code-value-hightlight'">
+                        <td :style="styleValue(entryColumn, entry)">
+                          <div v-html="entryColumn.cell.cellTemplate(entry)"></div>
+                        </td>
+                      </template>
+                      <template v-else-if="entryColumn.type === 'clickable-icon'">
+                        <td class="columnCenter" :style="styleValue(entryColumn, entry)">
+                          <a v-html="entryColumn.cell.cellTemplate(entry)" @click="emitCellClick(entry, entryColumn)">
+                          </a>
+                        </td>
+                      </template>
+                      <template v-else-if="entryColumn.type === 'clickable-icons'">
+                        <td class="columnCenter" :style="styleValue(entryColumn, entry)">
+
+                          <ul class="iconList">
+                            <template v-for="elem in entryColumn.cell.cellTemplate(entry)">
+                              <li>
+                                <a v-html="elem.template" @click="emitIconCellClick(elem.event, entry, entryColumn)">
+                                </a>
+                              </li>
+                            </template>
+
+                          </ul>
+
+                        </td>
+                      </template>
+                      <template v-else-if="entryColumn.type === 'clickable-icons-or-text'">
+                        <td class="columnCenter"  v-if="!entryColumn.cell.isText(entry)" :style="styleValue(entryColumn, entry)">
+                          <ul class="iconList">
+                            <template v-for="elem in entryColumn.cell.cellTemplate(entry)">
+                              <li>
+                                <a v-html="elem.template" @click="emitIconCellClick(elem.event, entry, entryColumn)">
+                                </a>
+                              </li>
+                            </template>
+
+                          </ul>
+                        </td>
+                        <td class="columnCenter"  v-else :style="styleValue(entryColumn, entry)">
+                          <template v-if="entryColumn.cell.toText(entry).isLink" >
+                            <a @click="emitCellClick(entry, entryColumn)">
+                              {{ entryColumn.cell.toText(entry).value }}
+                            </a>
+                          </template>
+                          <template v-else>
+                            {{ entryColumn.cell.toText(entry).value }}
+                          </template>
+                        </td>
+                      </template>
+                      <template v-else-if="entryColumn.type === 'numeric-link'">
+                        <td class="columnRight" :style="styleValue(entryColumn, entry)">
+                          <template v-if="entryColumn.cell.toText(entry).isLink" >
+                            <a @click="emitCellClick(entry, entryColumn)">
+                              {{ entry[entryColumn.id] }}
+                            </a>
+                          </template>
+                          <template v-else>
+                            {{ entry[entryColumn.id] }}
+                          </template>
+
+                        </td>
+                      </template>
+                      <template v-else-if="entryColumn.type === 'checkbox'">
+                        <td class="columnCenter" :style="styleValue(entryColumn, entry)">
+                          <input :disabled="entryColumn.cell.isDisabled()"
+                                 type="checkbox"
+                                 ref="checkbox"
+                                 :value="entryColumn.cell.toText(entry)"
+                                 :checked="entryColumn.cell.isChecked(entry)"
+                                 @click="emitCheckbox(entry, entryColumn.cell.toText(entry), entryColumn.cell.isChecked(entry))" />
+
+                          <!--<label class="checkbox checkbox-inline" :class="{'checked' : entryColumn.cell.isChecked(entry) == 1}">
+                            <input class="checkbox checkbox-inline"
+                                    :disabled="entryColumn.cell.isDisabled()"
+                                   type="checkbox"
+                                   ref="checkbox"
+                                   :value="entryColumn.cell.toText(entry)"
+                                   :checked="entryColumn.cell.isChecked(entry)"
+                                   @click="emitCheckbox(entry)" />
+
+                            <span class="icons"><span class="first-icon fui-checkbox-unchecked"></span><span class="second-icon fui-checkbox-checked"></span></span>
+                          </label>-->
+
+                        </td>
+                      </template>
+                      <template v-else-if="entryColumn.type === 'seconds-as-time'">
+                        <td class="columnCenter" :style="styleValue(entryColumn, entry)">
+                          {{ dureeFormattee(entry[entryColumn.id]) }}
+                        </td>
+                      </template>
+                      <template v-else-if="entryColumn.type === 'text-centre'">
+                        <td class="columnCenter" :style="styleValue(entryColumn, entry)">
+                          {{ entry[entryColumn.id] }}
+                        </td>
+                      </template>
+
+                      <template v-else-if="entryColumn.type === 'text-with-action'">
+                        <td class="columnCenter" v-if="entryColumn.cell.toText(entry).action" :style="styleValue(entryColumn, entry)">
+
+                          {{entryColumn.cell.toText(entry).value}}
+                          <template v-for="elem in entryColumn.cell.toText(entry).template">
+                            <a v-html="elem.template" v-if="elem.disabled" class="disabled"></a>
+                            <a v-html="elem.template" v-if="!elem.disabled" @click="emitIconCellClick(elem.event, entry, entryColumn)"></a>
+                          </template>
+
+                        </td>
+                        <td class="columnCenter" v-if="!entryColumn.cell.toText(entry).action" :style="styleValue(entryColumn, entry)">
+                          {{ entryColumn.cell.toText(entry.ajout).value }}
+                        </td>
+                      </template>
+
+                      <template  v-else>
+                        <td :style="styleValue(entryColumn, entry)">
+                          {{ entry[entryColumn.id] }}
+                        </td>
+                      </template>
+
                     </template>
-                    <template v-else-if="entryColumn.type === 'text-centre'">
-                      <td class="columnCenter">
-                        {{ entry[entryColumn.id] }}
-                      </td>
-                    </template>
+                  </tr>
+                </template>
 
-                    <template v-else-if="entryColumn.type === 'text-with-action'">
-                      <td class="columnCenter" v-if="entryColumn.cell.toText(entry).action">
 
-                        {{entryColumn.cell.toText(entry).value}}
-                        <template v-for="elem in entryColumn.cell.toText(entry).template">
-                          <a v-html="elem.template" v-if="elem.disabled" class="disabled"></a>
-                          <a v-html="elem.template" v-if="!elem.disabled" @click="emitIconCellClick(elem.event, entry, entryColumn)"></a>
-                        </template>
-
-                      </td>
-                      <td class="columnCenter" v-if="!entryColumn.cell.toText(entry).action">
-                        {{ entryColumn.cell.toText(entry.ajout).value }}
-                      </td>
-                    </template>
-
-                    <template  v-else>
-                      <td>
-                        {{ entry[entryColumn.id] }}
-                      </td>
-                    </template>
-
-                  </template>
-                </tr>
               </template>
               </tbody>
           </table>
@@ -399,6 +533,11 @@
       isLocalSort : {
           type : Boolean,
           default : false
+      },
+
+      rowTooltip : {
+          type : Function,
+          default : null
       }
     },
 
@@ -435,6 +574,7 @@
     },
 
     computed : {
+
 
       allNotChecked() {
         return this.$store.getters.allFichiersChecked;
@@ -508,10 +648,7 @@
 
     methods: {
 
-      afficherTootlip(entry) {
 
-        return  entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE' || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE' ? "Le programme est en cours de traitement d'éligibilité et de dédoublonnage" : '';
-      },
 
 
 
@@ -647,6 +784,14 @@
       },
       isNumber(n) {
         return !isNaN(parseFloat(n)) && isFinite(n);
+      },
+
+      styleValue(entryColumn, entry) {
+          debugger;
+          if(entryColumn.cell !== undefined && entryColumn.cell.css !== undefined) {
+            return entryColumn.cell.css(entry).style
+          }
+          return {}
       }
 
     },

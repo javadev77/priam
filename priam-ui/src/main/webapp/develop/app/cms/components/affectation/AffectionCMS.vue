@@ -121,6 +121,18 @@
       <!--<button class="btn btn-default btn-primary pull-right" type="button" @click="lancerAffectation()">Lancer Affectation</button>-->
     </div>
 
+    <div class="mask" v-if="deaffectationEncours" >
+      <div class="center-div">
+        <div class="spinner">
+          <div class="rect1"></div>
+          <div class="rect2"></div>
+          <div class="rect3"></div>
+          <div class="rect4"></div>
+          <div class="rect5"></div>
+        </div>
+      </div>
+    </div>
+
     <modal v-if="showModalAffectation">
       <span class="homer-prompt-q control-label" slot="body">
         Etes-vous sûr de vouloir affecter au programme un fichier qui n'a pas les mêmes famille / type d'utilisation ?
@@ -162,6 +174,8 @@
       var $this = this;
       var getters = this.$store.getters;
       return {
+
+        deaffectationEncours : false,
 
         fichiersToProgramme: {
           numProg: '',
@@ -728,12 +742,37 @@
               return response.json();
             })
             .then(data => {
-              console.log("Déaffactaation ok");
+              console.log("Déaffactation ok");
               this.showModalDesactiver = false;
-              this.programmeInfo = data;
-              this.initData();
+
+              this.$router.push({name: 'ListePrg'});
+              //this.deaffectationEncours = true;
+
+              //this.programmeInfo = data;
+              /*this.initData();
               this.rechercher();
-              this.$store.dispatch('toutDesactiver', false);
+              this.$store.dispatch('toutDesactiver', false);*/
+              /*var self = this;
+              var timer = setInterval(function () {
+
+                self.resource.findByNumProg({numProg: numProgramme})
+                  .then(response => {
+                    return response.json();
+                  })
+                  .then(programme => {
+                    if(programme.statutEligibilite === 'FIN_DESAFFECTATION') {
+                      clearInterval(timer);
+                      self.programmeInfo = programme;
+                      self.deaffectationEncours = false;
+                      self.initData();
+                      self.rechercher();
+                      self.$store.dispatch('toutDesactiver', false);
+                    }
+                  });
+
+
+              }, 1000);*/
+
             })
             .catch(response => {
               alert("Erreur technique lors de désaffectation des fichiers du programme !! ");
@@ -758,6 +797,79 @@
 
 .blueText {
   color: #799BC4;
+}
+
+
+.spinner {
+  float:  left;
+  width: 50px;
+  height: 40px;
+  text-align: center;
+  font-size: 10px;
+}
+
+.spinner > div {
+  background-color: #333;
+  height: 100%;
+  width: 6px;
+  display: inline-block;
+
+  -webkit-animation: sk-stretchdelay 1.2s infinite ease-in-out;
+  animation: sk-stretchdelay 1.2s infinite ease-in-out;
+}
+
+.spinner .rect2 {
+  -webkit-animation-delay: -1.1s;
+  animation-delay: -1.1s;
+}
+
+.spinner .rect3 {
+  -webkit-animation-delay: -1.0s;
+  animation-delay: -1.0s;
+}
+
+.spinner .rect4 {
+  -webkit-animation-delay: -0.9s;
+  animation-delay: -0.9s;
+}
+
+.spinner .rect5 {
+  -webkit-animation-delay: -0.8s;
+  animation-delay: -0.8s;
+}
+
+@-webkit-keyframes sk-stretchdelay {
+  0%, 40%, 100% { -webkit-transform: scaleY(0.4) }
+  20% { -webkit-transform: scaleY(1.0) }
+}
+
+@keyframes sk-stretchdelay {
+  0%, 40%, 100% {
+    transform: scaleY(0.4);
+    -webkit-transform: scaleY(0.4);
+  }  20% {
+       transform: scaleY(1.0);
+       -webkit-transform: scaleY(1.0);
+     }
+}
+
+.mask {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1050;
+  outline: 0;
+  background-color: black;
+  opacity: 0.5;
+}
+
+.mask .center-div {
+  width: 0%;
+  margin: 0 auto;
+  margin-top: 50vh; /* poussé de la moitié de hauteur de viewport */
+  transform: translateY(-50%);
 }
 
 </style>
