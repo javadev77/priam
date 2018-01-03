@@ -38,6 +38,16 @@
       </template>
     </modal>
 
+    <modal v-if="showPopupEligibilite">
+      <template slot="body">
+        <div style="text-align: justify" v-html="messageEligibilite">
+        </div>
+      </template>
+      <template slot="footer">
+        <button class="btn btn-default btn-primary pull-right yes" @click.prevent="showPopupEligibilite=false">Oui</button>
+      </template>
+    </modal>
+
   </div>
 </template>
 
@@ -55,6 +65,11 @@
           findLigneProgrammeByProgramme: {
             method: 'POST',
             url: process.env.CONTEXT_ROOT_PRIAM_CMS + 'app/rest/ligneProgramme/search'
+          },
+
+          isEligible : {
+            method: 'POST',
+            url: process.env.CONTEXT_ROOT_PRIAM_CMS + 'app/rest/ligneProgramme/selection/isEligible'
           }
         }
         this.resource = this.$resource('', {}, customActions);
@@ -104,7 +119,11 @@
 
             messageSonoAnt : '',
 
+            messageEligibilite: '',
+
             showPopup : false,
+
+            showPopupEligibilite : false,
 
             oeuvreToAdd : {},
 
@@ -209,7 +228,7 @@
               })
               .then(data => {
                   if(data && data.content.length > 0 ) {
-                      // CDEUTIL et IDE12 existe Afficher un warning
+                      // IDE12 existe Afficher un warning
                       let ligneProg = data.content[0];
                       this.showPopup = true;
                       if(this.programme.typeUtilisation === 'SONOFRA') {
@@ -221,7 +240,20 @@
                             + ligneProg.durDif + ', êtes-vous sûr de vouloir la remplacer avec la durée saisie ?';
                       }
                   } else {
-                    this.$emit('validate-ajout-oeuvre', this.oeuvreToAdd);
+                    // IDE12 n'existe pas alors verifier avec le catalogue
+                    this.resource.isEligible({ide12 : oeuvre.ide12})
+                      .then(response => {
+                        return response.json();
+                      })
+                      .then(isElegible => {
+                        console.log ("isElegible = "+  isElegible);
+                        if(isElegible) {
+                          this.$emit('validate-ajout-oeuvre', this.oeuvreToAdd);
+                        } else {
+                          this.showPopupEligibilite = true;
+                          this.messageEligibilite = 'Cette oeuvre n\'est pas éligible et donc ne peut être ajoutée au programme !';
+                        }
+                      });
                   }
               });
         },

@@ -1,9 +1,11 @@
 package fr.sacem.priam.services;
 
 import fr.sacem.priam.common.TypeUtilisationEnum;
+import fr.sacem.priam.model.dao.jpa.CatalogueOctavDao;
 import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.dao.jpa.cms.LigneProgrammeCMSDao;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
+import fr.sacem.priam.model.domain.CatalogueOctav;
 import fr.sacem.priam.model.domain.Fichier;
 import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.cms.LigneProgrammeCMS;
@@ -52,6 +54,9 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
 
     @Autowired
     private FichierDao fichierDao;
+
+    @Autowired
+    private CatalogueOctavDao catalogueOctavDao;
 
     @Override
     public List<KeyValueDto> getListIDE12ByProgramme(Long ide12, String programme) {
@@ -271,6 +276,9 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
 
             } else {
                 createOeuvreManuel(input, programme);
+                /*if(isEligible(input.getIde12())) {
+                    createOeuvreManuel(input, programme);
+                }*/
             }
         }
 
@@ -312,5 +320,16 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
         //input.setLibelleUtilisateur(sareftjLibutilDao.find);
 
         return ligneProgrammeCMSDao.saveAndFlush(input);
+    }
+
+    @Override
+    @Transactional
+    public boolean isEligible(Long ide12){
+        boolean result = false;
+        CatalogueOctav oeuvreCatalogueOctav = catalogueOctavDao.findByIde12(ide12);
+        if (oeuvreCatalogueOctav!=null){
+            result = true;
+        }
+        return result;
     }
 }
