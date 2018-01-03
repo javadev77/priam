@@ -15,6 +15,7 @@ import fr.sacem.priam.security.model.UserDTO;
 import fr.sacem.priam.services.api.LigneProgrammeResource;
 import fr.sacem.priam.services.api.LigneProgrammeService;
 import fr.sacem.priam.services.cms.LigneProgrammeCMSService;
+import fr.sacem.priam.services.dto.LigneProgrammeCritereRecherche;
 import org.apache.maven.doxia.logging.SystemStreamLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -139,4 +140,13 @@ public class LigneProgrammeCMSRessource extends LigneProgrammeResource {
 
         return new SelectionDto();
     }
+
+    @RequestMapping(value = "ligneProgramme/selection/isEligible",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public boolean isEligible(@RequestBody LigneProgrammeCritereRecherche ligneProgramme ) {
+        return ligneProgrammeCMSService.isEligible(ligneProgramme.getIde12());
+    }
+
 }

@@ -13,4 +13,7 @@ public interface LigneProgrammeCMSService {
 
     @Transactional
     void ajouterOeuvreManuel(LigneProgrammeCMS input);
+
+    @Transactional
+    boolean isEligible(Long ide12);
 }

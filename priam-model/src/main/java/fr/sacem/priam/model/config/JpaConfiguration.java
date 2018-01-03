@@ -43,7 +43,7 @@ public class JpaConfiguration {
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
-        em.setDataSource(dataSource());
+        em.setDataSource(dataSource2());
         em.setPackagesToScan("fr.sacem.priam.model.domain");
         em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         em.setJpaPropertyMap(additionalProperties());
@@ -51,7 +51,8 @@ public class JpaConfiguration {
     }
     
     @Bean
-    public DataSource dataSource() {
+    @Primary
+    public DataSource dataSource2() {
         JndiDataSourceLookup jndiDataSourceLookup = new JndiDataSourceLookup();
         jndiDataSourceLookup.setResourceRef(Boolean.TRUE);
         this.priamDatasourceJndi = EnvConstants.PRIAM_DB_JNDI.toString();
