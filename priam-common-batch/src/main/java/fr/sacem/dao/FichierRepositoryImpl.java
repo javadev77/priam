@@ -48,7 +48,7 @@ public class FichierRepositoryImpl implements FichierRepository {
     
     @Override
     public void updateFichierById(Long idFichier) {
-        String sql = "UPDATE " +this.nomTableFichier+" SET STATUT_CODE=?,DATE_FIN_CHGT=? " +
+        String sql = "UPDATE " + this.nomTableFichier + " SET STATUT_CODE=?,DATE_FIN_CHGT=? " +
                          "WHERE ID=?";
         jdbcTemplate.update(sql, stmt -> {
             stmt.setString(1, STATUT_OK);

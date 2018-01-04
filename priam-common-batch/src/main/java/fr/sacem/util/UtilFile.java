@@ -1,6 +1,7 @@
 package fr.sacem.util;
 
 import au.com.bytecode.opencsv.CSVReader;
+import com.google.common.io.Files;
 import fr.sacem.domain.Fichier;
 import fr.sacem.service.importPenef.FichierBatchService;
 import fr.sacem.util.exception.PriamValidationException;
@@ -13,6 +14,7 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 
 import java.io.*;
+
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;

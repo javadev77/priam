@@ -2,8 +2,10 @@ package fr.sacem.priam.rest.cms.api;
 
 import com.google.common.base.Strings;
 import fr.sacem.domain.Admap;
+import fr.sacem.priam.model.dao.jpa.FichierCatalogueOctavDao;
 import fr.sacem.priam.model.dao.jpa.SareftjLibutilDao;
 import fr.sacem.priam.model.dao.jpa.cms.TraitementEligibiliteCMSDao;
+import fr.sacem.priam.model.domain.FichierCatalogueOctav;
 import fr.sacem.priam.model.domain.cms.LigneProgrammeCMS;
 import fr.sacem.priam.model.domain.cms.TraitementEligibiliteCMS;
 import fr.sacem.priam.model.domain.cp.LigneProgrammeCP;
@@ -31,6 +33,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -59,6 +62,10 @@ public class LigneProgrammeCMSRessource extends LigneProgrammeResource {
     Job jobEligibiliteOctav;
 
     @Autowired
+    Job jobChargementCatalogueOctav;
+
+
+    @Autowired
     Admap admap;
 
     @Autowired
@@ -66,6 +73,9 @@ public class LigneProgrammeCMSRessource extends LigneProgrammeResource {
 
     @Autowired
     private SareftjLibutilDao sareftjLibutilDao;
+
+    @Autowired
+    private FichierCatalogueOctavDao fichierCatalogueOctavDao;
 
     @Autowired
     public LigneProgrammeCMSRessource(@Qualifier("ligneProgrammeCMSService") LigneProgrammeService ligneProgrammeService) {
@@ -147,6 +157,48 @@ public class LigneProgrammeCMSRessource extends LigneProgrammeResource {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public boolean isEligible(@RequestBody LigneProgrammeCritereRecherche ligneProgramme ) {
         return ligneProgrammeCMSService.isEligible(ligneProgramme.getIde12());
+    }
+
+
+    @RequestMapping(value = "ligneProgramme/selection/downloadCatalogueOctav",
+            method = RequestMethod.GET)
+
+    public ResponseEntity<?> downloadCatalogueOctav() {
+        //lancer le job
+        LOGGER.info("====== Lancement du job chargement de catalogue CMS ======");
+
+        try {
+
+            Map<String, JobParameter> jobParametersMap = new HashMap<>();
+            jobParametersMap.put("time", new JobParameter(System.currentTimeMillis()));
+            jobParametersMap.put("input.catalog.octav", new JobParameter(admap.getInputFile()));
+            jobParametersMap.put("archives.catalog.octav", new JobParameter(admap.getOutputFile()));
+
+            JobParameters jobParameters = new JobParameters(jobParametersMap);
+
+            jobLauncher.run(jobChargementCatalogueOctav, jobParameters);
+
+        } catch (Exception e) {
+            LOGGER.error("Error d'exécution du job desaffectation CMS", e);
+        }
+
+        LOGGER.info("====== Fin de Traitement ======");
+
+        return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(value = "ligneProgramme/selection/catalogueOctav",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public FichierCatalogueOctav getLastCatalogueOctav() {
+        PageRequest pageRequest = new PageRequest(0, 1);
+
+
+        Page<FichierCatalogueOctav> lastFichierOctav = fichierCatalogueOctavDao.findLastFichierOctav(pageRequest);
+
+
+        return lastFichierOctav !=null && !lastFichierOctav.getContent().isEmpty() ? lastFichierOctav.getContent().get(0) : null;
+
     }
 
 }
