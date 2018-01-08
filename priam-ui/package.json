@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "bootstrap": "3.3.7",
+    "currency-validator": "^1.0.1",
     "flat-ui": "2.2.1",
     "moment": "2.18.1",
     "select2": "3.5.1",
