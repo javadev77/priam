@@ -27,12 +27,18 @@
                   <i v-show="errors.has('duree')" class="fa fa-warning"></i>
                   <label v-show="errors.has('duree')" class="control-label" :class="{'has-error': errors.has('duree') }">{{ errors.first('duree') }}</label>
                 </li>
-
               </template>
               <template  v-if="programme.typeUtilisation == 'CPRIVSONPH'">
                 <li v-if="errors.has('quantite')">
                   <i v-show="errors.has('quantite')" class="fa fa-warning"></i>
                   <label v-show="errors.has('quantite')" :class="{'has-error': errors.has('quantite') }">{{ errors.first('quantite') }}</label>
+                </li>
+              </template>
+
+              <template  v-if="programme.typeUtilisation == 'SONOFRA'">
+                <li v-if="errors.has('points')">
+                  <i v-show="errors.has('points')" class="fa fa-warning"></i>
+                  <label v-show="errors.has('points')" :class="{'has-error': errors.has('points') }">{{ errors.first('points') }}</label>
                 </li>
               </template>
 
@@ -112,20 +118,16 @@
                        v-model="oeuvreManuelToCreate.quantite">
               </div>
             </div>
-            <div class="form-group col-md-5" v-if="programme.typeUtilisation == 'SONOFRA'">
+            <div class="form-group col-md-5" :class="{'has-error': errors.has('points') }" v-if="programme.typeUtilisation == 'SONOFRA'">
               <label class="col-md-6 control-label blueText text-right">Points <span class="mandatory">*</span></label>
               <div class="col-md-18">
-                <!--<input v-validate.disable="'required|decimal:2'"
-                       :class="{'has-error': errors.has('points') }" n
+                <input v-validate.disable="'required|regex:^[0-9]+'"
+                       :class="{'has-error': errors.has('points') }"
                        name="points"
                        class="form-control"
                        type="number"
                        v-model="oeuvreManuelToCreate.points"
-                        v-on:keyup="isDisabled">-->
-                <vueNumeric
-                  v-bind:precision="2"
-                  v-model="oeuvreManuelToCreate.points">
-                </vueNumeric>
+                       v-on:keypress="isNumber(event, oeuvreManuelToCreate.points)">
               </div>
             </div>
 
@@ -180,7 +182,8 @@
                   points: 0
               },
               utilisateursOptions : [],
-              programme : {}
+              programme : {},
+              event: null
           }
      },
 
@@ -246,12 +249,28 @@
         }).catch(() => {
           console.log('Correct them errors!');
         });
-
       },
 
+      isNumber(event, points) {
+        var regexp = /^[0-9]+(.[0-9]{0,1})?$/;
+        event = (event) ? event : window.event;
+        // var charCode = (event.which) ? event.which : event.keyCode;
+        var charCode = (event.which) ? event.which : event.keyCode;
+        if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
+          event.preventDefault();
+        } else {
+          if (points) {
+            if (regexp.test(points)) {
+              return true;
+            } else {
+              event.preventDefault();
+              ;
+            }
+          }
+        }
+      }
 
-
-    },
+      },
 
     components : {
         select2: Select2,

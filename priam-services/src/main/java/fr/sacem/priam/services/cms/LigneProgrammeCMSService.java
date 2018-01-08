@@ -15,5 +15,5 @@ public interface LigneProgrammeCMSService {
     void ajouterOeuvreManuel(LigneProgrammeCMS input);
 
     @Transactional
-    boolean isEligible(Long ide12);
+    boolean isEligible(Long ide12, String typeCMS);
 }
