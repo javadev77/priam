@@ -8,6 +8,7 @@ import org.springframework.batch.item.ItemProcessor;
  * Created by fandis on 15/12/2017.
  */
 public class CalculPointsProcessor implements ItemProcessor<PointsResult, PointsResult> {
+
     @Override
     public PointsResult process(PointsResult pointsResult) throws Exception {
         return pointsResult;

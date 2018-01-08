@@ -451,6 +451,9 @@
       },
 
       verifierEtModifierLeProgramme() {
+        console.log("this.programmeToModify.nom = ["  + typeof this.programmeToModify.nom + "]");
+        console.log("this.nom = ["  + typeof this.nom + "]");
+
         if(this.programmeToModify.nom !== this.nom) {
           this.resource.searchProgramme({nom: this.nom})
             .then(response => {
@@ -468,6 +471,7 @@
 
             });
         } else {
+            debugger;
           this.verifierSiMemeRionFamilleTypeUtil();
         }
       },
@@ -526,7 +530,7 @@
             })
             .then(data => {
               var listeProg = data.content;
-              if(listeProg.length > 0) {
+              if(listeProg.length > 0 && listeProg[0].nom !== this.nom) {
                  this.showModalMemeRion = true;
                  this.nomProgrammeMemeRion = listeProg[0].nom;
               } else {

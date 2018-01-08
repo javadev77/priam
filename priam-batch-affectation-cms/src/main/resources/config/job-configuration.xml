@@ -25,7 +25,6 @@
 
 
     <job id="jobEligibiliteOctav" xmlns="http://www.springframework.org/schema/batch">
-
         <step id="chargerCatalogueOctav" next="eligibiliteStep">
             <tasklet>
                 <chunk
@@ -73,6 +72,10 @@
                 </chunk>
             </tasklet>
 
+            <listeners>
+                <listener ref="calculPointsStepListener"/>
+            </listeners>
+
         </step>
 
 
@@ -91,6 +94,7 @@
 
     <bean id="calculPointsProcessor" class="fr.sacem.priam.batch.affectation.processor.CalculPointsProcessor"></bean>
 
+    <bean id="calculPointsStepListener" class="fr.sacem.priam.batch.affectation.listener.CalculPointsStepListener"></bean>
 
     <!-- Debut : Elements essentielle pour le step de dedoublonnage -->
 
@@ -322,14 +326,33 @@
 
     </bean>
 
-    <bean id="queryProviderStep4" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
+   <!-- <bean id="queryProviderStep4" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
         <property name="selectClause" value="SELECT  * FROM (select l.ide12 as ide12,  min(l.mt) as mt "/>
         <property name="fromClause" value="from PRIAM_LIGNE_PROGRAMME_CMS l
                                             INNER JOIN PRIAM_FICHIER f ON l.ID_FICHIER=f.ID
                                             INNER JOIN PRIAM_PROGRAMME p ON p.NUMPROG=f.NUMPROG
                                             INNER JOIN PRIAM_LIGNE_PROGRAMME_CMS l2 on l.ide12=l2.ide12
-                                                AND l.cdeFamilTypUtilOri &lt;&gt; l2.cdeFamilTypUtilOri AND l2.ID_FICHIER=f.ID "/>
+                                                AND l.cdeFamilTypUtilOri &lt;&gt; l2.cdeFamilTypUtilOri"/>
         <property name="whereClause" value="WHERE p.NUMPROG='#{jobParameters[numProg]}' AND p.STATUT_ELIGIBILITE = 'EN_ATTENTE_ELIGIBILITE') temp  WHERE temp.ide12 IS NOT NULL "/>
+        <property name="databaseType" value="MySQL" />
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sortKey" value="ide12"/>
+    </bean>-->
+
+    <bean id="queryProviderStep4" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
+        <property name="selectClause" value="SELECT l.id as id, l.ide12 as ide12,  l.mt as mt "/>
+        <property name="fromClause" value="from PRIAM_LIGNE_PROGRAMME_CMS l
+                                            INNER JOIN PRIAM_FICHIER f ON l.ID_FICHIER=f.ID
+                                            INNER JOIN PRIAM_PROGRAMME p ON p.NUMPROG=f.NUMPROG "/>
+        <property name="whereClause" value="WHERE p.NUMPROG='#{jobParameters[numProg]}'
+                                            AND p.STATUT_ELIGIBILITE = 'EN_ATTENTE_ELIGIBILITE'
+                                            AND l.mt &lt; (
+                                                SELECT MAX(l2.mt)
+                                                FROM PRIAM_LIGNE_PROGRAMME_CMS l2
+                                                INNER JOIN PRIAM_FICHIER f2 ON l2.ID_FICHIER=f2.ID
+                                                WHERE l.ide12=l2.ide12  AND l.cdeFamilTypUtilOri &lt;&gt; l2.cdeFamilTypUtilOri
+                                                AND f2.NUMPROG='#{jobParameters[numProg]}'
+                                            )"/>
         <property name="databaseType" value="MySQL" />
         <property name="dataSource" ref="dataSource"/>
         <property name="sortKey" value="ide12"/>
@@ -343,12 +366,8 @@
             <value>
                 <![CDATA[
                    DELETE FROM PRIAM_LIGNE_PROGRAMME_CMS
-                   WHERE ide12 = :ide12 AND mt = :mt
-                   AND ide12 IN (
-                      SELECT l.ide12
-                      FROM (SELECT * FROM PRIAM_LIGNE_PROGRAMME_CMS) as  l
-                        INNER JOIN PRIAM_FICHIER f on f.ID=l.ID_FICHIER
-                        WHERE f.NUMPROG = '#{jobParameters[numProg]}')
+                   WHERE id=:id
+
                 ]]>
             </value>
         </property>

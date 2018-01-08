@@ -1,5 +1,6 @@
 package fr.sacem.priam.batch.affectation.config;
 import fr.sacem.domain.Admap;
+import fr.sacem.priam.common.constants.EnvConstants;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.*;
@@ -12,9 +13,9 @@ import javax.sql.DataSource;
 @Configuration
 @ComponentScan(basePackages = "fr.sacem.priam.batch.affectation.*")
 @ImportResource(value = "classpath:config/job-configuration.xml")
-@Profile({"dev", "dev2", "lcoal"})
-@PropertySource("classpath:config/application-${spring.profiles.active}.properties")
-public class BatchConfig {
+@Profile({"prod"})
+@PropertySource("classpath:config/applicatin.properties")
+public class BatchConfigProd {
 
     @Value("${spring.datasource.url}")
     String urlDb;
@@ -28,11 +29,9 @@ public class BatchConfig {
     @Value("${spring.datasource.password}")
     String passwordDb;
 
-    @Value("${input.catalog.octav}")
-    String inputDirectory;
+    private String inputDirectory = String.valueOf(EnvConstants.OCTAV_ZIP_IN);
+    private String outputDirectory = String.valueOf(EnvConstants.OCTAV_ZIP_ARCHIVES);
 
-    @Value("${archives.catalog.octav}")
-    String outputDirectory;
 
     @Bean
     public DataSource dataSource() {

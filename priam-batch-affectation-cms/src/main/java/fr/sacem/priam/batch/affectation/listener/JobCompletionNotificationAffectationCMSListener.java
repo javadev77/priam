@@ -134,10 +134,6 @@ public class JobCompletionNotificationAffectationCMSListener extends JobExecutio
                 JobParameter outputDirectory = jobExecution.getJobParameters().getParameters().get(REPERTOIRE_DE_DESTINATION);
 
 
-                JobParameter jobParameter = (JobParameter) executionContext.get("idFichier");
-
-                Long idFichier = (Long) jobParameter.getValue();
-
                 utilFile.deplacerFichier(parameterFichierZipEnCours, parameterNomFichierOriginal, outputDirectory);
             }
         }
