@@ -18,10 +18,12 @@ public class PointsRowMapper implements RowMapper<PointsResult>  {
     @Override
     public PointsResult mapRow(ResultSet resultSet, int i) throws SQLException {
         PointsResult pointsResult = new PointsResult();
+
+        pointsResult.setId(resultSet.getLong("id"));
         pointsResult.setIde12(resultSet.getLong("ide12"));
         pointsResult.setMt(resultSet.getDouble("mt"));
 
-        LOGGER.info("pointsResult : ide12="  + pointsResult.getIde12() + ", mt = " + pointsResult.getMt());
+        LOGGER.info(pointsResult.toString());
 
         return pointsResult;
     }

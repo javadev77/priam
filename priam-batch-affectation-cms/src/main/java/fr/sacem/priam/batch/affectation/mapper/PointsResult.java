@@ -38,4 +38,9 @@ public class PointsResult {
     public void setIde12(Long ide12) {
         this.ide12 = ide12;
     }
+
+    @Override
+    public String toString() {
+        return "pointsResult : " + "id=" + id + ", ide12="  + ide12 + ", mt = " + mt;
+    }
 }

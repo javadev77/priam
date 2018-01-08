@@ -61,6 +61,7 @@ public class TraitementCmsDao {
 
     public void viderCatalogueOctav() {
         LOG.info("=== Suppression du contenu de la table PRIAM_CATALOGUE_OCTAV ====");
+        //TODO HABIB : Ajouter DELETE FROM WHERE TYPE_CMS=FR
         String sql =  "TRUNCATE PRIAM_CATALOGUE_OCTAV";
 
         jdbcTemplate.update(sql);

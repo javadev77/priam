@@ -209,7 +209,7 @@
         resource: '',
         nom : '',
         rionTheoriqueSelected : null,
-        familleSelected: this.$store.getters.familleOptionsVide[0],
+        familleSelected: this.$store.getters.userFamille,
         typeUtilisationSelected: null,
         typeRepart:'OEUVRE',
         programmeData: {

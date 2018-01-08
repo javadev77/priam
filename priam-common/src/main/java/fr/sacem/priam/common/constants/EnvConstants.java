@@ -135,6 +135,21 @@ public enum EnvConstants implements ConfigurableProperty {
             return "priam.db.jndi";
         }
 
+    },
+
+    OCTAV_ZIP_IN {
+        @Override
+        public String property() {
+            return "priam.octav.catalog.dir.in";
+        }
+
+    },
+
+    OCTAV_ZIP_ARCHIVES {
+        @Override
+        public String property() {
+            return "priam.octav.catalog.dir.archives";
+        }
     };
 
     @Override
