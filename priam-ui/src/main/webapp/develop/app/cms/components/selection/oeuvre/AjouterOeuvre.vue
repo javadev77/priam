@@ -275,13 +275,11 @@
 
                     //Lancer le chargement du catalogue octav
                     var self =this;
-                    this.resource.downloadCatalogueOctav()
+                    /*this.resource.downloadCatalogueOctav()
                       .then(response => {
                          self.chgtCatalogueEncours = true;
                          console.log("Lancement OK de chargement !!!");
-
                       });
-
                     var timer = setInterval(function () {
                       debugger;
                       self.resource.getLastCatalogueOctav()
@@ -297,10 +295,10 @@
                               .then(response => {
                                 return response.json();
                               })
-                              .then(isElegible => {
-                                console.log("isElegible = " + isElegible);
+                              .then(isEligible => {
+                                console.log("isEligible = " + isEligible);
                                 debugger;
-                                if (isElegible) {
+                                if (isEligible) {
                                   self.$emit('validate-ajout-oeuvre', self.oeuvreToAdd);
                                 } else {
                                   self.showPopupEligibilite = true;
@@ -309,11 +307,27 @@
                               });
                           }
                         });
-
-
-                    }, 2000);
-
-
+                    }, 2000);*/
+                    var typeCMS = '';
+                    if(this.programme.typeUtilisation === 'SONOFRA') {
+                      typeCMS = 'FR';
+                    } else if (this.programme.typeUtilisation === 'SONOANT') {
+                      typeCMS = 'ANT';
+                    }
+                    self.resource.isEligible({ide12: oeuvre.ide12, typeCMS: typeCMS})
+                      .then(response => {
+                        return response.json();
+                      })
+                      .then(isEligible => {
+                        console.log("isEligible = " + isEligible);
+                        debugger;
+                        if (isEligible) {
+                          self.$emit('validate-ajout-oeuvre', self.oeuvreToAdd);
+                        } else {
+                          self.showPopupEligibilite = true;
+                          self.messageEligibilite = 'Cette oeuvre n\'est pas éligible et donc ne peut être ajoutée au programme !';
+                        }
+                      });
                   }
               });
         },

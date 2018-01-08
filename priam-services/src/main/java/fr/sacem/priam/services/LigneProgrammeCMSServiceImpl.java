@@ -324,9 +324,9 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
 
     @Override
     @Transactional
-    public boolean isEligible(Long ide12){
+    public boolean isEligible(Long ide12, String typeCMS){
         boolean result = false;
-        CatalogueOctav oeuvreCatalogueOctav = catalogueOctavDao.findByIde12(ide12);
+        CatalogueOctav oeuvreCatalogueOctav = catalogueOctavDao.findByIde12(ide12, typeCMS);
         if (oeuvreCatalogueOctav!=null){
             result = true;
         }

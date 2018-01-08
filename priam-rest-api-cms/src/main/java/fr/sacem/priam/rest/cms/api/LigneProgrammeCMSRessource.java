@@ -2,9 +2,11 @@ package fr.sacem.priam.rest.cms.api;
 
 import com.google.common.base.Strings;
 import fr.sacem.domain.Admap;
+import fr.sacem.priam.common.TypeUtilisationEnum;
 import fr.sacem.priam.model.dao.jpa.FichierCatalogueOctavDao;
 import fr.sacem.priam.model.dao.jpa.SareftjLibutilDao;
 import fr.sacem.priam.model.dao.jpa.cms.TraitementEligibiliteCMSDao;
+import fr.sacem.priam.model.domain.CatalogueOctav;
 import fr.sacem.priam.model.domain.FichierCatalogueOctav;
 import fr.sacem.priam.model.domain.cms.LigneProgrammeCMS;
 import fr.sacem.priam.model.domain.cms.TraitementEligibiliteCMS;
@@ -155,8 +157,8 @@ public class LigneProgrammeCMSRessource extends LigneProgrammeResource {
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public boolean isEligible(@RequestBody LigneProgrammeCritereRecherche ligneProgramme ) {
-        return ligneProgrammeCMSService.isEligible(ligneProgramme.getIde12());
+    public boolean isEligible(@RequestBody CatalogueOctav catalogueOctav) {
+        return ligneProgrammeCMSService.isEligible(catalogueOctav.getIde12(), catalogueOctav.getTypeCMS());
     }
 
 

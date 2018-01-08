@@ -20,7 +20,8 @@ public class CatalogueOctavDaoTest {
     @Test
     public void findByIde12(){
         Long ide12 = 6286965011L;
-        CatalogueOctav oeuvre = catalogueOctavDao.findByIde12(ide12);
+        String typeCMS = "FR";
+        CatalogueOctav oeuvre = catalogueOctavDao.findByIde12(ide12, typeCMS);
         assertThat(oeuvre).isNotNull();
     }
 }
