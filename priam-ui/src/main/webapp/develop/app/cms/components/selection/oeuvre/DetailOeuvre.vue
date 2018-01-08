@@ -120,7 +120,7 @@
             </div>
             <div class="form-group col-md-5" :class="{'has-error': errors.has('points') }" v-if="programme.typeUtilisation == 'SONOFRA'">
               <label class="col-md-6 control-label blueText text-right">Points <span class="mandatory">*</span></label>
-              <div class="col-md-18">
+              <!--<div class="col-md-18">
                 <input v-validate.disable="'required|regex:^[0-9]+'"
                        :class="{'has-error': errors.has('points') }"
                        name="points"
@@ -128,9 +128,9 @@
                        type="number"
                        v-model="oeuvreManuelToCreate.points"
                        v-on:keypress="isNumber(event, oeuvreManuelToCreate.points)">
-              </div>
+              </div>-->
+              <decimal-input label="" v-model="oeuvreManuelToCreate.points">Points</decimal-input>
             </div>
-
           </div>
         </form>
       </div>
@@ -149,7 +149,7 @@
 
   import Select2 from '../../../../common/components/ui/Select2.vue';
   import {Validator} from 'vee-validate';
-  import VueNumeric from 'vue-numeric';
+  import DecimalInput from '../../../../common/components/ui/Decimal-input';
 
 
   const dictionary = {
@@ -274,7 +274,7 @@
 
     components : {
         select2: Select2,
-        VueNumeric
+        decimalInput: DecimalInput
     }
 
   }

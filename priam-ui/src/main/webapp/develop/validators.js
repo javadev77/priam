@@ -22,8 +22,7 @@ Vue.use(VeeValidate, {
         max: (e, n) => e + " ne peut pas contenir plus de " + n[0] + " caractères.",
         numeric: (e) => "Le champ '" + e +  "' ne peut contenir que des chiffres.",
         before: (e,n) => "La date de début doit être antérieure à la date de fin.",
-        decimal: (e) =>  "Le champ '" + e +  "' ne peut contenir que des chiffres.",
-        regex: (e) =>   "Le champ '" + e +  "' doit être au format numérique."
+        decimal: (e) =>  "Le champ '" + e +  "' ne peut contenir que des chiffres."
       }
     }
   }
