@@ -57,7 +57,7 @@ public class PriamLigneProgrammeCMSSQLMapper implements RowMapper<LigneProgramme
         ligneProgramme.setAjout(rs.getString("ajout"));
         ligneProgramme.setSelection(rs.getString("selection"));
 
-        LOGGER.info("LigneProgramme ide12= " + ligneProgramme.getIde12() + ", cdeFamilTypUtilOri=" + ligneProgramme.getCdeFamilTypUtilOri());
+        LOGGER.info("LigneProgramme id=" + ligneProgramme.getId() +  " ide12= " + ligneProgramme.getIde12() + ", cdeFamilTypUtilOri=" + ligneProgramme.getCdeFamilTypUtilOri());
 
 
         return ligneProgramme;
