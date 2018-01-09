@@ -15,4 +15,3 @@ module.exports = {
   CONTEXT_ROOT_PRIAM_CP : '"http://dev.sacem.fr/priam-cp-embouazzar/"',
   CONTEXT_ROOT_PRIAM_CMS : '"http://dev.sacem.fr/priam-cms-embouazzar/"'
 }*/
-
