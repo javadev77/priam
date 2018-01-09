@@ -530,7 +530,9 @@
             })
             .then(data => {
               var listeProg = data.content;
-              if(listeProg.length > 0 && listeProg[0].nom !== this.nom) {
+              debugger;
+              let progInResult = this.findProgInResult(listeProg, this.programmeToModify.numProg);
+              if(progInResult !== undefined) {
                  this.showModalMemeRion = true;
                  this.nomProgrammeMemeRion = listeProg[0].nom;
               } else {
@@ -566,6 +568,18 @@
           return date;
         }
         return null;
+      },
+
+      findProgInResult(listeProg, numProg) {
+          var result = null;
+          if(listeProg !== undefined && listeProg.length >0) {
+            result =  listeProg.find(function (elem) {
+                return elem.numProg !== numProg;
+              })
+          }
+
+          return result;
+
       },
 
       initData() {
