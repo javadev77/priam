@@ -1,6 +1,6 @@
 var currencyValidator = {
   format: function (number) {
-    return (Math.trunc(number * 1000000000000) / 1000000000000).toFixed(2)
+    return (Math.floor(number * 1000000000000) / 1000000000000).toFixed(2)
   },
   parse: function (newString, oldNumber) {
     var CleanParse = function (value) {
