@@ -17,6 +17,7 @@ import java.util.Properties;
 @ComponentScan(basePackages = "fr.sacem.*")
 @ImportResource(value = "classpath:config/job-configuration.xml")
 @Profile("production")
+@PropertySource("classpath:config/application-production.properties")
 public class ConfigurationPriamProd {
 
     private Enum ConfigurationFromAdMap = EnvConstants.BATCH_CONFIG_PROPERTIES;

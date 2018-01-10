@@ -1,6 +1,5 @@
 package fr.sacem;
 
-import fr.sacem.config.ConfigurationPriam;
 import fr.sacem.config.ConfigurationPriamLocal;
 import fr.sacem.config.ConfigurationPriamProd;
 import fr.sacem.domain.Admap;
@@ -27,13 +26,13 @@ public class App {
     public static void main(String[] args) {
 
 
-        ApplicationContext context = new AnnotationConfigApplicationContext(ConfigurationPriam.class);
+        ApplicationContext context = new AnnotationConfigApplicationContext(ConfigurationPriamLocal.class, ConfigurationPriamProd.class);
 
         JobLauncher jobLauncher = (JobLauncher) context.getBean("jobLauncher");
         Job job = (Job) context.getBean("archiveFlatFileReaderJob");
         Admap admap =(Admap) context.getBean("admap");
         try {
-            Map<String, JobParameter> jobParametersMap = new HashMap<String, JobParameter>();
+            Map<String, JobParameter> jobParametersMap = new HashMap<>();
             jobParametersMap.put("time", new JobParameter(System.currentTimeMillis()));
             System.out.println("inputDirectory "+ admap.getInputFile());
             System.out.println("inputDirectory "+ admap.getOutputFile());
