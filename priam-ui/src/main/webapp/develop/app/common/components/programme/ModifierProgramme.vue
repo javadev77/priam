@@ -77,6 +77,7 @@
                   <input
                          tabindex="0"
                          v-focus
+                         ref="nomProgramme"
                          maxlength="20"
                          name="Nom programme"
                          v-model="nom"
@@ -450,6 +451,7 @@
         }).catch(() => {
           // eslint-disable-next-line
           console.log('Correct them errors!');
+          this.$refs.nomProgramme.focus();
         });
       },
 
