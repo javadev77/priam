@@ -8,3 +8,4 @@ node
 target/
 yarn.lock
 .project
+/dist
