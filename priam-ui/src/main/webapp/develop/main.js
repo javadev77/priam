@@ -1,6 +1,7 @@
 import './utils'
 import Vue from 'vue'
 import vueShortkey from 'vue-shortkey'
+import './directives'
 import './filters'
 import './validators'
 import './httpConfig'

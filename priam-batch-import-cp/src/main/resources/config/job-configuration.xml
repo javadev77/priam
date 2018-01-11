@@ -11,12 +11,12 @@
         <context:component-scan base-package="fr.sacem.*"/>
 -->
 
-    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <!--<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
            <property name="searchSystemEnvironment" value="true"/>
         <property name="ignoreResourceNotFound" value="true"/>
         <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
      <property name="location" value="classpath:config/application-${spring.profiles.active}.properties"/>
-    </bean>
+    </bean>-->
     <job id="archiveFlatFileReaderJob" xmlns="http://www.springframework.org/schema/batch">
         <step id="archiveFlatFileReaderStep">
             <tasklet>
@@ -182,6 +182,11 @@
                             <map>
                                 <entry key="java.time.LocalDate">
                                     <bean class="fr.sacem.util.LocalDatePropertyEditor">
+                                    </bean>
+                                </entry>
+
+                                <entry key="java.lang.Double">
+                                    <bean class="fr.sacem.util.DoublePropertyEditor">
                                     </bean>
                                 </entry>
                             </map>

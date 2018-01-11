@@ -51,7 +51,7 @@
               <div class="form-group col-md-6" :class="{'has-error': errors.has('Nom programme') }">
                 <label class="col-md-9 control-label">Nom programme <span class="mandatory">*</span></label>
                 <div class="col-md-15">
-                  <input maxlength="20" name="Nom programme" v-model="nom" v-validate.disable="'required|max:20'" class="form-control" :class="{'has-error': errors.has('Nom programme') }"  type="text" >
+                  <input v-focus tabindex="0" ref="nomProgramme" maxlength="20" name="Nom programme" v-model="nom" v-validate.disable="'required|max:20'" class="form-control" :class="{'has-error': errors.has('Nom programme') }"  type="text" >
                 </div>
               </div>
 
@@ -209,7 +209,7 @@
         resource: '',
         nom : '',
         rionTheoriqueSelected : null,
-        familleSelected: this.$store.getters.userFamille,
+        familleSelected: this.$store.getters.userFamille.id === 'ALL' ? this.$store.getters.familleOptionsVide[0]: this.$store.getters.userFamille,
         typeUtilisationSelected: null,
         typeRepart:'OEUVRE',
         programmeData: {
@@ -269,6 +269,7 @@
         }).catch(() => {
           // eslint-disable-next-line
           console.log('Correct them errors!');
+          this.$refs.nomProgramme.focus();
         });
 
       },

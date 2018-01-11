@@ -1,13 +1,10 @@
 package fr.sacem.priam.model.dao.jpa;
 
-import fr.sacem.priam.model.dao.JpaConfigurationTest;
+import fr.sacem.priam.model.dao.AbstractDaoTest;
 import fr.sacem.priam.model.domain.ProgrammeKey;
 import fr.sacem.priam.model.domain.ProgrammeSequence;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -17,9 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Created by fandis on 22/06/2017.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes={JpaConfigurationTest.class})
-public class ProgrammeSequenceDaoTest {
+public class ProgrammeSequenceDaoTest extends AbstractDaoTest {
 
     @Autowired
     private ProgrammeSequnceDao programmeSequnceDao;

@@ -74,7 +74,11 @@
               <div class="form-group col-md-6" :class="{'has-error': errors.has('Nom programme') }">
                 <label class="col-md-9 control-label">Nom programme <span class="mandatory">*</span></label>
                 <div class="col-md-15">
-                  <input maxlength="20"
+                  <input
+                         tabindex="0"
+                         v-focus
+                         ref="nomProgramme"
+                         maxlength="20"
                          name="Nom programme"
                          v-model="nom"
                          v-validate.disable="'required|max:20'"
@@ -447,6 +451,7 @@
         }).catch(() => {
           // eslint-disable-next-line
           console.log('Correct them errors!');
+          this.$refs.nomProgramme.focus();
         });
       },
 
@@ -530,7 +535,9 @@
             })
             .then(data => {
               var listeProg = data.content;
-              if(listeProg.length > 0 && listeProg[0].nom !== this.nom) {
+              debugger;
+              let progInResult = this.findProgInResult(listeProg, this.programmeToModify.numProg);
+              if(progInResult !== undefined) {
                  this.showModalMemeRion = true;
                  this.nomProgrammeMemeRion = listeProg[0].nom;
               } else {
@@ -566,6 +573,18 @@
           return date;
         }
         return null;
+      },
+
+      findProgInResult(listeProg, numProg) {
+          var result = null;
+          if(listeProg !== undefined && listeProg.length >0) {
+            result =  listeProg.find(function (elem) {
+                return elem.numProg !== numProg;
+              })
+          }
+
+          return result;
+
       },
 
       initData() {
