@@ -6,7 +6,9 @@ import fr.sacem.priam.model.dao.jpa.FichierFelixDao;
 import fr.sacem.priam.model.domain.FichierFelix;
 import fr.sacem.priam.model.domain.StatutFichierFelix;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
+import fr.sacem.priam.services.FelixDataCMSService;
 import fr.sacem.priam.services.FelixDataService;
+import fr.sacem.priam.services.FelixDataServiceAbstract;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,8 +33,15 @@ public class RepartitionResource {
 
     private static Logger logger = LoggerFactory.getLogger(RepartitionResource.class);
 
+
+
+   @Autowired
+   private FelixDataService felixDataCPService;
+
+
     @Autowired
-    private FelixDataService felixDataService;
+    private FelixDataCMSService felixDataCMSService;
+
 
     @Autowired
     private FichierFelixDao fichierFelixDao;
@@ -56,7 +65,7 @@ public class RepartitionResource {
         fichierFelixDao.save(ff);
         fichierFelixDao.flush();
 
-        felixDataService.runAsyncCreateFichierFelix(numProg);
+        getFelixDataService(numProg).runAsyncCreateFichierFelix(numProg);
 
         return new ProgrammeDto();
     }
@@ -123,8 +132,14 @@ public class RepartitionResource {
             fichierFelixDao.flush();
 
         }
+        getFelixDataService(numProg).asyncSendFichierFelix(numProg);
 
-        felixDataService.asyncSendFichierFelix(numProg);
-
+    }
+    private FelixDataServiceAbstract getFelixDataService(String numProg) {
+        if (felixDataCPService.getFamilleUtil(numProg).equals("UC")) {
+            return felixDataCMSService;
+        } else {
+            return felixDataCPService;
+        }
     }
 }

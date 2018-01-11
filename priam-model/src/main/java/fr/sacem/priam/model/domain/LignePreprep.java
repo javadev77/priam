@@ -157,7 +157,11 @@ public class LignePreprep implements Serializable {
         this.cdeModDif = cdeModDif;
         this.cdeTypIde12 = cdeTypIde12;
         this.ide12 = ide12;
-        this.durDif = durDif;
+        if (durDif == 0L){
+            this.durDif = null;
+        } else {
+            this.durDif = durDif;
+        }
         this.nbrDif = nbrDif;
         this.mt = mt;
         this.ctna = ctna;
