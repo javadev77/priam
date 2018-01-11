@@ -64,10 +64,6 @@ public class LigneProgrammeCMSRessource extends LigneProgrammeResource {
     Job jobEligibiliteOctav;
 
     @Autowired
-    Job jobChargementCatalogueOctav;
-
-
-    @Autowired
     Admap admap;
 
     @Autowired
@@ -159,34 +155,6 @@ public class LigneProgrammeCMSRessource extends LigneProgrammeResource {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public boolean isEligible(@RequestBody CatalogueOctav catalogueOctav) {
         return ligneProgrammeCMSService.isEligible(catalogueOctav.getIde12(), catalogueOctav.getTypeCMS());
-    }
-
-
-    @RequestMapping(value = "ligneProgramme/selection/downloadCatalogueOctav",
-            method = RequestMethod.GET)
-
-    public ResponseEntity<?> downloadCatalogueOctav() {
-        //lancer le job
-        LOGGER.info("====== Lancement du job chargement de catalogue CMS ======");
-
-        try {
-
-            Map<String, JobParameter> jobParametersMap = new HashMap<>();
-            jobParametersMap.put("time", new JobParameter(System.currentTimeMillis()));
-            jobParametersMap.put("input.catalog.octav", new JobParameter(admap.getInputFile()));
-            jobParametersMap.put("archives.catalog.octav", new JobParameter(admap.getOutputFile()));
-
-            JobParameters jobParameters = new JobParameters(jobParametersMap);
-
-            jobLauncher.run(jobChargementCatalogueOctav, jobParameters);
-
-        } catch (Exception e) {
-            LOGGER.error("Error d'exécution du job desaffectation CMS", e);
-        }
-
-        LOGGER.info("====== Fin de Traitement ======");
-
-        return ResponseEntity.ok().build();
     }
 
     @RequestMapping(value = "ligneProgramme/selection/catalogueOctav",

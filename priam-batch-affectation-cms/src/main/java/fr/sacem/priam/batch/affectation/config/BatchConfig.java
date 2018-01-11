@@ -12,7 +12,7 @@ import javax.sql.DataSource;
 @Configuration
 @ComponentScan(basePackages = "fr.sacem.priam.batch.affectation.*")
 @ImportResource(value = "classpath:config/job-configuration.xml")
-@Profile({"dev", "dev2", "lcoal"})
+@Profile({"dev", "local"})
 @PropertySource("classpath:config/application-${spring.profiles.active}.properties")
 public class BatchConfig {
 

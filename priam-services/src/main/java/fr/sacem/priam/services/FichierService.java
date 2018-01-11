@@ -2,9 +2,11 @@ package fr.sacem.priam.services;
 
 import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.dao.jpa.cms.LigneProgrammeCMSDao;
+import fr.sacem.priam.model.dao.jpa.cms.LigneProgrammeCopyCMSDao;
 import fr.sacem.priam.model.dao.jpa.cp.LigneProgrammeCPDao;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.priam.model.domain.*;
+import fr.sacem.priam.model.domain.dto.FileDto;
 import fr.sacem.priam.model.util.FamillePriam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,9 +34,20 @@ public class FichierService {
     @Autowired
     private LigneProgrammeCMSDao ligneProgrammeCMSDao;
 
+    @Autowired
+    private LigneProgrammeCopyCMSDao ligneProgrammeCopyCMSDao;
+
     @Transactional
     public void deleteDonneesFichiers(Long fileId) {
-        ligneProgrammeCPDao.deleteAllByFichierId(fileId);
+        Fichier fichier = fichierDao.findOne(fileId);
+
+        if(FamillePriam.COPIE_PRIVEE.getCode().equals(fichier.getFamille().getCode())) {
+            ligneProgrammeCPDao.deleteAllByFichierId(fileId);
+        } else if(FamillePriam.CMS.getCode().equals(fichier.getFamille().getCode())) {
+            ligneProgrammeCMSDao.deleteAllByFichierId(fileId);
+            ligneProgrammeCopyCMSDao.deleteAllCopyByFichierId(fileId);
+        }
+
         fichierDao.updateFichierStatus(fileId, Status.ABANDONNE);
     }
     

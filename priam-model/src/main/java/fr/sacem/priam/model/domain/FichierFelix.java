@@ -3,6 +3,7 @@ package fr.sacem.priam.model.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "PRIAM_FICHIER_FELIX")
-public class FichierFelix {
+public class FichierFelix implements Serializable {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
