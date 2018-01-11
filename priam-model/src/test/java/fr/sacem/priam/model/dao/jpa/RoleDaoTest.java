@@ -2,13 +2,10 @@ package fr.sacem.priam.model.dao.jpa;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
 import fr.sacem.priam.common.constants.RoleType;
-import fr.sacem.priam.model.dao.JpaConfigurationTest;
+import fr.sacem.priam.model.dao.AbstractDaoTest;
 import fr.sacem.priam.model.domain.Role;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -19,10 +16,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Created by embouazzar on 30/08/2017.
  */
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes={JpaConfigurationTest.class})
 @Transactional
-public class RoleDaoTest {
+public class RoleDaoTest extends AbstractDaoTest {
 
     @Autowired
     private RoleDao roleDao;

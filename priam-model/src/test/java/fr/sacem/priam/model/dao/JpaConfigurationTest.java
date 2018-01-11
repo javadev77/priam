@@ -15,6 +15,7 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
@@ -26,6 +27,7 @@ import java.sql.Driver;
 @Configuration
 @PropertySource("classpath:application_test.properties")
 @EnableJpaRepositories(basePackages = "fr.sacem.priam.model.dao.jpa")
+@Profile("test")
 public class JpaConfigurationTest {
 
     @Value("${mariaDB4j.port}")

@@ -1,9 +1,10 @@
 package fr.sacem.priam.model.dao.jpa;
 
 
-import fr.sacem.priam.model.dao.JpaConfigurationTest;
+import fr.sacem.priam.model.dao.AbstractDaoTest;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
-import fr.sacem.priam.model.domain.*;
+import fr.sacem.priam.model.domain.Programme;
+import fr.sacem.priam.model.domain.StatutProgramme;
 import fr.sacem.priam.model.domain.criteria.ProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.model.domain.saref.SareftrFamiltyputil;
@@ -12,14 +13,11 @@ import fr.sacem.priam.model.domain.saref.SareftrTyputil;
 import org.assertj.core.util.Lists;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
@@ -34,10 +32,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Created by benmerzoukah on 09/05/2017.
  */
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes={JpaConfigurationTest.class})
 @Transactional
-public class ProgrammeViewDaoTest {
+public class ProgrammeViewDaoTest extends AbstractDaoTest{
     
     public static final Pageable PAGEABLE = new Pageable() {
         @Override
