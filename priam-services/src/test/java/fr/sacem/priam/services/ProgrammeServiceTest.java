@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes={JpaConfigurationTest.class, ConfigurationTest.class})
+@ActiveProfiles("test")
 public class ProgrammeServiceTest {
 
 	public static final String NUM_PROG = "170001";
@@ -133,7 +135,7 @@ public class ProgrammeServiceTest {
 		
 		Programme programme = programmeService.addProgramme(programmeDto);
 		
-		assertThat(programme.getNumProg()).isEqualTo("17" + StringUtils.leftPad(String.valueOf(lastSeq + 1), 4, "0"));
+		assertThat(programme.getNumProg()).isEqualTo("18" + StringUtils.leftPad(String.valueOf(lastSeq + 1), 4, "0"));
 		assertThat(programme.getNom()).isEqualTo("Test-PR01");
 		assertThat(programme.getRionTheorique().getRion()).isEqualTo(619);
 		assertThat(programme.getFamille().getCode()).isEqualTo("COPIEPRIV");

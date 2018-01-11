@@ -1,1 +1,1 @@
-/usr/java/JDK8/bin/java -jar -Dspring.profiles.active=production /usr1/priam/BatchRepartition/lib/priam-batch-repartition-2.0.0.jar
+/usr/java/JDK8/bin/java -jar -Dspring.profiles.active=production /usr1/priam/BatchRepartition/lib/@project.build.finalName@.jar

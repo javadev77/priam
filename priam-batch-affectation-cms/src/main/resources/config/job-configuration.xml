@@ -13,7 +13,6 @@
     </jdbc:initialize-database>-->
 
     <import resource="job-desaffectation-conf.xml"/>
-    <import resource="job-catalogue-octav-conf.xml"/>
 
     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="searchSystemEnvironment" value="true"/>
