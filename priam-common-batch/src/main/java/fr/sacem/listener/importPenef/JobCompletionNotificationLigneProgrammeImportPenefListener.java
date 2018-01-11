@@ -156,7 +156,7 @@ public class JobCompletionNotificationLigneProgrammeImportPenefListener extends 
                 utilFile.deplacerFichier(parameterFichierZipEnCours, parameterNomFichierOriginal, outputDirectory);
             }
 
-            if(idFichier != null && "CMS".equalsIgnoreCase(typeFichier)) {
+            if(idFichier != null && "SONOFRA".equalsIgnoreCase(typeFichier)) {
                 fichierRepository.supprimerLigneProgrammeParIdFichier(idFile);
             }
         }

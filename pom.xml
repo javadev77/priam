@@ -33,6 +33,8 @@
         <module>priam-rest-api-common</module>
         <module>priam-rest-api-copieprivee</module>
         <module>priam-rest-api-cms</module>
+        <module>priambatchimportcmsant</module>
+        <module>priam-batch-affectation-cms-ant</module>
     </modules>
 
     <organization>
