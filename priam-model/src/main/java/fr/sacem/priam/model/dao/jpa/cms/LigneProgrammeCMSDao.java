@@ -53,12 +53,12 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
 
     @Transactional
     @Query(value="SELECT  new fr.sacem.priam.model.domain.LignePreprep("+
-                     "ligneProgramme.cdeCisac, " +
+                     "'058', " +
                      "prog.cdeTer, " +
                      "prog.rionTheorique.rion, " +
                      "prog.famille.code, " +
                      "prog.numProg, " +
-                     "ligneProgramme.cdeUtil, " +
+                     "'XXX', " +
                      "'FORFAI', " +
                      "prog.typeUtilisation.code, " +
                      "'PRINC', " +
@@ -70,9 +70,9 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
                      "ligneProgramme.cdeModDif, " +
                      "ligneProgramme.cdeTypIde12, " +
                      "ligneProgramme.ide12, " +
-                     "sum(ligneProgramme.durDif), " +
-                     "(CASE WHEN prog.typeUtilisation.code = 'CPRIVSONRD' THEN 1L  ELSE sum(ligneProgramme.nbrDif) END),  " +
-                     "0.0d , " +
+                     "0L, " +
+                     "(CASE WHEN prog.typeUtilisation.code = 'SONOFRA' THEN 1L  ELSE ligneProgramme.mt END),  " +
+                     "(CASE WHEN prog.typeUtilisation.code = 'SONOFRA' THEN ligneProgramme.mt ELSE 0 END),  " +
                      "ligneProgramme.ctna, " +
                      "ligneProgramme.paramCoefHor, " +
                      "ligneProgramme.durDifCtna, " +
@@ -84,8 +84,7 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
                      "WHERE prog.numProg = :numProg " +
                      "AND ligneProgramme.selection = true " +
                      "AND ligneProgramme.oeuvreManuel IS NULL " +
-                     "GROUP BY ligneProgramme.ide12, " +
-                     "ligneProgramme.cdeUtil " +
+                     "GROUP BY ligneProgramme.ide12 " +
                      "ORDER BY ligneProgramme.cdeCisac ASC , prog.cdeTer ASC, prog.rionTheorique.rion ASC, " +
                      "prog.famille.code ASC, prog.typeUtilisation.code ASC, ligneProgramme.cdeUtil ASC, prog.dateDbtPrg ASC, prog.dateFinPrg ASC ")
     List<LignePreprep> findLigneProgrammeSelectionnesForFelix(@Param("numProg") String numProg);

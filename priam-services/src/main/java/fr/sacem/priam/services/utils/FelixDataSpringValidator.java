@@ -22,7 +22,6 @@ public class FelixDataSpringValidator implements Validator {
     @Override
     public void validate(Object o, Errors errors) {
 		  String cdeTypUtil = ((FelixData)o).getCdeTypUtil();
-
 		  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeCisac", "error.cdeCisac");
 		  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeTer", "error.cdeTer");
 		  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "rionEffet", "error.rionEffet");
@@ -50,7 +49,12 @@ public class FelixDataSpringValidator implements Validator {
 		  } else if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_PHONO.getCode().equalsIgnoreCase(cdeTypUtil)) {
 
 		  }
-	  
+	  //CMS
+		if( TypeUtilisationEnum.CMS_FRA.getCode().equalsIgnoreCase(cdeTypUtil) ||
+				TypeUtilisationEnum.CMS_ANT.getCode().equalsIgnoreCase(cdeTypUtil))  {
+			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "mt", "error.mt");
+
+		}
 	  
     }
 }
