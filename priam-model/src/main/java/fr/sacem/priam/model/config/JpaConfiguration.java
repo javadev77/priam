@@ -33,12 +33,8 @@ import java.util.Map;
 @Configuration
 @EnableJpaRepositories(basePackages = "fr.sacem.priam.model.dao.jpa")
 @EnableTransactionManagement
-@Profile("${webapp.mode}")
+@Profile({"dev", "re7", "prod"})
 public class JpaConfiguration {
-    
-    @Autowired
-    private Environment environment;
-
     private String priamDatasourceJndi;
     
     

@@ -4,6 +4,7 @@ import fr.sacem.priam.common.constants.EnvConstants;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.*;
+import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 
 import javax.sql.DataSource;
 
@@ -13,21 +14,12 @@ import javax.sql.DataSource;
 @Configuration
 @ComponentScan(basePackages = "fr.sacem.priam.batch.affectation.*")
 @ImportResource(value = "classpath:config/job-configuration.xml")
-@Profile({"prod"})
-@PropertySource("classpath:config/application.properties")
+@Profile({"prod", "dev", "re7"})
+@PropertySource("classpath:config/application-batch.properties")
 public class BatchConfigProd {
 
-    @Value("${spring.datasource.url}")
-    String urlDb;
 
-    @Value("${spring.datasource.username}")
-    String usernameDb;
-
-    @Value("${spring.datasource.driver-class-name}")
-    String driverDb;
-
-    @Value("${spring.datasource.password}")
-    String passwordDb;
+    private String priamDatasourceJndi;
 
     private String inputDirectory = String.valueOf(EnvConstants.OCTAV_ZIP_IN);
     private String outputDirectory = String.valueOf(EnvConstants.OCTAV_ZIP_ARCHIVES);
@@ -35,13 +27,12 @@ public class BatchConfigProd {
 
     @Bean
     public DataSource dataSource() {
-        return DataSourceBuilder
-                .create()
-                .username(usernameDb)
-                .password(passwordDb)
-                .url(urlDb)
-                .driverClassName(driverDb)
-                .build();
+        JndiDataSourceLookup jndiDataSourceLookup = new JndiDataSourceLookup();
+        jndiDataSourceLookup.setResourceRef(Boolean.TRUE);
+        this.priamDatasourceJndi = EnvConstants.PRIAM_DB_JNDI.toString();
+        DataSource dataSource = jndiDataSourceLookup.getDataSource(priamDatasourceJndi);
+
+        return dataSource;
     }
 
     @Bean

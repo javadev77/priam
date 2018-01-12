@@ -1,4 +1,5 @@
 spring:
-  profiles: local
+  profiles:
+    active: dev
   jmx:
     enabled: false

@@ -12,8 +12,8 @@ import javax.sql.DataSource;
 @Configuration
 @ComponentScan(basePackages = "fr.sacem.priam.batch.affectation.*")
 @ImportResource(value = "classpath:config/job-configuration.xml")
-@Profile({"dev", "local"})
-@PropertySource("classpath:config/application-${spring.profiles.active}.properties")
+@Profile("local")
+@PropertySource("classpath:config/application-local.properties")
 public class BatchConfig {
 
     @Value("${spring.datasource.url}")
