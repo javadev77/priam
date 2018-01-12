@@ -1077,7 +1077,6 @@
           },
 
         downloadCsvFile(url, data, filename) {
-
           var _open = function(verb, url, data, target) {
             var form = document.createElement('form');
             form.action = url;
