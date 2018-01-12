@@ -33,6 +33,7 @@ import java.util.Map;
 @Configuration
 @EnableJpaRepositories(basePackages = "fr.sacem.priam.model.dao.jpa")
 @EnableTransactionManagement
+@Profile("${webapp.mode}")
 public class JpaConfiguration {
     
     @Autowired

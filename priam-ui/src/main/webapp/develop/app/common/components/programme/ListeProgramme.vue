@@ -1033,7 +1033,7 @@
 
                             if(self.modeRepartition == 'REPART_BLANC') {
                               clearInterval(self.intervalIDs[numProg]);
-                              self.downloadCsvFile('app/rest/repartition/downloadFichierFelix', {numProg: numProg}, fichierFelix.nomFichier);
+                              self.downloadCsvFile(process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/repartition/downloadFichierFelix', {numProg: numProg}, fichierFelix.nomFichier);
 
                             } else if(self.modeRepartition == 'MISE_EN_REPART') {
                               self.programmesEnCoursTraitement.push(numProg);
@@ -1056,7 +1056,7 @@
 
                               if(fichierFelix.logs !== undefined && fichierFelix.logs.length > 0) {
                                 self.fichierFelixErrors = fichierFelix.logs;
-                                self.downloadCsvFile('app/rest/repartition/downloadFichierFelixError',
+                                self.downloadCsvFile(process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/repartition/downloadFichierFelixError',
                                   {numProg: numProg, tmpFilename : fichierFelix.nomFichier, filename : fichierFelix.nomFichier},
                                   fichierFelix.nomFichier);
                               }
