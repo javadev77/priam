@@ -25,6 +25,8 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
     @Query("DELETE FROM LigneProgrammeCMS lp WHERE lp.fichier.id = :fichierId")
     void deleteAllByFichierId(@Param("fichierId") Long fileId);
 
+
+
     List<LigneProgrammeCMS> findByFichierId(Long fileId);
 
     @Transactional

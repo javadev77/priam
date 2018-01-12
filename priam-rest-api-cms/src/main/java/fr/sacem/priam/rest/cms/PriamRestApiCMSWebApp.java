@@ -1,5 +1,6 @@
 package fr.sacem.priam.rest.cms;
 
+import fr.sacem.priam.batch.affectation.config.BatchConfigProd;
 import fr.sacem.priam.common.config.PropertiesWithJavaConfig;
 import fr.sacem.priam.model.config.JpaConfiguration;
 import fr.sacem.priam.batch.affectation.config.BatchConfig;
@@ -14,7 +15,8 @@ import org.springframework.context.annotation.Import;
 /**
  * Created by benmerzoukah on 15/11/2017.
  */
-@Import(value = {PropertiesWithJavaConfig.class, RestMvcConfig.class, JpaConfiguration.class, SecurityRestConfiguration.class, BatchConfig.class})
+@Import(value = {PropertiesWithJavaConfig.class, RestMvcConfig.class,
+        JpaConfiguration.class, SecurityRestConfiguration.class, BatchConfig.class, BatchConfigProd.class})
 @SpringBootApplication(scanBasePackages = {"fr.sacem.priam.rest.cms", "fr.sacem.priam.common", "fr.sacem.priam.services", "fr.sacem.priam.model"})
 @EnableCaching
 public class PriamRestApiCMSWebApp extends SpringBootServletInitializer {

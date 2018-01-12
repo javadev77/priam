@@ -63,8 +63,6 @@ public class AffectationCMSResource {
     @Autowired
     Admap admap;
 
-    @Autowired
-    ProgrammeService programmeService;
 
     @RequestMapping(value = "programme/affectation",
             method = RequestMethod.PUT,

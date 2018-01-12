@@ -12,7 +12,7 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "PRIAM_FICHIER")
-public class Fichier {
+public class Fichier implements Serializable {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
