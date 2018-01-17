@@ -4,9 +4,7 @@ import fr.sacem.dao.LigneProgrammeBatchDao;
 import fr.sacem.dao.ProgrammeBatchDao;
 import fr.sacem.dao.TraitementCmsDao;
 import fr.sacem.service.importPenef.FichierBatchService;
-import fr.sacem.service.importPenef.FichierBatchServiceImpl;
 import fr.sacem.util.UtilFile;
-import fr.sacem.util.exception.PriamValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.BatchStatus;
@@ -24,8 +22,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 
-import static fr.sacem.util.exception.PriamValidationException.ErrorType;
-
 
 @Component
 public class JobCompletionNotificationAffectationCMSListener extends JobExecutionListenerSupport {
@@ -34,6 +30,8 @@ public class JobCompletionNotificationAffectationCMSListener extends JobExecutio
     public static final String MESSAGE_FICHIER_CHARGE = " - Le fichier \"%s\" a bien été chargé";
     public static final String FORMAT_DATE = "dd/MM/yyyy HH:mm";
     public static final String MESSAGE_FORMAT_FICHIER = "Le fichier ne peut être chargé car il n'a pas le bon format";
+    public static final String ERREUR_ELIGIBILITE = "ERREUR_ELIGIBILITE";
+    public static final String CHARGEMENT_OK = "CHARGEMENT_OK";
     private static String NOM_FICHIER_CSV_EN_COURS = "nomFichier";
     private static String FICHIER_ZIP_EN_COURS = "fichierZipEnCours";
     private static String NOM_ORIGINAL_FICHIER_ZIP = "nomFichierOriginal";
@@ -118,7 +116,7 @@ public class JobCompletionNotificationAffectationCMSListener extends JobExecutio
                     Long nbOeuvresRetenues = ligneProgrammeBatchDao.countNbOeuvres(numProg);
                     Long nbOeuvresCatalogue = ligneProgrammeBatchDao.countNbOeuvresCatalogue();
                     Double sommePoints = ligneProgrammeBatchDao.countSommePoints(numProg);
-                    traitementCmsDao.majTraitment(idTraitementCMS, nbOeuvresCatalogue, nbOeuvresRetenues, sommePoints);
+                    traitementCmsDao.majTraitment(idTraitementCMS, nbOeuvresCatalogue, nbOeuvresRetenues, sommePoints, "FIN_ELIGIBILITE");
                 } else {
                     LOG.debug("Pas de excution context pour le step en cours : " + myStepExecution.getStepName());
                 }
@@ -136,6 +134,15 @@ public class JobCompletionNotificationAffectationCMSListener extends JobExecutio
 
                 utilFile.deplacerFichier(parameterFichierZipEnCours, parameterNomFichierOriginal, outputDirectory);
             }
+
+            String numProg = jobExecution.getJobParameters().getString("numProg");
+            programmeBatchDao.majStattutEligibilite(numProg, ERREUR_ELIGIBILITE);
+            Long idTraitementCMS = jobExecution.getExecutionContext().getLong("ID_TMT_CMS");
+            traitementCmsDao.majTraitment(idTraitementCMS, null, null, null, ERREUR_ELIGIBILITE);
+
+            fichierBatchService.clearSelectedFichiers(numProg, CHARGEMENT_OK);
+
+
         }
     }
 
