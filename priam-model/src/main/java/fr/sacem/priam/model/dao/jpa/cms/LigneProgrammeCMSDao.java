@@ -73,7 +73,7 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
                      "ligneProgramme.cdeTypIde12, " +
                      "ligneProgramme.ide12, " +
                      "0L, " +
-                     "(CASE WHEN prog.typeUtilisation.code = 'SONOFRA' THEN 1L  ELSE ligneProgramme.mt END),  " +
+                     "(CASE WHEN prog.typeUtilisation.code = 'SONOFRA' THEN 1L  ELSE ligneProgramme.nbrDif END),  " +
                      "(CASE WHEN prog.typeUtilisation.code = 'SONOFRA' THEN ligneProgramme.mt ELSE 0 END),  " +
                      "ligneProgramme.ctna, " +
                      "ligneProgramme.paramCoefHor, " +
