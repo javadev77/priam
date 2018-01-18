@@ -1,6 +1,7 @@
 package fr.sacem.listener.importPenef;
 
 import fr.sacem.dao.FichierRepository;
+import fr.sacem.priam.common.TypeUtilisationEnum;
 import fr.sacem.service.importPenef.FichierBatchServiceImpl;
 import fr.sacem.util.UtilFile;
 import fr.sacem.util.exception.PriamValidationException;
@@ -97,7 +98,7 @@ public class JobCompletionNotificationLigneProgrammeImportPenefListener extends 
                     LOG.debug("Pas de excution context pour le step en cours : " + myStepExecution.getStepName());
                 }
 
-                if(idFichier != null && "CMS".equalsIgnoreCase(typeFichier)) {
+                if(idFichier != null && TypeUtilisationEnum.CMS_FRA.getCode().equalsIgnoreCase(typeFichier)) {
                     fichierRepository.supprimerLigneProgrammeParIdFichier((Long)idFichier.getValue());
                 }
 
@@ -156,7 +157,7 @@ public class JobCompletionNotificationLigneProgrammeImportPenefListener extends 
                 utilFile.deplacerFichier(parameterFichierZipEnCours, parameterNomFichierOriginal, outputDirectory);
             }
 
-            if(idFichier != null && "SONOFRA".equalsIgnoreCase(typeFichier)) {
+            if(idFichier != null && TypeUtilisationEnum.CMS_FRA.getCode().equalsIgnoreCase(typeFichier)) {
                 fichierRepository.supprimerLigneProgrammeParIdFichier(idFile);
             }
         }

@@ -49,6 +49,7 @@ public class PriamLigneProgrammeSQLMapper implements RowMapper<LigneProgramme> {
         ligneProgramme.setDate_insertion(rs.getString("date_insertion"));
         ligneProgramme.setAjout(rs.getString("ajout"));
         ligneProgramme.setSelection(rs.getString("selection"));
+        ligneProgramme.setRionAnt(rs.getString("RION_N_ANT"));
 
         return ligneProgramme;
 

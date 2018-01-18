@@ -1,4 +1,4 @@
-package sacem.config;
+package fr.sacem.priam.batch.penef.cms.ant.config;
 
 import fr.sacem.domain.Admap;
 import org.springframework.beans.factory.annotation.Value;

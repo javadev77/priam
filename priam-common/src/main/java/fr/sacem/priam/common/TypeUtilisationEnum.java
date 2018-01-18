@@ -14,8 +14,8 @@ public enum TypeUtilisationEnum {
     COPIE_PRIVEE_SONORE_PHONO("CPRIVSONPH", "COPIEPRIV"),
     COPIE_PRIVEE_SONORE_RADIO("CPRIVSONRD", "COPIEPRIV"),
     CMS_FRA("SONOFRA","UC"),
-    CMS_ANT("SONOANT","UC"),
-    TYPE_CMS_FRA("FR", null);
+    CMS_ANT("SONOANT","UC");
+
 
     private final String code;
     private final String codeFamille;

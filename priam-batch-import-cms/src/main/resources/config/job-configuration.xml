@@ -68,7 +68,7 @@
     </job>
 
 
-    <bean id="dedoublonnageStepListener" class="fr.sacem.listener.DedoublonnageStepListener"></bean>
+    <bean id="dedoublonnageStepListener" class="fr.DedoublonnageStepListener"></bean>
     <!-- Debut : Elements essentielle pour le step de dedoublonnage -->
 
     <bean id="queryProvider" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">

@@ -1,5 +1,6 @@
 package fr.sacem.dao;
 
+import fr.sacem.priam.common.util.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -58,11 +59,16 @@ public class TraitementCmsDao {
         });
     }
 
-    public void viderCatalogueOctav() {
+    public void viderCatalogueOctav(String type_cms) {
         LOG.info("=== Suppression du contenu de la table PRIAM_CATALOGUE_OCTAV ====");
         //TODO HABIB : Ajouter DELETE FROM WHERE TYPE_CMS=FR
-        String sql =  "TRUNCATE PRIAM_CATALOGUE_OCTAV";
-
+        /*String sql =  "TRUNCATE PRIAM_CATALOGUE_OCTAV";*/
+        String sql = "";
+        if(type_cms.equals(FileUtils.CATALOGUE_OCTAV_TYPE_CMS_FR)){
+            sql = "DELETE FROM PRIAM_CATALOGUE_OCTAV WHERE TYPE_CMS="+ "'" + type_cms + "'";
+        } else {
+            sql = "DELETE FROM PRIAM_CATALOGUE_OCTAV WHERE TYPE_CMS=" + "'" + type_cms + "'";
+        }
         jdbcTemplate.update(sql);
     }
 

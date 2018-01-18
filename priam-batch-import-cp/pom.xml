@@ -133,7 +133,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>fr.sacem.App</mainClass>
+                            <mainClass>fr.App</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

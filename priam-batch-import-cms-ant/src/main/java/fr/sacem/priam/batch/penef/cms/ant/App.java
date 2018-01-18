@@ -1,6 +1,7 @@
-package sacem;
+package fr.sacem.priam.batch.penef.cms.ant;
 
 import fr.sacem.domain.Admap;
+import fr.sacem.priam.batch.penef.cms.ant.config.ConfigurationPriamLocal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
@@ -10,9 +11,7 @@ import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.Configuration;
-import sacem.config.ConfigurationPriamLocal;
-import sacem.config.ConfigurationPriamProd;
+import fr.sacem.priam.batch.penef.cms.ant.config.ConfigurationPriamProd;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,8 +46,6 @@ public class App {
         } catch (Exception e) {
             LOGGER.error("Error execution", e);
         }
-    
         LOGGER.info("Done");
-
     }
 }

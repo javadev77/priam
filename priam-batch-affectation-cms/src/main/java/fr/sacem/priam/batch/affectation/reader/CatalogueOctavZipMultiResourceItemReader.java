@@ -116,9 +116,14 @@ public class CatalogueOctavZipMultiResourceItemReader<T> extends MultiResourceIt
                                 File file = fichiersZipDansLeRepertoire.get(0);
 
                                 String fileName = file.getName();
-                                if((fileName.startsWith(FileUtils.PREFIX_OCTAV_CATALOGUE_FR)) || (fileName.startsWith(FileUtils.PREFIX_OCTAV_CATALOGUE_FR,1))) {
+                                if((fileName.startsWith(FileUtils.PREFIX_OCTAV_CATALOGUE_FR)) || (fileName.startsWith(FileUtils.PREFIX_OCTAV_CATALOGUE_FR,1))
+                                        ||(fileName.startsWith(FileUtils.PREFIX_OCTAV_CATALOGUE_ANF)) || (fileName.startsWith(FileUtils.PREFIX_OCTAV_CATALOGUE_ANF,1))) {
                                     // vider la baser et lancer le chargement
-                                    traitementCmsDao.viderCatalogueOctav();
+                                    if((fileName.startsWith(FileUtils.PREFIX_OCTAV_CATALOGUE_FR))){
+                                        traitementCmsDao.viderCatalogueOctav(FileUtils.CATALOGUE_OCTAV_TYPE_CMS_FR);
+                                    } else {
+                                        traitementCmsDao.viderCatalogueOctav(FileUtils.CATALOGUE_OCTAV_TYPE_CMS_ANF);
+                                    }
 
                                     Charset cs = Charset.forName("IBM437");
                                     zipFile = new ZipFile(file,cs);

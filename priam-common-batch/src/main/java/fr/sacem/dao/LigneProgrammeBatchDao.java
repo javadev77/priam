@@ -137,5 +137,23 @@ public class LigneProgrammeBatchDao {
             jdbcTemplate.update(sql);
         }
     }
+
+    @Transactional
+    public void deleteAfterCalculPointsAnt(String numProg){
+        String selectSql = "SELECT ligne.id as id " +
+                "FROM priam_ligne_programme_cms ligne" +
+                "INNER JOIN priam_fichier fichier ON ligne.ID_FICHIER = fichier.ID " +
+                "INNER JOIN priam_programme programme ON fichier.NUMPROG = programme.NUMPROG " +
+                "WHERE programme.NUMPROG=?" +
+                "AND programme.STATUT_ELIGIBILITE = 'EN_ATTENTE_ELIGIBILITE';";
+
+        List<Long> ids = jdbcTemplate.query(selectSql,
+                (resultSet, i) -> resultSet.getLong("id"), numProg);
+
+        if(ids != null && !ids.isEmpty()) {
+            String sql =  "DELETE FROM " + this.nomTableLigneProgramme + " WHERE id IN (" + Joiner.on(",").join(ids).toString() + ") ";
+            jdbcTemplate.update(sql);
+        }
+    }
 }
 

@@ -159,7 +159,8 @@
                             nomParticipant1,
                             cdeTypUtilOri,
                             cdeFamilTypUtilOri,
-                            libelleUtilisateur
+                            libelleUtilisateur,
+                            RION_N_ANT
                         )
                         VALUES (
                             :idFichier,
@@ -195,7 +196,8 @@
                             :nomParticipant1,
                             :cdeTypUtilOri,
                             :cdeFamilTypUtilOri,
-                            :cdeUtil
+                            :cdeUtil,
+                            :rionAnt
                         )
                 ]]>
             </value>
@@ -207,171 +209,9 @@
 
     <bean id="ligneProgrammeDedoublonnageStepOneProcessor" class="fr.sacem.service.importPenef.LigneProgrammeDedoublonnageStepOneProcessor"/>
 
-
-
-
-    <!-- Debut : Elements essentielle pour le step de dedoublonnage -->
-
-    <!--<bean id="queryProvider" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
-        <property name="selectClause" value="select
-                            id_fichier,
-                            cdeCisac,
-                            cdeFamilTypUtil,
-                            numProg,
-                            cdeUtil,
-                            cdeTypUtil,
-                            cdeGreDif,
-                            cdeModDif,
-                            cdeTypIde12,
-                            ide12,
-                            durDif,
-                            nbrDif,
-                            sum(mt) mt,
-                            ctna,
-                            paramCoefHor,
-                            durDifCtna,
-                            cdeLng,
-                            indDoubSsTit,
-                            tax,
-                            typMt,
-                            cdeGreIde12Cmplx,
-                            cdeGreIde12,
-                            titreOriCmplx,
-                            titreAltPppalCmplx,
-                            titreOriOeuvPereCmplx,
-                            titreAltOeuvPereCmplx,
-                            titreOeuvre,
-                            cdePaysOriIso4NCmplx,
-                            realisateurCmplx,
-                            roleParticipant1,
-                            nomParticipant1,
-                            cdeTypUtilOri,
-                            cdeFamilTypUtilOri,
-                            libelleUtilisateur,
-                            utilisateur,
-                            date_insertion,
-                            ajout,
-                            selection"/>
-
-        <property name="fromClause" value="from PRIAM_LIGNE_PROGRAMME_TRAITEMENT_BATCH l"/>
-
-        &lt;!&ndash;<property name="fromClause" value="from PRIAM_LIGNE_PROGRAMME_TRAITEMENT_BATCH l INNER JOIN PRIAM_FICHIER f ON l.ID_FICHIER=f.ID "/>&ndash;&gt;
-        <property name="whereClause" value="WHERE l.ID_FICHIER =:idFichier"/>
-        <property name="groupClause" value="group by l.ide12,  l.cdeFamilTypUtilOri"/>
-        <property name="databaseType" value="MySQL" />
-        <property name="dataSource" ref="dataSource"/>
-        <property name="sortKey" value="ide12"/>
-    </bean>-->
-
-
-    <!--<bean id="readerPriamFromTable"
-          class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
-        <property name="dataSource" ref="dataSource"/>
-        <property name="queryProvider" ref="queryProvider"/>
-        <property name="pageSize" value="${commit-interval}"/>
-        <property name="rowMapper" ref="ligneProgrammeRowMapper"/>
-        <property name="parameterValues">
-            <map>
-                <entry key="idFichier" value="#{jobExecutionContext[ID_FICHIER]}"/>
-            </map>
-        </property>
-
-    </bean>-->
-
     <bean id="ligneProgrammeRowMapper" class="fr.sacem.util.mapper.importPenef.PriamLigneProgrammeSQLMapper"/>
 
-    <!--<bean id="writerDedoublonnagePriam" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
-        <property name="dataSource" ref="dataSource"/>
-        <property name="sql">
-            <value>
-                <![CDATA[
-                    INSERT INTO PRIAM_LIGNE_PROGRAMME_CMS (
-                            id_fichier,
-                            cdeCisac,
-                            cdeFamilTypUtil,
-                            numProg,
-                            cdeUtil,
-                            cdeTypUtil,
-                            cdeGreDif,
-                            cdeModDif,
-                            cdeTypIde12,
-                            ide12,
-                            durDif,
-                            nbrDif,
-                            mt,
-                            ctna,
-                            paramCoefHor,
-                            durDifCtna,
-                            cdeLng,
-                            indDoubSsTit,
-                            tax,
-                            typMt,
-                            cdeGreIde12Cmplx,
-                            cdeGreIde12,
-                            titreOriCmplx,
-                            titreAltPppalCmplx,
-                            titreOriOeuvPereCmplx,
-                            titreAltOeuvPereCmplx,
-                            titreOeuvre,
-                            cdePaysOriIso4NCmplx,
-                            realisateurCmplx,
-                            roleParticipant1,
-                            nomParticipant1,
-                            cdeTypUtilOri,
-                            cdeFamilTypUtilOri,
-                            libelleUtilisateur,
-                            utilisateur,
-                            date_insertion,
-                            ajout,
-                            selection
-                        )
-                        VALUES (
-                            :idFichier,
-                            :cdeCisac,
-                            :cdeFamilTypUtil,
-                            :numProg,
-                            :cdeUtil,
-                            :cdeTypUtil,
-                            :cdeGreDif,
-                            :cdeModDif,
-                            :cdeTypIde12,
-                            :ide12,
-                            :durDif,
-                            :nbrDif,
-                            :mt,
-                            :ctna,
-                            :paramCoefHor,
-                            :durDifCtna,
-                            :cdeLng,
-                            :indDoubSsTit,
-                            :tax,
-                            :typMt,
-                            :cdeGreIde12Cmplx,
-                            :cdeGreIde12,
-                            :titreOriCmplx,
-                            :titreAltPppalCmplx,
-                            :titreOriOeuvPereCmplx,
-                            :titreAltOeuvPereCmplx,
-                            :titreOeuvre,
-                            :cdePaysOriIso4NCmplx,
-                            :realisateurCmplx,
-                            :roleParticipant1,
-                            :nomParticipant1,
-                            :cdeTypUtilOri,
-                            :cdeFamilTypUtilOri,
-                            :libelleUtilisateur,
-                            :utilisateur,
-                            :date_insertion,
-                            :ajout,
-                            :selection
-                        )
-                ]]>
-            </value>
-        </property>
-        <property name="itemSqlParameterSourceProvider">
-            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
-        </property>
-    </bean>-->
+
     <bean id="ligneProgrammeDedoublonnageStepTwoProcessor" class="fr.sacem.service.importPenef.LigneProgrammeDedoublonnageStepTwoProcessor"/>
 
     <!-- Fin : Elements essentielle pour le step de dedoublonnage -->
@@ -449,7 +289,8 @@
                             utilisateur,
                             date_insertion,
                             ajout,
-                            selection
+                            selection,
+                            RION_N_ANT
                         )
                         VALUES (
                             :idFichier,
@@ -489,7 +330,8 @@
                             :utilisateur,
                             :date_insertion,
                             :ajout,
-                            :selection
+                            :selection,
+                            :rionAnt
                         )
                 ]]>
             </value>
