@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="priam-batch-affectation-cms" />
         <module name="priam-batch-import-cms" />
+        <module name="priam-batch-import-cms-ant" />
         <module name="priam-batch-import-cp" />
         <module name="priam-batch-repartition" />
         <module name="priam-common" />
@@ -23,7 +24,9 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="priam-batch-affectation-cms" target="1.8" />
+      <module name="priam-batch-affectation-cms-ant" target="1.8" />
       <module name="priam-batch-import-cms" target="1.8" />
+      <module name="priam-batch-import-cms-ant" target="1.8" />
       <module name="priam-batch-import-cp" target="1.8" />
       <module name="priam-batch-repartition" target="1.8" />
       <module name="priam-common" target="1.8" />

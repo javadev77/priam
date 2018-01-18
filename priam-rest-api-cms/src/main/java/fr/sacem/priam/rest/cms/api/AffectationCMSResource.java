@@ -2,6 +2,7 @@ package fr.sacem.priam.rest.cms.api;
 
 import com.google.common.base.Strings;
 import fr.sacem.domain.Admap;
+import fr.sacem.priam.common.TypeUtilisationEnum;
 import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
 import fr.sacem.priam.model.dao.jpa.cms.TraitementEligibiliteCMSDao;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
@@ -58,6 +59,9 @@ public class AffectationCMSResource {
     Job jobDesaffectation;
 
     @Autowired
+    Job jobEligibiliteCMSAntille;
+
+    @Autowired
     Admap admap;
 
 
@@ -89,7 +93,11 @@ public class AffectationCMSResource {
 
             JobParameters jobParameters = new JobParameters(jobParametersMap);
 
-            jobLauncher.run(jobEligibiliteOctav, jobParameters);
+            if (programmeDto.getTypeUtilisation().equals(TypeUtilisationEnum.CMS_FRA.getCode())){
+                jobLauncher.run(jobEligibiliteOctav, jobParameters);
+            } else if (programmeDto.getTypeUtilisation().equals(TypeUtilisationEnum.CMS_ANT.getCode())) {
+                jobLauncher.run(jobEligibiliteCMSAntille, jobParameters);
+            }
 
         } catch (Exception e) {
             LOGGER.error("Error d'exécution du Batch Affectation CMS", e);

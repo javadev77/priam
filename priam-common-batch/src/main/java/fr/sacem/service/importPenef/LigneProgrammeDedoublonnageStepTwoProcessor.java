@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 
-
 /**
  * Created by fandis on 16/11/2017.
  */
@@ -17,6 +16,4 @@ public class LigneProgrammeDedoublonnageStepTwoProcessor implements ItemProcesso
 
         return ligneProgramme;
     }
-
-
 }

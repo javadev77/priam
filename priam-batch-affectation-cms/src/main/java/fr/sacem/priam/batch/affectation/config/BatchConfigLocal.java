@@ -14,7 +14,7 @@ import javax.sql.DataSource;
 @ImportResource(value = "classpath:config/job-configuration.xml")
 @Profile("local")
 @PropertySource("classpath:config/application-local.properties")
-public class BatchConfig {
+public class BatchConfigLocal {
 
     @Value("${spring.datasource.url}")
     String urlDb;

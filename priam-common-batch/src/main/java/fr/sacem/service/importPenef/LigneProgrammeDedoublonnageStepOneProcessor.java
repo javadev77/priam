@@ -1,6 +1,9 @@
 package fr.sacem.service.importPenef;
 
 import fr.sacem.domain.LigneProgramme;
+import fr.sacem.priam.common.TypeUtilisationEnum;
+import fr.sacem.priam.common.util.FileUtils;
+import fr.sacem.util.RionEnum;
 import fr.sacem.util.valdiator.importPenef.LigneProgrammeCMSSpringValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +52,12 @@ public class LigneProgrammeDedoublonnageStepOneProcessor implements ItemProcesso
 
         BindingResult errors = new BeanPropertyBindingResult(ligneProgramme, "ligneProgramme-"+ ligneProgramme.getLineNumber());
         validator.validate(ligneProgramme, errors);
+
+        if (nomFichier.startsWith(FileUtils.PREFIX_ANT_RION2)){
+            ligneProgramme.setRionAnt(RionEnum.RION_2_ANT.getCode());
+        } else if (nomFichier.startsWith(FileUtils.PREFIX_ANT_RION4)) {
+            ligneProgramme.setRionAnt(RionEnum.RION_4_ANT.getCode());
+        }
     
         if (!errors.hasErrors()) {
             return ligneProgramme;

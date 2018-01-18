@@ -37,7 +37,7 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
                     "ligneProgramme.nomParticipant1, " +
                     "ligneProgramme.ajout, " +
                     "ligneProgramme.selectionEnCours, " +
-                    "sum(ligneProgramme.mt)) " +
+            "(CASE WHEN f.programme.typeUtilisation.code = 'SONOFRA' THEN sum(ligneProgramme.mt) WHEN f.programme.typeUtilisation.code = 'SONOANT' THEN sum(ligneProgramme.nbrDif) ELSE 0 END)) "+
             "FROM LigneProgrammeCMS ligneProgramme join ligneProgramme.fichier  f " +
             "WHERE ligneProgramme.fichier = f.id " +
             "AND f.programme.numProg = :numProg " +
@@ -297,7 +297,8 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
                     "count(points), ajout" +
                     " from ( " +
                     "       SELECT " +
-                    "           count(l.mt) points, l.ide12, l.ajout " +
+                    "(CASE WHEN l.cdeTypUtil = 'SONOFRA' THEN count(l.mt)  WHEN l.cdeTypUtil = 'SONOANT' THEN count(l.nbrDif) ELSE 0 END) points, " +
+                    "          l.ide12, l.ajout " +
                     "       FROM " +
                     "           PRIAM_LIGNE_PROGRAMME_CMS l " +
                     "       inner join " +
@@ -315,7 +316,8 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
     @Transactional(readOnly = true)
     @Query(nativeQuery = true, value =
             "SELECT sum(points) from ( SELECT " +
-                    "sum(l.mt) points, l.ide12 " +
+                    "(CASE WHEN l.cdeTypUtil = 'SONOFRA' THEN sum(l.mt) WHEN l.cdeTypUtil = 'SONOANT' THEN sum(l.nbrDif) ELSE 0 END) points, " +
+                    "l.ide12 " +
                     "FROM " +
                     "PRIAM_LIGNE_PROGRAMME_CMS l inner join PRIAM_FICHIER as f " +
                     "on l.ID_FICHIER=f.ID " +

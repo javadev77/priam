@@ -23,6 +23,7 @@
         <module>priam-batch-import-cp</module>
         <module>priam-batch-repartition</module>
 		<module>priam-batch-import-cms-fra</module>
+        <module>priam-batch-import-cms-ant</module>
         <module>priam-batch-affectation-cms</module>
         <module>priam-common</module>
 		<module>priam-common-batch</module>
