@@ -46,9 +46,6 @@ public class AffectationCMSResource {
     private ProgrammeViewDao programmeViewDao;
 
     @Autowired
-    private TraitementEligibiliteCMSDao traitementEligibiliteCMSDao;
-
-    @Autowired
     private ProgrammeDao programmeDao;
 
     @Autowired

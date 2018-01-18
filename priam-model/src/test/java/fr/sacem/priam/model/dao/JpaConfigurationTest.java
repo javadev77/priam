@@ -77,7 +77,8 @@ public class JpaConfigurationTest {
             throw new RuntimeException(e);
         }
     }
-    @Bean(name = "dataSource")
+    @Bean(
+            name = "dataSource")
     @DependsOn(DB_SERVICE)
     @Qualifier("testDS")
     public DataSource dataSource(DataSourceProperties dataSourceProperties) throws ClassNotFoundException {

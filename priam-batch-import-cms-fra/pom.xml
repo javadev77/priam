@@ -4,12 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>fr.sacem.priam</groupId>
-    <artifactId>priam-batch-import-cms</artifactId>
+    <artifactId>priam-batch-import-cms-fra</artifactId>
 
     <packaging>jar</packaging>
 
     <name>priam-batch-import-cms-fra</name>
-    <description>Batch d&#39;extraction Penef CMS</description>
+    <description>Batch d'import des fichiers PENEF CMS FRANCE</description>
 
     <parent>
         <artifactId>priam-parent</artifactId>
@@ -27,12 +27,12 @@
         <dependency>
             <groupId>fr.sacem.priam</groupId>
             <artifactId>priam-common</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>fr.sacem.priam</groupId>
             <artifactId>priam-common-batch</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.batch</groupId>
@@ -73,7 +73,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>22.0-rc1</version>
+            <version>22.0</version>
         </dependency>
         <dependency>
             <groupId>commons-collections</groupId>

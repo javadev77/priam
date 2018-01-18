@@ -15,10 +15,7 @@ import fr.sacem.priam.services.cp.LigneProgrammeCPService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.JpaSort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -79,69 +76,7 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
 
         Programme programme = programmeDao.findOne(criteria.getNumProg());
 
-        Pageable queryPageable = new Pageable() {
-
-            @Override
-            public int getPageNumber() {
-                return pageable.getPageNumber();
-            }
-
-            @Override
-            public int getPageSize() {
-                return pageable.getPageSize();
-            }
-
-            @Override
-            public int getOffset() {
-                return pageable.getOffset();
-            }
-
-            @Override
-            public Sort getSort() {
-
-                Sort sort = pageable.getSort();
-
-                if(sort == null)
-                    return sort;
-
-                Sort.Order sortBy = sort.iterator().next();
-
-                if("sum(nbrDif)".equals(sortBy.getProperty()) ||
-                       "nbrDif".equals(sortBy.getProperty()) ||
-                       "sum(durDif)".equals(sortBy.getProperty()) ||
-                       "durDif".equals(sortBy.getProperty())) {
-                    if (TypeUtilisationEnum.COPIE_PRIVEE_SONORE_PHONO.getCode().equals(programme.getTypeUtilisation().getCode())) {
-                        sort = JpaSort.unsafe(sortBy.getDirection(), "sum(nbrDif)");
-                    } else if (TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode().equals(programme.getTypeUtilisation().getCode())) {
-                        sort = JpaSort.unsafe(sortBy.getDirection(), "sum(durDif)");
-                    }
-                } else if("libAbrgUtil".equals(sortBy.getProperty())) {
-                    sort = JpaSort.unsafe(sortBy.getDirection(), "cdeUtil");
-                }
-
-                return sort;
-            }
-
-            @Override
-            public Pageable next() {
-                return pageable.next();
-            }
-
-            @Override
-            public Pageable previousOrFirst() {
-                return pageable.previousOrFirst();
-            }
-
-            @Override
-            public Pageable first() {
-                return pageable.first();
-            }
-
-            @Override
-            public boolean hasPrevious() {
-                return pageable.hasPrevious();
-            }
-        };
+        Pageable queryPageable = createCustomPageable(pageable, programme);
 
 
         Page<SelectionDto> ligneProgrammeByCriteria = ligneProgrammeCPDao.findLigneProgrammeByCriteria(criteria.getNumProg(),
@@ -154,11 +89,75 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
         return ligneProgrammeByCriteria;
     }
 
+    protected Pageable createCustomPageable(Pageable pageable, Programme programme) {
+        return new Pageable() {
+
+                @Override
+                public int getPageNumber() {
+                    return pageable.getPageNumber();
+                }
+
+                @Override
+                public int getPageSize() {
+                    return pageable.getPageSize();
+                }
+
+                @Override
+                public int getOffset() {
+                    return pageable.getOffset();
+                }
+
+                @Override
+                public Sort getSort() {
+
+                    Sort sort = pageable.getSort();
+
+                    if(sort == null)
+                        return sort;
+
+                    Sort.Order sortBy = sort.iterator().next();
+
+                    if("sum(nbrDif)".equals(sortBy.getProperty()) ||
+                           "nbrDif".equals(sortBy.getProperty()) ||
+                           "sum(durDif)".equals(sortBy.getProperty()) ||
+                           "durDif".equals(sortBy.getProperty())) {
+                        if (TypeUtilisationEnum.COPIE_PRIVEE_SONORE_PHONO.getCode().equals(programme.getTypeUtilisation().getCode())) {
+                            sort = JpaSort.unsafe(sortBy.getDirection(), "sum(nbrDif)");
+                        } else if (TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode().equals(programme.getTypeUtilisation().getCode())) {
+                            sort = JpaSort.unsafe(sortBy.getDirection(), "sum(durDif)");
+                        }
+                    } else if("libAbrgUtil".equals(sortBy.getProperty())) {
+                        sort = JpaSort.unsafe(sortBy.getDirection(), "cdeUtil");
+                    }
+
+                    return sort;
+                }
+
+                @Override
+                public Pageable next() {
+                    return pageable.next();
+                }
+
+                @Override
+                public Pageable previousOrFirst() {
+                    return pageable.previousOrFirst();
+                }
+
+                @Override
+                public Pageable first() {
+                    return pageable.first();
+                }
+
+                @Override
+                public boolean hasPrevious() {
+                    return pageable.hasPrevious();
+                }
+            };
+    }
+
     @Transactional
     @Override
     public void selectLigneProgramme(String numProg, Set<Map<String, String>> idLingesProgrammes) {
-        //ligneProgrammeDao.updateSelectionTemporaireByNumProgramme(numProg, false);
-
         for (Map<String, String>  obj:  idLingesProgrammes) {
             if (obj != null && !obj.isEmpty()) {
                 ligneProgrammeCPDao.updateSelectionTemporaireByNumProgramme(numProg, Long.parseLong(obj.get(IDE_12)), obj.get(CDE_UTIL).split(" - ")[0], 1);
@@ -189,8 +188,6 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
                 oeuvreAuto.setOeuvreManuel(null);
                 ligneProgrammeCPDao.save(oeuvreAuto);
             });
-            //ligneProgrammeDao.save(oeuvresAutoByIdOeuvreManuel);
-            //ligneProgrammeDao.deleteLigneProgrammeByIde12AndNumProg(numProg, ide12, cdeUtil);
             ligneProgrammeCPDao.delete(oeuvreManuelFound);
             ligneProgrammeCPDao.flush();
         }
@@ -214,14 +211,12 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
             oeuvreManuelFound.setDateInsertion(new Date());
             oeuvreManuelFound.setUtilisateur(input.getUtilisateur());
             oeuvreManuelFound.setCdeTypIde12(input.getCdeTypIde12());
-            // oeuvreManuelFound.setSelectionEnCours(true);
         } else {
             List<LigneProgrammeCP> founds = ligneProgrammeCPDao.findOeuvresAutoByIde12AndCdeUtil(input.getNumProg(), input.getIde12(), input.getCdeUtil());
             if(founds != null && !founds.isEmpty()) {
                 LigneProgrammeCP oeuvreManuel = createOeuvreManuel(input, programme);
                 founds.forEach( found -> {
                     found.setOeuvreManuel(oeuvreManuel);
-                    //found.setSelectionEnCours(FALSE);
                     found.setSelection(FALSE);
                     ligneProgrammeCPDao.save(found);
                 });
@@ -242,15 +237,15 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
         
         Example<Fichier> of = Example.of(probe);
         Fichier f = fichierDao.findOne(of);
-        
-        if(f == null) {
-		f = new Fichier();
-  
-		f.setProgramme(programme);
-		f.setAutomatique(false);
-  
-		fichierDao.saveAndFlush(f);
-	  }
+
+        if (f == null) {
+            f = new Fichier();
+
+            f.setProgramme(programme);
+            f.setAutomatique(false);
+
+            fichierDao.saveAndFlush(f);
+        }
         
         input.setFichier(f);
         input.setCdeCisac(CDE_CISAC_058);
@@ -262,7 +257,6 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
         input.setCdeTypIde12(input.getCdeTypIde12());
         input.setSelectionEnCours(TRUE);
         input.setSelection(FALSE);
-        //input.setLibelleUtilisateur(sareftjLibutilDao.find);
         
         return ligneProgrammeCPDao.saveAndFlush(input);
     }

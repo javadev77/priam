@@ -19,6 +19,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
@@ -59,48 +60,7 @@ public class ProgrammeServiceTest {
 	@Autowired
 	FichierDao fichierDao;
 	
-	private static final Pageable pageable = new Pageable() {
-		
-		@Override
-		public int getPageNumber() {
-			return 0;
-		}
-		
-		@Override
-		public int getPageSize() {
-			return 5;
-		}
-		
-		@Override
-		public int getOffset() {
-			return 0;
-		}
-		
-		@Override
-		public Sort getSort() {
-			return null;
-		}
-		
-		@Override
-		public Pageable next() {
-			return null;
-		}
-		
-		@Override
-		public Pageable previousOrFirst() {
-			return null;
-		}
-		
-		@Override
-		public Pageable first() {
-			return null;
-		}
-		
-		@Override
-		public boolean hasPrevious() {
-			return false;
-		}
-	};
+	private static final Pageable pageable = new PageRequest(0, 5);
 	
 	@Before
 	public void setUp() throws Exception {
@@ -188,7 +148,7 @@ public class ProgrammeServiceTest {
 	public void test_tout_desaffecter() throws Exception {
 		String pr170001 = NUM_PROG;
 		List<Fichier> fichiersAffectes = fichierDao.findFichiersByIdProgramme(pr170001, Status.AFFECTE);
-		programmeService.toutDeaffecter(pr170001, "GUEST");
+		programmeService.toutDeaffecter(pr170001, "USER_ID_TEST");
 		
 		Programme programme = programmeDao.findOne(pr170001);
 		
