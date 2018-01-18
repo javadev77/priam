@@ -7,7 +7,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 
@@ -44,13 +43,13 @@ public class TraitementCmsDao {
     }
 
     public void majTraitment(Long idTraitementCMS, Long nbOeuvresCatalogue,
-                             Long oeuvresRetenues, Double sommePoints) {
+                             Long oeuvresRetenues, Double sommePoints, String statutEligibilite) {
         String sql =  "UPDATE PRIAM_TRAITEMENT_ELIGIBILITE_CMS SET STATUT_ELIGIBILITE = ?, DATE_FIN_TMT = ?, " +
                 "NB_OEUVRES_CATALOGUE = ?, NB_OEUVRES_RETENUES = ?, SOMME_POINTS=? " +
                 " WHERE ID = ?";
         java.util.Date now = new java.util.Date();
         jdbcTemplate.update(sql, stmt -> {
-            stmt.setString(1, "FIN_ELIGIBILITE");
+            stmt.setString(1, statutEligibilite);
             stmt.setTimestamp(2, new java.sql.Timestamp(now.getTime()));
             stmt.setLong(3, nbOeuvresCatalogue);
             stmt.setLong(4, oeuvresRetenues);
