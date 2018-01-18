@@ -72,27 +72,13 @@
               </div>
             </div>
 
-            <div v-if = "!dataLoading && this.programmeInfo.typeUtilisation=='SONOANT'">
+           <div v-if = "!dataLoading">
               <priam-grid
-                v-if="priamGrid_sono.gridData_sono.content"
-                :data="priamGrid_sono.gridData_sono"
-                :columns="priamGrid_sono.gridColumns"
+                v-if="priamGrid_SONOCMS.gridData_SONOCMS.content"
+                :data="priamGrid_SONOCMS.gridData_SONOCMS"
+                :columns="priamGrid_SONOCMS.gridColumns"
                 noResultText="Aucun résultat."
-                :filter-key="priamGrid_sono.searchQuery"
-                @load-page="loadPage"
-                @on-sort="onSort"
-                @all-checked="onAllChecked"
-                @entry-checked="onEntryChecked"
-                @supprimer-ligne-programme="onSupprimerLigneProgramme">
-              </priam-grid>
-            </div>
-            <div v-else-if = "!dataLoading && this.programmeInfo.typeUtilisation=='SONOFRA'">
-              <priam-grid
-                v-if="priamGrid_SONOFRA.gridData_SONOFRA.content"
-                :data="priamGrid_SONOFRA.gridData_SONOFRA"
-                :columns="priamGrid_SONOFRA.gridColumns"
-                noResultText="Aucun résultat."
-                :filter-key="priamGrid_SONOFRA.searchQuery"
+                :filter-key="priamGrid_SONOCMS.searchQuery"
                 @load-page="loadPage"
                 @on-sort="onSort"
                 @all-checked="onAllChecked"
@@ -227,7 +213,7 @@
 
         currentGridState : {},
 
-        priamGrid_SONOFRA: {
+        priamGrid_SONOCMS: {
           gridColumns: [
             {
               id: 'ide12',
@@ -290,10 +276,10 @@
               }
             },
             {
-              id: 'mt',
+              id: 'points',
               name: "Points",
               sortable: true,
-              sortProperty : 'sum(mt)',
+              sortProperty : 'sum(mt)', // l'equivalent du JpaSort dans le back
               type: 'numeric',
               cell: {
                 toText : function(entry) {
@@ -369,7 +355,7 @@
             }
 
           ],
-          gridData_SONOFRA : {},
+          gridData_SONOCMS : {},
           searchQuery : ''
         },
 
@@ -441,7 +427,6 @@
           this.dureeSelection.manuel = data.Manuel;
           this.dureeSelection.duree = data.SOMME;
 
-          debugger;
           this.backupDureeSelection = {
             auto: this.dureeSelection.auto,
             manuel: this.dureeSelection.manuel,
@@ -511,9 +496,17 @@
               this.tableauSelectionnable = false;
 
 
-            if(this.programmeInfo.typeUtilisation==="SONOFRA"){
-              this.defaultPageable.sort = 'mt';
-            }
+              this.defaultPageable.sort = 'points';
+            if(this.programmeInfo.typeUtilisation==="SONOANT"){
+              var pointsColumn = this.priamGrid_SONOCMS.gridColumns.find(function (elem) {
+                return elem.id === 'points';
+              });
+
+              if(pointsColumn !== undefined) {
+                pointsColumn.sortProperty = 'sum(nbrDif)';
+              }
+
+             }
 
             if(this.programmeInfo.statut == 'EN_COURS' || this.programmeInfo.statut == 'VALIDE') {
               this.filter.selection = 'Sélectionné';
@@ -564,13 +557,11 @@
           .then(data => {
 
             this.dataLoading = false;
-            if(this.programmeInfo.typeUtilisation === 'SONOFRA'){
 
-              this.priamGrid_SONOFRA.gridData_SONOFRA = data;
-              this.priamGrid_SONOFRA.gridData_SONOFRA.number = data.number + 1;
-              this.ligneProgramme = this.priamGrid_SONOFRA.gridData_SONOFRA.content;
+              this.priamGrid_SONOCMS.gridData_SONOCMS = data;
+              this.priamGrid_SONOCMS.gridData_SONOCMS.number = data.number + 1;
+              this.ligneProgramme = this.priamGrid_SONOCMS.gridData_SONOCMS.content;
 
-            }
           });
       },
 
@@ -659,13 +650,11 @@
             .then(data => {
 
               var tab = [];
-              if (this.programmeInfo.typeUtilisation === "SONOFRA") {
 
-                this.priamGrid_SONOFRA.gridData_SONOFRA = data;
-                this.priamGrid_SONOFRA.gridData_SONOFRA.number = data.number + 1;
-                tab = this.priamGrid_SONOFRA.gridData_SONOFRA.content;
+                this.priamGrid_SONOCMS.gridData_SONOCMS = data;
+                this.priamGrid_SONOCMS.gridData_SONOCMS.number = data.number + 1;
+                tab = this.priamGrid_SONOCMS.gridData_SONOCMS.content;
 
-              }
 
               this.ligneProgramme = tab;
               this.dataLoading = false;
@@ -723,10 +712,7 @@
             this.dureeSelection.auto++;
           }
 
-
-          if(this.programmeInfo.typeUtilisation==="SONOFRA"){
             this.dureeSelection.duree += entryChecked.pointsMontant;
-          }
 
           var found = this.ligneProgrammeSelected.find( elem => {
             return  elem.ide12 === entryChecked.ide12;
@@ -751,9 +737,7 @@
             this.dureeSelection.auto--;
           }
 
-          if(this.programmeInfo.typeUtilisation==="SONOFRA"){
             this.dureeSelection.duree -= entryChecked.pointsMontant;
-          }
 
           let number = this.indexOf(this.ligneProgrammeSelected, entryChecked);
           this.ligneProgrammeSelected.splice(number, 1);
@@ -812,9 +796,7 @@
         }
 
         let points;
-        if(this.programmeInfo.typeUtilisation==="SONOFRA"){
           points = entry.pointsMontant;
-        }
 
         if(entry.selection) {
           this.dureeSelection.duree += points;
@@ -858,7 +840,7 @@
 
         if(this.programmeInfo.statut == 'AFFECTE' || this.programmeInfo.statut == 'EN_COURS') {
 
-          if(this.programmeInfo.typeUtilisation == 'SONOFRA' && this.dureeSelection.duree == 0) {
+          if(this.dureeSelection.duree == 0) {
             this.modalWaring  = true;
             this.modalVisible = true;
             this.modalMessage  = 'Attention la somme des points sur le programme est égale à 0';

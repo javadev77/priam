@@ -34,10 +34,10 @@
 
         <div class="form-group col-xs-8">
 
-          <label class="col-xs-15 control-label blueText text-right" v-if="typeUtilisation == 'SONOFRA'">Points sélection</label>
+          <label class="col-xs-15 control-label blueText text-right" >Points sélection</label>
 
           <template v-if="!dataLoadingDuree">
-            <div class="col-xs-9 control-label" v-if="typeUtilisation == 'SONOFRA'">
+            <div class="col-xs-9 control-label">
               {{ montantFormate | numberFormat }}
             </div>
 

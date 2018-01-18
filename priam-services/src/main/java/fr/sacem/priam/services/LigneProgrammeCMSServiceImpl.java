@@ -100,13 +100,17 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
 
                 Sort.Order sortBy = sort.iterator().next();
 
-                if("sum(mt)".equals(sortBy.getProperty()) ||
+                if("points".equals(sortBy.getProperty()) ||
+                        "sum(nbrDif)".equals(sortBy.getProperty()) ||
+                        "sum(mt)".equals(sortBy.getProperty())||
                         "mt".equals(sortBy.getProperty())){
                     if (TypeUtilisationEnum.CMS_FRA.getCode().equals(programme.getTypeUtilisation().getCode())) {
                         sort = JpaSort.unsafe(sortBy.getDirection(), "sum(mt)");
                     }
-                } else if("libAbrgUtil".equals(sortBy.getProperty())) {
-                    sort = JpaSort.unsafe(sortBy.getDirection(), "cdeUtil");
+
+                    if (TypeUtilisationEnum.CMS_ANT.getCode().equals(programme.getTypeUtilisation().getCode())) {
+                        sort = JpaSort.unsafe(sortBy.getDirection(), "sum(nbrDif)");
+                    }
                 }
 
                 return sort;
@@ -239,10 +243,7 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
             Object[] indObjects = (Object[]) indicateur;
             result.put((String) indObjects[1], ((BigInteger) indObjects[0]).longValue());
         }
-
-        if(TypeUtilisationEnum.CMS_FRA.getCode().equals(programme.getTypeUtilisation().getCode())) {
-            result.put(SOMME, ligneProgrammeCMSDao.calculerPointsMontantOeuvres(numProg, selection));
-        }
+           result.put(SOMME, ligneProgrammeCMSDao.calculerPointsMontantOeuvres(numProg, selection));
 
         return result;
     }
