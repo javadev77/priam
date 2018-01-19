@@ -14,6 +14,7 @@
     <import resource="classpath:/configuration/job-database-test.xml"/>
     <util:properties id="envProperties"
                      location="classpath:configuration/application-test.properties"/>
+
     <job id="archiveFlatFileReaderJob" xmlns="http://www.springframework.org/schema/batch">
         <step id="archiveFlatFileReaderStep" next="dedoublonnageStep">
             <tasklet>

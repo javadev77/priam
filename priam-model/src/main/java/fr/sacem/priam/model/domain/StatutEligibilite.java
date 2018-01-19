@@ -15,4 +15,6 @@ public enum StatutEligibilite {
 
     FIN_DESAFFECTATION,
 
+    ERREUR_ELIGIBILITE
+
 }

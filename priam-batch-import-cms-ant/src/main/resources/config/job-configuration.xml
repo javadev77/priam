@@ -209,7 +209,7 @@
 
     <bean id="ligneProgrammeDedoublonnageStepOneProcessor" class="fr.sacem.service.importPenef.LigneProgrammeDedoublonnageStepOneProcessor"/>
 
-    <bean id="ligneProgrammeRowMapper" class="fr.sacem.util.mapper.importPenef.PriamLigneProgrammeSQLMapper"/>
+    <bean id="ligneProgrammeCmsAntSQLMapper" class="fr.sacem.util.mapper.importPenef.PriamLigneProgrammeCmsAntSQLMapper"/>
 
 
     <bean id="ligneProgrammeDedoublonnageStepTwoProcessor" class="fr.sacem.service.importPenef.LigneProgrammeDedoublonnageStepTwoProcessor"/>
@@ -228,7 +228,7 @@
         <property name="dataSource" ref="dataSource"/>
         <property name="queryProvider" ref="queryProvideRreaderSauvegardeStep"/>
         <property name="pageSize" value="${commit-interval}"/>
-        <property name="rowMapper" ref="ligneProgrammeRowMapper"/>
+        <property name="rowMapper" ref="ligneProgrammeCmsAntSQLMapper"/>
         <property name="parameterValues">
             <map>
                 <entry key="idFichier" value="#{jobExecutionContext[ID_FICHIER]}"/>

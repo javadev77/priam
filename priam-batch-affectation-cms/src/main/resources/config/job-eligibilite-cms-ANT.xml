@@ -70,7 +70,7 @@
     <bean id="queryProviderReaderCopierCatalogueOctavStep" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
         <property name="selectClause" value="select c.*"/>
         <property name="fromClause" value="from PRIAM_CATALOGUE_OCTAV c"/>
-        <!--<property name="whereClause" value="WHERE l.ID_FICHIER =:idFichier"/>-->
+        <property name="whereClause" value="WHERE c.TYPE_CMS='ANF' "/>
         <property name="databaseType" value="MySQL" />
         <property name="dataSource" ref="dataSource"/>
         <property name="sortKey" value="ide12"/>
@@ -126,6 +126,7 @@
         <property name="fromClause" value="from PRIAM_CATALOGUE_OCTAV_ANT c
                                             INNER JOIN PRIAM_PROGRAMME p ON p.NUMPROG=c.NUMPROG"/>
         <property name="whereClause" value="WHERE p.NUMPROG='#{jobParameters[numProg]}'
+                                            AND c.TYPE_CMS='ANF'
                                             AND p.STATUT_ELIGIBILITE = 'EN_ATTENTE_ELIGIBILITE'"/>
 
         <property name="databaseType" value="MySQL" />

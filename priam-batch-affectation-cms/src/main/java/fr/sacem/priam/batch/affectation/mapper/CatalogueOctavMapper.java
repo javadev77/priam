@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class CatalogueOctavMapper implements RowMapper<LigneCatalogueOctav> {
+
     @Override
     public LigneCatalogueOctav mapRow(ResultSet rs, int rowNum) throws SQLException {
         LigneCatalogueOctav ligneCatalogueOctav = new LigneCatalogueOctav();
@@ -15,6 +16,7 @@ public class CatalogueOctavMapper implements RowMapper<LigneCatalogueOctav> {
         ligneCatalogueOctav.setTitre(rs.getString("TITRE"));
         ligneCatalogueOctav.setRole(rs.getString("ROLE"));
         ligneCatalogueOctav.setParticipant(rs.getString("PARTICIPANT"));
+
         return ligneCatalogueOctav;
     }
 }
