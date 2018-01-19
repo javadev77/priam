@@ -209,4 +209,12 @@ public class ProgrammeService {
 		programme.setDataffect(new Date());
 		return programmeDao.saveAndFlush(programme);
 	}
+
+	@Transactional
+	public void majStatut(String numProg, StatutProgramme statutProgramme) {
+		Programme prog = programmeDao.findOne(numProg);
+		prog.setStatut(statutProgramme);
+
+		programmeDao.saveAndFlush(prog);
+	}
 }

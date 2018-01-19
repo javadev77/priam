@@ -233,8 +233,6 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
         result.put(MANUEL, 0L);
         result.put(SOMME, 0.0d);
 
-        Programme programme = programmeDao.findOne(numProg);
-
         Integer selection = SELECTION;
 
         List<Object> prog = ligneProgrammeCMSDao.compterOuvres(numProg, selection);
@@ -270,7 +268,6 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
                 LigneProgrammeCMS oeuvreManuel = createOeuvreManuel(input, programme);
                 founds.forEach( found -> {
                     found.setOeuvreManuel(oeuvreManuel);
-                    //found.setSelectionEnCours(FALSE);
                     found.setSelection(FALSE);
                     ligneProgrammeCMSDao.save(found);
                 });

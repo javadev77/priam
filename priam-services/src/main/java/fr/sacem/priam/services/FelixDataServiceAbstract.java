@@ -86,11 +86,7 @@ public abstract class FelixDataServiceAbstract {
         
         writer = csvMapper.writer(schema);
     }
-    
-    private OutputStream out;
-    private File file;
-    private long nbLine = 0;
-    
+
     @Autowired
     private ProgrammeDao programmeDao;
     
@@ -106,9 +102,9 @@ public abstract class FelixDataServiceAbstract {
     
     @Autowired
     private FichierFelixLogDao fichierFelixLogDao;
-    
-    @PersistenceContext
-    private EntityManager entityManager;
+
+    @Autowired
+    ProgrammeService programmeService;
     
     public abstract List<LignePreprep> getListLignesSelectionnees(String pNumprog);
 
@@ -270,8 +266,8 @@ public abstract class FelixDataServiceAbstract {
             LOGGER.debug("==> Debut Envoi du fichier à FELIX = " + ff.getNomFichier());
             SftpUtil.uploadFile(FELIX, tempFile, ff.getNomFichier());
             LOGGER.debug("<=== Fin Envoi du fichier à FELIX = " + ff.getNomFichier());
-            
-            majStatut(numProg, StatutProgramme.MIS_EN_REPART);
+
+            programmeService.majStatut(numProg, StatutProgramme.MIS_EN_REPART);
             
             ff.setStatut(StatutFichierFelix.ENVOYE);
             fichierFelixDao.saveAndFlush(ff);
@@ -291,23 +287,20 @@ public abstract class FelixDataServiceAbstract {
     }
     
     private void createErrorMessage(FichierFelix ff, String message) {
-        ff.setStatut(StatutFichierFelix.EN_ERREUR);
-        FichierFelixLog felixLog = new FichierFelixLog();
-        felixLog.setLog(message);
-        felixLog.setDateCreation(new Date());
-        fichierFelixLogDao.save(felixLog);
-        ff.getLogs().add(felixLog);
-    
-        fichierFelixDao.saveAndFlush(ff);
+        if(ff != null) {
+            ff.setStatut(StatutFichierFelix.EN_ERREUR);
+            FichierFelixLog felixLog = new FichierFelixLog();
+            felixLog.setLog(message);
+            felixLog.setDateCreation(new Date());
+            fichierFelixLogDao.save(felixLog);
+            ff.getLogs().add(felixLog);
+
+            fichierFelixDao.saveAndFlush(ff);
+        }
     }
-    
-    private void majStatut(String numProg, StatutProgramme statutProgramme) {
-        Programme prog = programmeDao.findOne(numProg);
-        prog.setStatut(statutProgramme);
-        programmeDao.save(prog);
-        programmeDao.flush();
-    }
+
     public String getFamilleUtil(String numprog){
+
         return programmeDao.findByNumProg(numprog).getFamille().getCode();
     }
 }
