@@ -1,5 +1,5 @@
 spring:
   profiles:
-    active: dev # a faire @webapp.mode@
+    active: @spring.active.profiles@ # a faire @webapp.mode@
   jmx:
     enabled: false
