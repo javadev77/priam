@@ -21,7 +21,7 @@ import org.springframework.context.annotation.Import;
 /**
  * Created by benmerzoukah on 18/04/2017.
  */
-@Import(value = {PropertiesWithJavaConfig.class})
+@Import(value = {PropertiesWithJavaConfig.class, JpaConfiguration.class})
 @SpringBootApplication(scanBasePackages = {"fr.sacem.priam.ui", "fr.sacem.priam.model"})
 @EnableAutoConfiguration(exclude = {
   ElasticsearchAutoConfiguration.class,
