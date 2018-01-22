@@ -19,5 +19,10 @@ if(process.env.DEBUG_MODE) {
   });
 
 } else {
-  //Vue.http.options.root = process.env.CONTEXT_ROOT;
+
+  Vue.http.interceptors.push((request, next) => {
+    request.credentials = true;
+    next();
+  });
+
 }
