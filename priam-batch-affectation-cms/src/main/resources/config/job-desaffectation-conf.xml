@@ -30,7 +30,6 @@
                 <chunk
                         reader="copyDonneesReader"
                         writer="copyDonneesWriter"
-                        processor="ligneCMSProcessor"
                         commit-interval="${commit-interval}">
                 </chunk>
             </tasklet>
@@ -77,7 +76,7 @@
         <property name="dataSource" ref="dataSource"/>
         <property name="queryProvider" ref="queryCopyDonneesReader"/>
         <property name="pageSize" value="${commit-interval}"/>
-        <property name="rowMapper" ref="ligneProgrammeRowMapper"/>
+        <property name="rowMapper" ref="ligneProgrammeCmsAntSQLMapper"/>
 
     </bean>
 
@@ -124,7 +123,8 @@
                             utilisateur,
                             date_insertion,
                             ajout,
-                            selection
+                            selection,
+                            RION_N_ANT
                         )
                         VALUES (
                             :idFichier,
@@ -164,7 +164,8 @@
                             :utilisateur,
                             :date_insertion,
                             :ajout,
-                            :selection
+                            :selection,
+                            :rionAnt
                         )
                 ]]>
             </value>
@@ -198,6 +199,8 @@
         <property name="dataSource" ref="dataSource"/>
         <property name="sortKey" value="ide12"/>
     </bean>
+
+    <bean id="ligneProgrammeCmsAntSQLMapper" class="fr.sacem.util.mapper.importPenef.PriamLigneProgrammeCmsAntSQLMapper"/>
 
 
 

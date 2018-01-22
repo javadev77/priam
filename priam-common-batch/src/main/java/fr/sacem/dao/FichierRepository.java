@@ -27,4 +27,7 @@ public interface FichierRepository {
     void enregistrerLog(Long idFichier, Set<String> errors);
 
     void clearSelectedFichiers(String numProg, String statut);
+
+    Long addFichierLink(String numProg);
+
 }

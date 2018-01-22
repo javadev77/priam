@@ -38,7 +38,7 @@ public class App {
             System.out.println("inputDirectory "+ admap.getOutputFile());
             jobParametersMap.put("input.archives", new JobParameter(admap.getInputFile()));
             jobParametersMap.put("output.archives", new JobParameter(admap.getOutputFile()));
-            jobParametersMap.put("idFichier", new JobParameter(0L));
+            //jobParametersMap.put("idFichier", new JobParameter(0L));
             JobParameters jobParameters = new JobParameters(jobParametersMap);
             JobExecution execution = jobLauncher.run(job, jobParameters);
             System.out.println("Exit Status : " + execution.getStatus());

@@ -72,6 +72,12 @@ public class TraitementCmsDao {
         jdbcTemplate.update(sql);
     }
 
+    public void viderCatalogueOctavAnt(String numProg){
+        LOG.info("=== Suppression du contenu de la table PRIAM_CATALOGUE_OCTAV ====");
+        String sql = "DELETE FROM PRIAM_CATALOGUE_OCTAV_ANT WHERE NUMPROG="+ "'" + numProg + "'";
+        jdbcTemplate.update(sql);
+    }
+
 
     public JdbcTemplate getJdbcTemplate() {
         return jdbcTemplate;

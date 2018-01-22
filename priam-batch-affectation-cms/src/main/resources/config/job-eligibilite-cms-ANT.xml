@@ -35,7 +35,7 @@
             </tasklet>
         </step>
 
-        <step id="calculPointsANTStep">
+        <step id="calculPointsANTStep" next="copierLigneProgrammeCMSStep">
             <tasklet>
                 <chunk
                         reader="readerCalculPointsANT"
@@ -45,6 +45,21 @@
             </tasklet>
             <listeners merge="true">
                 <listener ref="listnerDeleteAfterCalcul"/>
+            </listeners>
+        </step>
+
+        <step id="copierLigneProgrammeCMSStep">
+            <tasklet>
+                <chunk
+                        reader="readerCopierLigneProgrammeCMS"
+                        writer="writerCopierLigneProgrammeCMS"
+                        processor="copierLigneProgrammeCMSProcessor"
+                        commit-interval="${commit-interval}">
+
+                </chunk>
+            </tasklet>
+            <listeners merge="true">
+                <listener ref="listnerCopierLigneProgrammeCMS"/>
             </listeners>
         </step>
 
@@ -60,11 +75,6 @@
         <property name="queryProvider" ref="queryProviderReaderCopierCatalogueOctavStep"/>
         <property name="pageSize" value="${commit-interval}"/>
         <property name="rowMapper" ref="catalogueOctavRowMapper"/>
-        <!--<property name="parameterValues">
-            <map>
-                <entry key="idFichier" value="#{jobExecutionContext[ID_FICHIER]}"/>
-            </map>
-        </property>-->
     </bean>
 
     <bean id="queryProviderReaderCopierCatalogueOctavStep" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
@@ -196,4 +206,60 @@
         </property>
     </bean>
     <bean id="listnerDeleteAfterCalcul" class="fr.sacem.priam.batch.affectation.listener.ListenerDeleteAfterCalculPointsAnt"></bean>
+
+    <bean id="readerCopierLigneProgrammeCMS"
+          class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="queryProvider" ref="queryProviderReaderCopierLigneProgrammeCMSStep"/>
+        <property name="pageSize" value="${commit-interval}"/>
+        <property name="rowMapper" ref="ligneCatalogueOctavRowMapper"/>
+    </bean>
+
+    <bean id="queryProviderReaderCopierLigneProgrammeCMSStep" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
+        <property name="selectClause" value="select c.*"/>
+        <property name="fromClause" value="from PRIAM_CATALOGUE_OCTAV_ANT c"/>
+        <property name="whereClause" value="WHERE c.NUMPROG = '#{jobParameters[numProg]}'"/>
+        <property name="databaseType" value="MySQL" />
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sortKey" value="ide12"/>
+    </bean>
+
+    <bean id="writerCopierLigneProgrammeCMS" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    INSERT INTO PRIAM_LIGNE_PROGRAMME_CMS (
+                        cdeTypUtil,
+                        ide12,
+                        titreOeuvre,
+                        roleParticipant1,
+                        nomParticipant1,
+                        numProg,
+                        nbrDif,
+                        ID_FICHIER
+                        )
+                    VALUES (
+                        :typeCMS,
+                        :ide12,
+                        :titre,
+                        :role,
+                        :participant,
+                        :numProg,
+                        :nbrDif,
+                        '#{jobExecutionContext['idFichier']}'
+                        )
+                      ;
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
+
+    <bean id="listnerCopierLigneProgrammeCMS" class="fr.sacem.priam.batch.affectation.listener.ListnerCopierLigneProgrammeCMS"></bean>
+
+    <bean id="copierLigneProgrammeCMSProcessor" class="fr.sacem.priam.batch.affectation.processor.LigneCatalogueOctavProcessor"/>
+
 </beans>

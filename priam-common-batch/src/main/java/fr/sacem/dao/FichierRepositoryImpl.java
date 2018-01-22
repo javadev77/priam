@@ -18,6 +18,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -194,6 +195,32 @@ public class FichierRepositoryImpl implements FichierRepository {
 		stmt.setString(4, STATUT_EN_COURS);
 
 	  });
+    }
+
+    public Long addFichierLink(String numProg) {
+
+        String selectSql = "SELECT f.ID FROM PRIAM_FICHIER f WHERE f.NUMPROG=? AND f.SOURCE_AUTO = 0";
+
+        List<Long> ids = jdbcTemplate.query(selectSql,
+                (resultSet, i) -> resultSet.getLong("id"), numProg);
+
+        if(ids.isEmpty()) {
+
+            String sql = "INSERT INTO PRIAM_FICHIER (NUMPROG, SOURCE_AUTO) VALUES (?,?)";
+
+            GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+            jdbcTemplate.update(connection -> {
+                PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                stmt.setString(1, numProg);
+                stmt.setBoolean(2, false);
+                return stmt;
+            }, keyHolder);
+
+            return keyHolder.getKey().longValue();
+        } else {
+            return ids.get(0);
+        }
+
     }
 
     public void setDataSource(DataSource dataSource) {
