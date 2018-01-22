@@ -70,7 +70,7 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
                      "prog.dateFinPrg, " +
                      "ligneProgramme.cdeGreDif, " +
                      "ligneProgramme.cdeModDif, " +
-                     "ligneProgramme.cdeTypIde12, " +
+                     "'COCV', " +
                      "ligneProgramme.ide12, " +
                      "0L, " +
                      "(CASE WHEN prog.typeUtilisation.code = 'SONOFRA' THEN 1L  ELSE ligneProgramme.mt END),  " +
