@@ -1,3 +1,4 @@
+/*
 package fr.sacem.priam.batch.affectation.listener;
 
 import fr.sacem.dao.FichierRepository;
@@ -38,3 +39,4 @@ public class ListnerCopierLigneProgrammeCMS extends StepExecutionListenerSupport
         return stepExecution.getExitStatus();
     }
 }
+*/

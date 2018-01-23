@@ -44,11 +44,13 @@ public class SecurityRestConfiguration extends WebSecurityConfigurerAdapter {
   @Override
   protected void  configure(HttpSecurity http) throws Exception {
 
-    String webappMode = Environment.getParameter("webapp.mode");
-    if("dev".equalsIgnoreCase(webappMode)) {
-      http.cors().and();
-    }
-    http.csrf().disable()
+//    String webappMode = Environment.getParameter("webapp.mode");
+//    if("dev".equalsIgnoreCase(webappMode)) {
+//      http.cors().and();
+//    }
+    http.cors()
+      .and()
+      .csrf().disable()
       .exceptionHandling()
       .accessDeniedPage("/404.html")
       .authenticationEntryPoint(authenticationEntryPoint())
