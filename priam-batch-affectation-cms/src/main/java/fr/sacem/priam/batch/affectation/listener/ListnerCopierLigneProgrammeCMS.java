@@ -22,10 +22,9 @@ public class ListnerCopierLigneProgrammeCMS extends StepExecutionListenerSupport
 
     @Override
     public void beforeStep(StepExecution stepExecution) {
-        super.beforeStep(stepExecution);
 
         numProg = stepExecution.getJobParameters().getString("numProg");
-        Long idFichier = idFichier = fichierRepository.addFichierLink(numProg);
+        Long idFichier = fichierRepository.addFichierLink(numProg);
 
         JobExecution jobExecution = stepExecution.getJobExecution();
         ExecutionContext jobContext = jobExecution.getExecutionContext();
@@ -36,6 +35,7 @@ public class ListnerCopierLigneProgrammeCMS extends StepExecutionListenerSupport
     @Override
     public ExitStatus afterStep(StepExecution stepExecution) {
         traitementCmsDao.viderCatalogueOctavAnt(numProg);
-        return super.afterStep(stepExecution);
+
+        return stepExecution.getExitStatus();
     }
 }

@@ -150,6 +150,27 @@ public enum EnvConstants implements ConfigurableProperty {
         public String property() {
             return "priam.octav.catalog.dir.archives";
         }
+    },
+
+    PRIAM_SERVICE_REST_COMMON_URL {
+        @Override
+        public String property() {
+            return "priam.service.common.url";
+        }
+    },
+
+    PRIAM_SERVICE_REST_CMS_URL {
+        @Override
+        public String property() {
+            return "priam.service.cms.url";
+        }
+    },
+
+    PRIAM_SERVICE_REST_CP_URL {
+        @Override
+        public String property() {
+            return "priam.service.cp.url";
+        }
     };
 
     @Override

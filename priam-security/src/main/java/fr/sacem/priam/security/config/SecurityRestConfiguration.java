@@ -43,28 +43,26 @@ public class SecurityRestConfiguration extends WebSecurityConfigurerAdapter {
   private static final Logger LOGGER = LoggerFactory.getLogger(SecurityRestConfiguration.class);
   @Override
   protected void  configure(HttpSecurity http) throws Exception {
-
-    String webappMode = Environment.getParameter("webapp.mode");
-    if("dev".equalsIgnoreCase(webappMode)) {
-      http.cors().and();
-    }
-    http.csrf().disable()
-      .exceptionHandling()
-      .accessDeniedPage("/404.html")
-      .authenticationEntryPoint(authenticationEntryPoint())
-      .and()
-      .logout()
-      .invalidateHttpSession(true)
-      .deleteCookies(SsoPreAuthenticatedProcessingFilter.REQUEST_COOKIE_SSO_USER)
-      .logoutSuccessHandler(logoutSuccessHandler())
-      .and()
-      .addFilter(ssoPreAuthenticatedProcessingFilter())
-      .sessionManagement()//.maximumSessions(10).sessionRegistry(sessionRegistry()).and().sessionFixation().migrateSession()
-      .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-      .and()
-      .authorizeRequests()
-      .accessDecisionManager(affirmativeBased())
-      .antMatchers("/app/rest/**").authenticated();
+      http.cors()
+          .and()
+            .csrf().disable()
+            .exceptionHandling()
+            .accessDeniedPage("/404.html")
+            .authenticationEntryPoint(authenticationEntryPoint())
+          .and()
+            .logout()
+            .invalidateHttpSession(true)
+            .deleteCookies(SsoPreAuthenticatedProcessingFilter.REQUEST_COOKIE_SSO_USER)
+            .logoutSuccessHandler(logoutSuccessHandler())
+          .and()
+            .addFilter(ssoPreAuthenticatedProcessingFilter())
+            .sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+          .and()
+            .authorizeRequests()
+            .accessDecisionManager(affirmativeBased())
+            .antMatchers("/app/rest/**")
+          .authenticated();
 
   }
 
