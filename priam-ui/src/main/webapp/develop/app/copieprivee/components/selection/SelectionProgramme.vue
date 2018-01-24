@@ -645,7 +645,9 @@
           annulerSelection: {method: 'POST', url: process.env.CONTEXT_ROOT_PRIAM_CP + 'app/rest/ligneProgramme/selection/annuler'},
           supprimerLigneProgramme: {method: 'DELETE', url: process.env.CONTEXT_ROOT_PRIAM_CP + 'app/rest/ligneProgramme/{numProg}/{ide12}/'},
           enregistrerEdition : {method: 'POST', url: process.env.CONTEXT_ROOT_PRIAM_CP + 'app/rest/ligneProgramme/selection/enregistrerEdition'},
-          annulerEdition : {method: 'POST', url: process.env.CONTEXT_ROOT_PRIAM_CP + 'app/rest/ligneProgramme/selection/annulerEdition'}
+          annulerEdition : {method: 'POST', url: process.env.CONTEXT_ROOT_PRIAM_CP + 'app/rest/ligneProgramme/selection/annulerEdition'},
+          compteursProgramme: {method: 'GET', url: process.env.CONTEXT_ROOT_PRIAM_CP + 'app/rest/ligneProgramme/selection/compteurs?numProg={numProg}&statut={statut}'},
+          updateSelectionTemporaire : {method: 'POST', url: process.env.CONTEXT_ROOT_PRIAM_CP +  'app/rest/ligneProgramme/selection/temporaire/modifier'}
         }
 
         this.resource = this.$resource('', {}, customActions);
@@ -752,7 +754,7 @@
 
         this.modifierSelectionTemporaire();
 
-        this.resource.modifierSelection(this.selection)
+        this.resource.updateSelectionTemporaire(this.selection)
           .then(response => {
             return response.json();
           }).then(data => {
@@ -778,7 +780,7 @@
 
         this.modifierSelectionTemporaire();
 
-        this.resource.modifierSelection(this.selection)
+        this.resource.updateSelectionTemporaire(this.selection)
           .then(response => {
             return response.json();
           }).then(data => {
@@ -865,7 +867,7 @@
         } else {
           this.modifierSelectionTemporaire();
 
-          this.resource.modifierSelection(this.selection)
+          this.resource.updateSelectionTemporaire(this.selection)
             .then(response => {
               return response.json();
             }).then(data => {
@@ -1194,7 +1196,7 @@
         this.tableauSelectionnable = false;
         this.modifierSelectionTemporaire();
 
-        this.resource.modifierSelection(this.selection)
+        this.resource.updateSelectionTemporaire(this.selection)
           .then(response => {
             return response.json();
           })

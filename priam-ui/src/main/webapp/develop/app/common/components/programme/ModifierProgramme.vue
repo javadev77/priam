@@ -576,7 +576,7 @@
       },
 
       findProgInResult(listeProg, numProg) {
-          var result = null;
+          var result = undefined;
           if(listeProg !== undefined && listeProg.length >0) {
             result =  listeProg.find(function (elem) {
                 return elem.numProg !== numProg;
