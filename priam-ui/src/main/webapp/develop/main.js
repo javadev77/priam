@@ -37,25 +37,8 @@ function bootstrapIfReady(type) {
  * ******** Fetch init Data only Once ********
  * ********************************************/
 
-function fetchInitConfig() {
-  Vue.http.get(process.env.CONTEXT_ROOT_PRIAM + 'app/rest/general/appConfig')
-    .then(response => response.json())
-    .then(appConfig => {
-      if (appConfig) {
-        //store.commit('APP_CONFIG', data);
-        debugger;
-        Vue.set(process.env.CONTEXT_ROOT_PRIAM_COMMON, appConfig['priam.service.rest.common.url']);
-        Vue.set(process.env.CONTEXT_ROOT_PRIAM_CMS, appConfig['priam.service.rest.cms.url']);
-        Vue.set(process.env.CONTEXT_ROOT_PRIAM_CP, appConfig['priam.service.rest.cp.url']);
-
-        fetchInitData();
-      }
-    });
-}
 
 function fetchInitData() {
-
-
 
   Vue.http.get(process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/general/libellefamille')
     .then(response => response.json())
@@ -161,6 +144,5 @@ function fetchInitData() {
 
 }
 
-fetchInitConfig();
-//fetchInitData();
+fetchInitData();
 
