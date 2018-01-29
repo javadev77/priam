@@ -188,7 +188,7 @@
                 <filtering>true</filtering>
                 <directory>src/main/resources</directory>
                 <excludes>
-                    <!--<exclude>logback*.xml</exclude>-->
+                    <exclude>dev/**</exclude>
                 </excludes>
             </resource>
         </resources>
