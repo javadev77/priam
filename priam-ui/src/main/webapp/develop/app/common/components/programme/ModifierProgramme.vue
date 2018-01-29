@@ -410,6 +410,7 @@
       },
 
       rionTheoriqueOptions() {
+          debugger;
         return this.$store.getters.rionsAddProg;
       },
 
@@ -601,7 +602,7 @@
 
             var rionTheoriqueCode = this.programmeToModify.rionTheorique;
             console.log('rionTheoriqueCode=' + rionTheoriqueCode)
-            this.rionTheoriqueSelected = this.$store.getters.rionsAddProg.find(function (element) {
+            this.rionTheoriqueSelected = this.$store.getters.rionsSaref.find(function (element) {
               return Number.parseInt(element.id) === rionTheoriqueCode;
             });
 
