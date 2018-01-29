@@ -42,7 +42,7 @@ public class Fichier implements Serializable {
     private Long nbLignes;
     
     @Enumerated(EnumType.STRING)
-    @Column(name="STATUT_CODE", nullable = false)
+    @Column(name="STATUT_CODE", nullable = true)
     private Status statut;
     
     @ManyToOne(fetch = FetchType.LAZY)

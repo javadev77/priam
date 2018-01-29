@@ -166,7 +166,8 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
 
     }
 
-    private void deleteOeuvreManuel(LigneProgrammeCMS oeuvreManuelFound) {
+    @Override
+    public void deleteOeuvreManuel(LigneProgrammeCMS oeuvreManuelFound) {
         if(oeuvreManuelFound != null) {
 
             List<LigneProgrammeCMS> oeuvresAutoByIdOeuvreManuel = ligneProgrammeCMSDao.findOeuvresAutoByIdOeuvreManuel(oeuvreManuelFound.getId());
@@ -282,7 +283,8 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
 
     }
 
-    private LigneProgrammeCMS createOeuvreManuel(LigneProgrammeCMS input, Programme programme) {
+    @Override
+    public LigneProgrammeCMS createOeuvreManuel(LigneProgrammeCMS input, Programme programme) {
         Fichier probe = new Fichier();
         probe.setAutomatique(false);
         Programme programme1 = new Programme();
