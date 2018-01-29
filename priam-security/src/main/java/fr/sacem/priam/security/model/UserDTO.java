@@ -111,7 +111,15 @@ public class UserDTO implements Serializable{
         }
       }
 
-      return codes;
+        if(codes.isEmpty()) {
+            codes.add(COPIE_PRIVEE_SONORE_PHONO.getCode());
+            codes.add(COPIE_PRIVEE_SONORE_RADIO.getCode());
+            codes.add(SONOFRA.getCode());
+            codes.add(SONOANT.getCode());
+        }
+
+
+        return codes;
     }
 
   public List<String> authorizedFamilles() {
@@ -128,6 +136,11 @@ public class UserDTO implements Serializable{
             break;
         }
       }
+    }
+
+    if(codes.isEmpty()) {
+        codes.add(COPIE_PRIVEE.getCode());
+        codes.add(CMS.getCode());
     }
 
     return codes;
