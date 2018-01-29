@@ -18,7 +18,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -197,6 +196,7 @@ public class FichierRepositoryImpl implements FichierRepository {
 	  });
     }
 
+    @Override
     public Long addFichierLink(String numProg) {
 
         String selectSql = "SELECT f.ID FROM PRIAM_FICHIER f WHERE f.NUMPROG=? AND f.SOURCE_AUTO = 0";
@@ -221,6 +221,13 @@ public class FichierRepositoryImpl implements FichierRepository {
             return ids.get(0);
         }
 
+    }
+
+    @Override
+    public void deleteFichierLinkForAntille(String numProg) {
+        String sql = "DELETE FROM PRIAM_FICHIER WHERE NUMPROG=? AND SOURCE_AUTO = 0";
+
+        jdbcTemplate.update(sql, stmt -> stmt.setString(1, numProg));
     }
 
     public void setDataSource(DataSource dataSource) {

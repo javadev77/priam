@@ -1,4 +1,4 @@
-package fr.sacem.listener;
+package fr.sacem.priam.batch.penef.cms.fra.listener;
 
 import fr.sacem.dao.FichierRepository;
 import org.springframework.batch.core.ExitStatus;

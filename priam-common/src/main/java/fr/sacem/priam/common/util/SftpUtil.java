@@ -155,7 +155,7 @@ public class SftpUtil {
     }
 
     public static void uploadFile(SftpServer sftpServer, File fileToUpload, String remoteName, String flagFileName) throws JSchException, SftpException, IOException {
-        Assert.isTrue(fileToUpload.exists() && fileToUpload.isFile());
+        Assert.isTrue(fileToUpload.exists() && fileToUpload.isFile(), "Le fichier " + remoteName + " doit exister !!");
         ChannelSftp channelSftp = null;
         try{
             channelSftp = getSftpChannel(sftpServer);
@@ -178,7 +178,7 @@ public class SftpUtil {
     }
 
     private static void _createFile(ChannelSftp channelSftp, String fileName, String text) throws SftpException, IOException {
-        Assert.hasText(fileName);
+        Assert.hasText(fileName, "");
         try(OutputStream out = channelSftp.put(fileName)){
             out.write((text + NEW_LINE).getBytes());
         }

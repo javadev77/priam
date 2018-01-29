@@ -60,14 +60,15 @@ public class LigneProgrammeBatchDao {
 
     public Double countSommePoints(String numProg) {
         String sql =  "SELECT sum(points) as points from ( SELECT " +
-                "sum(l.mt) points, l.ide12 " +
+                "(CASE WHEN l.cdeTypUtil = 'SONOFRA' THEN sum(l.mt)  WHEN l.cdeTypUtil = 'SONOANT' THEN sum(l.nbrDif) ELSE 0 END) points, l.ide12 " +
                 "FROM " +
                 "PRIAM_LIGNE_PROGRAMME_CMS l inner join PRIAM_FICHIER as f " +
                 "on l.ID_FICHIER=f.ID " +
                 "WHERE " +
                 "f.numProg = ? " +
                 "GROUP BY l.ide12) result  ";
-        Double points = jdbcTemplate.queryForObject(sql, (resultSet, i) -> resultSet.getDouble("points"), numProg);
+        Double points = jdbcTemplate.queryForObject(sql, (resultSet, i) ->
+                resultSet.getDouble("points"), numProg);
 
         return points;
     }
@@ -86,10 +87,11 @@ public class LigneProgrammeBatchDao {
     }
 
 
-    public Long countNbOeuvresCatalogue() {
+    public Long countNbOeuvresCatalogue(String typeCMS) {
         String sql =  "SELECT " +
                 "count(cat.id) as nbOeuvres " +
-                "FROM PRIAM_CATALOGUE_OCTAV cat ";
+                "FROM PRIAM_CATALOGUE_OCTAV cat " +
+                "WHERE cat.TYPE_CMS='" + typeCMS + "'";
         Long nbOeuvres = jdbcTemplate.queryForObject(sql, (resultSet, i) -> resultSet.getLong("nbOeuvres"));
 
         return nbOeuvres;

@@ -194,7 +194,7 @@ CREATE TABLE `SAREFTR_FAMILTYPUTIL` (
   `CDETYPPROCESS` varchar(10) DEFAULT NULL,
   `POIDSOF` decimal(8,2) DEFAULT NULL,
   `CDEFAMILPART` char(2) NOT NULL,
-  `FAMILREMPL` varchar(10) DEFAULT NULL COMMENT 'valeur de remplacement pour interrogation de la documentation si la famille n¿est plus valide',
+  `FAMILREMPL` varchar(10) DEFAULT NULL COMMENT 'valeur de remplacement pour interrogation de la documentation si la typeUtilisation n¿est plus valide',
   PRIMARY KEY (`CDEFAMILTYPUTIL`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Famille de type dutilisation';
 
@@ -206,8 +206,8 @@ DROP TABLE IF EXISTS `SAREFTJ_LIBFAMILTYPUTIL`;
 CREATE TABLE `SAREFTJ_LIBFAMILTYPUTIL` (
   `CDELNG` varchar(3) NOT NULL COMMENT 'Code langue ISO2A de la langue utilisee dans les environements sacem',
   `CDEFAMILTYPUTIL` varchar(10) NOT NULL COMMENT 'Code Famille Type dUtilisation',
-  `LIBFAMILTYPUTIL` varchar(300) NOT NULL COMMENT 'Libelle de la famille de type dutilisation',
-  `LIBABRGFAMILTYPUTIL` varchar(25) DEFAULT NULL COMMENT 'Libelle abrege de la famille de type dutilisation',
+  `LIBFAMILTYPUTIL` varchar(300) NOT NULL COMMENT 'Libelle de la typeUtilisation de type dutilisation',
+  `LIBABRGFAMILTYPUTIL` varchar(25) DEFAULT NULL COMMENT 'Libelle abrege de la typeUtilisation de type dutilisation',
   `DATCRE` datetime NOT NULL COMMENT 'DATETIME de creation',
   `USERCRE` varchar(60) NOT NULL COMMENT 'Utilisateur ayant effectue la creation',
   `DATMAJ` datetime NOT NULL COMMENT 'DATETIME de modification',
@@ -215,7 +215,7 @@ CREATE TABLE `SAREFTJ_LIBFAMILTYPUTIL` (
   PRIMARY KEY (`CDELNG`,`CDEFAMILTYPUTIL`),
   KEY `SAREFTJ_LIBFA_LIBFAMILTYPUT_FK` (`CDEFAMILTYPUTIL`),
   CONSTRAINT `SAREFTJ_LIBFA_LIBFAMILTYPUT_FK` FOREIGN KEY (`CDEFAMILTYPUTIL`) REFERENCES `SAREFTR_FAMILTYPUTIL` (`CDEFAMILTYPUTIL`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Libelle dune famille de type dutilisation';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Libelle dune typeUtilisation de type dutilisation';
 
 --
 -- Table structure for table `SAREFTJ_LIBTER`

@@ -34,6 +34,7 @@ import static fr.sacem.priam.common.constants.EnvConstants.*;
 public class GeneralResource {
 
     private static final Integer RION_639 = 639 ;
+    public static final String RION_FORMAT_MMMM_yyyy = "MMMM yyyy";
     private static Logger logger = LoggerFactory.getLogger(GeneralResource.class);
 
     @Autowired
@@ -137,7 +138,7 @@ public class GeneralResource {
     public Map<String, String>[] getRions() {
         List<SareftrRion> sareftrRions = sareftrRionDao.findAfterRion(RION_639);
         List<Map<String, String>> result = new ArrayList<>(sareftrRions.size());
-        SimpleDateFormat sdf = new SimpleDateFormat("MMMM YYYY", Locale.FRANCE);
+        SimpleDateFormat sdf = new SimpleDateFormat(RION_FORMAT_MMMM_yyyy, Locale.FRANCE);
         sareftrRions.forEach(rion -> {
           String rionValue = String.valueOf(rion.getRion());
 
@@ -156,7 +157,7 @@ public class GeneralResource {
   public Map<String, String>[] getRionsCreation() {
     List<SareftrRion> sareftrRions = sareftrRionDao.findAllByDateRglmtAfterCurrentDate();
     List<Map<String, String>> result = new ArrayList<>(sareftrRions.size());
-    SimpleDateFormat sdf = new SimpleDateFormat("MMMM YYYY", Locale.FRANCE);
+    SimpleDateFormat sdf = new SimpleDateFormat(RION_FORMAT_MMMM_yyyy, Locale.FRANCE);
     sareftrRions.forEach(rion -> {
       String rionValue = String.valueOf(rion.getRion());
 

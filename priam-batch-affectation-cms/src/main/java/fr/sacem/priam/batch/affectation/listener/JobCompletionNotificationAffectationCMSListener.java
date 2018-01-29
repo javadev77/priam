@@ -3,6 +3,10 @@ package fr.sacem.priam.batch.affectation.listener;
 import fr.sacem.dao.LigneProgrammeBatchDao;
 import fr.sacem.dao.ProgrammeBatchDao;
 import fr.sacem.dao.TraitementCmsDao;
+import fr.sacem.domain.Programme;
+import fr.sacem.priam.common.util.FileUtils;
+import fr.sacem.priam.model.util.FamillePriam;
+import fr.sacem.priam.model.util.TypeUtilisationPriam;
 import fr.sacem.service.importPenef.FichierBatchService;
 import fr.sacem.util.UtilFile;
 import org.slf4j.Logger;
@@ -110,12 +114,24 @@ public class JobCompletionNotificationAffectationCMSListener extends JobExecutio
                     utilFile.deplacerFichier(parameterFichierZipEnCours, parameterNomFichierOriginal, outputDirectory);
 
                     String numProg = jobExecution.getJobParameters().getString("numProg");
+
                     programmeBatchDao.majStattutEligibilite(numProg, "FIN_ELIGIBILITE");
                     programmeBatchDao.majStattutProgramme(numProg, "AFFECTE");
+
                     Long idTraitementCMS = jobExecution.getExecutionContext().getLong("ID_TMT_CMS");
                     Long nbOeuvresRetenues = ligneProgrammeBatchDao.countNbOeuvres(numProg);
-                    Long nbOeuvresCatalogue = ligneProgrammeBatchDao.countNbOeuvresCatalogue();
+
+                    Programme programme = programmeBatchDao.findByNumProg(numProg);
+                    String typeCms = null;
+                    if(TypeUtilisationPriam.SONOFRA.getCode().equals(programme.getTypeUtilisation())) {
+                        typeCms = FileUtils.CATALOGUE_OCTAV_TYPE_CMS_FR;
+                    } else if(TypeUtilisationPriam.SONOANT.getCode().equals(programme.getTypeUtilisation())) {
+                        typeCms = FileUtils.CATALOGUE_OCTAV_TYPE_CMS_ANF;
+                    }
+
+                    Long nbOeuvresCatalogue = ligneProgrammeBatchDao.countNbOeuvresCatalogue(typeCms);
                     Double sommePoints = ligneProgrammeBatchDao.countSommePoints(numProg);
+
                     traitementCmsDao.majTraitment(idTraitementCMS, nbOeuvresCatalogue, nbOeuvresRetenues, sommePoints, "FIN_ELIGIBILITE");
                 } else {
                     LOG.debug("Pas de excution context pour le step en cours : " + myStepExecution.getStepName());
@@ -138,7 +154,7 @@ public class JobCompletionNotificationAffectationCMSListener extends JobExecutio
             String numProg = jobExecution.getJobParameters().getString("numProg");
             programmeBatchDao.majStattutEligibilite(numProg, ERREUR_ELIGIBILITE);
             Long idTraitementCMS = jobExecution.getExecutionContext().getLong("ID_TMT_CMS");
-            traitementCmsDao.majTraitment(idTraitementCMS, null, null, null, ERREUR_ELIGIBILITE);
+            traitementCmsDao.majTraitment(idTraitementCMS, 0L, 0L, 0.0d, ERREUR_ELIGIBILITE);
 
             fichierBatchService.clearSelectedFichiers(numProg, CHARGEMENT_OK);
 

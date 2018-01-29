@@ -121,8 +121,10 @@ public class CatalogueOctavZipMultiResourceItemReader<T> extends MultiResourceIt
                                     // vider la baser et lancer le chargement
                                     if((fileName.startsWith(FileUtils.PREFIX_OCTAV_CATALOGUE_FR))){
                                         traitementCmsDao.viderCatalogueOctav(FileUtils.CATALOGUE_OCTAV_TYPE_CMS_FR);
+                                        //stepExecution.getJobExecution().getExecutionContext().put("TYPE_CMS", FileUtils.CATALOGUE_OCTAV_TYPE_CMS_FR);
                                     } else {
                                         traitementCmsDao.viderCatalogueOctav(FileUtils.CATALOGUE_OCTAV_TYPE_CMS_ANF);
+                                        //stepExecution.getJobExecution().getExecutionContext().put("TYPE_CMS", FileUtils.CATALOGUE_OCTAV_TYPE_CMS_ANF);
                                     }
 
                                     Charset cs = Charset.forName("IBM437");

@@ -135,7 +135,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>fr.App</mainClass>
+                            <mainClass>fr.sacem.priam.batch.penef.cms.fra.App</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

@@ -1,8 +1,8 @@
 package fr.sacem.priam.batch.affectation.listener;
 
+import fr.sacem.dao.FichierRepository;
 import fr.sacem.dao.ProgrammeBatchDao;
 import fr.sacem.service.importPenef.FichierBatchService;
-import fr.sacem.service.importPenef.FichierBatchServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.BatchStatus;
@@ -21,6 +21,9 @@ public class JobDesaffectationListener extends JobExecutionListenerSupport {
     ProgrammeBatchDao programmeBatchDao;
 
     @Autowired
+    FichierRepository fichierRepository;
+
+    @Autowired
     private FichierBatchService fichierBatchService;
 
 
@@ -32,18 +35,23 @@ public class JobDesaffectationListener extends JobExecutionListenerSupport {
 
     @Override
     public void afterJob(JobExecution jobExecution) {
+        String numProg = jobExecution.getJobParameters().getString("numProg");
         if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
-            String numProg = jobExecution.getJobParameters().getString("numProg");
 
             programmeBatchDao.majStattutEligibilite(numProg, "FIN_DESAFFECTATION");
+
+            fichierRepository.deleteFichierLinkForAntille(numProg);
 
             fichierBatchService.clearSelectedFichiers(numProg, "CHARGEMENT_OK");
 
             String user = jobExecution.getJobParameters().getString("username");
+
             programmeBatchDao.updateProgramme(numProg, user);
 
+        } else if(jobExecution.getStatus() == BatchStatus.FAILED) {
+            // TODO : gerer le cas ou la desaffectation se passe mal Status FAILED
 
-
+            programmeBatchDao.majStattutEligibilite(numProg, "ERREUR_DESAFFECTATION");
         }
     }
 

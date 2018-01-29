@@ -1,11 +1,17 @@
 package fr.sacem.dao;
 
+import fr.sacem.domain.Programme;
 import fr.sacem.util.UtilFile;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * Created by fandis on 15/12/2017.
@@ -61,6 +67,23 @@ public class ProgrammeBatchDao {
             stmt.setTimestamp(3, UtilFile.getCurrentTimeStamp());
             stmt.setString(4, numProg);
         });
+    }
+
+    @Transactional
+    public Programme findByNumProg(String numProg) {
+        String sql = "SELECT p.NUMPROG as NUMPROG, p.CDETYPUTIL as CDETYPUTIL " +
+                    "FROM PRIAM_PROGRAMME p " +
+                    "WHERE p.NUMPROG=? ";
+
+        return jdbcTemplate.queryForObject(sql, (resultSet, i) -> {
+
+            Programme programme = new Programme();
+            programme.setNumProg(resultSet.getString("NUMPROG"));
+            programme.setTypeUtilisation(resultSet.getString("CDETYPUTIL"));
+
+            return programme;
+
+        }, numProg) ;
     }
 }
 

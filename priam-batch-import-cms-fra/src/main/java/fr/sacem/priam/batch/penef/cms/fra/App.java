@@ -1,7 +1,7 @@
-package fr.sacem;
+package fr.sacem.priam.batch.penef.cms.fra;
 
-import fr.sacem.config.ConfigurationPriamLocal;
-import fr.sacem.config.ConfigurationPriamProd;
+import fr.sacem.priam.batch.penef.cms.fra.config.ConfigurationPriamLocal;
+import fr.sacem.priam.batch.penef.cms.fra.config.ConfigurationPriamProd;
 import fr.sacem.domain.Admap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

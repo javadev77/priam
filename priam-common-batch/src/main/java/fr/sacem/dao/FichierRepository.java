@@ -30,4 +30,5 @@ public interface FichierRepository {
 
     Long addFichierLink(String numProg);
 
+    void deleteFichierLinkForAntille(String numProg);
 }

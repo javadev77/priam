@@ -1,4 +1,4 @@
-package fr.sacem.config;
+package fr.sacem.priam.batch.penef.cms.fra.config;
 import fr.sacem.domain.Admap;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.*;

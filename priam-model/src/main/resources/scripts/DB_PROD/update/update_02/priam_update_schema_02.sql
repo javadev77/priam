@@ -1,6 +1,5 @@
 USE priam_app;
 
-
 ALTER TABLE PRIAM_FICHIER
 ADD `TYPE_FICHIER` varchar(25) DEFAULT NULL COMMENT 'type de fichier peut etre CP CMD FV pour differencier l envoi';
 
