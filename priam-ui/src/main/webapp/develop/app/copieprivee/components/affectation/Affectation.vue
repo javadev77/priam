@@ -691,10 +691,12 @@
               .then(data => {
                 console.log("Déaffactaation ok");
                 this.showModalDesactiver = false;
-                this.programmeInfo = data;
+                /*this.programmeInfo = data;
                 this.initData();
                 this.rechercher();
-                this.$store.dispatch('toutDesactiver', false);
+                this.$store.dispatch('toutDesactiver', false);*/
+
+                this.$router.push({ name: 'ListePrg'});
               })
               .catch(response => {
                 alert("Erreur technique lors de désaffectation des fichiers du programme !! ");
