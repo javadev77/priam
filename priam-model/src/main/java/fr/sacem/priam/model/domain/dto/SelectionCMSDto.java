@@ -13,6 +13,9 @@ public class SelectionCMSDto extends SelectionDto {
         this.pointsMontant = pointsMontant;
     }
 
+    public SelectionCMSDto() {
+    }
+
     public Double getPointsMontant() {
         return pointsMontant;
     }
