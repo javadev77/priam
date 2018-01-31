@@ -183,15 +183,17 @@ public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Lon
             "INNER JOIN " +
             "  PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
             "set " +
-            "  p.SEL_EN_COURS=?4 " +
+            "  p.SEL_EN_COURS=?4," +
+            " p.durDif= ?5 " +
             "where " +
-            "  f.NUMPROG = ?1" +
-            " AND p.ide12 = ?2" +
-            " AND p.cdeUtil = ?3")
+            "  f.NUMPROG = ?1 " +
+            " AND p.ide12 = ?2 " +
+            " AND p.cdeUtil = ?3 ")
     void updateSelectionTemporaireByNumProgramme(@Param("numProg") String numProg,
                                                  @Param("ide12") Long ide12,
                                                  @Param("cdeUtil") String cdeUtil,
-                                                 @Param("select") int select);
+                                                 @Param("sel") int select,
+                                                 @Param("duree") Long durDif);
 
     @Transactional
     @Modifying(clearAutomatically = true)

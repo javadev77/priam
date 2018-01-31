@@ -313,8 +313,12 @@
                         </td>
                       </template>
                       <template v-else-if="entryColumn.type === 'seconds-as-time'">
-                        <td class="columnCenter" :style="styleValue(entryColumn, entry)">
+                        <td v-if="!entryColumn.editable" class="columnCenter" :style="styleValue(entryColumn, entry)">
                           {{ dureeFormattee(entry[entryColumn.id]) }}
+                        </td>
+                        <td v-else class="columnCenter">
+                          <component :is="entryColumn.cellEditorFramework" v-model="entry[entryColumn.id]"></component>
+
                         </td>
                       </template>
                       <template v-else-if="entryColumn.type === 'text-centre'">
@@ -335,6 +339,25 @@
                         </td>
                         <td class="columnCenter" v-if="!entryColumn.cell.toText(entry).action" :style="styleValue(entryColumn, entry)">
                           {{ entryColumn.cell.toText(entry.ajout).value }}
+                        </td>
+                      </template>
+
+                      <template v-else-if="entryColumn.type === 'inputNum'">
+                        <td style="width: 130px;">
+
+                          <template v-if="entryColumn.cell.toDisabled(entry)">
+                            <component :is="entryColumn.cellEditorFramework"
+                                       v-model="entry[entryColumn.id]"
+                                       :disabled="true"
+                            ></component>
+                          </template>
+                          <tempalte v-else>
+                            <component :is="entryColumn.cellEditorFramework"
+                                       v-model="entry[entryColumn.id]"
+                                       :disabled="false"
+                            ></component>
+                          </tempalte>
+
                         </td>
                       </template>
 
@@ -608,7 +631,7 @@
                 console.log("typeof a "+  typeof a);
                 let date1 = moment(a, "DD/MM/YYYY HH:mm");
                 let date2 = moment(b, "DD/MM/YYYY HH:mm");
-                debugger;
+
                 return (date1.isSame(date2) ? 0 : date1.isAfter(date2) ? 1 : -1) * order;
               });
             } else {
@@ -685,7 +708,7 @@
 
       emitCheckbox(entry, entryKey, value) {
         var key = null;//Number.parseInt(entry.id);
-        debugger;
+
         if(this.isNumber(entryKey)) {
           key = Number.parseInt(entryKey);
         } else {
@@ -739,7 +762,7 @@
         }
 
         console.log("this.checkedCurrentEntry=" +  entries.length);
-        debugger;
+
         this.$emit('all-checked', this.allChecked, entries);
 
       },
@@ -787,7 +810,7 @@
       },
 
       styleValue(entryColumn, entry) {
-          debugger;
+
           if(entryColumn.cell !== undefined && entryColumn.cell.css !== undefined) {
             return entryColumn.cell.css(entry).style
           }

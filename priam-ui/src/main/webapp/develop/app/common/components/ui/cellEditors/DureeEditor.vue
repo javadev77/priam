@@ -1,0 +1,81 @@
+<template>
+  <div>
+    <input
+      ref="input"
+      v-bind:value="value"
+      v-on:input="updateValue($event.target.value)"
+      v-on:focus="selectAll"
+      v-on:blur="formatValue"
+      :disabled="disabled"
+      @keyup.enter="formatValue"
+      class="tableInput numberInput"
+      style="width: 100%"
+    >
+  </div>
+
+</template>
+
+<script>
+  export default {
+    props: {
+      value: {
+        type: Number,
+        default: 0
+      },
+
+      disabled : {
+          type : Boolean,
+          default : true
+      }
+
+    },
+
+    mounted: function () {
+      this.formatValue();
+    },
+
+
+    methods: {
+
+      updateValue: function (value) {
+        var result = parseInt(value, 10);
+
+        if (isNaN(result)) {
+          this.$refs.input.value ='';
+          this.$emit('input', '')
+        } else {
+          this.$emit('input', result);
+        }
+
+      },
+
+      formatValue: function () {
+          if(!isNaN(this.value)) {
+            let jours = Math.floor( this.value / 86400);
+            let reste = this.value % 86400;
+            let hours = Math.floor( reste / 3600);
+            reste = reste % 3600;
+            let minutes = Math.floor(reste / 60);
+            let seconds = reste % 60;
+
+
+            let result = ((jours < 10) ? '0'+jours : jours) + 'j ' +((hours < 10) ? '0'+hours : hours)+"h "+((minutes < 10) ? '0' + minutes: minutes)+"m "+ ((seconds < 10) ? '0'+seconds : seconds) + "s";
+            debugger;
+            this.$refs.input.value = result;
+          } else {
+            this.$refs.input.value = "0";
+          }
+
+      },
+
+      selectAll: function (event) {
+        // Workaround for Safari bug
+        // http://stackoverflow.com/questions/1269722/selecting-text-on-focus-using-jquery-not-working-in-safari-and-chrome
+        debugger;
+        setTimeout(function () {
+          event.target.select()
+        }, 0)
+      }
+    }
+  }
+</script>

@@ -160,7 +160,11 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
     public void selectLigneProgramme(String numProg, Set<Map<String, String>> idLingesProgrammes) {
         for (Map<String, String>  obj:  idLingesProgrammes) {
             if (obj != null && !obj.isEmpty()) {
-                ligneProgrammeCPDao.updateSelectionTemporaireByNumProgramme(numProg, Long.parseLong(obj.get(IDE_12)), obj.get(CDE_UTIL).split(" - ")[0], 1);
+                ligneProgrammeCPDao.updateSelectionTemporaireByNumProgramme(numProg,
+                        Long.parseLong(obj.get(IDE_12)),
+                        obj.get(CDE_UTIL).split(" - ")[0],
+                        1,
+                        Long.valueOf(obj.get("durDif")));
             }
         }
 
@@ -266,7 +270,11 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
     public void deselectLigneProgramme(String numProg, Set<Map<String, String>> unselected) {
         for (Map<String, String>  obj:  unselected) {
             if(obj != null && !obj.isEmpty()) {
-                ligneProgrammeCPDao.updateSelectionTemporaireByNumProgramme(numProg, Long.parseLong(obj.get(IDE_12)), obj.get(CDE_UTIL).split(" - ")[0], 0);
+                ligneProgrammeCPDao.updateSelectionTemporaireByNumProgramme(numProg,
+                        Long.parseLong(obj.get(IDE_12)),
+                        obj.get(CDE_UTIL).split(" - ")[0],
+                        0,
+                        Long.valueOf(obj.get("durDif")));
             }
         }
     }

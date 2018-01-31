@@ -167,6 +167,10 @@
   import ActionSelection from './ActionSelection.vue';
   import ProgrammeInfo from '../../../common/components/programme/ProgrammeInfo.vue';
 
+
+  import DecimalInput from '../../../common/components/ui/Decimal-input.vue';
+  import DureeEditor from '../../../common/components/ui/cellEditors/DureeEditor.vue';
+
   export default {
     mixins: [chargementMixins],
 
@@ -454,15 +458,17 @@
               name: "Durée",
               sortable: true,
               sortProperty : 'sum(durDif)',
-              type: 'seconds-as-time',
+              type: 'inputNum',
+              editable : true,
+              cellEditorFramework : DureeEditor,
               cell: {
-                toText : function(entry) {
-                  var result = entry;
 
-                  if(result !=undefined)
-                    return result;
-                  else
-                    return "";
+                toDisabled: function(entry){
+
+                  if (!$this.isTableauSelectionnable()) {
+                    return true;
+                  }
+                  return false;
                 }
               }
             },
@@ -514,22 +520,7 @@
 
                 isChecked: function (entry) {
 
-                  debugger;
-                  /*var notChecked = $this.unselectedLigneProgramme.find(elem => {
-                    return elem.ide12 == entry.ide12 && elem.libAbrgUtil == entry.libAbrgUtil;
-                  });
 
-                  if (notChecked !== undefined) {
-                    return 0;
-                  }
-
-                  var result = $this.ligneProgrammeSelected.find(elem => {
-                    return elem.ide12 == entry.ide12 && elem.libAbrgUtil == entry.libAbrgUtil;
-                  });
-
-                  if (result !== undefined) {
-                    return 1;
-                  }*/
 
                   if(entry.selection) {
                       return 1;
@@ -645,7 +636,9 @@
           annulerSelection: {method: 'POST', url: process.env.CONTEXT_ROOT_PRIAM_CP + 'app/rest/ligneProgramme/selection/annuler'},
           supprimerLigneProgramme: {method: 'DELETE', url: process.env.CONTEXT_ROOT_PRIAM_CP + 'app/rest/ligneProgramme/{numProg}/{ide12}/'},
           enregistrerEdition : {method: 'POST', url: process.env.CONTEXT_ROOT_PRIAM_CP + 'app/rest/ligneProgramme/selection/enregistrerEdition'},
-          annulerEdition : {method: 'POST', url: process.env.CONTEXT_ROOT_PRIAM_CP + 'app/rest/ligneProgramme/selection/annulerEdition'}
+          annulerEdition : {method: 'POST', url: process.env.CONTEXT_ROOT_PRIAM_CP + 'app/rest/ligneProgramme/selection/annulerEdition'},
+          compteursProgramme: {method: 'GET', url: process.env.CONTEXT_ROOT_PRIAM_CP + 'app/rest/ligneProgramme/selection/compteurs?numProg={numProg}&statut={statut}'},
+          updateSelectionTemporaire : {method: 'POST', url: process.env.CONTEXT_ROOT_PRIAM_CP +  'app/rest/ligneProgramme/selection/temporaire/modifier'}
         }
 
         this.resource = this.$resource('', {}, customActions);
@@ -752,7 +745,7 @@
 
         this.modifierSelectionTemporaire();
 
-        this.resource.modifierSelection(this.selection)
+        this.resource.updateSelectionTemporaire(this.selection)
           .then(response => {
             return response.json();
           }).then(data => {
@@ -778,7 +771,7 @@
 
         this.modifierSelectionTemporaire();
 
-        this.resource.modifierSelection(this.selection)
+        this.resource.updateSelectionTemporaire(this.selection)
           .then(response => {
             return response.json();
           }).then(data => {
@@ -799,7 +792,7 @@
 
       selectAll() {
 
-        debugger;
+
         //if(!this.all) {
           for (var i in this.ligneProgramme) {
             if (this.indexOf(this.ligneProgrammeSelected, this.ligneProgramme[i]) == -1
@@ -865,7 +858,7 @@
         } else {
           this.modifierSelectionTemporaire();
 
-          this.resource.modifierSelection(this.selection)
+          this.resource.updateSelectionTemporaire(this.selection)
             .then(response => {
               return response.json();
             }).then(data => {
@@ -1052,7 +1045,7 @@
       },
 
       valider(selection) {
-        debugger;
+
         this.selection = selection;
 
         if(this.programmeInfo.statut == 'AFFECTE' || this.programmeInfo.statut == 'EN_COURS') {
@@ -1078,7 +1071,7 @@
       },
 
       validerSelection () {
-        debugger;
+
         /*if(this.all) {
           if(this.unselectedLigneProgramme.length != 0) {
             this.unselect();
@@ -1194,7 +1187,7 @@
         this.tableauSelectionnable = false;
         this.modifierSelectionTemporaire();
 
-        this.resource.modifierSelection(this.selection)
+        this.resource.updateSelectionTemporaire(this.selection)
           .then(response => {
             return response.json();
           })
