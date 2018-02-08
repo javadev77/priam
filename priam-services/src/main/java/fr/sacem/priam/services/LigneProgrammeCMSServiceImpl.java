@@ -45,6 +45,7 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
     private static final String SOMME = "SOMME";
     public static final Long NBRDIF_SONOFRA = 1L;
     public static final int SELECTION = 1;
+    private static final Double MT_SONOANT = 0.0;
 
     @Autowired
     private LigneProgrammeCMSDao ligneProgrammeCMSDao;
@@ -258,6 +259,7 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
             oeuvreManuelFound.setCdeFamilTypUtil(programme.getFamille().getCode());
             oeuvreManuelFound.setCdeTypUtil(programme.getTypeUtilisation().getCode());
             oeuvreManuelFound.setAjout(MANUEL);
+            oeuvreManuelFound.setNbrDif(input.getNbrDif());
             oeuvreManuelFound.setMt(input.getMt());
             oeuvreManuelFound.setOeuvreManuel(null);
             oeuvreManuelFound.setDateInsertion(new Date());
@@ -310,6 +312,9 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
         input.setCdeTypUtil(programme.getTypeUtilisation().getCode());
         if(programme.getTypeUtilisation().getCode().equals(TypeUtilisationPriam.SONOFRA.toString())) {
             input.setNbrDif(NBRDIF_SONOFRA);
+        }
+        if(programme.getTypeUtilisation().getCode().equals(TypeUtilisationPriam.SONOANT.toString())) {
+            input.setMt(MT_SONOANT);
         }
         input.setAjout(MANUEL);
         input.setSelection(TRUE);

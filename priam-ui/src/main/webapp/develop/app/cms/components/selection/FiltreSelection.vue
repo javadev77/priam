@@ -174,7 +174,7 @@
               cdeTypIde12 : oeuvreToAdd.cdeTypeIde12,
               titreOeuvre : oeuvreToAdd.titre,
               // durDif : oeuvreToAdd.duree,
-            // nbrDif : oeuvreToAdd.quantite,
+              nbrDif : oeuvreToAdd.quantite,
             // cdeUtil : oeuvreToAdd.utilisateur,
               mt: oeuvreToAdd.points,
               roleParticipant1 : oeuvreToAdd.roleParticipant1,
