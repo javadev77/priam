@@ -46,7 +46,7 @@ public class JobCompletionNotificationLigneProgrammeImportPenefListener extends 
     @Autowired
     FichierRepository fichierRepository;
 
-    @Value("${type.fichier}")
+    /*@Value("${type.fichier}")*/
     String typeFichier;
 
     @Autowired
@@ -170,5 +170,13 @@ public class JobCompletionNotificationLigneProgrammeImportPenefListener extends 
 
     public void setFichierBatchService(FichierBatchServiceImpl fichierBatchService) {
         this.fichierBatchService = fichierBatchService;
+    }
+
+    public String getTypeFichier() {
+        return typeFichier;
+    }
+
+    public void setTypeFichier(String typeFichier) {
+        this.typeFichier = typeFichier;
     }
 }
