@@ -176,7 +176,7 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
             "WHERE  "+
             "f.NUMPROG = ?1 " +
             "AND p.ide12 = ?2 " +
-            "AND p.ajout = 'Manuel' ")
+            "AND p.ajout = 'MANUEL' ")
     void deleteLigneProgrammeByIde12AndNumProg(@Param("numProg") String numProg,
                                                @Param("ide12") Long ide12);
 
@@ -187,7 +187,7 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
                      "AND f.programme.numProg = :numProg " +
                      "AND l.ide12 = :ide12 " +
                      "AND l.oeuvreManuel IS NULL " +
-                     "AND l.ajout = 'Automatique' ")
+                     "AND l.ajout = 'AUTOMATIQUE' ")
     List<LigneProgrammeCMS> findOeuvresAutoByIde12AndCdeUtil(@Param("numProg") String numProg, @Param("ide12") Long ide12);
 
     @Query(value="SELECT l " +
@@ -196,13 +196,22 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
                      "AND f.programme.numProg = :numProg " +
                      "AND l.ide12 = :ide12 " +
                      "AND l.oeuvreManuel IS NULL " +
-                     "AND l.ajout = 'Manuel' ")
+                     "AND l.ajout = 'MANUEL' ")
     LigneProgrammeCMS findOeuvreManuelByIde12(@Param("numProg") String numProg, @Param("ide12") Long ide12);
+
+
+    @Query(value="SELECT l " +
+            "FROM LigneProgrammeCMS l join l.fichier as f "+
+            "WHERE l.fichier = f.id " +
+            "AND f.programme.numProg = :numProg " +
+            "AND l.ide12 = :ide12 " +
+            "AND l.oeuvreManuel IS NULL ")
+    LigneProgrammeCMS findOeuvreACorrigeByIde12(@Param("numProg") String numProg, @Param("ide12") Long ide12);
 
     @Query(value="SELECT l " +
                      "FROM LigneProgrammeCMS l " +
                      "WHERE l.oeuvreManuel.id = :idOeuvreManuel  " +
-                     "AND l.ajout = 'Automatique' ")
+                     "AND l.ajout = 'AUTOMATIQUE' ")
     List<LigneProgrammeCMS> findOeuvresAutoByIdOeuvreManuel(@Param("idOeuvreManuel") Long idOeuvreManuel);
     
     
@@ -237,7 +246,7 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
                                            "WHERE  "+
                                            "f.NUMPROG = ?1 " +
                                            "AND p.selection=?2 " +
-                                           "AND p.ajout = 'Manuel' ")
+                                           "AND p.ajout = 'MANUEL' ")
     void deleteOeuvresManuels(@Param("numProg") String numProg, @Param("selection") boolean value);
     
     @Query(value="SELECT l " +
@@ -245,14 +254,15 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
                      "WHERE l.fichier = f.id " +
                      "AND f.programme.numProg = :numProg " +
                      "AND l.selection = :selection " +
-                     "AND l.ajout = 'Manuel' ")
+                     "AND l.ajout = 'MANUEL' ")
     List<LigneProgrammeCMS> findOeuvresManuelsEnCoursEdition(@Param("numProg") String numProg, @Param("selection") boolean value);
     
     @Query(value="SELECT l " +
                      "FROM LigneProgrammeCMS l join l.fichier as f "+
                      "WHERE l.fichier = f.id " +
                      "AND f.programme.numProg = :numProg " +
-                     "AND l.ajout = 'Manuel' ")
+                     "AND l.ajout = 'MANUEL' " +
+                     "OR l.ajout = 'CORRIGE' ")
     List<LigneProgrammeCMS> findAllOeuvresManuelsByNumProg(@Param("numProg") String numProg);
     
     @Transactional
@@ -263,7 +273,7 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
                                            "PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
                                            "WHERE  "+
                                            "f.NUMPROG = ?1 " +
-                                           "AND p.ajout = 'Manuel' ")
+                                           "AND p.ajout = 'MANUEL' ")
     void deleteAllOeuvres(@Param("numProg") String numProg);
     
     
@@ -334,6 +344,15 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
             "AND f.programme.numProg = :numProg " +
             "AND l.ide12 = :ide12 " +
             "AND l.oeuvreManuel IS NULL " +
-            "AND l.ajout = 'Manuel' ")
+            "AND l.ajout = 'MANUEL' ")
     LigneProgrammeCMS findOeuvreManuelByIde12AndCdeUtil(@Param("numProg")String numProg, @Param("ide12") Long ide12);
+
+    @Query(value="SELECT l " +
+            "FROM LigneProgrammeCMS l join l.fichier as f "+
+            "WHERE l.fichier = f.id " +
+            "AND f.programme.numProg = :numProg " +
+            "AND l.ide12 = :ide12 " +
+            "AND l.oeuvreManuel IS NULL " +
+            "AND l.ajout = 'CORRIGE' ")
+    LigneProgrammeCMS findOeuvreCorrigeByIde12(@Param("numProg") String numProg, @Param("ide12") Long ide12);
 }

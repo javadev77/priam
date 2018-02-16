@@ -2,7 +2,9 @@ package fr.sacem.priam.batch.affectation.reader;
 
 import fr.sacem.dao.TraitementCmsDao;
 import fr.sacem.domain.Fichier;
+import fr.sacem.priam.common.TypeUtilisationEnum;
 import fr.sacem.priam.common.util.FileUtils;
+import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.service.importPenef.FichierBatchService;
 import fr.sacem.util.UtilFile;
 import org.slf4j.Logger;
@@ -33,6 +35,7 @@ public class CatalogueOctavZipMultiResourceItemReader<T> extends MultiResourceIt
     private static final Logger LOG = LoggerFactory.getLogger(CatalogueOctavZipMultiResourceItemReader.class);
     private static final String EXTENTION_ZIP = "^(.*\\.((zip|ZIP)$))?[^.]*$";
     public static final String MESSAGE_NOM_FICHIER_INCORRECTE = "Le fichier ne peut être chargé car son nom n'a pas le bon format";
+    public static final String NUMPROG = "numProg";
     private Resource[] archives;
     private ZipFile[] zipFiles;
     private StepExecution stepExecution;
@@ -46,6 +49,11 @@ public class CatalogueOctavZipMultiResourceItemReader<T> extends MultiResourceIt
     @Autowired
     TraitementCmsDao traitementCmsDao;
 
+    @Autowired
+    ProgrammeDao programmeDao;
+
+    private String typeUtilisationProgramme;
+
 
     @Override
     public void open(ExecutionContext executionContext) throws ItemStreamException {
@@ -53,6 +61,8 @@ public class CatalogueOctavZipMultiResourceItemReader<T> extends MultiResourceIt
         JobParameters jobParameters = stepExecution.getJobParameters();
         JobParameter catalogueOactavDir =jobParameters.getParameters().get("input.catalog.octav");
         JobParameter catalogueOactavArchivesDir =jobParameters.getParameters().get("archives.catalog.octav");
+
+        typeUtilisationProgramme = programmeDao.findByNumProg(jobParameters.getParameters().get(NUMPROG).toString()).getTypeUtilisation().getCode();
 
         String inputDirectory = (String)catalogueOactavDir.getValue();
         String outputDirectory = (String)catalogueOactavArchivesDir.getValue();
@@ -90,7 +100,7 @@ public class CatalogueOctavZipMultiResourceItemReader<T> extends MultiResourceIt
                                 File file = fichiersDansLeRepertoire.get(j);
                                 LOG.debug("=== fichiers Dans Le Repertoire : "+file.getName()+" ===");
                                 //on traite qu'un seul fichier zip par lancement de batch
-                                if (file.getName().matches(EXTENTION_ZIP) && nbrDeFichierZipATraiter < 1) {
+                                if (file.getName().matches(EXTENTION_ZIP) && nbrDeFichierZipATraiter < 1 && ((file.getName().startsWith(FileUtils.PREFIX_OCTAV_CATALOGUE_FR)) && typeUtilisationProgramme.equals(TypeUtilisationEnum.CMS_FRA.getCode().toString())|| (file.getName().startsWith(FileUtils.PREFIX_OCTAV_CATALOGUE_ANF)) && typeUtilisationProgramme.equals(TypeUtilisationEnum.CMS_ANT.getCode().toString()))) {
 
                                     File fichierEnCoursDeTraitement = new File(rep + file.getName() + FILE_ZIP_EN_COURS_DE_TRAITEMENT);
                                     LOG.debug("=== renomer le fichier en : "+fichierEnCoursDeTraitement.getName()+" ===");
@@ -210,5 +220,13 @@ public class CatalogueOctavZipMultiResourceItemReader<T> extends MultiResourceIt
     @BeforeStep
     public void saveStepExecution(StepExecution stepExecution) {
         this.stepExecution = stepExecution;
+    }
+
+    public String getTypeUtilisationProgramme() {
+        return typeUtilisationProgramme;
+    }
+
+    public void setTypeUtilisationProgramme(String typeUtilisationProgramme) {
+        this.typeUtilisationProgramme = typeUtilisationProgramme;
     }
 }

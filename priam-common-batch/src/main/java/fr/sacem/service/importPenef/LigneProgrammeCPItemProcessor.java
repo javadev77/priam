@@ -1,7 +1,9 @@
 package fr.sacem.service.importPenef;
 
 import fr.sacem.domain.LigneProgramme;
+import fr.sacem.priam.common.TypeUtilisationEnum;
 import fr.sacem.util.valdiator.importPenef.LigneProgrammeCPSpringValidator;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.JobParameter;

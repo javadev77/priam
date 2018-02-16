@@ -338,7 +338,7 @@
 
                         </td>
                         <td class="columnCenter" v-if="!entryColumn.cell.toText(entry).action" :style="styleValue(entryColumn, entry)">
-                          {{ entryColumn.cell.toText(entry.ajout).value }}
+                          {{ entryColumn.cell.toText(entry).value }}
                         </td>
                       </template>
 

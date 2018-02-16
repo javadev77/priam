@@ -122,6 +122,10 @@ export default {
 
   getLastProgByNumProg : (state, getters) => (numProg) => {
     return state.lastProgrammesMisEnRepart.find(prog => prog.id === numProg)
+  },
+
+  etatOeuvre: state => {
+    return state.etatOeuvre;
   }
 
 };

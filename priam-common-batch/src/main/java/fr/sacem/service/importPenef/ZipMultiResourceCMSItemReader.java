@@ -1,6 +1,7 @@
 package fr.sacem.service.importPenef;
 
 import fr.sacem.domain.Fichier;
+import fr.sacem.priam.common.TypeUtilisationEnum;
 import fr.sacem.priam.common.util.FileUtils;
 import fr.sacem.util.UtilFile;
 import org.slf4j.Logger;
@@ -34,6 +35,8 @@ public class ZipMultiResourceCMSItemReader<T> extends MultiResourceItemReader<T>
     private static String FILE_ZIP_EN_COURS_DE_TRAITEMENT = "_en_cours_de_traitement";
     @Autowired
     private FichierBatchService fichierBatchService;
+
+    String typeFichier;
 
 
     /**
@@ -87,7 +90,7 @@ public class ZipMultiResourceCMSItemReader<T> extends MultiResourceItemReader<T>
                                 File file = fichiersDansLeRepertoire.get(j);
                                 LOG.debug("=== fichiers Dans Le Repertoire : "+file.getName()+" ===");
                                 //on traite qu'un seul fichier zip par lancement de batch
-                                if (file.getName().matches(EXTENTION_ZIP) && nbrDeFichierZipATraiter < 1) {
+                                if (file.getName().matches(EXTENTION_ZIP) && nbrDeFichierZipATraiter < 1 && ((file.getName().startsWith(FileUtils.PREFIX_FRA)&&(typeFichier.equals(TypeUtilisationEnum.CMS_FRA.getCode().toString()))) || (file.getName().startsWith(FileUtils.PREFIX_ANT)&&(typeFichier.equals(TypeUtilisationEnum.CMS_ANT.getCode().toString()))))) {
 
                                     File fichierEnCoursDeTraitement = new File(rep + file.getName() + FILE_ZIP_EN_COURS_DE_TRAITEMENT);
                                     LOG.debug("=== renomer le fichier en : "+fichierEnCoursDeTraitement.getName()+" ===");
@@ -187,5 +190,13 @@ public class ZipMultiResourceCMSItemReader<T> extends MultiResourceItemReader<T>
     }
     public void setUtilFile(UtilFile utilFile) {
         this.utilFile = utilFile;
+    }
+
+    public String getTypeFichier() {
+        return typeFichier;
+    }
+
+    public void setTypeFichier(String typeFichier) {
+        this.typeFichier = typeFichier;
     }
 }

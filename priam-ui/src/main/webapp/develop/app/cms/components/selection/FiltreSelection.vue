@@ -125,7 +125,8 @@
         return [
             'Tous',
             'Manuel',
-            'Automatique'
+            'Automatique',
+            'Corrigé'
         ];
       },
       selectionOptions() {

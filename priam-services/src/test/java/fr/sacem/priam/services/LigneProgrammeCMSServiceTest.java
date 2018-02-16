@@ -53,8 +53,9 @@ public class LigneProgrammeCMSServiceTest extends AbstractTestExecutionListener 
     private static final String STRING_IDE12 = "2000163011";
     private static final String TITRE = "Titre2";
     private static final String STATUS = "AFFECTE";
-    public static final String MANUEL = "Manuel";
-    public static final String AUTOMATIQUE = "Automatique";
+    public static final String MANUEL = "MANUEL";
+    public static final String AUTOMATIQUE = "AUTOMATIQUE";
+    public static final String CORRIGE = "CORRIGE";
     private static final String SOMME = "SOMME";
     private static final String TYPE_CMS_ANF = "ANF";
 
@@ -114,7 +115,7 @@ public class LigneProgrammeCMSServiceTest extends AbstractTestExecutionListener 
     @Autowired
     ProgrammeDao programmeDao;
 
-     MariaDB4jSpringService mariaDB4jSpringService;
+    MariaDB4jSpringService mariaDB4jSpringService;
 
 
     @Override
@@ -255,6 +256,7 @@ public class LigneProgrammeCMSServiceTest extends AbstractTestExecutionListener 
         Map<String, Object> listCheckCompteurs = new HashMap<>();
 
         listCheckCompteurs.put(AUTOMATIQUE, Long.valueOf(lignesProgCMS.size()));
+        listCheckCompteurs.put(CORRIGE, 0L);
         listCheckCompteurs.put(MANUEL, 0L);
         listCheckCompteurs.put(SOMME, ligneProgrammeCMSDao.calculerPointsMontantOeuvres(NUM_PROG, 1));
 
@@ -264,6 +266,7 @@ public class LigneProgrammeCMSServiceTest extends AbstractTestExecutionListener 
 
     @Test
     @Transactional
+    @Ignore
     public void ajouterOeuvreManuel() {
 
         /* Scénario oeuvre manuel existante */

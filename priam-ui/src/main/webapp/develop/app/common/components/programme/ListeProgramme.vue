@@ -57,7 +57,7 @@
                 </div>
 
                 <div class="col-sm-2">
-                  <label class="control-label pull-right">Rion statutaire</label>
+                  <label class="control-label pull-right">Rion cible</label>
                 </div>
                 <div class="col-sm-3">
                 <!--  <v-select :searchable="false" label="value" v-model="rionTheoriqueSelected" :options="rionTheoriqueOptions">
@@ -348,7 +348,7 @@
                 },
                 {
                   id :  'rionTheorique',
-                  name :   'Rion statutaire',
+                  name :   'Rion cible',
                   sortable : true,
                   type : 'code-value',
                   cell : {
@@ -639,7 +639,7 @@
 
                       var tempalte = [];
 
-                      if(cellValue.statutEligibilite === 'FIN_ELIGIBILITE' || cellValue.statutEligibilite === null) {
+                      if(cellValue.statutEligibilite === 'FIN_ELIGIBILITE' || cellValue.statutEligibilite === 'FIN_DESAFFECTATION' || cellValue.statutEligibilite === null) {
                         if(statusCode !== undefined && ('CREE' === statusCode || 'AFFECTE' === statusCode
                           || 'EN_COURS' === statusCode || 'VALIDE' === statusCode) ) {
                           if($this.isRightMDYPRG){

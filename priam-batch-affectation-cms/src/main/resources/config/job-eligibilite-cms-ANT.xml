@@ -69,6 +69,7 @@
 
     </job>
 
+
     <bean id="readerCopierCatalogueOctavStep"
           class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
         <property name="dataSource" ref="dataSource"/>
@@ -237,7 +238,8 @@
                         nomParticipant1,
                         numProg,
                         nbrDif,
-                        ID_FICHIER
+                        ID_FICHIER,
+                        ajout
                         )
                     VALUES (
                         :typeCMS,
@@ -247,7 +249,8 @@
                         :participant,
                         :numProg,
                         :nbrDif,
-                        '#{jobExecutionContext['idFichier']}'
+                        '#{jobExecutionContext['idFichier']}',
+                        'AUTOMATIQUE'
                         )
                       ;
                 ]]>

@@ -285,7 +285,7 @@
                 toText : function(entry) {
                   var result = entry;
                   if(result !=undefined)
-                    return result ;
+                    return result.nbrDif ;
                   else
                     return "";
                 }
@@ -293,24 +293,25 @@
             },
             {
               id: 'ajout',
-              name: "Ajout",
+              name: "Etat",
               sortable: true,
               type: 'text-with-action',
               cell: {
                 toText : function(entry) {
                   var result = entry;
 
-                  if(result !=undefined)
-                  {
-                    if(result.ajout == 'Manuel') {
+                  if(result !=undefined) {
+                    var element = $this.getEtatOeuvre(result.ajout);
+                    if(result.ajout == 'MANUEL' || result.ajout == 'CORRIGE') {
 
                       var tempalteTrash = '<span class="glyphicon glyphicon-trash" aria-hidden="true" style="padding-left: 0px;" title="Supprimer"></span>';
                       var template = [];
                       template.push({event : 'supprimer-ligne-programme', template : tempalteTrash, disabled : !$this.edition});
-                      return {value : result.ajout, template : template ,action : true};
-
+                      /*return {value : result.ajout, template : template ,action : true};*/
+                      return {value : element.libelle, template : template ,action : true};
                     }else {
-                      return {value : result, action : false};
+                      /*return {value : result.ajout, action : false};*/
+                      return {value : element.libelle, action : false};
                     }
 
                   }
@@ -474,24 +475,24 @@
             },
             {
               id: 'ajout',
-              name: "Ajout",
+              name: "Etat",
               sortable: true,
               type: 'text-with-action',
               cell: {
                 toText : function(entry) {
                   var result = entry;
-
+                  var element = $this.getEtatOeuvre(result.ajout);
                   if(result !=undefined)
                   {
-                    if(result.ajout == 'Manuel') {
+                    if(result.ajout == 'MANUEL' || result.ajout == 'CORRIGE') {
 
                       var tempalteTrash = '<span class="glyphicon glyphicon-trash" aria-hidden="true" style="padding-left: 0px;" title="Supprimer"></span>';
                       var template = [];
                       template.push({event : 'supprimer-ligne-programme', template : tempalteTrash, disabled : !$this.edition});
-                      return {value : result.ajout, template : template ,action : true};
+                      return {value : element.libelle, template : template ,action : true};
 
                     }else {
-                      return {value : result, action : false};
+                      return {value : element.libelle, action : false};
                     }
 
                   }
@@ -561,6 +562,7 @@
         },
         dureeSelection : {
           auto : 0,
+          corrige : 0,
           manuel : 0,
           duree : 0
         },
@@ -606,8 +608,9 @@
           return response.json();
         }).then(data => {
 
-          this.dureeSelection.auto = data.Automatique;
-          this.dureeSelection.manuel = data.Manuel;
+          this.dureeSelection.auto = data.AUTOMATIQUE;
+          this.dureeSelection.manuel = data.MANUEL;
+          this.dureeSelection.corrige = data.CORRIGE;
           this.dureeSelection.duree = data.SOMME;
 
           this.backupDureeSelection = {
@@ -884,9 +887,11 @@
 
         if(isChecked) {
 
-          if(entryChecked.ajout == 'Manuel') {
+          if(entryChecked.ajout == 'MANUEL') {
             this.dureeSelection.manuel ++;
 
+          } else if(entryChecked.ajout == 'CORRIGE') {
+            this.dureeSelection.corrige ++;
           } else {
             this.dureeSelection.auto++;
           }
@@ -914,8 +919,10 @@
 
         } else {
 
-          if(entryChecked.ajout == 'Manuel') {
+          if(entryChecked.ajout == 'MANUEL') {
             this.dureeSelection.manuel--;
+          } else if(entryChecked.ajout == 'CORRIGE') {
+            this.dureeSelection.corrige--;
           } else {
             this.dureeSelection.auto--;
           }

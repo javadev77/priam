@@ -23,6 +23,7 @@
 
     <job id="jobEligibiliteOctav" xmlns="http://www.springframework.org/schema/batch">
         <step id="chargerCatalogueOctav" next="eligibiliteStep">
+
             <tasklet>
                 <chunk
                         reader="catalogueOctavReader"

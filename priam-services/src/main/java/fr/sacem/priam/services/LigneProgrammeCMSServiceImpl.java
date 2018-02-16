@@ -1,6 +1,7 @@
 package fr.sacem.priam.services;
 
 import fr.sacem.priam.common.TypeUtilisationEnum;
+import fr.sacem.priam.common.util.FileUtils;
 import fr.sacem.priam.model.dao.jpa.CatalogueOctavDao;
 import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.dao.jpa.cms.LigneProgrammeCMSDao;
@@ -9,7 +10,6 @@ import fr.sacem.priam.model.domain.CatalogueOctav;
 import fr.sacem.priam.model.domain.Fichier;
 import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.cms.LigneProgrammeCMS;
-import fr.sacem.priam.model.domain.cp.LigneProgrammeCP;
 import fr.sacem.priam.model.domain.criteria.LigneProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.SelectionCMSDto;
@@ -40,8 +40,9 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
     public static final String IDE_12 = "ide12";
     public static final String CDE_UTIL = "XXX";
     public static final String CDE_CISAC_058 = "058";
-    public static final String MANUEL = "Manuel";
-    public static final String AUTOMATIQUE = "Automatique";
+    public static final String MANUEL = "MANUEL";
+    public static final String AUTOMATIQUE = "AUTOMATIQUE";
+    public static final String CORRIGE = "CORRIGE";
     private static final String SOMME = "SOMME";
     public static final Long NBRDIF_SONOFRA = 1L;
     public static final int SELECTION = 1;
@@ -162,7 +163,13 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
     @Override
     @Transactional
     public void supprimerLigneProgramme(String numProg, Long ide12, SelectionDto selectedLigneProgramme) {
-        LigneProgrammeCMS oeuvreManuelFound = ligneProgrammeCMSDao.findOeuvreManuelByIde12(numProg, ide12);
+        LigneProgrammeCMS oeuvreManuelFound = new LigneProgrammeCMS();
+        if(selectedLigneProgramme.getAjout().equals(MANUEL)){
+            oeuvreManuelFound = ligneProgrammeCMSDao.findOeuvreManuelByIde12(numProg, ide12);
+        } else if(selectedLigneProgramme.getAjout().equals(CORRIGE)) {
+            oeuvreManuelFound = ligneProgrammeCMSDao.findOeuvreCorrigeByIde12(numProg, ide12);
+        }
+
         deleteOeuvreManuel(oeuvreManuelFound);
 
     }
@@ -232,6 +239,7 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
     public Map<String,Object> calculerCompteurs(String numProg, String statut) {
         Map<String, Object> result = new HashMap<>();
         result.put(AUTOMATIQUE, 0L);
+        result.put(CORRIGE, 0L);
         result.put(MANUEL, 0L);
         result.put(SOMME, 0.0d);
 
@@ -253,7 +261,52 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
     public void ajouterOeuvreManuel(LigneProgrammeCMS input) {
         Programme programme = programmeDao.findOne(input.getNumProg());
 
-        LigneProgrammeCMS oeuvreManuelFound = ligneProgrammeCMSDao.findOeuvreManuelByIde12AndCdeUtil(input.getNumProg(), input.getIde12());
+        List<LigneProgrammeCMS> founds = ligneProgrammeCMSDao.findOeuvresAutoByIde12AndCdeUtil(input.getNumProg(), input.getIde12());
+        if(founds != null && !founds.isEmpty()) {
+            input.setAjout(CORRIGE);
+            LigneProgrammeCMS oeuvreManuel = createOeuvreManuel(input, programme);
+            founds.forEach( found -> {
+                found.setOeuvreManuel(oeuvreManuel);
+                found.setSelection(FALSE);
+                ligneProgrammeCMSDao.save(found);
+            });
+        } else {
+            LigneProgrammeCMS oeuvreCorrigeFound = ligneProgrammeCMSDao.findOeuvreCorrigeByIde12(input.getNumProg(), input.getIde12());
+            if(oeuvreCorrigeFound != null) {
+                oeuvreCorrigeFound.setCdeCisac(CDE_CISAC_058);
+                oeuvreCorrigeFound.setCdeFamilTypUtil(programme.getFamille().getCode());
+                oeuvreCorrigeFound.setCdeTypUtil(programme.getTypeUtilisation().getCode());
+                oeuvreCorrigeFound.setAjout(CORRIGE);
+                oeuvreCorrigeFound.setNbrDif(input.getNbrDif());
+                oeuvreCorrigeFound.setMt(input.getMt());
+                oeuvreCorrigeFound.setOeuvreManuel(null);
+                oeuvreCorrigeFound.setDateInsertion(new Date());
+                oeuvreCorrigeFound.setCdeTypIde12(input.getCdeTypIde12());
+                ligneProgrammeCMSDao.save(oeuvreCorrigeFound);
+            } else {
+                LigneProgrammeCMS oeuvreManuelFound = ligneProgrammeCMSDao.findOeuvreManuelByIde12AndCdeUtil(input.getNumProg(), input.getIde12());
+                if(oeuvreManuelFound != null) {
+                    oeuvreManuelFound.setCdeCisac(CDE_CISAC_058);
+                    oeuvreManuelFound.setCdeFamilTypUtil(programme.getFamille().getCode());
+                    oeuvreManuelFound.setCdeTypUtil(programme.getTypeUtilisation().getCode());
+                    oeuvreManuelFound.setAjout(MANUEL);
+                    oeuvreManuelFound.setNbrDif(input.getNbrDif());
+                    oeuvreManuelFound.setMt(input.getMt());
+                    oeuvreManuelFound.setOeuvreManuel(null);
+                    oeuvreManuelFound.setDateInsertion(new Date());
+                    oeuvreManuelFound.setCdeTypIde12(input.getCdeTypIde12());
+                    ligneProgrammeCMSDao.save(oeuvreManuelFound);
+                    // oeuvreManuelFound.setSelectionEnCours(true);
+                } else {
+                    input.setAjout(MANUEL);
+                    createOeuvreManuel(input, programme);
+                    /*if(isEligible(input.getIde12())) {
+                        createOeuvreManuel(input, programme);
+                    }*/
+                }
+            }
+        }
+        /*LigneProgrammeCMS oeuvreManuelFound = ligneProgrammeCMSDao.findOeuvreManuelByIde12AndCdeUtil(input.getNumProg(), input.getIde12());
         if(oeuvreManuelFound != null) {
             oeuvreManuelFound.setCdeCisac(CDE_CISAC_058);
             oeuvreManuelFound.setCdeFamilTypUtil(programme.getFamille().getCode());
@@ -268,6 +321,7 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
         } else {
             List<LigneProgrammeCMS> founds = ligneProgrammeCMSDao.findOeuvresAutoByIde12AndCdeUtil(input.getNumProg(), input.getIde12());
             if(founds != null && !founds.isEmpty()) {
+                input.setAjout(CORRIGE);
                 LigneProgrammeCMS oeuvreManuel = createOeuvreManuel(input, programme);
                 founds.forEach( found -> {
                     found.setOeuvreManuel(oeuvreManuel);
@@ -276,13 +330,12 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
                 });
 
             } else {
+                input.setAjout(MANUEL);
                 createOeuvreManuel(input, programme);
-                /*if(isEligible(input.getIde12())) {
+                *//*if(isEligible(input.getIde12())) {
                     createOeuvreManuel(input, programme);
-                }*/
-            }
-        }
-
+                }*//*
+            }*/
     }
 
     @Override
@@ -316,7 +369,8 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
         if(programme.getTypeUtilisation().getCode().equals(TypeUtilisationPriam.SONOANT.toString())) {
             input.setMt(MT_SONOANT);
         }
-        input.setAjout(MANUEL);
+        /*input.setAjout(MANUEL);*/
+
         input.setSelection(TRUE);
         input.setDateInsertion(new Date());
         input.setCdeTypIde12(input.getCdeTypIde12());
@@ -331,7 +385,12 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
     @Transactional
     public boolean isEligible(Long ide12, String typeCMS){
         boolean result = false;
-        CatalogueOctav oeuvreCatalogueOctav = catalogueOctavDao.findByIde12(ide12, typeCMS);
+        CatalogueOctav oeuvreCatalogueOctav = new CatalogueOctav();
+        if(typeCMS.equals("ANT")){
+            oeuvreCatalogueOctav = catalogueOctavDao.findByIde12(ide12, FileUtils.CATALOGUE_OCTAV_TYPE_CMS_ANF);
+        } else {
+            oeuvreCatalogueOctav = catalogueOctavDao.findByIde12(ide12, typeCMS);
+        }
         if (oeuvreCatalogueOctav!=null){
             result = true;
         }

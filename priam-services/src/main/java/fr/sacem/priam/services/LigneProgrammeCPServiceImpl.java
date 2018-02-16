@@ -35,8 +35,9 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
     public static final String IDE_12 = "ide12";
     public static final String CDE_UTIL = "libAbrgUtil";
     public static final String CDE_CISAC_058 = "058";
-    public static final String MANUEL = "Manuel";
-    public static final String AUTOMATIQUE = "Automatique";
+    public static final String MANUEL = "MANUEL";
+    public static final String AUTOMATIQUE = "AUTOMATIQUE";
+    public static final String CORRIGE = "CORRIGE";
     private static final String SOMME = "SOMME";
     public static final int SELECTION = 1;
 
@@ -160,11 +161,16 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
     public void selectLigneProgramme(String numProg, Set<Map<String, String>> idLingesProgrammes) {
         for (Map<String, String>  obj:  idLingesProgrammes) {
             if (obj != null && !obj.isEmpty()) {
+                /*ligneProgrammeCPDao.updateSelectionTemporaireByNumProgramme(numProg,
+                        Long.parseLong(obj.get(IDE_12)),
+                        obj.get(CDE_UTIL).split(" - ")[0],
+                        1,
+                        Long.valueOf(obj.get("durDif")));*/
                 ligneProgrammeCPDao.updateSelectionTemporaireByNumProgramme(numProg,
                         Long.parseLong(obj.get(IDE_12)),
                         obj.get(CDE_UTIL).split(" - ")[0],
                         1,
-                        Long.valueOf(obj.get("durDif")));
+                        obj.get("durDif") != null ? Long.valueOf(obj.get("durDif")) : null);
             }
         }
 
@@ -177,9 +183,13 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
     public void supprimerLigneProgramme(String numProg, Long ide12, SelectionDto selectedLigneProgramme) {
     
         String cdeUtil = selectedLigneProgramme.getCdeUtil();
-        LigneProgrammeCP oeuvreManuelFound = ligneProgrammeCPDao.findOeuvreManuelByIde12AndCdeUtil(numProg, ide12, cdeUtil);
+        LigneProgrammeCP oeuvreManuelFound = new LigneProgrammeCP();
+        if(selectedLigneProgramme.getAjout().equals(MANUEL)){
+            oeuvreManuelFound = ligneProgrammeCPDao.findOeuvreManuelByIde12AndCdeUtil(numProg, ide12, cdeUtil);
+        } else if(selectedLigneProgramme.getAjout().equals(CORRIGE)){
+            oeuvreManuelFound = ligneProgrammeCPDao.findOeuvreCorrigeByIde12AndCdeUtil(numProg, ide12, cdeUtil);
+        }
         doDeleteOeuvreManuel(oeuvreManuelFound);
-    
     }
 
     private void doDeleteOeuvreManuel(LigneProgrammeCP oeuvreManuelFound) {
@@ -202,8 +212,52 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
     @Override
     public void ajouterOeuvreManuel(LigneProgrammeCP input) {
         Programme programme = programmeDao.findOne(input.getNumProg());
-    
-        LigneProgrammeCP oeuvreManuelFound = ligneProgrammeCPDao.findOeuvreManuelByIde12AndCdeUtil(input.getNumProg(), input.getIde12(), input.getCdeUtil());
+
+        List<LigneProgrammeCP> founds = ligneProgrammeCPDao.findOeuvresAutoByIde12AndCdeUtil(input.getNumProg(), input.getIde12(), input.getCdeUtil());
+        if(founds != null && !founds.isEmpty()) {
+            input.setAjout(CORRIGE);
+            LigneProgrammeCP oeuvreManuel = createOeuvreManuel(input, programme);
+            founds.forEach( found -> {
+                found.setOeuvreManuel(oeuvreManuel);
+                found.setSelection(FALSE);
+                ligneProgrammeCPDao.save(found);
+            });
+
+        } else {
+            LigneProgrammeCP oeuvreCorrigeFound = ligneProgrammeCPDao.findOeuvreCorrigeByIde12AndCdeUtil(input.getNumProg(), input.getIde12(), input.getCdeUtil());
+            if(oeuvreCorrigeFound != null) {
+                oeuvreCorrigeFound.setCdeCisac(CDE_CISAC_058);
+                oeuvreCorrigeFound.setCdeFamilTypUtil(programme.getFamille().getCode());
+                oeuvreCorrigeFound.setCdeTypUtil(programme.getTypeUtilisation().getCode());
+                oeuvreCorrigeFound.setAjout(CORRIGE);
+                oeuvreCorrigeFound.setOeuvreManuel(null);
+                oeuvreCorrigeFound.setDurDif(input.getDurDif());
+                oeuvreCorrigeFound.setNbrDif(input.getNbrDif());
+                oeuvreCorrigeFound.setDateInsertion(new Date());
+                oeuvreCorrigeFound.setUtilisateur(input.getUtilisateur());
+                oeuvreCorrigeFound.setCdeTypIde12(input.getCdeTypIde12());
+                ligneProgrammeCPDao.save(oeuvreCorrigeFound);
+            } else {
+                LigneProgrammeCP oeuvreManuelFound = ligneProgrammeCPDao.findOeuvreManuelByIde12AndCdeUtil(input.getNumProg(), input.getIde12(), input.getCdeUtil());
+                if(oeuvreManuelFound != null) {
+                    oeuvreManuelFound.setCdeCisac(CDE_CISAC_058);
+                    oeuvreManuelFound.setCdeFamilTypUtil(programme.getFamille().getCode());
+                    oeuvreManuelFound.setCdeTypUtil(programme.getTypeUtilisation().getCode());
+                    oeuvreManuelFound.setAjout(MANUEL);
+                    oeuvreManuelFound.setOeuvreManuel(null);
+                    oeuvreManuelFound.setDurDif(input.getDurDif());
+                    oeuvreManuelFound.setNbrDif(input.getNbrDif());
+                    oeuvreManuelFound.setDateInsertion(new Date());
+                    oeuvreManuelFound.setUtilisateur(input.getUtilisateur());
+                    oeuvreManuelFound.setCdeTypIde12(input.getCdeTypIde12());
+                    ligneProgrammeCPDao.save(oeuvreManuelFound);
+                } else {
+                    input.setAjout(MANUEL);
+                    createOeuvreManuel(input, programme);
+                }
+            }
+        }
+        /*LigneProgrammeCP oeuvreManuelFound = ligneProgrammeCPDao.findOeuvreManuelByIde12AndCdeUtil(input.getNumProg(), input.getIde12(), input.getCdeUtil());
         if(oeuvreManuelFound != null) {
             oeuvreManuelFound.setCdeCisac(CDE_CISAC_058);
             oeuvreManuelFound.setCdeFamilTypUtil(programme.getFamille().getCode());
@@ -218,6 +272,7 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
         } else {
             List<LigneProgrammeCP> founds = ligneProgrammeCPDao.findOeuvresAutoByIde12AndCdeUtil(input.getNumProg(), input.getIde12(), input.getCdeUtil());
             if(founds != null && !founds.isEmpty()) {
+                input.setAjout(CORRIGE);
                 LigneProgrammeCP oeuvreManuel = createOeuvreManuel(input, programme);
                 founds.forEach( found -> {
                     found.setOeuvreManuel(oeuvreManuel);
@@ -226,9 +281,10 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
                 });
         
             } else {
+                input.setAjout(MANUEL);
                 createOeuvreManuel(input, programme);
             }
-        }
+        }*/
         
     }
     
@@ -255,7 +311,7 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
         input.setCdeCisac(CDE_CISAC_058);
         input.setCdeFamilTypUtil(programme.getFamille().getCode());
         input.setCdeTypUtil(programme.getTypeUtilisation().getCode());
-        input.setAjout(MANUEL);
+        /*input.setAjout(MANUEL);*/
         input.setSelection(TRUE);
         input.setDateInsertion(new Date());
         input.setCdeTypIde12(input.getCdeTypIde12());
@@ -319,6 +375,7 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
 
         Map<String, Long> result = new HashMap<>();
         result.put(AUTOMATIQUE, 0L);
+        result.put(CORRIGE, 0L);
         result.put(MANUEL, 0L);
         result.put(SOMME, 0L);
 

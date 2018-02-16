@@ -555,7 +555,7 @@ CREATE TABLE `PRIAM_LIGNE_PROGRAMME` (
   `cdeFamilTypUtilOri` varchar(45) DEFAULT NULL,
   `utilisateur` varchar(250) DEFAULT 'Batch Extraction',
   `date_insertion` datetime DEFAULT CURRENT_TIMESTAMP,
-  `ajout` varchar(45) DEFAULT 'Automatique',
+  `ajout` varchar(45) DEFAULT 'AUTOMATIQUE',
   `selection` tinyint(1) DEFAULT '0',
   `idOeuvreManuel` int(11) DEFAULT NULL,
   `SEL_EN_COURS` tinyint(4) DEFAULT '1',

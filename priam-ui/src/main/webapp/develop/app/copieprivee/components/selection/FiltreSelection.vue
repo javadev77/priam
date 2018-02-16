@@ -60,7 +60,7 @@
               </div>
 
               <div class="form-group col-md-4">
-                <label class="col-md-8 control-label blueText text-right">Ajout</label>
+                <label class="col-md-8 control-label blueText text-right">Etat</label>
                 <div class="col-md-16">
                   <v-select :searchable="false" v-model="filter.ajout" :options="ajoutOptions"></v-select>
                 </div>
@@ -133,7 +133,8 @@
         return [
             'Tous',
             'Manuel',
-            'Automatique'
+            'Automatique',
+            'Corrigé'
         ];
       },
       selectionOptions() {

@@ -83,7 +83,8 @@
                             nomParticipant1,
                             cdeTypUtilOri,
                             cdeFamilTypUtilOri,
-                            libelleUtilisateur
+                            libelleUtilisateur,
+                            ajout
                         )
                         VALUES (
                             :idFichier,
@@ -121,7 +122,8 @@
                             :cdeFamilTypUtilOri,
                             (SELECT concat(libUtil.CDEUTIL, case when libUtil.LIBABRGUTIL is null then '' else ' - ' end, coalesce(libUtil.LIBABRGUTIL, ''))
                              FROM SAREFTJ_LIBUTIL libUtil
-                              WHERE libUtil.CDEUTIL = :cdeUtil )
+                              WHERE libUtil.CDEUTIL = :cdeUtil ),
+                              'AUTOMATIQUE'
                         )
                 ]]>
             </value>

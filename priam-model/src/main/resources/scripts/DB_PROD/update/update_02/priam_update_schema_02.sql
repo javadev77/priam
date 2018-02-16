@@ -44,7 +44,7 @@ CREATE TABLE `PRIAM_LIGNE_PROGRAMME_CMS` (
   `cdeFamilTypUtilOri` varchar(45) DEFAULT NULL,
   `utilisateur` varchar(250) DEFAULT 'Batch Extraction',
   `date_insertion` datetime DEFAULT CURRENT_TIMESTAMP,
-  `ajout` varchar(45) DEFAULT 'Automatique',
+  `ajout` varchar(45) DEFAULT 'AUTOMATIQUE',
   `selection` tinyint(1) DEFAULT '0',
   `idOeuvreManuel` int(11) DEFAULT NULL,
   `SEL_EN_COURS` tinyint(4) DEFAULT '1',
@@ -93,7 +93,7 @@ CREATE TABLE `PRIAM_LIGNE_PROGRAMME_TRAITEMENT_BATCH` (
   `cdeFamilTypUtilOri` varchar(45) DEFAULT NULL,
   `utilisateur` varchar(250) DEFAULT 'Batch Extraction',
   `date_insertion` datetime DEFAULT CURRENT_TIMESTAMP,
-  `ajout` varchar(45) DEFAULT 'Automatique',
+  `ajout` varchar(45) DEFAULT 'AUTOMATIQUE',
   `selection` tinyint(1) DEFAULT '0',
   `idOeuvreManuel` int(11) DEFAULT NULL,
   `SEL_EN_COURS` tinyint(4) DEFAULT '1',
@@ -142,7 +142,7 @@ CREATE TABLE `PRIAM_LIGNE_PROGRAMME_FV` (
   `cdeFamilTypUtilOri` varchar(45) DEFAULT NULL,
   `utilisateur` varchar(250) DEFAULT 'Batch Extraction',
   `date_insertion` datetime DEFAULT CURRENT_TIMESTAMP,
-  `ajout` varchar(45) DEFAULT 'Automatique',
+  `ajout` varchar(45) DEFAULT 'AUTOMATIQUE',
   `selection` tinyint(1) DEFAULT '0',
   `idOeuvreManuel` int(11) DEFAULT NULL,
   `SEL_EN_COURS` tinyint(4) DEFAULT '1',
@@ -297,7 +297,7 @@ CREATE TABLE `PRIAM_LIGNE_PROGRAMME_CMS_COPY` (
   `cdeFamilTypUtilOri` varchar(45) DEFAULT NULL,
   `utilisateur` varchar(250) DEFAULT 'Batch Extraction',
   `date_insertion` datetime DEFAULT CURRENT_TIMESTAMP,
-  `ajout` varchar(45) DEFAULT 'Automatique',
+  `ajout` varchar(45) DEFAULT 'AUTOMATIQUE',
   `selection` tinyint(1) DEFAULT '0',
   `idOeuvreManuel` int(11) DEFAULT NULL,
   `SEL_EN_COURS` tinyint(4) DEFAULT '1',
@@ -342,5 +342,6 @@ CREATE TABLE PRIAM_CATALOGUE_OCTAV_ANT (
   PRIMARY KEY (ID)
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 commit;

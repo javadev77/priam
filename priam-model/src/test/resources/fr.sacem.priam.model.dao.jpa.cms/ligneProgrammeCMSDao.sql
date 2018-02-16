@@ -1,0 +1,40 @@
+USE priam_app;
+
+Insert into SAREFTR_RION (RION,DATCALC,DATRGLMT,FILTRE,ORDAFF,COM,DATCRE,USERCRE,DATMAJ,USERMAJ)
+values ('642','2012-03-29', '2012-07-05', '9223372036854775807','0','Répartition 2ème Trimestre 2012.', '2011-11-17','bautistaf', '2012-04-08','BUISSONF');
+
+INSERT INTO PRIAM_PROGRAMME(NUMPROG, NOM, RION_THEORIQUE, CDEFAMILTYPUTIL, CDETYPUTIL, TYPE_REPART, DATE_CREATION, STATUT_PROG_CODE, RION_PAIEMENT)
+VALUES ('180007', 'TEST PRG CMS ANT', 642, 'UC','SONOANT', 'OEUVRE', '2018-01-15 16:17:42', 'AFFECTE', NULL);
+
+INSERT INTO PRIAM_FICHIER
+(NOM, CDEFAMILTYPUTIL, CDETYPUTIL, DATE_DEBUT_CHGT, DATE_FIN_CHGT, NB_LIGNES, STATUT_CODE, NUMPROG)
+VALUES ('Fichier 151', 'UC', 'SONOANT', '2018-01-22 10:33:18', '2018-01-22 10:33:19', 5, 'AFFECTE', '180007');
+
+INSERT INTO PRIAM_LIGNE_PROGRAMME_CMS (numProg, cdeTypUtil, ide12, nbrDif, ID_FICHIER, titreOeuvre, roleParticipant1, nomParticipant1)
+VALUES ('180007', 'SONOANT', 2000163011, 30, (SELECT ID FROM PRIAM_FICHIER WHERE NOM ='Fichier 151'), 'Titre1', 'CA', 'Participant1');
+
+INSERT INTO PRIAM_LIGNE_PROGRAMME_CMS (numProg, cdeTypUtil, ide12, nbrDif, ID_FICHIER, titreOeuvre, roleParticipant1, nomParticipant1)
+VALUES ('180007', 'SONOANT', 2002037711, 30, (SELECT ID FROM PRIAM_FICHIER WHERE NOM ='Fichier 151'), 'Titre2', 'CA', 'Participant2');
+
+INSERT INTO PRIAM_LIGNE_PROGRAMME_CMS (numProg, cdeTypUtil, ide12, nbrDif, ID_FICHIER, titreOeuvre, roleParticipant1, nomParticipant1)
+VALUES ('180007', 'SONOANT', 2002665711, 30, (SELECT ID FROM PRIAM_FICHIER WHERE NOM ='Fichier 151'), 'Titre3', 'CA', 'Participant3');
+
+INSERT INTO PRIAM_LIGNE_PROGRAMME_CMS (numProg, cdeTypUtil, ide12, nbrDif, ID_FICHIER, titreOeuvre, roleParticipant1, nomParticipant1)
+VALUES ('180007', 'SONOANT', 2003256311, 30, (SELECT ID FROM PRIAM_FICHIER WHERE NOM ='Fichier 151'), 'Titre4', 'CA', 'Participant4');
+
+INSERT INTO PRIAM_LIGNE_PROGRAMME_CMS (numProg, cdeTypUtil, ide12, nbrDif, ID_FICHIER, titreOeuvre, roleParticipant1, nomParticipant1)
+VALUES ('180007', 'SONOANT', 2003257111, 30, (SELECT ID FROM PRIAM_FICHIER WHERE NOM ='Fichier 151'), 'Titre5', 'CA', 'Participant5');
+
+INSERT INTO PRIAM_LIGNE_PROGRAMME_CMS (numProg, cdeTypUtil, ide12, nbrDif, ID_FICHIER, titreOeuvre, roleParticipant1, nomParticipant1, selection)
+VALUES ('180007', 'SONOANT', 2018280111, 30, (SELECT ID FROM PRIAM_FICHIER WHERE NOM ='Fichier 151'), 'Titre6', 'CA', 'Participant6', 1);
+
+INSERT INTO PRIAM_LIGNE_PROGRAMME_CMS (numProg, cdeTypUtil, ide12, nbrDif, ID_FICHIER, titreOeuvre, roleParticipant1, nomParticipant1, ajout)
+VALUES ('180007', 'SONOANT', 2018300111, 30, (SELECT ID FROM PRIAM_FICHIER WHERE NOM ='Fichier 151'), 'Titre7', 'CA', 'Participant7', 'CORRIGE');
+
+INSERT INTO PRIAM_LIGNE_PROGRAMME_CMS (numProg, cdeTypUtil, ide12, nbrDif, ID_FICHIER, titreOeuvre, roleParticipant1, nomParticipant1, ajout)
+VALUES ('180007', 'SONOANT', 2018290111, 30, (SELECT ID FROM PRIAM_FICHIER WHERE NOM ='Fichier 151'), 'Titre8', 'CA', 'Participant8', 'Manuel');
+
+INSERT INTO `PRIAM_CATALOGUE_OCTAV` (`TYPE_CMS`, `IDE12`, `TITRE`, `ROLE`, `PARTICIPANT`)
+VALUES ('ANF', 2002037711, 'Titre12', 'CA', 'Participant12');
+
+COMMIT;

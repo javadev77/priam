@@ -54,6 +54,7 @@
         <property name="delegate" ref="flatFileItemReader"/>
         <property name="strict" value="false"/>
         <property name="utilFile" ref="utilFile"/>
+        <property name="typeFichier" value="${type.fichier}"/>
     </bean>
 
     <bean id="flatFileItemReader"
@@ -160,7 +161,8 @@
                             cdeTypUtilOri,
                             cdeFamilTypUtilOri,
                             libelleUtilisateur,
-                            RION_N_ANT
+                            RION_N_ANT,
+                            ajout
                         )
                         VALUES (
                             :idFichier,
@@ -197,7 +199,8 @@
                             :cdeTypUtilOri,
                             :cdeFamilTypUtilOri,
                             :cdeUtil,
-                            :rionAnt
+                            :rionAnt,
+                            'AUTOMATIQUE'
                         )
                 ]]>
             </value>
@@ -329,7 +332,7 @@
                             :libelleUtilisateur,
                             :utilisateur,
                             :date_insertion,
-                            :ajout,
+                            'AUTOMATIQUE',
                             :selection,
                             :rionAnt
                         )
