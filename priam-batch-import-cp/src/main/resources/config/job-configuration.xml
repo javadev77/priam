@@ -34,6 +34,7 @@
     </job>
     <bean id="listenerCompletition" class="fr.sacem.listener.importPenef.JobCompletionNotificationLigneProgrammeImportPenefListener">
         <property name="fichierBatchService" ref="fichierBatchService"/>
+        <property name="typeFichier" value="${type.fichier}"/>
     </bean>
     <bean id="readerPriamZip"
           class="fr.sacem.service.importPenef.ZipMultiResourceCPItemReader" scope="step">
