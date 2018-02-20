@@ -1,17 +1,14 @@
 package fr.sacem.dao;
 
 import fr.sacem.domain.Programme;
-import fr.sacem.util.UtilFile;
-import org.springframework.dao.DataAccessException;
+import fr.sacem.util.DateTimeUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.ResultSetExtractor;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 /**
  * Created by fandis on 15/12/2017.
@@ -64,7 +61,7 @@ public class ProgrammeBatchDao {
         jdbcTemplate.update(sql, stmt -> {
             stmt.setString(1, "CREE");
             stmt.setString(2, user);
-            stmt.setTimestamp(3, UtilFile.getCurrentTimeStamp());
+            stmt.setTimestamp(3, new DateTimeUtils().getCurrentTimeStamp());
             stmt.setString(4, numProg);
         });
     }

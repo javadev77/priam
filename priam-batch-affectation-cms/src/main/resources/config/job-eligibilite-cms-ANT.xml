@@ -13,10 +13,10 @@
 
     <job id="jobEligibiliteCMSAntille" xmlns="http://www.springframework.org/schema/batch">
         <!--<step id="chargerCatalogueOctav" next="eligibiliteStep">-->
-        <step id="chargerCatalogueOctav" next="copierCatalogueOctavStep">
+        <step id="chargerCatalogueOctavAnt" next="copierCatalogueOctavStep">
             <tasklet>
                 <chunk
-                        reader="catalogueOctavReader"
+                        reader="catalogueOctavANTReader"
                         processor="catalogueOctavProcessor"
                         writer="catalogueOctavWriter"
                         commit-interval="${commit-interval}">
@@ -24,7 +24,7 @@
             </tasklet>
         </step>
 
-        <step id="copierCatalogueOctavStep" parent="chargerCatalogueOctav" next="calculPointsANTStep">
+        <step id="copierCatalogueOctavStep" parent="chargerCatalogueOctavAnt" next="calculPointsANTStep">
             <tasklet>
                 <chunk
                         reader="readerCopierCatalogueOctavStep"
@@ -68,6 +68,13 @@
         </listeners>
 
     </job>
+
+
+    <bean id="catalogueOctavANTReader"
+          class="fr.sacem.priam.batch.affectation.reader.CatalogueOctavZipMultiResourceItemReader" scope="step">
+        <property name="delegate" ref="flatFileItemReader"/>
+        <property name="strict" value="false"/>
+    </bean>
 
 
     <bean id="readerCopierCatalogueOctavStep"

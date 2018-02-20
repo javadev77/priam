@@ -22,7 +22,7 @@
 
 
     <job id="jobEligibiliteOctav" xmlns="http://www.springframework.org/schema/batch">
-        <step id="chargerCatalogueOctav" next="eligibiliteStep">
+        <step id="chargerCatalogueOctavFRA" next="eligibiliteStep">
 
             <tasklet>
                 <chunk
@@ -86,7 +86,9 @@
     </job>
 
 
-    <bean id="listenerCompletition" class="fr.sacem.priam.batch.affectation.listener.JobCompletionNotificationAffectationCMSListener">
+    <bean id="listenerCompletition"
+          class="fr.sacem.priam.batch.affectation.listener.JobCompletionNotificationAffectationCMSListener"
+          scope="prototype">
         <property name="fichierBatchService" ref="fichierBatchService"/>
     </bean>
 
@@ -219,7 +221,7 @@
     <bean id="ligneCMSProcessor" class="fr.sacem.priam.batch.affectation.processor.LigneCMSProcessor"/>
 
     <bean id="flatFileItemReader"
-          class="org.springframework.batch.item.file.FlatFileItemReader">
+          class="org.springframework.batch.item.file.FlatFileItemReader" scope="prototype">
         <property name="lineMapper">
             <bean class="org.springframework.batch.item.file.mapping.DefaultLineMapper">
                 <property name="lineTokenizer">
@@ -426,7 +428,7 @@
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
-    <bean id="utilFile" class="fr.sacem.util.UtilFile">
+    <bean id="utilFile" class="fr.sacem.util.UtilFile" scope="prototype">
         <property name="fichierBatchService" ref="fichierBatchService"/>
     </bean>
 

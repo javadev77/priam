@@ -90,7 +90,7 @@ public class ZipFileJobConfigurationTest {
         FileOutputStream fos = new FileOutputStream(inputDirectory + "\\" + ZIP_FILE);
         Charset cs = Charset.forName("IBM437");
         ZipOutputStream zos = new ZipOutputStream(fos);
-        UtilFile.addToZipFile(SINGLE_FILE, zos);
+        new UtilFile().addToZipFile(SINGLE_FILE, zos);
 
         jobParametersMap.put("input.archives", new JobParameter(inputDirectory));
         jobParametersMap.put("output.archives", new JobParameter(outputDirectory));

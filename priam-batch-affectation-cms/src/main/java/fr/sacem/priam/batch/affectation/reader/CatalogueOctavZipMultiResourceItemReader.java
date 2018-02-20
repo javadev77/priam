@@ -39,11 +39,15 @@ public class CatalogueOctavZipMultiResourceItemReader<T> extends MultiResourceIt
     private Resource[] archives;
     private ZipFile[] zipFiles;
     private StepExecution stepExecution;
+
     @Autowired
     private UtilFile utilFile;
+
     private ZipFile zipFile;
+
     @Autowired
     private FichierBatchService fichierBatchService;
+
     private static String FILE_ZIP_EN_COURS_DE_TRAITEMENT = "_en_cours_de_traitement";
 
     @Autowired
@@ -100,7 +104,10 @@ public class CatalogueOctavZipMultiResourceItemReader<T> extends MultiResourceIt
                                 File file = fichiersDansLeRepertoire.get(j);
                                 LOG.debug("=== fichiers Dans Le Repertoire : "+file.getName()+" ===");
                                 //on traite qu'un seul fichier zip par lancement de batch
-                                if (file.getName().matches(EXTENTION_ZIP) && nbrDeFichierZipATraiter < 1 && ((file.getName().startsWith(FileUtils.PREFIX_OCTAV_CATALOGUE_FR)) && typeUtilisationProgramme.equals(TypeUtilisationEnum.CMS_FRA.getCode().toString())|| (file.getName().startsWith(FileUtils.PREFIX_OCTAV_CATALOGUE_ANF)) && typeUtilisationProgramme.equals(TypeUtilisationEnum.CMS_ANT.getCode().toString()))) {
+                                if (file.getName().matches(EXTENTION_ZIP) && nbrDeFichierZipATraiter < 1 &&
+                                        ((file.getName().startsWith(FileUtils.PREFIX_OCTAV_CATALOGUE_FR))
+                                        && typeUtilisationProgramme.equals(TypeUtilisationEnum.CMS_FRA.getCode().toString()) || (file.getName().startsWith(FileUtils.PREFIX_OCTAV_CATALOGUE_ANF))
+                                        && typeUtilisationProgramme.equals(TypeUtilisationEnum.CMS_ANT.getCode().toString()))) {
 
                                     File fichierEnCoursDeTraitement = new File(rep + file.getName() + FILE_ZIP_EN_COURS_DE_TRAITEMENT);
                                     LOG.debug("=== renomer le fichier en : "+fichierEnCoursDeTraitement.getName()+" ===");

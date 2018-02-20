@@ -2,6 +2,7 @@ package fr.sacem.Batch.dao;
 
 import fr.sacem.dao.FichierRepositoryImpl;
 import fr.sacem.domain.Fichier;
+import fr.sacem.util.DateTimeUtils;
 import fr.sacem.util.UtilFile;
 import fr.sacem.util.exception.PriamValidationException;
 import org.junit.Assert;
@@ -35,7 +36,7 @@ public class FichierRepositoryTest {
     @Test
     public void addFichierTest() {
         Fichier fichier = new Fichier();
-        fichier.setDateDebutChargt(UtilFile.getCurrentTimeStamp());
+        fichier.setDateDebutChargt(new DateTimeUtils().getCurrentTimeStamp());
         fichier.setFamille("COPIEPRIV");
         fichier.setNom("FF_PENEF_EXTRANA_EXTCPRIVSONPH_MON_FICHIER1");
         fichier.setTypeUtilisation("CPRIVSONPH");

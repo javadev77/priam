@@ -26,16 +26,13 @@ import java.util.zip.ZipOutputStream;
  * Created by fandis on 10/05/2017.
  */
 public class UtilFile {
-    private final static char SEPARATOR = ';';
     private static final Logger LOG = LoggerFactory.getLogger(UtilFile.class);
     private static final String MON_FILTER = "TRACABILITE";
-    private static final String STATUT_EN_COURS = "EN_COURS";
     private static final String EXTENTION_CSV = ".csv";
     private FichierBatchService fichierBatchService;
 
 
-    @Autowired
-    public static Long nombreDeLignes(InputStream inputStream) {
+    public Long nombreDeLignes(InputStream inputStream) {
         String input ;
         Long count = 0L;
         try {
@@ -53,61 +50,9 @@ public class UtilFile {
         return count;
     }
 
-    public static Fichier chargerLesDonnees(InputStream inputStream, String nomFichier) {
-        Fichier fichier = new Fichier();
-        try {
-            //Traitement pour recuperer la famille et le type d'utilisation depuis le contenu du ficiher
-            Reader reader = new InputStreamReader(inputStream);
-            BufferedReader bufferedReader = new BufferedReader(reader);
-            CSVReader csvReader = new CSVReader(bufferedReader, SEPARATOR);
-            List<String[]> data = new ArrayList<String[]>();
 
-            String[] nextLine = null;
-            String[] donnee = null;
-            Long nbLignes = 0L;
-            while ((nextLine = csvReader.readNext()) != null) {
-                // ligne vide
-                if (nextLine == null || nextLine.length == 0) {
-                    continue;
-                }
-                String debut = nextLine[0].trim();
-                if (StringUtils.isBlank(debut) || StringUtils.isEmpty(debut) ) {
-                    continue;
-                }
 
-                // ligne de commentaire
-                if (debut.startsWith("#")) {
-                    continue;
-                }
-                if(donnee == null) {
-                    donnee = nextLine;
-                }
-                
-                nbLignes++;
-            }
-            // on a besoin de charger que la premiere ligne pour recuperer typeUtilisation et la famille
-            if (donnee != null) {
-                fichier.setTypeUtilisation(donnee[4]);
-                fichier.setFamille(donnee[1]);
-                fichier.setNom(nomFichier);
-                // Date de debout de chargement
-                fichier.setDateDebutChargt(UtilFile.getCurrentTimeStamp());
-                //Nom du fichier a intégrer en BDD
-                fichier.setNom(nomFichier);
-                //Nombre de lignes dans le fichier
-                fichier.setNbLignes(nbLignes);
-                fichier.setStatut(STATUT_EN_COURS);
-            }
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-        return fichier;
-    }
 
-    public static java.sql.Timestamp getCurrentTimeStamp() {
-        java.util.Date today = new java.util.Date();
-        return new java.sql.Timestamp(today.getTime());
-    }
 
     /**
      * Extract only files from the zip archive.
@@ -140,7 +85,7 @@ public class UtilFile {
         return idFichier;
     }
 
-    public static void addToZipFile(String fileName, ZipOutputStream zos) throws IOException {
+    public void addToZipFile(String fileName, ZipOutputStream zos) throws IOException {
 
         System.out.println("Writing '" + fileName + "' to zip file");
 

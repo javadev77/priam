@@ -37,7 +37,7 @@ public class UtilFileTest {
         UtilFile utilFile = new UtilFile();
         File file = new File(SINGLE_FILE);
         InputStream targetStream = new FileInputStream(file);
-        Fichier fichier = utilFile.chargerLesDonnees(targetStream, NOM_FICHIER_CSV);
+        Fichier fichier = null;//utilFile.chargerLesDonnees(targetStream, NOM_FICHIER_CSV);
         Assert.assertEquals(fichier.getNom(), NOM_FICHIER_CSV);
         Assert.assertEquals(fichier.getFamille(), "COPIEPRIV");
         Assert.assertEquals(fichier.getTypeUtilisation(), "CPRIVSONRD");

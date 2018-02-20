@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
@@ -23,6 +24,8 @@ public class TraitementCmsDao {
 
     }
 
+
+    @Transactional
     public long createTraitement(String numProg, Long nbOeuvres) {
         String sql =  "INSERT INTO PRIAM_TRAITEMENT_ELIGIBILITE_CMS (DATE_DEBUT_TMT, NUMPROG, STATUT_ELIGIBILITE, NB_OEUVRES_EXTRACT)" +
                 "  VALUES (?, ?, ?, ?)";
@@ -43,6 +46,8 @@ public class TraitementCmsDao {
         return keyHolder.getKey().longValue();
     }
 
+
+    @Transactional
     public void majTraitment(Long idTraitementCMS, Long nbOeuvresCatalogue,
                              Long oeuvresRetenues, Double sommePoints, String statutEligibilite) {
         String sql =  "UPDATE PRIAM_TRAITEMENT_ELIGIBILITE_CMS SET STATUT_ELIGIBILITE = ?, DATE_FIN_TMT = ?, " +
@@ -59,6 +64,8 @@ public class TraitementCmsDao {
         });
     }
 
+
+    @Transactional
     public void viderCatalogueOctav(String type_cms) {
         LOG.info("=== Suppression du contenu de la table PRIAM_CATALOGUE_OCTAV ====");
         //TODO HABIB : Ajouter DELETE FROM WHERE TYPE_CMS=FR
@@ -72,6 +79,8 @@ public class TraitementCmsDao {
         jdbcTemplate.update(sql);
     }
 
+
+    @Transactional
     public void viderCatalogueOctavAnt(String numProg){
         LOG.info("=== Suppression du contenu de la table PRIAM_CATALOGUE_OCTAV ====");
         String sql = "DELETE FROM PRIAM_CATALOGUE_OCTAV_ANT WHERE NUMPROG="+ "'" + numProg + "'";
