@@ -385,11 +385,11 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
     @Transactional
     public boolean isEligible(Long ide12, String typeCMS){
         boolean result = false;
-        CatalogueOctav oeuvreCatalogueOctav = new CatalogueOctav();
-        if(typeCMS.equals("ANT")){
+        CatalogueOctav oeuvreCatalogueOctav = null;
+        if("ANT".equals(typeCMS)){
             oeuvreCatalogueOctav = catalogueOctavDao.findByIde12(ide12, FileUtils.CATALOGUE_OCTAV_TYPE_CMS_ANF);
         } else {
-            oeuvreCatalogueOctav = catalogueOctavDao.findByIde12(ide12, typeCMS);
+            oeuvreCatalogueOctav = catalogueOctavDao.findByIde12(ide12, FileUtils.CATALOGUE_OCTAV_TYPE_CMS_FR);
         }
         if (oeuvreCatalogueOctav!=null){
             result = true;

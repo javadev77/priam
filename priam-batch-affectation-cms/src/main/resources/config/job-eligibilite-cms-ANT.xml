@@ -13,6 +13,7 @@
 
     <job id="jobEligibiliteCMSAntille" xmlns="http://www.springframework.org/schema/batch">
         <!--<step id="chargerCatalogueOctav" next="eligibiliteStep">-->
+
         <step id="chargerCatalogueOctavAnt" next="copierCatalogueOctavStep">
             <tasklet>
                 <chunk
@@ -24,7 +25,7 @@
             </tasklet>
         </step>
 
-        <step id="copierCatalogueOctavStep" parent="chargerCatalogueOctavAnt" next="calculPointsANTStep">
+        <step id="copierCatalogueOctavStep" next="calculPointsANTStep">
             <tasklet>
                 <chunk
                         reader="readerCopierCatalogueOctavStep"
@@ -69,13 +70,11 @@
 
     </job>
 
-
     <bean id="catalogueOctavANTReader"
           class="fr.sacem.priam.batch.affectation.reader.CatalogueOctavZipMultiResourceItemReader" scope="step">
         <property name="delegate" ref="flatFileItemReader"/>
         <property name="strict" value="false"/>
     </bean>
-
 
     <bean id="readerCopierCatalogueOctavStep"
           class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
@@ -256,7 +255,7 @@
                         :participant,
                         :numProg,
                         :nbrDif,
-                        '#{jobExecutionContext['idFichier']}',
+                        '#{jobExecutionContext['ID_FICHIER_LINK']}',
                         'AUTOMATIQUE'
                         )
                       ;

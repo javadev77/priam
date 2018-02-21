@@ -283,7 +283,7 @@
               type: 'numeric',
               cell: {
                 toText : function(entry) {
-                  var result = entry;
+                  var result = entry.nbrDif;
                   if(result !=undefined)
                     return result.nbrDif ;
                   else

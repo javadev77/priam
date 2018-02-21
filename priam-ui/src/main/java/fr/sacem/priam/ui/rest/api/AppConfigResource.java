@@ -1,3 +1,4 @@
+/*
 package fr.sacem.priam.ui.rest.api;
 
 import fr.sacem.priam.common.constants.EnvConstants;
@@ -9,9 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.Map;
 
+*/
 /**
  * Created by benmerzoukah on 23/01/2018.
- */
+ *//*
+
 
 @RestController
 @RequestMapping("/app/rest/appConfig")
@@ -33,3 +36,4 @@ public class AppConfigResource {
 
 
 }
+*/

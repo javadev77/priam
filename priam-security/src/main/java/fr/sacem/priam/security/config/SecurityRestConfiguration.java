@@ -43,6 +43,11 @@ public class SecurityRestConfiguration extends WebSecurityConfigurerAdapter {
   private static final Logger LOGGER = LoggerFactory.getLogger(SecurityRestConfiguration.class);
   @Override
   protected void  configure(HttpSecurity http) throws Exception {
+//    String webappMode = Environment.getParameter("webapp.mode");
+//    if("dev".equalsIgnoreCase(webappMode)) {
+//      http.cors().and();
+//    }
+
       http.cors()
           .and()
             .csrf().disable()

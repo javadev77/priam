@@ -410,6 +410,7 @@
       },
 
       rionTheoriqueOptions() {
+          debugger;
         return this.$store.getters.rionsAddProg;
       },
 
@@ -576,7 +577,7 @@
       },
 
       findProgInResult(listeProg, numProg) {
-          var result = null;
+          var result = undefined;
           if(listeProg !== undefined && listeProg.length >0) {
             result =  listeProg.find(function (elem) {
                 return elem.numProg !== numProg;
@@ -601,7 +602,7 @@
 
             var rionTheoriqueCode = this.programmeToModify.rionTheorique;
             console.log('rionTheoriqueCode=' + rionTheoriqueCode)
-            this.rionTheoriqueSelected = this.$store.getters.rionsAddProg.find(function (element) {
+            this.rionTheoriqueSelected = this.$store.getters.rionsSaref.find(function (element) {
               return Number.parseInt(element.id) === rionTheoriqueCode;
             });
 

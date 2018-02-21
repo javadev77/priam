@@ -26,9 +26,6 @@ public class LignePreprep implements Serializable {
     @Column(name = "rionEffet")
     private Integer rionEffet;
     
-    /*@Column(name = "keyLigPenel")
-    private Integer keyLigPenel;*/
-    
     
     @Column(name = "cdeFamilTypUtil")
     private String cdeFamilTypUtil;
@@ -158,11 +155,6 @@ public class LignePreprep implements Serializable {
         this.cdeModDif = cdeModDif;
         this.cdeTypIde12 = cdeTypIde12;
         this.ide12 = ide12;
-        /*if (durDif == 0L || Objects.isNull(durDif)){
-            this.durDif = null;
-        } else {
-            this.durDif = durDif;
-        }*/
         this.durDif = durDif;
         this.nbrDif = nbrDif;
         this.mt = mt;
@@ -173,15 +165,7 @@ public class LignePreprep implements Serializable {
         this.indDoubSsTit = indDoubSsTit;
         this.tax = tax;
     }
-    
-   /* public Long getId() {
-        return id;
-    }
-    
-    public void setId(Long id) {
-        this.id = id;
-    }*/
-    
+
     public String getCdeCisac() {
         return cdeCisac;
     }

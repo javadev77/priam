@@ -1,5 +1,5 @@
 spring:
   profiles:
-    active: dev
+    active: @spring.active.profiles@
   jmx:
     enabled: false

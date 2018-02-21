@@ -28,7 +28,7 @@ public class ListnerCopierLigneProgrammeCMS extends StepExecutionListenerSupport
 
         JobExecution jobExecution = stepExecution.getJobExecution();
         ExecutionContext jobContext = jobExecution.getExecutionContext();
-        jobContext.put("idFichier", new JobParameter(idFichier));
+        jobContext.put("ID_FICHIER_LINK", idFichier);
         stepExecution.setExecutionContext(jobContext);
     }
 

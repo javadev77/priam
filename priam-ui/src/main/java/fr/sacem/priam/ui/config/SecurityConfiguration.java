@@ -48,6 +48,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void  configure(HttpSecurity http) throws Exception {
+//    String webappMode = Environment.getParameter("webapp.mode");
+//    if("dev".equalsIgnoreCase(webappMode)) {
+//      http.cors().and();
+//    }
+
       http.cors()
           .and()
             .csrf().disable()

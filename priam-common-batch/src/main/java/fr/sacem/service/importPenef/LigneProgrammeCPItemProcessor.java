@@ -64,7 +64,6 @@ public class LigneProgrammeCPItemProcessor implements ItemProcessor<LigneProgram
 		}
 
 	  }
-    
         return ligneProgramme;
     }
 
