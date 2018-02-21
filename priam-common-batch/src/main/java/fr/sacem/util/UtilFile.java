@@ -1,21 +1,14 @@
 package fr.sacem.util;
 
-import au.com.bytecode.opencsv.CSVReader;
-import com.google.common.io.Files;
-import fr.sacem.domain.Fichier;
 import fr.sacem.service.importPenef.FichierBatchService;
 import fr.sacem.util.exception.PriamValidationException;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.JobParameter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 
 import java.io.*;
-
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.zip.ZipEntry;

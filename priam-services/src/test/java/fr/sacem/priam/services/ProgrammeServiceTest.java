@@ -195,7 +195,7 @@ public class ProgrammeServiceTest {
 	public void getDurDifProgramme(){
 		Map<String, Long> durDifProgramme = ((LigneProgrammeCPServiceImpl)ligneProgrammeService).getDurDifProgramme(NUM_PROG, AFFECTE);
 		assertThat(durDifProgramme).isNotEmpty();
-		assertThat(durDifProgramme.size()).isEqualTo(3);
+		assertThat(durDifProgramme.size()).isEqualTo(5);
 	}
 
 	@Test

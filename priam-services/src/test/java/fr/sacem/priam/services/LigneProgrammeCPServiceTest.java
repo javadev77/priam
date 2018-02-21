@@ -211,6 +211,7 @@ public class LigneProgrammeCPServiceTest {
         Map<String, String> list = new HashMap<>();
         list.put("ide12", IDE12);
         list.put("libAbrgUtil", "0002");
+        list.put("durDif", "30");
         listIDE12.add(list);
 
         ligneProgrammeCPService.deselectLigneProgramme(NUM_PROG, listIDE12);

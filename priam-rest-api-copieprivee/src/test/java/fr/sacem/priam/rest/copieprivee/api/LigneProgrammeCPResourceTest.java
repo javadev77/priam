@@ -233,6 +233,7 @@ public class LigneProgrammeCPResourceTest extends RestResourceTest {
     Map<String, String> selection = new HashMap<>();
     selection.put("ide12", 6829877211L+"");
     selection.put("libAbrgUtil", "");
+    selection.put("durDif", "30");
     inselectedSet.add(selection);
     input.setUnselected(inselectedSet);
 
@@ -273,6 +274,7 @@ public class LigneProgrammeCPResourceTest extends RestResourceTest {
     SelectionDto se = new SelectionDto();
     se.setIde12(1454545L);
     se.setCdeUtil("LU1");
+    se.setAjout("MANUEL");
 
     mockMvc.perform(
       delete(APP_REST_SUPPRIMER_LIGNE_PROGRAMME + "170001/" + String.valueOf(se.getIde12()))

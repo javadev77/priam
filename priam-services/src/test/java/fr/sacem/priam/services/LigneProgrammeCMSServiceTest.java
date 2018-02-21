@@ -179,6 +179,7 @@ public class LigneProgrammeCMSServiceTest extends AbstractTestExecutionListener 
         oeuvreToDelete.setIde12(3000163011L);
 
         SelectionCMSDto selectionCMSDto = new SelectionCMSDto();
+        selectionCMSDto.setAjout("MANUEL");
 
         ligneProgrammeCMSService.ajouterOeuvreManuel(oeuvreToDelete);
         ligneProgrammeCMSService.supprimerLigneProgramme(NUM_PROG, oeuvreToDelete.getIde12(), selectionCMSDto);

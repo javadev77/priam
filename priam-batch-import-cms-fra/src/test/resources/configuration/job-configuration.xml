@@ -201,6 +201,7 @@
         <property name="delegate" ref="flatFileItemReader"/>
         <property name="strict" value="false"/>
         <property name="utilFile" ref="utilFile"/>
+        <property name="typeFichier" value="${type.fichier}"/>
     </bean>
 
     <bean id="writerPriam" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
