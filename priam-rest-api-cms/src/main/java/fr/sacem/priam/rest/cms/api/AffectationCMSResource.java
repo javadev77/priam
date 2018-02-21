@@ -93,9 +93,10 @@ public class AffectationCMSResource {
 
             JobParameters jobParameters = new JobParameters(jobParametersMap);
 
-            if (TypeUtilisationEnum.CMS_FRA.getCode().equals(programmeDto.getTypeUtilisation())){
+            String typeUtilisation = programmeDto != null  ? programmeDto.getTypeUtilisation() : "";
+            if (TypeUtilisationEnum.CMS_FRA.getCode().equals(typeUtilisation)){
                 jobLauncher.run(jobEligibiliteOctav, jobParameters);
-            } else if (TypeUtilisationEnum.CMS_ANT.getCode().equals(programmeDto.getTypeUtilisation())) {
+            } else if (TypeUtilisationEnum.CMS_ANT.getCode().equals(typeUtilisation)) {
                 jobLauncher.run(jobEligibiliteCMSAntille, jobParameters);
             }
 
