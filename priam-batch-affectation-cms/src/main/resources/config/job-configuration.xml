@@ -29,7 +29,13 @@
                         reader="catalogueOctavReader"
                         writer="catalogueOctavWriter"
                         processor="catalogueOctavProcessor"
-                        commit-interval="${commit-interval}">
+                        commit-interval="${commit-interval}"
+                        retry-limit="15">
+
+                    <retryable-exception-classes>
+                        <include class="org.springframework.dao.DeadlockLoserDataAccessException"/>
+                        <include class="org.springframework.dao.CannotAcquireLockException"/>
+                    </retryable-exception-classes>
                 </chunk>
             </tasklet>
         </step>
