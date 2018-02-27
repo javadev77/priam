@@ -40,6 +40,7 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
     public static final String CORRIGE = "CORRIGE";
     private static final String SOMME = "SOMME";
     public static final int SELECTION = 1;
+    public static final String DUR_DIF = "durDif";
 
 
     @Autowired
@@ -121,11 +122,12 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
                     if("sum(nbrDif)".equals(sortBy.getProperty()) ||
                            "nbrDif".equals(sortBy.getProperty()) ||
                            "sum(durDif)".equals(sortBy.getProperty()) ||
+                            "sum(durDifEdit)".equals(sortBy.getProperty()) ||
                            "durDif".equals(sortBy.getProperty())) {
                         if (TypeUtilisationEnum.COPIE_PRIVEE_SONORE_PHONO.getCode().equals(programme.getTypeUtilisation().getCode())) {
                             sort = JpaSort.unsafe(sortBy.getDirection(), "sum(nbrDif)");
                         } else if (TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode().equals(programme.getTypeUtilisation().getCode())) {
-                            sort = JpaSort.unsafe(sortBy.getDirection(), "sum(durDif)");
+                            sort = JpaSort.unsafe(sortBy.getDirection(), "sum(durDifEdit)");
                         }
                     } else if("libAbrgUtil".equals(sortBy.getProperty())) {
                         sort = JpaSort.unsafe(sortBy.getDirection(), "cdeUtil");
@@ -161,22 +163,68 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
     public void selectLigneProgramme(String numProg, Set<Map<String, String>> idLingesProgrammes) {
         for (Map<String, String>  obj:  idLingesProgrammes) {
             if (obj != null && !obj.isEmpty()) {
-                /*ligneProgrammeCPDao.updateSelectionTemporaireByNumProgramme(numProg,
-                        Long.parseLong(obj.get(IDE_12)),
-                        obj.get(CDE_UTIL).split(" - ")[0],
-                        1,
-                        Long.valueOf(obj.get("durDif")));*/
-                ligneProgrammeCPDao.updateSelectionTemporaireByNumProgramme(numProg,
-                        Long.parseLong(obj.get(IDE_12)),
-                        obj.get(CDE_UTIL).split(" - ")[0],
-                        1,
-                        obj.get("durDif") != null ? Long.valueOf(obj.get("durDif")) : null);
+
+                Long ide12 = Long.parseLong(obj.get(IDE_12));
+                String libUtil = obj.get(CDE_UTIL);
+                String cdeUtil = libUtil !=null ? libUtil.split(" - ")[0] : "";
+
+                ligneProgrammeCPDao.updateSelectionTemporaireByNumProgramme(numProg, ide12, cdeUtil, 1);
+
             }
         }
 
 
     }
-    
+
+    @Transactional
+    @Override
+    public void modifierDurDifTemporaire(String numProg, Set<Map<String, String>> idLingesProgrammes) {
+        for (Map<String, String>  obj:  idLingesProgrammes) {
+            if (obj != null && !obj.isEmpty()) {
+                Long ide12 = Long.parseLong(obj.get(IDE_12));
+                String libUtil = obj.get(CDE_UTIL);
+                String cdeUtil = libUtil !=null ? libUtil.split(" - ")[0] : "";
+
+
+                String durDifStringValue = obj.get(DUR_DIF);
+                Long durDifEdit = durDifStringValue != null && !durDifStringValue.equals("")? Long.valueOf(durDifStringValue) : 0L;
+
+                String ajout = obj.get("ajout");
+
+
+
+                if(AUTOMATIQUE.equals(ajout)) {
+                    List<LigneProgrammeCP> oeuvresAuto = ligneProgrammeCPDao.findOeuvresAutoByIde12AndCdeUtil(numProg, ide12, cdeUtil);
+                    Long sumTotal = oeuvresAuto.stream().mapToLong(lcp -> lcp.getDurDif()).sum();
+                    if(oeuvresAuto != null && !oeuvresAuto.isEmpty()) {
+                        if( !durDifEdit.equals(sumTotal)) {
+                            LigneProgrammeCP ligneProgrammeCP = new LigneProgrammeCP();
+
+                            ligneProgrammeCP.setTitreOeuvre(obj.get("titreOeuvre"));
+                            ligneProgrammeCP.setRoleParticipant1(obj.get("roleParticipant1"));
+                            ligneProgrammeCP.setNomParticipant1(obj.get("nomParticipant1"));
+                            ligneProgrammeCP.setNumProg(numProg);
+                            ligneProgrammeCP.setIde12(ide12);
+                            ligneProgrammeCP.setCdeUtil(cdeUtil);
+                            ligneProgrammeCP.setLibelleUtilisateur(libUtil);
+                            ligneProgrammeCP.setNumProg(numProg);
+                            ligneProgrammeCP.setDurDifEdit(durDifEdit);
+                            ligneProgrammeCP.setCdeTypIde12(oeuvresAuto.get(0).getCdeTypIde12());
+
+                            ajouterOeuvreManuel(ligneProgrammeCP);
+                        }
+
+                    }
+                } else {
+                    ligneProgrammeCPDao.updateDurDifTemporaireByNumProgramme(numProg, ide12, cdeUtil, durDifEdit);
+                }
+
+
+            }
+        }
+
+    }
+
     
     @Transactional
     @Override
@@ -200,6 +248,7 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
                 oeuvreAuto.setSelection(FALSE);
                 oeuvreAuto.setSelectionEnCours(TRUE);
                 oeuvreAuto.setOeuvreManuel(null);
+                oeuvreAuto.setDurDifEdit(oeuvreAuto.getDurDif());
                 ligneProgrammeCPDao.save(oeuvreAuto);
             });
             ligneProgrammeCPDao.delete(oeuvreManuelFound);
@@ -220,74 +269,45 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
             founds.forEach( found -> {
                 found.setOeuvreManuel(oeuvreManuel);
                 found.setSelection(FALSE);
-                ligneProgrammeCPDao.save(found);
+                ligneProgrammeCPDao.saveAndFlush(found);
             });
 
         } else {
             LigneProgrammeCP oeuvreCorrigeFound = ligneProgrammeCPDao.findOeuvreCorrigeByIde12AndCdeUtil(input.getNumProg(), input.getIde12(), input.getCdeUtil());
             if(oeuvreCorrigeFound != null) {
-                oeuvreCorrigeFound.setCdeCisac(CDE_CISAC_058);
-                oeuvreCorrigeFound.setCdeFamilTypUtil(programme.getFamille().getCode());
-                oeuvreCorrigeFound.setCdeTypUtil(programme.getTypeUtilisation().getCode());
                 oeuvreCorrigeFound.setAjout(CORRIGE);
-                oeuvreCorrigeFound.setOeuvreManuel(null);
-                oeuvreCorrigeFound.setDurDif(input.getDurDif());
-                oeuvreCorrigeFound.setNbrDif(input.getNbrDif());
-                oeuvreCorrigeFound.setDateInsertion(new Date());
-                oeuvreCorrigeFound.setUtilisateur(input.getUtilisateur());
-                oeuvreCorrigeFound.setCdeTypIde12(input.getCdeTypIde12());
-                ligneProgrammeCPDao.save(oeuvreCorrigeFound);
+                updateOeuvreManuelOuCorrige(input, programme, oeuvreCorrigeFound);
             } else {
                 LigneProgrammeCP oeuvreManuelFound = ligneProgrammeCPDao.findOeuvreManuelByIde12AndCdeUtil(input.getNumProg(), input.getIde12(), input.getCdeUtil());
                 if(oeuvreManuelFound != null) {
-                    oeuvreManuelFound.setCdeCisac(CDE_CISAC_058);
-                    oeuvreManuelFound.setCdeFamilTypUtil(programme.getFamille().getCode());
-                    oeuvreManuelFound.setCdeTypUtil(programme.getTypeUtilisation().getCode());
                     oeuvreManuelFound.setAjout(MANUEL);
-                    oeuvreManuelFound.setOeuvreManuel(null);
-                    oeuvreManuelFound.setDurDif(input.getDurDif());
-                    oeuvreManuelFound.setNbrDif(input.getNbrDif());
-                    oeuvreManuelFound.setDateInsertion(new Date());
-                    oeuvreManuelFound.setUtilisateur(input.getUtilisateur());
-                    oeuvreManuelFound.setCdeTypIde12(input.getCdeTypIde12());
-                    ligneProgrammeCPDao.save(oeuvreManuelFound);
+                    updateOeuvreManuelOuCorrige(input, programme, oeuvreManuelFound);
                 } else {
                     input.setAjout(MANUEL);
+                    input.setDurDifEdit(input.getDurDif());
                     createOeuvreManuel(input, programme);
                 }
             }
         }
-        /*LigneProgrammeCP oeuvreManuelFound = ligneProgrammeCPDao.findOeuvreManuelByIde12AndCdeUtil(input.getNumProg(), input.getIde12(), input.getCdeUtil());
-        if(oeuvreManuelFound != null) {
-            oeuvreManuelFound.setCdeCisac(CDE_CISAC_058);
-            oeuvreManuelFound.setCdeFamilTypUtil(programme.getFamille().getCode());
-            oeuvreManuelFound.setCdeTypUtil(programme.getTypeUtilisation().getCode());
-            oeuvreManuelFound.setAjout(MANUEL);
-            oeuvreManuelFound.setOeuvreManuel(null);
-            oeuvreManuelFound.setDurDif(input.getDurDif());
-            oeuvreManuelFound.setNbrDif(input.getNbrDif());
-            oeuvreManuelFound.setDateInsertion(new Date());
-            oeuvreManuelFound.setUtilisateur(input.getUtilisateur());
-            oeuvreManuelFound.setCdeTypIde12(input.getCdeTypIde12());
-        } else {
-            List<LigneProgrammeCP> founds = ligneProgrammeCPDao.findOeuvresAutoByIde12AndCdeUtil(input.getNumProg(), input.getIde12(), input.getCdeUtil());
-            if(founds != null && !founds.isEmpty()) {
-                input.setAjout(CORRIGE);
-                LigneProgrammeCP oeuvreManuel = createOeuvreManuel(input, programme);
-                founds.forEach( found -> {
-                    found.setOeuvreManuel(oeuvreManuel);
-                    found.setSelection(FALSE);
-                    ligneProgrammeCPDao.save(found);
-                });
-        
-            } else {
-                input.setAjout(MANUEL);
-                createOeuvreManuel(input, programme);
-            }
-        }*/
         
     }
-    
+
+    private void updateOeuvreManuelOuCorrige(LigneProgrammeCP input, Programme programme, LigneProgrammeCP oeuvreToMdify) {
+
+        oeuvreToMdify.setCdeCisac(CDE_CISAC_058);
+        oeuvreToMdify.setCdeFamilTypUtil(programme.getFamille().getCode());
+        oeuvreToMdify.setCdeTypUtil(programme.getTypeUtilisation().getCode());
+        oeuvreToMdify.setOeuvreManuel(null);
+        oeuvreToMdify.setDurDif(input.getDurDif());
+        oeuvreToMdify.setDurDifEdit(input.getDurDifEdit());
+        oeuvreToMdify.setNbrDif(input.getNbrDif());
+        oeuvreToMdify.setDateInsertion(new Date());
+        oeuvreToMdify.setUtilisateur(input.getUtilisateur());
+        oeuvreToMdify.setCdeTypIde12(input.getCdeTypIde12());
+
+        ligneProgrammeCPDao.saveAndFlush(oeuvreToMdify);
+    }
+
     private LigneProgrammeCP createOeuvreManuel(LigneProgrammeCP input, Programme programme) {
         Fichier probe = new Fichier();
         probe.setAutomatique(false);
@@ -314,7 +334,6 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
         /*input.setAjout(MANUEL);*/
         input.setSelection(TRUE);
         input.setDateInsertion(new Date());
-        input.setCdeTypIde12(input.getCdeTypIde12());
         input.setSelectionEnCours(TRUE);
         input.setSelection(FALSE);
         
@@ -329,8 +348,7 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
                 ligneProgrammeCPDao.updateSelectionTemporaireByNumProgramme(numProg,
                         Long.parseLong(obj.get(IDE_12)),
                         obj.get(CDE_UTIL).split(" - ")[0],
-                        0,
-                        Long.valueOf(obj.get("durDif")));
+                        0);
             }
         }
     }
@@ -342,19 +360,25 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
         
         ligneProgrammeCPDao.updateSelection(numProg, TRUE);
         ligneProgrammeCPDao.updateSelection(numProg, FALSE);
-        
+
+        //
+        ligneProgrammeCPDao.updateDurDif(numProg);
+
         ligneProgrammeCPDao.flush();
     }
     
     @Transactional
     @Override
     public void annulerEdition(String numProg) {
-        List<LigneProgrammeCP> oeuvresManuelsEnCoursEdition = ligneProgrammeCPDao.findOeuvresManuelsEnCoursEdition(numProg, FALSE);
-        oeuvresManuelsEnCoursEdition.forEach( oeuvreManuel -> doDeleteOeuvreManuel(oeuvreManuel));
+        /*List<LigneProgrammeCP> oeuvresManuelsEnCoursEdition = ligneProgrammeCPDao.findOeuvresManuelsEnCoursEdition(numProg, TRUE);
+        oeuvresManuelsEnCoursEdition.forEach( oeuvreManuel -> doDeleteOeuvreManuel(oeuvreManuel));*/
         
         ligneProgrammeCPDao.updateSelectionTemporaire(numProg, FALSE);
         ligneProgrammeCPDao.updateSelectionTemporaire(numProg, TRUE);
-        
+
+        ligneProgrammeCPDao.updateDurDifTemporaire(numProg, FALSE);
+        ligneProgrammeCPDao.updateDurDifTemporaire(numProg, TRUE);
+
         ligneProgrammeCPDao.flush();
     }
     

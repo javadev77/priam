@@ -85,7 +85,8 @@
                             cdeTypUtilOri,
                             cdeFamilTypUtilOri,
                             libelleUtilisateur,
-                            ajout
+                            ajout,
+                            durDifEdit
                         )
                         VALUES (
                             :idFichier,
@@ -124,7 +125,8 @@
                             (SELECT concat(libUtil.CDEUTIL, case when libUtil.LIBABRGUTIL is null then '' else ' - ' end, coalesce(libUtil.LIBABRGUTIL, ''))
                              FROM SAREFTJ_LIBUTIL libUtil
                               WHERE libUtil.CDEUTIL = :cdeUtil ),
-                              'AUTOMATIQUE'
+                            'AUTOMATIQUE',
+                            :durDif
                         )
                 ]]>
             </value>

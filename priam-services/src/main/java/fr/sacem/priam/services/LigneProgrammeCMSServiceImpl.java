@@ -238,6 +238,11 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
     }
 
     @Override
+    public void modifierDurDifTemporaire(String numProg, Set<Map<String, String>> idLingesProgrammes) {
+
+    }
+
+    @Override
     public Map<String,Object> calculerCompteurs(String numProg, String statut) {
         Map<String, Object> result = new HashMap<>();
         result.put(AUTOMATIQUE, 0L);

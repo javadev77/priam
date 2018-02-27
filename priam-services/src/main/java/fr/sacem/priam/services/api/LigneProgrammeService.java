@@ -35,4 +35,9 @@ public interface LigneProgrammeService {
     void annulerEdition(String numProg);
 
     void annulerSelection(String numProg);
+
+    @Transactional
+    void modifierDurDifTemporaire(String numProg, Set<Map<String, String>> idLingesProgrammes);
+
+
 }

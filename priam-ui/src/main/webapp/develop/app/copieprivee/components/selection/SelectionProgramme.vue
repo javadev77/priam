@@ -458,7 +458,7 @@
               id: 'durDif',
               name: "Durée",
               sortable: true,
-              sortProperty : 'sum(durDif)',
+              sortProperty : 'sum(durDifEdit)',
               type: 'inputNum',
               editable : true,
               cellEditorFramework : DureeEditor,
@@ -702,7 +702,8 @@
               if (index > -1) {
                 this.ligneProgramme.splice(index, 1);
               }
-              this.getDuree(this.programmeInfo.statut);
+              //this.getDuree(this.programmeInfo.statut);
+              this.rechercher();
           });
 
       },
@@ -745,24 +746,32 @@
 
       onSort(currentPage, pageSize, sort) {
 
+        if (this.edition) {
+          this.modifierSelectionTemporaire();
 
-        this.modifierSelectionTemporaire();
-
-        this.resource.updateSelectionTemporaire(this.selection)
-          .then(response => {
-            return response.json();
-          }).then(data => {
+          this.resource.updateSelectionTemporaire(this.selection)
+            .then(response => {
+              return response.json();
+            }).then(data => {
 
 
-          this.launchRequest(currentPage, pageSize, sort.property, sort.direction);
+            this.launchRequest(currentPage, pageSize, sort.property, sort.direction);
 
-          this.defaultPageable.sort = sort.property;
-          this.defaultPageable.dir = sort.direction;
+            this.defaultPageable.sort = sort.property;
+            this.defaultPageable.dir = sort.direction;
 
-        })
-          .catch(response => {
-            console.log("Erreur technique lors de la validation de la selection du programme !! " + response);
-          });
+          })
+            .catch(response => {
+              console.log("Erreur technique lors de la validation de la selection du programme !! " + response);
+            });
+        } else {
+            this.launchRequest(currentPage, pageSize, sort.property, sort.direction);
+
+            this.defaultPageable.sort = sort.property;
+            this.defaultPageable.dir = sort.direction;
+
+        }
+
 
 
       },
@@ -772,18 +781,23 @@
         let pageSize = this.defaultPageable.size;
 
 
-        this.modifierSelectionTemporaire();
+        if (this.edition) {
+          this.modifierSelectionTemporaire();
 
-        this.resource.updateSelectionTemporaire(this.selection)
-          .then(response => {
-            return response.json();
-          }).then(data => {
+          this.resource.updateSelectionTemporaire(this.selection)
+            .then(response => {
+              return response.json();
+            }).then(data => {
 
             this.launchRequest(pageNum, pageSize, sort.property, sort.direction);
 
-        }).catch(response => {
+          }).catch(response => {
             console.log("Erreur technique lors de la validation de la selection du programme !! " + response);
           });
+
+        } else {
+          this.launchRequest(pageNum, pageSize, sort.property, sort.direction);
+        }
 
 
       },
@@ -855,7 +869,7 @@
         this.currentFilter.titre = this.filter.titre;
         this.currentFilter.selection = this.filter.selection;
 
-        if(this.isActionAnnulerEdition) {
+        if(!this.edition) {
           doSearch.call(this);
           this.getDuree(this.programmeInfo.statut);
         } else {

@@ -1,7 +1,7 @@
 <template>
   <div>
     <input
-      ref="input"
+      ref="inputDureeEdit"
       v-bind:value="value"
       v-on:input="updateValue($event.target.value)"
       v-on:focus="selectAll"
@@ -31,6 +31,7 @@
     },
 
     mounted: function () {
+      debugger;
       this.formatValue();
     },
 
@@ -38,10 +39,11 @@
     methods: {
 
       updateValue: function (value) {
+        debugger;
         var result = parseInt(value, 10);
 
         if (isNaN(result)) {
-          this.$refs.input.value ='';
+          this.$refs.inputDureeEdit.value ='';
           this.$emit('input', '')
         } else {
           this.$emit('input', result);
@@ -50,6 +52,7 @@
       },
 
       formatValue: function () {
+          debugger;
           if(!isNaN(this.value)) {
             let jours = Math.floor( this.value / 86400);
             let reste = this.value % 86400;
@@ -61,14 +64,15 @@
 
             let result = ((jours < 10) ? '0'+jours : jours) + 'j ' +((hours < 10) ? '0'+hours : hours)+"h "+((minutes < 10) ? '0' + minutes: minutes)+"m "+ ((seconds < 10) ? '0'+seconds : seconds) + "s";
             debugger;
-            this.$refs.input.value = result;
+            this.$refs.inputDureeEdit.value = result;
           } else {
-            this.$refs.input.value = "0";
+            this.$refs.inputDureeEdit.value = "0";
           }
 
       },
 
       selectAll: function (event) {
+        debugger;
         // Workaround for Safari bug
         // http://stackoverflow.com/questions/1269722/selecting-text-on-focus-using-jquery-not-working-in-safari-and-chrome
         debugger;

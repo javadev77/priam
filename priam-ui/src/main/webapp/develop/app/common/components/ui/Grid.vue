@@ -346,7 +346,7 @@
                         <td style="width: 130px;">
 
                           <template v-if="entryColumn.cell.toDisabled(entry)">
-                            <component :is="entryColumn.cellEditorFramework"
+                            <component  :is="entryColumn.cellEditorFramework"
                                        v-model="entry[entryColumn.id]"
                                        :disabled="true"
                             ></component>

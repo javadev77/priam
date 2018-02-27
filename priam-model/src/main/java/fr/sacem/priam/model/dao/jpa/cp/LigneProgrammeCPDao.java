@@ -4,7 +4,6 @@ import fr.sacem.priam.model.domain.LignePreprep;
 import fr.sacem.priam.model.domain.cp.LigneProgrammeCP;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.SelectionDto;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -50,7 +49,7 @@ public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Lon
                     "ligneProgramme.roleParticipant1, " +
                     "ligneProgramme.nomParticipant1, " +
                     "ligneProgramme.ajout, " +
-                    "sum(ligneProgramme.durDif), " +
+                    "sum(ligneProgramme.durDifEdit), " +
                     "sum(ligneProgramme.nbrDif), " +
                     "ligneProgramme.selectionEnCours, " +
                     "ligneProgramme.libelleUtilisateur, " +
@@ -183,8 +182,7 @@ public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Lon
             "INNER JOIN " +
             "  PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
             "set " +
-            "  p.SEL_EN_COURS=?4," +
-            "  p.durDif= ?5 " +
+            "  p.SEL_EN_COURS=?4 "+
             "where " +
             "  f.NUMPROG = ?1 " +
             " AND p.ide12 = ?2 " +
@@ -192,8 +190,23 @@ public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Lon
     void updateSelectionTemporaireByNumProgramme(@Param("numProg") String numProg,
                                                  @Param("ide12") Long ide12,
                                                  @Param("cdeUtil") String cdeUtil,
-                                                 @Param("sel") int select,
-                                                 @Param("duree") Long durDif);
+                                                 @Param("sel") int select);
+
+    @Modifying(clearAutomatically = true)
+    @Query(nativeQuery = true, value="update " +
+            "  PRIAM_LIGNE_PROGRAMME_CP p " +
+            "INNER JOIN " +
+            "  PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
+            "set " +
+            "  p.durDifEdit=?4 "+
+            "where " +
+            "  f.NUMPROG = ?1 " +
+            " AND p.ide12 = ?2 " +
+            " AND p.cdeUtil = ?3 ")
+    void updateDurDifTemporaireByNumProgramme(@Param("numProg") String numProg,
+                                                 @Param("ide12") Long ide12,
+                                                 @Param("cdeUtil") String cdeUtil,
+                                                 @Param("durDif") Long durDifEdit);
 
     @Transactional
     @Modifying(clearAutomatically = true)
@@ -255,7 +268,20 @@ public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Lon
                "WHERE  "+
                "f.NUMPROG = ?1 AND p.SEL_EN_COURS=?2")
     void updateSelection(@Param("numProg") String numProg, @Param("selection") boolean value);
-    
+
+    @Modifying(clearAutomatically = true)
+    @Query(nativeQuery = true, value = "update " +
+            "PRIAM_LIGNE_PROGRAMME_CP p " +
+            "INNER JOIN " +
+            "PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
+            "set  p.durDif=p.durDifEdit " +
+            "WHERE  "+
+            "f.NUMPROG = ?1 " +
+            "AND p.SEL_EN_COURS=1 " +
+            "AND p.idOeuvreManuel is NULL " +
+            "AND p.ajout='MANUEL' OR p.ajout='CORRIGE' ")
+    void updateDurDif(@Param("numProg") String numProg);
+
     
     @Modifying(clearAutomatically = true)
     @Query(nativeQuery = true, value = "update " +
@@ -266,7 +292,18 @@ public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Lon
                                            "WHERE  "+
                                            "f.NUMPROG = ?1 AND p.selection=?2")
     void updateSelectionTemporaire(@Param("numProg") String numProg, @Param("selection") boolean value);
-    
+
+
+    @Modifying(clearAutomatically = true)
+    @Query(nativeQuery = true, value = "update " +
+            "PRIAM_LIGNE_PROGRAMME_CP p " +
+            "INNER JOIN " +
+            "PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
+            "set  p.durDifEdit=p.durDif " +
+            "WHERE  "+
+            "f.NUMPROG = ?1 AND p.selection=?2")
+    void updateDurDifTemporaire(@Param("numProg") String numProg, @Param("selection") boolean selection);
+
     @Transactional
     @Modifying(clearAutomatically = true)
     @Query(nativeQuery = true, value = "DELETE p.* FROM " +
@@ -283,9 +320,8 @@ public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Lon
                      "FROM LigneProgrammeCP l join l.fichier as f "+
                      "WHERE l.fichier = f.id " +
                      "AND f.programme.numProg = :numProg " +
-                     "AND l.selection = :selection " +
-                     "AND l.ajout = 'MANUEL' " +
-                     "OR l.ajout = 'CORRIGE' ")
+                     "AND l.selectionEnCours = :selection " +
+                     "AND l.ajout = 'MANUEL' ")
     List<LigneProgrammeCP> findOeuvresManuelsEnCoursEdition(@Param("numProg") String numProg, @Param("selection") boolean value);
     
     @Query(value="SELECT l " +
