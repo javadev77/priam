@@ -441,8 +441,8 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
     @Override
     public void annulerSelection(String numProg) {
         List<LigneProgrammeCP> allOeuvresManuelsByNumProg = ligneProgrammeCPDao.findAllOeuvresManuelsByNumProg(numProg);
-        allOeuvresManuelsByNumProg.forEach( oeuvreManuel -> doDeleteOeuvreManuel(oeuvreManuel));
-        
+        allOeuvresManuelsByNumProg.forEach(this::doDeleteOeuvreManuel);
+
         ligneProgrammeCPDao.updateSelectionTemporaireByNumProgramme(numProg, TRUE);
         ligneProgrammeCPDao.updateSelection(numProg, TRUE);
         
