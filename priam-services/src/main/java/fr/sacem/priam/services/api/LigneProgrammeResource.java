@@ -147,11 +147,9 @@ public abstract class LigneProgrammeResource {
     private void modifierSelection(@RequestBody ValdierSelectionProgrammeInput input, String numProg) {
         if (!input.getSelected().isEmpty()) {
             getLigneProgrammeService().selectLigneProgramme(numProg, input.getSelected());
-            getLigneProgrammeService().modifierDurDifTemporaire(numProg, input.getSelected());
         }
         if (!input.getUnselected().isEmpty()) {
             getLigneProgrammeService().deselectLigneProgramme(numProg, input.getUnselected());
-            getLigneProgrammeService().modifierDurDifTemporaire(numProg, input.getUnselected());
         }
     }
 

@@ -22,4 +22,7 @@ FOREIGN KEY (AJOUT) REFERENCES PRIAM_ETAT_OEUVRE(CDE_ETAT);
 ALTER TABLE PRIAM_LIGNE_PROGRAMME_CP
     ADD `durDifEdit` int(11) DEFAULT NULL COMMENT  'Colonne qui sert pour le tableau editable dans ecran selection';
 
+ALTER TABLE PRIAM_LIGNE_PROGRAMME_CP
+  ADD `nbrDifEdit` int(11) DEFAULT NULL COMMENT  'Colonne qui sert pour le tableau editable dans ecran selection';
+
 commit;

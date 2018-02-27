@@ -168,7 +168,7 @@
   import ProgrammeInfo from '../../../common/components/programme/ProgrammeInfo.vue';
 
 
-  import DecimalInput from '../../../common/components/ui/Decimal-input.vue';
+  import QuantiteEditor from '../../../common/components/ui/cellEditors/QuantiteEditor.vue';
   import DureeEditor from '../../../common/components/ui/cellEditors/DureeEditor.vue';
 
   export default {
@@ -279,15 +279,16 @@
               id: 'nbrDif',
               name: "Quantité",
               sortable: true,
-              sortProperty : 'sum(nbrDif)',
-              type: 'numeric',
+              sortProperty : 'sum(nbrDifEdit)',
+              type: 'inputNum',
+              cellEditorFramework : QuantiteEditor,
               cell: {
-                toText : function(entry) {
-                  var result = entry.nbrDif;
-                  if(result !=undefined)
-                    return result.nbrDif ;
-                  else
-                    return "";
+                toDisabled: function(entry){
+
+                  if (!$this.isTableauSelectionnable()) {
+                    return true;
+                  }
+                  return false;
                 }
               }
             },
@@ -668,9 +669,9 @@
 
 
             if(this.programmeInfo.typeUtilisation==="CPRIVSONPH"){
-              this.defaultPageable.sort = 'nbrDif';
+              this.defaultPageable.sort = 'nbrDifEdit';
             }else if (this.programmeInfo.typeUtilisation==="CPRIVSONRD") {
-              this.defaultPageable.sort = 'durDif';
+              this.defaultPageable.sort = 'durDifEdit';
             }
 
             if(this.programmeInfo.statut == 'EN_COURS' || this.programmeInfo.statut == 'VALIDE') {

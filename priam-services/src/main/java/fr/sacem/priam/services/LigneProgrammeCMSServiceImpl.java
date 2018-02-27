@@ -237,10 +237,6 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
         ligneProgrammeCMSDao.flush();
     }
 
-    @Override
-    public void modifierDurDifTemporaire(String numProg, Set<Map<String, String>> idLingesProgrammes) {
-
-    }
 
     @Override
     public Map<String,Object> calculerCompteurs(String numProg, String statut) {

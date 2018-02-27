@@ -18,4 +18,8 @@ public interface LigneProgrammeCPService {
     Map<String, Long> getDurDifProgramme(String numProg, String statut);
 
     List<String> getUtilisateursByProgramme(String programme);
+
+
+    @Transactional
+    void modifierDurOrNbrDifTemporaire(String numProg, Set<Map<String, String>> idLingesProgrammes);
 }

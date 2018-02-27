@@ -86,7 +86,8 @@
                             cdeFamilTypUtilOri,
                             libelleUtilisateur,
                             ajout,
-                            durDifEdit
+                            durDifEdit,
+                            nbrDifEdit
                         )
                         VALUES (
                             :idFichier,
@@ -126,7 +127,8 @@
                              FROM SAREFTJ_LIBUTIL libUtil
                               WHERE libUtil.CDEUTIL = :cdeUtil ),
                             'AUTOMATIQUE',
-                            :durDif
+                            :durDif,
+                            :nbrDif
                         )
                 ]]>
             </value>

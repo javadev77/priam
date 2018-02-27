@@ -59,6 +59,9 @@ public class LigneProgrammeCP implements Serializable {
     @Column(name = "durDifEdit")
     private Long durDifEdit;
 
+    @Column(name = "nbrDifEdit")
+    private Long nbrDifEdit;
+
 
     @Column(name = "mt")
     private Double mt;
@@ -489,6 +492,14 @@ public class LigneProgrammeCP implements Serializable {
 
     public void setDurDifEdit(Long durDifEdit) {
         this.durDifEdit = durDifEdit;
+    }
+
+    public Long getNbrDifEdit() {
+        return nbrDifEdit;
+    }
+
+    public void setNbrDifEdit(Long nbrDifEdit) {
+        this.nbrDifEdit = nbrDifEdit;
     }
 
     @Override

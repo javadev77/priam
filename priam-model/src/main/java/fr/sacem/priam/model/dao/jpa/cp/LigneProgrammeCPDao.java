@@ -50,7 +50,7 @@ public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Lon
                     "ligneProgramme.nomParticipant1, " +
                     "ligneProgramme.ajout, " +
                     "sum(ligneProgramme.durDifEdit), " +
-                    "sum(ligneProgramme.nbrDif), " +
+                    "sum(ligneProgramme.nbrDifEdit), " +
                     "ligneProgramme.selectionEnCours, " +
                     "ligneProgramme.libelleUtilisateur, " +
                     "ligneProgramme.cdeUtil) " +
@@ -321,7 +321,7 @@ public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Lon
                      "WHERE l.fichier = f.id " +
                      "AND f.programme.numProg = :numProg " +
                      "AND l.selectionEnCours = :selection " +
-                     "AND l.ajout = 'MANUEL' ")
+                     "AND l.ajout = 'CORRIGE' ")
     List<LigneProgrammeCP> findOeuvresManuelsEnCoursEdition(@Param("numProg") String numProg, @Param("selection") boolean value);
     
     @Query(value="SELECT l " +
@@ -417,4 +417,45 @@ public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Lon
                     "GROUP BY l.ide12, l.cdeUtil) result")
     Long calculerQuantiteOeuvres(@Param("numProg") String numProg, @Param("selection") Integer selection);
 
+
+
+    @Modifying(clearAutomatically = true)
+    @Query(nativeQuery = true, value="update " +
+            "  PRIAM_LIGNE_PROGRAMME_CP p " +
+            "INNER JOIN " +
+            "  PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
+            "set " +
+            "  p.nbrDifEdit=?4 "+
+            "where " +
+            "  f.NUMPROG = ?1 " +
+            " AND p.ide12 = ?2 " +
+            " AND p.cdeUtil = ?3 ")
+    void updateNbrDifTemporaireByNumProgramme(@Param("numProg") String numProg,
+                                              @Param("ide12") Long ide12,
+                                              @Param("cdeUtil") String cdeUtil,
+                                              @Param("durDif") Long nbrDifEdit);
+
+
+    @Modifying(clearAutomatically = true)
+    @Query(nativeQuery = true, value = "update " +
+            "PRIAM_LIGNE_PROGRAMME_CP p " +
+            "INNER JOIN " +
+            "PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
+            "set  p.nbrDif=p.nbrDifEdit " +
+            "WHERE  "+
+            "f.NUMPROG = ?1 " +
+            "AND p.SEL_EN_COURS=1 " +
+            "AND p.idOeuvreManuel is NULL " +
+            "AND p.ajout='MANUEL' OR p.ajout='CORRIGE' ")
+    void updateNbrDif(@Param("numProg") String numProg);
+
+    @Modifying(clearAutomatically = true)
+    @Query(nativeQuery = true, value = "update " +
+            "PRIAM_LIGNE_PROGRAMME_CP p " +
+            "INNER JOIN " +
+            "PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
+            "set  p.nbrDifEdit=p.nbrDif " +
+            "WHERE  "+
+            "f.NUMPROG = ?1 AND p.selection=?2")
+    void updateNbrDifTemporaire(@Param("numProg") String numProg, @Param("selection") boolean selection);
 }

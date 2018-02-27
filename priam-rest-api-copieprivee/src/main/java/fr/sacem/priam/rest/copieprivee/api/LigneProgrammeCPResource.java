@@ -13,11 +13,13 @@ import fr.sacem.priam.services.ProgrammeService;
 import fr.sacem.priam.services.api.LigneProgrammeResource;
 import fr.sacem.priam.services.api.LigneProgrammeService;
 import fr.sacem.priam.services.cp.LigneProgrammeCPService;
+import fr.sacem.priam.services.dto.ValdierSelectionProgrammeInput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -77,6 +79,25 @@ public class LigneProgrammeCPResource extends LigneProgrammeResource {
     }
 
 
+
+
+    @RequestMapping(value = "ligneProgramme/selection/temporaire/modifier",
+                    method = RequestMethod.POST,
+                    produces = MediaType.APPLICATION_JSON_VALUE,
+                    consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Override
+    public List<String> modifierSelectionTemporaire(@RequestBody ValdierSelectionProgrammeInput input) {
+        super.modifierSelectionTemporaire(input);
+        String numProg = input.getNumProg();
+        if (!input.getSelected().isEmpty()) {
+            ligneProgrammeCPService.modifierDurOrNbrDifTemporaire(numProg, input.getSelected());
+        }
+        if (!input.getUnselected().isEmpty()) {
+            ligneProgrammeCPService.modifierDurOrNbrDifTemporaire(numProg, input.getUnselected());
+        }
+
+        return new ArrayList<>();
+    }
 
 
     @Override

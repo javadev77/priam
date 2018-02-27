@@ -10,8 +10,10 @@ import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.criteria.LigneProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.SelectionDto;
+import fr.sacem.priam.model.util.TypeUtilisationPriam;
 import fr.sacem.priam.services.api.LigneProgrammeService;
 import fr.sacem.priam.services.cp.LigneProgrammeCPService;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +43,7 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
     private static final String SOMME = "SOMME";
     public static final int SELECTION = 1;
     public static final String DUR_DIF = "durDif";
+    public static final String AJOUT = "ajout";
 
 
     @Autowired
@@ -119,13 +122,13 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
 
                     Sort.Order sortBy = sort.iterator().next();
 
-                    if("sum(nbrDif)".equals(sortBy.getProperty()) ||
-                           "nbrDif".equals(sortBy.getProperty()) ||
+                    if("sum(nbrDifEdit)".equals(sortBy.getProperty()) ||
+                           "nbrDifEdit".equals(sortBy.getProperty()) ||
                            "sum(durDif)".equals(sortBy.getProperty()) ||
                             "sum(durDifEdit)".equals(sortBy.getProperty()) ||
                            "durDif".equals(sortBy.getProperty())) {
                         if (TypeUtilisationEnum.COPIE_PRIVEE_SONORE_PHONO.getCode().equals(programme.getTypeUtilisation().getCode())) {
-                            sort = JpaSort.unsafe(sortBy.getDirection(), "sum(nbrDif)");
+                            sort = JpaSort.unsafe(sortBy.getDirection(), "sum(nbrDifEdit)");
                         } else if (TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode().equals(programme.getTypeUtilisation().getCode())) {
                             sort = JpaSort.unsafe(sortBy.getDirection(), "sum(durDifEdit)");
                         }
@@ -178,54 +181,90 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
 
     @Transactional
     @Override
-    public void modifierDurDifTemporaire(String numProg, Set<Map<String, String>> idLingesProgrammes) {
+    public void modifierDurOrNbrDifTemporaire(String numProg, Set<Map<String, String>> idLingesProgrammes) {
+        Programme prog = programmeDao.findByNumProg(numProg);
+
         for (Map<String, String>  obj:  idLingesProgrammes) {
             if (obj != null && !obj.isEmpty()) {
-                Long ide12 = Long.parseLong(obj.get(IDE_12));
-                String libUtil = obj.get(CDE_UTIL);
-                String cdeUtil = libUtil !=null ? libUtil.split(" - ")[0] : "";
-
-
-                String durDifStringValue = obj.get(DUR_DIF);
-                Long durDifEdit = durDifStringValue != null && !durDifStringValue.equals("")? Long.valueOf(durDifStringValue) : 0L;
-
                 String ajout = obj.get("ajout");
 
+                LigneProgrammeCP inputLigneCP = createLigneProgrammeCPFromInput(numProg, obj);
+
+                if(prog.getTypeUtilisation().getCode().equals(TypeUtilisationPriam.COPIE_PRIVEE_SONORE_PHONO.getCode())) {
+                    String nbrDifValue = obj.get("nbrDif");
+                    Long nbrDifEdit = nbrDifValue != null && !nbrDifValue.equals("") ? Long.valueOf(nbrDifValue) : 0L;
 
 
-                if(AUTOMATIQUE.equals(ajout)) {
-                    List<LigneProgrammeCP> oeuvresAuto = ligneProgrammeCPDao.findOeuvresAutoByIde12AndCdeUtil(numProg, ide12, cdeUtil);
-                    Long sumTotal = oeuvresAuto.stream().mapToLong(lcp -> lcp.getDurDif()).sum();
-                    if(oeuvresAuto != null && !oeuvresAuto.isEmpty()) {
-                        if( !durDifEdit.equals(sumTotal)) {
-                            LigneProgrammeCP ligneProgrammeCP = new LigneProgrammeCP();
+                    if(AUTOMATIQUE.equals(ajout)) {
+                        List<LigneProgrammeCP> oeuvresAuto = ligneProgrammeCPDao.findOeuvresAutoByIde12AndCdeUtil(numProg, inputLigneCP.getIde12(), inputLigneCP.getCdeUtil());
+                        Long sumTotal = oeuvresAuto.stream().mapToLong(lcp -> lcp.getNbrDif()).sum();
+                        if(oeuvresAuto != null && !oeuvresAuto.isEmpty()) {
+                            if( !nbrDifEdit.equals(sumTotal)) {
 
-                            ligneProgrammeCP.setTitreOeuvre(obj.get("titreOeuvre"));
-                            ligneProgrammeCP.setRoleParticipant1(obj.get("roleParticipant1"));
-                            ligneProgrammeCP.setNomParticipant1(obj.get("nomParticipant1"));
-                            ligneProgrammeCP.setNumProg(numProg);
-                            ligneProgrammeCP.setIde12(ide12);
-                            ligneProgrammeCP.setCdeUtil(cdeUtil);
-                            ligneProgrammeCP.setLibelleUtilisateur(libUtil);
-                            ligneProgrammeCP.setNumProg(numProg);
-                            ligneProgrammeCP.setDurDifEdit(durDifEdit);
-                            ligneProgrammeCP.setCdeTypIde12(oeuvresAuto.get(0).getCdeTypIde12());
+                                inputLigneCP.setCdeTypIde12(oeuvresAuto.get(0).getCdeTypIde12());
+                                inputLigneCP.setNbrDifEdit(nbrDifEdit);
 
-                            ajouterOeuvreManuel(ligneProgrammeCP);
+                                ajouterOeuvreManuel(inputLigneCP);
+                            }
+
                         }
-
+                    } else {
+                        ligneProgrammeCPDao.updateNbrDifTemporaireByNumProgramme(numProg, inputLigneCP.getIde12(), inputLigneCP.getCdeUtil(), nbrDifEdit);
                     }
-                } else {
-                    ligneProgrammeCPDao.updateDurDifTemporaireByNumProgramme(numProg, ide12, cdeUtil, durDifEdit);
                 }
+                else if(prog.getTypeUtilisation().getCode().equals(TypeUtilisationPriam.COPIE_PRIVEE_SONORE_RADIO.getCode())) {
+                    String durDifStringValue = obj.get(DUR_DIF);
+                    Long durDifEdit = durDifStringValue != null && !durDifStringValue.equals("") ? Long.valueOf(durDifStringValue) : 0L;
 
+                    if(AUTOMATIQUE.equals(ajout)) {
+                        List<LigneProgrammeCP> oeuvresAuto = ligneProgrammeCPDao.findOeuvresAutoByIde12AndCdeUtil(numProg, inputLigneCP.getIde12(), inputLigneCP.getCdeUtil());
+                        Long sumTotal = oeuvresAuto.stream().mapToLong(lcp -> lcp.getDurDif()).sum();
+                        if(oeuvresAuto != null && !oeuvresAuto.isEmpty()) {
+                            if( !durDifEdit.equals(sumTotal)) {
+
+                                inputLigneCP.setDurDifEdit(durDifEdit);
+                                inputLigneCP.setCdeTypIde12(oeuvresAuto.get(0).getCdeTypIde12());
+
+                                ajouterOeuvreManuel(inputLigneCP);
+                            }
+
+                        }
+                    } else {
+                        ligneProgrammeCPDao.updateDurDifTemporaireByNumProgramme(numProg, inputLigneCP.getIde12(), inputLigneCP.getCdeUtil(), durDifEdit);
+                    }
+
+                }
 
             }
         }
 
     }
 
-    
+    private LigneProgrammeCP createLigneProgrammeCPFromInput(String numProg, Map<String, String> input) {
+        LigneProgrammeCP ligneProgrammeCP = new LigneProgrammeCP();
+
+
+        String ide12Value = input.get(IDE_12);
+        Long ide12 = StringUtils.isNotEmpty(ide12Value) ? Long.parseLong(ide12Value) : 0L;
+        String libUtil = input.get(CDE_UTIL);
+        String cdeUtil = StringUtils.isNotEmpty(libUtil)  ? libUtil.split(" - ")[0] : "";
+
+        ligneProgrammeCP.setTitreOeuvre(input.get("titreOeuvre"));
+        ligneProgrammeCP.setRoleParticipant1(input.get("roleParticipant1"));
+        ligneProgrammeCP.setNomParticipant1(input.get("nomParticipant1"));
+        ligneProgrammeCP.setNumProg(numProg);
+        ligneProgrammeCP.setIde12(ide12);
+        ligneProgrammeCP.setCdeUtil(cdeUtil);
+        ligneProgrammeCP.setLibelleUtilisateur(libUtil);
+        ligneProgrammeCP.setNumProg(numProg);
+
+
+
+
+        return ligneProgrammeCP;
+    }
+
+
     @Transactional
     @Override
     public void supprimerLigneProgramme(String numProg, Long ide12, SelectionDto selectedLigneProgramme) {
@@ -245,10 +284,13 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
     
             List<LigneProgrammeCP> oeuvresAutoByIdOeuvreManuel = ligneProgrammeCPDao.findOeuvresAutoByIdOeuvreManuel(oeuvreManuelFound.getId());
             oeuvresAutoByIdOeuvreManuel.forEach( oeuvreAuto -> {
+
                 oeuvreAuto.setSelection(FALSE);
                 oeuvreAuto.setSelectionEnCours(TRUE);
                 oeuvreAuto.setOeuvreManuel(null);
                 oeuvreAuto.setDurDifEdit(oeuvreAuto.getDurDif());
+                oeuvreAuto.setNbrDifEdit(oeuvreAuto.getNbrDif());
+
                 ligneProgrammeCPDao.save(oeuvreAuto);
             });
             ligneProgrammeCPDao.delete(oeuvreManuelFound);
@@ -357,12 +399,18 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
     @Transactional
     @Override
     public void enregistrerEdition(String numProg) {
-        
+
+        Programme prog = programmeDao.findByNumProg(numProg);
+
         ligneProgrammeCPDao.updateSelection(numProg, TRUE);
         ligneProgrammeCPDao.updateSelection(numProg, FALSE);
 
-        //
-        ligneProgrammeCPDao.updateDurDif(numProg);
+        if(prog.getTypeUtilisation().getCode().equals(TypeUtilisationPriam.COPIE_PRIVEE_SONORE_RADIO.getCode())) {
+            ligneProgrammeCPDao.updateDurDif(numProg);
+        } else if(prog.getTypeUtilisation().getCode().equals(TypeUtilisationPriam.COPIE_PRIVEE_SONORE_PHONO.getCode())) {
+            ligneProgrammeCPDao.updateNbrDif(numProg);
+        }
+
 
         ligneProgrammeCPDao.flush();
     }
@@ -372,12 +420,19 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
     public void annulerEdition(String numProg) {
         /*List<LigneProgrammeCP> oeuvresManuelsEnCoursEdition = ligneProgrammeCPDao.findOeuvresManuelsEnCoursEdition(numProg, TRUE);
         oeuvresManuelsEnCoursEdition.forEach( oeuvreManuel -> doDeleteOeuvreManuel(oeuvreManuel));*/
-        
+
+        Programme prog = programmeDao.findByNumProg(numProg);
+
         ligneProgrammeCPDao.updateSelectionTemporaire(numProg, FALSE);
         ligneProgrammeCPDao.updateSelectionTemporaire(numProg, TRUE);
 
-        ligneProgrammeCPDao.updateDurDifTemporaire(numProg, FALSE);
-        ligneProgrammeCPDao.updateDurDifTemporaire(numProg, TRUE);
+        if(prog.getTypeUtilisation().getCode().equals(TypeUtilisationPriam.COPIE_PRIVEE_SONORE_RADIO.getCode())) {
+            ligneProgrammeCPDao.updateDurDifTemporaire(numProg, FALSE);
+            ligneProgrammeCPDao.updateDurDifTemporaire(numProg, TRUE);
+        } else if(prog.getTypeUtilisation().getCode().equals(TypeUtilisationPriam.COPIE_PRIVEE_SONORE_PHONO.getCode())) {
+            ligneProgrammeCPDao.updateNbrDifTemporaire(numProg, FALSE);
+            ligneProgrammeCPDao.updateNbrDifTemporaire(numProg, TRUE);
+        }
 
         ligneProgrammeCPDao.flush();
     }
