@@ -17,6 +17,9 @@ import fr.sacem.priam.model.domain.dto.SelectionDto;
 import fr.sacem.priam.model.util.TypeUtilisationPriam;
 import fr.sacem.priam.services.api.LigneProgrammeService;
 import fr.sacem.priam.services.cms.LigneProgrammeCMSService;
+import fr.sacem.priam.services.journal.annotation.LogEtatProgramme;
+import fr.sacem.priam.services.journal.annotation.LogOeuvre;
+import fr.sacem.priam.services.journal.annotation.TypeLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -164,6 +167,7 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
 
     @Override
     @Transactional
+    @LogOeuvre(event = TypeLog.SUPPRESSIONOEUVRE)
     public void supprimerLigneProgramme(String numProg, Long ide12, SelectionDto selectedLigneProgramme) {
         LigneProgrammeCMS oeuvreManuelFound = new LigneProgrammeCMS();
         if(selectedLigneProgramme.getAjout().equals(MANUEL)){
@@ -175,8 +179,7 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
         deleteOeuvreManuel(oeuvreManuelFound);
 
     }
-
-    @Override
+       @Override
     public void deleteOeuvreManuel(LigneProgrammeCMS oeuvreManuelFound) {
         if(oeuvreManuelFound != null) {
 
@@ -215,7 +218,7 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
 
     @Override
     @Transactional
-    public void annulerEdition(String numProg) {
+    public void annulerEdition(String numProg, String utilisateur) {
         List<LigneProgrammeCMS> oeuvresManuelsEnCoursEdition = ligneProgrammeCMSDao.findOeuvresManuelsEnCoursEdition(numProg, FALSE);
         oeuvresManuelsEnCoursEdition.forEach( oeuvreManuel -> deleteOeuvreManuel(oeuvreManuel));
 
@@ -227,7 +230,7 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
 
     @Override
     @Transactional
-    public void annulerSelection(String numProg) {
+    public void annulerSelection(String numProg, String utilisateur) {
         List<LigneProgrammeCMS> allOeuvresManuelsByNumProg = ligneProgrammeCMSDao.findAllOeuvresManuelsByNumProg(numProg);
         allOeuvresManuelsByNumProg.forEach( oeuvreManuel -> deleteOeuvreManuel(oeuvreManuel));
 

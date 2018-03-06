@@ -25,4 +25,15 @@ ALTER TABLE PRIAM_LIGNE_PROGRAMME_CP
 ALTER TABLE PRIAM_LIGNE_PROGRAMME_CP
   ADD `nbrDifEdit` int(11) DEFAULT NULL COMMENT  'Colonne qui sert pour le tableau editable dans ecran selection';
 
+DROP TABLE IF EXISTS PRIAM_JOURNAL_EVENEMENT;
+CREATE TABLE PRIAM_JOURNAL_EVENEMENT (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `evenement` varchar(25) DEFAULT NULL,
+  `ide12` bigint(20) DEFAULT NULL,
+  `date` datetime DEFAULT CURRENT_TIMESTAMP,
+  `utilisateur` varchar(255) DEFAULT NULL,
+  `situationAvant` varchar(455) DEFAULT NULL,
+  `situationApres` varchar(455) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 commit;

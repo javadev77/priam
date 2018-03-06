@@ -128,7 +128,8 @@ public class ProgrammeResource {
                       method = RequestMethod.PUT,
                       consumes = MediaType.APPLICATION_JSON_VALUE,
                       produces = MediaType.APPLICATION_JSON_VALUE)
-     public Programme abandonnerProgramme(@RequestBody ProgrammeDto programmeDto) {
+     public Programme abandonnerProgramme(@RequestBody ProgrammeDto programmeDto, UserDTO userDTO) {
+         programmeDto.setUsermaj(userDTO.getDisplayName());
           return programmeService.abandonnerProgramme(programmeDto);
      }
 

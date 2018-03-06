@@ -6,6 +6,7 @@ import fr.sacem.priam.model.dao.jpa.FichierFelixDao;
 import fr.sacem.priam.model.domain.FichierFelix;
 import fr.sacem.priam.model.domain.StatutFichierFelix;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
+import fr.sacem.priam.security.model.UserDTO;
 import fr.sacem.priam.services.FelixDataCMSService;
 import fr.sacem.priam.services.FelixDataService;
 import fr.sacem.priam.services.FelixDataServiceAbstract;
@@ -123,7 +124,7 @@ public class RepartitionResource {
     @RequestMapping(value = "/generateFelixData",
                     method = RequestMethod.POST,
                     consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void generateFelixData(@RequestBody ProgrammeDto programme) throws TechnicalException {
+    public void generateFelixData(@RequestBody ProgrammeDto programme, UserDTO userDto) throws TechnicalException {
         String numProg = programme.getNumProg();
         FichierFelix ff = fichierFelixDao.findByNumprog(numProg);
         if(ff != null) {
@@ -132,7 +133,7 @@ public class RepartitionResource {
             fichierFelixDao.flush();
 
         }
-        getFelixDataService(numProg).asyncSendFichierFelix(numProg);
+        getFelixDataService(numProg).asyncSendFichierFelix(programme, userDto.getDisplayName());
 
     }
     private FelixDataServiceAbstract getFelixDataService(String numProg) {

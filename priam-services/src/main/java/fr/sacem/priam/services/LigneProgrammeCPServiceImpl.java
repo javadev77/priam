@@ -14,6 +14,8 @@ import fr.sacem.priam.model.util.TypeUtilisationPriam;
 import fr.sacem.priam.services.api.LigneProgrammeService;
 import fr.sacem.priam.services.cp.LigneProgrammeCPService;
 import org.apache.commons.lang3.StringUtils;
+import fr.sacem.priam.services.journal.annotation.LogOeuvre;
+import fr.sacem.priam.services.journal.annotation.TypeLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -266,6 +268,7 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
 
 
     @Transactional
+    @LogOeuvre(event = TypeLog.SUPPRESSIONOEUVRE)
     @Override
     public void supprimerLigneProgramme(String numProg, Long ide12, SelectionDto selectedLigneProgramme) {
     
@@ -417,12 +420,12 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
     
     @Transactional
     @Override
-    public void annulerEdition(String numProg) {
+
+    public void annulerEdition(String numProg, String utilisateur) {
         /*List<LigneProgrammeCP> oeuvresManuelsEnCoursEdition = ligneProgrammeCPDao.findOeuvresManuelsEnCoursEdition(numProg, TRUE);
-        oeuvresManuelsEnCoursEdition.forEach( oeuvreManuel -> doDeleteOeuvreManuel(oeuvreManuel));*/
+        oeuvresManuelsEnCoursEdition.forEach( oeuvreManuel -> doDeleteOeuvreManuel(oeuvreManuel, utilisateur)));*/
 
         Programme prog = programmeDao.findByNumProg(numProg);
-
         ligneProgrammeCPDao.updateSelectionTemporaire(numProg, FALSE);
         ligneProgrammeCPDao.updateSelectionTemporaire(numProg, TRUE);
 
@@ -436,12 +439,17 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
 
         ligneProgrammeCPDao.flush();
     }
-    
+
+
     @Transactional
     @Override
-    public void annulerSelection(String numProg) {
+    public void annulerSelection(String numProg, String utilisateur) {
         List<LigneProgrammeCP> allOeuvresManuelsByNumProg = ligneProgrammeCPDao.findAllOeuvresManuelsByNumProg(numProg);
+
         allOeuvresManuelsByNumProg.forEach(this::doDeleteOeuvreManuel);
+
+
+        //allOeuvresManuelsByNumProg.forEach( oeuvreManuel -> doDeleteOeuvreManuel(oeuvreManuel, utilisateur));
 
         ligneProgrammeCPDao.updateSelectionTemporaireByNumProgramme(numProg, TRUE);
         ligneProgrammeCPDao.updateSelection(numProg, TRUE);

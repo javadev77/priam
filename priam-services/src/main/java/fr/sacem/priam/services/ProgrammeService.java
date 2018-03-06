@@ -10,6 +10,9 @@ import fr.sacem.priam.model.domain.saref.SareftrFamiltyputil;
 import fr.sacem.priam.model.domain.saref.SareftrRion;
 import fr.sacem.priam.model.domain.saref.SareftrTyputil;
 import fr.sacem.priam.model.util.MapperConfiguration;
+import fr.sacem.priam.services.journal.annotation.LogEtatProgramme;
+import fr.sacem.priam.services.journal.annotation.LogProgramme;
+import fr.sacem.priam.services.journal.annotation.TypeLog;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,6 +66,7 @@ public class ProgrammeService {
 	}
 	
 	@Transactional
+    @LogProgramme(event = TypeLog.CREATION)
 	public Programme addProgramme(ProgrammeDto programmeDto) {
 		MapperConfiguration mapperConfiguration = new MapperConfiguration();
 		ParamAppli paramAppli = paramAppliDao.getParam("ANNEE_SEQ_PROGRAMME");
@@ -116,8 +120,11 @@ public class ProgrammeService {
 		}
 		return resultat;
 	}
-	
+
+
+
 	@Transactional
+	@LogProgramme(event = TypeLog.MODIFICATION)
 	public Programme updateProgramme(ProgrammeDto programmeDto) {
 		Programme programme = programmeDao.findOne(programmeDto.getNumProg());
 		
@@ -149,6 +156,7 @@ public class ProgrammeService {
 	}
 	
 	@Transactional
+    @LogProgramme(event = TypeLog.SUPPRESSION)
 	public Programme abandonnerProgramme(ProgrammeDto programmeDto) {
 		Programme programme = programmeDao.findOne(programmeDto.getNumProg());
 		programme.setStatut(StatutProgramme.ABANDONNE);
@@ -175,6 +183,7 @@ public class ProgrammeService {
 	}
 
 	@Transactional
+	@LogEtatProgramme(event = TypeLog.VALIDATION)
 	public Programme validerProgramme(ProgrammeDto programmeDto) {
 		Programme programme = programmeDao.findOne(programmeDto.getNumProg());
 		programme.setStatut(StatutProgramme.VALIDE);
@@ -185,6 +194,7 @@ public class ProgrammeService {
 	}
 
 	@Transactional
+	@LogEtatProgramme(event = TypeLog.INVALIDATION)
 	public Programme invaliderProgramme(ProgrammeDto programmeDto) {
 	    FichierFelix ff = fichierFelixDao.findByNumprog(programmeDto.getNumProg());
 	    if(ff != null) {
@@ -202,6 +212,24 @@ public class ProgrammeService {
 	}
 
 	@Transactional
+	public Programme enregistrerSelection(ProgrammeDto programmeDto) {
+		FichierFelix ff = fichierFelixDao.findByNumprog(programmeDto.getNumProg());
+		if(ff != null) {
+			fichierFelixDao.delete(ff.getId());
+			fichierFelixDao.flush();
+		}
+
+		Programme programme = programmeDao.findOne(programmeDto.getNumProg());
+		programme.setStatut(StatutProgramme.EN_COURS);
+		programme.setUserValidation(null);
+		programme.setDateValidation(null);
+
+
+		return programmeDao.saveAndFlush(programme);
+	}
+
+	@Transactional
+	@LogEtatProgramme(event = TypeLog.ANNULATION)
 	public Programme updateStatutProgrammeToAffecte(ProgrammeDto programmeDTO) {
 		Programme programme = programmeDao.findOne(programmeDTO.getNumProg());
 		programme.setStatut(StatutProgramme.AFFECTE);
@@ -211,9 +239,11 @@ public class ProgrammeService {
 	}
 
 	@Transactional
-	public void majStatut(String numProg, StatutProgramme statutProgramme) {
-		Programme prog = programmeDao.findOne(numProg);
-		prog.setStatut(statutProgramme);
+	@LogEtatProgramme(event = TypeLog.REPARTITION)
+	public void majStatut(ProgrammeDto programmeDTO) {
+		Programme prog = programmeDao.findOne(programmeDTO.getNumProg());
+		prog.setStatut(programmeDTO.getStatut());
+		prog.setUsermaj(programmeDTO.getUsermaj());
 
 		programmeDao.saveAndFlush(prog);
 	}
