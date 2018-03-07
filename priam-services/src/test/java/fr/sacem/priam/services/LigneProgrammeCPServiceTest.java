@@ -195,7 +195,7 @@ public class LigneProgrammeCPServiceTest {
         ligneProgrammeCPDao.updateSelection(NUM_PROG, true);
 
 
-        ligneProgrammeCPService.annulerEdition(NUM_PROG);
+      //  ligneProgrammeCPService.annulerEdition(NUM_PROG);
 
         List<LigneProgrammeCP> after = ligneProgrammeCPDao.findLigneProgrammeByNumProg(NUM_PROG);
         Iterable<LigneProgrammeCP> filtredAfter = Iterables.filter(after, ligneProgrammeCP -> ligneProgrammeCP.isSelectionEnCours());

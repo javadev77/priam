@@ -3,6 +3,8 @@ package fr.sacem.priam.services.api;
 import fr.sacem.priam.model.domain.criteria.LigneProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.SelectionDto;
+import fr.sacem.priam.services.journal.annotation.LogOeuvre;
+import fr.sacem.priam.services.journal.annotation.TypeLog;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
@@ -25,17 +27,14 @@ public interface LigneProgrammeService {
 
     void selectLigneProgramme(String numProg, Set<Map<String, String>> idLingesProgrammes);
 
-
     void supprimerLigneProgramme(String numProg, Long ide12, SelectionDto selectedLigneProgramme);
 
     void deselectLigneProgramme(String numProg, Set<Map<String, String>> unselected);
 
     void enregistrerEdition(String numProg);
 
-    void annulerEdition(String numProg);
+    void annulerEdition(String numProg, String utilisateur);
 
-    void annulerSelection(String numProg);
-
-
+    void annulerSelection(String numProg, String utilisateur);
 
 }

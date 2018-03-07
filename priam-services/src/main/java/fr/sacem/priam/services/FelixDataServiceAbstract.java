@@ -17,6 +17,7 @@ import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.priam.model.domain.*;
 import fr.sacem.priam.model.domain.dto.FelixData;
 import fr.sacem.priam.model.domain.dto.FichierFelixError;
+import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.services.utils.FelixDataSpringValidator;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileUtils;
@@ -247,9 +248,10 @@ public abstract class FelixDataServiceAbstract {
     
     @Transactional
     @Async("threadPoolTaskExecutor")
-    public void asyncSendFichierFelix(String numProg) {
+    public void asyncSendFichierFelix(ProgrammeDto programmeDto, String utilisateur) {
+        String numProg = programmeDto.getNumProg();
+        programmeDto.setUsermaj(utilisateur);
         try {
-            
             prepareFelixData(numProg);
             
             // Regeneration du fichier
@@ -266,8 +268,8 @@ public abstract class FelixDataServiceAbstract {
             LOGGER.debug("==> Debut Envoi du fichier à FELIX = " + ff.getNomFichier());
             SftpUtil.uploadFile(FELIX, tempFile, ff.getNomFichier());
             LOGGER.debug("<=== Fin Envoi du fichier à FELIX = " + ff.getNomFichier());
-
-            programmeService.majStatut(numProg, StatutProgramme.MIS_EN_REPART);
+            programmeDto.setStatut(StatutProgramme.MIS_EN_REPART);
+            programmeService.majStatut(programmeDto);
             
             ff.setStatut(StatutFichierFelix.ENVOYE);
             fichierFelixDao.saveAndFlush(ff);
