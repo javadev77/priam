@@ -162,7 +162,8 @@
                             cdeFamilTypUtilOri,
                             libelleUtilisateur,
                             RION_N_ANT,
-                            ajout
+                            ajout,
+                            nbrDifEdit
                         )
                         VALUES (
                             :idFichier,
@@ -200,7 +201,8 @@
                             :cdeFamilTypUtilOri,
                             :cdeUtil,
                             :rionAnt,
-                            'AUTOMATIQUE'
+                            'AUTOMATIQUE',
+                            :nbrDif
                         )
                 ]]>
             </value>

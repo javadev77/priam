@@ -83,6 +83,7 @@
                 @on-sort="onSort"
                 @all-checked="onAllChecked"
                 @entry-checked="onEntryChecked"
+                @onCellValueChanged="onCellValueChanged"
                 @supprimer-ligne-programme="onSupprimerLigneProgramme">
               </priam-grid>
             </div>
@@ -171,6 +172,9 @@
   import ProgrammeInfo from '../../../common/components/programme/ProgrammeInfo.vue';
   import Navbar from '../../../common/components/ui/priam-navbar.vue';
 
+  import PointsMontantEditor from './cellEditors/PointsMontantEditor.vue';
+  import PointsEditor from './cellEditors/PointsEditor.vue';
+
   export default {
     mixins: [chargementMixins],
 
@@ -195,6 +199,8 @@
         },
 
         showPopupInfoTmtCMS : false,
+
+        pointsSelection : 0,
 
         all : false,
         edition : false,
@@ -276,18 +282,19 @@
               }
             },
             {
-              id: 'points',
+              id: 'pointsMontant',
               name: "Points",
               sortable: true,
               sortProperty : 'sum(mt)', // l'equivalent du JpaSort dans le back
-              type: 'numeric',
+              type: 'inputNum',
+              cellEditorFramework : undefined,
               cell: {
-                toText : function(entry) {
+                toDisabled: function(entry){
 
-                  if(entry.pointsMontant !== undefined)
-                    return entry.pointsMontant;
-                  else
-                    return "";
+                  if (!$this.isTableauSelectionnable()) {
+                    return true;
+                  }
+                  return false;
                 }
               }
             },
@@ -398,7 +405,8 @@
         this.initProgramme();
     },
 
-    methods :{
+    methods : {
+
       openPopupInfoTraitementCMS() {
           this.showPopupInfoTmtCMS = true;
 
@@ -427,6 +435,7 @@
           this.dureeSelection.manuel = data.MANUEL;
           this.dureeSelection.corrige = data.CORRIGE
           this.dureeSelection.duree = data.SOMME;
+          //this.pointsSelection = this.countPointsSelection();
 
           this.backupDureeSelection = {
             auto: this.dureeSelection.auto,
@@ -498,17 +507,22 @@
               this.tableauSelectionnable = false;
 
 
-              this.defaultPageable.sort = 'points';
-            if(this.programmeInfo.typeUtilisation==="SONOANT"){
-              var pointsColumn = this.priamGrid_SONOCMS.gridColumns.find(function (elem) {
-                return elem.id === 'points';
-              });
+              this.defaultPageable.sort = 'pointsMontant';
 
-              if(pointsColumn !== undefined) {
-                pointsColumn.sortProperty = 'sum(nbrDif)';
-              }
+                var pointsColumn = this.priamGrid_SONOCMS.gridColumns.find(function (elem) {
+                  return elem.id === 'pointsMontant';
+                });
 
-             }
+                if(pointsColumn !== undefined) {
+                  if(this.programmeInfo.typeUtilisation === "SONOANT"){
+                    pointsColumn.sortProperty = 'sum(nbrDifEdit)';
+                    pointsColumn.cellEditorFramework = PointsEditor;
+                  } else {
+                    pointsColumn.sortProperty = 'sum(mtEdit)';
+                    pointsColumn.cellEditorFramework = PointsMontantEditor;
+                  }
+
+               }
 
             if(this.programmeInfo.statut == 'EN_COURS' || this.programmeInfo.statut == 'VALIDE') {
               this.filter.selection = 'Sélectionné';
@@ -523,6 +537,10 @@
         this.showPopupSuppression = true;
         this.selectedLineProgramme = row;
 
+      },
+
+      onCellValueChanged(column, columnModel) {
+        console.log("Cell Value has changed !!!")
       },
 
       supprimerProgramme() {
@@ -1066,10 +1084,23 @@
 
       lengthOfTabLigneProgramme() {
        return this.ligneProgramme !== undefined ? this.ligneProgramme.length : 0;
+      },
+
+      countPointsSelection() {
+        var countPt = 0;
+        for(var i in this.ligneProgramme) {
+          if(this.ligneProgramme[i].selection) {
+            countPt += this.ligneProgramme[i].pointsMontant ;
+          }
+        }
+
+        return countPt;
+
       }
     },
 
     watch: {
+
       lengthOfTabLigneProgramme : function (newValue) {
         console.log("The length of tab has changed  "+  newValue);
         this.$store.dispatch('toutDesactiver', newValue && newValue === this.countNbSelected);
@@ -1078,6 +1109,12 @@
       countNbSelected : function (newValue) {
         console.log("Le nombre de selection a cahnge "+  newValue);
         this.$store.dispatch('toutDesactiver', newValue && newValue === this.lengthOfTabLigneProgramme);
+      },
+
+      countPointsSelection : function (newValue) {
+        console.log("Points sélection a cahnge "+  newValue);
+        //this.dureeSelection.duree = newValue;
+        //this.calculerCompteurs();
       }
 
     },

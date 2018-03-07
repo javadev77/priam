@@ -21,5 +21,5 @@ public interface LigneProgrammeCPService {
 
 
     @Transactional
-    void modifierDurOrNbrDifTemporaire(String numProg, Set<Map<String, String>> idLingesProgrammes);
+    void modifierDurOrNbrDifTemporaire(String numProg, Set<Map<String, String>> idLingesProgrammes, boolean isSelected);
 }

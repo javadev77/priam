@@ -706,6 +706,12 @@
         this.$emit(event, entry, column);
       },
 
+      inputValue(event, column, columnModel) {
+          debugger;
+        columnModel = event;
+        this.$emit('onCellValueChanged', column, columnModel);
+      },
+
       emitCheckbox(entry, entryKey, value) {
         var key = null;//Number.parseInt(entry.id);
 

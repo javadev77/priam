@@ -36,7 +36,7 @@ public class ZipMultiResourceCMSItemReader<T> extends MultiResourceItemReader<T>
     @Autowired
     private FichierBatchService fichierBatchService;
 
-    String typeFichier;
+    private String typeFichier;
 
 
     /**

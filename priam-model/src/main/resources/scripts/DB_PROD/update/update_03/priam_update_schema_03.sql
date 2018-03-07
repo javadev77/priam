@@ -25,4 +25,11 @@ ALTER TABLE PRIAM_LIGNE_PROGRAMME_CP
 ALTER TABLE PRIAM_LIGNE_PROGRAMME_CP
   ADD `nbrDifEdit` int(11) DEFAULT NULL COMMENT  'Colonne qui sert pour le tableau editable dans ecran selection';
 
+ALTER TABLE PRIAM_LIGNE_PROGRAMME_CMS
+  ADD `mtEdit` double DEFAULT NULL COMMENT  'Colonne qui sert pour le tableau editable dans ecran selection';
+
+ALTER TABLE PRIAM_LIGNE_PROGRAMME_CMS
+  ADD `nbrDifEdit` int(11) DEFAULT NULL COMMENT  'Colonne qui sert pour le tableau editable dans ecran selection';
+
+
 commit;

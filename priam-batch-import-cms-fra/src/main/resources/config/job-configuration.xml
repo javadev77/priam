@@ -182,7 +182,8 @@
                             utilisateur,
                             date_insertion,
                             ajout,
-                            selection
+                            selection,
+                            mtEdit
                         )
                         VALUES (
                             :idFichier,
@@ -222,7 +223,8 @@
                             :utilisateur,
                             :date_insertion,
                             'AUTOMATIQUE',
-                            :selection
+                            :selection,
+                            :mt
                         )
                 ]]>
             </value>

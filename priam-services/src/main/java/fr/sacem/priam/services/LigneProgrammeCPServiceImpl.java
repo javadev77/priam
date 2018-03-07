@@ -44,6 +44,7 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
     public static final int SELECTION = 1;
     public static final String DUR_DIF = "durDif";
     public static final String AJOUT = "ajout";
+    public static final String NBR_DIF = "nbrDif";
 
 
     @Autowired
@@ -181,7 +182,7 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
 
     @Transactional
     @Override
-    public void modifierDurOrNbrDifTemporaire(String numProg, Set<Map<String, String>> idLingesProgrammes) {
+    public void modifierDurOrNbrDifTemporaire(String numProg, Set<Map<String, String>> idLingesProgrammes, boolean isSelected) {
         Programme prog = programmeDao.findByNumProg(numProg);
 
         for (Map<String, String>  obj:  idLingesProgrammes) {
@@ -189,9 +190,10 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
                 String ajout = obj.get("ajout");
 
                 LigneProgrammeCP inputLigneCP = createLigneProgrammeCPFromInput(numProg, obj);
+                inputLigneCP.setSelectionEnCours(isSelected);
 
                 if(prog.getTypeUtilisation().getCode().equals(TypeUtilisationPriam.COPIE_PRIVEE_SONORE_PHONO.getCode())) {
-                    String nbrDifValue = obj.get("nbrDif");
+                    String nbrDifValue = obj.get(NBR_DIF);
                     Long nbrDifEdit = nbrDifValue != null && !nbrDifValue.equals("") ? Long.valueOf(nbrDifValue) : 0L;
 
 
@@ -307,6 +309,7 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
         List<LigneProgrammeCP> founds = ligneProgrammeCPDao.findOeuvresAutoByIde12AndCdeUtil(input.getNumProg(), input.getIde12(), input.getCdeUtil());
         if(founds != null && !founds.isEmpty()) {
             input.setAjout(CORRIGE);
+
             LigneProgrammeCP oeuvreManuel = createOeuvreManuel(input, programme);
             founds.forEach( found -> {
                 found.setOeuvreManuel(oeuvreManuel);
@@ -327,6 +330,8 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
                 } else {
                     input.setAjout(MANUEL);
                     input.setDurDifEdit(input.getDurDif());
+                    input.setNbrDifEdit(input.getNbrDifEdit());
+
                     createOeuvreManuel(input, programme);
                 }
             }
@@ -376,7 +381,7 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
         /*input.setAjout(MANUEL);*/
         input.setSelection(TRUE);
         input.setDateInsertion(new Date());
-        input.setSelectionEnCours(TRUE);
+
         input.setSelection(FALSE);
         
         return ligneProgrammeCPDao.saveAndFlush(input);

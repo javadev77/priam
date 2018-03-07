@@ -37,7 +37,7 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
                     "ligneProgramme.nomParticipant1, " +
                     "ligneProgramme.ajout, " +
                     "ligneProgramme.selectionEnCours, " +
-            "(CASE WHEN f.programme.typeUtilisation.code = 'SONOFRA' THEN sum(ligneProgramme.mt) WHEN f.programme.typeUtilisation.code = 'SONOANT' THEN sum(ligneProgramme.nbrDif) ELSE 0 END)) "+
+            "(CASE WHEN f.programme.typeUtilisation.code = 'SONOFRA' THEN sum(ligneProgramme.mtEdit) WHEN f.programme.typeUtilisation.code = 'SONOANT' THEN sum(ligneProgramme.nbrDifEdit) ELSE 0 END)) "+
             "FROM LigneProgrammeCMS ligneProgramme join ligneProgramme.fichier  f " +
             "WHERE ligneProgramme.fichier = f.id " +
             "AND f.programme.numProg = :numProg " +
@@ -326,7 +326,7 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
     @Transactional(readOnly = true)
     @Query(nativeQuery = true, value =
             "SELECT sum(points) from ( SELECT " +
-                    "(CASE WHEN l.cdeTypUtil = 'SONOFRA' THEN sum(l.mt) WHEN l.cdeTypUtil = 'SONOANT' THEN sum(l.nbrDif) ELSE 0 END) points, " +
+                    "(CASE WHEN l.cdeTypUtil = 'SONOFRA' THEN sum(l.mtEdit) WHEN l.cdeTypUtil = 'SONOANT' THEN sum(l.nbrDifEdit) ELSE 0 END) points, " +
                     "l.ide12 " +
                     "FROM " +
                     "PRIAM_LIGNE_PROGRAMME_CMS l inner join PRIAM_FICHIER as f " +
@@ -355,4 +355,78 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
             "AND l.oeuvreManuel IS NULL " +
             "AND l.ajout = 'CORRIGE' ")
     LigneProgrammeCMS findOeuvreCorrigeByIde12(@Param("numProg") String numProg, @Param("ide12") Long ide12);
+
+
+    @Modifying(clearAutomatically = true)
+    @Query(nativeQuery = true, value="update " +
+            "  PRIAM_LIGNE_PROGRAMME_CMS p " +
+            "INNER JOIN " +
+            "  PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
+            "set " +
+            "  p.nbrDifEdit=?3 "+
+            "where " +
+            "  f.NUMPROG = ?1 " +
+            " AND p.ide12 = ?2 ")
+    void updatePointsTemporaireByNumProgramme(String numProg, Long ide12, Long nbrDifEdit);
+
+    @Modifying(clearAutomatically = true)
+    @Query(nativeQuery = true, value = "update " +
+            "PRIAM_LIGNE_PROGRAMME_CMS p " +
+            "INNER JOIN " +
+            "PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
+            "set  p.nbrDif=p.nbrDifEdit " +
+            "WHERE  "+
+            "f.NUMPROG = ?1 " +
+            "AND p.SEL_EN_COURS=1 " +
+            "AND p.idOeuvreManuel is NULL " +
+            "AND p.ajout='MANUEL' OR p.ajout='CORRIGE' ")
+    void updatePoints(String numProg);
+
+
+    @Modifying(clearAutomatically = true)
+    @Query(nativeQuery = true, value = "update " +
+            "PRIAM_LIGNE_PROGRAMME_CMS p " +
+            "INNER JOIN " +
+            "PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
+            "set  p.nbrDifEdit=p.nbrDif " +
+            "WHERE  "+
+            "f.NUMPROG = ?1 AND p.selection=?2")
+    void updateNbrDifTemporaire(String numProg, Boolean aFalse);
+
+
+    @Modifying(clearAutomatically = true)
+    @Query(nativeQuery = true, value = "update " +
+            "PRIAM_LIGNE_PROGRAMME_CMS p " +
+            "INNER JOIN " +
+            "PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
+            "set  p.mt=p.mtEdit " +
+            "WHERE  "+
+            "f.NUMPROG = ?1 " +
+            "AND p.SEL_EN_COURS=1 " +
+            "AND p.idOeuvreManuel is NULL " +
+            "AND p.ajout='MANUEL' OR p.ajout='CORRIGE' ")
+    void updatePointsMt(String numProg);
+
+    @Modifying(clearAutomatically = true)
+    @Query(nativeQuery = true, value = "update " +
+            "PRIAM_LIGNE_PROGRAMME_CMS p " +
+            "INNER JOIN " +
+            "PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
+            "set  p.mtEdit=p.mt " +
+            "WHERE  "+
+            "f.NUMPROG = ?1 AND p.selection=?2")
+    void updatePointsMtTemporaire(String numProg, Boolean aTrue);
+
+
+    @Modifying(clearAutomatically = true)
+    @Query(nativeQuery = true, value="update " +
+            "  PRIAM_LIGNE_PROGRAMME_CMS p " +
+            "INNER JOIN " +
+            "  PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
+            "set " +
+            "  p.mtEdit=?3 "+
+            "where " +
+            "  f.NUMPROG = ?1 " +
+            " AND p.ide12 = ?2 ")
+    void updatePointsMtTemporaireByNumProgramme(String numProg, Long ide12, Double mtEdit);
 }

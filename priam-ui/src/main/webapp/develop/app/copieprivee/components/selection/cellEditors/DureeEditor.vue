@@ -3,9 +3,9 @@
     <input
       ref="inputDureeEdit"
       v-bind:value="value"
-      v-on:input="updateValue($event.target.value)"
-      v-on:focus="selectAll"
-      v-on:blur="formatValue"
+      @input="updateValue($event.target.value)"
+      @focus="selectAll"
+      @blur="formatValue"
       :disabled="disabled"
       @keyup.enter="formatValue"
       class="tableInput numberInput"

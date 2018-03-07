@@ -58,6 +58,7 @@ public class LigneProgrammeCPResource extends LigneProgrammeResource {
       String libAbrgUtil = sareftjLibutil.getLibAbrgUtil();
       input.setLibelleUtilisateur(sareftjLibutil.getCdeUtil() + (Strings.isNullOrEmpty(libAbrgUtil) ? "" :  " - " + libAbrgUtil));
       input.setUtilisateur(userDTO.getUserId());
+      input.setSelectionEnCours(Boolean.TRUE);
 
       ligneProgrammeCPService.ajouterOeuvreManuel(input);
 
@@ -90,10 +91,10 @@ public class LigneProgrammeCPResource extends LigneProgrammeResource {
         super.modifierSelectionTemporaire(input);
         String numProg = input.getNumProg();
         if (!input.getSelected().isEmpty()) {
-            ligneProgrammeCPService.modifierDurOrNbrDifTemporaire(numProg, input.getSelected());
+            ligneProgrammeCPService.modifierDurOrNbrDifTemporaire(numProg, input.getSelected(), Boolean.TRUE);
         }
         if (!input.getUnselected().isEmpty()) {
-            ligneProgrammeCPService.modifierDurOrNbrDifTemporaire(numProg, input.getUnselected());
+            ligneProgrammeCPService.modifierDurOrNbrDifTemporaire(numProg, input.getUnselected(), Boolean.FALSE);
         }
 
         return new ArrayList<>();
