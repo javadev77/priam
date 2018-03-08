@@ -166,9 +166,10 @@ public class LigneProgrammeCMSServiceTest extends AbstractTestExecutionListener 
         listIDE12.add(list);
 
         ligneProgrammeCMSService.selectLigneProgramme(NUM_PROG, listIDE12);
+
         List<LigneProgrammeCMS> ligneProgrammeCMS = ligneProgrammeCMSDao.findLigneProgrammeByNumProg(NUM_PROG);
         Iterable<LigneProgrammeCMS> selectedLigneCMS = Iterables.filter(ligneProgrammeCMS, lp -> lp.isSelectionEnCours());
-        assertThat(Iterables.size(selectedLigneCMS)).isEqualTo(5);
+        assertThat(Iterables.size(selectedLigneCMS)).isEqualTo(6);
     }
 
     @Test
@@ -228,7 +229,7 @@ public class LigneProgrammeCMSServiceTest extends AbstractTestExecutionListener 
         ligneProgrammeCMSDao.updateSelection(NUM_PROG, true);
 
 
-      //  ligneProgrammeCMSService.annulerEdition(NUM_PROG);
+        ligneProgrammeCMSService.annulerEdition(NUM_PROG, "USER_GUEST");
 
         List<LigneProgrammeCMS> after = ligneProgrammeCMSDao.findLigneProgrammeByNumProg(NUM_PROG);
         Iterable<LigneProgrammeCMS> filtredAfter = Iterables.filter(after, ligneProgrammeCMS -> ligneProgrammeCMS.isSelectionEnCours());
@@ -243,7 +244,9 @@ public class LigneProgrammeCMSServiceTest extends AbstractTestExecutionListener 
         Iterable<LigneProgrammeCMS> filtredBefore = Iterables.filter(before, ligneProgrammeCMS -> ligneProgrammeCMS.isSelectionEnCours());
         ligneProgrammeCMSDao.updateSelection(NUM_PROG, false);
         ligneProgrammeCMSDao.updateSelectionTemporaire(NUM_PROG, false);
-     //   ligneProgrammeCMSService.annulerSelection(NUM_PROG);
+
+         ligneProgrammeCMSService.annulerSelection(NUM_PROG, "GUEST");
+
         List<LigneProgrammeCMS> after = ligneProgrammeCMSDao.findLigneProgrammeByNumProg(NUM_PROG);
         Iterable<LigneProgrammeCMS> filtredAfter = Iterables.filter(after, ligneProgrammeCMS -> ligneProgrammeCMS.isSelectionEnCours());
         assertThat(Iterables.size(filtredAfter)).isEqualTo(Iterables.size(filtredBefore));

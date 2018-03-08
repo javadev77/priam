@@ -23,6 +23,7 @@ import java.util.*;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -260,6 +261,7 @@ public class LigneProgrammeCPResourceTest extends RestResourceTest {
 
     mockMvc.perform(post(APP_REST_ANNULER_SELECTION)
       .content(this.json(input))
+            .with(user("guest"))
       .contentType(contentType))
       .andExpect(status().isOk());
   }

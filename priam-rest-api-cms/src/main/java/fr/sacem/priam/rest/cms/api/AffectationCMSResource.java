@@ -80,6 +80,9 @@ public class AffectationCMSResource {
             programmeDto = programmeViewDao.findByNumProg(numProg);
         }
 
+        if(fichiers == null || fichiers.isEmpty()) {
+            return programmeDto;
+        }
         //lancer le job
         LOGGER.info("====== Lancement du job Affectation CMS ======");
 
