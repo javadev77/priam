@@ -2,6 +2,7 @@ package fr.sacem.priam.model.domain.cp;
 
 import com.google.common.base.Objects;
 import fr.sacem.priam.model.domain.Fichier;
+import fr.sacem.priam.model.util.EtatOeuvreEnum;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -61,7 +62,6 @@ public class LigneProgrammeCP implements Serializable {
 
     @Column(name = "nbrDifEdit")
     private Long nbrDifEdit;
-
 
     @Column(name = "mt")
     private Double mt;
@@ -135,7 +135,7 @@ public class LigneProgrammeCP implements Serializable {
     
     @Column(name = "ajout")
     private String ajout;
-    
+
     @Column(name = "selection")
     private boolean selection;
     

@@ -8,6 +8,8 @@ import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.priam.model.domain.*;
 import fr.sacem.priam.model.domain.dto.FileDto;
 import fr.sacem.priam.model.util.FamillePriam;
+import fr.sacem.priam.services.journal.annotation.LogFichier;
+import fr.sacem.priam.services.journal.annotation.TypeLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

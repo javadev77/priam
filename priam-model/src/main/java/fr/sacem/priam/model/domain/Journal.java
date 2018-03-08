@@ -3,6 +3,7 @@ package fr.sacem.priam.model.domain;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by monfleurm on 22/02/2018.
@@ -16,6 +17,9 @@ public class Journal implements Serializable {
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "numprog")
+    private String numProg;
+
     @Column(name = "evenement")
     private String evenement;
 
@@ -23,25 +27,38 @@ public class Journal implements Serializable {
     private Long ide12;
 
     @Column(name = "date")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date date;
 
     @Column(name = "utilisateur")
     private String utilisateur;
 
-    @Column(name = "situationAvant")
-    private String situationAvant;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "ID_EVENEMENT")
+    List<SituationAvant> listSituationAvant;
 
-    @Column(name = "situationApres")
-    private String situationApres;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "ID_EVENEMENT")
+    List<SituationApres> listSituationApres;
 
-    public Journal(String evenement, Long ide12, Date date, String utilisateur, String situationAvant, String situationApres) {
+    public Journal() {
+    }
+
+    public Journal(String numProg, String evenement, Long ide12, Date date, String utilisateur, List<SituationAvant> listSituationAvant, List<SituationApres> listSituationApres) {
+        this.numProg = numProg;
         this.evenement = evenement;
         this.ide12 = ide12;
         this.date = date;
         this.utilisateur = utilisateur;
-        this.situationAvant = situationAvant;
-        this.situationApres = situationApres;
+        this.listSituationAvant = listSituationAvant;
+        this.listSituationApres = listSituationApres;
+    }
+
+    public Journal(String numProg, String evenement, Date date, String utilisateurMaj) {
+        this.numProg = numProg;
+        this.evenement = evenement;
+        this.date = date;
+        this.utilisateur = utilisateurMaj;
     }
 
     public Long getId() {
@@ -66,12 +83,27 @@ public class Journal implements Serializable {
 
     public void setUtilisateur(String utilisateur) { this.utilisateur = utilisateur; }
 
-    public String getSituationAvant() { return situationAvant; }
+    public String getNumProg() {
+        return numProg;
+    }
 
-    public void setSituationAvant(String situationAvant) { this.situationAvant = situationAvant; }
+    public void setNumProg(String numProg) {
+        this.numProg = numProg;
+    }
 
-    public void setSituationApres(String situationApres) { this.situationApres = situationApres; }
+    public List<SituationAvant> getListSituationAvant() {
+        return listSituationAvant;
+    }
 
-    public String getSituationApres() { return situationApres; }
+    public void setListSituationAvant(List<SituationAvant> listSituationAvant) {
+        this.listSituationAvant = listSituationAvant;
+    }
 
+    public List<SituationApres> getListSituationApres() {
+        return listSituationApres;
+    }
+
+    public void setListSituationApres(List<SituationApres> listSituationApres) {
+        this.listSituationApres = listSituationApres;
+    }
 }

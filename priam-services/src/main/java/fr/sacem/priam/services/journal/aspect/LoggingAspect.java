@@ -1,35 +1,38 @@
 package fr.sacem.priam.services.journal.aspect;
 
+import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.dao.jpa.JournalDao;
 import fr.sacem.priam.model.dao.jpa.cms.LigneProgrammeCMSDao;
 import fr.sacem.priam.model.dao.jpa.cp.LigneProgrammeCPDao;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
-import fr.sacem.priam.model.domain.Journal;
-import fr.sacem.priam.model.domain.Programme;
-import fr.sacem.priam.model.domain.StatutProgramme;
+import fr.sacem.priam.model.domain.*;
+import fr.sacem.priam.model.domain.dto.FileDto;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
-import fr.sacem.priam.services.journal.annotation.LogOeuvre;
-import fr.sacem.priam.services.journal.annotation.LogProgramme;
-import fr.sacem.priam.services.journal.annotation.LogEtatProgramme;
-import fr.sacem.priam.services.journal.annotation.TypeLog;
+import fr.sacem.priam.services.journal.annotation.*;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Aspect
 @Configuration
 public class LoggingAspect {
 
-    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(LoggingAspect.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LoggingAspect.class);
 
     @Autowired ProgrammeDao programmeDao;
+
+    @Autowired FichierDao fichierDao;
 
     @Autowired JournalDao journalDao;
 
@@ -40,32 +43,68 @@ public class LoggingAspect {
 
     @Around("execution(@fr.sacem.priam.services.journal.annotation.LogProgramme * *(..)) && @annotation(logProgramme)")
     public void logProgramme(ProceedingJoinPoint joinPoint, LogProgramme logProgramme) throws Throwable {
-        System.out.println("******");
-        System.out.println("logProgramme() is running!");
-        System.out.println("Method : " + joinPoint.getSignature().getName());
-        System.out.println("Arguments : " + Arrays.toString(joinPoint.getArgs()));
-        System.out.println("Around before is running!");
-        String situationAvant = "";
+        LOG.info("******");
+        LOG.info("logProgramme() is running!");
+        LOG.info("Method : " + joinPoint.getSignature().getName());
+        LOG.info("Arguments : " + Arrays.toString(joinPoint.getArgs()));
+        LOG.info("Around before is running!");
+
+        Journal journal = new Journal();
+
         String utilisateurMaj = "";
         ProgrammeDto programmeDto = (ProgrammeDto) joinPoint.getArgs()[0];
         TypeLog annotationValue = logProgramme.event();
+        String evenement = annotationValue.getEvenement();
+
+        journal.setEvenement(evenement);
+        journal.setDate(new Date());
+
+        List<SituationAvant> situationAvantList = new ArrayList<>();
+        List<SituationApres> situationApresList = new ArrayList<>();
+        SituationAvant situationAvant = new SituationAvant();
+        SituationApres situationApres = new SituationApres();
+
+
+        /*Journal journal = new Journal(programmeDto.getNumProg(),evenement, new Date(), utilisateurMaj);*/
+
+
         if (annotationValue.equals(TypeLog.MODIFICATION) || annotationValue.equals(TypeLog.SUPPRESSION)) {
-            Programme oldProgramme = programmeDao.findOne(programmeDto.getNumProg());
-            situationAvant = getInfoProgramme(oldProgramme);
+            journal.setNumProg(programmeDto.getNumProg());
             utilisateurMaj = programmeDto.getUsermaj();
+            journal.setUtilisateur(utilisateurMaj);
+
+            Programme oldProgramme = programmeDao.findOne(programmeDto.getNumProg());
+            situationAvant.setSituation(getInfoProgramme(oldProgramme));
+            situationAvantList.add(situationAvant);
+
         } else if (annotationValue.equals(TypeLog.CREATION)){
             utilisateurMaj = programmeDto.getUsercre();
+            journal.setUtilisateur(utilisateurMaj);
         }
-        joinPoint.proceed();
-        System.out.println("Around after is running!");
-        String evenement = annotationValue.getEvenement();
-        String situationApres = "";
+
+        Object result = joinPoint.proceed();
+        LOG.info("Around after is running!");
+
         if (annotationValue.equals(TypeLog.MODIFICATION) || annotationValue.equals(TypeLog.CREATION)) {
-            situationApres = getInfoProgrammeDto(programmeDto);
+            if(result instanceof Programme) {
+                Programme prog = (Programme) result;
+                journal.setNumProg(prog.getNumProg());
+            }
+            situationApres.setSituation(getInfoProgrammeDto(programmeDto));
+            situationApresList.add(situationApres);
         }
-        Journal journal = new Journal(evenement, null, new Date(), utilisateurMaj, situationAvant, situationApres);
+
+        journal.setListSituationAvant(situationAvantList);
+        journal.setListSituationApres(situationApresList);
         journalDao.save(journal);
-        System.out.println("******");
+        LOG.info("******");
+    }
+
+    @Around("execution(@fr.sacem.priam.services.journal.annotation.LogOeuvre * *(..)) && @annotation(logOeuvre)")
+    public void logOeuvre(ProceedingJoinPoint joinPoint, LogOeuvre logOeuvre)  throws Throwable {
+        TypeLog annotationValue = logOeuvre.event();
+        joinPoint.proceed();
+
     }
 
     @Around("execution(@fr.sacem.priam.services.journal.annotation.LogEtatProgramme * *(..)) && @annotation(logEtatProgramme)")
@@ -93,15 +132,8 @@ public class LoggingAspect {
                 situationApres = StatutProgramme.MIS_EN_REPART.toString();
                 utilisateur = programmeDto.getUsermaj();
             }
-            Journal journal = new Journal(annotationValue.getEvenement(), null, new Date(), utilisateur, situationAvant, situationApres);
-        journalDao.save(journal);
-    }
-
-    @Around("execution(@fr.sacem.priam.services.journal.annotation.LogOeuvre * *(..)) && @annotation(logOeuvre)")
-    public void logOeuvre(ProceedingJoinPoint joinPoint, LogOeuvre logOeuvre)  throws Throwable {
-        TypeLog annotationValue = logOeuvre.event();
-        joinPoint.proceed();
-
+            /*Journal journal = new Journal(programmeDto.getNumProg(),annotationValue.getEvenement(), null, new Date(), utilisateur, situationAvant, situationApres);*/
+        /*journalDao.save(journal);*/
     }
 
     private String getInfoProgramme(Programme programme) {
@@ -121,4 +153,5 @@ public class LoggingAspect {
                 + " Date début : " + programmeDto.getDateDbtPrg() + " Date fin : " + programmeDto.getDateFinPrg()
                 + " Date maj : " + new Date() + " Utilisateur maj : " + programmeDto.getUsermaj();
     }
+
 }
