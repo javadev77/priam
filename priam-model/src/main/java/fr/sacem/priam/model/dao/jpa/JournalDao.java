@@ -14,7 +14,6 @@ import java.util.List;
 /**
  * Created by monfleurm on 26/01/2018.
  */
-@Lazy
 @Transactional
 public interface JournalDao extends JpaRepository<Journal,Long> {
 

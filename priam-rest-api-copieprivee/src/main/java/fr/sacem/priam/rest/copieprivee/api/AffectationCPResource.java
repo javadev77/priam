@@ -5,6 +5,8 @@ import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
 import fr.sacem.priam.model.domain.Fichier;
 import fr.sacem.priam.model.domain.dto.AffectationDto;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
+import fr.sacem.priam.rest.copieprivee.journal.annotation.LogFichier;
+import fr.sacem.priam.rest.copieprivee.journal.annotation.TypeLog;
 import fr.sacem.priam.security.model.UserDTO;
 import fr.sacem.priam.services.FichierService;
 import fr.sacem.priam.services.ProgrammeService;
@@ -40,6 +42,7 @@ public class AffectationCPResource {
             method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
+    @LogFichier(event = TypeLog.AFFECTATION)
     public ProgrammeDto affecterFichiers (@RequestBody AffectationDto affectationDto, UserDTO currentUser) {
 
         ProgrammeDto programmeDto = null;
