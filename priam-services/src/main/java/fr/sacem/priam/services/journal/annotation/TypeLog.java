@@ -8,7 +8,9 @@ public enum TypeLog {
     INVALIDATION ("Invalidation programme"),
     ANNULATION ("Annuler la sélection"),
     REPARTITION ("Mise en répartition"),
-    SUPPRESSIONOEUVRE ("Suppression oeuvre avec état ");
+    SUPPRESSIONOEUVRE ("Suppression oeuvre avec état "),
+    AJOUT_OEUVRE("Ajout oeuvre"),
+    MODIFIER_OEUVRE("Modification oeuvre");
 
     private String evenement ;
 

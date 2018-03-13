@@ -1,6 +1,5 @@
-package fr.sacem.priam.rest.api.copieprivee.config;
+package fr.sacem.priam.rest.copieprivee.config;
 
-import fr.sacem.priam.rest.copieprivee.config.PriamCopiepriveeWebAppTest;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,20 +8,17 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.mock.http.MockHttpOutputMessage;
-import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
-
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertNotNull;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 /**
@@ -55,7 +51,7 @@ public abstract class RestResourceTest {
   @Before
   public void setup() throws Exception {
       this.mockMvc = webAppContextSetup(webApplicationContext)
-                        .apply(springSecurity())
+                        //.apply(springSecurity())
                         .build();
   }
 

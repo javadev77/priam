@@ -37,7 +37,7 @@
       <app-filtre-selection
         :filter="filter"
         :retablir="retablirFiltre"
-        :rechercher="rechercher"
+        :rechercher="launchRechercheEtCompteurs"
         :ajouter="ajouterOeuvre"
         :edition="edition"
       >
@@ -669,9 +669,9 @@
 
 
             if(this.programmeInfo.typeUtilisation==="CPRIVSONPH"){
-              this.defaultPageable.sort = 'nbrDifEdit';
+              this.defaultPageable.sort = 'sum(nbrDifEdit)';
             }else if (this.programmeInfo.typeUtilisation==="CPRIVSONRD") {
-              this.defaultPageable.sort = 'durDifEdit';
+              this.defaultPageable.sort = 'sum(durDifEdit)';
             }
 
             if(this.programmeInfo.statut == 'EN_COURS' || this.programmeInfo.statut == 'VALIDE') {
@@ -766,6 +766,7 @@
               console.log("Erreur technique lors de la validation de la selection du programme !! " + response);
             });
         } else {
+            debugger;
             this.launchRequest(currentPage, pageSize, sort.property, sort.direction);
 
             this.defaultPageable.sort = sort.property;
@@ -828,40 +829,46 @@
 
       },
 
+      launchRechercheEtCompteurs() {
+
+        this.doSearch();
+        this.getDuree(this.programmeInfo.statut);
+      },
+
+      doSearch() {
+        this.dataLoading = true;
+        this.resource.findLigneProgrammeByProgramme({
+          page: this.defaultPageable.page - 1, size: this.defaultPageable.size,
+          sort: this.defaultPageable.sort, dir: this.defaultPageable.dir
+        }, this.filter)
+        .then(response => {
+          return response.json();
+        })
+        .then(data => {
+
+          var tab = [];
+          if (this.programmeInfo.typeUtilisation === "CPRIVSONPH") {
+
+            this.priamGrid_phono.gridData_phono = data;
+            this.priamGrid_phono.gridData_phono.number = data.number + 1;
+            tab = this.priamGrid_phono.gridData_phono.content;
+
+          } else if (this.programmeInfo.typeUtilisation === "CPRIVSONRD") {
+
+            this.priamGrid_sono.gridData_sono = data;
+            this.priamGrid_sono.gridData_sono.number = data.number + 1;
+            tab = this.priamGrid_sono.gridData_sono.content;
+          }
+
+          this.ligneProgramme = tab;
+          this.dataLoading = false;
+
+        // this.$store.dispatch('toutDesactiver', this.countNbSelected(this.ligneProgramme) == this.ligneProgramme.length);
+        //this.selectAll();
+      });
+    },
+
       rechercher(){
-
-        function doSearch() {
-          this.dataLoading = true;
-          this.resource.findLigneProgrammeByProgramme({
-            page: this.defaultPageable.page - 1, size: this.defaultPageable.size,
-            sort: this.defaultPageable.sort, dir: this.defaultPageable.dir
-          }, this.filter)
-            .then(response => {
-              return response.json();
-            })
-            .then(data => {
-
-              var tab = [];
-              if (this.programmeInfo.typeUtilisation === "CPRIVSONPH") {
-
-                this.priamGrid_phono.gridData_phono = data;
-                this.priamGrid_phono.gridData_phono.number = data.number + 1;
-                tab = this.priamGrid_phono.gridData_phono.content;
-
-              } else if (this.programmeInfo.typeUtilisation === "CPRIVSONRD") {
-
-                this.priamGrid_sono.gridData_sono = data;
-                this.priamGrid_sono.gridData_sono.number = data.number + 1;
-                tab = this.priamGrid_sono.gridData_sono.content;
-              }
-
-              this.ligneProgramme = tab;
-              this.dataLoading = false;
-
-             // this.$store.dispatch('toutDesactiver', this.countNbSelected(this.ligneProgramme) == this.ligneProgramme.length);
-              //this.selectAll();
-            });
-        }
 
         this.currentFilter.ide12 = this.filter.ide12;
         this.currentFilter.ajout = this.filter.ajout;
@@ -871,8 +878,7 @@
         this.currentFilter.selection = this.filter.selection;
 
         if(!this.edition) {
-          doSearch.call(this);
-          this.getDuree(this.programmeInfo.statut);
+          this.launchRechercheEtCompteurs();
         } else {
           this.modifierSelectionTemporaire();
 
@@ -881,9 +887,7 @@
               return response.json();
             }).then(data => {
 
-            doSearch.call(this);
-            this.getDuree(this.programmeInfo.statut);
-
+            this.launchRechercheEtCompteurs();
           })
             .catch(response => {
               console.log("Erreur technique lors de la validation de la selection du programme !! " + response);
@@ -1011,14 +1015,21 @@
       },
 
       recalculerCompteurs(entry) {
-        if(entry.ajout == 'Manuel') {
+        if(entry.ajout == 'MANUEL') {
           if(entry.selection) {
             this.dureeSelection.manuel++;
           } else {
             this.dureeSelection.manuel--;
           }
 
-        } else {
+        } else if(entry.ajout == 'CORRIGE') {
+          if(entry.selection) {
+            this.dureeSelection.corrige++;
+          } else {
+            this.dureeSelection.corrige--;
+          }
+        }
+        else if(entry.ajout == 'AUTOMATIQUE') {
           if(entry.selection) {
             this.dureeSelection.auto++;
           } else {
@@ -1037,6 +1048,10 @@
           this.dureeSelection.duree += duree;
         } else {
           this.dureeSelection.duree -= duree;
+        }
+
+        if(this.dureeSelection.duree < 0) {
+          this.dureeSelection.duree  = 0;
         }
       },
 

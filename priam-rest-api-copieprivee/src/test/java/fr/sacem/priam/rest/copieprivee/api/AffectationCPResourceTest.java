@@ -6,7 +6,7 @@ import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.domain.Fichier;
 import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.dto.AffectationDto;
-import fr.sacem.priam.rest.api.copieprivee.config.RestResourceTest;
+import fr.sacem.priam.rest.copieprivee.config.RestResourceTest;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

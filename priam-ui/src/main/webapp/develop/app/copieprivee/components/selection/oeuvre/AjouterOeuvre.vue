@@ -220,8 +220,9 @@
                           this.messageRadio = 'Attention, cette oeuvre est déjà présente au niveau du programme avec la durée '
                             + ligneProg.durDif + ', êtes-vous sûr de vouloir la remplacer avec la durée saisie ?';
                       }
+                    //this.oeuvreToAdd.ajout = 'CORRIGE';
                   } else {
-
+                    //this.oeuvreToAdd.ajout = 'MANUEL';
                     this.$emit('validate-ajout-oeuvre', this.oeuvreToAdd);
                   }
               });

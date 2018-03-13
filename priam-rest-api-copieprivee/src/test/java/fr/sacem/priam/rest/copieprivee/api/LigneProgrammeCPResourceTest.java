@@ -4,9 +4,9 @@ import fr.sacem.priam.model.dao.jpa.cp.LigneProgrammeCPDao;
 import fr.sacem.priam.model.domain.cp.LigneProgrammeCP;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.SelectionDto;
-import fr.sacem.priam.rest.api.copieprivee.config.RestResourceTest;
 import fr.sacem.priam.rest.copieprivee.api.dto.LigneProgrammeCritereRecherche;
 import fr.sacem.priam.rest.copieprivee.api.dto.ValdierSelectionProgrammeInput;
+import fr.sacem.priam.rest.copieprivee.config.RestResourceTest;
 import fr.sacem.priam.services.api.LigneProgrammeService;
 import fr.sacem.priam.services.cp.LigneProgrammeCPService;
 import org.junit.Rule;
@@ -261,7 +261,6 @@ public class LigneProgrammeCPResourceTest extends RestResourceTest {
 
     mockMvc.perform(post(APP_REST_ANNULER_SELECTION)
       .content(this.json(input))
-            .with(user("guest"))
       .contentType(contentType))
       .andExpect(status().isOk());
   }

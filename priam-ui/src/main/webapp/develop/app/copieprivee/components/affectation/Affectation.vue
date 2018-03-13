@@ -674,6 +674,7 @@
               this.$router.push({ name: 'ListePrg'});
           })
           .catch(response => {
+              debugger;
               alert("Erreur technique lors de l'affectation des fichiers au programme !! ");
           });
       },

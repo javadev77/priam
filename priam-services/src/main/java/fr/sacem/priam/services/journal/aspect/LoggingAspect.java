@@ -6,7 +6,6 @@ import fr.sacem.priam.model.dao.jpa.cms.LigneProgrammeCMSDao;
 import fr.sacem.priam.model.dao.jpa.cp.LigneProgrammeCPDao;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.priam.model.domain.*;
-import fr.sacem.priam.model.domain.dto.FileDto;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.services.journal.annotation.*;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -22,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Aspect
 @Configuration
@@ -42,7 +40,7 @@ public class LoggingAspect {
 
 
     @Around("execution(@fr.sacem.priam.services.journal.annotation.LogProgramme * *(..)) && @annotation(logProgramme)")
-    public void logProgramme(ProceedingJoinPoint joinPoint, LogProgramme logProgramme) throws Throwable {
+    public Object logProgramme(ProceedingJoinPoint joinPoint, LogProgramme logProgramme) throws Throwable {
         LOG.info("******");
         LOG.info("logProgramme() is running!");
         LOG.info("Method : " + joinPoint.getSignature().getName());
@@ -97,7 +95,10 @@ public class LoggingAspect {
         journal.setListSituationAvant(situationAvantList);
         journal.setListSituationApres(situationApresList);
         journalDao.save(journal);
+
         LOG.info("******");
+
+        return result;
     }
 
     @Around("execution(@fr.sacem.priam.services.journal.annotation.LogOeuvre * *(..)) && @annotation(logOeuvre)")

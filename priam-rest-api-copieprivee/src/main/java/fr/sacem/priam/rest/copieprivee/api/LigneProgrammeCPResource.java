@@ -7,6 +7,8 @@ import fr.sacem.priam.model.domain.dto.SelectionDto;
 import fr.sacem.priam.model.domain.saref.SareftjLibUtilPK;
 import fr.sacem.priam.model.domain.saref.SareftjLibutil;
 import fr.sacem.priam.model.util.GlobalConstants;
+import fr.sacem.priam.rest.copieprivee.journal.annotation.LogOeuvre;
+import fr.sacem.priam.rest.copieprivee.journal.annotation.TypeLog;
 import fr.sacem.priam.security.model.UserDTO;
 import fr.sacem.priam.services.LigneProgrammeCPServiceImpl;
 import fr.sacem.priam.services.ProgrammeService;

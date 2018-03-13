@@ -2,6 +2,7 @@ package fr.sacem.priam.model.domain;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -35,11 +36,11 @@ public class Journal implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "ID_EVENEMENT")
-    List<SituationAvant> listSituationAvant;
+    List<SituationAvant> listSituationAvant = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "ID_EVENEMENT")
-    List<SituationApres> listSituationApres;
+    List<SituationApres> listSituationApres = new ArrayList<>();
 
     public Journal() {
     }

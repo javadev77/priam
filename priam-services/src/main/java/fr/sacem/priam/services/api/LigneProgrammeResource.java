@@ -186,7 +186,7 @@ public abstract class LigneProgrammeResource {
         programmeDTO.setUseraffecte(userDTO.getDisplayName());
 
         Programme programme = programmeService.updateStatutProgrammeToAffecte(programmeDTO);
-        getLigneProgrammeService().annulerSelection(programme.getNumProg(), userDTO.getDisplayName());
+        getLigneProgrammeService().annulerSelection(input.getNumProg(), userDTO.getDisplayName());
 
 
         return new ArrayList<>();

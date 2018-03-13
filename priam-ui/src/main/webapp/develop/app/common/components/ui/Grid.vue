@@ -679,7 +679,7 @@
         if(this.sort !== undefined && this.sort!== null) {
           let sortProp = entryColumn.sortProperty !== undefined  ? entryColumn.sortProperty : entryColumn.id;
           console.log("property" + this.sort.property)
-          return sortProp == this.sort.property;
+          return sortProp === this.sort.property;
         }
         return false;
       },
@@ -785,7 +785,7 @@
         }
 
         this.sort.ascending = isAsc;
-        this.sort.property = entryColumn.id;
+        this.sort.property = sortProp;
         this.sort.direction = isAsc ? 'ASC' : 'DESC';
 
 

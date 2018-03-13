@@ -2,10 +2,13 @@ package fr.sacem.priam.rest.copieprivee.journal.aspect;
 
 import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.dao.jpa.JournalDao;
+import fr.sacem.priam.model.dao.jpa.cp.LigneProgrammeCPDao;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.priam.model.domain.*;
 
+import fr.sacem.priam.model.domain.cp.LigneProgrammeCP;
 import fr.sacem.priam.model.domain.dto.AffectationDto;
+import fr.sacem.priam.model.util.TypeUtilisationPriam;
 import fr.sacem.priam.rest.copieprivee.journal.annotation.*;
 
 import fr.sacem.priam.security.model.UserDTO;
@@ -33,9 +36,12 @@ public class LoggingAspectRestCP {
 
     @Autowired JournalDao journalDao;
 
+    @Autowired
+    LigneProgrammeCPDao ligneProgrammeCPDao;
+
 
     @Around("execution(@fr.sacem.priam.rest.copieprivee.journal.annotation.LogFichier * *(..)) && @annotation(logFichier)")
-    public void logFichier(ProceedingJoinPoint joinPoint, LogFichier logFichier) throws Throwable{
+    public Object logFichier(ProceedingJoinPoint joinPoint, LogFichier logFichier) throws Throwable{
         TypeLog annotationValue = logFichier.event();
         String situationAvant = "";
         String situationApres = "";
@@ -48,13 +54,62 @@ public class LoggingAspectRestCP {
             /*Programme oldProgramme = programmeDao.findOne(programmeDto.getNumProg());*/
             situationAvant = getFichiersAffectes(numProg);
             utilisateurMaj = userDTO.getDisplayName();
-            joinPoint.proceed();
+
+
+
             situationApres = getFichiersAffectes(numProg);
             /*Journal journal = new Journal(numProg,annotationValue.getEvenement(), null, new Date(), utilisateurMaj, situationAvant, situationApres);
             journalDao.save(journal);*/
         }
 
+        Object result = joinPoint.proceed();
+        LOG.info("Result  :  " + result);
+
+        return result;
     }
+
+    /*@Around("execution(@fr.sacem.priam.rest.copieprivee.journal.annotation.LogOeuvre * *(..)) && @annotation(logOeuvre)")
+    public  Object logAjouterOeuvre(ProceedingJoinPoint joinPoint, LogOeuvre logOeuvre) throws Throwable {
+
+        TypeLog annotationValue = logOeuvre.event();
+
+        LigneProgrammeCP input = (LigneProgrammeCP) joinPoint.getArgs()[0];
+        UserDTO userDTO = (UserDTO)joinPoint.getArgs()[1];
+
+
+
+
+        Object result = joinPoint.proceed();
+
+
+        Journal journal = new Journal();
+        String numProg = input.getNumProg();
+        journal.setNumProg(numProg);
+        journal.setDate(new Date());
+        journal.setEvenement(annotationValue.getEvenement());
+        journal.setIde12(input.getIde12());
+        journal.setUtilisateur(userDTO.getUserId());
+
+        SituationAvant situationAvant = new SituationAvant();
+        situationAvant.setSituation("0");
+
+        journal.getListSituationAvant().add(situationAvant);
+        SituationApres situationApres = new SituationApres();
+
+        Programme prog = programmeDao.findByNumProg(numProg);
+        if(TypeUtilisationPriam.COPIE_PRIVEE_SONORE_PHONO.getCode().equals(prog.getTypeUtilisation().getCode())) {
+            situationApres.setSituation(String.valueOf(input.getNbrDif()));
+        } else if(TypeUtilisationPriam.COPIE_PRIVEE_SONORE_RADIO.getCode().equals(prog.getTypeUtilisation().getCode())) {
+            situationApres.setSituation(String.valueOf(input.getDurDif()));
+        }
+
+        journal.getListSituationApres().add(situationApres);
+
+        journalDao.save(journal);
+
+        return result;
+
+    }*/
 
     private String getFichiersAffectes(String numProg){
         List<Fichier> listFichiersAvantAffectation = fichierDao.findFichiersByIdProgramme(numProg, Status.AFFECTE);

@@ -2,7 +2,9 @@ package fr.sacem.priam.rest.common.config;
 
 
 import fr.sacem.priam.model.dao.JpaConfigurationTest;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.cache.annotation.EnableCaching;
@@ -16,6 +18,7 @@ import org.springframework.test.context.ActiveProfiles;
 @SpringBootApplication(scanBasePackages = {"fr.sacem.priam.rest.common", "fr.sacem.priam.common", "fr.sacem.priam.services", "fr.sacem.priam.model"})
 @EnableCaching
 @ActiveProfiles("test")
+@EnableAutoConfiguration(exclude = { SecurityAutoConfiguration.class})
 public class PriamRestApiCommonWebAppTest extends SpringBootServletInitializer {
 
     @Override

@@ -193,7 +193,9 @@
               cdeTypIde12 : oeuvreToAdd.cdeTypeIde12,
               titreOeuvre : oeuvreToAdd.titre,
               durDif : oeuvreToAdd.duree,
+              durDifEdit : oeuvreToAdd.duree,
               nbrDif : oeuvreToAdd.quantite,
+              nbrDifEdit : oeuvreToAdd.quantite,
               cdeUtil : oeuvreToAdd.utilisateur,
               roleParticipant1 : oeuvreToAdd.roleParticipant1,
               nomParticipant1 : oeuvreToAdd.nomParticipant1,
@@ -204,9 +206,9 @@
               return response.json();
             })
             .then(data => {
-              //
-              console.log('ok ajout');
+
               this.rechercher();
+              //this.$emit("ajout-oeuvre-sucess");
             })
             .catch(error => {
 

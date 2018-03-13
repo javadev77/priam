@@ -216,6 +216,9 @@
             });*/
 
         //this.oeuvreManuelToCreate.utilisateur = this.$store.getters.libelleUtilisateur[0].id;
+
+      this.oeuvre.titre ='ISOTOPE';
+      this.oeuvre.ide12='2869871701'
     },
 
     methods : {
