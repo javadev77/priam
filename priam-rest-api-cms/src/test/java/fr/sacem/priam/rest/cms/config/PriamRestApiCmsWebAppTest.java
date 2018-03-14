@@ -1,6 +1,7 @@
 package fr.sacem.priam.rest.cms.config;
 
 
+import fr.sacem.priam.batch.affectation.config.BatchConfigLocal;
 import fr.sacem.priam.model.dao.JpaConfigurationTest;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -14,7 +15,7 @@ import org.springframework.test.context.ActiveProfiles;
 /**
  * Created by benmerzoukah on 18/04/2017.
  */
-@Import(JpaConfigurationTest.class)
+@Import({JpaConfigurationTest.class,  BatchConfigLocal.class})
 @SpringBootApplication(scanBasePackages = {"fr.sacem.priam.rest.cms", "fr.sacem.priam.common", "fr.sacem.priam.services", "fr.sacem.priam.model"})
 @EnableCaching
 @ActiveProfiles("test")

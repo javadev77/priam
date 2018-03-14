@@ -14,7 +14,7 @@
     <logger name="org.springframework.web.servlet.mvc" level="ERROR"/>
     <logger name="com.fasterxml.jackson" level="ERROR" />
 
-    <root level="ERROR">
+    <root level="INFO">
         <appender-ref ref="CONSOLE"/>
     </root>
 

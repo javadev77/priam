@@ -83,6 +83,14 @@ public class AffectationCMSResource {
         if(fichiers == null || fichiers.isEmpty()) {
             return programmeDto;
         }
+
+        launchJobAffectation(programmeDto);
+
+
+        return programmeDto;
+    }
+
+    protected void launchJobAffectation(ProgrammeDto programmeDto) {
         //lancer le job
         LOGGER.info("====== Lancement du job Affectation CMS ======");
 
@@ -92,7 +100,7 @@ public class AffectationCMSResource {
             jobParametersMap.put("time", new JobParameter(System.currentTimeMillis()));
             jobParametersMap.put("input.catalog.octav", new JobParameter(admap.getInputFile()));
             jobParametersMap.put("archives.catalog.octav", new JobParameter(admap.getOutputFile()));
-            jobParametersMap.put("numProg", new JobParameter(numProg));
+            jobParametersMap.put("numProg", new JobParameter(programmeDto.getNumProg()));
 
             JobParameters jobParameters = new JobParameters(jobParametersMap);
 
@@ -108,8 +116,6 @@ public class AffectationCMSResource {
         }
 
         LOGGER.info("====== Fin de Traitement ======");
-
-        return programmeDto;
     }
 
 
@@ -120,7 +126,7 @@ public class AffectationCMSResource {
     public ProgrammeDto desaffecterFichiers (@RequestBody String numProg, UserDTO userDTO){
         LOGGER.info("desaffecterFichiers() ==> numProg=" + numProg);
 
-        Programme programme = programmeDao.findOne(numProg);
+        Programme programme = programmeDao.findByNumProg(numProg);
         programme.setStatutEligibilite(StatutEligibilite.EN_COURS_DESAFFECTATION);
         programmeDao.saveAndFlush(programme);
 

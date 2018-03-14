@@ -86,87 +86,44 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
     @Transactional
     @Override
     public Page<SelectionDto> findLigneProgrammeByCriteria(LigneProgrammeCriteria criteria, Pageable pageable) {
-
         Programme programme = programmeDao.findOne(criteria.getNumProg());
 
-        Pageable queryPageable = createCustomPageable(pageable, programme);
+        Sort customSort = createCustomSort(pageable, programme);
 
-
-        Page<SelectionDto> ligneProgrammeByCriteria = ligneProgrammeCPDao.findLigneProgrammeByCriteria(criteria.getNumProg(),
+        PageRequest pageRequest = new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), customSort);
+        return ligneProgrammeCPDao.findLigneProgrammeByCriteria(criteria.getNumProg(),
                 criteria.getUtilisateur(),
                 criteria.getIde12(),
                 criteria.getTitre(),
                 criteria.getAjout(),
-                criteria.getSelection(), queryPageable);
-
-        return ligneProgrammeByCriteria;
+                criteria.getSelection(), pageRequest);
     }
 
-    protected Pageable createCustomPageable(Pageable pageable, Programme programme) {
-        return new Pageable() {
+    protected Sort createCustomSort(Pageable pageable, Programme programme) {
 
-                @Override
-                public int getPageNumber() {
-                    return pageable.getPageNumber();
-                }
+        Sort sort = pageable.getSort();
 
-                @Override
-                public int getPageSize() {
-                    return pageable.getPageSize();
-                }
+        if(sort == null)
+            return sort;
 
-                @Override
-                public int getOffset() {
-                    return pageable.getOffset();
-                }
+        Sort.Order sortBy = sort.iterator().next();
 
-                @Override
-                public Sort getSort() {
+        if("sum(nbrDifEdit)".equals(sortBy.getProperty()) ||
+                "nbrDifEdit".equals(sortBy.getProperty()) ||
+                "sum(durDif)".equals(sortBy.getProperty()) ||
+                "sum(durDifEdit)".equals(sortBy.getProperty()) ||
+                "durDif".equals(sortBy.getProperty())) {
+            if (TypeUtilisationEnum.COPIE_PRIVEE_SONORE_PHONO.getCode().equals(programme.getTypeUtilisation().getCode())) {
+                sort = JpaSort.unsafe(sortBy.getDirection(), "sum(nbrDifEdit)");
+            } else if (TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode().equals(programme.getTypeUtilisation().getCode())) {
+                sort = JpaSort.unsafe(sortBy.getDirection(), "sum(durDifEdit)");
+            }
+        } else if("libAbrgUtil".equals(sortBy.getProperty())) {
+            sort = JpaSort.unsafe(sortBy.getDirection(), "cdeUtil");
+        }
 
-                    Sort sort = pageable.getSort();
+        return sort;
 
-                    if(sort == null)
-                        return sort;
-
-                    Sort.Order sortBy = sort.iterator().next();
-
-                    if("sum(nbrDifEdit)".equals(sortBy.getProperty()) ||
-                           "nbrDifEdit".equals(sortBy.getProperty()) ||
-                           "sum(durDif)".equals(sortBy.getProperty()) ||
-                            "sum(durDifEdit)".equals(sortBy.getProperty()) ||
-                           "durDif".equals(sortBy.getProperty())) {
-                        if (TypeUtilisationEnum.COPIE_PRIVEE_SONORE_PHONO.getCode().equals(programme.getTypeUtilisation().getCode())) {
-                            sort = JpaSort.unsafe(sortBy.getDirection(), "sum(nbrDifEdit)");
-                        } else if (TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode().equals(programme.getTypeUtilisation().getCode())) {
-                            sort = JpaSort.unsafe(sortBy.getDirection(), "sum(durDifEdit)");
-                        }
-                    } else if("libAbrgUtil".equals(sortBy.getProperty())) {
-                        sort = JpaSort.unsafe(sortBy.getDirection(), "cdeUtil");
-                    }
-
-                    return sort;
-                }
-
-                @Override
-                public Pageable next() {
-                    return pageable.next();
-                }
-
-                @Override
-                public Pageable previousOrFirst() {
-                    return pageable.previousOrFirst();
-                }
-
-                @Override
-                public Pageable first() {
-                    return pageable.first();
-                }
-
-                @Override
-                public boolean hasPrevious() {
-                    return pageable.hasPrevious();
-                }
-            };
     }
 
     @Transactional
@@ -206,8 +163,9 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
 
                     if(AUTOMATIQUE.equals(ajout)) {
                         List<LigneProgrammeCP> oeuvresAuto = ligneProgrammeCPDao.findOeuvresAutoByIde12AndCdeUtil(numProg, inputLigneCP.getIde12(), inputLigneCP.getCdeUtil());
-                        Long sumTotal = sumOfNbrDif(oeuvresAuto);
+
                         if(!oeuvresAuto.isEmpty()) {
+                            Long sumTotal = sumOfNbrDif(oeuvresAuto);
                             if( !nbrDifEdit.equals(sumTotal)) {
 
                                 inputLigneCP.setCdeTypIde12(oeuvresAuto.get(0).getCdeTypIde12());
@@ -227,8 +185,9 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
 
                     if(AUTOMATIQUE.equals(ajout)) {
                         List<LigneProgrammeCP> oeuvresAuto = ligneProgrammeCPDao.findOeuvresAutoByIde12AndCdeUtil(numProg, inputLigneCP.getIde12(), inputLigneCP.getCdeUtil());
-                        Long sumTotal = sumOfDurDif(oeuvresAuto);
+
                         if(!oeuvresAuto.isEmpty()) {
+                            Long sumTotal = sumOfDurDif(oeuvresAuto);
                             if( !durDifEdit.equals(sumTotal)) {
 
                                 inputLigneCP.setDurDifEdit(durDifEdit);
@@ -445,7 +404,7 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
         input.setCdeFamilTypUtil(programme.getFamille().getCode());
         input.setCdeTypUtil(programme.getTypeUtilisation().getCode());
         /*input.setAjout(MANUEL);*/
-        input.setSelection(TRUE);
+        //input.setSelectionEnCours(TRUE);
         input.setDateInsertion(new Date());
 
         input.setSelection(FALSE);

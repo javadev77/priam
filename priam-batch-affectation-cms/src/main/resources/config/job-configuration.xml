@@ -13,12 +13,12 @@
     <import resource="job-desaffectation-conf.xml"/>
     <import resource="job-eligibilite-cms-ANT.xml"/>
 
-    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+   <!-- <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="searchSystemEnvironment" value="true"/>
         <property name="ignoreResourceNotFound" value="true"/>
         <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
         <property name="location" value="classpath:config/application-${spring.profiles.active}.properties"/>
-    </bean>
+    </bean>-->
 
 
     <job id="jobEligibiliteOctav" xmlns="http://www.springframework.org/schema/batch">

@@ -4,6 +4,9 @@ import fr.sacem.priam.model.domain.dto.AffectationDto;
 import fr.sacem.priam.rest.cms.config.RestResourceTest;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -16,7 +19,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class AffectationCMSResourceTest extends RestResourceTest {
 
     @Test
-    @Ignore
     public void affecterFichiers() throws Exception {
         mockMvc.perform(
                 put("/app/rest/programme/affectation")
@@ -34,8 +36,13 @@ public class AffectationCMSResourceTest extends RestResourceTest {
     }
 
     @Test
-    @Ignore
     public void desaffecterFichiers() throws Exception {
+
+        mockMvc.perform(
+                put("/app/rest/programme/toutDesaffecter")
+                        .content("170001")
+                        .contentType(contentType))
+                .andExpect(status().isOk());
     }
 
 }

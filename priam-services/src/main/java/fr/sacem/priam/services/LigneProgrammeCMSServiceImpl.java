@@ -22,10 +22,7 @@ import fr.sacem.priam.services.journal.annotation.LogOeuvre;
 import fr.sacem.priam.services.journal.annotation.TypeLog;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.JpaSort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -87,81 +84,41 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
     public Page<SelectionCMSDto> findLigneProgrammeByCriteria(LigneProgrammeCriteria criteria, Pageable pageable) {
         Programme programme = programmeDao.findOne(criteria.getNumProg());
 
-        Pageable queryPageable = new Pageable() {
+        Sort customSort = createCustomSort(pageable, programme);
+        PageRequest pageRequest = new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), customSort);
 
-            @Override
-            public int getPageNumber() {
-                return pageable.getPageNumber();
-            }
-
-            @Override
-            public int getPageSize() {
-                return pageable.getPageSize();
-            }
-
-            @Override
-            public int getOffset() {
-                return pageable.getOffset();
-            }
-
-            @Override
-            public Sort getSort() {
-
-                Sort sort = pageable.getSort();
-
-                if(sort == null)
-                    return sort;
-
-                Sort.Order sortBy = sort.iterator().next();
-
-                String sortProp = sortBy.getProperty();
-                if("pointsMontant".equals(sortProp) ||
-                        "sum(nbrDifEdit)".equals(sortProp) ||
-                        "sum(mtEdit)".equals(sortProp)||
-                        "mt".equals(sortProp)){
-                    String typeUtilCode = programme.getTypeUtilisation().getCode();
-                    Sort.Direction direction = sortBy.getDirection();
-                    if (TypeUtilisationEnum.CMS_FRA.getCode().equals(typeUtilCode)) {
-                        sort = JpaSort.unsafe(direction, "sum(mtEdit)");
-                    }
-
-                    if (TypeUtilisationEnum.CMS_ANT.getCode().equals(typeUtilCode)) {
-                        sort = JpaSort.unsafe(direction, "sum(nbrDifEdit)");
-                    }
-                }
-
-                return sort;
-            }
-
-            @Override
-            public Pageable next() {
-                return pageable.next();
-            }
-
-            @Override
-            public Pageable previousOrFirst() {
-                return pageable.previousOrFirst();
-            }
-
-            @Override
-            public Pageable first() {
-                return pageable.first();
-            }
-
-            @Override
-            public boolean hasPrevious() {
-                return pageable.hasPrevious();
-            }
-        };
-
-
-        Page<SelectionCMSDto> ligneProgrammeByCriteria = ligneProgrammeCMSDao.findLigneProgrammeByCriteria(criteria.getNumProg(),
+        return  ligneProgrammeCMSDao.findLigneProgrammeByCriteria(criteria.getNumProg(),
                 criteria.getIde12(),
                 criteria.getTitre(),
                 criteria.getAjout(),
-                criteria.getSelection(), queryPageable);
+                criteria.getSelection(), pageRequest);
+    }
 
-        return ligneProgrammeByCriteria;
+    protected Sort createCustomSort(Pageable pageable, Programme programme) {
+        Sort sort = pageable.getSort();
+
+        if(sort == null)
+            return sort;
+
+        Sort.Order sortBy = sort.iterator().next();
+
+        String sortProp = sortBy.getProperty();
+        if("pointsMontant".equals(sortProp) ||
+                "sum(nbrDifEdit)".equals(sortProp) ||
+                "sum(mtEdit)".equals(sortProp)||
+                "mt".equals(sortProp)){
+            String typeUtilCode = programme.getTypeUtilisation().getCode();
+            Sort.Direction direction = sortBy.getDirection();
+            if (TypeUtilisationEnum.CMS_FRA.getCode().equals(typeUtilCode)) {
+                sort = JpaSort.unsafe(direction, "sum(mtEdit)");
+            }
+
+            if (TypeUtilisationEnum.CMS_ANT.getCode().equals(typeUtilCode)) {
+                sort = JpaSort.unsafe(direction, "sum(nbrDifEdit)");
+            }
+        }
+
+        return sort;
     }
 
     @Override
@@ -417,9 +374,7 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
         if(programme.getTypeUtilisation().getCode().equals(TypeUtilisationPriam.SONOANT.toString())) {
             input.setMt(MT_SONOANT);
         }
-        /*input.setAjout(MANUEL);*/
 
-        input.setSelection(TRUE);
         input.setDateInsertion(new Date());
         input.setCdeTypIde12(input.getCdeTypIde12());
         input.setSelectionEnCours(TRUE);
@@ -462,8 +417,9 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
 
                     if(AUTOMATIQUE.equals(ajout)) {
                         List<LigneProgrammeCMS> oeuvresAuto = ligneProgrammeCMSDao.findOeuvresAutoByIde12AndCdeUtil(numProg, inputLigneCMS.getIde12());
-                        Long sumTotal = sumOfNbrDif(oeuvresAuto);
+
                         if(oeuvresAuto != null && !oeuvresAuto.isEmpty()) {
+                            Long sumTotal = sumOfNbrDif(oeuvresAuto);
                             if( !nbrDifEdit.equals(sumTotal)) {
 
                                 inputLigneCMS.setCdeTypIde12(oeuvresAuto.get(0).getCdeTypIde12());
@@ -483,8 +439,9 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
 
                     if(AUTOMATIQUE.equals(ajout)) {
                         List<LigneProgrammeCMS> oeuvresAuto = ligneProgrammeCMSDao.findOeuvresAutoByIde12AndCdeUtil(numProg, inputLigneCMS.getIde12());
-                        Double sumTotal = sumOfMt(oeuvresAuto);
+
                         if(oeuvresAuto != null && !oeuvresAuto.isEmpty()) {
+                            Double sumTotal = sumOfMt(oeuvresAuto);
                             if( !mtEdit.equals(sumTotal)) {
 
                                 inputLigneCMS.setMtEdit(mtEdit);
