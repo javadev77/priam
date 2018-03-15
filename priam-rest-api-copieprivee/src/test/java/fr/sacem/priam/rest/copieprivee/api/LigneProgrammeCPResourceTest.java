@@ -368,6 +368,17 @@ public class LigneProgrammeCPResourceTest extends RestResourceTest {
       .andExpect(jsonPath("$.length()", is(0)));
   }
 
+  @Test
+  public void modifierSelectionTemporaire() throws Exception {
+
+    ValdierSelectionProgrammeInput input = new ValdierSelectionProgrammeInput();
+    input.setNumProg("170001");
+    mockMvc.perform(
+            post("/app/rest/ligneProgramme/selection/temporaire/modifier")
+                    .content(json(input))
+                    .contentType(contentType))
+            .andExpect(status().isOk());
+  }
 
   private LigneProgrammeCP createLigneProgramme(String numProg, Long ide12, String cdeUtil) {
     LigneProgrammeCP input = new LigneProgrammeCP();

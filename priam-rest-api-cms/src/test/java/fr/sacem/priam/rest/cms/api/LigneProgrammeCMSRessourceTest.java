@@ -1,10 +1,14 @@
 package fr.sacem.priam.rest.cms.api;
 
+import fr.sacem.priam.model.domain.CatalogueOctav;
+import fr.sacem.priam.model.domain.cms.LigneProgrammeCMS;
 import fr.sacem.priam.rest.cms.config.RestResourceTest;
+import fr.sacem.priam.services.dto.ValdierSelectionProgrammeInput;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -22,28 +26,56 @@ public class LigneProgrammeCMSRessourceTest extends RestResourceTest {
                 .andExpect(status().isOk());
     }
 
-    @Test
-    public void lancerTraitementAffectationCMS() throws Exception {
-    }
 
     @Test
     public void getLastFinished() throws Exception {
+
+        mockMvc.perform(
+                get("/app/rest/programme/eligibilite/tmt/170001")
+                        .contentType(contentType))
+                .andExpect(status().isOk());
     }
+
+
 
     @Test
     public void ajouterOeuvreManuel() throws Exception {
+
+        LigneProgrammeCMS input = new LigneProgrammeCMS();
+        input.setIde12(14257554L);
+        input.setTitreOeuvre("title");
+        input.setNumProg("170001");
+
+        mockMvc.perform(
+                post("/app/rest/ligneProgramme/selection/ajoutOeuvre")
+                     .content(json(input))
+                    .contentType(contentType))
+                .andExpect(status().isOk());
     }
 
     @Test
     public void isEligible() throws Exception {
-    }
 
-    @Test
-    public void getLastCatalogueOctav() throws Exception {
+        CatalogueOctav input = new CatalogueOctav();
+        input.setIde12(4517897L);
+        input.setTypeCMS("ANT");
+        mockMvc.perform(
+                post("/app/rest/ligneProgramme/selection/isEligible")
+                        .content(json(input))
+                        .contentType(contentType))
+                .andExpect(status().isOk());
     }
 
     @Test
     public void modifierSelectionTemporaire() throws Exception {
+
+        ValdierSelectionProgrammeInput input = new ValdierSelectionProgrammeInput();
+        input.setNumProg("170001");
+        mockMvc.perform(
+                post("/app/rest/ligneProgramme/selection/temporaire/modifier")
+                        .content(json(input))
+                        .contentType(contentType))
+                .andExpect(status().isOk());
     }
 
 }

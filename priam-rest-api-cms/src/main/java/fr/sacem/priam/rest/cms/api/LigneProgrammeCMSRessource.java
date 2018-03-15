@@ -1,8 +1,6 @@
 package fr.sacem.priam.rest.cms.api;
 
-import com.google.common.base.Strings;
 import fr.sacem.domain.Admap;
-import fr.sacem.priam.common.TypeUtilisationEnum;
 import fr.sacem.priam.model.dao.jpa.FichierCatalogueOctavDao;
 import fr.sacem.priam.model.dao.jpa.SareftjLibutilDao;
 import fr.sacem.priam.model.dao.jpa.cms.TraitementEligibiliteCMSDao;
@@ -10,31 +8,23 @@ import fr.sacem.priam.model.domain.CatalogueOctav;
 import fr.sacem.priam.model.domain.FichierCatalogueOctav;
 import fr.sacem.priam.model.domain.cms.LigneProgrammeCMS;
 import fr.sacem.priam.model.domain.cms.TraitementEligibiliteCMS;
-import fr.sacem.priam.model.domain.cp.LigneProgrammeCP;
 import fr.sacem.priam.model.domain.dto.SelectionDto;
-import fr.sacem.priam.model.domain.saref.SareftjLibUtilPK;
-import fr.sacem.priam.model.domain.saref.SareftjLibutil;
-import fr.sacem.priam.model.util.GlobalConstants;
 import fr.sacem.priam.security.model.UserDTO;
 import fr.sacem.priam.services.api.LigneProgrammeResource;
 import fr.sacem.priam.services.api.LigneProgrammeService;
 import fr.sacem.priam.services.cms.LigneProgrammeCMSService;
-import fr.sacem.priam.services.dto.LigneProgrammeCritereRecherche;
 import fr.sacem.priam.services.dto.ValdierSelectionProgrammeInput;
-import org.apache.maven.doxia.logging.SystemStreamLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameter;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -92,35 +82,6 @@ public class LigneProgrammeCMSRessource extends LigneProgrammeResource {
     }
 
 
-
-    @RequestMapping(value = "programme/eligibilite/{numProg}",
-            method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public void lancerTraitementAffectationCMS(@PathVariable(value = "numProg") String numProg) {
-        LOGGER.info("Lancement du Batch Affectation CMS ");
-
-
-
-        try {
-
-            Map<String, JobParameter> jobParametersMap = new HashMap<String, JobParameter>();
-            jobParametersMap.put("time", new JobParameter(System.currentTimeMillis()));
-            jobParametersMap.put("input.catalog.octav", new JobParameter(admap.getInputFile()));
-            jobParametersMap.put("archives.catalog.octav", new JobParameter(admap.getOutputFile()));
-            jobParametersMap.put("numProg", new JobParameter(numProg));
-            JobParameters jobParameters = new JobParameters(jobParametersMap);
-
-            jobLauncher.run(jobEligibiliteOctav, jobParameters);
-        } catch (Exception e) {
-            LOGGER.error("Error execution", e);
-        }
-
-        LOGGER.info("Fin de Traitement ");
-
-
-
-    }
-
     @RequestMapping(value = "programme/eligibilite/tmt/{numProg}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -160,7 +121,7 @@ public class LigneProgrammeCMSRessource extends LigneProgrammeResource {
         return ligneProgrammeCMSService.isEligible(catalogueOctav.getIde12(), catalogueOctav.getTypeCMS());
     }
 
-    @RequestMapping(value = "ligneProgramme/selection/catalogueOctav",
+    /*@RequestMapping(value = "ligneProgramme/selection/catalogueOctav",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public FichierCatalogueOctav getLastCatalogueOctav() {
@@ -172,7 +133,7 @@ public class LigneProgrammeCMSRessource extends LigneProgrammeResource {
 
         return lastFichierOctav !=null && !lastFichierOctav.getContent().isEmpty() ? lastFichierOctav.getContent().get(0) : null;
 
-    }
+    }*/
 
     @Override
     public List<String> modifierSelectionTemporaire(@RequestBody ValdierSelectionProgrammeInput input) {
