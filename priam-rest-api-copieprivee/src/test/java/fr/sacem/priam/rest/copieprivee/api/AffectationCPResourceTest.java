@@ -72,18 +72,15 @@ public class AffectationCPResourceTest extends RestResourceTest {
     private AffectationDto createAffectationDto(String numProg, List<String> fichiers) {
         AffectationDto affectationDto = new AffectationDto();
         affectationDto.setNumProg(numProg);
-        List<Fichier> transform = Lists.transform(fichiers, new Function<String, Fichier>() {
-            @Override
-            public Fichier apply(String f) {
-                Fichier fichier = new Fichier();
-                fichier.setNomFichier( f);
-                fichier.setStatut(Status.CHARGEMENT_OK);
-                fichier.setAutomatique(Boolean.TRUE);
+        List<Fichier> transform = Lists.transform(fichiers, f -> {
+            Fichier fichier = new Fichier();
+            fichier.setNomFichier( f);
+            fichier.setStatut(Status.CHARGEMENT_OK);
+            fichier.setAutomatique(Boolean.TRUE);
 
-                fichierDao.save(fichier);
+            fichierDao.save(fichier);
 
-                return fichier;
-            }
+            return fichier;
         });
 
         affectationDto.setFichiers(transform);
