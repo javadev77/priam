@@ -112,12 +112,14 @@ public class RepartitionResource {
 
     @RequestMapping(value = "/downloadFichierFelix",
                     method = RequestMethod.POST)
-    public void downloadFichierFelixRepartitionABlan(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void downloadFichierFelixRepartitionABlanc(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String numProg = request.getParameter("numProg");
 
         FichierFelix fichierFelix = fichierFelixDao.findByNumprog(numProg);
-        if(fichierFelix.getLogs() == null || fichierFelix.getLogs().isEmpty()) {
-            generateFelixCsvData(response, numProg, fichierFelix.getNomFichier());
+        if(fichierFelix != null ) {
+            if(fichierFelix.getLogs() == null || fichierFelix.getLogs().isEmpty()) {
+                generateFelixCsvData(response, numProg, fichierFelix.getNomFichier());
+            }
         }
     }
 

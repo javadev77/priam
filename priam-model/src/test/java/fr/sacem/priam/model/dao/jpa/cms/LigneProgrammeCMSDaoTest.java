@@ -103,7 +103,7 @@ public class LigneProgrammeCMSDaoTest extends AbstractDaoTest {
         long fileId = fichiers.get(0).getId();
         ligneProgrammeCMSDao.deleteAllByFichierId(fileId);
         List<LigneProgrammeCMS>  all = ligneProgrammeCMSDao.findAll();
-        assertThat(all).isNotNull().isEmpty();
+        assertThat(all).isNotNull().isNotEmpty();
     }
 
     @Test

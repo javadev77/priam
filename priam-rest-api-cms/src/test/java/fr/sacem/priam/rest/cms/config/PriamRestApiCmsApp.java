@@ -20,10 +20,10 @@ import org.springframework.test.context.ActiveProfiles;
 @EnableCaching
 @ActiveProfiles("test")
 @EnableAutoConfiguration(exclude = { SecurityAutoConfiguration.class})
-public class PriamRestApiCmsWebAppTest extends SpringBootServletInitializer {
+public class PriamRestApiCmsApp extends SpringBootServletInitializer {
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(PriamRestApiCmsWebAppTest.class);
+        return application.sources(PriamRestApiCmsApp.class);
     }
 }

@@ -42,7 +42,7 @@ public class ProgrammeResourceTest extends RestResourceTest {
                .content(this.json(o))
                .contentType(contentType))
                .andExpect(status().isOk())
-               .andExpect(jsonPath("$.content", hasSize(1)));
+               .andExpect(jsonPath("$.content", hasSize(3)));
     }
 
     @Test
@@ -138,7 +138,6 @@ public class ProgrammeResourceTest extends RestResourceTest {
 
     @Test
     @Transactional
-    @Ignore
     public void add_programme() throws Exception {
       mockMvc.perform(
             post("/app/rest/programme/")
@@ -146,13 +145,12 @@ public class ProgrammeResourceTest extends RestResourceTest {
             .contentType(contentType))
           .andExpect(status().isOk())
           .andExpect(jsonPath("$.famille.code", is("COPIEPRIV")))
-          .andExpect(jsonPath("$.nom", is("Test01")));
+          .andExpect(jsonPath("$.nom", is("Test02")));
 
     }
 
     @Test
     @Transactional
-    @Ignore
     public void test_abandonner_programme() throws Exception {
       mockMvc.perform(
         put("/app/rest/programme/abandon")
@@ -187,12 +185,25 @@ public class ProgrammeResourceTest extends RestResourceTest {
   }
 
 
-    private ProgrammeDto createProgrammeDtoWithNumProg(String numProg, String nom, String famille) {
+    @Test
+    @Transactional
+    public void test_modifier_programme() throws Exception {
+        mockMvc.perform(
+                put("/app/rest/programme/")
+                        .content(this.json(createProgrammeDtoWithNumProg("170001","Test32", "COPIEPRIV")))
+                        .contentType(contentType))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.nom", is("Test32")));
+
+    }
+
+
+   private ProgrammeDto createProgrammeDtoWithNumProg(String numProg, String nom, String famille) {
         ProgrammeDto programmeDto = createProgrammeDto(nom, famille, null);
         programmeDto.setNumProg(numProg);
 
         return  programmeDto;
-    }
+   }
 
     private ProgrammeDto createProgrammeDto(String nom, String famille, String typeUtil) {
         ProgrammeDto dto = new ProgrammeDto();

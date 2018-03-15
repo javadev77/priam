@@ -3,6 +3,7 @@ package fr.sacem.priam.rest.common.api;
 import fr.sacem.priam.model.dao.jpa.FichierFelixDao;
 import fr.sacem.priam.model.domain.FichierFelix;
 import fr.sacem.priam.model.domain.StatutFichierFelix;
+import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.rest.common.config.RestResourceTest;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -58,16 +60,39 @@ public class RepartitionResourceTest extends RestResourceTest {
 
   }
 
-  @Test
-  public void generateFelixDataWithErrors() throws Exception {
+  @Test(expected = Exception.class)
+  public void generateFelixDataWithErrors_KO() throws Exception {
+
+    mockMvc.perform(
+            post("/app/rest/repartition/downloadFichierFelixError")
+                    .contentType(contentType))
+
+            .andExpect(status().isOk());
   }
 
   @Test
-  public void downloadFichierFelixRepartitionABlan() throws Exception {
+  @Transactional
+  public void downloadFichierFelixRepartitionABlanc() throws Exception {
+    mockMvc.perform(
+            post("/app/rest/repartition/downloadFichierFelix?numProg=170001")
+                    .contentType(contentType))
+
+            .andExpect(status().isOk());
   }
 
   @Test
+  @Transactional
   public void generateFelixData() throws Exception {
+
+    ProgrammeDto pr = new ProgrammeDto();
+    pr.setNumProg("170001");
+
+    mockMvc.perform(
+            post("/app/rest/repartition/generateFelixData")
+                    .content(json(pr))
+                    .contentType(contentType))
+
+            .andExpect(status().isOk());
   }
 
 }
