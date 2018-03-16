@@ -14,6 +14,7 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +25,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Created by benmerzoukah on 21/08/2017.
@@ -47,6 +49,9 @@ public class RepartitionResource {
     @Autowired
     private FichierFelixDao fichierFelixDao;
 
+    @Autowired
+    @Qualifier(value = "configAdmap")
+    Map<String, String> configAdmap;
 
 
     @RequestMapping(value = "validateFelixData/{numProg}",
@@ -85,23 +90,24 @@ public class RepartitionResource {
     @RequestMapping(value = "/downloadFichierFelixError",
                    method = RequestMethod.POST)
     public void generateFelixDataWithErrors(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String tmpFilename = request.getParameter("tmpFilename");
         String filename = request.getParameter("filename");
         String numProg = request.getParameter("numProg");
 
-        //Programme programme = programmeDao.findOne(numProg);
 
         generateFelixCsvData(response, numProg, filename);
     }
 
-    private void generateFelixCsvData(HttpServletResponse response, String numProg, String filename) throws IOException {
+    protected void generateFelixCsvData(HttpServletResponse response, String numProg, String filename) throws IOException {
         response.setContentType("text/csv");
         response.setHeader("Content-Disposition", "attachment; filename=" + filename);
 
 
         FichierFelix ff = fichierFelixDao.findByNumprog(numProg);
-        File file = new File(EnvConstants.FELIX_PREPREP_DIR.toString() + File.separator + ff.getNomFichier());
-        //byte[] content = ff.getContent();
+        String preprepDir = configAdmap.get(EnvConstants.FELIX_PREPREP_DIR.property());
+        File file = new File(preprepDir + File.separator + ff.getNomFichier());
+        if(!file.exists())
+            throw new TechnicalException(String.format("Le fichier %s n'existe pas", ff.getNomFichier()));
+
         try(FileInputStream in = new FileInputStream(file); OutputStream output = response.getOutputStream()) {
             IOUtils.copy(in, output);
         } catch (Exception e) {

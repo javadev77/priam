@@ -1,5 +1,6 @@
 package fr.sacem.priam.rest.common.api;
 
+import fr.sacem.priam.common.exception.TechnicalException;
 import fr.sacem.priam.model.dao.jpa.FichierFelixDao;
 import fr.sacem.priam.model.domain.FichierFelix;
 import fr.sacem.priam.model.domain.StatutFichierFelix;
@@ -8,6 +9,7 @@ import fr.sacem.priam.rest.common.config.RestResourceTest;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.util.NestedServletException;
 
 import java.util.Date;
 
@@ -28,10 +30,7 @@ public class RepartitionResourceTest extends RestResourceTest {
 
   @Test
   @Transactional
-  public void runAsyncCreateFichierFelix() throws Exception {
-
-    FichierFelix ff = createMockFichierFelix("170001", StatutFichierFelix.EN_COURS);
-
+  public void arunAsyncCreateFichierFelix() throws Exception {
     mockMvc.perform(
       get(APP_REST_CREATE_FICHIER_FELIX, "170001")
         .contentType(contentType))
@@ -72,7 +71,19 @@ public class RepartitionResourceTest extends RestResourceTest {
 
   @Test
   @Transactional
-  public void downloadFichierFelixRepartitionABlanc() throws Exception {
+  public void generateFelixDataWithErrors_OK() throws Exception {
+    //FichierFelix ff = createMockFichierFelix("180001", StatutFichierFelix.EN_COURS);
+
+    mockMvc.perform(
+            post("/app/rest/repartition/downloadFichierFelixError?filename=test-f&numProg=180001")
+                    .contentType(contentType))
+
+            .andExpect(status().isOk());
+  }
+
+  @Test(expected = NestedServletException.class)
+  @Transactional
+  public void downloadFichierFelixRepartitionABlanc_KO() throws Exception {
     mockMvc.perform(
             post("/app/rest/repartition/downloadFichierFelix?numProg=170001")
                     .contentType(contentType))

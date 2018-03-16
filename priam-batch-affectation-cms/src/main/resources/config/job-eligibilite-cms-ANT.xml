@@ -163,7 +163,7 @@
             <value>
                 <![CDATA[
                     UPDATE PRIAM_CATALOGUE_OCTAV_ANT
-                    set NBRDIF = (SELECT CASE WHEN temp.pt IS NOT NULL THEN sum(temp.pt) ELSE 0 END
+                    set NBRDIF = (SELECT CASE WHEN test.pt IS NOT NULL THEN sum(test.pt) ELSE 0 END
                     FROm (
                            SELECT cdeFamilTypUtilOri, RION_N_ANT, 6 as pt
                            FROM PRIAM_LIGNE_PROGRAMME_CMS l
@@ -208,7 +208,7 @@
                                  AND l.cdeFamilTypUtilOri='DTSGEN'
                                  AND l.RION_N_ANT = 'RION-4'
                            GROUP BY l.ide12, l.cdeFamilTypUtilOri, l.RION_N_ANT
-                         ) as temp) + NBRDIF
+                         ) as test) + NBRDIF
                     WHERE ide12=:ide12 and NUMPROG='#{jobParameters[numProg]}';
 
                 ]]>
