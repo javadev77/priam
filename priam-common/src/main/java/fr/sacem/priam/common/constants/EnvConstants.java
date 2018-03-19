@@ -180,6 +180,6 @@ public enum EnvConstants implements ConfigurableProperty {
     }
     
     public String defaultValue(){
-        return "D:\\dev_x86\\projects\\PRIAM\\toolbox\\workspace-develop-lot2\\priam\\priam-rest-api-common\\src\\test\\resources\\temp\\";
+        return "";
     }
 }

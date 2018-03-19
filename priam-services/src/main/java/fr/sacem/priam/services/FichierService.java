@@ -5,13 +5,11 @@ import fr.sacem.priam.model.dao.jpa.cms.LigneProgrammeCMSDao;
 import fr.sacem.priam.model.dao.jpa.cms.LigneProgrammeCopyCMSDao;
 import fr.sacem.priam.model.dao.jpa.cp.LigneProgrammeCPDao;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
-import fr.sacem.priam.model.domain.*;
-import fr.sacem.priam.model.domain.dto.FileDto;
+import fr.sacem.priam.model.domain.*;;
 import fr.sacem.priam.model.util.FamillePriam;
-import fr.sacem.priam.services.journal.annotation.LogFichier;
-import fr.sacem.priam.services.journal.annotation.TypeLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -54,7 +52,7 @@ public class FichierService {
     }
     
     
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void majFichiersAffectesAuProgramme(String numProg, List<Fichier> nouveauxfichiersAffectes, String currentUserName){
         List<Long> idsNouveauxFichiersAffectes=new ArrayList<>();
         for(Fichier fichier : nouveauxfichiersAffectes){

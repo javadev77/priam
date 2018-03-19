@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -37,9 +38,9 @@ public interface FichierDao extends JpaRepository<Fichier, Long> {
     @Query("SELECT DISTINCT new fr.sacem.priam.model.domain.dto.FileDto(f.id, f.nomFichier, fam.code, typu.code, f.dateDebutChargt, f.dateFinChargt, f.nbLignes, f.statut) " +
             "FROM Fichier AS f JOIN f.famille AS fam JOIN f.typeUtilisation AS typu " +
             "WHERE f.statut IN (:status) AND f.automatique = true ")
-      
+
     Page<FileDto> findAllFichiersByStatus(@Param("status") List<Status> status, Pageable pageable);
-    
+
     @Transactional
     @Modifying(clearAutomatically = true)
     @Query("UPDATE Fichier f SET f.statut= :statut WHERE f.id = :id")
@@ -74,8 +75,8 @@ public interface FichierDao extends JpaRepository<Fichier, Long> {
     @Modifying(clearAutomatically = true)
     @Query("UPDATE Fichier f SET f.programme.numProg = NULL, f.statut =:status WHERE f.programme.numProg = :numProg")
     void clearSelectedFichiers(@Param("numProg") String numProg,@Param("status") Status status);
-    
-    
+
+
     @Transactional
     @Modifying(clearAutomatically = true)
     @Query("UPDATE Fichier f SET f.programme.numProg = :numProg, f.statut =:status  WHERE f.id IN (:idFichiers) ")

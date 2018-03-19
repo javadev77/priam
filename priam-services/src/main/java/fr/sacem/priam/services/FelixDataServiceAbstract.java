@@ -26,6 +26,7 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,10 +43,7 @@ import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import static fr.sacem.priam.common.util.SftpUtil.SftpServer.FELIX;
 import static java.util.Arrays.asList;
@@ -106,6 +104,10 @@ public abstract class FelixDataServiceAbstract {
 
     @Autowired
     ProgrammeService programmeService;
+
+    @Autowired
+    @Qualifier(value = "configAdmap")
+    Map<String, String> configAdmap;
     
     public abstract List<LignePreprep> getListLignesSelectionnees(String pNumprog);
 
@@ -207,7 +209,8 @@ public abstract class FelixDataServiceAbstract {
                               + programme.getTypeUtilisation().getCode() + "_"
                               + programme.getRionTheorique().getRion() + "_"
                               + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".csv";
-        File tmpFile = new File(EnvConstants.FELIX_PREPREP_DIR.toString() + File.separator + fileName);
+
+        File tmpFile = new File(getPreprepDir() + File.separator + fileName);
         OutputStream out = new FileOutputStream(tmpFile);
         
         writeLines(out, head());
@@ -245,7 +248,11 @@ public abstract class FelixDataServiceAbstract {
         
         return fichierFelixError;
     }
-    
+
+    private String getPreprepDir() {
+        return configAdmap.get(EnvConstants.FELIX_PREPREP_DIR.property());
+    }
+
     @Transactional
     @Async("threadPoolTaskExecutor")
     public void asyncSendFichierFelix(ProgrammeDto programmeDto, String utilisateur) {
@@ -264,7 +271,7 @@ public abstract class FelixDataServiceAbstract {
             fichierFelixDao.saveAndFlush(ff);
             
             // Envoi du fichier via FTP
-            File tempFile = new File(EnvConstants.FELIX_PREPREP_DIR.toString() + File.separator + fichierFelixWithErrors.getFilename());
+            File tempFile = new File(getPreprepDir() + File.separator + fichierFelixWithErrors.getFilename());
             LOGGER.debug("==> Debut Envoi du fichier à FELIX = " + ff.getNomFichier());
             SftpUtil.uploadFile(FELIX, tempFile, ff.getNomFichier());
             LOGGER.debug("<=== Fin Envoi du fichier à FELIX = " + ff.getNomFichier());

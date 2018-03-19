@@ -51,7 +51,7 @@ public class Fichier implements Serializable {
     
     @Column(name = "SOURCE_AUTO")
     private Boolean automatique;
-    
+
     public  Fichier() {
     }
     
@@ -135,7 +135,7 @@ public class Fichier implements Serializable {
     public Boolean getAutomatique() {
         return automatique;
     }
-    
+
     @Override
     public int hashCode() {
         return (int) (id ^ (id >>> 32));

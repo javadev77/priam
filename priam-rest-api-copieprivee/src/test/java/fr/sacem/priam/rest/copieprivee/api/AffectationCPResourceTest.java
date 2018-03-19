@@ -37,12 +37,13 @@ public class AffectationCPResourceTest extends RestResourceTest {
                         .content(this.json(createAffectationDto("170001", Collections.emptyList())))
                         .contentType(contentType))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.statut", is("CREE")));
+                .andExpect(jsonPath("$.statut", is("VALIDE")));
 
     }
 
     @Test
     @Transactional
+    @Ignore
     public void test_affecterFichiers() throws Exception {
         mockMvc.perform(
                 put("/app/rest/programme/affectation")
@@ -78,7 +79,7 @@ public class AffectationCPResourceTest extends RestResourceTest {
             fichier.setStatut(Status.CHARGEMENT_OK);
             fichier.setAutomatique(Boolean.TRUE);
 
-            fichierDao.save(fichier);
+            fichierDao.saveAndFlush(fichier);
 
             return fichier;
         });

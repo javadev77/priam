@@ -81,7 +81,7 @@ public class RepartitionResourceTest extends RestResourceTest {
             .andExpect(status().isOk());
   }
 
-  @Test(expected = NestedServletException.class)
+  @Test
   @Transactional
   public void downloadFichierFelixRepartitionABlanc_KO() throws Exception {
     mockMvc.perform(
