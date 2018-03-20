@@ -1,6 +1,5 @@
 package fr.sacem.priam.rest.common.api;
 
-import fr.sacem.priam.common.exception.TechnicalException;
 import fr.sacem.priam.model.dao.jpa.FichierFelixDao;
 import fr.sacem.priam.model.domain.FichierFelix;
 import fr.sacem.priam.model.domain.StatutFichierFelix;
@@ -9,7 +8,6 @@ import fr.sacem.priam.rest.common.config.RestResourceTest;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.util.NestedServletException;
 
 import java.util.Date;
 

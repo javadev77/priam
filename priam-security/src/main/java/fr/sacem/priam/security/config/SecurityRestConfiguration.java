@@ -1,6 +1,5 @@
 package fr.sacem.priam.security.config;
 
-import fr.sacem.fwk.config.Environment;
 import fr.sacem.fwk.security.SecurityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

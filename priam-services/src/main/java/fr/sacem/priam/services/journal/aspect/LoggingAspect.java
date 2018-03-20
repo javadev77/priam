@@ -7,7 +7,10 @@ import fr.sacem.priam.model.dao.jpa.cp.LigneProgrammeCPDao;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.priam.model.domain.*;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
-import fr.sacem.priam.services.journal.annotation.*;
+import fr.sacem.priam.services.journal.annotation.LogEtatProgramme;
+import fr.sacem.priam.services.journal.annotation.LogOeuvre;
+import fr.sacem.priam.services.journal.annotation.LogProgramme;
+import fr.sacem.priam.services.journal.annotation.TypeLog;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -15,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-
 
 import java.util.ArrayList;
 import java.util.Arrays;

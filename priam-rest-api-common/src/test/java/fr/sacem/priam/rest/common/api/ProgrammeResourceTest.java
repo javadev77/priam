@@ -2,17 +2,12 @@ package fr.sacem.priam.rest.common.api;
 
 import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
-
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
-import fr.sacem.priam.rest.common.config.RestResourceTest;
 import fr.sacem.priam.rest.common.api.dto.ProgrammeCritereRecherche;
-
-import org.junit.Ignore;
+import fr.sacem.priam.rest.common.config.RestResourceTest;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-
-
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;

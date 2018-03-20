@@ -86,7 +86,7 @@ public class ChargementResource {
     if(input.getStatutCode() == null || input.getStatutCode().isEmpty()) {
       status = Arrays.asList(Status.values());
     } else {
-      status = Lists.transform(input.getStatutCode(), code -> Status.valueOf(code));
+      status = Lists.transform(input.getStatutCode(), Status::valueOf);
     }
     return status;
   }

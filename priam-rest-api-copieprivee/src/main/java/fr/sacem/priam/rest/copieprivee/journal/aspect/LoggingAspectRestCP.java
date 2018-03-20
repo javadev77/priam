@@ -4,13 +4,11 @@ import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.dao.jpa.JournalDao;
 import fr.sacem.priam.model.dao.jpa.cp.LigneProgrammeCPDao;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
-import fr.sacem.priam.model.domain.*;
-
-import fr.sacem.priam.model.domain.cp.LigneProgrammeCP;
+import fr.sacem.priam.model.domain.Fichier;
+import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.dto.AffectationDto;
-import fr.sacem.priam.model.util.TypeUtilisationPriam;
-import fr.sacem.priam.rest.copieprivee.journal.annotation.*;
-
+import fr.sacem.priam.rest.copieprivee.journal.annotation.LogFichier;
+import fr.sacem.priam.rest.copieprivee.journal.annotation.TypeLog;
 import fr.sacem.priam.security.model.UserDTO;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -20,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 

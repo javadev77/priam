@@ -106,7 +106,7 @@ public class GeneralResource {
         all.forEach( famille -> {
             List<String> collect = famille.getSareftrTyputils()
                                      .stream()
-                                      .map(s -> s.getCode())
+                                      .map(SareftrTyputil::getCode)
                                      .filter(in(typeUtilisations))
                                      .collect(Collectors.toList());
             result.put(famille.getCode(), getLibelleTypeUtilisationByCodes(collect, lang));
@@ -115,7 +115,7 @@ public class GeneralResource {
         return result;
     }
 
-    private Map<String, String> [] getLibelleTypeUtilisationByCodes(List<String> typeUtilCodes, String lang) {
+    private Map[] getLibelleTypeUtilisationByCodes(List<String> typeUtilCodes, String lang) {
         List<SareftjLibtyputil> byCodeAndLang = sareftjLibtyputilDao.findByCodeAndLang(typeUtilCodes != null && !typeUtilCodes.isEmpty() ? typeUtilCodes : null, lang);
         List<Map<String, String>> result = new ArrayList<>(typeUtilCodes != null && !typeUtilCodes.isEmpty() ? typeUtilCodes.size() : 0);
         byCodeAndLang.forEach(libelle -> result.add(createStringMap(libelle.getCode(), libelle.getLibelle())));
@@ -135,7 +135,7 @@ public class GeneralResource {
     @RequestMapping(value = "/rions",
                     method = RequestMethod.GET,
                     produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, String>[] getRions() {
+    public Map[] getRions() {
         List<SareftrRion> sareftrRions = sareftrRionDao.findAfterRion(RION_639);
         List<Map<String, String>> result = new ArrayList<>(sareftrRions.size());
         SimpleDateFormat sdf = new SimpleDateFormat(RION_FORMAT_MMMM_yyyy, Locale.FRANCE);
@@ -154,7 +154,7 @@ public class GeneralResource {
   @RequestMapping(value = "/rions_creation",
     method = RequestMethod.GET,
     produces = MediaType.APPLICATION_JSON_VALUE)
-  public Map<String, String>[] getRionsCreation() {
+  public Map[] getRionsCreation() {
     List<SareftrRion> sareftrRions = sareftrRionDao.findAllByDateRglmtAfterCurrentDate();
     List<Map<String, String>> result = new ArrayList<>(sareftrRions.size());
     SimpleDateFormat sdf = new SimpleDateFormat(RION_FORMAT_MMMM_yyyy, Locale.FRANCE);
@@ -171,16 +171,14 @@ public class GeneralResource {
     @RequestMapping(value = "/territoire",
                    method = RequestMethod.GET,
                    produces = MediaType.APPLICATION_JSON_VALUE)
-    public  Map<String, String> [] getAllTerritoire() {
+    public Map[] getAllTerritoire() {
         List<SareftjLibter> sareftjLibters = sareftjLibterDao.findByLang(GlobalConstants.FR_LANG);
 
         List<Map<String, String>> result = new ArrayList<>(sareftjLibters.size());
         sareftjLibters.forEach(libelle -> result.add(createStringMap(libelle.getCdePaysIso4N() + "",
-                                    new StringBuilder()
-                                      .append(libelle.getCdePaysIso4N())
-                                      .append(" - ")
-                                      .append(libelle.getNomPaysAbr())
-                                      .toString())));
+                String.valueOf(libelle.getCdePaysIso4N()) +
+                        " - " +
+                        libelle.getNomPaysAbr())));
 
         return result.toArray(new Map[0]);
     }
@@ -209,7 +207,7 @@ public class GeneralResource {
     @RequestMapping(value = "/libelleUtilisateur",
                     method = RequestMethod.GET,
                     produces = MediaType.APPLICATION_JSON_VALUE)
-   public  Map<String, String> [] getLibelleCdeUtilisateur() {
+   public Map[] getLibelleCdeUtilisateur() {
       List<SareftjLibutil> labels = sareftjLibutilDao.findByLang(GlobalConstants.FR_LANG);
 
       List<Map<String, String>> result = new ArrayList<>(labels.size());

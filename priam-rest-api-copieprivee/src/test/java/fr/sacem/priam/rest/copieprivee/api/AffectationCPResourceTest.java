@@ -1,6 +1,5 @@
 package fr.sacem.priam.rest.copieprivee.api;
 
-import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.domain.Fichier;

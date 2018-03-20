@@ -5,7 +5,6 @@ import fr.sacem.priam.common.TypeUtilisationEnum;
 import fr.sacem.service.importPenef.FichierBatchServiceImpl;
 import fr.sacem.util.UtilFile;
 import fr.sacem.util.exception.PriamValidationException;
-import org.omg.CORBA.FREE_MEM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.BatchStatus;
@@ -15,7 +14,6 @@ import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;

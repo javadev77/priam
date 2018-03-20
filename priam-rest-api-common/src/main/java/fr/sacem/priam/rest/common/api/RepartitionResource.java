@@ -81,9 +81,7 @@ public class RepartitionResource {
       method = RequestMethod.GET,
       produces = MediaType.APPLICATION_JSON_VALUE)
     public FichierFelix getFichierFelix(@PathVariable("numProg") String numProg) {
-        FichierFelix fichierFelix = fichierFelixDao.findByNumprog(numProg);
-
-        return fichierFelix;
+        return fichierFelixDao.findByNumprog(numProg);
     }
 
 
@@ -122,10 +120,11 @@ public class RepartitionResource {
         String numProg = request.getParameter("numProg");
 
         FichierFelix fichierFelix = fichierFelixDao.findByNumprog(numProg);
-        if(fichierFelix != null ) {
-            if(fichierFelix.getLogs() == null || fichierFelix.getLogs().isEmpty()) {
-                generateFelixCsvData(response, numProg, fichierFelix.getNomFichier());
-            }
+        if (fichierFelix == null) {
+            return;
+        }
+        if(fichierFelix.getLogs() == null || fichierFelix.getLogs().isEmpty()) {
+            generateFelixCsvData(response, numProg, fichierFelix.getNomFichier());
         }
     }
 

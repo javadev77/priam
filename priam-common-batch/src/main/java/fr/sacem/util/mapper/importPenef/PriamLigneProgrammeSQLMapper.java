@@ -2,6 +2,7 @@ package fr.sacem.util.mapper.importPenef;
 
 import fr.sacem.domain.LigneProgramme;
 import org.springframework.jdbc.core.RowMapper;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 /**

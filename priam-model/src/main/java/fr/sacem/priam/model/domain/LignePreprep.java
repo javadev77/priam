@@ -3,7 +3,6 @@ package fr.sacem.priam.model.domain;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Objects;
 
 /**
  * Created by benmerzoukah on 29/05/2017.

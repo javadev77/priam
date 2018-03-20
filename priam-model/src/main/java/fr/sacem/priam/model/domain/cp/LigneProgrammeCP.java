@@ -2,7 +2,6 @@ package fr.sacem.priam.model.domain.cp;
 
 import com.google.common.base.Objects;
 import fr.sacem.priam.model.domain.Fichier;
-import fr.sacem.priam.model.util.EtatOeuvreEnum;
 
 import javax.persistence.*;
 import java.io.Serializable;

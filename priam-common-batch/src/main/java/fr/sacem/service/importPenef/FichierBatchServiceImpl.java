@@ -4,12 +4,10 @@ import au.com.bytecode.opencsv.CSVReader;
 import fr.sacem.dao.FichierRepository;
 import fr.sacem.domain.Fichier;
 import fr.sacem.util.DateTimeUtils;
-import fr.sacem.util.UtilFile;
 import fr.sacem.util.exception.PriamValidationException;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

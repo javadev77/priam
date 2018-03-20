@@ -1,7 +1,6 @@
 package fr.sacem.service.importPenef;
 
 import fr.sacem.domain.LigneProgramme;
-import fr.sacem.priam.common.TypeUtilisationEnum;
 import fr.sacem.priam.common.util.FileUtils;
 import fr.sacem.util.RionEnum;
 import fr.sacem.util.valdiator.importPenef.LigneProgrammeCMSSpringValidator;

@@ -1,6 +1,5 @@
 package fr.sacem.priam.model.dao;
 
-import fr.sacem.priam.model.dao.JpaConfigurationTest;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;

@@ -5,7 +5,6 @@ import fr.sacem.dao.ProgrammeBatchDao;
 import fr.sacem.dao.TraitementCmsDao;
 import fr.sacem.domain.Programme;
 import fr.sacem.priam.common.util.FileUtils;
-import fr.sacem.priam.model.util.FamillePriam;
 import fr.sacem.priam.model.util.TypeUtilisationPriam;
 import fr.sacem.service.importPenef.FichierBatchService;
 import fr.sacem.util.UtilFile;
