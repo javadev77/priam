@@ -34,10 +34,10 @@ public class AffectationCPResourceTest extends RestResourceTest {
     public void test_affecterFichiers_all_vide() throws Exception {
         mockMvc.perform(
                 put("/app/rest/programme/affectation")
-                        .content(this.json(createAffectationDto("170001", Collections.emptyList())))
+                        .content(this.json(createAffectationDto("180090", Collections.emptyList())))
                         .contentType(contentType))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.statut", is("VALIDE")));
+                .andExpect(jsonPath("$.statut", is("CREE")));
 
     }
 
@@ -47,7 +47,7 @@ public class AffectationCPResourceTest extends RestResourceTest {
     public void test_affecterFichiers() throws Exception {
         mockMvc.perform(
                 put("/app/rest/programme/affectation")
-                        .content(this.json(createAffectationDto("170001", Arrays.asList("F01", "F02"))))
+                        .content(this.json(createAffectationDto("180090", Arrays.asList("F01", "F02"))))
                         .contentType(contentType))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.statut", is("AFFECTE")));

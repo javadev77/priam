@@ -42,7 +42,8 @@ public class ProgrammeResourceTest extends RestResourceTest {
                .content(this.json(o))
                .contentType(contentType))
                .andExpect(status().isOk())
-               .andExpect(jsonPath("$.content", hasSize(3)));
+               .andExpect(jsonPath("$.totalPages",is(1)))
+               .andExpect(jsonPath("$.totalElements", is(4)));
     }
 
     @Test

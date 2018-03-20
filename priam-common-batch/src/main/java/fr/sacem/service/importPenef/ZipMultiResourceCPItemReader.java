@@ -118,12 +118,14 @@ public class ZipMultiResourceCPItemReader<T> extends MultiResourceItemReader<T> 
                                 //Le nom du fichier est entregister dans le context du step pour pouvoir l'utiliser dans le itemWriter
                                 Long idFichier = utilFile.extractFiles(zipFile, extractedResources);
                                 Fichier fichier = fichierBatchService.findById(idFichier);
-                                JobParameter jobParameterNomDuFichier = new JobParameter(fichier.getNom());
+                                String nomFichier = fichier.getNom();
+                                JobParameter jobParameterNomDuFichier = new JobParameter(nomFichier);
                                 this.stepExecution.getExecutionContext().put("nomFichier", jobParameterNomDuFichier);
                                 JobParameter jobParameterIdFichier = new JobParameter(fichier.getId());
                                 this.stepExecution.getExecutionContext().put("idFichier", jobParameterIdFichier);
                                 // utilisation de offset a 1 est pour cause la creation des fichier dans les zip avec un / sous linux, c'est un hack pour les fichiers creer sous linux
-                                if((!file.getName().startsWith(FileUtils.PREFIX_PRIV_SON_RD) && !file.getName().startsWith(FileUtils.PREFIX_PRIV_SON_PH) &(!file.getName().startsWith(FileUtils.PREFIX_PRIV_SON_RD,1)) && (!file.getName().startsWith(FileUtils.PREFIX_PRIV_SON_PH,1)))) {
+                                if(!nomFichier.startsWith(FileUtils.PREFIX_PRIV_SON_RD)
+                                        && !nomFichier.startsWith(FileUtils.PREFIX_PRIV_SON_PH)) {
                                     System.out.println("String str starts with quick: "+file.getName().startsWith(FileUtils.PREFIX_PRIV_SON_RD));
                                     System.out.println("String str starts with quick: "+file.getName().startsWith(FileUtils.PREFIX_PRIV_SON_PH));
                                     System.out.println("String str starts with quick: "+file.getName().startsWith(FileUtils.PREFIX_PRIV_SON_RD,1));

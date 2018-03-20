@@ -119,7 +119,6 @@ public class ProgrammeViewDaoTest extends AbstractDaoTest{
         assertThat(all.getContent()).isNotNull().isNotEmpty();
     
         all.getContent().forEach( programmeDto -> {
-            assertThat(programmeDto.getNumProg()).startsWith("17");
             assertThat(programmeDto.getRionTheorique()).isEqualTo(619);
         });
     }
@@ -134,7 +133,7 @@ public class ProgrammeViewDaoTest extends AbstractDaoTest{
         Page<ProgrammeDto> all = programmeViewDao.findAllProgrammeByCriteria(criteria.getNumProg(), criteria.getNom(), criteria.getStatut(), criteria.getDateCreationDebut(), criteria.getDateCreationFin(), criteria.getSareftrFamiltyputil(), criteria.getTypeUtilisation(), criteria.getSareftrRionTheorique(), criteria.getSareftrRionPaiement(), criteria.getTypeRepart(), PAGEABLE);
         
         assertThat(all).isNotNull();
-        assertThat(all.getContent()).extracting("fichiers").isEqualTo(Arrays.asList(4L));
+        assertThat(all.getContent()).extracting("fichiers").isEqualTo(Arrays.asList(0L, 4L));
     
     }
     
