@@ -24,12 +24,12 @@ public class UserDTO implements Serializable{
 
       @Override
       public String getDisplayName() {
-        return "Guest";
+        return "GUEST";
       }
 
       @Override
       public String getUserId() {
-        return "guest";
+        return "GUEST";
       }
 
       @Override

@@ -155,6 +155,7 @@ public class GeneralResourceTest extends RestResourceTest {
     Map<String, String> params = new HashMap<>();
     params.put("USER_PAGE_SIZE", "30");
 
+
     mockMvc.perform(
       put("/app/rest/general/parametres")
         .content(this.json(params))

@@ -173,7 +173,7 @@ public class LigneProgrammeCMSServiceTest extends AbstractTestExecutionListener 
 
         List<LigneProgrammeCMS> ligneProgrammeCMS = ligneProgrammeCMSDao.findLigneProgrammeByNumProg(NUM_PROG);
         Iterable<LigneProgrammeCMS> selectedLigneCMS = Iterables.filter(ligneProgrammeCMS, lp -> lp.isSelectionEnCours());
-        assertThat(Iterables.size(selectedLigneCMS)).isEqualTo(6);
+        assertThat(Iterables.size(selectedLigneCMS)).isEqualTo(5);
     }
 
     @Test
@@ -317,11 +317,11 @@ public class LigneProgrammeCMSServiceTest extends AbstractTestExecutionListener 
         oeuvreNewManuel.setSelection(TRUE);
         oeuvreNewManuel.setDateInsertion(new Date());
         oeuvreNewManuel.setSelectionEnCours(TRUE);
-        oeuvreNewManuel.setSelection(FALSE);
 
-        ligneProgrammeCMSService.createOeuvreManuel(oeuvreNewManuel, programme);
-        LigneProgrammeCMS oeuvreNewManuelToChecked = ligneProgrammeCMSDao.findOeuvreManuelByIde12(NUM_PROG, oeuvreNewManuel.getIde12());
-        assertThat(oeuvreNewManuelToChecked).isNotNull();
+
+        LigneProgrammeCMS oeuvreManuel = ligneProgrammeCMSService.createOeuvreManuel(oeuvreNewManuel, programme);
+
+        assertThat(oeuvreManuel).isNotNull();
     //    ligneProgrammeCMSService.deleteOeuvreManuel(oeuvreNewManuelToChecked);
 
     }
