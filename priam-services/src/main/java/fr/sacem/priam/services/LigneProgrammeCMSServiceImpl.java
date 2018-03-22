@@ -2,7 +2,6 @@ package fr.sacem.priam.services;
 
 import fr.sacem.priam.common.TypeUtilisationEnum;
 import fr.sacem.priam.model.dao.jpa.CatalogueOctavDao;
-import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.dao.jpa.JournalDao;
 import fr.sacem.priam.model.dao.jpa.cms.LigneProgrammeCMSDao;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
@@ -21,7 +20,10 @@ import fr.sacem.priam.services.journal.annotation.LogOeuvre;
 import fr.sacem.priam.services.journal.annotation.TypeLog;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.JpaSort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,13 +62,13 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
     private ProgrammeDao programmeDao;
 
     @Autowired
-    private FichierDao fichierDao;
-
-    @Autowired
     private CatalogueOctavDao catalogueOctavDao;
 
     @Autowired
     private JournalDao journalDao;
+
+    @Autowired
+    private FichierService fichierService;
 
     @Override
     public List<KeyValueDto> getListIDE12ByProgramme(Long ide12, String programme) {
@@ -145,13 +147,14 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
         deleteOeuvreManuel(oeuvreManuelFound);
 
     }
-       @Override
+
+    @Override
     public void deleteOeuvreManuel(LigneProgrammeCMS oeuvreManuelFound) {
         if(oeuvreManuelFound != null) {
 
             List<LigneProgrammeCMS> oeuvresAutoByIdOeuvreManuel = ligneProgrammeCMSDao.findOeuvresAutoByIdOeuvreManuel(oeuvreManuelFound.getId());
             for (LigneProgrammeCMS oeuvreAuto : oeuvresAutoByIdOeuvreManuel) {
-                oeuvreAuto.setSelection(FALSE);
+                //oeuvreAuto.setSelection(FALSE);
                 oeuvreAuto.setSelectionEnCours(TRUE);
                 oeuvreAuto.setOeuvreManuel(null);
                 ligneProgrammeCMSDao.save(oeuvreAuto);
@@ -194,6 +197,10 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
     @Transactional
     public void annulerEdition(String numProg, String utilisateur) {
         Programme prog = programmeDao.findByNumProg(numProg);
+
+        List<LigneProgrammeCMS> oeuvresManuelsEnCoursEdition = ligneProgrammeCMSDao.findOeuvresManuelsEnCoursEdition(numProg);
+        oeuvresManuelsEnCoursEdition.forEach( oeuvreManuel -> deleteOeuvreManuel(oeuvreManuel));
+
         ligneProgrammeCMSDao.updateSelectionTemporaire(numProg, FALSE);
         ligneProgrammeCMSDao.updateSelectionTemporaire(numProg, TRUE);
 
@@ -255,7 +262,7 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
             LigneProgrammeCMS oeuvreManuel = createOeuvreManuel(input, programme);
             founds.forEach( found -> {
                 found.setOeuvreManuel(oeuvreManuel);
-                found.setSelection(FALSE);
+                //found.setSelection(FALSE);
                 ligneProgrammeCMSDao.saveAndFlush(found);
             });
 
@@ -344,25 +351,8 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
 
     @Override
     public LigneProgrammeCMS createOeuvreManuel(LigneProgrammeCMS input, Programme programme) {
-        Fichier probe = new Fichier();
-        probe.setAutomatique(false);
-        Programme programme1 = new Programme();
-        programme1.setNumProg(input.getNumProg());
-        probe.setProgramme(programme1);
-
-        Example<Fichier> of = Example.of(probe);
-        Fichier f = fichierDao.findOne(of);
-
-        if(f == null) {
-            f = new Fichier();
-
-            f.setProgramme(programme);
-            f.setAutomatique(false);
-
-            fichierDao.saveAndFlush(f);
-        }
-
-        input.setFichier(f);
+        String numProg = input.getNumProg();
+        input.setFichier(fichierService.getOrCreateFichierLink(numProg));
         input.setCdeCisac(CDE_CISAC_058);
         input.setCdeFamilTypUtil(programme.getFamille().getCode());
         input.setCdeUtil(CDE_UTIL);
@@ -376,8 +366,8 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
 
         input.setDateInsertion(new Date());
         input.setCdeTypIde12(input.getCdeTypIde12());
-        input.setSelectionEnCours(TRUE);
-        input.setSelection(FALSE);
+        //input.setSelectionEnCours(TRUE);
+        //input.setSelection(TRUE);
 
         return ligneProgrammeCMSDao.saveAndFlush(input);
     }

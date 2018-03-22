@@ -11,13 +11,14 @@ import java.util.List;
  * Created by benmerzoukah on 18/08/2017.
  */
 @Component
-public class FelixDataService extends FelixDataServiceAbstract{
+public class FelixDataCPService extends FelixDataServiceAbstract {
     
 
     @Autowired
     private LigneProgrammeCPDao ligneProgrammeCPDao;
 
 
+    @Override
     public List<LignePreprep> getListLignesSelectionnees(String numProg) {
        return ligneProgrammeCPDao.findLigneProgrammeSelectionnesForFelix(numProg);
     }

@@ -8,7 +8,7 @@ import fr.sacem.priam.model.domain.StatutFichierFelix;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.security.model.UserDTO;
 import fr.sacem.priam.services.FelixDataCMSService;
-import fr.sacem.priam.services.FelixDataService;
+import fr.sacem.priam.services.FelixDataCPService;
 import fr.sacem.priam.services.FelixDataServiceAbstract;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -39,7 +39,7 @@ public class RepartitionResource {
 
 
    @Autowired
-   private FelixDataService felixDataCPService;
+   private FelixDataCPService felixDataCPService;
 
 
     @Autowired

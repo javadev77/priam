@@ -650,7 +650,7 @@
 
                       var tempalte = [];
 
-                      tempalte.push({event : 'log-programme', template : tempalteLog});
+
 
                       if(cellValue.statutEligibilite === 'FIN_ELIGIBILITE' || cellValue.statutEligibilite === 'FIN_DESAFFECTATION' || cellValue.statutEligibilite === null) {
                         if(statusCode !== undefined && ('CREE' === statusCode || 'AFFECTE' === statusCode
@@ -665,6 +665,8 @@
                             tempalte.push({event : 'abondon-programme', template : tempalteTrash});
                           }
                         }
+
+                        tempalte.push({event : 'log-programme', template : tempalteLog});
 
                       }
 

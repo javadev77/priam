@@ -39,7 +39,7 @@
       <app-filtre-selection
         :filter="filter"
         :retablir="retablirFiltre"
-        :rechercher="launchRechercheEtCompteurs"
+        :rechercher="rechercher"
         :ajouter="ajouterOeuvre"
         :edition="edition"
       >
@@ -1048,7 +1048,7 @@
         this.annulerAction = true;
         this.modalVisible = true;
         this.tableauSelectionnable = true;
-        this.modalMessage  = 'Toutes les opérations seront perdues. Etes-vous sûr de vouloir annuler la sélection?';
+        this.modalMessage  = 'Toutes les opérations seront perdues. Etes-vous sûr de vouloir annuler la sélection ?';
 
 
       },
@@ -1059,10 +1059,11 @@
           .then(response => {
             this.selectedLineProgramme = [];
             this.unselectedLigneProgramme = [];
-            this.rechercher();
+
             this.tableauSelectionnable = false;
             this.edition = false;
             this.inProcess = false;
+            this.rechercher();
             this.calculerCompteurs(this.programmeInfo.statut);
         });
 
