@@ -37,7 +37,7 @@
       <app-filtre-selection
         :filter="filter"
         :retablir="retablirFiltre"
-        :rechercher="launchRechercheEtCompteurs"
+        :rechercher="rechercher"
         :ajouter="ajouterOeuvre"
         :edition="edition"
       >
@@ -717,6 +717,7 @@
 
         this.dataLoading = true;
 
+        debugger;
         this.resource.findLigneProgrammeByProgramme({page : pageNum -1 , size : pageSize,
           sort : sort, dir: dir}, this.currentFilter )
           .then(response => {
@@ -1015,6 +1016,7 @@
       },
 
       recalculerCompteurs(entry) {
+          debugger;
         if(entry.ajout == 'MANUEL') {
           if(entry.selection) {
             this.dureeSelection.manuel++;
@@ -1298,10 +1300,10 @@
           .then(response => {
             this.selectedLineProgramme = [];
             this.unselectedLigneProgramme = [];
-            this.rechercher();
             this.tableauSelectionnable = false;
             this.edition = false;
             this.inProcess = false;
+            this.rechercher();
             this.getDuree(this.programmeInfo.statut);
         });
 
@@ -1344,6 +1346,23 @@
       countNbSelected : function (newValue) {
         console.log("Le nombre de selection a cahnge "+  newValue);
         this.$store.dispatch('toutDesactiver', newValue && newValue === this.lengthOfTabLigneProgramme);
+      },
+
+      ligneProgramme : function (newTab, oldTab) {
+
+        console.log("newTab "+  newTab);
+        /*for(var i in newTab) {
+
+          //this.recalculerCompteurs(newTab[i]);
+          if(newTab[i].nbrDif != oldTab[i].nbrDif) {
+            console.log("newTab[i].nbrDif "+  newTab[i].nbrDif);
+            this.recalculerCompteurs(newTab[i]);
+          }
+
+        }*/
+
+        //this.getDuree();
+
       }
 
     },

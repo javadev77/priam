@@ -174,15 +174,14 @@
               ide12 : oeuvreToAdd.ide12,
               cdeTypIde12 : oeuvreToAdd.cdeTypeIde12,
               titreOeuvre : oeuvreToAdd.titre,
-              // durDif : oeuvreToAdd.duree,
               nbrDif : oeuvreToAdd.quantite,
               nbrDifEdit : oeuvreToAdd.quantite,
-            // cdeUtil : oeuvreToAdd.utilisateur,
               mt: oeuvreToAdd.points,
               mtEdit: oeuvreToAdd.points,
               roleParticipant1 : oeuvreToAdd.roleParticipant1,
-              nomParticipant1 : oeuvreToAdd.nomParticipant1
-              /*libelleUtilisateur : oeuvreToAdd.libelleUtilisateur*/
+              nomParticipant1 : oeuvreToAdd.nomParticipant1,
+              selectionEnCours : true,
+              selection : true
           }
           this.resource.ajouterOeuvreManuel(ligneProgramme)
             .then(response => {

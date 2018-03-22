@@ -1,7 +1,11 @@
 package fr.sacem.priam.model.domain;
 
+import com.google.common.base.Strings;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -106,5 +110,15 @@ public class Journal implements Serializable {
 
     public void setListSituationApres(List<SituationApres> listSituationApres) {
         this.listSituationApres = listSituationApres;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("Num Programme", numProg)
+                .append("evenement", evenement)
+                .append("utilisateur", utilisateur)
+                .append("date", new SimpleDateFormat("dd/MM/yyyy HH:mm").format(date))
+                .toString();
     }
 }

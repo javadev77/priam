@@ -320,9 +320,9 @@ public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Lon
                      "FROM LigneProgrammeCP l join l.fichier as f "+
                      "WHERE l.fichier = f.id " +
                      "AND f.programme.numProg = :numProg " +
-                     "AND l.selectionEnCours = :selection " +
+                     "AND l.selection = 0 " +
                      "AND l.ajout = 'CORRIGE' ")
-    List<LigneProgrammeCP> findOeuvresManuelsEnCoursEdition(@Param("numProg") String numProg, @Param("selection") boolean value);
+    List<LigneProgrammeCP> findOeuvresManuelsEnCoursEdition(@Param("numProg") String numProg);
     
     @Query(value="SELECT l " +
                      "FROM LigneProgrammeCP l join l.fichier as f "+
@@ -392,7 +392,7 @@ public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Lon
     @Transactional(readOnly = true)
     @Query(nativeQuery = true, value =
             "SELECT sum(duree) from ( SELECT " +
-                    "sum(l.durDif) duree, l.ide12 " +
+                    "sum(l.durDifEdit) duree, l.ide12 " +
                     "FROM " +
                     "PRIAM_LIGNE_PROGRAMME_CP l inner join PRIAM_FICHIER as f " +
                     "on l.ID_FICHIER=f.ID " +
@@ -406,7 +406,7 @@ public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Lon
     @Transactional(readOnly = true)
     @Query(nativeQuery = true, value =
             "SELECT sum(quantite) from ( SELECT " +
-                    "sum(l.nbrDif) quantite, l.ide12 " +
+                    "sum(l.nbrDifEdit) quantite, l.ide12 " +
                     "FROM " +
                     "PRIAM_LIGNE_PROGRAMME_CP l " +
                     "inner join PRIAM_FICHIER as f " +
@@ -437,6 +437,7 @@ public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Lon
 
 
     @Modifying(clearAutomatically = true)
+    @Transactional
     @Query(nativeQuery = true, value = "update " +
             "PRIAM_LIGNE_PROGRAMME_CP p " +
             "INNER JOIN " +
@@ -450,12 +451,13 @@ public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Lon
     void updateNbrDif(@Param("numProg") String numProg);
 
     @Modifying(clearAutomatically = true)
+    @Transactional
     @Query(nativeQuery = true, value = "update " +
             "PRIAM_LIGNE_PROGRAMME_CP p " +
             "INNER JOIN " +
             "PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
             "set  p.nbrDifEdit=p.nbrDif " +
             "WHERE  "+
-            "f.NUMPROG = ?1 AND p.selection=?2")
+            "f.NUMPROG = ?1 AND p.SEL_EN_COURS=?2")
     void updateNbrDifTemporaire(@Param("numProg") String numProg, @Param("selection") boolean selection);
 }

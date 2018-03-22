@@ -86,5 +86,13 @@ public interface FichierDao extends JpaRepository<Fichier, Long> {
     @Transactional(readOnly =true)
     @Query(nativeQuery = true, value="SELECT LOG from  PRIAM_FICHIER_LOG FL WHERE FL.ID_FICHIER = ?1 ORDER BY LOG")
     Set<String> getChargementLog(@Param("idFichier") Long idFichier);
+
+
+    @Transactional(readOnly =true)
+    @Query("SELECT f " +
+            "FROM Fichier AS f " +
+            "WHERE f.programme.numProg = :numProg " +
+            "AND f.automatique = false ")
+    Fichier findFichierLink(@Param("numProg")String numProg);
 }
 

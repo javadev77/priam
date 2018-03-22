@@ -253,9 +253,9 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
                      "FROM LigneProgrammeCMS l join l.fichier as f "+
                      "WHERE l.fichier = f.id " +
                      "AND f.programme.numProg = :numProg " +
-                     "AND l.selection = :selection " +
-                     "AND l.ajout = 'MANUEL' ")
-    List<LigneProgrammeCMS> findOeuvresManuelsEnCoursEdition(@Param("numProg") String numProg, @Param("selection") boolean value);
+                     "AND l.selection = 0 " +
+                     "AND l.ajout = 'CORRIGE' ")
+    List<LigneProgrammeCMS> findOeuvresManuelsEnCoursEdition(@Param("numProg") String numProg);
     
     @Query(value="SELECT l " +
                      "FROM LigneProgrammeCMS l join l.fichier as f "+

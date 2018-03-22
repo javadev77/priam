@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
  * Created by benmerzoukah on 13/07/2017.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = PriamCopiepriveeWebAppTest.class)
+@SpringBootTest(classes = PriamCopiepriveeWebApp.class)
 @WebAppConfiguration
 @ActiveProfiles("test")
 public abstract class RestResourceTest {

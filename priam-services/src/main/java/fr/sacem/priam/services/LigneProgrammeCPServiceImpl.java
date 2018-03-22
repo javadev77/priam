@@ -56,12 +56,12 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
 
     @Autowired
     private ProgrammeDao programmeDao;
-    
-    @Autowired
-    private FichierDao fichierDao;
 
     @Autowired
     JournalDao journalDao;
+
+    @Autowired
+    FichierService fichierService;
     
     private static final Logger LOG = LoggerFactory.getLogger(LigneProgrammeCPServiceImpl.class);
 
@@ -262,13 +262,13 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
             List<LigneProgrammeCP> oeuvresAutoByIdOeuvreManuel = ligneProgrammeCPDao.findOeuvresAutoByIdOeuvreManuel(oeuvreManuelFound.getId());
             oeuvresAutoByIdOeuvreManuel.forEach( oeuvreAuto -> {
 
-                oeuvreAuto.setSelection(FALSE);
+                //oeuvreAuto.setSelection(TRUE);
                 oeuvreAuto.setSelectionEnCours(TRUE);
                 oeuvreAuto.setOeuvreManuel(null);
-                oeuvreAuto.setDurDifEdit(oeuvreAuto.getDurDif());
-                oeuvreAuto.setNbrDifEdit(oeuvreAuto.getNbrDif());
+                //oeuvreAuto.setDurDifEdit(oeuvreAuto.getDurDif());
+                //oeuvreAuto.setNbrDifEdit(oeuvreAuto.getNbrDif());
 
-                ligneProgrammeCPDao.save(oeuvreAuto);
+                ligneProgrammeCPDao.saveAndFlush(oeuvreAuto);
             });
             ligneProgrammeCPDao.delete(oeuvreManuelFound);
             ligneProgrammeCPDao.flush();
@@ -291,7 +291,7 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
             LigneProgrammeCP oeuvreManuel = createOeuvreManuel(input, programme);
             founds.forEach( found -> {
                 found.setOeuvreManuel(oeuvreManuel);
-                found.setSelection(FALSE);
+                //found.setSelection(FALSE);
                 ligneProgrammeCPDao.saveAndFlush(found);
             });
 
@@ -338,6 +338,9 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
 
         journal.getListSituationAvant().add(situationAvant);
 
+        if(LOG.isInfoEnabled()) {
+            LOG.info(journal.toString());
+        }
         journalDao.saveAndFlush(journal);
         
     }
@@ -381,33 +384,16 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
     }
 
     private LigneProgrammeCP createOeuvreManuel(LigneProgrammeCP input, Programme programme) {
-        Fichier probe = new Fichier();
-        probe.setAutomatique(false);
-        Programme programme1 = new Programme();
-        programme1.setNumProg(input.getNumProg());
-        probe.setProgramme(programme1);
-        
-        Example<Fichier> of = Example.of(probe);
-        Fichier f = fichierDao.findOne(of);
 
-        if (f == null) {
-            f = new Fichier();
-
-            f.setProgramme(programme);
-            f.setAutomatique(false);
-
-            fichierDao.saveAndFlush(f);
-        }
-        
-        input.setFichier(f);
+        input.setFichier(fichierService.getOrCreateFichierLink(input.getNumProg()));
         input.setCdeCisac(CDE_CISAC_058);
         input.setCdeFamilTypUtil(programme.getFamille().getCode());
         input.setCdeTypUtil(programme.getTypeUtilisation().getCode());
-        /*input.setAjout(MANUEL);*/
-        //input.setSelectionEnCours(TRUE);
+
         input.setDateInsertion(new Date());
 
-        input.setSelection(FALSE);
+        //input.setSelectionEnCours(TRUE);
+        //input.setSelection(TRUE);
         
         return ligneProgrammeCPDao.saveAndFlush(input);
     }
@@ -447,12 +433,12 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
     
     @Transactional
     @Override
-
     public void annulerEdition(String numProg, String utilisateur) {
-        /*List<LigneProgrammeCP> oeuvresManuelsEnCoursEdition = ligneProgrammeCPDao.findOeuvresManuelsEnCoursEdition(numProg, TRUE);
-        oeuvresManuelsEnCoursEdition.forEach( oeuvreManuel -> doDeleteOeuvreManuel(oeuvreManuel, utilisateur)));*/
-
         Programme prog = programmeDao.findByNumProg(numProg);
+
+        List<LigneProgrammeCP> oeuvresManuelsEnCoursEdition = ligneProgrammeCPDao.findOeuvresManuelsEnCoursEdition(numProg);
+        oeuvresManuelsEnCoursEdition.forEach( oeuvreManuel -> doDeleteOeuvreManuel(oeuvreManuel));
+
         ligneProgrammeCPDao.updateSelectionTemporaire(numProg, FALSE);
         ligneProgrammeCPDao.updateSelectionTemporaire(numProg, TRUE);
 

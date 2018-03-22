@@ -96,6 +96,22 @@ public class FichierService {
         programmeDao.saveAndFlush(programme);
     }
 
+    public Fichier getOrCreateFichierLink(String numProg) {
+
+        Fichier fichierLink = fichierDao.findFichierLink(numProg);
+        if(fichierLink == null) {
+            fichierLink = new Fichier();
+
+            Programme programme = programmeDao.findByNumProg(numProg);
+            fichierLink.setProgramme(programme);
+            fichierLink.setAutomatique(false);
+
+            fichierLink = fichierDao.saveAndFlush(fichierLink);
+        }
+
+        return fichierLink;
+    }
+
     public Set<String> getChargementLog(Long idFichier) {
         return fichierDao.getChargementLog(idFichier);
     }

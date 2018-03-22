@@ -199,7 +199,9 @@
               cdeUtil : oeuvreToAdd.utilisateur,
               roleParticipant1 : oeuvreToAdd.roleParticipant1,
               nomParticipant1 : oeuvreToAdd.nomParticipant1,
-              libelleUtilisateur : oeuvreToAdd.libelleUtilisateur
+              libelleUtilisateur : oeuvreToAdd.libelleUtilisateur,
+              selectionEnCours : true,
+              selection : true
           }
           this.resource.ajouterOeuvreManuel(lingeProgramme)
             .then(response => {

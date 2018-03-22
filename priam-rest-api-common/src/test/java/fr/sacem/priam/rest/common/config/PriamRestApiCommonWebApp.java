@@ -1,4 +1,4 @@
-package fr.sacem.priam.rest.copieprivee.config;
+package fr.sacem.priam.rest.common.config;
 
 
 import fr.sacem.priam.model.dao.JpaConfigurationTest;
@@ -14,15 +14,15 @@ import org.springframework.test.context.ActiveProfiles;
 /**
  * Created by benmerzoukah on 18/04/2017.
  */
-@Import({JpaConfigurationTest.class, AdampConfigTest.class})
-@SpringBootApplication(scanBasePackages = {"fr.sacem.priam.rest.copieprivee", "fr.sacem.priam.common", "fr.sacem.priam.services", "fr.sacem.priam.model"})
+@Import(JpaConfigurationTest.class)
+@SpringBootApplication(scanBasePackages = {"fr.sacem.priam.rest.common", "fr.sacem.priam.common", "fr.sacem.priam.services", "fr.sacem.priam.model"})
 @EnableCaching
 @ActiveProfiles("test")
 @EnableAutoConfiguration(exclude = { SecurityAutoConfiguration.class})
-public class PriamCopiepriveeWebAppTest extends SpringBootServletInitializer {
+public class PriamRestApiCommonWebApp extends SpringBootServletInitializer {
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(PriamCopiepriveeWebAppTest.class);
+        return application.sources(PriamRestApiCommonWebApp.class);
     }
 }

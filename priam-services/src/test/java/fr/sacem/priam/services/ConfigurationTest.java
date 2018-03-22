@@ -37,8 +37,13 @@ public class ConfigurationTest {
     }
     
     @Bean
-    public FelixDataService felixDataService() {
-	  return new FelixDataService();
+    public FelixDataCPService felixDataService() {
+	  return new FelixDataCPService();
+    }
+
+    @Bean
+    public FelixDataCMSService felixDataCMSService() {
+        return new FelixDataCMSService();
     }
 
     @Bean(name = "configAdmap")
