@@ -11,8 +11,6 @@ import fr.sacem.priam.services.api.LigneProgrammeResource;
 import fr.sacem.priam.services.api.LigneProgrammeService;
 import fr.sacem.priam.services.cms.LigneProgrammeCMSService;
 import fr.sacem.priam.services.dto.ValdierSelectionProgrammeInput;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -31,16 +29,11 @@ import java.util.Map;
 @RequestMapping("/app/rest/")
 public class LigneProgrammeCMSRessource extends LigneProgrammeResource {
 
-    private static  final Logger LOGGER = LoggerFactory.getLogger(LigneProgrammeCMSRessource.class);
-
     @Autowired
     @Qualifier("ligneProgrammeCMSService")
     LigneProgrammeCMSService ligneProgrammeCMSService;
 
     LigneProgrammeService ligneProgrammeService;
-
-    @Autowired
-    Admap admap;
 
     @Autowired
     TraitementEligibiliteCMSDao traitementEligibiliteCMSDao;
