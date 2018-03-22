@@ -666,7 +666,11 @@
                           }
                         }
 
-                        tempalte.push({event : 'log-programme', template : tempalteLog});
+
+                        if($this.hasRight('VIJREV')) {
+                          tempalte.push({event : 'log-programme', template : tempalteLog});
+                        }
+
 
                       }
 

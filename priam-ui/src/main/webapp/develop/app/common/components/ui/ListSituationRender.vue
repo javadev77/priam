@@ -12,7 +12,7 @@
 
   export  default {
     props : {
-      value : Object
+      value : Array
     },
 
     methods : {

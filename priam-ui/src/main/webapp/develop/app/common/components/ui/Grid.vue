@@ -583,7 +583,7 @@
         sortOrders: sortOrders,
         sort : [],
         currentPage : 1,
-        pageSize : 25
+        pageSize : this.$store.getters.userPageSize
 
       }
     },
@@ -790,6 +790,7 @@
         this.sort.direction = isAsc ? 'ASC' : 'DESC';
 
 
+        debugger;
 
         this.$emit('on-sort', this.currentPage, this.pageSize, this.sort);
       },

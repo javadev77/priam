@@ -8,19 +8,34 @@
         </h5>
       </div>
       <div class="panel-collapse">
-        <div class="panel-body" style="height:450px; overflow-y:scroll;">
-          <log-grid
-            v-if="logGrid.logGridData.content"
-            :data="logGrid.logGridData"
-            :columns="logGrid.logGridColumns"
-            noResultText="Aucun résultat."
-            @load-page="loadPage"
-            @on-sort="onSort">
-            >
-          </log-grid>
-          <div class="row espacement">
-            <button class="btn btn-default btn-primary pull-right" type="button" @click="$emit('cancel')">Fermer</button>
+        <div class="panel-body">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h5 class="panel-title">
+                <a>Résultats</a>
+                <span class="pull-left collapsible-icon bg-ico-tablerow"></span>
+              </h5>
+            </div>
+            <div class="panel-collapse">
+              <div class="result-panel-body panel-body" style="height:450px; overflow-y:scroll;">
+                <log-grid
+                  v-if="logGrid.logGridData.content"
+                  :data="logGrid.logGridData"
+                  :columns="logGrid.logGridColumns"
+                  noResultText="Aucun résultat."
+                  @load-page="loadPage"
+                  @on-sort="onSort">
+                  >
+                </log-grid>
+
+              </div>
+              <div class="row espacement">
+                <button class="btn btn-default btn-primary pull-right" type="button" @click="$emit('cancel')">Fermer</button>
+              </div>
+
+            </div>
           </div>
+        </div>
         </div>
       </div>
     </div>
@@ -157,6 +172,7 @@
 
         onSort(currentPage, pageSize, sort) {
 
+            debugger;
           this.launchRequest(currentPage, pageSize, sort.property, sort.direction);
 
           this.defaultPageable.sort = sort.property;
