@@ -652,6 +652,7 @@
 
     created() {
 
+        debugger;
         this.sort = this.data.sort !== undefined ? this.data.sort[0] : undefined;
 
         if(this.isLocalSort) {

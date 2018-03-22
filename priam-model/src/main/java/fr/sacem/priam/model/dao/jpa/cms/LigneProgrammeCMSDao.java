@@ -4,6 +4,7 @@ import fr.sacem.priam.model.domain.LignePreprep;
 import fr.sacem.priam.model.domain.cms.LigneProgrammeCMS;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.SelectionCMSDto;
+import fr.sacem.priam.model.domain.dto.SelectionDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -429,4 +430,26 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
             "  f.NUMPROG = ?1 " +
             " AND p.ide12 = ?2 ")
     void updatePointsMtTemporaireByNumProgramme(String numProg, Long ide12, Double mtEdit);
+
+    @Transactional
+    @Query(value="SELECT new fr.sacem.priam.model.domain.dto.SelectionCMSDto("+
+            "ligneProgramme.ide12, " +
+            "ligneProgramme.titreOeuvre, " +
+            "ligneProgramme.roleParticipant1, " +
+            "ligneProgramme.nomParticipant1, " +
+            "ligneProgramme.ajout, " +
+            "ligneProgramme.selectionEnCours, " +
+            "(CASE WHEN f.programme.typeUtilisation.code = 'SONOFRA' THEN sum(ligneProgramme.mtEdit) WHEN f.programme.typeUtilisation.code = 'SONOANT' THEN sum(ligneProgramme.nbrDifEdit) ELSE 0 END)) "+
+            "FROM LigneProgrammeCMS ligneProgramme join ligneProgramme.fichier  f " +
+            //"SareftjLibutil lu "+
+            "WHERE ligneProgramme.fichier = f.id " +
+            //"AND lu.cdeUtil = ligneProgramme.cdeUtil "+
+            "AND f.programme.numProg = :numProg " +
+            "AND (ligneProgramme.selectionEnCours = :selectionEnCours OR :selectionEnCours IS NULL) " +
+            "AND (ligneProgramme.selection = :selection OR :selection IS NULL) " +
+            "AND (ligneProgramme.oeuvreManuel IS NULL) " +
+            "GROUP BY ligneProgramme.ide12")
+    List<SelectionCMSDto> findLigneProgrammePreselected(@Param("numProg") String numProg,
+                                                     @Param("selectionEnCours") Boolean selectionEnCours,
+                                                     @Param("selection") Boolean selection);
 }

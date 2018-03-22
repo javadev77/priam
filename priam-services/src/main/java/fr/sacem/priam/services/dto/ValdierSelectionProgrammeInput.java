@@ -16,6 +16,7 @@ public class ValdierSelectionProgrammeInput {
   private boolean all;
   private Set<Map<String, String>> unselected = new HashSet<>();
   private Set<Map<String, String>> selected = new HashSet<>();
+  private boolean fromSelection;
 
   public ValdierSelectionProgrammeInput() {
 
@@ -56,6 +57,15 @@ public class ValdierSelectionProgrammeInput {
   public boolean isDeselectAll() { return deselectAll; }
 
   public void setDeselectAll(boolean deselectAll) { this.deselectAll = deselectAll; }
+
+
+  public boolean isFromSelection() {
+    return fromSelection;
+  }
+
+  public void setFromSelection(boolean fromSelection) {
+    this.fromSelection = fromSelection;
+  }
 
   @Override
   public String toString() {

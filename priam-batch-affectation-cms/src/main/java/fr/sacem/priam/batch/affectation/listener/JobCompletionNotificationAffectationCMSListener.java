@@ -3,8 +3,18 @@ package fr.sacem.priam.batch.affectation.listener;
 import fr.sacem.dao.LigneProgrammeBatchDao;
 import fr.sacem.dao.ProgrammeBatchDao;
 import fr.sacem.dao.TraitementCmsDao;
+
 import fr.sacem.domain.Programme;
+import fr.sacem.priam.batch.affectation.dao.JournalBatchDao;
+import fr.sacem.priam.common.TypeLog;
 import fr.sacem.priam.common.util.FileUtils;
+import fr.sacem.priam.model.dao.jpa.FichierDao;
+import fr.sacem.priam.model.dao.jpa.JournalDao;
+import fr.sacem.priam.model.domain.*;
+
+import fr.sacem.priam.model.journal.JournalBuilder;
+
+
 import fr.sacem.priam.model.util.TypeUtilisationPriam;
 import fr.sacem.service.importPenef.FichierBatchService;
 import fr.sacem.util.UtilFile;
@@ -18,12 +28,12 @@ import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 
 @Component
@@ -35,6 +45,7 @@ public class JobCompletionNotificationAffectationCMSListener extends JobExecutio
     public static final String MESSAGE_FORMAT_FICHIER = "Le fichier ne peut être chargé car il n'a pas le bon format";
     public static final String ERREUR_ELIGIBILITE = "ERREUR_ELIGIBILITE";
     public static final String CHARGEMENT_OK = "CHARGEMENT_OK";
+    public static final String FICHIERS_AVANT_AFFECTATION = "FICHIERS_AVANT_AFFECTATION";
     private static String NOM_FICHIER_CSV_EN_COURS = "nomFichier";
     private static String FICHIER_ZIP_EN_COURS = "fichierZipEnCours";
     private static String NOM_ORIGINAL_FICHIER_ZIP = "nomFichierOriginal";
@@ -52,10 +63,21 @@ public class JobCompletionNotificationAffectationCMSListener extends JobExecutio
     ProgrammeBatchDao programmeBatchDao;
 
     @Autowired
+    FichierDao fichierDao;
+
+    @Autowired
+    JournalDao journalDao;
+
+    @Autowired
+    JournalBatchDao journalBatchDao;
+
+    @Autowired
     TraitementCmsDao traitementCmsDao;
 
     @Autowired
     LigneProgrammeBatchDao ligneProgrammeBatchDao;
+
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
     @Autowired
     public JobCompletionNotificationAffectationCMSListener() {
@@ -71,13 +93,19 @@ public class JobCompletionNotificationAffectationCMSListener extends JobExecutio
         Long nbOeuvres = ligneProgrammeBatchDao.countNbOeuvres(numProg);
         long traitementID = traitementCmsDao.createTraitement(numProg, nbOeuvres);
 
+        /*List<Fichier> fichiersByIdProgramme = fichierDao.findFichiersByIdProgramme(numProg, Status.AFFECTE);*/
         jobExecution.getExecutionContext().put("ID_TMT_CMS", traitementID);
+        /*jobExecution.getExecutionContext().put(FICHIERS_AVANT_AFFECTATION, fichiersByIdProgramme);*/
     }
 
     @Override
     public void afterJob(JobExecution jobExecution) {
 
         if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
+
+            String numProg = jobExecution.getJobParameters().getString("numProg");
+            String userId = jobExecution.getJobParameters().getString("userId");
+            String listNomFichier = jobExecution.getJobParameters().getString("listNomFichier");
 
             Collection<StepExecution> stepExecutions = jobExecution.getStepExecutions();
             Iterator it = stepExecutions.iterator();
@@ -112,7 +140,7 @@ public class JobCompletionNotificationAffectationCMSListener extends JobExecutio
 
                     utilFile.deplacerFichier(parameterFichierZipEnCours, parameterNomFichierOriginal, outputDirectory);
 
-                    String numProg = jobExecution.getJobParameters().getString("numProg");
+
 
                     programmeBatchDao.majStattutEligibilite(numProg, "FIN_ELIGIBILITE");
                     programmeBatchDao.majStattutProgramme(numProg, "AFFECTE");
@@ -136,6 +164,35 @@ public class JobCompletionNotificationAffectationCMSListener extends JobExecutio
                     LOG.debug("Pas de excution context pour le step en cours : " + myStepExecution.getStepName());
                 }
             }
+
+            List<SituationAvant> situationAvantList = new ArrayList<>();
+            List<SituationApres> situationApresList = new ArrayList<>();
+
+            if(!listNomFichier.isEmpty()) {
+                List<String> listNomFichierAvantAffecte = Arrays.asList(listNomFichier.split("\\s*,\\s*"));
+                listNomFichierAvantAffecte.forEach(NomFichierAvantAffecte -> {
+                    SituationAvant situationAvant = new SituationAvant();
+                    situationAvant.setSituation(NomFichierAvantAffecte);
+                    situationAvantList.add(situationAvant);
+                });
+            }
+
+            List<Fichier> listFichierAffecte = fichierDao.findFichiersByIdProgramme(numProg, Status.AFFECTE);
+            listFichierAffecte.forEach(fichierAffecte ->{
+                SituationApres situationApres = new SituationApres();
+                situationApres.setSituation(fichierAffecte.getNomFichier() + " " + simpleDateFormat.format(fichierAffecte.getDateFinChargt()));
+                situationApresList.add(situationApres);
+            });
+
+            JournalBuilder journalBuilder = new JournalBuilder(numProg,null,userId);
+            Journal journal = journalBuilder.addEvenement(TypeLog.AFFECTATION_DESAFFECTATION.getEvenement()).build();
+            journal.setListSituationAvant(situationAvantList);
+            journal.setListSituationApres(situationApresList);
+
+            /*journalDao.saveAndFlush(journal);*/
+            Long idJournal = journalBatchDao.saveJournal(journal);
+            journalBatchDao.saveSituationAvantJournal(journal.getListSituationAvant(), idJournal);
+            journalBatchDao.saveSituationApresJournal(journal.getListSituationApres(), idJournal);
         } else {
             Collection<StepExecution> stepExecutions = jobExecution.getStepExecutions();
             Iterator it = stepExecutions.iterator();

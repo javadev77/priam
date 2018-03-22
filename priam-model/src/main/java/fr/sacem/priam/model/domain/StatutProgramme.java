@@ -11,5 +11,5 @@ public enum StatutProgramme {
     CREE,
     MIS_EN_REPART,
     EN_COURS_MISE_EN_REPART,
-    REPARTI
+    REPARTI;
 }

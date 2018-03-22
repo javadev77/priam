@@ -41,7 +41,7 @@ DROP TABLE IF EXISTS PRIAM_JOURNAL_EVENEMENT;
 CREATE TABLE PRIAM_JOURNAL_EVENEMENT (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `numprog` varchar(8) NOT NULL,
-  `evenement` varchar(25) DEFAULT NULL,
+  `evenement` varchar(100) DEFAULT NULL,
   `ide12` bigint(20) DEFAULT NULL,
   `date` datetime DEFAULT CURRENT_TIMESTAMP,
   `utilisateur` varchar(255) DEFAULT NULL,

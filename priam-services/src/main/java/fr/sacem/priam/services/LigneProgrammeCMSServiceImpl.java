@@ -13,10 +13,10 @@ import fr.sacem.priam.model.domain.dto.SelectionCMSDto;
 import fr.sacem.priam.model.domain.dto.SelectionDto;
 import fr.sacem.priam.model.domain.saref.SareftrTyputil;
 import fr.sacem.priam.model.util.TypeUtilisationPriam;
+import fr.sacem.priam.security.model.UserDTO;
 import fr.sacem.priam.services.api.LigneProgrammeService;
 import fr.sacem.priam.services.cms.LigneProgrammeCMSService;
-import fr.sacem.priam.services.journal.JournalBuilder;
-import fr.sacem.priam.services.journal.annotation.LogOeuvre;
+import fr.sacem.priam.model.journal.JournalBuilder;
 import fr.sacem.priam.services.journal.annotation.TypeLog;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -135,7 +135,6 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
 
     @Override
     @Transactional
-    @LogOeuvre(event = TypeLog.SUPPRESSIONOEUVRE)
     public void supprimerLigneProgramme(String numProg, Long ide12, SelectionDto selectedLigneProgramme) {
         LigneProgrammeCMS oeuvreManuelFound = new LigneProgrammeCMS();
         if(selectedLigneProgramme.getAjout().equals(MANUEL)){
@@ -251,9 +250,10 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
 
     @Transactional
     @Override
-    public void ajouterOeuvreManuel(LigneProgrammeCMS input) {
+    public void ajouterOeuvreManuel(LigneProgrammeCMS input, UserDTO userDTO) {
         Programme programme = programmeDao.findOne(input.getNumProg());
         Journal journal = createJournal(input, programme);
+        journal.setUtilisateur(userDTO.getUserId());
         SituationAvant situationAvant = new SituationAvant();
 
         List<LigneProgrammeCMS> founds = ligneProgrammeCMSDao.findOeuvresAutoByIde12AndCdeUtil(input.getNumProg(), input.getIde12());
@@ -346,7 +346,7 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
 
         jb.addSituationApres(situationApres);
 
-        return jb.toJournalObject();
+        return jb.build();
     }
 
     @Override
@@ -366,8 +366,10 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
 
         input.setDateInsertion(new Date());
         input.setCdeTypIde12(input.getCdeTypIde12());
+
         //input.setSelectionEnCours(TRUE);
         //input.setSelection(TRUE);
+
 
         return ligneProgrammeCMSDao.saveAndFlush(input);
     }
@@ -389,7 +391,7 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
     }
 
     @Override
-    public void modifierPointsTemporaire(String numProg, Set<Map<String, String>> idLingesProgrammes, boolean isSelected) {
+    public void modifierPointsTemporaire(String numProg, Set<Map<String, String>> idLingesProgrammes, boolean isSelected, UserDTO userDTO) {
         Programme prog = programmeDao.findByNumProg(numProg);
 
         for (Map<String, String>  obj:  idLingesProgrammes) {
@@ -414,7 +416,7 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
                                 inputLigneCMS.setCdeTypIde12(oeuvresAuto.get(0).getCdeTypIde12());
                                 inputLigneCMS.setNbrDifEdit(nbrDifEdit);
 
-                                ajouterOeuvreManuel(inputLigneCMS);
+                                ajouterOeuvreManuel(inputLigneCMS, userDTO);
                             }
 
                         }
@@ -435,7 +437,7 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
 
                                 inputLigneCMS.setMtEdit(mtEdit);
 
-                                ajouterOeuvreManuel(inputLigneCMS);
+                                ajouterOeuvreManuel(inputLigneCMS, userDTO);
                             }
 
                         }

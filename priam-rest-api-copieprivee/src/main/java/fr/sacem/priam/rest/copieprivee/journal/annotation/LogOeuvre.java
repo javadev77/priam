@@ -1,5 +1,7 @@
 package fr.sacem.priam.rest.copieprivee.journal.annotation;
 
+import fr.sacem.priam.common.TypeLog;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

@@ -6,11 +6,14 @@ public enum TypeLog {
     SUPPRESSION ("Suppression programme"),
     VALIDATION ("Validation programme"),
     INVALIDATION ("Invalidation programme"),
-    ANNULATION ("Annuler la sélection"),
+    ANNULATION ("Annulation de la sélection"),
     REPARTITION ("Mise en répartition"),
-    SUPPRESSIONOEUVRE ("Suppression oeuvre avec état "),
     AJOUT_OEUVRE("Ajout oeuvre"),
-    MODIFIER_OEUVRE("Modification oeuvre");
+    MODIFIER_OEUVRE("Modification oeuvre"),
+    SUPPRESSION_OEUVRE ("Suppression oeuvre avec état "),
+    SELECTION ("Sélection"),
+    DESELECTION ("Désélection");
+
 
     private String evenement ;
 

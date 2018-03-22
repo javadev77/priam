@@ -12,10 +12,13 @@ import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.SelectionDto;
 import fr.sacem.priam.model.domain.saref.SareftrTyputil;
 import fr.sacem.priam.model.util.TypeUtilisationPriam;
+import fr.sacem.priam.security.model.UserDTO;
 import fr.sacem.priam.services.api.LigneProgrammeService;
 import fr.sacem.priam.services.cp.LigneProgrammeCPService;
-import fr.sacem.priam.services.journal.JournalBuilder;
-import fr.sacem.priam.services.journal.annotation.LogOeuvre;
+
+import fr.sacem.priam.model.journal.JournalBuilder;
+import org.apache.commons.lang3.StringUtils;
+
 import fr.sacem.priam.services.journal.annotation.TypeLog;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -137,16 +140,13 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
                 String cdeUtil = libUtil !=null ? libUtil.split(" - ")[0] : "";
 
                 ligneProgrammeCPDao.updateSelectionTemporaireByNumProgramme(numProg, ide12, cdeUtil, 1);
-
             }
         }
-
-
     }
 
     @Transactional
     @Override
-    public void modifierDurOrNbrDifTemporaire(String numProg, Set<Map<String, String>> idLingesProgrammes, boolean isSelected) {
+    public void modifierDurOrNbrDifTemporaire(String numProg, Set<Map<String, String>> idLingesProgrammes, boolean isSelected, UserDTO userDTO) {
         Programme prog = programmeDao.findByNumProg(numProg);
 
         for (Map<String, String>  obj:  idLingesProgrammes) {
@@ -171,7 +171,7 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
                                 inputLigneCP.setCdeTypIde12(oeuvresAuto.get(0).getCdeTypIde12());
                                 inputLigneCP.setNbrDifEdit(nbrDifEdit);
 
-                                ajouterOeuvreManuel(inputLigneCP);
+                                ajouterOeuvreManuel(inputLigneCP, userDTO);
                             }
 
                         }
@@ -193,7 +193,7 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
                                 inputLigneCP.setDurDifEdit(durDifEdit);
                                 inputLigneCP.setCdeTypIde12(oeuvresAuto.get(0).getCdeTypIde12());
 
-                                ajouterOeuvreManuel(inputLigneCP);
+                                ajouterOeuvreManuel(inputLigneCP, userDTO);
                             }
 
                         }
@@ -242,7 +242,6 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
 
 
     @Transactional
-    @LogOeuvre(event = TypeLog.SUPPRESSIONOEUVRE)
     @Override
     public void supprimerLigneProgramme(String numProg, Long ide12, SelectionDto selectedLigneProgramme) {
     
@@ -278,10 +277,11 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
     
     @Transactional
     @Override
-    public void ajouterOeuvreManuel(LigneProgrammeCP input) {
+    public void ajouterOeuvreManuel(LigneProgrammeCP input, UserDTO userDTO) {
         Programme programme = programmeDao.findOne(input.getNumProg());
 
         Journal journal = createJournal(input, programme);
+        journal.setUtilisateur(userDTO.getUserId());
         SituationAvant situationAvant = new SituationAvant();
 
         List<LigneProgrammeCP> founds = ligneProgrammeCPDao.findOeuvresAutoByIde12AndCdeUtil(input.getNumProg(), input.getIde12(), input.getCdeUtil());
@@ -353,15 +353,17 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
 
         jb.addSituationApres(situationApres);
 
-        return jb.toJournalObject();
+        return jb.build();
     }
 
     private String getNbrDifOrDurDifAsString(Programme prog, LigneProgrammeCP input) {
         SareftrTyputil typeUtilisation = prog.getTypeUtilisation();
         if(TypeUtilisationPriam.COPIE_PRIVEE_SONORE_PHONO.getCode().equals(typeUtilisation.getCode())) {
-            return String.valueOf(input.getNbrDif());
+            /*return String.valueOf(input.getNbrDif());*/
+            return String.valueOf(input.getNbrDif()!= null ? input.getNbrDif() : input.getNbrDifEdit());
         } else if(TypeUtilisationPriam.COPIE_PRIVEE_SONORE_RADIO.getCode().equals(typeUtilisation.getCode())) {
-            return  String.valueOf(input.getDurDif());
+            /*return  String.valueOf(input.getDurDif());*/
+            return  String.valueOf(input.getDurDif()!= null ? input.getDurDif() : input.getDurDifEdit());
         }
         return "";
     }
@@ -398,8 +400,7 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
         return ligneProgrammeCPDao.saveAndFlush(input);
     }
     
-    @Transactional
-    @Override
+    @Transactional @Override
     public void deselectLigneProgramme(String numProg, Set<Map<String, String>> unselected) {
         for (Map<String, String>  obj:  unselected) {
             if(obj != null && !obj.isEmpty()) {
@@ -426,7 +427,6 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
         } else if(prog.getTypeUtilisation().getCode().equals(TypeUtilisationPriam.COPIE_PRIVEE_SONORE_PHONO.getCode())) {
             ligneProgrammeCPDao.updateNbrDif(numProg);
         }
-
 
         ligneProgrammeCPDao.flush();
     }

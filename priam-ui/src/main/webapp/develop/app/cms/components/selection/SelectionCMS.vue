@@ -210,6 +210,7 @@
         programmeInfo: {},
         tableauSelectionnable : false,
         isCollapsed: false,
+        fromSelection: false,
         defaultPageable : {
           page : 1,
           sort : 'ide12',
@@ -726,6 +727,8 @@
 
       onEntryChecked(isChecked, entryChecked) {
 
+
+        this.fromSelection = true;
         if(isChecked) {
 
           if(entryChecked.ajout === 'MANUEL') {
@@ -789,6 +792,8 @@
       },
 
       onAllChecked(allChecked, entries) {
+
+        this.fromSelection = true;
 
         this.all = allChecked;
         this.ligneProgrammeSelected = [];
@@ -997,7 +1002,11 @@
               selected : []
             };
 
-            this.selection.numProg = this.$route.params.numProg;
+            this.selection =  {
+              numProg : this.$route.params.numProg,
+              fromSelection : this.fromSelection
+            };
+            debugger;
             this.resource.enregistrerEdition(this.selection)
               .then(response => {
                 this.filter.selection = 'Sélectionné';
@@ -1072,6 +1081,7 @@
       editSelectionClickHandler () {
         this.tableauSelectionnable = true;
         this.edition = true;
+        this.fromSelection = false;
       }
 
     },

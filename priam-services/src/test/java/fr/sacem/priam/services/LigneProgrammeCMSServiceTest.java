@@ -11,8 +11,14 @@ import fr.sacem.priam.model.domain.cms.LigneProgrammeCMS;
 import fr.sacem.priam.model.domain.criteria.LigneProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.SelectionCMSDto;
+
 import org.junit.Ignore;
 import org.junit.Test;
+
+
+import fr.sacem.priam.security.model.UserDTO;
+import org.junit.*;
+
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -174,13 +180,14 @@ public class LigneProgrammeCMSServiceTest extends AbstractTestExecutionListener 
     @Transactional
     public void supprimerLigneProgramme() {
         LigneProgrammeCMS oeuvreToDelete = new LigneProgrammeCMS();
+        UserDTO userDTO = new UserDTO();
         oeuvreToDelete.setNumProg(NUM_PROG);
         oeuvreToDelete.setIde12(3000163011L);
 
         SelectionCMSDto selectionCMSDto = new SelectionCMSDto();
         selectionCMSDto.setAjout("MANUEL");
 
-        ligneProgrammeCMSService.ajouterOeuvreManuel(oeuvreToDelete);
+        ligneProgrammeCMSService.ajouterOeuvreManuel(oeuvreToDelete, userDTO);
         ligneProgrammeCMSService.supprimerLigneProgramme(NUM_PROG, oeuvreToDelete.getIde12(), selectionCMSDto);
 
         LigneProgrammeCMS ligneProgrammeCMS = ligneProgrammeCMSDao.findOeuvreManuelByIde12(NUM_PROG, oeuvreToDelete.getIde12());
@@ -273,11 +280,12 @@ public class LigneProgrammeCMSServiceTest extends AbstractTestExecutionListener 
 
         /* Scénario oeuvre manuel existante */
         LigneProgrammeCMS oeuvreManuelFound = new LigneProgrammeCMS();
+        UserDTO userDTO = new UserDTO();
         oeuvreManuelFound.setNumProg(NUM_PROG);
         oeuvreManuelFound.setIde12(2000163011L);
         oeuvreManuelFound.setAjout(MANUEL);
 
-        ligneProgrammeCMSService.ajouterOeuvreManuel(oeuvreManuelFound);
+        ligneProgrammeCMSService.ajouterOeuvreManuel(oeuvreManuelFound, userDTO);
         LigneProgrammeCMS oeuvreManuelChecked = ligneProgrammeCMSDao.findOeuvreManuelByIde12(NUM_PROG, oeuvreManuelFound.getIde12());
 
         assertThat(oeuvreManuelChecked).isNotNull();
@@ -285,11 +293,12 @@ public class LigneProgrammeCMSServiceTest extends AbstractTestExecutionListener 
 
         /* Scénario oeuvre automatique existante */
         LigneProgrammeCMS oeuvreAutoFound = new LigneProgrammeCMS();
+
         oeuvreAutoFound.setNumProg(NUM_PROG);
         oeuvreAutoFound.setIde12(2002037711L);
         oeuvreAutoFound.setAjout(AUTOMATIQUE);
 
-        ligneProgrammeCMSService.ajouterOeuvreManuel(oeuvreAutoFound);
+        ligneProgrammeCMSService.ajouterOeuvreManuel(oeuvreAutoFound, userDTO);
         LigneProgrammeCMS oeuvreAutoToChecked = ligneProgrammeCMSDao.findOeuvreManuelByIde12(NUM_PROG, oeuvreAutoFound.getIde12());
 
         assertThat(oeuvreAutoToChecked).isNotNull();

@@ -3,6 +3,7 @@ package fr.sacem.priam.rest.common.api;
 
 import com.google.common.collect.Lists;
 import fr.sacem.priam.model.dao.jpa.FichierDao;
+import fr.sacem.priam.model.domain.Fichier;
 import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.dto.FileDto;
 import fr.sacem.priam.rest.common.api.dto.AffectationCriteria;
@@ -73,6 +74,7 @@ public class ChargementResource {
         return fichierDao.findFichiersAffectes(codeFamille, codeTypeUtil, status, numProg);
 
     }
+
 
   private List<String> typeUtilisationCriterion(@RequestBody InputChgtCriteria input, UserDTO currentUser) {
     if(input.getTypeUtilisationCode() != null && !"ALL".equals(input.getTypeUtilisationCode())) {

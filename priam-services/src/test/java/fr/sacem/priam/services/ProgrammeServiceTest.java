@@ -11,6 +11,7 @@ import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.StatutProgramme;
 import fr.sacem.priam.model.domain.criteria.ProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
+import fr.sacem.priam.security.model.UserDTO;
 import fr.sacem.priam.services.api.LigneProgrammeService;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
@@ -85,6 +86,7 @@ public class ProgrammeServiceTest {
 	@Transactional
 	public void addProgramme() throws Exception {
 		ProgrammeDto programmeDto = new ProgrammeDto();
+		UserDTO userDTO = new UserDTO();
 		programmeDto.setNom("Test-PR01");
 		programmeDto.setRionTheorique(619);
 		programmeDto.setFamille("COPIEPRIV");
@@ -92,7 +94,7 @@ public class ProgrammeServiceTest {
 		String lastElement = programmeSequnceDao.getLastElement("17");
 		Integer lastSeq = StringUtils.isNotEmpty(lastElement) ?  Integer.valueOf(lastElement) : 0;
 		
-		Programme programme = programmeService.addProgramme(programmeDto);
+		Programme programme = programmeService.addProgramme(programmeDto, userDTO);
 		
 		assertThat(programme.getNumProg()).isEqualTo("18" + StringUtils.leftPad(String.valueOf(lastSeq + 1), 4, "0"));
 		assertThat(programme.getNom()).isEqualTo("Test-PR01");
@@ -116,12 +118,13 @@ public class ProgrammeServiceTest {
 	@Transactional
 	public void updateProgramme() throws Exception {
 		ProgrammeDto programmeDto = new ProgrammeDto();
+		UserDTO userDTO = new UserDTO();
 		programmeDto.setNumProg(NUM_PROG);
 		programmeDto.setNom("Programme-170001");
 		programmeDto.setRionTheorique(619);
 		programmeDto.setFamille("COPIEPRIV");
 		
-		Programme programme = programmeService.updateProgramme(programmeDto);
+		Programme programme = programmeService.updateProgramme(programmeDto, userDTO);
 		
 		assertThat(programme).isNotNull();
 		assertThat(programme.getNom()).isEqualTo("Programme-170001");
@@ -133,9 +136,10 @@ public class ProgrammeServiceTest {
 	@Transactional
 	public void abandonnerProgramme() throws Exception {
 		ProgrammeDto programmeDto = new ProgrammeDto();
+		UserDTO userDTO = new UserDTO();
 		programmeDto.setNumProg(NUM_PROG);
 		
-		Programme programme = programmeService.abandonnerProgramme(programmeDto);
+		Programme programme = programmeService.abandonnerProgramme(programmeDto, userDTO);
 		
 		assertThat(programme).isNotNull();
 		assertThat(programme.getStatut()).isEqualTo(StatutProgramme.ABANDONNE);
@@ -174,8 +178,9 @@ public class ProgrammeServiceTest {
 	@Transactional
 	public void validerProgramme() {
 		ProgrammeDto programmeDto = new ProgrammeDto();
+		UserDTO userDTO = new UserDTO();
 		programmeDto.setNumProg(NUM_PROG);
-		Programme programme = programmeService.validerProgramme(programmeDto);
+		Programme programme = programmeService.validerProgramme(programmeDto, userDTO);
 		assertThat(programme).isNotNull();
 		assertThat(programme.getStatut()).isEqualTo(StatutProgramme.VALIDE);
 	}
@@ -184,8 +189,9 @@ public class ProgrammeServiceTest {
 	@Transactional
 	public void invaliderProgramme() {
 		ProgrammeDto programmeDto = new ProgrammeDto();
+		UserDTO userDTO = new UserDTO();
 		programmeDto.setNumProg(NUM_PROG);
-		Programme programme = programmeService.invaliderProgramme(programmeDto);
+		Programme programme = programmeService.invaliderProgramme(programmeDto, userDTO);
 		assertThat(programme).isNotNull();
 		assertThat(programme.getStatut()).isEqualTo(StatutProgramme.EN_COURS);
 	}
@@ -201,8 +207,9 @@ public class ProgrammeServiceTest {
 	@Transactional
 	public void updateStatutProgrammeToAffecte() {
 		ProgrammeDto programmeDto = new ProgrammeDto();
+		UserDTO userDTO = new UserDTO();
 		programmeDto.setNumProg(NUM_PROG);
-		Programme programme = programmeService.updateStatutProgrammeToAffecte(programmeDto);
+		Programme programme = programmeService.updateStatutProgrammeToAffecte(programmeDto, userDTO);
 		assertThat(programme).isNotNull();
 		assertThat(programme.getStatut()).isEqualTo(StatutProgramme.AFFECTE);
 	}

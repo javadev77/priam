@@ -12,6 +12,7 @@ import java.util.List;
 public class AffectationDto {
     private String numProg;
     private List<Fichier> fichiers= new ArrayList<>();
+    private List<Long> fichersAvantAffectation = new ArrayList<>();
 
 
     public AffectationDto(String numProg, List<Fichier> fichiers) {
@@ -33,6 +34,14 @@ public class AffectationDto {
 
     public void setFichiers(List<Fichier> fichiers) {
         this.fichiers = fichiers;
+    }
+
+    public List<Long> getFichersAvantAffectation() {
+        return fichersAvantAffectation;
+    }
+
+    public void setFichersAvantAffectation(List<Long> fichersAvantAffectation) {
+        this.fichersAvantAffectation = fichersAvantAffectation;
     }
 
     public AffectationDto() {

@@ -3,15 +3,22 @@ package fr.sacem.priam.rest.cms.api;
 import com.google.common.base.Strings;
 import fr.sacem.domain.Admap;
 import fr.sacem.priam.common.TypeUtilisationEnum;
+import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.priam.model.domain.Fichier;
 import fr.sacem.priam.model.domain.Programme;
+import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.StatutEligibilite;
 import fr.sacem.priam.model.domain.dto.AffectationDto;
+import fr.sacem.priam.model.domain.dto.DesaffectationDto;
+import fr.sacem.priam.model.domain.dto.FileDto;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.security.model.UserDTO;
 import fr.sacem.priam.services.FichierService;
+
+import org.apache.commons.lang.StringUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
@@ -20,14 +27,14 @@ import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by benmerzoukah on 16/11/2017.
@@ -45,6 +52,9 @@ public class AffectationCMSResource {
 
     @Autowired
     private ProgrammeDao programmeDao;
+
+    @Autowired
+    private FichierDao fichierDao;
 
     @Autowired
     JobLauncher jobLauncher;
@@ -72,6 +82,10 @@ public class AffectationCMSResource {
         String numProg = affectationDto.getNumProg();
         List<Fichier> fichiers = affectationDto.getFichiers();
 
+        /*List<Fichier> fichiersAvantAffectation = fichierDao.findFichiersByIdProgramme(numProg, Status.AFFECTE);*/
+        List<Fichier> fichiersAvantAffectation = getListFichierByIdFichier(affectationDto.getFichersAvantAffectation());
+        String listNomFichiersAvantAffectation = getListNomFichier(fichiersAvantAffectation);
+
         if(!Strings.isNullOrEmpty(numProg)){
             fichierService.majFichiersAffectesAuProgramme(numProg, fichiers, currentUser.getDisplayName());
             programmeDto = programmeViewDao.findByNumProg(numProg);
@@ -81,13 +95,13 @@ public class AffectationCMSResource {
             return programmeDto;
         }
 
-        launchJobAffectation(programmeDto);
+        launchJobAffectation(programmeDto, currentUser, listNomFichiersAvantAffectation);
 
 
         return programmeDto;
     }
 
-    protected void launchJobAffectation(ProgrammeDto programmeDto) {
+    protected void launchJobAffectation(ProgrammeDto programmeDto, UserDTO userDTO, String listNomFichiersAvantAffectation) {
         //lancer le job
         LOGGER.info("====== Lancement du job Affectation CMS ======");
 
@@ -98,6 +112,10 @@ public class AffectationCMSResource {
             jobParametersMap.put("input.catalog.octav", new JobParameter(admap.getInputFile()));
             jobParametersMap.put("archives.catalog.octav", new JobParameter(admap.getOutputFile()));
             jobParametersMap.put("numProg", new JobParameter(programmeDto.getNumProg()));
+            jobParametersMap.put("userId", new JobParameter(userDTO.getUserId()));
+
+//            String listNomFichier = fichiers.stream().map(e -> e.getNomFichier() + " " + e.getDateFinChargt()).collect(Collectors.joining(","));
+            jobParametersMap.put("listNomFichier", new JobParameter(listNomFichiersAvantAffectation));
 
             JobParameters jobParameters = new JobParameters(jobParametersMap);
 
@@ -120,10 +138,14 @@ public class AffectationCMSResource {
             method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ProgrammeDto desaffecterFichiers (@RequestBody String numProg, UserDTO userDTO){
-        LOGGER.info("desaffecterFichiers() ==> numProg=" + numProg);
+    /*public ProgrammeDto desaffecterFichiers (@RequestBody String numProg, UserDTO userDTO, String isAllDesaffecte){*/
+    public ProgrammeDto desaffecterFichiers (@RequestBody DesaffectationDto desaffectationDto, UserDTO userDTO){
+        /*LOGGER.info("desaffecterFichiers() ==> numProg=" + numProg);*/
+        LOGGER.info("desaffecterFichiers() ==> numProg=" + desaffectationDto.getNumProg());
 
-        Programme programme = programmeDao.findByNumProg(numProg);
+        /*Programme programme = programmeDao.findByNumProg(numProg);*/
+        Programme programme = programmeDao.findByNumProg(desaffectationDto.getNumProg());
+
         programme.setStatutEligibilite(StatutEligibilite.EN_COURS_DESAFFECTATION);
         programmeDao.saveAndFlush(programme);
 
@@ -134,8 +156,15 @@ public class AffectationCMSResource {
 
             Map<String, JobParameter> jobParametersMap = new HashMap<>();
             jobParametersMap.put("time", new JobParameter(System.currentTimeMillis()));
-            jobParametersMap.put("numProg", new JobParameter(numProg));
+            /*jobParametersMap.put("numProg", new JobParameter(numProg));*/
+            jobParametersMap.put("numProg", new JobParameter(desaffectationDto.getNumProg()));
             jobParametersMap.put("username", new JobParameter(userDTO.getDisplayName()));
+            jobParametersMap.put("isAllDesaffecte", new JobParameter(desaffectationDto.getIsAllDesaffecte()));
+            jobParametersMap.put("userId", new JobParameter(userDTO.getUserId()));
+            jobParametersMap.put("listIdFichiersAllDesaffectes", new JobParameter(StringUtils.join(desaffectationDto.getFichersAvantDesaffectation(), ',')));
+
+
+
 
             JobParameters jobParameters = new JobParameters(jobParametersMap);
 
@@ -148,6 +177,30 @@ public class AffectationCMSResource {
         LOGGER.info("====== Fin de Traitement ======");
 
         return new ProgrammeDto();
+    }
+
+    @RequestMapping(value = "allFichiersAffectesByNumprog/{numProg}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<FileDto> findFichiersAffectesByIdProgramme(@PathVariable("numProg") String numProg) {
+        return fichierDao.findFichiersAffecteByIdProgramme(numProg, Status.AFFECTE);
+
+    }
+
+    private String getListNomFichier(List<Fichier> fichiers){
+        List<FileDto> list = new ArrayList<>();
+        fichiers.forEach(fichier -> {
+            list.add(fichierDao.findById(fichier.getId()));
+        });
+        return list.stream().map(e -> e.getNomFichier() + " " + e.getDateFinChargt()).collect(Collectors.joining(","));
+    }
+
+    private List<Fichier> getListFichierByIdFichier(List<Long> listIdFichier){
+        List<Fichier> result = new ArrayList<>();
+        listIdFichier.forEach(id -> {
+            result.add(fichierDao.findOne(id));
+        });
+        return result;
     }
 
 

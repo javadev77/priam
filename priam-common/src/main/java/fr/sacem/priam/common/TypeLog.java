@@ -1,7 +1,9 @@
-package fr.sacem.priam.rest.copieprivee.journal.annotation;
+package fr.sacem.priam.common;
 
 public enum TypeLog {
-    AFFECTATION ("Affectation fichiers");
+    AFFECTATION_DESAFFECTATION ("Affectation / Désaffectation fichiers"),
+    DESAFFECTATION ("Désaffectation fichiers"),
+    ALL_DESAFFECTATION ("Tout désaffecter");
 
     private String evenement ;
 
