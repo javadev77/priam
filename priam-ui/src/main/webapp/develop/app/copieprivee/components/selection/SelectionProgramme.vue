@@ -188,6 +188,7 @@
         programmeInfo: {},
         tableauSelectionnable : false,
         isCollapsed: false,
+        fromSelection: false,
         defaultPageable : {
           page : 1,
           sort : 'ide12',
@@ -904,6 +905,8 @@
       },
 
       onEntryChecked(isChecked, entryChecked) {
+        debugger;
+        this.fromSelection = true;
 
         if(isChecked) {
 
@@ -999,7 +1002,7 @@
       },
 
       onAllChecked(allChecked, entries) {
-
+        this.fromSelection = true;
         this.all = allChecked;
         this.ligneProgrammeSelected = [];
         this.unselectedLigneProgramme = [];
@@ -1231,14 +1234,19 @@
             return response.json();
           })
           .then(data => {
-            this.selection = {
+            /*this.selection = {
               deselectAll : false,
               all : false,
               unselected : [],
               selected : []
-            };
+            };*/
 
-            this.selection.numProg = this.$route.params.numProg;
+
+            debugger;
+            this.selection =  {
+              numProg : this.$route.params.numProg,
+              fromSelection : this.fromSelection
+            };
             this.resource.enregistrerEdition(this.selection)
               .then(response => {
                 this.filter.selection = 'Sélectionné';
@@ -1253,10 +1261,6 @@
           .catch(response => {
             alert("Erreur technique lors de la validation de la selection du programme !! " + response);
           });
-
-
-
-
 
       },
 
@@ -1278,7 +1282,8 @@
           deselectAll : false,
           all : false,
           unselected : this.unselectedLigneProgramme,
-          selected : this.ligneProgrammeSelected
+          selected : this.ligneProgrammeSelected,
+          fromSelection : false
         };
 
         this.selection.numProg = this.$route.params.numProg;
@@ -1312,6 +1317,7 @@
       editSelectionClickHandler () {
         this.tableauSelectionnable = true;
         this.edition = true;
+        this.fromSelection = false;
       }
 
     },

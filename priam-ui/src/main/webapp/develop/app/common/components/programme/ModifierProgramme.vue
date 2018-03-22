@@ -497,12 +497,15 @@
 
         this.resource.updateProgramme(this.programmeData)
             .then(response => {
+              debugger;
+              return response.json();
+            })
+            .then(data => {
               console.log("modification ok");
               this.$emit('validate');
             })
-            .catch(error => {
-                console.log("modification KO Error Log ==> " + error);
-                alert("Erreur technique lors de la modification du programme !! ");
+            .catch(response => {
+                alert("Erreur technique lors de la modification du programme  !! ");
                 this.$emit('cancel');
             });
 

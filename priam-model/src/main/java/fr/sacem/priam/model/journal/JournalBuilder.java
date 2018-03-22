@@ -1,4 +1,4 @@
-package fr.sacem.priam.services.journal;
+package fr.sacem.priam.model.journal;
 
 import fr.sacem.priam.model.domain.Journal;
 import fr.sacem.priam.model.domain.SituationApres;
@@ -45,7 +45,12 @@ public class JournalBuilder {
         return this;
     }
 
-    public Journal toJournalObject() {
+    public JournalBuilder addEvenement(String event) {
+        this.journal.setEvenement(event);
+        return this;
+    }
+
+    public Journal build() {
         return this.journal;
     }
 

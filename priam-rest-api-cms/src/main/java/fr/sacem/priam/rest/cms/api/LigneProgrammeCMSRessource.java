@@ -85,7 +85,7 @@ public class LigneProgrammeCMSRessource extends LigneProgrammeResource {
     public SelectionDto ajouterOeuvreManuel(@RequestBody LigneProgrammeCMS input, UserDTO userDTO) {
         input.setUtilisateur(userDTO.getUserId());
 
-        ligneProgrammeCMSService.ajouterOeuvreManuel(input);
+        ligneProgrammeCMSService.ajouterOeuvreManuel(input, userDTO);
 
         return new SelectionDto();
     }
@@ -99,14 +99,14 @@ public class LigneProgrammeCMSRessource extends LigneProgrammeResource {
     }
 
     @Override
-    public List<String> modifierSelectionTemporaire(@RequestBody ValdierSelectionProgrammeInput input) {
-        super.modifierSelectionTemporaire(input);
+    public List<String> modifierSelectionTemporaire(@RequestBody ValdierSelectionProgrammeInput input, UserDTO userDTO) {
+        super.modifierSelectionTemporaire(input, userDTO);
         String numProg = input.getNumProg();
         if (!input.getSelected().isEmpty()) {
-            ligneProgrammeCMSService.modifierPointsTemporaire(numProg, input.getSelected(), Boolean.TRUE);
+            ligneProgrammeCMSService.modifierPointsTemporaire(numProg, input.getSelected(), Boolean.TRUE, userDTO);
         }
         if (!input.getUnselected().isEmpty()) {
-            ligneProgrammeCMSService.modifierPointsTemporaire(numProg, input.getUnselected(), Boolean.FALSE);
+            ligneProgrammeCMSService.modifierPointsTemporaire(numProg, input.getUnselected(), Boolean.FALSE, userDTO);
         }
 
         return new ArrayList<>();

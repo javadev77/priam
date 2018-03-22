@@ -68,6 +68,13 @@ public interface FichierDao extends JpaRepository<Fichier, Long> {
             "WHERE f.programme.numProg = :numProg " +
             "AND f.statut=:status")
     List<Fichier> findFichiersByIdProgramme(@Param("numProg") String numProg, @Param("status") Status status);
+
+    @Transactional(readOnly =true)
+    @Query("SELECT new fr.sacem.priam.model.domain.dto.FileDto(f.id, f.nomFichier, f.dateDebutChargt, f.dateFinChargt, f.nbLignes, f.statut) " +
+            "FROM Fichier AS f " +
+            "WHERE f.programme.numProg = :numProg " +
+            "AND f.statut=:status")
+    List<FileDto> findFichiersAffecteByIdProgramme(@Param("numProg") String numProg, @Param("status") Status status);
     
     
     @Transactional

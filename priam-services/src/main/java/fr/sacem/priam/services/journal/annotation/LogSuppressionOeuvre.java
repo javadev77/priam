@@ -1,6 +1,4 @@
-package fr.sacem.priam.rest.copieprivee.journal.annotation;
-
-import fr.sacem.priam.common.TypeLog;
+package fr.sacem.priam.services.journal.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -9,6 +7,6 @@ import java.lang.annotation.Target;
 
 @Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface LogFichier {
+public @interface LogSuppressionOeuvre {
     TypeLog event();
 }

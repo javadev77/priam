@@ -2,6 +2,7 @@ package fr.sacem.priam.services;
 
 import fr.sacem.priam.model.dao.jpa.*;
 import fr.sacem.priam.model.domain.*;
+import fr.sacem.priam.model.domain.dto.JournalDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,4 +33,10 @@ public class JournalService {
 
 		return pageJournal;
 	}*/
+
+	@Transactional
+	public Page<Journal> findJournalByNumProg(String numProg, Pageable pageable){
+			Page<Journal> pageJournalEvent = journalDao.findJournalByNumProg(numProg, pageable);
+		return pageJournalEvent;
+	}
 }

@@ -71,12 +71,12 @@ public class FichierService {
         if(programme.getFamille().getCode().equals(FamillePriam.CMS.getCode())) {
             //Mettre par defaut les oeuvre à  selectionne
             ligneProgrammeCMSDao.updateSelectionTemporaireByNumProgramme(numProg, true);
-            ligneProgrammeCMSDao.deselectAllByNumProgramme(numProg, false);
+            ligneProgrammeCMSDao.deselectAllByNumProgramme(numProg, true);
             programme.setStatutEligibilite(StatutEligibilite.EN_ATTENTE_ELIGIBILITE);
         } else if(programme.getFamille().getCode().equals(FamillePriam.COPIE_PRIVEE.getCode())) {
             //Mettre par defaut les oeuvre à  selectionne
             ligneProgrammeCPDao.updateSelectionTemporaireByNumProgramme(numProg, true);
-            ligneProgrammeCPDao.deselectAllByNumProgramme(numProg, false);
+            ligneProgrammeCPDao.deselectAllByNumProgramme(numProg, true);
 
         }
 

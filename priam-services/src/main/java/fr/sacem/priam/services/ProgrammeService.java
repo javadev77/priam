@@ -9,6 +9,7 @@ import fr.sacem.priam.model.domain.saref.SareftrFamiltyputil;
 import fr.sacem.priam.model.domain.saref.SareftrRion;
 import fr.sacem.priam.model.domain.saref.SareftrTyputil;
 import fr.sacem.priam.model.util.MapperConfiguration;
+import fr.sacem.priam.security.model.UserDTO;
 import fr.sacem.priam.services.journal.annotation.LogEtatProgramme;
 import fr.sacem.priam.services.journal.annotation.LogProgramme;
 import fr.sacem.priam.services.journal.annotation.TypeLog;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -68,7 +70,7 @@ public class ProgrammeService {
 	
 	@Transactional
     @LogProgramme(event = TypeLog.CREATION)
-	public Programme addProgramme(ProgrammeDto programmeDto) {
+	public Programme addProgramme(ProgrammeDto programmeDto, UserDTO userDTO) {
 		MapperConfiguration mapperConfiguration = new MapperConfiguration();
 		ParamAppli paramAppli = paramAppliDao.getParam("ANNEE_SEQ_PROGRAMME");
 		ProgrammeSequence programmeSequence = new ProgrammeSequence();
@@ -126,7 +128,7 @@ public class ProgrammeService {
 
 	@Transactional
 	@LogProgramme(event = TypeLog.MODIFICATION)
-	public Programme updateProgramme(ProgrammeDto programmeDto) {
+	public Programme updateProgramme(ProgrammeDto programmeDto, UserDTO userDTO) {
 		Programme programme = programmeDao.findOne(programmeDto.getNumProg());
 		
 		programme.setNom(programmeDto.getNom());
@@ -158,7 +160,7 @@ public class ProgrammeService {
 	
 	@Transactional
     @LogProgramme(event = TypeLog.SUPPRESSION)
-	public Programme abandonnerProgramme(ProgrammeDto programmeDto) {
+	public Programme abandonnerProgramme(ProgrammeDto programmeDto, UserDTO userDTO) {
 		Programme programme = programmeDao.findOne(programmeDto.getNumProg());
 		programme.setStatut(StatutProgramme.ABANDONNE);
 		
@@ -185,7 +187,7 @@ public class ProgrammeService {
 
 	@Transactional
 	@LogEtatProgramme(event = TypeLog.VALIDATION)
-	public Programme validerProgramme(ProgrammeDto programmeDto) {
+	public Programme validerProgramme(ProgrammeDto programmeDto, UserDTO userDTO) {
 		Programme programme = programmeDao.findOne(programmeDto.getNumProg());
 		programme.setStatut(StatutProgramme.VALIDE);
 		programme.setUserValidation(programmeDto.getUserValidation());
@@ -196,7 +198,7 @@ public class ProgrammeService {
 
 	@Transactional
 	@LogEtatProgramme(event = TypeLog.INVALIDATION)
-	public Programme invaliderProgramme(ProgrammeDto programmeDto) {
+	public Programme invaliderProgramme(ProgrammeDto programmeDto, UserDTO userDTO) {
 	    FichierFelix ff = fichierFelixDao.findByNumprog(programmeDto.getNumProg());
 	    if(ff != null) {
 		  fichierFelixDao.delete(ff.getId());
@@ -231,17 +233,17 @@ public class ProgrammeService {
 
 	@Transactional
 	@LogEtatProgramme(event = TypeLog.ANNULATION)
-	public Programme updateStatutProgrammeToAffecte(ProgrammeDto programmeDTO) {
+	public Programme updateStatutProgrammeToAffecte(ProgrammeDto programmeDTO, UserDTO userDTO) {
 		Programme programme = programmeDao.findOne(programmeDTO.getNumProg());
 		programme.setStatut(StatutProgramme.AFFECTE);
-		programme.setUseraffect(programmeDTO.getUseraffecte());
+		programme.setUseraffect(userDTO.getUserId());
 		programme.setDataffect(new Date());
 		return programmeDao.saveAndFlush(programme);
 	}
 
 	@Transactional
 	@LogEtatProgramme(event = TypeLog.REPARTITION)
-	public void majStatut(ProgrammeDto programmeDTO) {
+	public void majStatut(ProgrammeDto programmeDTO, UserDTO userDTO) {
 		Programme prog = programmeDao.findOne(programmeDTO.getNumProg());
 		prog.setStatut(programmeDTO.getStatut());
 		prog.setUsermaj(programmeDTO.getUsermaj());

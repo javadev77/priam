@@ -103,7 +103,7 @@ public class ProgrammeResource {
                      produces = MediaType.APPLICATION_JSON_VALUE)
      public Programme save (@RequestBody ProgrammeDto programmeDto, UserDTO userDTO){
         programmeDto.setUsercre(userDTO.getDisplayName());
-        return programmeService.addProgramme(programmeDto);
+        return programmeService.addProgramme(programmeDto, userDTO);
      }
 
      @RequestMapping(value = "programme/numProg/{numProg}",
@@ -119,9 +119,8 @@ public class ProgrammeResource {
                      consumes = MediaType.APPLICATION_JSON_VALUE,
                      produces = MediaType.APPLICATION_JSON_VALUE)
      public Programme updateProgramme(@RequestBody ProgrammeDto programmeDto, UserDTO userDTO){
-         programmeDto.setUsermaj(userDTO.getDisplayName());
-
-         return programmeService.updateProgramme(programmeDto);
+         /*programmeDto.setUsermaj(userDTO.getDisplayName());*/
+         return programmeService.updateProgramme(programmeDto, userDTO);
      }
 
      @RequestMapping(value = "programme/abandon",
@@ -129,8 +128,8 @@ public class ProgrammeResource {
                       consumes = MediaType.APPLICATION_JSON_VALUE,
                       produces = MediaType.APPLICATION_JSON_VALUE)
      public Programme abandonnerProgramme(@RequestBody ProgrammeDto programmeDto, UserDTO userDTO) {
-         programmeDto.setUsermaj(userDTO.getDisplayName());
-          return programmeService.abandonnerProgramme(programmeDto);
+         /*programmeDto.setUsermaj(userDTO.getDisplayName());*/
+          return programmeService.abandonnerProgramme(programmeDto, userDTO);
      }
 
 

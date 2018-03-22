@@ -58,7 +58,7 @@ public class LigneProgrammeCPResource extends LigneProgrammeResource {
       input.setUtilisateur(userDTO.getUserId());
       input.setSelectionEnCours(Boolean.TRUE);
 
-      ligneProgrammeCPService.ajouterOeuvreManuel(input);
+      ligneProgrammeCPService.ajouterOeuvreManuel(input, userDTO);
 
       return new SelectionDto();
   }
@@ -85,14 +85,14 @@ public class LigneProgrammeCPResource extends LigneProgrammeResource {
                     produces = MediaType.APPLICATION_JSON_VALUE,
                     consumes = MediaType.APPLICATION_JSON_VALUE)
     @Override
-    public List<String> modifierSelectionTemporaire(@RequestBody ValdierSelectionProgrammeInput input) {
-        super.modifierSelectionTemporaire(input);
+    public List<String> modifierSelectionTemporaire(@RequestBody ValdierSelectionProgrammeInput input, UserDTO userDTO) {
+        super.modifierSelectionTemporaire(input, userDTO);
         String numProg = input.getNumProg();
         if (!input.getSelected().isEmpty()) {
-            ligneProgrammeCPService.modifierDurOrNbrDifTemporaire(numProg, input.getSelected(), Boolean.TRUE);
+            ligneProgrammeCPService.modifierDurOrNbrDifTemporaire(numProg, input.getSelected(), Boolean.TRUE, userDTO);
         }
         if (!input.getUnselected().isEmpty()) {
-            ligneProgrammeCPService.modifierDurOrNbrDifTemporaire(numProg, input.getUnselected(), Boolean.FALSE);
+            ligneProgrammeCPService.modifierDurOrNbrDifTemporaire(numProg, input.getUnselected(), Boolean.FALSE, userDTO);
         }
 
         return new ArrayList<>();

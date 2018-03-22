@@ -643,9 +643,9 @@
                     },
 
                     cellTemplate: function (cellValue) {
+                      var tempalteLog = '<span class="glyphicon glyphicon-list-alt" aria-hidden="true" style="padding-left: 0px;" title="Journal"></span>';
                       var tempalteTrash = '<span class="glyphicon glyphicon-trash" aria-hidden="true" style="padding-left: 0px;" title="Abandonner"></span>';
                       var tempalteUpdate = '<span class="glyphicon glyphicon-pencil" aria-hidden="true" style="padding-left: 0px;" title="Modifier"></span>';
-                      var tempalteLog = '<span class="glyphicon glyphicon-list-alt" aria-hidden="true" style="padding-left: 0px;" title="Journal"></span>';
                       var statusCode = cellValue.statut;
 
                       var tempalte = [];

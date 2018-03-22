@@ -11,6 +11,9 @@ import fr.sacem.priam.security.model.UserDTO;
 import fr.sacem.priam.services.ProgrammeService;
 import fr.sacem.priam.services.dto.LigneProgrammeCritereRecherche;
 import fr.sacem.priam.services.dto.ValdierSelectionProgrammeInput;
+import fr.sacem.priam.services.journal.annotation.LogOeuvre;
+import fr.sacem.priam.services.journal.annotation.LogSuppressionOeuvre;
+import fr.sacem.priam.services.journal.annotation.TypeLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -102,7 +105,7 @@ public abstract class LigneProgrammeResource {
         programmeDTO.setUserValidation(userDTO.getDisplayName());
         getLigneProgrammeService().enregistrerEdition(input.getNumProg());
 
-        programmeService.validerProgramme(programmeDTO);
+        programmeService.validerProgramme(programmeDTO, userDTO);
 
         return new ArrayList<>();
     }
@@ -119,7 +122,7 @@ public abstract class LigneProgrammeResource {
         ProgrammeDto programmeDTO = new ProgrammeDto();
         programmeDTO.setNumProg(input.getNumProg());
         programmeDTO.setUsermaj(userDTO.getDisplayName());
-        programmeService.invaliderProgramme(programmeDTO);
+        programmeService.invaliderProgramme(programmeDTO, userDTO);
 
         modifierSelection(input, input.getNumProg());
 
@@ -130,7 +133,7 @@ public abstract class LigneProgrammeResource {
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public List<String> modifierSelectionTemporaire(@RequestBody ValdierSelectionProgrammeInput input) {
+    public List<String> modifierSelectionTemporaire(@RequestBody ValdierSelectionProgrammeInput input, UserDTO userDTO) {
 
         if(input == null || input.getNumProg() == null || input.getNumProg().isEmpty())
             throw new InputValidationException("input or num programme must not be null !");
@@ -166,7 +169,7 @@ public abstract class LigneProgrammeResource {
         ProgrammeDto programmeDTO = new ProgrammeDto();
         programmeDTO.setNumProg(numProg);
         programmeDTO.setUsermaj(userDTO.getDisplayName());
-        programmeService.invaliderProgramme(programmeDTO);
+        programmeService.invaliderProgramme(programmeDTO, userDTO);
 
         return new ArrayList<>();
     }
@@ -185,7 +188,7 @@ public abstract class LigneProgrammeResource {
         programmeDTO.setNumProg(input.getNumProg());
         programmeDTO.setUseraffecte(userDTO.getDisplayName());
 
-        Programme programme = programmeService.updateStatutProgrammeToAffecte(programmeDTO);
+        Programme programme = programmeService.updateStatutProgrammeToAffecte(programmeDTO, userDTO);
         getLigneProgrammeService().annulerSelection(input.getNumProg(), userDTO.getDisplayName());
 
 
@@ -196,6 +199,7 @@ public abstract class LigneProgrammeResource {
             method = RequestMethod.DELETE,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
+    @LogSuppressionOeuvre(event = TypeLog.SUPPRESSION_OEUVRE)
     public boolean supprimerLigneProgramme(@PathVariable(name = "numProg") String numProg,
                                            @PathVariable(name = "ide12") Long ide12,
                                            @RequestBody SelectionDto selectedLigneProgramme, UserDTO userDto) {
@@ -208,6 +212,7 @@ public abstract class LigneProgrammeResource {
     @RequestMapping(value = "ligneProgramme/selection/enregistrerEdition",
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE)
+    @LogOeuvre(event = TypeLog.SELECTION)
     public void enregistrerEdition(@RequestBody ValdierSelectionProgrammeInput input, UserDTO userDTO) {
         if(input == null || input.getNumProg() == null || input.getNumProg().isEmpty())
             throw new InputValidationException("input or num programme must not be null !");

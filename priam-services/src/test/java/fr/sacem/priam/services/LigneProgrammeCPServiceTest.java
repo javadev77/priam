@@ -7,6 +7,7 @@ import fr.sacem.priam.model.domain.cp.LigneProgrammeCP;
 import fr.sacem.priam.model.domain.criteria.LigneProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.SelectionDto;
+import fr.sacem.priam.security.model.UserDTO;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -155,11 +156,13 @@ public class LigneProgrammeCPServiceTest {
         oeuvreToDelete.setIde12(6547891L);
         oeuvreToDelete.setCdeUtil("CDE-TEST");
 
+        UserDTO userDTO = new UserDTO();
+
         SelectionDto selectedLigneProgramme = new SelectionDto();
         selectedLigneProgramme.setCdeUtil(oeuvreToDelete.getCdeUtil());
 
 
-        ligneProgrammeCPService.ajouterOeuvreManuel(oeuvreToDelete);
+        ligneProgrammeCPService.ajouterOeuvreManuel(oeuvreToDelete, userDTO);
 
         ligneProgrammeCPService.supprimerLigneProgramme(NUM_PROG, oeuvreToDelete.getIde12(), selectedLigneProgramme);
 

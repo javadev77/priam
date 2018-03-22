@@ -74,6 +74,74 @@ public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Lon
                                       @Param("titre") String titre,
                                       @Param("ajout") String ajout,
                                       @Param("selectionEnCours") Boolean selectionEnCours,Pageable pageable);
+
+    @Transactional
+    @Query(value="SELECT new fr.sacem.priam.model.domain.dto.SelectionDto("+
+            "ligneProgramme.ide12, " +
+            "ligneProgramme.titreOeuvre, " +
+            "ligneProgramme.roleParticipant1, " +
+            "ligneProgramme.nomParticipant1, " +
+            "ligneProgramme.ajout, " +
+            "sum(ligneProgramme.durDifEdit), " +
+            "sum(ligneProgramme.nbrDifEdit), " +
+            "ligneProgramme.selection, " +
+            "ligneProgramme.libelleUtilisateur, " +
+            "ligneProgramme.cdeUtil) " +
+            //"CONCAT(ligneProgramme.cdeUtil, CASE WHEN lu.libAbrgUtil is null THEN '' ELSE ' - ' END, COALESCE(lu.libAbrgUtil,''))) " +
+            "FROM LigneProgrammeCP ligneProgramme join ligneProgramme.fichier  f " +
+            //"SareftjLibutil lu "+
+            "WHERE ligneProgramme.fichier = f.id " +
+            //"AND lu.cdeUtil = ligneProgramme.cdeUtil "+
+            "AND f.programme.numProg = :numProg " +
+            "AND (ligneProgramme.ide12 = :ide12 OR :ide12 IS NULL) " +
+            "AND (ligneProgramme.ajout = :ajout OR :ajout IS NULL) " +
+            "AND (ligneProgramme.selection = :selection OR :selection IS NULL) " +
+            "AND (ligneProgramme.titreOeuvre = :titre OR :titre IS NULL) " +
+            "AND (ligneProgramme.cdeUtil = :utilisateur OR :utilisateur IS NULL) " +
+            "AND (ligneProgramme.oeuvreManuel IS NULL) " +
+            "GROUP BY ligneProgramme.ide12, " +
+            "ligneProgramme.cdeUtil")
+    List<SelectionDto> findLigneProgrammeSelected(@Param("numProg") String numProg,
+                                                    @Param("utilisateur") String utilisateur,
+                                                    @Param("ide12") Long ide12,
+                                                    @Param("titre") String titre,
+                                                    @Param("ajout") String ajout,
+                                                    @Param("selection") Boolean selection);
+
+    @Transactional
+    @Query(value="SELECT new fr.sacem.priam.model.domain.dto.SelectionDto("+
+            "ligneProgramme.ide12, " +
+            "ligneProgramme.titreOeuvre, " +
+            "ligneProgramme.roleParticipant1, " +
+            "ligneProgramme.nomParticipant1, " +
+            "ligneProgramme.ajout, " +
+            "sum(ligneProgramme.durDifEdit), " +
+            "sum(ligneProgramme.nbrDifEdit), " +
+            "ligneProgramme.selectionEnCours, " +
+            "ligneProgramme.libelleUtilisateur, " +
+            "ligneProgramme.cdeUtil) " +
+            //"CONCAT(ligneProgramme.cdeUtil, CASE WHEN lu.libAbrgUtil is null THEN '' ELSE ' - ' END, COALESCE(lu.libAbrgUtil,''))) " +
+            "FROM LigneProgrammeCP ligneProgramme join ligneProgramme.fichier  f " +
+            //"SareftjLibutil lu "+
+            "WHERE ligneProgramme.fichier = f.id " +
+            //"AND lu.cdeUtil = ligneProgramme.cdeUtil "+
+            "AND f.programme.numProg = :numProg " +
+            "AND (ligneProgramme.ide12 = :ide12 OR :ide12 IS NULL) " +
+            "AND (ligneProgramme.ajout = :ajout OR :ajout IS NULL) " +
+            "AND (ligneProgramme.selectionEnCours = :selectionEnCours OR :selectionEnCours IS NULL) " +
+            "AND (ligneProgramme.selection = :selection OR :selection IS NULL) " +
+            "AND (ligneProgramme.titreOeuvre = :titre OR :titre IS NULL) " +
+            "AND (ligneProgramme.cdeUtil = :utilisateur OR :utilisateur IS NULL) " +
+            "AND (ligneProgramme.oeuvreManuel IS NULL) " +
+            "GROUP BY ligneProgramme.ide12, " +
+            "ligneProgramme.cdeUtil")
+    List<SelectionDto> findLigneProgrammePreselected(@Param("numProg") String numProg,
+                                                  @Param("utilisateur") String utilisateur,
+                                                  @Param("ide12") Long ide12,
+                                                  @Param("titre") String titre,
+                                                  @Param("ajout") String ajout,
+                                                  @Param("selectionEnCours") Boolean selectionEnCours,
+                                                     @Param("selection") Boolean selection);
     
     @Transactional
     @Query(value="SELECT  new fr.sacem.priam.model.domain.LignePreprep("+
@@ -256,9 +324,7 @@ public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Lon
                      "WHERE l.oeuvreManuel.id = :idOeuvreManuel  " +
                      "AND l.ajout = 'AUTOMATIQUE' ")
     List<LigneProgrammeCP> findOeuvresAutoByIdOeuvreManuel(@Param("idOeuvreManuel")Long idOeuvreManuel);
-    
-    
-    
+
     @Modifying(clearAutomatically = true)
     @Query(nativeQuery = true, value = "update " +
              "PRIAM_LIGNE_PROGRAMME_CP p " +

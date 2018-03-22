@@ -7,6 +7,7 @@ import fr.sacem.priam.model.domain.dto.SelectionDto;
 import fr.sacem.priam.rest.copieprivee.api.dto.LigneProgrammeCritereRecherche;
 import fr.sacem.priam.rest.copieprivee.api.dto.ValdierSelectionProgrammeInput;
 import fr.sacem.priam.rest.copieprivee.config.RestResourceTest;
+import fr.sacem.priam.security.model.UserDTO;
 import fr.sacem.priam.services.api.LigneProgrammeService;
 import fr.sacem.priam.services.cp.LigneProgrammeCPService;
 import org.junit.Rule;
@@ -271,7 +272,9 @@ public class LigneProgrammeCPResourceTest extends RestResourceTest {
 
     LigneProgrammeCP input = createLigneProgramme("170001", 1454545L, "LU1");
 
-    ligneProgrammeCPService.ajouterOeuvreManuel(input);
+    UserDTO userDTO = new UserDTO();
+
+    ligneProgrammeCPService.ajouterOeuvreManuel(input, userDTO);
 
     SelectionDto se = new SelectionDto();
     se.setIde12(1454545L);

@@ -140,7 +140,7 @@ public class RepartitionResource {
             fichierFelixDao.flush();
 
         }
-        getFelixDataService(numProg).asyncSendFichierFelix(programme, userDto.getDisplayName());
+        getFelixDataService(numProg).asyncSendFichierFelix(programme, userDto);
 
     }
     private FelixDataServiceAbstract getFelixDataService(String numProg) {
