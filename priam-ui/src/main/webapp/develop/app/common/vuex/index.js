@@ -7,8 +7,8 @@ import getters from './getters';
 
 const state = {
   pagination : {
-    userPageSize: 5,
-    sizes : [5, 50, 100]
+    userPageSize: 25,
+    sizes : [25, 50, 100]
   },
 
   userFamille : {'id' : 'ALL', 'value' : 'Toutes'},
