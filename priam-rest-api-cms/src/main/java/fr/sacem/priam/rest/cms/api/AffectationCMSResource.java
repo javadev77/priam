@@ -78,11 +78,14 @@ public class AffectationCMSResource {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ProgrammeDto affecterFichiers (@RequestBody AffectationDto affectationDto, UserDTO currentUser) {
 
-        ProgrammeDto programmeDto = null;
         String numProg = affectationDto.getNumProg();
+        ProgrammeDto programmeDto =  programmeViewDao.findByNumProg(numProg);
         List<Fichier> fichiers = affectationDto.getFichiers();
 
-        /*List<Fichier> fichiersAvantAffectation = fichierDao.findFichiersByIdProgramme(numProg, Status.AFFECTE);*/
+        if(fichiers == null || fichiers.isEmpty()) {
+            return programmeDto;
+        }
+
         List<Fichier> fichiersAvantAffectation = getListFichierByIdFichier(affectationDto.getFichersAvantAffectation());
         String listNomFichiersAvantAffectation = getListNomFichier(fichiersAvantAffectation);
 
@@ -91,9 +94,7 @@ public class AffectationCMSResource {
             programmeDto = programmeViewDao.findByNumProg(numProg);
         }
 
-        if(fichiers == null || fichiers.isEmpty()) {
-            return programmeDto;
-        }
+
 
         launchJobAffectation(programmeDto, currentUser, listNomFichiersAvantAffectation);
 
