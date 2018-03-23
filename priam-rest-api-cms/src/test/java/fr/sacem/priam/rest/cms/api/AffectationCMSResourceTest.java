@@ -5,6 +5,7 @@ import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.domain.Fichier;
 import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.dto.AffectationDto;
+import fr.sacem.priam.model.domain.dto.DesaffectationDto;
 import fr.sacem.priam.rest.cms.config.RestResourceTest;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -58,7 +59,6 @@ public class AffectationCMSResourceTest extends RestResourceTest {
     @Ignore
     public void affecterFichiers_CMS_FRA() throws Exception {
         AffectationDto affectationDto = createAffectationDto("180001", Arrays.asList("Fichier_FRA01"));
-       // affectationDto.setFichiers(fichierFRA);
         mockMvc.perform(
                 put("/app/rest/programme/affectation/")
                         .content(this.json(affectationDto))
@@ -110,9 +110,12 @@ public class AffectationCMSResourceTest extends RestResourceTest {
     @Transactional
     public void desaffecterFichiers() throws Exception {
 
+        DesaffectationDto d = new DesaffectationDto();
+        d.setNumProg("180001");
+        d.setIsAllDesaffecte("true");
         mockMvc.perform(
                 put("/app/rest/programme/toutDesaffecter")
-                        .content("180001")
+                        .content(json(d))
                         .contentType(contentType))
                 .andExpect(status().isOk());
     }

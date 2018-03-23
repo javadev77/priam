@@ -138,12 +138,9 @@ public class AffectationCMSResource {
             method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    /*public ProgrammeDto desaffecterFichiers (@RequestBody String numProg, UserDTO userDTO, String isAllDesaffecte){*/
     public ProgrammeDto desaffecterFichiers (@RequestBody DesaffectationDto desaffectationDto, UserDTO userDTO){
-        /*LOGGER.info("desaffecterFichiers() ==> numProg=" + numProg);*/
         LOGGER.info("desaffecterFichiers() ==> numProg=" + desaffectationDto.getNumProg());
 
-        /*Programme programme = programmeDao.findByNumProg(numProg);*/
         Programme programme = programmeDao.findByNumProg(desaffectationDto.getNumProg());
 
         programme.setStatutEligibilite(StatutEligibilite.EN_COURS_DESAFFECTATION);
@@ -156,7 +153,6 @@ public class AffectationCMSResource {
 
             Map<String, JobParameter> jobParametersMap = new HashMap<>();
             jobParametersMap.put("time", new JobParameter(System.currentTimeMillis()));
-            /*jobParametersMap.put("numProg", new JobParameter(numProg));*/
             jobParametersMap.put("numProg", new JobParameter(desaffectationDto.getNumProg()));
             jobParametersMap.put("username", new JobParameter(userDTO.getDisplayName()));
             jobParametersMap.put("isAllDesaffecte", new JobParameter(desaffectationDto.getIsAllDesaffecte()));

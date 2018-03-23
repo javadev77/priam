@@ -4,8 +4,10 @@ package fr.sacem.priam.model.dao.jpa;
 import fr.sacem.priam.model.dao.AbstractDaoTest;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.priam.model.domain.Programme;
+import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.StatutProgramme;
 import fr.sacem.priam.model.domain.criteria.ProgrammeCriteria;
+import fr.sacem.priam.model.domain.dto.FileDto;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.model.domain.saref.SareftrFamiltyputil;
 import fr.sacem.priam.model.domain.saref.SareftrRion;
@@ -14,14 +16,12 @@ import org.assertj.core.util.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -91,6 +91,9 @@ public class ProgrammeViewDaoTest extends AbstractDaoTest{
 
     @Autowired
     private SareftrFamiltyputilDao sareftrFamiltyputilDao;
+
+    @Autowired
+    FichierDao fichierDao;
     
     @Before
     public void setup() {
@@ -126,14 +129,20 @@ public class ProgrammeViewDaoTest extends AbstractDaoTest{
     @Test
     public void count_nb_fichiers_par_programme() {
         ProgrammeCriteria criteria = new ProgrammeCriteria();
+        criteria.setNumProg("170001");
         criteria.setStatut(Arrays.asList(StatutProgramme.values()));
-        criteria.setSareftrFamiltyputil(Lists.newArrayList("COPIEPRIV"));
-        criteria.setTypeUtilisation(Lists.newArrayList("CPRIVSONPH"));
+        ArrayList<String> famille = Lists.newArrayList("COPIEPRIV");
+        criteria.setSareftrFamiltyputil(famille);
+        ArrayList<String> typeUtil = Lists.newArrayList("CPRIVSONPH");
+        criteria.setTypeUtilisation(typeUtil);
 
+        PageRequest pageable = new PageRequest(0, 25);
+        List<Status> status = Lists.newArrayList(Status.AFFECTE);
+        List<FileDto> allFichiers = fichierDao.findFichiersAffectes(famille, typeUtil, status, criteria.getNumProg());
         Page<ProgrammeDto> all = programmeViewDao.findAllProgrammeByCriteria(criteria.getNumProg(), criteria.getNom(), criteria.getStatut(), criteria.getDateCreationDebut(), criteria.getDateCreationFin(), criteria.getSareftrFamiltyputil(), criteria.getTypeUtilisation(), criteria.getSareftrRionTheorique(), criteria.getSareftrRionPaiement(), criteria.getTypeRepart(), PAGEABLE);
         
         assertThat(all).isNotNull();
-        assertThat(all.getContent()).extracting("fichiers").isEqualTo(Arrays.asList(0L, 4L));
+        assertThat(all.getTotalElements()).isEqualTo(1L);
     
     }
     
