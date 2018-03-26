@@ -648,7 +648,7 @@
                       var tempalteUpdate = '<span class="glyphicon glyphicon-pencil" aria-hidden="true" style="padding-left: 0px;" title="Modifier"></span>';
                       var statusCode = cellValue.statut;
 
-                      var tempalte = [];
+                      var tempalte = [{}, {}, {}];
 
 
 
@@ -656,28 +656,25 @@
                         if(statusCode !== undefined && ('CREE' === statusCode || 'AFFECTE' === statusCode
                           || 'EN_COURS' === statusCode || 'VALIDE' === statusCode) ) {
                           if($this.isRightMDYPRG){
-                            tempalte.push({event : 'update-programme', template : tempalteUpdate});
+                            tempalte[0] = {event : 'update-programme', template : tempalteUpdate};
                           }
                         }
 
                         if(statusCode !== undefined && 'CREE' === statusCode) {
                           if($this.isRightABDPRG){
-                            tempalte.push({event : 'abondon-programme', template : tempalteTrash});
+                            tempalte[1] = {event : 'abondon-programme', template : tempalteTrash};
                           }
                         }
 
 
                         if($this.hasRight('VIJREV')) {
-                          tempalte.push({event : 'log-programme', template : tempalteLog});
+                          tempalte[2] = {event : 'log-programme', template : tempalteLog};
                         }
 
 
                       }
 
 
-                      if(tempalte.length == 1) {
-                        tempalte.push({event : 'no', template : '<span aria-hidden="true" style="padding-left: 0px;"></span>'});
-                      }
 
 
                       return tempalte;
