@@ -3,6 +3,8 @@ package fr.sacem.priam.services.journal.aspect;
 import fr.sacem.priam.common.TypeUtilisationEnum;
 import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.dao.jpa.JournalDao;
+import fr.sacem.priam.model.dao.jpa.SareftjLibterDao;
+import fr.sacem.priam.model.dao.jpa.SareftrRionDao;
 import fr.sacem.priam.model.dao.jpa.cms.LigneProgrammeCMSDao;
 import fr.sacem.priam.model.dao.jpa.cp.LigneProgrammeCPDao;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
@@ -12,6 +14,9 @@ import fr.sacem.priam.model.domain.cms.LigneProgrammeCMS;
 import fr.sacem.priam.model.domain.cp.LigneProgrammeCP;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 
+import fr.sacem.priam.model.domain.saref.SareftjLibter;
+import fr.sacem.priam.model.domain.saref.SareftrRion;
+import fr.sacem.priam.model.util.GlobalConstants;
 import fr.sacem.priam.services.journal.annotation.LogEtatProgramme;
 import fr.sacem.priam.services.journal.annotation.LogOeuvre;
 import fr.sacem.priam.services.journal.annotation.LogProgramme;
@@ -24,6 +29,7 @@ import fr.sacem.priam.security.model.UserDTO;
 import fr.sacem.priam.services.dto.ValdierSelectionProgrammeInput;
 import fr.sacem.priam.services.journal.annotation.*;
 
+import org.apache.commons.lang.WordUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -47,10 +53,10 @@ public class LoggingAspect {
 
     private static final Logger LOG = LoggerFactory.getLogger(LoggingAspect.class);
 
-    private static final String PRG_EN_COURS = "Programme \"En cours\" ";
-    private static final String PRG_VALIDE = "Programme \"Validé\" ";
-    private static final String PRG_AFFECTE = "Programme \"Affecté\" ";
-    private static final String PRG_MIS_EN_REPART = "Programme \"Mis en répartition\" ";
+    private static final String PRG_EN_COURS = "En cours";
+    private static final String PRG_VALIDE = "Validé";
+    private static final String PRG_AFFECTE = "Affecté";
+    private static final String PRG_MIS_EN_REPART = "Mis en répartition";
     private static final String OEUVRE_SELECTIONNEE = "Sélectionnée";
     private static final String OEUVRE_DESELECTIONNEE = "Désélectionnée";
     private static final String SUPPRESSION_OEUVRE_MANUEL = "Suppression oeuvre avec état \"Manuel\"";
@@ -65,7 +71,12 @@ public class LoggingAspect {
     @Autowired private LigneProgrammeCPDao ligneProgrammeCPDao;
 
     @Autowired private LigneProgrammeCMSDao ligneProgrammeCMSDao;
-    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+
+    @Autowired private SareftjLibterDao sareftjLibterDao;
+
+    @Autowired private SareftrRionDao sareftrRionDao;
+
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
 
     @Around("execution(@fr.sacem.priam.services.journal.annotation.LogProgramme * *(..)) && @annotation(logProgramme)")
@@ -93,13 +104,8 @@ public class LoggingAspect {
         SituationAvant situationAvant = new SituationAvant();
         SituationApres situationApres = new SituationApres();
 
-
-        /*Journal journal = new Journal(programmeDto.getNumProg(),evenement, new Date(), utilisateurMaj);*/
-
-
         if (annotationValue.equals(TypeLog.MODIFICATION) || annotationValue.equals(TypeLog.SUPPRESSION)) {
             journal.setNumProg(programmeDto.getNumProg());
-            /*utilisateurMaj = programmeDto.getUsermaj();*/
             journal.setUtilisateur(utilisateurMaj);
 
             Programme oldProgramme = programmeDao.findOne(programmeDto.getNumProg());
@@ -107,7 +113,6 @@ public class LoggingAspect {
             situationAvantList.add(situationAvant);
 
         } else if (annotationValue.equals(TypeLog.CREATION)){
-            /*utilisateurMaj = programmeDto.getUsercre();*/
             journal.setUtilisateur(utilisateurMaj);
         }
 
@@ -428,28 +433,37 @@ public class LoggingAspect {
     }
 
     private String getInfoProgramme(Programme programme) {
-        return "Numprog : " + programme.getNumProg() + " Nom : " + programme.getNom() + "<br/>"
-                + " Famille : " + programme.getFamille().getCode() + " Type util : " + programme.getTypeUtilisation().getCode() + "<br/>"
-                + " Rion: " + programme.getRionTheorique().getRion() + " Code ter : " + programme.getCdeTer() + "<br/>"
-                + " Type repart : " + programme.getTypeRepart() + "<br/>"
-                + " Date début : " + simpleDateFormat.format(programme.getDateDbtPrg()) + "<br/>"
-                + " Date fin : " + programme.getDateFinPrg() + "<br/>"
-                + " Date maj : " + programme.getDatmaj();
-                /*+ " Utilisateur maj : " + programme.getUsermaj();*/
+        return " Nom programme : " + programme.getNom() + "<br/>"
+                + " Rion cible : " + getLibelleRion(programme.getRionTheorique().getRion()) + "<br/>"
+                + " Famille : " + programme.getFamille().getCode() + "<br/>"
+                + " Type d'utilisation : " + programme.getTypeUtilisation().getCode() + "<br/>"
+                + " Date de début : " + simpleDateFormat.format(programme.getDateDbtPrg()) + "<br/>"
+                + " Date de fin : " + simpleDateFormat.format(programme.getDateFinPrg()) + "<br/>"
+                + " Territoire : " + getLibelleTerritoire(programme.getCdeTer(), GlobalConstants.FR_LANG) + "<br/>"
+                + " Mode de répartition : " + WordUtils.capitalize(programme.getTypeRepart().toString());
     }
 
     private String getInfoProgrammeDto(ProgrammeDto programmeDto) {
-        return "Numprog : " + programmeDto.getNumProg() + "<br/>"
-                + "Nom : " + programmeDto.getNom()+ "<br/>"
+        return "Nom programme : " + programmeDto.getNom()+ "<br/>"
+                + "Rion cible : " + getLibelleRion(programmeDto.getRionTheorique()) + "<br/>"
                 + "Famille : " + programmeDto.getFamille() + "<br/>"
-                + "Type util : " + programmeDto.getTypeUtilisation() + "<br/>"
-                + "Rion: " + programmeDto.getRionTheorique() + "<br/>"
-                + "Code ter : " + programmeDto.getCdeTer() + "<br/>"
-                + "Type repart : " + programmeDto.getTypeRepart() +"<br/>"
-                + "Date début : " + simpleDateFormat.format(programmeDto.getDateDbtPrg()) + "<br/>"
-                + "Date fin : " + simpleDateFormat.format(programmeDto.getDateFinPrg()) + "<br/>"
-                + "Date maj : " + simpleDateFormat.format(new Date()); /*+ "<br/>"
-                + "Utilisateur maj : " + programmeDto.getUsermaj();*/
+                + "Type d'utilisation : " + programmeDto.getTypeUtilisation() + "<br/>"
+                + "Date de début : " + simpleDateFormat.format(programmeDto.getDateDbtPrg()) + "<br/>"
+                + "Date de fin : " + simpleDateFormat.format(programmeDto.getDateFinPrg()) + "<br/>"
+                + "Territoire : " + getLibelleTerritoire(programmeDto.getCdeTer(), GlobalConstants.FR_LANG) + "<br/>"
+                + "Mode de répartition : " + WordUtils.capitalize(programmeDto.getTypeRepart().toString());
+    }
+
+    private String getLibelleTerritoire(Integer code, String lang){
+        SareftjLibter sareftjLibter = sareftjLibterDao.findByCodeAndLang(code, lang);
+        String libelleTerritoire = String.valueOf(sareftjLibter.getCdePaysIso4N()) + " - " + sareftjLibter.getNomPays();
+        return libelleTerritoire;
+    }
+
+    private String getLibelleRion(Integer rion){
+        SareftrRion sareftrRion = sareftrRionDao.findOne(rion);
+        String libelleRion = sareftrRion.getRion() + " - " + new SimpleDateFormat("MMMM yyyy").format(sareftrRion.getDatrglmt());
+        return libelleRion;
     }
 
 }

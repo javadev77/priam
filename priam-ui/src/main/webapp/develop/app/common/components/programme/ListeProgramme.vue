@@ -666,12 +666,9 @@
                           }
                         }
 
-
                         if($this.hasRight('VIJREV')) {
                           tempalte[2] = {event : 'log-programme', template : tempalteLog};
                         }
-
-
                       }
 
 

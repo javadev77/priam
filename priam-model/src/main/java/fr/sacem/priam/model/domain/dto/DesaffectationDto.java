@@ -6,7 +6,7 @@ import java.util.List;
 public class DesaffectationDto {
 
     private String numProg;
-    private String isAllDesaffecte;
+    private boolean allDesaffecte;
     private List fichersAvantDesaffectation;
 
     public String getNumProg() {
@@ -17,13 +17,9 @@ public class DesaffectationDto {
         this.numProg = numProg;
     }
 
-    public String getIsAllDesaffecte() {
-        return isAllDesaffecte;
-    }
+    public boolean isAllDesaffecte() { return allDesaffecte; }
 
-    public void setIsAllDesaffecte(String isAllDesaffecte) {
-        this.isAllDesaffecte = isAllDesaffecte;
-    }
+    public void setAllDesaffecte(boolean allDesaffecte) { this.allDesaffecte = allDesaffecte; }
 
     public List getFichersAvantDesaffectation() {
         return fichersAvantDesaffectation;
@@ -33,11 +29,11 @@ public class DesaffectationDto {
         this.fichersAvantDesaffectation = fichersAvantDesaffectation;
     }
 
-    public DesaffectationDto(String numProg, String isAllDesaffecte, List fichersAvantDesaffectation)
+    public DesaffectationDto(String numProg, boolean allDesaffecte, List fichersAvantDesaffectation)
     {
         this.fichersAvantDesaffectation = new ArrayList();
         this.numProg = numProg;
-        this.isAllDesaffecte = isAllDesaffecte;
+        this.allDesaffecte = allDesaffecte;
         this.fichersAvantDesaffectation = fichersAvantDesaffectation;
     }
 
