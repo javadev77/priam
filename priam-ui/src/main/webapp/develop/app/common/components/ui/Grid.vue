@@ -241,29 +241,34 @@
                       <template v-else-if="entryColumn.type === 'clickable-icons'">
                         <td class="columnCenter" :style="styleValue(entryColumn, entry)">
 
-                          <ul class="iconList">
-                            <template v-for="elem in entryColumn.cell.cellTemplate(entry)">
-                              <li>
-                                <a v-html="elem.template" @click="emitIconCellClick(elem.event, entry, entryColumn)">
-                                </a>
-                              </li>
-                            </template>
-
-                          </ul>
+                          <table style="margin: auto;">
+                            <tr>
+                              <!--<ul class="iconList">-->
+                              <template v-for="elem in entryColumn.cell.cellTemplate(entry)">
+                                <td style="width: 20px; border: none !important">
+                                  <a v-html="elem.template" @click="emitIconCellClick(elem.event, entry, entryColumn)">
+                                  </a>
+                                </td>
+                              </template>
+                            </tr>
+                          </table>
 
                         </td>
                       </template>
                       <template v-else-if="entryColumn.type === 'clickable-icons-or-text'">
                         <td class="columnCenter"  v-if="!entryColumn.cell.isText(entry)" :style="styleValue(entryColumn, entry)">
-                          <ul class="iconList">
+                          <!--<ul class="iconList">-->
+                           <table>
+                             <tr>
                             <template v-for="elem in entryColumn.cell.cellTemplate(entry)">
-                              <li>
+                              <td>
                                 <a v-html="elem.template" @click="emitIconCellClick(elem.event, entry, entryColumn)">
                                 </a>
-                              </li>
+                              </td>
                             </template>
-
-                          </ul>
+                             </tr>
+                           </table>
+                          <!--</ul>-->
                         </td>
                         <td class="columnCenter"  v-else :style="styleValue(entryColumn, entry)">
                           <template v-if="entryColumn.cell.toText(entry).isLink" >
@@ -402,30 +407,34 @@
                       </template>
                       <template v-else-if="entryColumn.type === 'clickable-icons'">
                         <td class="columnCenter" :style="styleValue(entryColumn, entry)">
-
-                          <ul class="iconList">
+                          <table style="margin: auto;">
+                            <tr>
+                          <!--<ul class="iconList">-->
                             <template v-for="elem in entryColumn.cell.cellTemplate(entry)">
-                              <li>
+                              <td style="width: 20px; border: none !important">
                                 <a v-html="elem.template" @click="emitIconCellClick(elem.event, entry, entryColumn)">
                                 </a>
-                              </li>
+                              </td>
                             </template>
+                            </tr>
+                          </table>
 
-                          </ul>
+                          <!--</ul>-->
 
                         </td>
                       </template>
                       <template v-else-if="entryColumn.type === 'clickable-icons-or-text'">
                         <td class="columnCenter"  v-if="!entryColumn.cell.isText(entry)" :style="styleValue(entryColumn, entry)">
-                          <ul class="iconList">
-                            <template v-for="elem in entryColumn.cell.cellTemplate(entry)">
-                              <li>
-                                <a v-html="elem.template" @click="emitIconCellClick(elem.event, entry, entryColumn)">
-                                </a>
-                              </li>
-                            </template>
-
-                          </ul>
+                          <table style="margin: auto;">
+                            <tr>
+                              <template v-for="elem in entryColumn.cell.cellTemplate(entry)">
+                                <td style="width: 20px; border: none !important">
+                                  <a v-html="elem.template" @click="emitIconCellClick(elem.event, entry, entryColumn)">
+                                  </a>
+                                </td>
+                              </template>
+                            </tr>
+                          </table>
                         </td>
                         <td class="columnCenter"  v-else :style="styleValue(entryColumn, entry)">
                           <template v-if="entryColumn.cell.toText(entry).isLink" >
@@ -890,6 +899,10 @@
     margin: auto;
     padding: 0px;
     width: 50px;
+  }
+
+  .iconList td {
+    width: 20px;
   }
 
   .iconList li {
