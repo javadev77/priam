@@ -209,8 +209,8 @@
 
         this.oeuvreManuelToCreate.utilisateur = this.$store.getters.libelleUtilisateur[0].id;
 
-        this.oeuvre.titre ='EX S AND OH S';
-        this.oeuvre.ide12='2888780111'
+        this.oeuvre.titre ='';
+        this.oeuvre.ide12=''
     },
 
     methods : {

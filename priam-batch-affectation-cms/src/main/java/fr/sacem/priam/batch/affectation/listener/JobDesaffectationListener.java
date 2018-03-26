@@ -16,6 +16,7 @@ import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collector;
@@ -44,6 +45,8 @@ public class JobDesaffectationListener extends JobExecutionListenerSupport {
 
     @Autowired
     JournalBatchDao journalBatchDao;
+
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
 
     @Override
@@ -82,7 +85,7 @@ public class JobDesaffectationListener extends JobExecutionListenerSupport {
 
                 listfichierAllDesaffecte.forEach(fichier -> {
                     SituationAvant situationAvant = new SituationAvant();
-                    situationAvant.setSituation(fichier.getNomFichier()+ " " + fichier.getDateFinChargt());
+                    situationAvant.setSituation(fichier.getNomFichier()+ " " + simpleDateFormat.format(fichier.getDateFinChargt()));
                     situationAvantList.add(situationAvant);
                 });
                 journal.setListSituationAvant(situationAvantList);
@@ -93,7 +96,6 @@ public class JobDesaffectationListener extends JobExecutionListenerSupport {
 
         } else if(jobExecution.getStatus() == BatchStatus.FAILED) {
             // TODO : gerer le cas ou la desaffectation se passe mal Status FAILED
-
             programmeBatchDao.majStattutEligibilite(numProg, "ERREUR_DESAFFECTATION");
         }
     }

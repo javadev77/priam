@@ -255,6 +255,7 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
         Journal journal = createJournal(input, programme);
         journal.setUtilisateur(userDTO.getUserId());
         SituationAvant situationAvant = new SituationAvant();
+        SituationApres situationApres = new SituationApres();
 
         List<LigneProgrammeCMS> founds = ligneProgrammeCMSDao.findOeuvresAutoByIde12AndCdeUtil(input.getNumProg(), input.getIde12());
         if(founds != null && !founds.isEmpty()) {
@@ -269,8 +270,10 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
             SareftrTyputil typeUtilisation = programme.getTypeUtilisation();
             if(TypeUtilisationPriam.SONOFRA.getCode().equals(typeUtilisation.getCode())) {
                 situationAvant.setSituation(String.valueOf(sumOfMt(founds)));
+                situationApres.setSituation(String.valueOf(input.getMt()));
             } else if(TypeUtilisationPriam.SONOANT.getCode().equals(typeUtilisation.getCode())) {
                 situationAvant.setSituation(String.valueOf(sumOfNbrDif(founds)));
+                situationApres.setSituation(String.valueOf(input.getNbrDif()));
             }
 
             journal.setEvenement(TypeLog.MODIFIER_OEUVRE.getEvenement());
@@ -308,7 +311,7 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
         }
 
         journal.getListSituationAvant().add(situationAvant);
-
+        journal.getListSituationApres().add(situationApres);
         journalDao.saveAndFlush(journal);
 
     }

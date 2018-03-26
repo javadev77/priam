@@ -26,7 +26,7 @@ public interface SareftjLibterDao extends JpaRepository<SareftjLibter, SareftjLi
 
     @Cacheable("sareftjLibterByCodeAndLang")
     @Query("SELECT sareftjLibter FROM SareftjLibter sareftjLibter " +
-            "WHERE sareftjLibter.cdePaysIso4N in (:codes) "+
+            "WHERE sareftjLibter.cdePaysIso4N = :code "+
             "AND sareftjLibter.cdeLng = :lang")
-    List<SareftjLibter> findByCodeAndLang(@Param("codes") List<Integer> codes, @Param("lang") String lang);
+    SareftjLibter findByCodeAndLang(@Param("code") Integer code, @Param("lang") String lang);
 }

@@ -1,5 +1,5 @@
 <template>
-    <ul style="list-style: none;">
+    <ul style="list-style: none; padding-left: 0px">
       <li v-for="item in value">
         <span v-html="item.situation"></span>
       </li>

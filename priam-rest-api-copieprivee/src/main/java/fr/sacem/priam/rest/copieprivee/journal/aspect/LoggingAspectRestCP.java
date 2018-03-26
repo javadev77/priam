@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -42,7 +43,7 @@ public class LoggingAspectRestCP {
     @Autowired
     LigneProgrammeCPDao ligneProgrammeCPDao;
 
-
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
     @Around("execution(@fr.sacem.priam.rest.copieprivee.journal.annotation.LogFichier * *(..)) && @annotation(logFichier)")
     public Object logFichier(ProceedingJoinPoint joinPoint, LogFichier logFichier) throws Throwable{
@@ -161,7 +162,7 @@ public class LoggingAspectRestCP {
         List<SituationAvant> result = new ArrayList<>();
         for (Fichier fichier : listFichiers) {
             SituationAvant situationAvant = new SituationAvant();
-            situationAvant.setSituation(fichier.getNomFichier() + " " + fichier.getDateFinChargt());
+            situationAvant.setSituation(fichier.getNomFichier() + " " + simpleDateFormat.format(fichier.getDateFinChargt()));
             result.add(situationAvant);
         }
         return result;
@@ -172,7 +173,7 @@ public class LoggingAspectRestCP {
         List<SituationApres> result = new ArrayList<>();
         for (Fichier fichier : listFichiers) {
             SituationApres situationApres = new SituationApres();
-            situationApres.setSituation(fichier.getNomFichier() + " " + fichier.getDateFinChargt());
+            situationApres.setSituation(fichier.getNomFichier() + " " + simpleDateFormat.format(fichier.getDateFinChargt()));
             result.add(situationApres);
         }
         return result;

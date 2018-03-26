@@ -17,7 +17,7 @@
               </h5>
             </div>
             <div class="panel-collapse">
-              <div class="result-panel-body panel-body" style="height:450px; overflow-y:scroll;">
+              <div class="result-panel-body panel-body" style="height:600px; overflow-y:scroll;">
                 <log-grid
                   v-if="logGrid.logGridData.content"
                   :data="logGrid.logGridData"
@@ -36,10 +36,8 @@
             </div>
           </div>
         </div>
-        </div>
       </div>
     </div>
-
   </div>
 </template>
 
@@ -131,6 +129,9 @@
                 type: 'inputNum',
                 cellEditorFramework : ListSituationRender,
                 cell: {
+                  css: function (entry) {
+                    return {style: {'text-align' : 'left'}}
+                  },
                   toDisabled : function (entry) {
                     return false;
                   }
@@ -217,5 +218,7 @@
 </script>
 
 <style>
+
+
 
 </style>

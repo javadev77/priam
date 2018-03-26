@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import java.util.HashMap;
@@ -70,6 +71,8 @@ public class AffectationCMSResource {
 
     @Autowired
     Admap admap;
+
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
 
     @RequestMapping(value = "programme/affectation",
@@ -156,7 +159,7 @@ public class AffectationCMSResource {
             jobParametersMap.put("time", new JobParameter(System.currentTimeMillis()));
             jobParametersMap.put("numProg", new JobParameter(desaffectationDto.getNumProg()));
             jobParametersMap.put("username", new JobParameter(userDTO.getDisplayName()));
-            jobParametersMap.put("isAllDesaffecte", new JobParameter(desaffectationDto.getIsAllDesaffecte()));
+            jobParametersMap.put("isAllDesaffecte", new JobParameter(String.valueOf(desaffectationDto.isAllDesaffecte())));
             jobParametersMap.put("userId", new JobParameter(userDTO.getUserId()));
             jobParametersMap.put("listIdFichiersAllDesaffectes", new JobParameter(StringUtils.join(desaffectationDto.getFichersAvantDesaffectation(), ',')));
 
@@ -189,7 +192,7 @@ public class AffectationCMSResource {
         fichiers.forEach(fichier -> {
             list.add(fichierDao.findById(fichier.getId()));
         });
-        return list.stream().map(e -> e.getNomFichier() + " " + e.getDateFinChargt()).collect(Collectors.joining(","));
+        return list.stream().map(e -> e.getNomFichier() + " " + simpleDateFormat.format(e.getDateFinChargt())).collect(Collectors.joining(","));
     }
 
     private List<Fichier> getListFichierByIdFichier(List<Long> listIdFichier){
