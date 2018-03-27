@@ -112,7 +112,8 @@ public class AffectationCMSResourceTest extends RestResourceTest {
 
         DesaffectationDto d = new DesaffectationDto();
         d.setNumProg("180001");
-        d.setIsAllDesaffecte("true");
+        d.setAllDesaffecte(true);
+
         mockMvc.perform(
                 put("/app/rest/programme/toutDesaffecter")
                         .content(json(d))
