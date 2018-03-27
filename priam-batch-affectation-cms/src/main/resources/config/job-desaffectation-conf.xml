@@ -120,7 +120,9 @@
                             date_insertion,
                             ajout,
                             selection,
-                            RION_N_ANT
+                            RION_N_ANT,
+                            mtEdit,
+                            nbrDifEdit
                         )
                         VALUES (
                             :idFichier,
@@ -161,7 +163,9 @@
                             :date_insertion,
                             :ajout,
                             :selection,
-                            :rionAnt
+                            :rionAnt,
+                            :mt,
+                            :nbrDif
                         )
                 ]]>
             </value>
