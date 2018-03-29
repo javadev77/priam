@@ -552,12 +552,13 @@
           })
           .then(data => {
               this.showPopupSuppression = false;
-              var index = this.indexOf(this.ligneProgramme, this.selectedLineProgramme);
+              /*var index = this.indexOf(this.ligneProgramme, this.selectedLineProgramme);
 
               if (index > -1) {
                 this.ligneProgramme.splice(index, 1);
               }
-              this.calculerCompteurs(this.programmeInfo.statut);
+              this.calculerCompteurs(this.programmeInfo.statut);*/
+              this.launchRechercheEtCompteurs();
           });
 
       },

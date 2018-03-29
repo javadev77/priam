@@ -156,6 +156,8 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
                 //oeuvreAuto.setSelection(FALSE);
                 oeuvreAuto.setSelectionEnCours(TRUE);
                 oeuvreAuto.setOeuvreManuel(null);
+                oeuvreAuto.setMtEdit(oeuvreAuto.getMt());
+                oeuvreAuto.setNbrDifEdit(oeuvreAuto.getNbrDif());
                 ligneProgrammeCMSDao.save(oeuvreAuto);
             }
 

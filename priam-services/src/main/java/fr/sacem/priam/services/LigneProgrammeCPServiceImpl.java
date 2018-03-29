@@ -264,8 +264,8 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
                 //oeuvreAuto.setSelection(TRUE);
                 oeuvreAuto.setSelectionEnCours(TRUE);
                 oeuvreAuto.setOeuvreManuel(null);
-                //oeuvreAuto.setDurDifEdit(oeuvreAuto.getDurDif());
-                //oeuvreAuto.setNbrDifEdit(oeuvreAuto.getNbrDif());
+                oeuvreAuto.setDurDifEdit(oeuvreAuto.getDurDif());
+                oeuvreAuto.setNbrDifEdit(oeuvreAuto.getNbrDif());
 
                 ligneProgrammeCPDao.saveAndFlush(oeuvreAuto);
             });

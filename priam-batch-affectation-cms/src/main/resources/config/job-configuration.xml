@@ -192,9 +192,8 @@
                 <![CDATA[
                    UPDATE PRIAM_LIGNE_PROGRAMME_CMS l2
                     INNER JOIN PRIAM_FICHIER f2 on f2.ID=l2.ID_FICHIER
-                    SET mt = :mt
+                    SET mt = :mt, mtEdit = :mt
                     WHERE ide12 = :ide12 AND cdeFamilTypUtilOri = :cdeFamilTypUtilOri
-                          AND l2.id= :id
                       AND f2.NUMPROG = '#{jobParameters[numProg]}'
                 ]]>
             </value>

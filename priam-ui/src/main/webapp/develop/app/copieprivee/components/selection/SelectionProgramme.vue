@@ -301,10 +301,11 @@
               cell: {
                 toText : function(entry) {
                   var result = entry;
+                  var element = $this.getEtatOeuvre(result.ajout);
 
-                  if(result !=undefined) {
-                    var element = $this.getEtatOeuvre(result.ajout);
-                    if(result.ajout == 'MANUEL' || result.ajout == 'CORRIGE') {
+                  debugger;
+                  if(result !== undefined && element !== undefined) {
+                    if(result.ajout === 'MANUEL' || result.ajout === 'CORRIGE') {
 
                       var tempalteTrash = '<span class="glyphicon glyphicon-trash" aria-hidden="true" style="padding-left: 0px;" title="Supprimer"></span>';
                       var template = [];
@@ -341,21 +342,6 @@
                 },
 
                 isChecked: function (entry) {
-                  /*var notChecked = $this.unselectedLigneProgramme.find(elem => {
-                    return elem.ide12 == entry.ide12 && elem.libAbrgUtil == entry.libAbrgUtil;
-                  });
-
-                  if (notChecked !== undefined) {
-                    return 0;
-                  }
-
-                  var result = $this.ligneProgrammeSelected.find(elem => {
-                    return elem.ide12 == entry.ide12 && elem.libAbrgUtil == entry.libAbrgUtil;
-                  });
-
-                  if (result !== undefined) {
-                    return 1;
-                  }*/
 
                   if(entry.selection) {
                     return 1;
@@ -484,9 +470,9 @@
                 toText : function(entry) {
                   var result = entry;
                   var element = $this.getEtatOeuvre(result.ajout);
-                  if(result !=undefined)
+                  if(result !== undefined && element !== undefined)
                   {
-                    if(result.ajout == 'MANUEL' || result.ajout == 'CORRIGE') {
+                    if(result.ajout === 'MANUEL' || result.ajout === 'CORRIGE') {
 
                       var tempalteTrash = '<span class="glyphicon glyphicon-trash" aria-hidden="true" style="padding-left: 0px;" title="Supprimer"></span>';
                       var template = [];
@@ -698,14 +684,7 @@
           })
           .then(data => {
               this.showPopupSuppression = false;
-              //this.launchRequest(this.currentGridState.pageNum, this.currentGridState.pageSize, this.currentGridState.sort, this.currentGridState.dir);
-              var index = this.indexOf(this.ligneProgramme, this.selectedLineProgramme);
-
-              if (index > -1) {
-                this.ligneProgramme.splice(index, 1);
-              }
-              //this.getDuree(this.programmeInfo.statut);
-              this.rechercher();
+              this.launchRechercheEtCompteurs();
           });
 
       },
