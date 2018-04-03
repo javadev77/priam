@@ -261,7 +261,6 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
             List<LigneProgrammeCP> oeuvresAutoByIdOeuvreManuel = ligneProgrammeCPDao.findOeuvresAutoByIdOeuvreManuel(oeuvreManuelFound.getId());
             oeuvresAutoByIdOeuvreManuel.forEach( oeuvreAuto -> {
 
-                //oeuvreAuto.setSelection(TRUE);
                 oeuvreAuto.setSelectionEnCours(TRUE);
                 oeuvreAuto.setOeuvreManuel(null);
                 oeuvreAuto.setDurDifEdit(oeuvreAuto.getDurDif());
