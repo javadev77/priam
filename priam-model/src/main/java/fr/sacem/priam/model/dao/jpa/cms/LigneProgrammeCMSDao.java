@@ -192,6 +192,17 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
     List<LigneProgrammeCMS> findOeuvresAutoByIde12AndCdeUtil(@Param("numProg") String numProg, @Param("ide12") Long ide12);
 
     @Query(value="SELECT l " +
+            "FROM LigneProgrammeCMS l join l.fichier as f "+
+            "WHERE l.fichier = f.id " +
+            "AND f.programme.numProg = :numProg " +
+            "AND l.ide12 = :ide12 " +
+            "AND l.oeuvreManuel IS NOT NULL " +
+            "AND l.ajout = 'AUTOMATIQUE' ")
+    List<LigneProgrammeCMS> findOeuvresAutoLinkCorrigeByIde12AndCdeUtil(@Param("numProg") String numProg, @Param("ide12") Long ide12);
+
+
+
+    @Query(value="SELECT l " +
                      "FROM LigneProgrammeCMS l join l.fichier as f "+
                      "WHERE l.fichier = f.id " +
                      "AND f.programme.numProg = :numProg " +
@@ -430,6 +441,22 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
             "  f.NUMPROG = ?1 " +
             " AND p.ide12 = ?2 ")
     void updatePointsMtTemporaireByNumProgramme(String numProg, Long ide12, Double mtEdit);
+
+    @Modifying(clearAutomatically = true)
+    @Query(nativeQuery = true, value="update " +
+            "  PRIAM_LIGNE_PROGRAMME_CMS p " +
+            "INNER JOIN " +
+            "  PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
+            "set " +
+            "  p.nbrDifEdit=?4 "+
+            "where " +
+            "  f.NUMPROG = ?1 " +
+            " AND p.ide12 = ?2 " +
+            " AND p.cdeUtil = ?3 ")
+    void updateNbrDifTemporaireByNumProgramme(@Param("numProg") String numProg,
+                                              @Param("ide12") Long ide12,
+                                              @Param("cdeUtil") String cdeUtil,
+                                              @Param("nbrDif") Long nbrDifEdit);
 
     @Transactional
     @Query(value="SELECT new fr.sacem.priam.model.domain.dto.SelectionCMSDto("+
