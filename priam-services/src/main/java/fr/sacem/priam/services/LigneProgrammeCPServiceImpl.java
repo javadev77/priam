@@ -160,8 +160,8 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
                     String nbrDifValue = obj.get(NBR_DIF);
                     Long nbrDifEdit = nbrDifValue != null && !nbrDifValue.equals("") ? Long.valueOf(nbrDifValue) : 0L;
 
-
                     if(AUTOMATIQUE.equals(ajout)) {
+
                         List<LigneProgrammeCP> oeuvresAuto = ligneProgrammeCPDao.findOeuvresAutoByIde12AndCdeUtil(numProg, inputLigneCP.getIde12(), inputLigneCP.getCdeUtil());
 
                         if(!oeuvresAuto.isEmpty()) {
@@ -173,8 +173,9 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
 
                                 ajouterOeuvreManuel(inputLigneCP, userDTO);
                             }
-
                         }
+                    } else if(CORRIGE.equals(ajout)) {
+                        correctionOeuvreCorrige(numProg, inputLigneCP, nbrDifEdit);
                     } else {
                         ligneProgrammeCPDao.updateNbrDifTemporaireByNumProgramme(numProg, inputLigneCP.getIde12(), inputLigneCP.getCdeUtil(), nbrDifEdit);
                     }
@@ -186,9 +187,9 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
                     if(AUTOMATIQUE.equals(ajout)) {
                         List<LigneProgrammeCP> oeuvresAuto = ligneProgrammeCPDao.findOeuvresAutoByIde12AndCdeUtil(numProg, inputLigneCP.getIde12(), inputLigneCP.getCdeUtil());
 
-                        if(!oeuvresAuto.isEmpty()) {
+                        if (!oeuvresAuto.isEmpty()) {
                             Long sumTotal = sumOfDurDif(oeuvresAuto);
-                            if( !durDifEdit.equals(sumTotal)) {
+                            if (!durDifEdit.equals(sumTotal)) {
 
                                 inputLigneCP.setDurDifEdit(durDifEdit);
                                 inputLigneCP.setCdeTypIde12(oeuvresAuto.get(0).getCdeTypIde12());
@@ -197,6 +198,8 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
                             }
 
                         }
+                    } else if(CORRIGE.equals(ajout)){
+                        correctionOeuvreCorrige(numProg, inputLigneCP, durDifEdit);
                     } else {
                         ligneProgrammeCPDao.updateDurDifTemporaireByNumProgramme(numProg, inputLigneCP.getIde12(), inputLigneCP.getCdeUtil(), durDifEdit);
                     }
@@ -206,6 +209,41 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
             }
         }
 
+    }
+
+    private void correctionOeuvreCorrige(String numProg, LigneProgrammeCP inputLigneCP, Long points) {
+        Programme programme = programmeDao.findByNumProg(numProg);
+        List<LigneProgrammeCP> oeuvresAutoLinkCorrige = ligneProgrammeCPDao.findOeuvresAutoLinkCorrigeByIde12AndCdeUtil(numProg, inputLigneCP.getIde12(), inputLigneCP.getCdeUtil());
+        Long sumTotal = 0L;
+
+        if(programme.getTypeUtilisation().getCode().equals(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_PHONO.getCode())){
+            if(!oeuvresAutoLinkCorrige.isEmpty()) {
+                sumTotal = sumOfNbrDif(oeuvresAutoLinkCorrige);
+                if( !points.equals(sumTotal)) {
+                    inputLigneCP.setCdeTypIde12(oeuvresAutoLinkCorrige.get(0).getCdeTypIde12());
+                    inputLigneCP.setNbrDifEdit(points);
+                    ligneProgrammeCPDao.updateNbrDifTemporaireByNumProgramme(numProg, inputLigneCP.getIde12(), inputLigneCP.getCdeUtil(), points);
+                } else {
+                    deleteOeuvreCorrigeLinkAuto(numProg, inputLigneCP);
+                }
+            }
+        } else if(programme.getTypeUtilisation().getCode().equals(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode())){
+            if(!oeuvresAutoLinkCorrige.isEmpty()) {
+                sumTotal = sumOfDurDif(oeuvresAutoLinkCorrige);
+                if( !points.equals(sumTotal)) {
+                    inputLigneCP.setCdeTypIde12(oeuvresAutoLinkCorrige.get(0).getCdeTypIde12());
+                    inputLigneCP.setDurDifEdit(points);
+                    ligneProgrammeCPDao.updateDurDifTemporaireByNumProgramme(numProg, inputLigneCP.getIde12(), inputLigneCP.getCdeUtil(), points);
+                } else {
+                    deleteOeuvreCorrigeLinkAuto(numProg, inputLigneCP);
+                }
+            }
+        }
+    }
+
+    private void deleteOeuvreCorrigeLinkAuto(String numProg, LigneProgrammeCP inputLigneCP) {
+        LigneProgrammeCP oeuvreManuelFound = ligneProgrammeCPDao.findOeuvreCorrigeByIde12AndCdeUtil(numProg, inputLigneCP.getIde12(), inputLigneCP.getCdeUtil());
+        doDeleteOeuvreManuel(oeuvreManuelFound);
     }
 
     private long sumOfDurDif(List<LigneProgrammeCP> oeuvresAuto) {

@@ -10,6 +10,7 @@
       @keyup.enter="formatValue"
       class="tableInput numberInput"
       style="width: 100%"
+      maxlength="10"
     >
   </div>
 

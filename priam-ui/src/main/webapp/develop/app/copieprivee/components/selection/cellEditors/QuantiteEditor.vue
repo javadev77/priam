@@ -7,7 +7,7 @@
       v-on:blur="formatValue"
       class="tableInput numberInput"
       style="width: 100%"
-
+      maxlength="10"
     >
 
 </template>

@@ -410,10 +410,9 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
                     String nbrDifValue = obj.get(POINTS_MONTANT);
                     Long nbrDifEdit = nbrDifValue != null && !nbrDifValue.equals("") ? Long.valueOf(nbrDifValue) : 0L;
 
+                    List<LigneProgrammeCMS> oeuvresAuto = ligneProgrammeCMSDao.findOeuvresAutoByIde12AndCdeUtil(numProg, inputLigneCMS.getIde12());
 
                     if(AUTOMATIQUE.equals(ajout)) {
-                        List<LigneProgrammeCMS> oeuvresAuto = ligneProgrammeCMSDao.findOeuvresAutoByIde12AndCdeUtil(numProg, inputLigneCMS.getIde12());
-
                         if(oeuvresAuto != null && !oeuvresAuto.isEmpty()) {
                             Long sumTotal = sumOfNbrDif(oeuvresAuto);
                             if( !nbrDifEdit.equals(sumTotal)) {
@@ -425,11 +424,12 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
                             }
 
                         }
+                    } else if(CORRIGE.equals(ajout)){
+                        correctionOeuvreCorrige(numProg, inputLigneCMS, nbrDifEdit, null);
                     } else {
                         ligneProgrammeCMSDao.updatePointsTemporaireByNumProgramme(numProg, inputLigneCMS.getIde12(), nbrDifEdit);
                     }
-                }
-                else if(prog.getTypeUtilisation().getCode().equals(TypeUtilisationPriam.SONOFRA.getCode())) {
+                } else if(prog.getTypeUtilisation().getCode().equals(TypeUtilisationPriam.SONOFRA.getCode())) {
                     String mtValue = obj.get(POINTS_MONTANT);
                     Double mtEdit = mtValue != null && !mtValue.equals("") ? Double.valueOf(mtValue) : 0.0d;
 
@@ -444,8 +444,9 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
 
                                 ajouterOeuvreManuel(inputLigneCMS, userDTO);
                             }
-
                         }
+                    } else if(CORRIGE.equals(ajout)){
+                        correctionOeuvreCorrige(numProg, inputLigneCMS, null, mtEdit);
                     } else {
                         ligneProgrammeCMSDao.updatePointsMtTemporaireByNumProgramme(numProg, inputLigneCMS.getIde12(), mtEdit);
                     }
@@ -454,6 +455,41 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
 
             }
         }
+    }
+
+    private void correctionOeuvreCorrige(String numProg, LigneProgrammeCMS inputLigneCMS, Long nbrDif, Double montant) {
+        Programme programme = programmeDao.findByNumProg(numProg);
+        List<LigneProgrammeCMS> oeuvresAutoLinkCorrige = ligneProgrammeCMSDao.findOeuvresAutoLinkCorrigeByIde12AndCdeUtil(numProg, inputLigneCMS.getIde12());
+//        Long sumTotal = 0L;
+
+        if(programme.getTypeUtilisation().getCode().equals(TypeUtilisationEnum.CMS_FRA.getCode())){
+            if(!oeuvresAutoLinkCorrige.isEmpty()) {
+                Double sumTotal = sumOfMt(oeuvresAutoLinkCorrige);
+                if(!montant.equals(sumTotal)){
+                    inputLigneCMS.setCdeTypIde12(oeuvresAutoLinkCorrige.get(0).getCdeTypIde12());
+                    inputLigneCMS.setMtEdit(montant);
+                    ligneProgrammeCMSDao.updatePointsMtTemporaireByNumProgramme(numProg, inputLigneCMS.getIde12(), montant);
+                } else {
+                    deleteOeuvreCorrigeLinkAuto(numProg, inputLigneCMS);
+                }
+            }
+        } else if(programme.getTypeUtilisation().getCode().equals(TypeUtilisationEnum.CMS_ANT.getCode())){
+            if(!oeuvresAutoLinkCorrige.isEmpty()) {
+                Long sumTotal = sumOfNbrDif(oeuvresAutoLinkCorrige);
+                if(!nbrDif.equals(sumTotal)){
+                    inputLigneCMS.setCdeTypIde12(oeuvresAutoLinkCorrige.get(0).getCdeTypIde12());
+                    inputLigneCMS.setNbrDifEdit(nbrDif);
+                    ligneProgrammeCMSDao.updateNbrDifTemporaireByNumProgramme(numProg, inputLigneCMS.getIde12(), inputLigneCMS.getCdeUtil(), nbrDif);
+                } else {
+                    deleteOeuvreCorrigeLinkAuto(numProg, inputLigneCMS);
+                }
+            }
+        }
+    }
+
+    private void deleteOeuvreCorrigeLinkAuto(String numProg, LigneProgrammeCMS inputLigneCMS) {
+        LigneProgrammeCMS oeuvreManuelFound = ligneProgrammeCMSDao.findOeuvreCorrigeByIde12(numProg, inputLigneCMS.getIde12());
+        deleteOeuvreManuel(oeuvreManuelFound);
     }
 
     private double sumOfMt(List<LigneProgrammeCMS> oeuvresAuto) {
