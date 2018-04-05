@@ -39,7 +39,7 @@
       <app-filtre-selection
         :filter="filter"
         :retablir="retablirFiltre"
-        :rechercher="rechercher"
+        :rechercher="launchRechercheEtCompteurs"
         :ajouter="ajouterOeuvre"
         :edition="edition"
       >
@@ -552,12 +552,6 @@
           })
           .then(data => {
               this.showPopupSuppression = false;
-              /*var index = this.indexOf(this.ligneProgramme, this.selectedLineProgramme);
-
-              if (index > -1) {
-                this.ligneProgramme.splice(index, 1);
-              }
-              this.calculerCompteurs(this.programmeInfo.statut);*/
               this.launchRechercheEtCompteurs();
           });
 
@@ -699,7 +693,7 @@
         this.currentFilter.titre = this.filter.titre;
         this.currentFilter.selection = this.filter.selection;
 
-        if(this.isActionAnnulerEdition) {
+        if(!this.edition) {
           this.launchRechercheEtCompteurs();
         } else {
           this.modifierSelectionTemporaire();

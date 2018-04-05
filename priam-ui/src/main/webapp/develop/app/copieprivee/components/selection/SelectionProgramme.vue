@@ -37,7 +37,7 @@
       <app-filtre-selection
         :filter="filter"
         :retablir="retablirFiltre"
-        :rechercher="rechercher"
+        :rechercher="launchRechercheEtCompteurs"
         :ajouter="ajouterOeuvre"
         :edition="edition"
       >

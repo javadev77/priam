@@ -254,39 +254,47 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
     @Override
     public void ajouterOeuvreManuel(LigneProgrammeCMS input, UserDTO userDTO) {
         Programme programme = programmeDao.findOne(input.getNumProg());
+
         Journal journal = createJournal(input, programme);
         journal.setUtilisateur(userDTO.getUserId());
         SituationAvant situationAvant = new SituationAvant();
         SituationApres situationApres = new SituationApres();
 
+        situationApres.setSituation(getPointsOrMtAsString(programme, input));
+
+
         List<LigneProgrammeCMS> founds = ligneProgrammeCMSDao.findOeuvresAutoByIde12AndCdeUtil(input.getNumProg(), input.getIde12());
         if(founds != null && !founds.isEmpty()) {
-            input.setAjout(CORRIGE);
-            LigneProgrammeCMS oeuvreManuel = createOeuvreManuel(input, programme);
-            founds.forEach( found -> {
-                found.setOeuvreManuel(oeuvreManuel);
-                //found.setSelection(FALSE);
-                ligneProgrammeCMSDao.saveAndFlush(found);
-            });
+            if(!isBackToEtatAuto(programme, input, founds)){
+                input.setAjout(CORRIGE);
+                LigneProgrammeCMS oeuvreManuel = createOeuvreManuel(input, programme);
+                founds.forEach( found -> {
+                    found.setOeuvreManuel(oeuvreManuel);
+                    ligneProgrammeCMSDao.saveAndFlush(found);
+                });
+            }
+
 
             SareftrTyputil typeUtilisation = programme.getTypeUtilisation();
             if(TypeUtilisationPriam.SONOFRA.getCode().equals(typeUtilisation.getCode())) {
                 situationAvant.setSituation(String.valueOf(sumOfMt(founds)));
-                situationApres.setSituation(String.valueOf(input.getMt()));
             } else if(TypeUtilisationPriam.SONOANT.getCode().equals(typeUtilisation.getCode())) {
                 situationAvant.setSituation(String.valueOf(sumOfNbrDif(founds)));
-                situationApres.setSituation(String.valueOf(input.getNbrDif()));
             }
 
             journal.setEvenement(TypeLog.MODIFIER_OEUVRE.getEvenement());
         } else {
             LigneProgrammeCMS oeuvreCorrigeFound = ligneProgrammeCMSDao.findOeuvreCorrigeByIde12(input.getNumProg(), input.getIde12());
+            List<LigneProgrammeCMS> oeuvresAutoLinkCorrige = ligneProgrammeCMSDao.findOeuvresAutoLinkCorrigeByIde12AndCdeUtil(input.getNumProg(), input.getIde12());
             if(oeuvreCorrigeFound != null) {
-                oeuvreCorrigeFound.setAjout(MANUEL);
                 situationAvant.setSituation(getPointsOrMtAsString(programme, oeuvreCorrigeFound));
-                updateOeuvre(input, programme, oeuvreCorrigeFound);
-
                 journal.setEvenement(TypeLog.MODIFIER_OEUVRE.getEvenement());
+                if(!isBackToEtatAuto(programme, input, oeuvresAutoLinkCorrige)){
+                    oeuvreCorrigeFound.setAjout(CORRIGE);
+                    updateOeuvre(input, programme, oeuvreCorrigeFound);
+                } else {
+                    deleteOeuvreCorrigeLinkAuto(input.getNumProg(), input);
+                }
             } else {
                 LigneProgrammeCMS oeuvreManuelFound = ligneProgrammeCMSDao.findOeuvreManuelByIde12AndCdeUtil(input.getNumProg(), input.getIde12());
                 if(oeuvreManuelFound != null) {
@@ -305,9 +313,6 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
                     situationAvant.setSituation("0");
                     journal.setEvenement(TypeLog.AJOUT_OEUVRE.getEvenement());
 
-                    /*if(isEligible(input.getIde12())) {
-                        createOeuvreManuel(input, programme);
-                    }*/
                 }
             }
         }
@@ -321,9 +326,9 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
     private String getPointsOrMtAsString(Programme prog, LigneProgrammeCMS input) {
         SareftrTyputil typeUtilisation = prog.getTypeUtilisation();
         if(TypeUtilisationPriam.SONOFRA.getCode().equals(typeUtilisation.getCode())) {
-            return String.valueOf(input.getMt());
+            return String.valueOf(input.getMtEdit());
         } else if(TypeUtilisationPriam.SONOANT.getCode().equals(typeUtilisation.getCode())) {
-            return  String.valueOf(input.getNbrDif());
+            return  String.valueOf(input.getNbrDifEdit());
         }
         return "";
     }
@@ -332,9 +337,9 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
         oeuvreCorrigeFound.setCdeCisac(CDE_CISAC_058);
         oeuvreCorrigeFound.setCdeFamilTypUtil(programme.getFamille().getCode());
         oeuvreCorrigeFound.setCdeTypUtil(programme.getTypeUtilisation().getCode());
-        oeuvreCorrigeFound.setNbrDif(input.getNbrDif());
+        //oeuvreCorrigeFound.setNbrDif(input.getNbrDif());
         oeuvreCorrigeFound.setNbrDifEdit(input.getNbrDifEdit());
-        oeuvreCorrigeFound.setMt(input.getMt());
+        //oeuvreCorrigeFound.setMt(input.getMt());
         oeuvreCorrigeFound.setMtEdit(input.getMtEdit());
         oeuvreCorrigeFound.setOeuvreManuel(null);
         oeuvreCorrigeFound.setDateInsertion(new Date());
@@ -346,10 +351,7 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
     private Journal createJournal(LigneProgrammeCMS input, Programme prog) {
         JournalBuilder jb = new JournalBuilder(input.getNumProg(), input.getIde12(), input.getUtilisateur());
 
-        SituationApres situationApres = new SituationApres();
-        situationApres.setSituation(getPointsOrMtAsString(prog, input));
 
-        jb.addSituationApres(situationApres);
 
         return jb.build();
     }
@@ -409,44 +411,37 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
                 if(prog.getTypeUtilisation().getCode().equals(TypeUtilisationPriam.SONOANT.getCode())) {
                     String nbrDifValue = obj.get(POINTS_MONTANT);
                     Long nbrDifEdit = nbrDifValue != null && !nbrDifValue.equals("") ? Long.valueOf(nbrDifValue) : 0L;
-
+                    inputLigneCMS.setNbrDifEdit(nbrDifEdit);
                     List<LigneProgrammeCMS> oeuvresAuto = ligneProgrammeCMSDao.findOeuvresAutoByIde12AndCdeUtil(numProg, inputLigneCMS.getIde12());
 
                     if(AUTOMATIQUE.equals(ajout)) {
                         if(oeuvresAuto != null && !oeuvresAuto.isEmpty()) {
                             Long sumTotal = sumOfNbrDif(oeuvresAuto);
                             if( !nbrDifEdit.equals(sumTotal)) {
-
-                                inputLigneCMS.setCdeTypIde12(oeuvresAuto.get(0).getCdeTypIde12());
-                                inputLigneCMS.setNbrDifEdit(nbrDifEdit);
-
+                                //inputLigneCMS.setCdeTypIde12(oeuvresAuto.get(0).getCdeTypIde12());
                                 ajouterOeuvreManuel(inputLigneCMS, userDTO);
                             }
-
                         }
                     } else if(CORRIGE.equals(ajout)){
-                        correctionOeuvreCorrige(numProg, inputLigneCMS, nbrDifEdit, null);
+                        correctionOeuvreCorrige(numProg, inputLigneCMS, userDTO);
                     } else {
                         ligneProgrammeCMSDao.updatePointsTemporaireByNumProgramme(numProg, inputLigneCMS.getIde12(), nbrDifEdit);
                     }
                 } else if(prog.getTypeUtilisation().getCode().equals(TypeUtilisationPriam.SONOFRA.getCode())) {
                     String mtValue = obj.get(POINTS_MONTANT);
                     Double mtEdit = mtValue != null && !mtValue.equals("") ? Double.valueOf(mtValue) : 0.0d;
-
+                    inputLigneCMS.setMtEdit(mtEdit);
                     if(AUTOMATIQUE.equals(ajout)) {
                         List<LigneProgrammeCMS> oeuvresAuto = ligneProgrammeCMSDao.findOeuvresAutoByIde12AndCdeUtil(numProg, inputLigneCMS.getIde12());
 
                         if(oeuvresAuto != null && !oeuvresAuto.isEmpty()) {
                             Double sumTotal = sumOfMt(oeuvresAuto);
                             if( !mtEdit.equals(sumTotal)) {
-
-                                inputLigneCMS.setMtEdit(mtEdit);
-
                                 ajouterOeuvreManuel(inputLigneCMS, userDTO);
                             }
                         }
                     } else if(CORRIGE.equals(ajout)){
-                        correctionOeuvreCorrige(numProg, inputLigneCMS, null, mtEdit);
+                        correctionOeuvreCorrige(numProg, inputLigneCMS, userDTO);
                     } else {
                         ligneProgrammeCMSDao.updatePointsMtTemporaireByNumProgramme(numProg, inputLigneCMS.getIde12(), mtEdit);
                     }
@@ -457,31 +452,60 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
         }
     }
 
-    private void correctionOeuvreCorrige(String numProg, LigneProgrammeCMS inputLigneCMS, Long nbrDif, Double montant) {
+    private void correctionOeuvreCorrige(String numProg, LigneProgrammeCMS inputLigneCMS, UserDTO userDTO) {
         Programme programme = programmeDao.findByNumProg(numProg);
-        List<LigneProgrammeCMS> oeuvresAutoLinkCorrige = ligneProgrammeCMSDao.findOeuvresAutoLinkCorrigeByIde12AndCdeUtil(numProg, inputLigneCMS.getIde12());
-//        Long sumTotal = 0L;
 
+        List<LigneProgrammeCMS> oeuvresAutoLinkCorrige = ligneProgrammeCMSDao.findOeuvresAutoLinkCorrigeByIde12AndCdeUtil(numProg, inputLigneCMS.getIde12());
+        LigneProgrammeCMS currentOeuvreCorrige = ligneProgrammeCMSDao.findOeuvreCorrigeByIde12(numProg, inputLigneCMS.getIde12());
         if(programme.getTypeUtilisation().getCode().equals(TypeUtilisationEnum.CMS_FRA.getCode())){
             if(!oeuvresAutoLinkCorrige.isEmpty()) {
                 Double sumTotal = sumOfMt(oeuvresAutoLinkCorrige);
-                if(!montant.equals(sumTotal)){
-                    inputLigneCMS.setCdeTypIde12(oeuvresAutoLinkCorrige.get(0).getCdeTypIde12());
-                    inputLigneCMS.setMtEdit(montant);
-                    ligneProgrammeCMSDao.updatePointsMtTemporaireByNumProgramme(numProg, inputLigneCMS.getIde12(), montant);
-                } else {
-                    deleteOeuvreCorrigeLinkAuto(numProg, inputLigneCMS);
+                if(!inputLigneCMS.getMtEdit().equals(currentOeuvreCorrige.getMtEdit())) {
+                    Journal journal = saveJournal(programme, inputLigneCMS, userDTO);
+                    SituationApres situationApres = new SituationApres();
+                    situationApres.setSituation(getPointsOrMtAsString(programme, inputLigneCMS));
+                    journal.getListSituationApres().add(situationApres);
+
+                    if(!inputLigneCMS.getMtEdit().equals(sumTotal)){
+                        ligneProgrammeCMSDao.updatePointsMtTemporaireByNumProgramme(numProg, inputLigneCMS.getIde12(), inputLigneCMS.getMtEdit());
+                    } else {
+                        deleteOeuvreCorrigeLinkAuto(numProg, inputLigneCMS);
+                    }
+
+
+                    inputLigneCMS.setMtEdit(currentOeuvreCorrige.getMtEdit());
+                    SituationAvant situationAvant = new SituationAvant();
+                    situationAvant.setSituation(getPointsOrMtAsString(programme, inputLigneCMS));
+                    journal.getListSituationAvant().add(situationAvant);
+
+                    journalDao.saveAndFlush(journal);
+
                 }
             }
         } else if(programme.getTypeUtilisation().getCode().equals(TypeUtilisationEnum.CMS_ANT.getCode())){
             if(!oeuvresAutoLinkCorrige.isEmpty()) {
                 Long sumTotal = sumOfNbrDif(oeuvresAutoLinkCorrige);
-                if(!nbrDif.equals(sumTotal)){
-                    inputLigneCMS.setCdeTypIde12(oeuvresAutoLinkCorrige.get(0).getCdeTypIde12());
-                    inputLigneCMS.setNbrDifEdit(nbrDif);
-                    ligneProgrammeCMSDao.updateNbrDifTemporaireByNumProgramme(numProg, inputLigneCMS.getIde12(), inputLigneCMS.getCdeUtil(), nbrDif);
-                } else {
-                    deleteOeuvreCorrigeLinkAuto(numProg, inputLigneCMS);
+                if(!inputLigneCMS.getNbrDifEdit().equals(currentOeuvreCorrige.getNbrDifEdit())) {
+                    Journal journal = saveJournal(programme, inputLigneCMS, userDTO);
+                    SituationApres situationApres = new SituationApres();
+                    situationApres.setSituation(getPointsOrMtAsString(programme, inputLigneCMS));
+                    journal.getListSituationApres().add(situationApres);
+
+
+                    if (!inputLigneCMS.getNbrDifEdit().equals(sumTotal)) {
+                        ligneProgrammeCMSDao.updatePointsTemporaireByNumProgramme(numProg, inputLigneCMS.getIde12(), inputLigneCMS.getNbrDifEdit());
+                    } else {
+                        deleteOeuvreCorrigeLinkAuto(numProg, inputLigneCMS);
+                    }
+
+                    inputLigneCMS.setNbrDifEdit(currentOeuvreCorrige.getNbrDifEdit());
+
+                    SituationAvant situationAvant = new SituationAvant();
+                    situationAvant.setSituation(getPointsOrMtAsString(programme, inputLigneCMS));
+                    journal.getListSituationAvant().add(situationAvant);
+
+                    journalDao.saveAndFlush(journal);
+
                 }
             }
         }
@@ -492,6 +516,13 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
         deleteOeuvreManuel(oeuvreManuelFound);
     }
 
+    private Journal saveJournal(Programme programme, LigneProgrammeCMS ligneProgrammeCMS, UserDTO userDTO){
+        Journal journal = createJournal(ligneProgrammeCMS, programme);
+        journal.setUtilisateur(userDTO.getUserId());
+        journal.setEvenement(TypeLog.MODIFIER_OEUVRE.getEvenement());
+        return journal;
+    }
+
     private double sumOfMt(List<LigneProgrammeCMS> oeuvresAuto) {
         return oeuvresAuto.stream().mapToDouble(LigneProgrammeCMS::getMt).sum();
     }
@@ -499,6 +530,7 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
     private long sumOfNbrDif(List<LigneProgrammeCMS> oeuvresAuto) {
         return oeuvresAuto.stream().mapToLong(LigneProgrammeCMS::getNbrDif).sum();
     }
+
 
     private LigneProgrammeCMS createLigneProgrammeCMSFromInput(String numProg, Map<String, String> input) {
         LigneProgrammeCMS ligneProgrammeCMS = new LigneProgrammeCMS();
@@ -519,4 +551,32 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
 
         return ligneProgrammeCMS;
     }
+
+
+    private boolean isBackToEtatAuto(Programme programme, LigneProgrammeCMS ligneProgrammeCMS, List<LigneProgrammeCMS> oeuvresAutoLink){
+        boolean result = false;
+        if(programme.getTypeUtilisation().getCode().equals(TypeUtilisationEnum.CMS_FRA.getCode())){
+            if(ligneProgrammeCMS.getMt()!=null){
+                if(ligneProgrammeCMS.getMt().equals(sumOfMt(oeuvresAutoLink))){
+                    result = true;
+                }
+            } else {
+                if(ligneProgrammeCMS.getMtEdit().equals(sumOfMt(oeuvresAutoLink))){
+                    result = true;
+                }
+            }
+        } else {
+            if(ligneProgrammeCMS.getNbrDif()!=null){
+                if(ligneProgrammeCMS.getNbrDif().equals(sumOfNbrDif(oeuvresAutoLink))){
+                    result = true;
+                }
+            } else {
+                if(ligneProgrammeCMS.getNbrDifEdit().equals(sumOfNbrDif(oeuvresAutoLink))){
+                    result = true;
+                }
+            }
+        }
+        return result;
+    }
+
 }

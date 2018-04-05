@@ -267,7 +267,7 @@
 
                       } else if(this.programme.typeUtilisation === 'SONOANT') {
                           this.messageSonoAnt = 'Attention, cette oeuvre est déjà présente au niveau du programme avec Points '
-                            + ligneProg.pointsMontant + ', êtes-vous sûr de vouloir la remplacer avec la durée saisie ?';
+                            + ligneProg.pointsMontant + ', êtes-vous sûr de vouloir la remplacer ?';
                       }
                   } else {
                     // IDE12 n'existe pas alors verifier avec le catalogue

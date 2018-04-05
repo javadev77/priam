@@ -442,21 +442,6 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
             " AND p.ide12 = ?2 ")
     void updatePointsMtTemporaireByNumProgramme(String numProg, Long ide12, Double mtEdit);
 
-    @Modifying(clearAutomatically = true)
-    @Query(nativeQuery = true, value="update " +
-            "  PRIAM_LIGNE_PROGRAMME_CMS p " +
-            "INNER JOIN " +
-            "  PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
-            "set " +
-            "  p.nbrDifEdit=?4 "+
-            "where " +
-            "  f.NUMPROG = ?1 " +
-            " AND p.ide12 = ?2 " +
-            " AND p.cdeUtil = ?3 ")
-    void updateNbrDifTemporaireByNumProgramme(@Param("numProg") String numProg,
-                                              @Param("ide12") Long ide12,
-                                              @Param("cdeUtil") String cdeUtil,
-                                              @Param("nbrDif") Long nbrDifEdit);
 
     @Transactional
     @Query(value="SELECT new fr.sacem.priam.model.domain.dto.SelectionCMSDto("+
