@@ -182,13 +182,6 @@
 
     </dependencyManagement>
 
- <!--   <profiles>
-
-        <profile>
-            <id>dev-sacem</id>
-        </profile>
-
-    </profiles>-->
 
     <build>
 
