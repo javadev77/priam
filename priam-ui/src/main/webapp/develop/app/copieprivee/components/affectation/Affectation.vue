@@ -98,7 +98,7 @@
             </h5>
           </div>
           <div class="panel-collapse">
-            <div class="result-panel-body panel-body" style="height:600px; overflow-y:scroll;">
+            <div class="result-panel-body panel-body" style="height:400px; overflow-y:scroll;">
 
               <priam-grid
                 :isPaginable="false"
@@ -119,7 +119,7 @@
       <button v-show="showButtonToutDesactiver" style="width: 160px;"  class="btn btn-default btn-primary pull-left" type="button" @click="showModalDesactiver = true">Tout désaffecter</button>
       <button v-show="showButtonAnnuler" class="btn btn-default btn-primary pull-right" type="button" @click="annuler()">Annuler</button>
       <button v-show="showButtonEnregistrer" class="btn btn-default btn-primary pull-right" type="button" @click="enregister()" :disabled="!isRightRECAFC">Enregister</button>
-      <button v-show="showButtonEditer" class="btn btn-default btn-primary pull-right" type="button" @click="editer()" :disabled="!isRightEDTAFC">Editer</button>
+      <button v-show="showButtonEditer" class="btn btn-default btn-primary pull-right" type="button" @click="editer()" :disabled="!isRightEDTAFC">Modifier</button>
       <span v-if="isStatusProgrammeAffecte()" class="pull-right">
         Affecté par {{ programmeInfo.useraffecte }} {{ programmeInfo.dataffecte | dateAffectation }}
       </span>
