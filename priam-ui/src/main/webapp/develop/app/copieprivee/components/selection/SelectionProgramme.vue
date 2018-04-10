@@ -290,6 +290,19 @@
                     return true;
                   }
                   return false;
+                },
+
+                onCellValueChanged: function (entry, params) {
+                  //Re-calculer les compteurs
+                  debugger;
+                  if(entry.selection && params !== null && params.oldVal !== null) {
+                      $this.dureeSelection.duree -= params.oldVal;
+                      $this.dureeSelection.duree += params.newVal;
+
+                      if($this.dureeSelection.duree < 0) {
+                        $this.dureeSelection.duree  = 0;
+                      }
+                  }
                 }
               }
             },
@@ -303,7 +316,6 @@
                   var result = entry;
                   var element = $this.getEtatOeuvre(result.ajout);
 
-                  debugger;
                   if(result !== undefined && element !== undefined) {
                     if(result.ajout === 'MANUEL' || result.ajout === 'CORRIGE') {
 
@@ -458,6 +470,18 @@
                     return true;
                   }
                   return false;
+                },
+
+                onCellValueChanged: function (entry, params) {
+                  //Re-calculer les compteurs
+                  if(entry.selection && params !== null && params.oldVal !== null) {
+                    $this.dureeSelection.duree -= params.oldVal;
+                    $this.dureeSelection.duree += params.newVal;
+
+                    if($this.dureeSelection.duree < 0) {
+                      $this.dureeSelection.duree  = 0;
+                    }
+                  }
                 }
               }
             },
@@ -1213,15 +1237,7 @@
             return response.json();
           })
           .then(data => {
-            /*this.selection = {
-              deselectAll : false,
-              all : false,
-              unselected : [],
-              selected : []
-            };*/
 
-
-            debugger;
             this.selection =  {
               numProg : this.$route.params.numProg,
               fromSelection : this.fromSelection

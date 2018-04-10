@@ -28,9 +28,33 @@
 
     },
 
+    data() {
+
+      return {
+        mutableValue : null
+      }
+
+    },
+
+    watch : {
+
+      value : function (newValue) {
+        this.mutableValue = newValue;
+
+      },
+
+      mutableValue : function (newVal, oldVal) {
+        if(newVal !== oldVal) {
+          this.$emit('valueChanged', {oldVal  : oldVal, newVal : newVal});
+        }
+      }
+
+    },
+
     mounted: function () {
       debugger;
       this.formatValue();
+      this.mutableValue = this.value;
     },
 
 
@@ -42,6 +66,8 @@
 
           this.$refs.input.value = result.value;
         }
+
+        this.mutableValue = result.value;
         this.$emit('input', result.value)
       },
 
