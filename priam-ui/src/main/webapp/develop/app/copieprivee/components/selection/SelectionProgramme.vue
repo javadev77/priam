@@ -647,7 +647,8 @@
           enregistrerEdition : {method: 'POST', url: process.env.CONTEXT_ROOT_PRIAM_CP + 'app/rest/ligneProgramme/selection/enregistrerEdition'},
           annulerEdition : {method: 'POST', url: process.env.CONTEXT_ROOT_PRIAM_CP + 'app/rest/ligneProgramme/selection/annulerEdition'},
           compteursProgramme: {method: 'GET', url: process.env.CONTEXT_ROOT_PRIAM_CP + 'app/rest/ligneProgramme/selection/compteurs?numProg={numProg}&statut={statut}'},
-          updateSelectionTemporaire : {method: 'POST', url: process.env.CONTEXT_ROOT_PRIAM_CP +  'app/rest/ligneProgramme/selection/temporaire/modifier'}
+          updateSelectionTemporaire : {method: 'POST', url: process.env.CONTEXT_ROOT_PRIAM_CP +  'app/rest/ligneProgramme/selection/temporaire/modifier'},
+          getUtilisateursByProgramme : {method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_CP + 'app/rest/ligneProgramme/utilisateurs?programme='+this.$route.params.numProg}
         }
 
         this.resource = this.$resource('', {}, customActions);
@@ -684,7 +685,8 @@
               this.all = false;
             }
             this.rechercher();
-
+            debugger;
+            this.filter.utilisateur = [{id : 'Tous', value : 'Tous'},{id : 'Tous2', value : 'Tous2'}];
           });
       },
 
@@ -709,6 +711,7 @@
                 this.ligneProgramme.splice(index, 1);
               }
               this.getDuree(this.programmeInfo.statut);
+            this.$store.dispatch('getUtilisateursByProgramme', this.$route.params.numProg);
           });
 
       },
@@ -853,7 +856,6 @@
               //this.selectAll();
             });
         }
-
         this.currentFilter.ide12 = this.filter.ide12;
         this.currentFilter.ajout = this.filter.ajout;
         this.currentFilter.numProg = this.filter.numProg;
@@ -1282,8 +1284,7 @@
       editSelectionClickHandler () {
         this.tableauSelectionnable = true;
         this.edition = true;
-      }
-
+      },
     },
 
     computed : {

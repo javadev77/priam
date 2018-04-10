@@ -103,6 +103,7 @@
   import EcranModal from '../../../common/components/ui/EcranModal.vue';
   import AjouterOeuvre from './oeuvre/AjouterOeuvre.vue';
 
+
   export default {
 
     data() {
@@ -119,12 +120,13 @@
     },
     computed : {
       utilisateurOptions() {
-        let result = this.utilisateursOptions.map(elem => {
+        this.utilisateursOptions = this.$store.getters.listeUtilisateur;
+        let result = this.utilisateursOptions === undefined ? [] :  (this.utilisateursOptions.map(elem => {
           return {
             id : elem,
             value : elem
           }
-        });
+        }));
 
         result.unshift({id : 'Tous', value : 'Tous'});
         return result;
@@ -168,17 +170,6 @@
         this.retablir();
       },
 
-      getUtilisateursByProgramme() {
-
-        this.resource.getUtilisateursByProgramme()
-          .then(response => {
-            return response.json();
-          })
-          .then(data => {
-            this.utilisateursOptions = data;
-          });
-      },
-
       ajouterOeuvre() {
         this.showMipsa = true;
       },
@@ -206,6 +197,8 @@
               //
               console.log('ok ajout');
               this.rechercher();
+              this.$store.dispatch('getUtilisateursByProgramme', this.$route.params.numProg);
+
             })
             .catch(error => {
 
@@ -213,7 +206,6 @@
 
               }
             );
-
       }
     },
 
@@ -226,12 +218,11 @@
 
     created() {
       const customActions = {
-        getUtilisateursByProgramme : {method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_CP + 'app/rest/ligneProgramme/utilisateurs?programme='+this.$route.params.numProg},
         ajouterOeuvreManuel : {method : 'POST', url : process.env.CONTEXT_ROOT_PRIAM_CP + 'app/rest/ligneProgramme/selection/ajoutOeuvre'}
       }
       this.resource= this.$resource('', {}, customActions);
 
-      this.getUtilisateursByProgramme();
+      this.$store.dispatch('getUtilisateursByProgramme', this.$route.params.numProg);
     }
   }
 </script>

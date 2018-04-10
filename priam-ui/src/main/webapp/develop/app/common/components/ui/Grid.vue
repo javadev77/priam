@@ -608,7 +608,7 @@
                 console.log("typeof a "+  typeof a);
                 let date1 = moment(a, "DD/MM/YYYY HH:mm");
                 let date2 = moment(b, "DD/MM/YYYY HH:mm");
-                debugger;
+
                 return (date1.isSame(date2) ? 0 : date1.isAfter(date2) ? 1 : -1) * order;
               });
             } else {
@@ -787,7 +787,6 @@
       },
 
       styleValue(entryColumn, entry) {
-          debugger;
           if(entryColumn.cell !== undefined && entryColumn.cell.css !== undefined) {
             return entryColumn.cell.css(entry).style
           }

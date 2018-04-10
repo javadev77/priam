@@ -6,7 +6,8 @@ import mutations from './mutations';
 import getters from './getters';
 
 const state = {
-  programmeEnSelection : {}
+  programmeEnSelection : {},
+  listeUtilisateur : []
 };
 
 export default {
