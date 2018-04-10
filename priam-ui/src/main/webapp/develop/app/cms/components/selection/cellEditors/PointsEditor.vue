@@ -22,7 +22,6 @@
 
 <script>
 
-  import Select2 from '../../../../common/components/ui/Select2.vue';
 
   export default {
 
@@ -38,6 +37,14 @@
         }
       },
 
+      data() {
+
+          return {
+            mutableValue : null
+          }
+
+      },
+
       computed : {
         pointsOptions() {
             //return [{id : 'p6', value:6}, {id : 'p12', value:12}, {id : 'p18', value:18}, {id : 'p24', value:24}, {id : 'p30', value:30}];
@@ -48,18 +55,32 @@
      methods : {
 
        updateValue(valueChanged) {
-         this.$emit('input', parseInt(valueChanged));
+         let val = parseInt(valueChanged);
+         this.mutableValue = val;
+         this.$emit('input', val);
        }
      },
 
+    watch : {
+
+          value : function (newValue) {
+            this.mutableValue = newValue;
+
+          },
+
+          mutableValue : function (newVal, oldVal) {
+            if(newVal !== oldVal) {
+              this.$emit('valueChanged', {oldVal  : oldVal, newVal : newVal});
+            }
+          }
+
+    },
+
      mounted() {
        this.value= parseInt(this.value);
+       this.mutableValue = this.value;
 
-     },
-
-      components : {
-        select2 :Select2
-      }
+     }
   }
 
 </script>

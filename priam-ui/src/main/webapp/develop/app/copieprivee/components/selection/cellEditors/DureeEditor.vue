@@ -31,9 +31,32 @@
 
     },
 
+    data() {
+
+      return {
+        mutableValue : null
+      }
+
+    },
+
+    watch : {
+
+      value : function (newValue) {
+        this.mutableValue = newValue;
+
+      },
+
+      mutableValue : function (newVal, oldVal) {
+        if(newVal !== oldVal) {
+          this.$emit('valueChanged', {oldVal  : oldVal, newVal : newVal});
+        }
+      }
+
+    },
+
     mounted: function () {
-      debugger;
       this.formatValue();
+      this.mutableValue = this.value;
     },
 
 
@@ -45,8 +68,10 @@
 
         if (isNaN(result)) {
           this.$refs.inputDureeEdit.value ='';
+          this.mutableValue = null;
           this.$emit('input', '')
         } else {
+          this.mutableValue = result;
           this.$emit('input', result);
         }
 
