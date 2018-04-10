@@ -174,7 +174,10 @@
               }
             },
 
-            selectedOeuvre : {}
+            selectedOeuvre : {
+              ide12: '2111210711',
+              titre: 'LA BOHEME'
+            }
           }
 
 

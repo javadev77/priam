@@ -32,7 +32,7 @@
             <button class="btn btn-default btn-primary width-140" type="button" @click.prevent="valider()" :disabled="isLoadingDuree || inProcess || listSelectionVide || !isRightVLDSEL">Valider Sélection</button>
           </div>
 
-          <button class="btn btn-default btn-primary pull-right width-140" type="button" @click.prevent="editer()" :disabled="isLoadingDuree || inProcess || !isRightEDTSEL">Editer Sélection</button>
+          <button class="btn btn-default btn-primary pull-right width-140" type="button" @click.prevent="editer()" :disabled="isLoadingDuree || inProcess || !isRightEDTSEL">Modifier Sélection</button>
         </div>
 
         <div v-else-if="programmeInfo.statut == 'EN_COURS'">
@@ -40,7 +40,7 @@
           <div class="pull-right" :title="listSelectionVide ? 'Il faut sélectionner au moins une oeuvre' : ''">
             <button class="btn btn-default btn-primary width-140" type="button" @click.prevent="valider()" :disabled="isLoadingDuree || inProcess || listSelectionVide || !isRightVLDSEL">Valider Sélection</button>
           </div>
-          <button class="btn btn-default btn-primary pull-right width-140" type="button" @click.prevent="editer()" :disabled="isLoadingDuree || inProcess || !isRightEDTSEL">Editer Sélection</button>
+          <button class="btn btn-default btn-primary pull-right width-140" type="button" @click.prevent="editer()" :disabled="isLoadingDuree || inProcess || !isRightEDTSEL">Modifier Sélection</button>
         </div>
 
         <div v-else-if="programmeInfo.statut == 'VALIDE'">

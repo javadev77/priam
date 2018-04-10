@@ -4,5 +4,9 @@
 export default {
   programmeEnSelection: state => {
     return state.programmeEnSelection;
+  },
+
+  listeUtilisateur: state => {
+    return state.listeUtilisateur;
   }
 }
