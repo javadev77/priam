@@ -216,6 +216,8 @@ public class JobCompletionNotificationAffectationCMSListener extends JobExecutio
 
 
         }
+
+
     }
 
     public FichierBatchService getFichierBatchService() {

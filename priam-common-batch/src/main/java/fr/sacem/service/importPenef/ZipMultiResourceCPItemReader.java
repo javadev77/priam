@@ -92,6 +92,7 @@ public class ZipMultiResourceCPItemReader<T> extends MultiResourceItemReader<T> 
                                         && file.getName().startsWith(FileUtils.PREFIX_FILE_PENEF_CP)) {
 
                                     File fichierEnCoursDeTraitement = new File(rep + file.getName() + FILE_ZIP_EN_COURS_DE_TRAITEMENT);
+                                    utilFile.suppressionFlag(fichierEnCoursDeTraitement);
                                     LOG.debug("=== renomer le fichier en : "+fichierEnCoursDeTraitement.getName()+" ===");
                                     JobParameter jobParameterFichierZipEnCours = new JobParameter(fichierEnCoursDeTraitement.getAbsolutePath());
                                     JobParameter jobParameterNomFichierOriginal = new JobParameter(file.getName());

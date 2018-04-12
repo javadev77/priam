@@ -5,7 +5,11 @@
   <parent>
     <artifactId>priam-parent</artifactId>
     <groupId>fr.sacem.priam</groupId>
+<<<<<<< Updated upstream
     <version>2.2.1</version>
+=======
+    <version>2.2.2</version>
+>>>>>>> Stashed changes
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
