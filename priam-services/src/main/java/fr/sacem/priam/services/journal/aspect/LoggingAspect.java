@@ -1,10 +1,7 @@
 package fr.sacem.priam.services.journal.aspect;
 
 import fr.sacem.priam.common.TypeUtilisationEnum;
-import fr.sacem.priam.model.dao.jpa.FichierDao;
-import fr.sacem.priam.model.dao.jpa.JournalDao;
-import fr.sacem.priam.model.dao.jpa.SareftjLibterDao;
-import fr.sacem.priam.model.dao.jpa.SareftrRionDao;
+import fr.sacem.priam.model.dao.jpa.*;
 import fr.sacem.priam.model.dao.jpa.cms.LigneProgrammeCMSDao;
 import fr.sacem.priam.model.dao.jpa.cp.LigneProgrammeCPDao;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
@@ -14,8 +11,7 @@ import fr.sacem.priam.model.domain.cms.LigneProgrammeCMS;
 import fr.sacem.priam.model.domain.cp.LigneProgrammeCP;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 
-import fr.sacem.priam.model.domain.saref.SareftjLibter;
-import fr.sacem.priam.model.domain.saref.SareftrRion;
+import fr.sacem.priam.model.domain.saref.*;
 import fr.sacem.priam.model.util.GlobalConstants;
 import fr.sacem.priam.services.journal.annotation.LogEtatProgramme;
 import fr.sacem.priam.services.journal.annotation.LogOeuvre;
@@ -75,6 +71,10 @@ public class LoggingAspect {
     @Autowired private SareftjLibterDao sareftjLibterDao;
 
     @Autowired private SareftrRionDao sareftrRionDao;
+
+    @Autowired private SareftjLibfamiltyputilDao sareftjLibfamiltyputilDao;
+
+    @Autowired private SareftjLibtyputilDao sareftjLibtyputilDao;
 
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -435,8 +435,8 @@ public class LoggingAspect {
     private String getInfoProgramme(Programme programme) {
         return " Nom programme : " + programme.getNom() + "<br/>"
                 + " Rion cible : " + getLibelleRion(programme.getRionTheorique().getRion()) + "<br/>"
-                + " Famille : " + programme.getFamille().getCode() + "<br/>"
-                + " Type d'utilisation : " + programme.getTypeUtilisation().getCode() + "<br/>"
+                + " Famille : " + getLibelleFamille(programme.getFamille().getCode(), GlobalConstants.FR_LANG) + "<br/>"
+                + " Type d'utilisation : " + getLibelleTypeUtil(programme.getTypeUtilisation().getCode(), GlobalConstants.FR_LANG) + "<br/>"
                 + " Date de début : " + simpleDateFormat.format(programme.getDateDbtPrg()) + "<br/>"
                 + " Date de fin : " + simpleDateFormat.format(programme.getDateFinPrg()) + "<br/>"
                 + " Territoire : " + getLibelleTerritoire(programme.getCdeTer(), GlobalConstants.FR_LANG) + "<br/>"
@@ -446,8 +446,8 @@ public class LoggingAspect {
     private String getInfoProgrammeDto(ProgrammeDto programmeDto) {
         return "Nom programme : " + programmeDto.getNom()+ "<br/>"
                 + "Rion cible : " + getLibelleRion(programmeDto.getRionTheorique()) + "<br/>"
-                + "Famille : " + programmeDto.getFamille() + "<br/>"
-                + "Type d'utilisation : " + programmeDto.getTypeUtilisation() + "<br/>"
+                + "Famille : " + getLibelleFamille(programmeDto.getFamille(), GlobalConstants.FR_LANG) + "<br/>"
+                + "Type d'utilisation : " + getLibelleTypeUtil(programmeDto.getTypeUtilisation(), GlobalConstants.FR_LANG) + "<br/>"
                 + "Date de début : " + simpleDateFormat.format(programmeDto.getDateDbtPrg()) + "<br/>"
                 + "Date de fin : " + simpleDateFormat.format(programmeDto.getDateFinPrg()) + "<br/>"
                 + "Territoire : " + getLibelleTerritoire(programmeDto.getCdeTer(), GlobalConstants.FR_LANG) + "<br/>"
@@ -464,6 +464,16 @@ public class LoggingAspect {
         SareftrRion sareftrRion = sareftrRionDao.findOne(rion);
         String libelleRion = sareftrRion.getRion() + " - " + new SimpleDateFormat("MMMM yyyy").format(sareftrRion.getDatrglmt());
         return libelleRion;
+    }
+
+    private String getLibelleFamille(String code, String lang){
+        SareftjLibfamiltyputil sareftjLibfamiltyputil = sareftjLibfamiltyputilDao.findByCodeAndLang(code, lang);
+        return sareftjLibfamiltyputil.getLibelle();
+    }
+
+    private String getLibelleTypeUtil(String code, String lang){
+        SareftjLibtyputil sareftjLibtyputil = sareftjLibtyputilDao.findByCodeAndLang(code , lang);
+        return sareftjLibtyputil.getLibelle();
     }
 
 }
