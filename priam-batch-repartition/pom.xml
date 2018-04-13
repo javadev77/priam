@@ -5,7 +5,6 @@
 
     <groupId>fr.sacem.priam</groupId>
     <artifactId>priam-batch-repartition</artifactId>
-
     <version>2.2.2</version>
 
     <packaging>jar</packaging>

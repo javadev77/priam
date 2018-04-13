@@ -15,7 +15,6 @@
     <artifactId>priam-parent</artifactId>
 
     <version>2.2.2</version>
-
     <packaging>pom</packaging>
 
     <name>PRIAM</name>
