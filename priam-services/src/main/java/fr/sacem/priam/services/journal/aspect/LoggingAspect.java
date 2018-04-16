@@ -413,7 +413,7 @@ public class LoggingAspect {
                     situationApres.setSituation("0");
                     situationApresList.add(situationApres);
                 }else if(oeuvreManuelCMS.getCdeTypUtil().equals(TypeUtilisationEnum.CMS_ANT.getCode())){
-                    situationAvant.setSituation(String.valueOf(selectionDto.getNbrDif()));
+                    situationAvant.setSituation(String.valueOf(oeuvreManuelCMS.getNbrDif()));
                     situationAvantList.add(situationAvant);
                     situationApres.setSituation("0");
                     situationApresList.add(situationApres);
