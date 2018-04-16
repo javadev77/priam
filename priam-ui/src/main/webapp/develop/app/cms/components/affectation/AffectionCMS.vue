@@ -783,9 +783,6 @@
           console.log("fichiers envoyes" + this.fichiersToProgramme.fichiers);
           debugger;
 
-          /*this.fichiersDesaffectes.numProg = numProgramme;
-          this.fichiersDesaffectes.isAllDesaffecte = 'true';*/
-
           this.resource.findFichiersAffecte({numProg: numProgramme})
             .then(response => {
               return response.json();
@@ -793,10 +790,6 @@
             .then(data => {
               console.log("fichiersAvantDesaffectation" + data);
               debugger;
-              const result = [];
-              /*for (let key in data) {
-                this.fichiersDesaffectes.fichersAvantDesaffectation.push(data[key].id);
-              }*/
               for (let key in data) {
                 this.fichersAvantDesaffectation.push(data[key].id);
               }
@@ -807,7 +800,6 @@
                 fichersAvantDesaffectation: this.fichersAvantDesaffectation
               }
 
-              /*this.resource.toutDeaffecterProg(numProgramme)*/
               this.resource.toutDeaffecterProg(this.fichiersDesaffectes)
                 .then(response => {
                   return response.json();

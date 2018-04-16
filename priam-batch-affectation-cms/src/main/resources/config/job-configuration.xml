@@ -442,4 +442,6 @@
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
+    <bean id="journalAffectationBuilder" class="fr.sacem.priam.model.util.JournalAffectationBuilder"></bean>
+
 </beans>

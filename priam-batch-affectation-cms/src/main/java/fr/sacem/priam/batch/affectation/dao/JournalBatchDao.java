@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 
-public class JournalBatchDao {
+public class  JournalBatchDao {
 
     private JdbcTemplate jdbcTemplate;
 
