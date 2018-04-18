@@ -16,6 +16,7 @@ import fr.sacem.priam.model.util.JournalAffectationBuilder;
 import fr.sacem.priam.security.model.UserDTO;
 import fr.sacem.priam.services.FichierService;
 
+import fr.sacem.priam.services.utils.AffectationUtil;
 import org.apache.commons.lang.StringUtils;
 
 import org.slf4j.Logger;
@@ -72,6 +73,9 @@ public class AffectationCMSResource {
     Job jobEligibiliteCMSAntille;
 
     @Autowired
+    AffectationUtil affectationUtil;
+
+    @Autowired
     Admap admap;
 
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
@@ -85,7 +89,7 @@ public class AffectationCMSResource {
 
         String numProg = affectationDto.getNumProg();
         ProgrammeDto programmeDto =  programmeViewDao.findByNumProg(numProg);
-        List<Fichier> fichiers = affectationDto.getFichiers();
+        List<Fichier> fichiers = affectationUtil.getFichiersAffectes(affectationDto);
 
         List<Fichier> fichiersAvantAffectation = getListFichierByIdFichier(affectationDto.getFichersAvantAffectation());
         String listNomFichiersAvantAffectation = getListNomFichier(fichiersAvantAffectation);
