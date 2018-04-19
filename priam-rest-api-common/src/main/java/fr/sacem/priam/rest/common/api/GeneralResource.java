@@ -35,6 +35,12 @@ public class GeneralResource {
 
     private static final Integer RION_639 = 639 ;
     public static final String RION_FORMAT_MMMM_yyyy = "MMMM yyyy";
+    public static final String USER_FAMILLE = "USER_FAMILLE";
+    public static final String USER_FAMILLE_ALL = "ALL,Toutes";
+    public static final String USER_FAMILLE_COPIEPRIV = "COPIEPRIV,Copie Privée";
+    public static final String USER_FAMILLE_UC = "UC,Usagers Communs";
+    public static final String REGEX_USER_FAMILLE = ",";
+
     private static Logger logger = LoggerFactory.getLogger(GeneralResource.class);
 
     @Autowired
@@ -235,8 +241,12 @@ public class GeneralResource {
     method = RequestMethod.GET,
     produces = MediaType.APPLICATION_JSON_VALUE)
   public Map<String, String> getParametrageByUser(UserDTO currentUser) {
-    return parametrageService.findByUserId(currentUser.getUserId());
-
+      List<String> typeFamilles = currentUser.authorizedFamilles();
+      Map<String, String> result = parametrageService.findByUserId(currentUser.getUserId());
+      if(!isRightUserFamille(typeFamilles ,result.get(USER_FAMILLE).split(REGEX_USER_FAMILLE)[0])){
+          result.replace(USER_FAMILLE, USER_FAMILLE_ALL);
+      }
+      return result;
   }
 
   @RequestMapping(value = "parametres",
@@ -259,4 +269,13 @@ public class GeneralResource {
 
       return appInfo;
   }
+
+  private boolean isRightUserFamille(List<String> listUserFamille,String codeUserFamille){
+        Optional<String> queryResult = listUserFamille.stream()
+                .filter(userFamille -> userFamille != null)
+                .filter(userFamille -> userFamille.split(REGEX_USER_FAMILLE)[0].equals(codeUserFamille))
+                .findFirst();
+        return queryResult.isPresent();
+  }
+
 }
