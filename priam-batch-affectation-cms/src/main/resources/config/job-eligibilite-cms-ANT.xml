@@ -248,7 +248,8 @@
                         nbrDif,
                         ID_FICHIER,
                         ajout,
-                        nbrDifEdit
+                        nbrDifEdit,
+                        selection
                         )
                     VALUES (
                         :typeCMS,
@@ -260,7 +261,8 @@
                         :nbrDif,
                         '#{jobExecutionContext['ID_FICHIER_LINK']}',
                         'AUTOMATIQUE',
-                        :nbrDif
+                        :nbrDif,
+                        1
                         )
                       ;
                 ]]>

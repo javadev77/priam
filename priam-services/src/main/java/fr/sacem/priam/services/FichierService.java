@@ -1,5 +1,6 @@
 package fr.sacem.priam.services;
 
+import fr.sacem.priam.common.TypeUtilisationEnum;
 import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.dao.jpa.cms.LigneProgrammeCMSDao;
 import fr.sacem.priam.model.dao.jpa.cms.LigneProgrammeCopyCMSDao;
@@ -70,8 +71,10 @@ public class FichierService {
 
         if(programme.getFamille().getCode().equals(FamillePriam.CMS.getCode())) {
             //Mettre par defaut les oeuvre à  selectionne
-            ligneProgrammeCMSDao.updateSelectionTemporaireByNumProgramme(numProg, true);
-            ligneProgrammeCMSDao.deselectAllByNumProgramme(numProg, true);
+            if(programme.getTypeUtilisation().getCode().equals(TypeUtilisationEnum.CMS_FRA.getCode())) {
+                ligneProgrammeCMSDao.updateSelectionTemporaireByNumProgramme(numProg, true);
+                ligneProgrammeCMSDao.deselectAllByNumProgramme(numProg, true);
+            }
             programme.setStatutEligibilite(StatutEligibilite.EN_ATTENTE_ELIGIBILITE);
         } else if(programme.getFamille().getCode().equals(FamillePriam.COPIE_PRIVEE.getCode())) {
             //Mettre par defaut les oeuvre à  selectionne
