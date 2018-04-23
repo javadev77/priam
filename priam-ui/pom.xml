@@ -278,12 +278,12 @@
 
 
           <execution>
-            <id>yarn run devsacem</id>
+            <id>yarn run re7</id>
             <goals>
               <goal>yarn</goal>
             </goals>
             <configuration>
-              <arguments>run devsacem</arguments>
+              <arguments>run re7</arguments>
             </configuration>
           </execution>
 
