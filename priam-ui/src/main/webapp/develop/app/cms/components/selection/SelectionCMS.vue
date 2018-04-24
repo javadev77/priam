@@ -285,7 +285,7 @@
               id: 'pointsMontant',
               name: "Points",
               sortable: true,
-              sortProperty : 'sum(mt)', // l'equivalent du JpaSort dans le back
+              sortProperty : 'mt', // l'equivalent du JpaSort dans le back
               type: 'inputNum',
               cellEditorFramework : undefined,
               cell: {
@@ -527,10 +527,10 @@
 
                 if(pointsColumn !== undefined) {
                   if(this.programmeInfo.typeUtilisation === "SONOANT"){
-                    pointsColumn.sortProperty = 'sum(nbrDifEdit)';
+                    pointsColumn.sortProperty = 'nbrDifEdit';
                     pointsColumn.cellEditorFramework = PointsEditor;
                   } else {
-                    pointsColumn.sortProperty = 'sum(mtEdit)';
+                    pointsColumn.sortProperty = 'mtEdit';
                     pointsColumn.cellEditorFramework = PointsMontantEditor;
                   }
 

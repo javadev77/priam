@@ -13,6 +13,7 @@ import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 
 import fr.sacem.priam.model.domain.saref.*;
 import fr.sacem.priam.model.util.GlobalConstants;
+import fr.sacem.priam.services.JournalService;
 import fr.sacem.priam.services.journal.annotation.LogEtatProgramme;
 import fr.sacem.priam.services.journal.annotation.LogOeuvre;
 import fr.sacem.priam.services.journal.annotation.LogProgramme;
@@ -46,6 +47,8 @@ import java.util.List;
 @Aspect
 @Configuration
 public class LoggingAspect {
+    private static final String OEUVRE_SELECTIONNEE = "Sélectionnée";
+    private static final String OEUVRE_DESELECTIONNEE = "Désélectionnée";
 
     private static final Logger LOG = LoggerFactory.getLogger(LoggingAspect.class);
 
@@ -53,8 +56,6 @@ public class LoggingAspect {
     private static final String PRG_VALIDE = "Validé";
     private static final String PRG_AFFECTE = "Affecté";
     private static final String PRG_MIS_EN_REPART = "Mis en répartition";
-    private static final String OEUVRE_SELECTIONNEE = "Sélectionnée";
-    private static final String OEUVRE_DESELECTIONNEE = "Désélectionnée";
     private static final String SUPPRESSION_OEUVRE_MANUEL = "Suppression oeuvre avec état \"Manuel\"";
     private static final String SUPPRESSION_OEUVRE_CORRIGE = "Suppression oeuvre avec état \"Corrigé\"";
 
@@ -72,11 +73,18 @@ public class LoggingAspect {
 
     @Autowired private SareftrRionDao sareftrRionDao;
 
+
     @Autowired private SareftjLibfamiltyputilDao sareftjLibfamiltyputilDao;
 
     @Autowired private SareftjLibtyputilDao sareftjLibtyputilDao;
 
+    @Autowired
+    JournalService journalService;
+
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+  /*  @Autowired
+    private JournalJdbcDao journalJdbcDao;*/
 
 
     @Around("execution(@fr.sacem.priam.services.journal.annotation.LogProgramme * *(..)) && @annotation(logProgramme)")
@@ -143,136 +151,12 @@ public class LoggingAspect {
         ValdierSelectionProgrammeInput selectionProgrammeInput = (ValdierSelectionProgrammeInput)joinPoint.getArgs()[0];
 
         UserDTO userDTO = (UserDTO)joinPoint.getArgs()[1];
-        String numProg = selectionProgrammeInput.getNumProg();
-
-        Programme programme = programmeDao.findByNumProg(numProg);
-
-        List<SelectionDto> listLigneProgrammePreselectionnees = new ArrayList<>();
-        List<SelectionDto> listLigneProgrammePredeselectionnees = new ArrayList<>();
-        List<SelectionCMSDto> listLigneProgrammePreselectionneesCMS = new ArrayList<>();
-        List<SelectionCMSDto> listLigneProgrammePredeselectionneesCMS = new ArrayList<>();
-
-        if(selectionProgrammeInput.isFromSelection() && programme.getFamille().getCode().equals(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_PHONO.getCodeFamille())) {
-            listLigneProgrammePreselectionnees = ligneProgrammeCPDao.findLigneProgrammePreselected(numProg, null, null, null, null, true, false);
-            listLigneProgrammePredeselectionnees = ligneProgrammeCPDao.findLigneProgrammePreselected(numProg, null, null, null, null, false, true);
-
-            for (SelectionDto ligneSelectionnee : listLigneProgrammePreselectionnees) {
-                Journal journal = new Journal();
-                journal.setEvenement(annotationValue.getEvenement());
-                journal.setNumProg(selectionProgrammeInput.getNumProg());
-                journal.setIde12(ligneSelectionnee.getIde12());
-                journal.setDate(new Date());
-                journal.setUtilisateur(userDTO.getUserId());
-
-                List<SituationAvant> situationAvantList = new ArrayList<>();
-                List<SituationApres> situationApresList = new ArrayList<>();
-
-                SituationAvant situationAvant = new SituationAvant();
-                SituationApres situationApres = new SituationApres();
-
-                situationAvant.setSituation(OEUVRE_DESELECTIONNEE);
-                situationApres.setSituation(OEUVRE_SELECTIONNEE);
-
-                situationAvantList.add(situationAvant);
-                situationApresList.add(situationApres);
-
-                journal.setListSituationAvant(situationAvantList);
-                journal.setListSituationApres(situationApresList);
-
-                journalDao.save(journal);
-            }
-
-
-            for (SelectionDto ligneDeselectionnee : listLigneProgrammePredeselectionnees) {
-                Journal journal = new Journal();
-                journal.setEvenement(TypeLog.DESELECTION.getEvenement());
-                journal.setNumProg(selectionProgrammeInput.getNumProg());
-                journal.setIde12(ligneDeselectionnee.getIde12());
-                journal.setDate(new Date());
-                journal.setUtilisateur(userDTO.getUserId());
-
-                List<SituationAvant> situationAvantList = new ArrayList<>();
-                List<SituationApres> situationApresList = new ArrayList<>();
-
-                SituationAvant situationAvant = new SituationAvant();
-                SituationApres situationApres = new SituationApres();
-
-                situationAvant.setSituation(OEUVRE_SELECTIONNEE);
-                situationApres.setSituation(OEUVRE_DESELECTIONNEE);
-
-                situationAvantList.add(situationAvant);
-                situationApresList.add(situationApres);
-
-                journal.setListSituationAvant(situationAvantList);
-                journal.setListSituationApres(situationApresList);
-
-                journalDao.save(journal);
-            }
-
-        } else if(selectionProgrammeInput.isFromSelection() && programme.getFamille().getCode().equals(TypeUtilisationEnum.CMS_FRA.getCodeFamille())){
-            listLigneProgrammePreselectionneesCMS = ligneProgrammeCMSDao.findLigneProgrammePreselected(numProg, true, false);
-            listLigneProgrammePredeselectionneesCMS = ligneProgrammeCMSDao.findLigneProgrammePreselected(numProg, false, true);
-
-            for (SelectionCMSDto ligneSelectionnee : listLigneProgrammePreselectionneesCMS) {
-                Journal journal = new Journal();
-                journal.setEvenement(annotationValue.getEvenement());
-                journal.setNumProg(selectionProgrammeInput.getNumProg());
-                journal.setIde12(ligneSelectionnee.getIde12());
-                journal.setDate(new Date());
-                journal.setUtilisateur(userDTO.getUserId());
-
-                List<SituationAvant> situationAvantList = new ArrayList<>();
-                List<SituationApres> situationApresList = new ArrayList<>();
-
-                SituationAvant situationAvant = new SituationAvant();
-                SituationApres situationApres = new SituationApres();
-
-                situationAvant.setSituation(OEUVRE_DESELECTIONNEE);
-                situationApres.setSituation(OEUVRE_SELECTIONNEE);
-
-                situationAvantList.add(situationAvant);
-                situationApresList.add(situationApres);
-
-                journal.setListSituationAvant(situationAvantList);
-                journal.setListSituationApres(situationApresList);
-
-                journalDao.save(journal);
-            }
-
-
-            for (SelectionCMSDto ligneDeselectionnee : listLigneProgrammePredeselectionneesCMS) {
-                Journal journal = new Journal();
-                journal.setEvenement(TypeLog.DESELECTION.getEvenement());
-                journal.setNumProg(selectionProgrammeInput.getNumProg());
-                journal.setIde12(ligneDeselectionnee.getIde12());
-                journal.setDate(new Date());
-                journal.setUtilisateur(userDTO.getUserId());
-
-                List<SituationAvant> situationAvantList = new ArrayList<>();
-                List<SituationApres> situationApresList = new ArrayList<>();
-
-                SituationAvant situationAvant = new SituationAvant();
-                SituationApres situationApres = new SituationApres();
-
-                situationAvant.setSituation(OEUVRE_SELECTIONNEE);
-                situationApres.setSituation(OEUVRE_DESELECTIONNEE);
-
-                situationAvantList.add(situationAvant);
-                situationApresList.add(situationApres);
-
-                journal.setListSituationAvant(situationAvantList);
-                journal.setListSituationApres(situationApresList);
-
-                journalDao.save(journal);
-            }
-        }
-
-
-
+        journalService.logJournalOeuvre(selectionProgrammeInput, userDTO, annotationValue);
         Object result = joinPoint.proceed();
 
         return result;
     }
+
 
     @Around("execution(@fr.sacem.priam.services.journal.annotation.LogEtatProgramme * *(..)) && @annotation(logEtatProgramme)")
     public Object logEtatProgramme(ProceedingJoinPoint joinPoint, LogEtatProgramme logEtatProgramme)  throws Throwable {

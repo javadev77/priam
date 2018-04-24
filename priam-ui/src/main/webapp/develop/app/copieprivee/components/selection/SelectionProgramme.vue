@@ -787,7 +787,7 @@
         this.defaultPageable.size = size;
         let pageSize = this.defaultPageable.size;
 
-
+        this.dataLoading = true;
         if (this.edition) {
           this.modifierSelectionTemporaire();
 
@@ -836,6 +836,13 @@
 
       launchRechercheEtCompteurs() {
 
+        this.currentFilter.ide12 = this.filter.ide12;
+        this.currentFilter.ajout = this.filter.ajout;
+        this.currentFilter.numProg = this.filter.numProg;
+        this.currentFilter.utilisateur = this.filter.utilisateur;
+        this.currentFilter.titre = this.filter.titre;
+        this.currentFilter.selection = this.filter.selection;
+
         this.doSearch();
         this.getDuree(this.programmeInfo.statut);
       },
@@ -875,13 +882,8 @@
 
       rechercher(){
 
-        this.currentFilter.ide12 = this.filter.ide12;
-        this.currentFilter.ajout = this.filter.ajout;
-        this.currentFilter.numProg = this.filter.numProg;
-        this.currentFilter.utilisateur = this.filter.utilisateur;
-        this.currentFilter.titre = this.filter.titre;
-        this.currentFilter.selection = this.filter.selection;
 
+        debugger;
         if(!this.edition) {
           this.launchRechercheEtCompteurs();
         } else {
@@ -1238,10 +1240,11 @@
           })
           .then(data => {
 
-            this.selection =  {
+            /*this.selection =  {
               numProg : this.$route.params.numProg,
               fromSelection : this.fromSelection
-            };
+            };*/
+            this.selection.fromSelection= this.fromSelection;
             this.resource.enregistrerEdition(this.selection)
               .then(response => {
                 this.filter.selection = 'Sélectionné';
@@ -1250,7 +1253,7 @@
                 this.tableauSelectionnable = false;
                 this.edition = false;
                 this.inProcess = false;
-                this.initProgramme();
+                //this.initProgramme();
               });
           })
           .catch(response => {

@@ -1,4 +1,4 @@
-/* ----- Classe générale pour tous les sprites */
+/* ----- Classe gï¿½nï¿½rale pour tous les sprites */
 .socspr20 {
     width: 20px;
     height: 20px;
@@ -8,15 +8,15 @@
     margin-right: 3px;
     vertical-align: middle;
 }
-/* ----- Sociétaire ----- */
+/* ----- Sociï¿½taire ----- */
 .soc20 {
     background-position: -0px -0px;
 }
-/* ----- Sociétaire (non valide) ----- */
+/* ----- Sociï¿½taire (non valide) ----- */
 .socnonval20 {
     background-position: -21px -0px;
 }
-/* ----- Sociétaire identifié IPI ----- */
+/* ----- Sociï¿½taire identifiï¿½ IPI ----- */
 .socipi20 {
     background-position: -42px -0px;
 }
@@ -28,7 +28,7 @@
 .pernonval20 {
     background-position: -21px -21px;
 }
-/* ----- Personne identifié IPI ----- */
+/* ----- Personne identifiï¿½ IPI ----- */
 .peripi20 {
     background-position: -42px -21px;
 }
@@ -40,7 +40,7 @@
 .grpnonval20 {
     background-position: -21px -42px;
 }
-/* ----- Groupe identifié IPI ----- */
+/* ----- Groupe identifiï¿½ IPI ----- */
 .grpipi20 {
     background-position: -42px -42px;
 }
@@ -52,19 +52,19 @@
 .pemnonval20 {
     background-position: -21px -63px;
 }
-/* ----- Personne morale identifiée IPI ----- */
+/* ----- Personne morale identifiï¿½e IPI ----- */
 .pemipi20 {
     background-position: -42px -63px;
 }
-/* ----- Œuvre ----- */
+/* ----- ï¿½uvre ----- */
 .oeuv20 {
     background-position: -0px -84px;
 }
-/* ----- Œuvre codifiée ----- */
+/* ----- ï¿½uvre codifiï¿½e ----- */
 .oeuvcodif20 {
     background-position: -21px -84px;
 }
-/* ----- Œuvre numérique ----- */
+/* ----- ï¿½uvre numï¿½rique ----- */
 .oeuvnum20 {
     background-position: -42px -84px;
 }

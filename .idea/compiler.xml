@@ -7,6 +7,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="priam-batch-affectation-cms" />
+        <module name="priam-batch-affectation-cp" />
         <module name="priam-batch-import-cms-ant" />
         <module name="priam-batch-import-cms-fra" />
         <module name="priam-batch-import-cp" />
@@ -25,6 +26,7 @@
     <bytecodeTargetLevel>
       <module name="priam-batch-affectation-cms" target="1.8" />
       <module name="priam-batch-affectation-cms-ant" target="1.8" />
+      <module name="priam-batch-affectation-cp" target="1.8" />
       <module name="priam-batch-import-cms" target="1.8" />
       <module name="priam-batch-import-cms-ant" target="1.8" />
       <module name="priam-batch-import-cms-fra" target="1.8" />

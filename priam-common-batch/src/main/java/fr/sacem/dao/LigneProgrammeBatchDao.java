@@ -154,5 +154,32 @@ public class LigneProgrammeBatchDao {
             jdbcTemplate.update(sql);
         }
     }
+
+    @Transactional
+    public void deleteDedoublonnageCP(String numProg) {
+        String selectSql = "SELECT l2.id as id " +
+                "FROM PRIAM_LIGNE_PROGRAMME_CP l2 " +
+                "INNER JOIN PRIAM_FICHIER f ON l2.ID_FICHIER=f.ID " +
+                "INNER JOIN PRIAM_PROGRAMME p ON p.NUMPROG=f.NUMPROG "+
+                "WHERE p.NUMPROG=? AND p.STATUT_ELIGIBILITE = 'EN_ATTENTE_ELIGIBILITE' "+
+                "AND l2.id not IN (SELECT temp.id3 "+
+                "from ( "+
+                "select min(l.id) as id3 "+
+                "from PRIAM_LIGNE_PROGRAMME_CP l "+
+                "INNER JOIN PRIAM_FICHIER f ON l.ID_FICHIER=f.ID "+
+                "INNER JOIN PRIAM_PROGRAMME p ON p.NUMPROG=f.NUMPROG "+
+                "WHERE p.NUMPROG=? AND p.STATUT_ELIGIBILITE = 'EN_ATTENTE_ELIGIBILITE' "+
+                "group by l.ide12, l.cdeUtil) as  temp) ";
+
+
+
+        List<Long> ids = jdbcTemplate.query(selectSql,
+                (resultSet, i) -> resultSet.getLong("id"), numProg, numProg);
+
+        if(ids != null && !ids.isEmpty()) {
+            String sql =  "DELETE FROM PRIAM_LIGNE_PROGRAMME_CP WHERE id IN (" + Joiner.on(",").join(ids).toString() + ") ";
+            jdbcTemplate.update(sql);
+        }
+    }
 }
 

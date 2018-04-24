@@ -7,7 +7,7 @@
           <element id="module-output" name="priam-rest-api-cms" />
         </element>
         <element id="directory" name="lib">
-          <element id="archive" name="priam-common-batch-2.0.5.1-SNAPSHOT.jar">
+          <element id="archive" name="priam-common-batch-2.2.4-SNAPSHOT.jar">
             <element id="module-output" name="priam-common-batch" />
           </element>
           <element id="library" level="project" name="Maven: commons-validator:commons-validator:1.4.0" />
@@ -73,7 +73,7 @@
           <element id="library" level="project" name="Maven: com.google.guava:guava:21.0" />
           <element id="library" level="project" name="Maven: org.springframework.boot:spring-boot:1.5.2.RELEASE" />
           <element id="library" level="project" name="Maven: org.springframework.boot:spring-boot-autoconfigure:1.5.2.RELEASE" />
-          <element id="archive" name="priam-common-2.0.5.1-SNAPSHOT.jar">
+          <element id="archive" name="priam-common-2.2.4-SNAPSHOT.jar">
             <element id="module-output" name="priam-common" />
           </element>
           <element id="library" level="project" name="Maven: org.springframework.security:spring-security-core:4.2.2.RELEASE" />
@@ -84,7 +84,7 @@
           <element id="library" level="project" name="Maven: org.springframework:spring-messaging:4.3.7.RELEASE" />
           <element id="library" level="project" name="Maven: org.springframework.integration:spring-integration-stream:4.3.8.RELEASE" />
           <element id="library" level="project" name="Maven: com.jcraft:jsch:0.1.54" />
-          <element id="archive" name="priam-model-2.0.5.1-SNAPSHOT.jar">
+          <element id="archive" name="priam-model-2.2.4-SNAPSHOT.jar">
             <element id="module-output" name="priam-model" />
           </element>
           <element id="library" level="project" name="Maven: commons-beanutils:commons-beanutils:1.9.3" />
@@ -93,13 +93,13 @@
           <element id="library" level="project" name="Maven: org.hibernate:hibernate-validator:5.3.4.Final" />
           <element id="library" level="project" name="Maven: com.fasterxml:classmate:1.3.3" />
           <element id="library" level="project" name="Maven: org.mariadb.jdbc:mariadb-java-client:1.5.8" />
-          <element id="archive" name="priam-security-2.0.5.1-SNAPSHOT.jar">
+          <element id="archive" name="priam-security-2.2.4-SNAPSHOT.jar">
             <element id="module-output" name="priam-security" />
           </element>
-          <element id="archive" name="priam-services-2.0.5.1-SNAPSHOT.jar">
+          <element id="archive" name="priam-services-2.2.4-SNAPSHOT.jar">
             <element id="module-output" name="priam-services" />
           </element>
-          <element id="archive" name="priam-batch-affectation-cms-2.0.5.1-SNAPSHOT.jar">
+          <element id="archive" name="priam-batch-affectation-cms-2.2.4-SNAPSHOT.jar">
             <element id="module-output" name="priam-batch-affectation-cms" />
           </element>
           <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.7.24" />

@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/priam-batch-affectation-cms/priam-batch-affectation-cms.iml" filepath="$PROJECT_DIR$/priam-batch-affectation-cms/priam-batch-affectation-cms.iml" />
+      <module fileurl="file://$PROJECT_DIR$/priam-batch-affectation-cp/priam-batch-affectation-cp.iml" filepath="$PROJECT_DIR$/priam-batch-affectation-cp/priam-batch-affectation-cp.iml" />
       <module fileurl="file://$PROJECT_DIR$/priam-batch-import-cms-ant/priam-batch-import-cms-ant.iml" filepath="$PROJECT_DIR$/priam-batch-import-cms-ant/priam-batch-import-cms-ant.iml" />
       <module fileurl="file://$PROJECT_DIR$/priam-batch-import-cms-fra/priam-batch-import-cms-fra.iml" filepath="$PROJECT_DIR$/priam-batch-import-cms-fra/priam-batch-import-cms-fra.iml" />
       <module fileurl="file://$PROJECT_DIR$/priam-batch-import-cp/priam-batch-import-cp.iml" filepath="$PROJECT_DIR$/priam-batch-import-cp/priam-batch-import-cp.iml" />

@@ -18,7 +18,7 @@ import java.util.List;
 @Transactional(readOnly = true)
 public interface LibelleFamilleDao extends JpaRepository<SareftjLibfamiltyputil, SareftjLibfamiltyputilPK> {
     
-    @Cacheable("libelle_familles")
+    //@Cacheable("libelle_familles")
     @Query("SELECT libFam FROM SareftjLibfamiltyputil libFam " +
             "WHERE (libFam.sareftrFamiltyputil.dateDebut is null OR " +
                "DATE_FORMAT(libFam.sareftrFamiltyputil.dateDebut, '%Y-%d-%m') = '0000-00-00' OR "+
