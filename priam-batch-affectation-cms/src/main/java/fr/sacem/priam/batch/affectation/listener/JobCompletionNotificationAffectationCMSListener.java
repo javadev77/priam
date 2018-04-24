@@ -6,15 +6,15 @@ import fr.sacem.dao.TraitementCmsDao;
 
 import fr.sacem.domain.Programme;
 import fr.sacem.priam.batch.affectation.dao.JournalBatchDao;
-import fr.sacem.priam.common.TypeLog;
 import fr.sacem.priam.common.util.FileUtils;
 import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.dao.jpa.JournalDao;
-import fr.sacem.priam.model.domain.*;
-
-import fr.sacem.priam.model.journal.JournalBuilder;
 
 
+import fr.sacem.priam.model.domain.Fichier;
+import fr.sacem.priam.model.domain.Journal;
+import fr.sacem.priam.model.domain.Status;
+import fr.sacem.priam.model.util.JournalAffectationBuilder;
 import fr.sacem.priam.model.util.TypeUtilisationPriam;
 import fr.sacem.service.importPenef.FichierBatchService;
 import fr.sacem.util.UtilFile;
@@ -28,7 +28,6 @@ import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -165,7 +164,7 @@ public class JobCompletionNotificationAffectationCMSListener extends JobExecutio
                 }
             }
 
-            List<SituationAvant> situationAvantList = new ArrayList<>();
+            /*List<SituationAvant> situationAvantList = new ArrayList<>();
             List<SituationApres> situationApresList = new ArrayList<>();
 
             if(!listNomFichier.isEmpty()) {
@@ -189,7 +188,13 @@ public class JobCompletionNotificationAffectationCMSListener extends JobExecutio
             journal.setListSituationAvant(situationAvantList);
             journal.setListSituationApres(situationApresList);
 
-            /*journalDao.saveAndFlush(journal);*/
+
+            Long idJournal = journalBatchDao.saveJournal(journal);
+            */
+
+            List<Fichier> listFichierAffecte = fichierDao.findFichiersByIdProgramme(numProg, Status.AFFECTE);
+            JournalAffectationBuilder journalAffectationBuilder = new JournalAffectationBuilder();
+            Journal journal = journalAffectationBuilder.create(numProg, listNomFichier, listFichierAffecte, userId);
             Long idJournal = journalBatchDao.saveJournal(journal);
             journalBatchDao.saveSituationAvantJournal(journal.getListSituationAvant(), idJournal);
             journalBatchDao.saveSituationApresJournal(journal.getListSituationApres(), idJournal);
@@ -216,6 +221,8 @@ public class JobCompletionNotificationAffectationCMSListener extends JobExecutio
 
 
         }
+
+
     }
 
     public FichierBatchService getFichierBatchService() {

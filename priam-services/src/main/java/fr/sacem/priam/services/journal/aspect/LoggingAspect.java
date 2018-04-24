@@ -1,34 +1,28 @@
 package fr.sacem.priam.services.journal.aspect;
 
+import fr.sacem.priam.model.dao.jpa.*;
 import fr.sacem.priam.common.TypeUtilisationEnum;
-import fr.sacem.priam.model.dao.jpa.FichierDao;
-import fr.sacem.priam.model.dao.jpa.JournalDao;
-import fr.sacem.priam.model.dao.jpa.SareftjLibterDao;
-import fr.sacem.priam.model.dao.jpa.SareftrRionDao;
 import fr.sacem.priam.model.dao.jpa.cms.LigneProgrammeCMSDao;
 import fr.sacem.priam.model.dao.jpa.cp.LigneProgrammeCPDao;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
-import fr.sacem.priam.model.domain.*;
-
+import fr.sacem.priam.model.domain.Journal;
+import fr.sacem.priam.model.domain.Programme;
+import fr.sacem.priam.model.domain.SituationApres;
+import fr.sacem.priam.model.domain.SituationAvant;
 import fr.sacem.priam.model.domain.cms.LigneProgrammeCMS;
 import fr.sacem.priam.model.domain.cp.LigneProgrammeCP;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
-
-import fr.sacem.priam.model.domain.saref.SareftjLibter;
-import fr.sacem.priam.model.domain.saref.SareftrRion;
-import fr.sacem.priam.model.util.GlobalConstants;
-import fr.sacem.priam.services.journal.annotation.LogEtatProgramme;
-import fr.sacem.priam.services.journal.annotation.LogOeuvre;
-import fr.sacem.priam.services.journal.annotation.LogProgramme;
-import fr.sacem.priam.services.journal.annotation.TypeLog;
-
 import fr.sacem.priam.model.domain.dto.SelectionCMSDto;
 import fr.sacem.priam.model.domain.dto.SelectionDto;
+import fr.sacem.priam.model.domain.saref.SareftjLibfamiltyputil;
+import fr.sacem.priam.model.domain.saref.SareftjLibter;
+import fr.sacem.priam.model.domain.saref.SareftjLibtyputil;
+import fr.sacem.priam.model.domain.saref.SareftrRion;
 import fr.sacem.priam.model.util.EtatOeuvreEnum;
+import fr.sacem.priam.model.util.GlobalConstants;
 import fr.sacem.priam.security.model.UserDTO;
 import fr.sacem.priam.services.dto.ValdierSelectionProgrammeInput;
 import fr.sacem.priam.services.journal.annotation.*;
-
 import org.apache.commons.lang.WordUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -37,8 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.domain.Page;
-
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -75,6 +67,11 @@ public class LoggingAspect {
     @Autowired private SareftjLibterDao sareftjLibterDao;
 
     @Autowired private SareftrRionDao sareftrRionDao;
+
+
+    @Autowired private SareftjLibfamiltyputilDao sareftjLibfamiltyputilDao;
+
+    @Autowired private SareftjLibtyputilDao sareftjLibtyputilDao;
 
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -413,7 +410,7 @@ public class LoggingAspect {
                     situationApres.setSituation("0");
                     situationApresList.add(situationApres);
                 }else if(oeuvreManuelCMS.getCdeTypUtil().equals(TypeUtilisationEnum.CMS_ANT.getCode())){
-                    situationAvant.setSituation(String.valueOf(selectionDto.getNbrDif()));
+                    situationAvant.setSituation(String.valueOf(oeuvreManuelCMS.getNbrDif()));
                     situationAvantList.add(situationAvant);
                     situationApres.setSituation("0");
                     situationApresList.add(situationApres);
@@ -435,8 +432,9 @@ public class LoggingAspect {
     private String getInfoProgramme(Programme programme) {
         return " Nom programme : " + programme.getNom() + "<br/>"
                 + " Rion cible : " + getLibelleRion(programme.getRionTheorique().getRion()) + "<br/>"
-                + " Famille : " + programme.getFamille().getCode() + "<br/>"
-                + " Type d'utilisation : " + programme.getTypeUtilisation().getCode() + "<br/>"
+                + " Famille : " + getLibelleFamille(programme.getFamille().getCode(), GlobalConstants.FR_LANG) + "<br/>"
+                + " Type d'utilisation : " + getLibelleTypeUtil(programme.getTypeUtilisation().getCode(), GlobalConstants.FR_LANG) + "<br/>"
+
                 + " Date de début : " + simpleDateFormat.format(programme.getDateDbtPrg()) + "<br/>"
                 + " Date de fin : " + simpleDateFormat.format(programme.getDateFinPrg()) + "<br/>"
                 + " Territoire : " + getLibelleTerritoire(programme.getCdeTer(), GlobalConstants.FR_LANG) + "<br/>"
@@ -446,8 +444,9 @@ public class LoggingAspect {
     private String getInfoProgrammeDto(ProgrammeDto programmeDto) {
         return "Nom programme : " + programmeDto.getNom()+ "<br/>"
                 + "Rion cible : " + getLibelleRion(programmeDto.getRionTheorique()) + "<br/>"
-                + "Famille : " + programmeDto.getFamille() + "<br/>"
-                + "Type d'utilisation : " + programmeDto.getTypeUtilisation() + "<br/>"
+                + "Famille : " + getLibelleFamille(programmeDto.getFamille(), GlobalConstants.FR_LANG) + "<br/>"
+                + "Type d'utilisation : " + getLibelleTypeUtil(programmeDto.getTypeUtilisation(), GlobalConstants.FR_LANG) + "<br/>"
+
                 + "Date de début : " + simpleDateFormat.format(programmeDto.getDateDbtPrg()) + "<br/>"
                 + "Date de fin : " + simpleDateFormat.format(programmeDto.getDateFinPrg()) + "<br/>"
                 + "Territoire : " + getLibelleTerritoire(programmeDto.getCdeTer(), GlobalConstants.FR_LANG) + "<br/>"
@@ -464,6 +463,17 @@ public class LoggingAspect {
         SareftrRion sareftrRion = sareftrRionDao.findOne(rion);
         String libelleRion = sareftrRion.getRion() + " - " + new SimpleDateFormat("MMMM yyyy").format(sareftrRion.getDatrglmt());
         return libelleRion;
+    }
+
+    private String getLibelleFamille(String code, String lang){
+        SareftjLibfamiltyputil sareftjLibfamiltyputil = sareftjLibfamiltyputilDao.findByCodeAndLang(code, lang);
+        return sareftjLibfamiltyputil.getLibelle();
+    }
+
+    private String getLibelleTypeUtil(String code, String lang){
+        SareftjLibtyputil sareftjLibtyputil = sareftjLibtyputilDao.findByCodeAndLang(code , lang);
+        return sareftjLibtyputil.getLibelle();
+
     }
 
 }

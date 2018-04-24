@@ -110,6 +110,7 @@ public class CatalogueOctavZipMultiResourceItemReader<T> extends MultiResourceIt
                                         && typeUtilisationProgramme.equals(TypeUtilisationEnum.CMS_ANT.getCode().toString()))) {
 
                                     File fichierEnCoursDeTraitement = new File(rep + file.getName() + FILE_ZIP_EN_COURS_DE_TRAITEMENT);
+                                    utilFile.suppressionFlag(fichierEnCoursDeTraitement);
                                     LOG.debug("=== renomer le fichier en : "+fichierEnCoursDeTraitement.getName()+" ===");
                                     JobParameter jobParameterFichierZipEnCours = new JobParameter(fichierEnCoursDeTraitement.getAbsolutePath());
                                     JobParameter jobParameterNomFichierOriginal = new JobParameter(file.getName());

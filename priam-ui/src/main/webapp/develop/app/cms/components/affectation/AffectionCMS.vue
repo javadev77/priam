@@ -783,20 +783,11 @@
           console.log("fichiers envoyes" + this.fichiersToProgramme.fichiers);
           debugger;
 
-          /*this.fichiersDesaffectes.numProg = numProgramme;
-          this.fichiersDesaffectes.isAllDesaffecte = 'true';*/
-
           this.resource.findFichiersAffecte({numProg: numProgramme})
             .then(response => {
               return response.json();
             })
             .then(data => {
-              console.log("fichiersAvantDesaffectation" + data);
-              debugger;
-              const result = [];
-              /*for (let key in data) {
-                this.fichiersDesaffectes.fichersAvantDesaffectation.push(data[key].id);
-              }*/
               for (let key in data) {
                 this.fichersAvantDesaffectation.push(data[key].id);
               }
@@ -807,7 +798,6 @@
                 fichersAvantDesaffectation: this.fichersAvantDesaffectation
               }
 
-              /*this.resource.toutDeaffecterProg(numProgramme)*/
               this.resource.toutDeaffecterProg(this.fichiersDesaffectes)
                 .then(response => {
                   return response.json();
@@ -817,32 +807,6 @@
                   this.showModalDesactiver = false;
 
                   this.$router.push({name: 'ListePrg'});
-                  //this.deaffectationEncours = true;
-
-                  //this.programmeInfo = data;
-                  /*this.initData();
-              this.rechercher();
-              this.$store.dispatch('toutDesactiver', false);*/
-                  /*var self = this;
-              var timer = setInterval(function () {
-
-                self.resource.findByNumProg({numProg: numProgramme})
-                  .then(response => {
-                    return response.json();
-                  })
-                  .then(programme => {
-                    if(programme.statutEligibilite === 'FIN_DESAFFECTATION') {
-                      clearInterval(timer);
-                      self.programmeInfo = programme;
-                      self.deaffectationEncours = false;
-                      self.initData();
-                      self.rechercher();
-                      self.$store.dispatch('toutDesactiver', false);
-                    }
-                  });
-
-
-              }, 1000);*/
 
                 })
                 .catch(response => {

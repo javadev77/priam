@@ -1,8 +1,10 @@
 package fr.sacem.priam.rest.copieprivee.api;
 
 import com.google.common.base.Strings;
+import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
 import fr.sacem.priam.model.domain.Fichier;
+import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.dto.AffectationDto;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.rest.copieprivee.journal.annotation.LogFichier;
@@ -10,6 +12,7 @@ import fr.sacem.priam.common.TypeLog;
 import fr.sacem.priam.security.model.UserDTO;
 import fr.sacem.priam.services.FichierService;
 import fr.sacem.priam.services.ProgrammeService;
+import fr.sacem.priam.services.utils.AffectationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +22,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by benmerzoukah on 16/11/2017.
@@ -36,6 +41,9 @@ public class AffectationCPResource {
     private ProgrammeViewDao programmeViewDao;
 
     @Autowired
+    AffectationUtil affectationUtil;
+
+    @Autowired
     private ProgrammeService programmeService;
 
     @RequestMapping(value = "programme/affectation",
@@ -47,8 +55,7 @@ public class AffectationCPResource {
 
         ProgrammeDto programmeDto = null;
         String numProg=affectationDto.getNumProg();
-        List<Fichier> fichiers = affectationDto.getFichiers();
-
+        List<Fichier> fichiers = affectationUtil.getFichiersAffectes(affectationDto);
         if(!Strings.isNullOrEmpty(numProg)){
             fichierService.majFichiersAffectesAuProgramme(numProg, fichiers, currentUser.getDisplayName());
             programmeDto = programmeViewDao.findByNumProg(numProg);

@@ -4,19 +4,19 @@ import com.google.common.base.Strings;
 import fr.sacem.domain.Admap;
 import fr.sacem.priam.common.TypeUtilisationEnum;
 import fr.sacem.priam.model.dao.jpa.FichierDao;
+import fr.sacem.priam.model.dao.jpa.JournalDao;
 import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
-import fr.sacem.priam.model.domain.Fichier;
-import fr.sacem.priam.model.domain.Programme;
-import fr.sacem.priam.model.domain.Status;
-import fr.sacem.priam.model.domain.StatutEligibilite;
+import fr.sacem.priam.model.domain.*;
 import fr.sacem.priam.model.domain.dto.AffectationDto;
 import fr.sacem.priam.model.domain.dto.DesaffectationDto;
 import fr.sacem.priam.model.domain.dto.FileDto;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
+import fr.sacem.priam.model.util.JournalAffectationBuilder;
 import fr.sacem.priam.security.model.UserDTO;
 import fr.sacem.priam.services.FichierService;
 
+import fr.sacem.priam.services.utils.AffectationUtil;
 import org.apache.commons.lang.StringUtils;
 
 import org.slf4j.Logger;
@@ -58,6 +58,9 @@ public class AffectationCMSResource {
     private FichierDao fichierDao;
 
     @Autowired
+    private JournalDao journalDao;
+
+    @Autowired
     JobLauncher jobLauncher;
 
     @Autowired
@@ -68,6 +71,9 @@ public class AffectationCMSResource {
 
     @Autowired
     Job jobEligibiliteCMSAntille;
+
+    @Autowired
+    AffectationUtil affectationUtil;
 
     @Autowired
     Admap admap;
@@ -83,14 +89,17 @@ public class AffectationCMSResource {
 
         String numProg = affectationDto.getNumProg();
         ProgrammeDto programmeDto =  programmeViewDao.findByNumProg(numProg);
-        List<Fichier> fichiers = affectationDto.getFichiers();
-
-        if(fichiers == null || fichiers.isEmpty()) {
-            return programmeDto;
-        }
+        List<Fichier> fichiers = affectationUtil.getFichiersAffectes(affectationDto);
 
         List<Fichier> fichiersAvantAffectation = getListFichierByIdFichier(affectationDto.getFichersAvantAffectation());
         String listNomFichiersAvantAffectation = getListNomFichier(fichiersAvantAffectation);
+
+        if(fichiers == null || fichiers.isEmpty()) {
+            JournalAffectationBuilder journalAffectationBuilder = new JournalAffectationBuilder();
+            Journal journal = journalAffectationBuilder.create(programmeDto.getNumProg(), listNomFichiersAvantAffectation, fichiers, currentUser.getUserId());
+            journalDao.save(journal);
+            return programmeDto;
+        }
 
         if(!Strings.isNullOrEmpty(numProg)){
             fichierService.majFichiersAffectesAuProgramme(numProg, fichiers, currentUser.getDisplayName());

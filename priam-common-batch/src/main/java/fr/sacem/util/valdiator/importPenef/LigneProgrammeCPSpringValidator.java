@@ -16,7 +16,7 @@ import java.util.Locale;
  * Created by belwidanej on 28/08/2017.
  */
 @Component
-public class LigneProgrammeCPSpringValidator implements Validator {
+public class LigneProgrammeCPSpringValidator extends CommonValidator implements Validator {
 
 
 	public static final int IDE12_LENGTH_MAX = 12;
@@ -70,8 +70,6 @@ public class LigneProgrammeCPSpringValidator implements Validator {
 			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "nbrDif", "error. nbrDif");
 		}
 
-
-
 		if(cdeTypUtil == null || cdeTypUtil.isEmpty()) {
 			errors.rejectValue("cdeTypUtil", "error.cdeTypUtil");
 		}
@@ -92,55 +90,4 @@ public class LigneProgrammeCPSpringValidator implements Validator {
 		validateNumericFields(errors, (LigneProgramme) o);
     }
 
-	protected void validateNumericFields(Errors errors, LigneProgramme o) {
-
-		Double ide12 = validateNumericField(errors, o.getIde12(), "ide12");
-		if(ide12 != null)
-			o.setIde12(Long.toString(ide12.longValue()));
-		else
-			o.setIde12(null);
-
-		Double durDif = validateNumericField(errors, o.getDurDif(), "durDif");
-		if(durDif != null)
-			o.setDurDif(Long.toString(durDif.longValue()));
-		else
-			o.setDurDif(null);
-
-		Double nbrDif = validateNumericField(errors, o.getNbrDif(), "nbrDif");
-		if(nbrDif != null)
-			o.setNbrDif(Long.toString(nbrDif.longValue()));
-		else
-			o.setNbrDif(null);
-
-		Double durDifCtna = validateNumericField(errors, o.getDurDifCtna(), "durDifCtna");
-		if(durDifCtna != null)
-			o.setDurDifCtna(Long.toString(durDifCtna.longValue()));
-		else
-			o.setDurDifCtna(null);
-
-		Double tax = validateNumericField(errors, o.getTax(), "tax");
-		if(tax != null)
-			o.setTax(tax.toString());
-		else
-			o.setTax(null);
-
-		if(o.getMt() != null)
-			o.setMt(o.getMt());
-		else
-			o.setMt(null);
-	}
-
-
-	protected Double validateNumericField(Errors errors, String text, String field) {
-		if (StringUtils.hasText(text)) {
-			NumberFormat nf = NumberFormat.getInstance(Locale.FRANCE);
-			try {
-				return nf.parse(text).doubleValue();
-			} catch (ParseException e) {
-				errors.rejectValue(field, "format.error."+field);
-			}
-		}
-
-		return null;
-	}
 }

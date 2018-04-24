@@ -298,6 +298,16 @@ public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Lon
                      "AND l.oeuvreManuel IS NULL " +
                      "AND l.ajout = 'AUTOMATIQUE' ")
     List<LigneProgrammeCP> findOeuvresAutoByIde12AndCdeUtil(@Param("numProg") String numProg, @Param("ide12") Long ide12, @Param("cdeUtil") String cdeUtil);
+
+    @Query(value="SELECT l " +
+            "FROM LigneProgrammeCP l join l.fichier as f "+
+            "WHERE l.fichier = f.id " +
+            "AND f.programme.numProg = :numProg " +
+            "AND l.ide12 = :ide12 " +
+            "AND l.cdeUtil = :cdeUtil " +
+            "AND l.oeuvreManuel IS NOT NULL " +
+            "AND l.ajout = 'AUTOMATIQUE' ")
+    List<LigneProgrammeCP> findOeuvresAutoLinkCorrigeByIde12AndCdeUtil(@Param("numProg") String numProg, @Param("ide12") Long ide12, @Param("cdeUtil") String cdeUtil);
     
     @Query(value="SELECT l " +
                      "FROM LigneProgrammeCP l join l.fichier as f "+

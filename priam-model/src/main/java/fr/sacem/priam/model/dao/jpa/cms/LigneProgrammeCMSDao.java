@@ -192,6 +192,17 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
     List<LigneProgrammeCMS> findOeuvresAutoByIde12AndCdeUtil(@Param("numProg") String numProg, @Param("ide12") Long ide12);
 
     @Query(value="SELECT l " +
+            "FROM LigneProgrammeCMS l join l.fichier as f "+
+            "WHERE l.fichier = f.id " +
+            "AND f.programme.numProg = :numProg " +
+            "AND l.ide12 = :ide12 " +
+            "AND l.oeuvreManuel IS NOT NULL " +
+            "AND l.ajout = 'AUTOMATIQUE' ")
+    List<LigneProgrammeCMS> findOeuvresAutoLinkCorrigeByIde12AndCdeUtil(@Param("numProg") String numProg, @Param("ide12") Long ide12);
+
+
+
+    @Query(value="SELECT l " +
                      "FROM LigneProgrammeCMS l join l.fichier as f "+
                      "WHERE l.fichier = f.id " +
                      "AND f.programme.numProg = :numProg " +
@@ -430,6 +441,7 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
             "  f.NUMPROG = ?1 " +
             " AND p.ide12 = ?2 ")
     void updatePointsMtTemporaireByNumProgramme(String numProg, Long ide12, Double mtEdit);
+
 
     @Transactional
     @Query(value="SELECT new fr.sacem.priam.model.domain.dto.SelectionCMSDto("+

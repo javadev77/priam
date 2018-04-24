@@ -39,7 +39,7 @@
       <app-filtre-selection
         :filter="filter"
         :retablir="retablirFiltre"
-        :rechercher="rechercher"
+        :rechercher="launchRechercheEtCompteurs"
         :ajouter="ajouterOeuvre"
         :edition="edition"
       >
@@ -83,7 +83,6 @@
                 @on-sort="onSort"
                 @all-checked="onAllChecked"
                 @entry-checked="onEntryChecked"
-                @onCellValueChanged="onCellValueChanged"
                 @supprimer-ligne-programme="onSupprimerLigneProgramme">
               </priam-grid>
             </div>
@@ -230,7 +229,7 @@
               cell: {
                 toText : function(entry) {
                   var result = entry;
-                  if(result !=undefined)
+                  if(result !== undefined)
                     return result ;
                   else
                     return "";
@@ -245,7 +244,7 @@
               cell : {
                 toText : function(entry) {
                   var result = entry;
-                  if(result !=undefined)
+                  if(result !== undefined)
                     return result ;
                   else
                     return "";
@@ -260,7 +259,7 @@
               cell : {
                 toText : function(entry) {
                   var result = entry;
-                  if(result !=undefined)
+                  if(result !== undefined)
                     return result ;
                   else
                     return "";
@@ -275,7 +274,7 @@
               cell: {
                 toText : function(entry) {
                   var result = entry;
-                  if(result !=undefined)
+                  if(result !== undefined)
                     return result ;
                   else
                     return "";
@@ -296,6 +295,19 @@
                     return true;
                   }
                   return false;
+                },
+
+                onCellValueChanged: function (entry, params) {
+                  //Re-calculer les compteurs
+                  if(entry.selection && params !== null && params.oldVal !== null) {
+                    let points = params.newVal;
+                    $this.dureeSelection.duree -= params.oldVal;
+                    $this.dureeSelection.duree += points;
+
+                    if($this.dureeSelection.duree < 0) {
+                      $this.dureeSelection.duree  = 0;
+                    }
+                  }
                 }
               }
             },
@@ -308,11 +320,10 @@
                 toText : function(entry) {
                   var result = entry;
 
-                  debugger
-                  if(result !=undefined)
+                  if(result !== undefined)
                   {
                     var element = $this.getEtatOeuvre(result.ajout);
-                    if(result.ajout == 'MANUEL' || result.ajout == 'CORRIGE') {
+                    if(result.ajout === 'MANUEL' || result.ajout === 'CORRIGE') {
                       var tempalteTrash = '<span class="glyphicon glyphicon-trash" aria-hidden="true" style="padding-left: 0px;" title="Supprimer"></span>';
                       var template = [];
                       template.push({event : 'supprimer-ligne-programme', template : tempalteTrash, disabled : !$this.edition});
@@ -540,10 +551,6 @@
 
       },
 
-      onCellValueChanged(column, columnModel) {
-        console.log("Cell Value has changed !!!")
-      },
-
       supprimerProgramme() {
 
         this.resource.supprimerLigneProgramme({numProg : this.programmeInfo.numProg, ide12 : this.selectedLineProgramme.ide12}, this.selectedLineProgramme)
@@ -552,12 +559,7 @@
           })
           .then(data => {
               this.showPopupSuppression = false;
-              var index = this.indexOf(this.ligneProgramme, this.selectedLineProgramme);
-
-              if (index > -1) {
-                this.ligneProgramme.splice(index, 1);
-              }
-              this.calculerCompteurs(this.programmeInfo.statut);
+              this.launchRechercheEtCompteurs();
           });
 
       },
@@ -698,7 +700,7 @@
         this.currentFilter.titre = this.filter.titre;
         this.currentFilter.selection = this.filter.selection;
 
-        if(this.isActionAnnulerEdition) {
+        if(!this.edition) {
           this.launchRechercheEtCompteurs();
         } else {
           this.modifierSelectionTemporaire();

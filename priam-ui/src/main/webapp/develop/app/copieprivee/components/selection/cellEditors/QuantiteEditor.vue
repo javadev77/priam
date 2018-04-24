@@ -7,7 +7,7 @@
       v-on:blur="formatValue"
       class="tableInput numberInput"
       style="width: 100%"
-
+      maxlength="10"
     >
 
 </template>
@@ -25,8 +25,33 @@
       }
     },
 
+    data() {
+
+      return {
+        mutableValue : null
+      }
+
+    },
+
+    watch : {
+
+      value : function (newValue) {
+        this.mutableValue = newValue;
+
+      },
+
+      mutableValue : function (newVal, oldVal) {
+        if(newVal !== oldVal) {
+          this.$emit('valueChanged', {oldVal  : oldVal, newVal : newVal});
+        }
+      }
+
+    },
+
+
     mounted: function () {
       this.formatValue()
+      this.mutableValue = this.value;
     },
 
     methods: {
@@ -39,6 +64,7 @@
         if (result !== undefined) {
           this.$refs.input.value = result;
         }
+        this.mutableValue = result;
         this.$emit('input', result)
       },
 

@@ -1,30 +1,32 @@
 package fr.sacem.priam.services;
 
 import fr.sacem.priam.common.TypeUtilisationEnum;
-import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.dao.jpa.JournalDao;
 import fr.sacem.priam.model.dao.jpa.cp.LigneProgrammeCPDao;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
-import fr.sacem.priam.model.domain.*;
+import fr.sacem.priam.model.domain.Journal;
+import fr.sacem.priam.model.domain.Programme;
+import fr.sacem.priam.model.domain.SituationApres;
+import fr.sacem.priam.model.domain.SituationAvant;
 import fr.sacem.priam.model.domain.cp.LigneProgrammeCP;
 import fr.sacem.priam.model.domain.criteria.LigneProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.SelectionDto;
 import fr.sacem.priam.model.domain.saref.SareftrTyputil;
+import fr.sacem.priam.model.journal.JournalBuilder;
 import fr.sacem.priam.model.util.TypeUtilisationPriam;
 import fr.sacem.priam.security.model.UserDTO;
 import fr.sacem.priam.services.api.LigneProgrammeService;
 import fr.sacem.priam.services.cp.LigneProgrammeCPService;
-
-import fr.sacem.priam.model.journal.JournalBuilder;
-import org.apache.commons.lang3.StringUtils;
-
 import fr.sacem.priam.services.journal.annotation.TypeLog;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.JpaSort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -159,9 +161,9 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
                 if(prog.getTypeUtilisation().getCode().equals(TypeUtilisationPriam.COPIE_PRIVEE_SONORE_PHONO.getCode())) {
                     String nbrDifValue = obj.get(NBR_DIF);
                     Long nbrDifEdit = nbrDifValue != null && !nbrDifValue.equals("") ? Long.valueOf(nbrDifValue) : 0L;
-
-
+                    inputLigneCP.setNbrDifEdit(nbrDifEdit);
                     if(AUTOMATIQUE.equals(ajout)) {
+
                         List<LigneProgrammeCP> oeuvresAuto = ligneProgrammeCPDao.findOeuvresAutoByIde12AndCdeUtil(numProg, inputLigneCP.getIde12(), inputLigneCP.getCdeUtil());
 
                         if(!oeuvresAuto.isEmpty()) {
@@ -169,12 +171,12 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
                             if( !nbrDifEdit.equals(sumTotal)) {
 
                                 inputLigneCP.setCdeTypIde12(oeuvresAuto.get(0).getCdeTypIde12());
-                                inputLigneCP.setNbrDifEdit(nbrDifEdit);
 
                                 ajouterOeuvreManuel(inputLigneCP, userDTO);
                             }
-
                         }
+                    } else if(CORRIGE.equals(ajout)) {
+                        correctionOeuvreCorrige(numProg, inputLigneCP, userDTO);
                     } else {
                         ligneProgrammeCPDao.updateNbrDifTemporaireByNumProgramme(numProg, inputLigneCP.getIde12(), inputLigneCP.getCdeUtil(), nbrDifEdit);
                     }
@@ -182,21 +184,23 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
                 else if(prog.getTypeUtilisation().getCode().equals(TypeUtilisationPriam.COPIE_PRIVEE_SONORE_RADIO.getCode())) {
                     String durDifStringValue = obj.get(DUR_DIF);
                     Long durDifEdit = durDifStringValue != null && !durDifStringValue.equals("") ? Long.valueOf(durDifStringValue) : 0L;
-
+                    inputLigneCP.setDurDifEdit(durDifEdit);
                     if(AUTOMATIQUE.equals(ajout)) {
                         List<LigneProgrammeCP> oeuvresAuto = ligneProgrammeCPDao.findOeuvresAutoByIde12AndCdeUtil(numProg, inputLigneCP.getIde12(), inputLigneCP.getCdeUtil());
 
-                        if(!oeuvresAuto.isEmpty()) {
+                        if (!oeuvresAuto.isEmpty()) {
                             Long sumTotal = sumOfDurDif(oeuvresAuto);
-                            if( !durDifEdit.equals(sumTotal)) {
+                            if (!durDifEdit.equals(sumTotal)) {
 
-                                inputLigneCP.setDurDifEdit(durDifEdit);
+
                                 inputLigneCP.setCdeTypIde12(oeuvresAuto.get(0).getCdeTypIde12());
 
                                 ajouterOeuvreManuel(inputLigneCP, userDTO);
                             }
 
                         }
+                    } else if(CORRIGE.equals(ajout)){
+                        correctionOeuvreCorrige(numProg, inputLigneCP, userDTO);
                     } else {
                         ligneProgrammeCPDao.updateDurDifTemporaireByNumProgramme(numProg, inputLigneCP.getIde12(), inputLigneCP.getCdeUtil(), durDifEdit);
                     }
@@ -206,6 +210,76 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
             }
         }
 
+    }
+
+    private void correctionOeuvreCorrige(String numProg, LigneProgrammeCP inputLigneCP, UserDTO userDTO) {
+        Programme programme = programmeDao.findByNumProg(numProg);
+        List<LigneProgrammeCP> oeuvresAutoLinkCorrige = ligneProgrammeCPDao.findOeuvresAutoLinkCorrigeByIde12AndCdeUtil(numProg, inputLigneCP.getIde12(), inputLigneCP.getCdeUtil());
+        Long sumTotal;
+
+        LigneProgrammeCP currentOeuvreCorrige = ligneProgrammeCPDao.findOeuvreCorrigeByIde12AndCdeUtil(numProg, inputLigneCP.getIde12(), inputLigneCP.getCdeUtil());
+        if(programme.getTypeUtilisation().getCode().equals(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_PHONO.getCode())){
+            if(!oeuvresAutoLinkCorrige.isEmpty()) {
+                sumTotal = sumOfNbrDif(oeuvresAutoLinkCorrige);
+                Long inputNbrDifEdit = inputLigneCP.getNbrDifEdit();
+                if(!inputNbrDifEdit.equals(currentOeuvreCorrige.getNbrDifEdit())) {
+                    Journal journal = saveJournal(inputLigneCP, userDTO);
+                    SituationApres situationApres = new SituationApres();
+                    situationApres.setSituation(getNbrDifOrDurDifAsString(programme, inputLigneCP));
+                    journal.getListSituationApres().add(situationApres);
+
+                    if( !inputNbrDifEdit.equals(sumTotal)) {
+
+                        ligneProgrammeCPDao.updateNbrDifTemporaireByNumProgramme(numProg, inputLigneCP.getIde12(), inputLigneCP.getCdeUtil(), inputNbrDifEdit);
+
+
+                    } else {
+
+                        deleteOeuvreCorrigeLinkAuto(numProg, inputLigneCP);
+                    }
+
+                    SituationAvant situationAvant = new SituationAvant();
+                    inputLigneCP.setNbrDifEdit(currentOeuvreCorrige.getNbrDifEdit());
+                    situationAvant.setSituation(getNbrDifOrDurDifAsString(programme, inputLigneCP));
+                    journal.getListSituationAvant().add(situationAvant);
+                    journalDao.saveAndFlush(journal);
+                }
+
+            }
+        } else if(programme.getTypeUtilisation().getCode().equals(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode())){
+            if(!oeuvresAutoLinkCorrige.isEmpty()) {
+                sumTotal = sumOfDurDif(oeuvresAutoLinkCorrige);
+                Long inputDurDifEdit = inputLigneCP.getDurDifEdit();
+                if(!inputDurDifEdit.equals(currentOeuvreCorrige.getDurDifEdit())) {
+                    Journal journal = saveJournal(inputLigneCP, userDTO);
+                    SituationApres situationApres = new SituationApres();
+                    situationApres.setSituation(getNbrDifOrDurDifAsString(programme, inputLigneCP));
+                    journal.getListSituationApres().add(situationApres);
+
+                    if( !inputDurDifEdit.equals(sumTotal)) {
+
+                        ligneProgrammeCPDao.updateDurDifTemporaireByNumProgramme(numProg, inputLigneCP.getIde12(), inputLigneCP.getCdeUtil(), inputDurDifEdit);
+
+                    } else {
+                        deleteOeuvreCorrigeLinkAuto(numProg, inputLigneCP);
+                    }
+
+                    inputLigneCP.setDurDifEdit(currentOeuvreCorrige.getDurDifEdit());
+                    SituationAvant situationAvant = new SituationAvant();
+                    situationAvant.setSituation(getNbrDifOrDurDifAsString(programme, inputLigneCP));
+                    journal.getListSituationAvant().add(situationAvant);
+
+                    journalDao.saveAndFlush(journal);
+
+                }
+
+            }
+        }
+    }
+
+    private void deleteOeuvreCorrigeLinkAuto(String numProg, LigneProgrammeCP inputLigneCP) {
+        LigneProgrammeCP oeuvreManuelFound = ligneProgrammeCPDao.findOeuvreCorrigeByIde12AndCdeUtil(numProg, inputLigneCP.getIde12(), inputLigneCP.getCdeUtil());
+        doDeleteOeuvreManuel(oeuvreManuelFound);
     }
 
     private long sumOfDurDif(List<LigneProgrammeCP> oeuvresAuto) {
@@ -261,11 +335,10 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
             List<LigneProgrammeCP> oeuvresAutoByIdOeuvreManuel = ligneProgrammeCPDao.findOeuvresAutoByIdOeuvreManuel(oeuvreManuelFound.getId());
             oeuvresAutoByIdOeuvreManuel.forEach( oeuvreAuto -> {
 
-                //oeuvreAuto.setSelection(TRUE);
                 oeuvreAuto.setSelectionEnCours(TRUE);
                 oeuvreAuto.setOeuvreManuel(null);
-                //oeuvreAuto.setDurDifEdit(oeuvreAuto.getDurDif());
-                //oeuvreAuto.setNbrDifEdit(oeuvreAuto.getNbrDif());
+                oeuvreAuto.setDurDifEdit(oeuvreAuto.getDurDif());
+                oeuvreAuto.setNbrDifEdit(oeuvreAuto.getNbrDif());
 
                 ligneProgrammeCPDao.saveAndFlush(oeuvreAuto);
             });
@@ -280,21 +353,24 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
     public void ajouterOeuvreManuel(LigneProgrammeCP input, UserDTO userDTO) {
         Programme programme = programmeDao.findOne(input.getNumProg());
 
-        Journal journal = createJournal(input, programme);
+        Journal journal = createJournal(input);
         journal.setUtilisateur(userDTO.getUserId());
         SituationAvant situationAvant = new SituationAvant();
+        SituationApres situationApres = new SituationApres();
+
+        situationApres.setSituation(getNbrDifOrDurDifAsString(programme, input));
 
         List<LigneProgrammeCP> founds = ligneProgrammeCPDao.findOeuvresAutoByIde12AndCdeUtil(input.getNumProg(), input.getIde12(), input.getCdeUtil());
         if(founds != null && !founds.isEmpty()) {
-            input.setAjout(CORRIGE);
+            if(!isBackToEtatAuto(programme, input, founds)){
+                input.setAjout(CORRIGE);
 
-            LigneProgrammeCP oeuvreManuel = createOeuvreManuel(input, programme);
-            founds.forEach( found -> {
-                found.setOeuvreManuel(oeuvreManuel);
-                //found.setSelection(FALSE);
-                ligneProgrammeCPDao.saveAndFlush(found);
-            });
-
+                LigneProgrammeCP oeuvreManuel = createOeuvreManuel(input, programme);
+                founds.forEach( found -> {
+                    found.setOeuvreManuel(oeuvreManuel);
+                    ligneProgrammeCPDao.saveAndFlush(found);
+                });
+            }
             SareftrTyputil typeUtilisation = programme.getTypeUtilisation();
             if(TypeUtilisationPriam.COPIE_PRIVEE_SONORE_PHONO.getCode().equals(typeUtilisation.getCode())) {
                 situationAvant.setSituation(String.valueOf(sumOfNbrDif(founds)));
@@ -304,15 +380,18 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
 
             journal.setEvenement(TypeLog.MODIFIER_OEUVRE.getEvenement());
 
-
         } else {
             LigneProgrammeCP oeuvreCorrigeFound = ligneProgrammeCPDao.findOeuvreCorrigeByIde12AndCdeUtil(input.getNumProg(), input.getIde12(), input.getCdeUtil());
+            List<LigneProgrammeCP> oeuvresAutoLinkCorrige = ligneProgrammeCPDao.findOeuvresAutoLinkCorrigeByIde12AndCdeUtil(input.getNumProg(), input.getIde12(), input.getCdeUtil());
             if(oeuvreCorrigeFound != null) {
-                oeuvreCorrigeFound.setAjout(CORRIGE);
                 situationAvant.setSituation(getNbrDifOrDurDifAsString(programme, oeuvreCorrigeFound));
-                updateOeuvreManuelOuCorrige(input, programme, oeuvreCorrigeFound);
-
                 journal.setEvenement(TypeLog.MODIFIER_OEUVRE.getEvenement());
+                if(!isBackToEtatAuto(programme, input, oeuvresAutoLinkCorrige)){
+                    oeuvreCorrigeFound.setAjout(CORRIGE);
+                    updateOeuvreManuelOuCorrige(input, programme, oeuvreCorrigeFound);
+                } else {
+                    deleteOeuvreCorrigeLinkAuto(input.getNumProg(), input);
+                }
             } else {
                 LigneProgrammeCP oeuvreManuelFound = ligneProgrammeCPDao.findOeuvreManuelByIde12AndCdeUtil(input.getNumProg(), input.getIde12(), input.getCdeUtil());
                 if(oeuvreManuelFound != null) {
@@ -337,6 +416,7 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
         }
 
         journal.getListSituationAvant().add(situationAvant);
+        journal.getListSituationApres().add(situationApres);
 
         if(LOG.isInfoEnabled()) {
             LOG.info(journal.toString());
@@ -345,13 +425,8 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
         
     }
 
-    private Journal createJournal(LigneProgrammeCP input, Programme prog) {
+    private Journal createJournal(LigneProgrammeCP input) {
         JournalBuilder jb = new JournalBuilder(input.getNumProg(), input.getIde12(), input.getUtilisateur());
-
-        SituationApres situationApres = new SituationApres();
-        situationApres.setSituation(getNbrDifOrDurDifAsString(prog, input));
-
-        jb.addSituationApres(situationApres);
 
         return jb.build();
     }
@@ -359,11 +434,11 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
     private String getNbrDifOrDurDifAsString(Programme prog, LigneProgrammeCP input) {
         SareftrTyputil typeUtilisation = prog.getTypeUtilisation();
         if(TypeUtilisationPriam.COPIE_PRIVEE_SONORE_PHONO.getCode().equals(typeUtilisation.getCode())) {
-            /*return String.valueOf(input.getNbrDif());*/
-            return String.valueOf(input.getNbrDif()!= null ? input.getNbrDif() : input.getNbrDifEdit());
+            return String.valueOf(input.getNbrDifEdit());
+            //return String.valueOf(input.getNbrDif()!= null ? input.getNbrDif() : input.getNbrDifEdit());
         } else if(TypeUtilisationPriam.COPIE_PRIVEE_SONORE_RADIO.getCode().equals(typeUtilisation.getCode())) {
-            /*return  String.valueOf(input.getDurDif());*/
-            return  String.valueOf(input.getDurDif()!= null ? input.getDurDif() : input.getDurDifEdit());
+            return  String.valueOf(input.getDurDifEdit());
+            //return  String.valueOf(input.getDurDif()!= null ? input.getDurDif() : input.getDurDifEdit());
         }
         return "";
     }
@@ -374,9 +449,9 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
         oeuvreToMdify.setCdeFamilTypUtil(programme.getFamille().getCode());
         oeuvreToMdify.setCdeTypUtil(programme.getTypeUtilisation().getCode());
         oeuvreToMdify.setOeuvreManuel(null);
-        oeuvreToMdify.setDurDif(input.getDurDif());
+
         oeuvreToMdify.setDurDifEdit(input.getDurDifEdit());
-        oeuvreToMdify.setNbrDif(input.getNbrDif());
+
         oeuvreToMdify.setNbrDifEdit(input.getNbrDifEdit());
         oeuvreToMdify.setDateInsertion(new Date());
         oeuvreToMdify.setUtilisateur(input.getUtilisateur());
@@ -497,5 +572,39 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
         }
 
         return result;
+    }
+
+    private boolean isBackToEtatAuto(Programme programme, LigneProgrammeCP ligneProgrammeCP, List<LigneProgrammeCP> oeuvresAutoLink){
+        boolean result = false;
+        if(programme.getTypeUtilisation().getCode().equals(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_PHONO.getCode())){
+            if(ligneProgrammeCP.getNbrDif() != null){
+                if (ligneProgrammeCP.getNbrDif().equals(sumOfNbrDif(oeuvresAutoLink))) {
+                    result = true;
+                }
+            } else {
+                if(ligneProgrammeCP.getNbrDifEdit().equals(sumOfNbrDif(oeuvresAutoLink))){
+                    result = true;
+                }
+            }
+        } else {
+            if(ligneProgrammeCP.getDurDif() != null){
+                if(ligneProgrammeCP.getDurDif().equals(sumOfDurDif(oeuvresAutoLink))){
+                    result = true;
+                }
+            } else {
+                if(ligneProgrammeCP.getDurDifEdit().equals(sumOfDurDif(oeuvresAutoLink))){
+                    result = true;
+                }
+            }
+        }
+        return result;
+    }
+
+
+    private Journal saveJournal(LigneProgrammeCP ligneProgrammeCP, UserDTO userDTO){
+        Journal journal = createJournal(ligneProgrammeCP);
+        journal.setUtilisateur(userDTO.getUserId());
+        journal.setEvenement(TypeLog.MODIFIER_OEUVRE.getEvenement());
+        return journal;
     }
 }
