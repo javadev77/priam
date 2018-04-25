@@ -1253,7 +1253,10 @@
                 this.tableauSelectionnable = false;
                 this.edition = false;
                 this.inProcess = false;
-                //this.initProgramme();
+                this.rechercher();
+              })
+              .catch(response => {
+                alert("Erreur technique lors de l'operation de enregistrer edition du programme !! " + response);
               });
           })
           .catch(response => {

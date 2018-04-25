@@ -1,5 +1,8 @@
 package fr.sacem.priam.services;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import fr.sacem.priam.common.TypeUtilisationEnum;
 import fr.sacem.priam.model.dao.jpa.JournalDao;
 import fr.sacem.priam.model.dao.jpa.JournalJdbcDao;
@@ -26,16 +29,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.JpaSort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Nullable;
 import javax.persistence.EntityManager;
+import java.math.BigInteger;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -125,8 +127,26 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
                 criteria.getAjout(),
                 criteria.getSelection(), pageRequest);
 
+        /*Iterable<SelectionDto> selectionDtos = Iterables.transform(result, new Function<Object[], SelectionDto>() {
+            @Nullable
+            @Override
+            public SelectionDto apply(@Nullable Object[] objects) {
+                SelectionDto selectionDto = new SelectionDto();
+
+                selectionDto.setIde12(((BigInteger) objects[0]).longValue());
+                Byte selectionEnCours = (Byte) objects[7];
+                selectionDto.setSelection(selectionEnCours.intValue() == 1);
+                selectionDto.setCdeUtil((String) objects[9]);
+                selectionDto.setLibAbrgUtil((String) objects[8]);
+
+                return selectionDto;
+            }
+        });
+        List<SelectionDto> dtos = Lists.newArrayList(selectionDtos);*/
         long after = System.currentTimeMillis();
         LOG.info(String.format("Execution of findLigneProgrammeByCriteria() takes %s ms", (after-before)));
+
+       // return new PageImpl<>(dtos, pageRequest, result.getTotalElements());
         return result;
     }
 
@@ -301,7 +321,7 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
                // ligneProgrammeCPJdbcDao.batchUpdateNbrDifTemporaireByNumProgramme(collected);
                 ligneProgrammeCPDao.updateNbrDifTemporaireByNumProgramme(numProg, lp.getIde12(), lp.getCdeUtil(), lp.getNbrDifEdit(), lp.isSelectionEnCours());
             }  else if(prog.getTypeUtilisation().getCode().equals(TypeUtilisationPriam.COPIE_PRIVEE_SONORE_RADIO.getCode())) {
-                ligneProgrammeCPDao.updateDurDifTemporaireByNumProgramme(numProg, lp.getIde12(), lp.getCdeUtil(), lp.getDurDifEdit());
+                ligneProgrammeCPDao.updateDurDifTemporaireByNumProgramme(numProg, lp.getIde12(), lp.getCdeUtil(), lp.getDurDifEdit(),  lp.isSelectionEnCours());
                 //ligneProgrammeCPJdbcDao.updateDurDifTemporaireByNumProgramme(collected);
             }
         });
