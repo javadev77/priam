@@ -161,7 +161,7 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
 
         if("sum(nbrDifEdit)".equals(sortBy.getProperty()) ||
                 "nbrDifEdit".equals(sortBy.getProperty()) ||
-                "sum(durDif)".equals(sortBy.getProperty()) ||
+                "sum(durDifEdit)".equals(sortBy.getProperty()) ||
                 "durDifEdit".equals(sortBy.getProperty()) ||
                 "durDif".equals(sortBy.getProperty())) {
             if (TypeUtilisationEnum.COPIE_PRIVEE_SONORE_PHONO.getCode().equals(programme.getTypeUtilisation().getCode())) {
