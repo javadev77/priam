@@ -459,6 +459,7 @@
               name: "Durée",
               sortable: true,
               sortProperty : 'sum(durDifEdit)',
+              sortProperty : 'sum(durDifEdit)',
               type: 'inputNum',
               editable : true,
               cellEditorFramework : DureeEditor,

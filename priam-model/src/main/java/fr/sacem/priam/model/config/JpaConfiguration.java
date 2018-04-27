@@ -1,8 +1,8 @@
 package fr.sacem.priam.model.config;
 
-import fr.sacem.priam.common.constants.EnvConstants;
 import org.hibernate.dialect.MySQL5InnoDBDialect;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
@@ -31,29 +30,24 @@ import java.util.Map;
 @EnableTransactionManagement
 @Profile({"dev", "re7", "prod"})
 public class JpaConfiguration {
-    private String priamDatasourceJndi;
+
+    @Autowired
+    DataSource dataSource;
     
     
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
-        em.setDataSource(dataSource2());
+
+        em.setDataSource(dataSource);
         em.setPackagesToScan("fr.sacem.priam.model.domain");
         em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         em.setJpaPropertyMap(additionalProperties());
+
         return em;
     }
     
-    @Bean
-    @Primary
-    public DataSource dataSource2() {
-        JndiDataSourceLookup jndiDataSourceLookup = new JndiDataSourceLookup();
-        jndiDataSourceLookup.setResourceRef(Boolean.TRUE);
-        this.priamDatasourceJndi = EnvConstants.PRIAM_DB_JNDI.toString();
-        DataSource dataSource = jndiDataSourceLookup.getDataSource(priamDatasourceJndi);
-        
-        return dataSource;
-    }
+
     
     @Bean
     public PlatformTransactionManager transactionManager(EntityManagerFactory emf){
@@ -67,12 +61,12 @@ public class JpaConfiguration {
         return new PersistenceExceptionTranslationPostProcessor();
     }
     
-    @Bean
+   /* @Bean
     @Primary
     @ConfigurationProperties(prefix = "datasource.priam")
     public DataSourceProperties dataSourceProperties(){
         return new DataSourceProperties();
-    }
+    }*/
     
     private  Map<String, Object> additionalProperties() {
         Map<String, Object> properties = new HashMap<>();

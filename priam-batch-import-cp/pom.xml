@@ -8,7 +8,7 @@
 
     <packaging>jar</packaging>
 
-    <name>priam-batch-import-cp</name>
+    <name>BatchImport</name>
     <description>Batch d&#39;extraction Penef pour les copies privees</description>
 
     <parent>
@@ -152,7 +152,7 @@
                     <descriptors>
                         <descriptor>srcBuild/assemble/assembly.xml</descriptor>
                     </descriptors>
-                    <finalName>${project.build.finalName}-${project.version}</finalName>
+                    <finalName>${project.name}</finalName>
                 </configuration>
                 <executions>
                     <execution>
