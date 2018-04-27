@@ -34,6 +34,7 @@
         <module>priam-batch-import-cms-fra</module>
         <module>priam-batch-import-cms-ant</module>
         <module>priam-batch-affectation-cms</module>
+        <module>priam-catalogue-cms</module>
     </modules>
 
     <organization>
