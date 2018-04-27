@@ -1,11 +1,13 @@
-package fr.sacem.priam.model.config;
-
+package fr.sacem.priam.catcms.config;
 
 import org.hibernate.dialect.MySQL5InnoDBDialect;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -24,28 +26,23 @@ import java.util.Map;
  * Created by benmerzoukah on 09/05/2017.
  */
 @Configuration
-@EnableJpaRepositories(basePackages = "fr.sacem.priam.model.dao.jpa")
+@EnableJpaRepositories(basePackages = "fr.sacem.priam.catcms.dao.jpa")
 @EnableTransactionManagement
 @Profile({"dev", "re7", "prod"})
-public class JpaConfiguration {
-
-    @Autowired
-    DataSource dataSource;
+public class CatcmsJpaConfiguration {
     
+    @Autowired
+    DataSource dataSource2;
 
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
-
-        em.setDataSource(dataSource);
-        em.setPackagesToScan("fr.sacem.priam.model.domain");
+        em.setDataSource(dataSource2);
+        em.setPackagesToScan("fr.sacem.priam.catcms.domain");
         em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         em.setJpaPropertyMap(additionalProperties());
-
         return em;
     }
-    
-
     
     @Bean
     public PlatformTransactionManager transactionManager(EntityManagerFactory emf){
@@ -59,7 +56,7 @@ public class JpaConfiguration {
         return new PersistenceExceptionTranslationPostProcessor();
     }
     
-   /* @Bean
+    /*@Bean
     @Primary
     @ConfigurationProperties(prefix = "datasource.priam")
     public DataSourceProperties dataSourceProperties(){
@@ -82,8 +79,8 @@ public class JpaConfiguration {
         return properties;
     }
     
-    @Bean
+    /*@Bean
     public ModelMapper modelMapper() {
         return new ModelMapper();
-    }
+    }*/
 }
