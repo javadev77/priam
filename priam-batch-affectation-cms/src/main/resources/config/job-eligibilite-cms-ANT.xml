@@ -130,7 +130,7 @@
         </property>
     </bean>
 
-    <bean id="catalogueOctavAntProcessor" class="fr.sacem.service.importPenef.CatalogueOctavAntProcessor"/>
+    <bean id="catalogueOctavAntProcessor" class="fr.sacem.priam.batch.common.service.importPenef.CatalogueOctavAntProcessor"/>
 
     <bean id="readerCalculPointsANT"
           class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">

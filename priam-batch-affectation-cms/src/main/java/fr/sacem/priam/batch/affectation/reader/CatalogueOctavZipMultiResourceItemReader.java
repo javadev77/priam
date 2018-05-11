@@ -1,12 +1,12 @@
 package fr.sacem.priam.batch.affectation.reader;
 
-import fr.sacem.dao.TraitementCmsDao;
-import fr.sacem.domain.Fichier;
+import fr.sacem.priam.batch.common.dao.TraitementCmsDao;
+import fr.sacem.priam.batch.common.domain.Fichier;
 import fr.sacem.priam.common.TypeUtilisationEnum;
 import fr.sacem.priam.common.util.FileUtils;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
-import fr.sacem.service.importPenef.FichierBatchService;
-import fr.sacem.util.UtilFile;
+import fr.sacem.priam.batch.common.service.importPenef.FichierBatchService;
+import fr.sacem.priam.batch.common.util.UtilFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.JobParameter;

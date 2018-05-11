@@ -2,7 +2,7 @@ package fr.sacem.priam.batch.penef.cms.fra;
 
 import fr.sacem.priam.batch.penef.cms.fra.config.ConfigurationPriamLocal;
 import fr.sacem.priam.batch.penef.cms.fra.config.ConfigurationPriamProd;
-import fr.sacem.domain.Admap;
+import fr.sacem.priam.batch.common.domain.Admap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;

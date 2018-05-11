@@ -1,10 +1,10 @@
 package fr.sacem.priam.batch.affectation.listener;
 
-import fr.sacem.dao.LigneProgrammeBatchDao;
-import fr.sacem.dao.ProgrammeBatchDao;
-import fr.sacem.dao.TraitementCmsDao;
+import fr.sacem.priam.batch.common.dao.LigneProgrammeBatchDao;
+import fr.sacem.priam.batch.common.dao.ProgrammeBatchDao;
+import fr.sacem.priam.batch.common.dao.TraitementCmsDao;
 
-import fr.sacem.domain.Programme;
+import fr.sacem.priam.batch.common.domain.Programme;
 import fr.sacem.priam.batch.affectation.dao.JournalBatchDao;
 import fr.sacem.priam.common.util.FileUtils;
 import fr.sacem.priam.model.dao.jpa.FichierDao;
@@ -16,8 +16,8 @@ import fr.sacem.priam.model.domain.Journal;
 import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.util.JournalAffectationBuilder;
 import fr.sacem.priam.model.util.TypeUtilisationPriam;
-import fr.sacem.service.importPenef.FichierBatchService;
-import fr.sacem.util.UtilFile;
+import fr.sacem.priam.batch.common.service.importPenef.FichierBatchService;
+import fr.sacem.priam.batch.common.util.UtilFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.BatchStatus;

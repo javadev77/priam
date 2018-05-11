@@ -1,6 +1,5 @@
 package fr.sacem.priam.rest.cms.api;
 
-import fr.sacem.domain.Admap;
 import fr.sacem.priam.model.dao.jpa.cms.TraitementEligibiliteCMSDao;
 import fr.sacem.priam.model.domain.CatalogueOctav;
 import fr.sacem.priam.model.domain.cms.LigneProgrammeCMS;

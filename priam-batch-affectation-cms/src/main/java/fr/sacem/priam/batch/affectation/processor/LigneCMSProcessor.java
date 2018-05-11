@@ -1,6 +1,6 @@
 package fr.sacem.priam.batch.affectation.processor;
 
-import fr.sacem.domain.LigneProgrammeCMS;
+import fr.sacem.priam.batch.common.domain.LigneProgrammeCMS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;

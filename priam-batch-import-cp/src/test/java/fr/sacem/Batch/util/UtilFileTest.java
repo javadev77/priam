@@ -1,6 +1,6 @@
 package fr.sacem.Batch.util;
 
-import fr.sacem.util.UtilFile;
+import fr.sacem.priam.batch.common.util.UtilFile;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

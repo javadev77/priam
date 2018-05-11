@@ -136,7 +136,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>fr.sacem.App</mainClass>
+                            <mainClass>fr.sacem.priam.importcp.App</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

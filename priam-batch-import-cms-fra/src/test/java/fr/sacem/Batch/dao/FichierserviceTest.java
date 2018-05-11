@@ -1,8 +1,8 @@
 package fr.sacem.Batch.dao;
 
-import fr.sacem.domain.Fichier;
-import fr.sacem.service.importPenef.FichierBatchServiceImpl;
-import fr.sacem.util.exception.PriamValidationException;
+import fr.sacem.priam.batch.common.domain.Fichier;
+import fr.sacem.priam.batch.common.service.importPenef.FichierBatchServiceImpl;
+import fr.sacem.priam.batch.common.util.exception.PriamValidationException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

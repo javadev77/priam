@@ -1,6 +1,6 @@
 package fr.sacem.priam.batch.penef.cms.ant.config;
 
-import fr.sacem.domain.Admap;
+import fr.sacem.priam.batch.common.domain.Admap;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.*;

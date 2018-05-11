@@ -1,6 +1,6 @@
 package fr.sacem.priam.batch.affectation.listener;
 
-import fr.sacem.dao.LigneProgrammeBatchDao;
+import fr.sacem.priam.batch.common.dao.LigneProgrammeBatchDao;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.listener.StepExecutionListenerSupport;

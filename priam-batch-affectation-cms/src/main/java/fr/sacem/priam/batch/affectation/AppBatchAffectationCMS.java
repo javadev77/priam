@@ -1,6 +1,6 @@
 package fr.sacem.priam.batch.affectation;
 
-import fr.sacem.domain.Admap;
+import fr.sacem.priam.batch.common.domain.Admap;
 import fr.sacem.priam.batch.affectation.config.BatchConfigLocal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -5,7 +5,7 @@ package fr.sacem.Batch;
  */
 
 
-import fr.sacem.util.UtilFile;
+import fr.sacem.priam.batch.common.util.UtilFile;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

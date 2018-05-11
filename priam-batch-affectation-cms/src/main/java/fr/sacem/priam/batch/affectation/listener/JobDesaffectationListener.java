@@ -1,14 +1,13 @@
 package fr.sacem.priam.batch.affectation.listener;
 
-import edu.emory.mathcs.backport.java.util.Arrays;
-import fr.sacem.dao.FichierRepository;
-import fr.sacem.dao.ProgrammeBatchDao;
+import fr.sacem.priam.batch.common.dao.FichierRepository;
+import fr.sacem.priam.batch.common.dao.ProgrammeBatchDao;
 import fr.sacem.priam.batch.affectation.dao.JournalBatchDao;
 import fr.sacem.priam.common.TypeLog;
 import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.domain.*;
 import fr.sacem.priam.model.journal.JournalBuilder;
-import fr.sacem.service.importPenef.FichierBatchService;
+import fr.sacem.priam.batch.common.service.importPenef.FichierBatchService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.BatchStatus;
@@ -19,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 

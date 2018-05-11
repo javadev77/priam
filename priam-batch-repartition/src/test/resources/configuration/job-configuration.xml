@@ -59,9 +59,9 @@
     <bean id="repartitionItemProcessor" class="fr.sacem.service.repartition.RepartitionItemProcessor"/>
 
     <bean id="flatFileItemReader"
-          class="fr.sacem.util.mapper.repartition.CsvPriamFileItemReader">
+          class="fr.sacem.priam.batch.common.util.mapper.repartition.CsvPriamFileItemReader">
         <property name="lineMapper">
-            <bean class="fr.sacem.util.mapper.repartition.CsvPriamLineMapper">
+            <bean class="fr.sacem.priam.batch.common.util.mapper.repartition.CsvPriamLineMapper">
                 <property name="lineTokenizer">
                     <bean class="org.springframework.batch.item.file.transform.DelimitedLineTokenizer">
                         <property name="names" value="numeroProgramme,datcalc,sareftrRion,status"/>
@@ -70,11 +70,11 @@
                 </property>
                 <property name="fieldSetMapper">
                     <bean class="org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper">
-                        <property name="targetType" value="fr.sacem.domain.Repartition"/>
+                        <property name="targetType" value="fr.sacem.priam.batch.common.domain.Repartition"/>
                         <property name="customEditors">
                             <map>
                                 <entry key="java.time.LocalDate">
-                                    <bean class="fr.sacem.util.LocalDatePropertyEditor">
+                                    <bean class="fr.sacem.priam.batch.common.util.LocalDatePropertyEditor">
                                     </bean>
                                 </entry>
                             </map>

@@ -1,6 +1,6 @@
 package fr.sacem.priam.batch.affectation.mapper;
 
-import fr.sacem.domain.LigneCatalogueOctav;
+import fr.sacem.priam.batch.common.domain.LigneCatalogueOctav;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

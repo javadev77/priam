@@ -4,16 +4,12 @@ import fr.sacem.priam.model.domain.Journal;
 import fr.sacem.priam.model.domain.SituationApres;
 import fr.sacem.priam.model.domain.SituationAvant;
 
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.util.Calendar;
 import java.util.List;
 
-import fr.sacem.util.DateTimeUtils;
+import fr.sacem.priam.batch.common.util.DateTimeUtils;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;

@@ -137,7 +137,7 @@
 
     </bean>
 
-    <bean id="ligneProgrammeRowMapper" class="fr.sacem.util.mapper.importPenef.PriamLigneProgrammeSQLMapper"/>
+    <bean id="ligneProgrammeRowMapper" class="fr.sacem.priam.batch.common.util.mapper.importPenef.PriamLigneProgrammeSQLMapper"/>
 
     <bean id="writerDedoublonnagePriam" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
         <property name="dataSource" ref="dataSource"/>
@@ -233,14 +233,14 @@
             <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
         </property>
     </bean>
-    <bean id="ligneProgrammeDedoublonnageStepTwoProcessor" class="fr.sacem.service.importPenef.LigneProgrammeDedoublonnageStepTwoProcessor"/>
+    <bean id="ligneProgrammeDedoublonnageStepTwoProcessor" class="fr.sacem.priam.batch.common.service.importPenef.LigneProgrammeDedoublonnageStepTwoProcessor"/>
 
     <!-- Fin : Elements essentielle pour le step de dedoublonnage -->
-    <bean id="listenerCompletition" class="fr.sacem.listener.importPenef.JobCompletionNotificationLigneProgrammeImportPenefListener">
+    <bean id="listenerCompletition" class="fr.sacem.priam.batch.common.listener.importPenef.JobCompletionNotificationLigneProgrammeImportPenefListener">
         <property name="fichierBatchService" ref="fichierBatchService"/>
     </bean>
     <bean id="readerPriamZip"
-          class="fr.sacem.service.importPenef.ZipMultiResourceCMSItemReader" scope="step">
+          class="fr.sacem.priam.batch.common.service.importPenef.ZipMultiResourceCMSItemReader" scope="step">
         <property name="delegate" ref="flatFileItemReader"/>
         <property name="strict" value="false"/>
         <property name="utilFile" ref="utilFile"/>
@@ -333,11 +333,11 @@
             <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
         </property>
     </bean>
-    <bean id="ligneProgrammeDedoublonnageStepOneProcessor" class="fr.sacem.service.importPenef.LigneProgrammeDedoublonnageStepOneProcessor"/>
+    <bean id="ligneProgrammeDedoublonnageStepOneProcessor" class="fr.sacem.priam.batch.common.service.importPenef.LigneProgrammeDedoublonnageStepOneProcessor"/>
     <bean id="flatFileItemReader"
-          class="fr.sacem.util.mapper.importPenef.PriamFileItemReader">
+          class="fr.sacem.priam.batch.common.util.mapper.importPenef.PriamFileItemReader">
         <property name="lineMapper">
-            <bean class="fr.sacem.util.mapper.importPenef.PriamLineMapper">
+            <bean class="fr.sacem.priam.batch.common.util.mapper.importPenef.PriamLineMapper">
                 <property name="lineTokenizer">
                     <bean class="org.springframework.batch.item.file.transform.DelimitedLineTokenizer">
                         <property name="names"
@@ -379,15 +379,15 @@
                 </property>
                 <property name="fieldSetMapper">
                     <bean class="org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper">
-                        <property name="targetType" value="fr.sacem.domain.LigneProgramme"/>
+                        <property name="targetType" value="fr.sacem.priam.batch.common.domain.LigneProgramme"/>
                         <property name="customEditors">
                             <map>
                                 <entry key="java.time.LocalDate">
-                                    <bean class="fr.sacem.util.LocalDatePropertyEditor">
+                                    <bean class="fr.sacem.priam.batch.common.util.LocalDatePropertyEditor">
                                     </bean>
                                 </entry>
                                 <entry key="java.lang.Double">
-                                    <bean class="fr.sacem.util.DoublePropertyEditor">
+                                    <bean class="fr.sacem.priam.batch.common.util.DoublePropertyEditor">
                                     </bean>
                                 </entry>
                             </map>
@@ -535,17 +535,17 @@
           p:dataSource-ref="dataSource"
           p:transactionManager-ref="transactionManager"/>
 
-    <bean id="fichierBatchService" class="fr.sacem.service.importPenef.FichierBatchServiceImpl">
+    <bean id="fichierBatchService" class="fr.sacem.priam.batch.common.service.importPenef.FichierBatchServiceImpl">
         <constructor-arg ref="fichierRepository"/>
     </bean>
-    <bean id="fichierRepository" class="fr.sacem.dao.FichierRepositoryImpl">
+    <bean id="fichierRepository" class="fr.sacem.priam.batch.common.dao.FichierRepositoryImpl">
         <property name="dataSource" ref="dataSource"/>
         <property name="nomTableFichier" value="${nom.table.fichier}"/>
         <property name="nomTableLigneProgramme" value="${nom.table.ligneprogramme}"/>
         <property name="nomTableLigneProgrammeLog" value="${nom.table.fichierlog}"/>
         <property name="typeFichier" value="${type.fichier}"/>
     </bean>
-    <bean id="utilFile" class="fr.sacem.util.UtilFile">
+    <bean id="utilFile" class="fr.sacem.priam.batch.common.util.UtilFile">
         <property name="fichierBatchService" ref="fichierBatchService"/>
     </bean>
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
