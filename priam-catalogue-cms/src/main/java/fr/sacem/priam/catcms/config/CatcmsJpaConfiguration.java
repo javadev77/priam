@@ -32,12 +32,12 @@ import java.util.Map;
 public class CatcmsJpaConfiguration {
     
     @Autowired
-    DataSource dataSource2;
+    DataSource dataSource;
 
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
-        em.setDataSource(dataSource2);
+        em.setDataSource(dataSource);
         em.setPackagesToScan("fr.sacem.priam.catcms.domain");
         em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         em.setJpaPropertyMap(additionalProperties());

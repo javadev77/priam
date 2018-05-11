@@ -204,7 +204,7 @@
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
-    <bean id="ligneProgrammeCmsAntSQLMapper" class="fr.sacem.util.mapper.importPenef.PriamLigneProgrammeCmsAntSQLMapper"/>
+    <bean id="ligneProgrammeCmsAntSQLMapper" class="fr.sacem.priam.batch.common.util.mapper.importPenef.PriamLigneProgrammeCmsAntSQLMapper"/>
 
 
 

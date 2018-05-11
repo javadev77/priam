@@ -1,7 +1,7 @@
 package fr.sacem.priam.batch.affectation.listener;
 
-import fr.sacem.dao.FichierRepository;
-import fr.sacem.dao.TraitementCmsDao;
+import fr.sacem.priam.batch.common.dao.FichierRepository;
+import fr.sacem.priam.batch.common.dao.TraitementCmsDao;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.StepExecution;

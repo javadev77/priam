@@ -1,7 +1,7 @@
 package fr.sacem.priam.rest.cms.api;
 
 import com.google.common.base.Strings;
-import fr.sacem.domain.Admap;
+import fr.sacem.priam.batch.common.domain.Admap;
 import fr.sacem.priam.common.TypeUtilisationEnum;
 import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.dao.jpa.JournalDao;

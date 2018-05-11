@@ -1,6 +1,6 @@
 package fr.sacem.priam.batch.affectation.processor;
 
-import fr.sacem.domain.LigneCatalogueOctav;
+import fr.sacem.priam.batch.common.domain.LigneCatalogueOctav;
 import fr.sacem.priam.common.TypeUtilisationEnum;
 import fr.sacem.priam.common.util.FileUtils;
 import org.springframework.batch.item.ItemProcessor;

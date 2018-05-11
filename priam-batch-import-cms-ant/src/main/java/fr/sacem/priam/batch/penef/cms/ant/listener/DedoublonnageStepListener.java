@@ -1,6 +1,6 @@
 package fr.sacem.priam.batch.penef.cms.ant.listener;
 
-import fr.sacem.dao.FichierRepository;
+import fr.sacem.priam.batch.common.dao.FichierRepository;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.listener.StepExecutionListenerSupport;

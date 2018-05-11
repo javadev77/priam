@@ -1,7 +1,7 @@
 package fr.sacem;
 
 import fr.sacem.config.ConfigurationPriam;
-import fr.sacem.domain.Admap;
+import fr.sacem.priam.batch.common.domain.Admap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
