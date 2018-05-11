@@ -10,5 +10,5 @@ public interface CatalogueOctavDao extends JpaRepository<CatalogueOctav, Long>{
 
     @Transactional
     @Query(value ="Select c from CatalogueOctav c where c.ide12 = :ide12 and c.typeCMS = :typeCMS")
-    public CatalogueOctav findByIde12(@Param("ide12") Long ide12,@Param("typeCMS") String typeCMS);
+    CatalogueOctav findByIde12(@Param("ide12") Long ide12,@Param("typeCMS") String typeCMS);
 }

@@ -72,6 +72,13 @@
             routes : ['parametrage']
           },
 
+          {
+            id : 'catalogue',
+            name : 'catalogue-cms',
+            label : 'Catalogue CMS',
+            routes : ['catalogue-cms']
+          }
+
         ],
         currentActiveMenu :  {
           id : ''

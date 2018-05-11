@@ -1,7 +1,8 @@
-package fr.sacem.priam.catcms.domain;
+package fr.sacem.priam.model.domain.catcms;
+
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import fr.sacem.priam.model.util.CustomDateSerializer;
+import fr.sacem.priam.model.util.SimpleDateSerializer;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -30,7 +31,7 @@ public class CatalogueRdo implements Serializable {
 
     @Column(name = "DATE_ENTREE")
     @Temporal(TemporalType.TIMESTAMP)
-    @JsonSerialize(using = CustomDateSerializer.class)
+    @JsonSerialize(using = SimpleDateSerializer.class)
     private Date dateEntree;
 
     @Column(name = "TYPE_INSCRIPTION")
@@ -38,12 +39,12 @@ public class CatalogueRdo implements Serializable {
 
     @Column(name = "DATE_RENOUVELLEMENT")
     @Temporal(TemporalType.TIMESTAMP)
-    @JsonSerialize(using = CustomDateSerializer.class)
+    @JsonSerialize(using = SimpleDateSerializer.class)
     private Date dateRenouvellement;
 
     @Column(name = "DATE_SORTIE")
     @Temporal(TemporalType.TIMESTAMP)
-    @JsonSerialize(using = CustomDateSerializer.class)
+    @JsonSerialize(using = SimpleDateSerializer.class)
     private Date dateSortie;
 
     @Column(name = "TYPE_SORTIE")
@@ -54,6 +55,7 @@ public class CatalogueRdo implements Serializable {
 
     @Column(name = "PARTICIPANT")
     private String participant;
+
 
     public Long getId() {
         return id;
@@ -152,19 +154,5 @@ public class CatalogueRdo implements Serializable {
     }
 
     public CatalogueRdo() {
-    }
-
-    public CatalogueRdo(String typeCMS, Long ide12, String titre, String typUtilGen, Date dateEntree, String typeInscription, Date dateRenouvellement, Date dateSortie, String typeSortie, String role, String participant) {
-        this.typeCMS = typeCMS;
-        this.ide12 = ide12;
-        this.titre = titre;
-        this.typUtilGen = typUtilGen;
-        this.dateEntree = dateEntree;
-        this.typeInscription = typeInscription;
-        this.dateRenouvellement = dateRenouvellement;
-        this.dateSortie = dateSortie;
-        this.typeSortie = typeSortie;
-        this.role = role;
-        this.participant = participant;
     }
 }

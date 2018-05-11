@@ -126,6 +126,10 @@ export default {
 
   etatOeuvre: state => {
     return state.etatOeuvre;
+  },
+
+  routing : state => {
+    return state.routing;
   }
 
 };

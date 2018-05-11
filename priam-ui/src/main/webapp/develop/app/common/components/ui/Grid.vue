@@ -33,7 +33,7 @@
                   <template v-else>
                     <th v-if="entry.sortable">
                       <a v-if="!isLocalSort" @click="serverSortBy(entry)">
-                        <span>{{ entry.name }}</span>
+                        <span v-html="entry.name"></span>
                         <span v-if="entry.sortable"
                               class="fui"
                               :class="{'fui-triangle-down': !sortAsc,
@@ -53,7 +53,7 @@
                       </a>
                     </th>
                     <th v-else>
-                      <span>{{ entry.name }}</span>
+                      <span v-html="entry.name"></span>
                     </th>
                   </template>
                 </template>

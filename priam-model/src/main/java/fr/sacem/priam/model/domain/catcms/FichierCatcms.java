@@ -1,4 +1,4 @@
-package fr.sacem.priam.catcms.domain;
+package fr.sacem.priam.model.domain.catcms;
 
 import javax.persistence.*;
 import java.io.Serializable;

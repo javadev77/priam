@@ -4,5 +4,6 @@
 import { routes as cms } from './cms';
 import { routes as copieprivee } from './copieprivee';
 import { routes as common } from './common';
+import { routes as cataloguecms } from './catalogue-cms';
 
-export default [ ...copieprivee, ...cms, ...common ];
+export default [ ...copieprivee, ...cms, ...common, ...cataloguecms];

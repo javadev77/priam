@@ -4,9 +4,9 @@
       <a v-if="backButton" class="btn-back no-select" @click="goBack()" v-shortkey="['f8']" @shortkey="goBack()">
         <span class="glyphicon glyphicon-chevron-left"></span>Retour (F8)
       </a>
-      <span>{{ titre1 }} <span class="glyphicon glyphicon-chevron-right"></span>
+      <span>{{ titre1 }} <span v-if="titre2" class="glyphicon glyphicon-chevron-right"></span>
               {{ titre2 }}
-        <template v-if="titre3"><span class="glyphicon glyphicon-chevron-right"></span>{{ titre3 }}</template>
+        <template v-if="titre3"><span v-if="titre3" class="glyphicon glyphicon-chevron-right"></span>{{ titre3 }}</template>
       </span>
     </div>
   </div>

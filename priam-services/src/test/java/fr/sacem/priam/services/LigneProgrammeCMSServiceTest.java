@@ -11,14 +11,9 @@ import fr.sacem.priam.model.domain.cms.LigneProgrammeCMS;
 import fr.sacem.priam.model.domain.criteria.LigneProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.SelectionCMSDto;
-
+import fr.sacem.priam.security.model.UserDTO;
 import org.junit.Ignore;
 import org.junit.Test;
-
-
-import fr.sacem.priam.security.model.UserDTO;
-import org.junit.*;
-
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -35,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
-import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.is;

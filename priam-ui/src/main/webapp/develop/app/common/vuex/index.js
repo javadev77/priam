@@ -6,6 +6,7 @@ import mutations from './mutations';
 import getters from './getters';
 
 const state = {
+  routing : false,
   pagination : {
     userPageSize: 25,
     sizes : [25, 50, 100]

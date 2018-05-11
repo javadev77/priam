@@ -1,4 +1,4 @@
-package fr.sacem.priam.catcms.domain;
+package fr.sacem.priam.model.domain.catcms;
 
 public enum StatusCatcms {
     EN_COURS,

@@ -3,6 +3,11 @@
  */
 
 export default {
+
+  'ROUTING' (state, routing) {
+    state.routing = routing;
+  },
+
   'SELECT_PAGE' (state, page) {
     state.pagination.currentPage = page;
   },

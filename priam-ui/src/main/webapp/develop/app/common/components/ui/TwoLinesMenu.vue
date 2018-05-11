@@ -118,6 +118,7 @@
           },
 
           selectItem(menu, item) {
+              debugger;
               if(item != null) {
                 this.activeSubMenu = item.id;
                 this.$router.push({name : item.name})

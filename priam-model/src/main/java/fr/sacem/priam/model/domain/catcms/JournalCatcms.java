@@ -1,4 +1,4 @@
-package fr.sacem.priam.catcms.domain;
+package fr.sacem.priam.model.domain.catcms;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import fr.sacem.priam.model.util.CustomDateSerializer;

@@ -3,6 +3,9 @@ package fr.sacem.priam.model.dao;
 import ch.vorburger.exec.ManagedProcessException;
 import ch.vorburger.mariadb4j.springframework.MariaDB4jSpringService;
 import org.hibernate.dialect.MySQL5InnoDBDialect;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
@@ -30,6 +33,8 @@ import java.util.Map;
 @EnableJpaRepositories(basePackages = "fr.sacem.priam.model.dao.jpa")
 @Profile("test")
 public class JpaConfigurationTest {
+
+    private static Logger logger = LoggerFactory.getLogger(JpaConfigurationTest.class);
 
     @Value("${mariaDB4j.port}")
     private Integer dbPort;
@@ -109,7 +114,7 @@ public class JpaConfigurationTest {
 
 
         }catch(ManagedProcessException e){
-            e.getMessage();
+            logger.error(e.getMessage());
         }
         return dataSource;
     }

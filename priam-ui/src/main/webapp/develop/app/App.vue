@@ -6,6 +6,8 @@
                     <router-view></router-view>
                 </transition>
         </div>
+
+      <div class="routing" v-if="isRouting"></div>
     </div>
 </template>
 
@@ -21,6 +23,12 @@
               }
             }
         },
+
+      computed : {
+            isRouting() {
+              return this.$store.getters.routing;
+            }
+      },
 
         created() {
           this.activeMenu.id = this.$route.name;
