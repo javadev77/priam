@@ -35,12 +35,6 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>fr.sacem.priam</groupId>
-            <artifactId>priam-catalogue-cms</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.springframework.batch</groupId>
             <artifactId>spring-batch-infrastructure</artifactId>
         </dependency>

@@ -1,6 +1,7 @@
 package fr.sacem.priam.batch.catcms.rdo;
 
 import fr.sacem.priam.batch.catcms.rdo.dao.FichierCatcmsRepositoryForTest;
+import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -44,7 +45,8 @@ public class JobImportCatalogueCMSRDOTest {
     private static final String ZIP_FILE_PATH = "src/test/resources/inputDirectory/FF_OCTAV_CATALOGUE_FR.zip";
 
     private FichierCatcmsRepositoryForTest fichierCatcmsRepository;
-
+    File inDir = null;
+    File outDir;
 
 
     @Before
@@ -54,6 +56,17 @@ public class JobImportCatalogueCMSRDOTest {
         // Get the bean to use to invoke the application
         jobLauncherTestUtils = (JobLauncherTestUtils) context.getBean("jobLauncherTestUtils");
         fichierCatcmsRepository = (FichierCatcmsRepositoryForTest) context.getBean("fichierRepositoryForTest");
+
+        try {
+
+            inDir = new File(inputDirectory);
+            FileUtils.forceMkdir(inDir);
+
+            outDir = new File(outputDirectory);
+            FileUtils.forceMkdir(outDir);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         csvToZip();
     }
 
@@ -79,6 +92,16 @@ public class JobImportCatalogueCMSRDOTest {
             Assert.assertEquals(2L, nbLignes);
         }
 
+    }
+
+    @After
+    public void cleanUp() {
+        try {
+            FileUtils.deleteDirectory(inDir);
+            FileUtils.deleteDirectory(outDir);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void csvToZip() {
