@@ -309,7 +309,7 @@
             </plugin>
 -->
 
-            <plugin>
+           <!-- <plugin>
                 <groupId>org.zeroturnaround</groupId>
                 <artifactId>jrebel-maven-plugin</artifactId>
                 <version>1.1.7</version>
@@ -322,7 +322,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
         </plugins>
 
     </build>
