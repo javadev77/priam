@@ -138,8 +138,6 @@
     <bean id="fichierRepository" class="fr.sacem.priam.batch.catcms.rdo.dao.FichierCatcmsRepositoryImpl">
         <property name="dataSource" ref="dataSource"/>
         <property name="nomTableFichier" value="${nom.table.fichier}"/>
-        <property name="nomTableLigneProgramme" value="${nom.table.ligneprogramme}"/>
-        <property name="nomTableLigneProgrammeLog" value="${nom.table.fichierlog}"/>
     </bean>
     <bean id="utilFile" class="fr.sacem.priam.batch.common.util.UtilFile">
         <property name="fichierBatchService" ref="fichierBatchService"/>

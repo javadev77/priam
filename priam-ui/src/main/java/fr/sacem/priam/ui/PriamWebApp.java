@@ -1,6 +1,7 @@
 package fr.sacem.priam.ui;
 
 
+import fr.sacem.priam.common.config.DataSourceConfig;
 import fr.sacem.priam.common.config.PropertiesWithJavaConfig;
 import fr.sacem.priam.model.config.JpaConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -18,7 +19,7 @@ import org.springframework.context.annotation.Import;
 /**
  * Created by benmerzoukah on 18/04/2017.
  */
-@Import(value = {PropertiesWithJavaConfig.class, JpaConfiguration.class})
+@Import(value = {PropertiesWithJavaConfig.class, JpaConfiguration.class, DataSourceConfig.class})
 @SpringBootApplication(scanBasePackages = {"fr.sacem.priam.ui", "fr.sacem.priam.model"})
 @EnableAutoConfiguration(exclude = {
   ElasticsearchAutoConfiguration.class,

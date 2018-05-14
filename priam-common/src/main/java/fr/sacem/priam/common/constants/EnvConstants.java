@@ -169,6 +169,20 @@ public enum EnvConstants implements ConfigurableProperty {
         public String property() {
             return "priam.service.cp.url";
         }
+    },
+
+    CATCMS_RDO_INPUT {
+        @Override
+        public String property() {
+            return "priam.catcms.rdo.input";
+        }
+    },
+
+    CATCMS_RDO__ARCHIVES {
+        @Override
+        public String property() {
+            return "priam.catcms.rdo.archives";
+        }
     };
 
     @Override

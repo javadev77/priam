@@ -24,9 +24,6 @@ public class FichierCatcmsRepositoryImpl implements FichierRepository {
 
     private JdbcTemplate jdbcTemplate;
     private String nomTableFichier;
-    private String nomTableLigneProgramme;
-    private String nomTableLigneProgrammeLog;
-    /*private String typeFichier;*/
     private ResultSetExtractor<Fichier> fichierExtractor = new FichierExtractor();
     private static final String STATUT_OK = "CHARGEMENT_OK";
     private static final String STATUT_KO = "CHARGEMENT_KO";
@@ -175,22 +172,6 @@ public class FichierCatcmsRepositoryImpl implements FichierRepository {
 
     public void setNomTableFichier(String nomTableFichier) {
         this.nomTableFichier = nomTableFichier;
-    }
-
-    public String getNomTableLigneProgramme() {
-        return nomTableLigneProgramme;
-    }
-
-    public void setNomTableLigneProgramme(String nomTableLigneProgramme) {
-        this.nomTableLigneProgramme = nomTableLigneProgramme;
-    }
-
-    public String getNomTableLigneProgrammeLog() {
-        return nomTableLigneProgrammeLog;
-    }
-
-    public void setNomTableLigneProgrammeLog(String nomTableLigneProgrammeLog) {
-        this.nomTableLigneProgrammeLog = nomTableLigneProgrammeLog;
     }
 
     public ResultSetExtractor<Fichier> getFichierExtractor() {

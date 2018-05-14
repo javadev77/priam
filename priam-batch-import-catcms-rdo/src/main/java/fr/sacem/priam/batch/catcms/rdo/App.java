@@ -1,5 +1,6 @@
 package fr.sacem.priam.batch.catcms.rdo;
 
+import fr.sacem.priam.batch.catcms.rdo.config.ConfigurationPriamProd;
 import fr.sacem.priam.batch.common.domain.Admap;
 import fr.sacem.priam.batch.catcms.rdo.config.ConfigurationPriamLocal;
 import org.slf4j.Logger;
@@ -21,7 +22,7 @@ public class App {
 
     public static void main(String[] args) {
 
-        ApplicationContext context = new AnnotationConfigApplicationContext(ConfigurationPriamLocal.class);
+        ApplicationContext context = new AnnotationConfigApplicationContext(ConfigurationPriamLocal.class, ConfigurationPriamProd.class);
         JobLauncher jobLauncher = (JobLauncher) context.getBean("jobLauncher");
         Job job = (Job) context.getBean("jobImportCatalogueCMSRDO");
         Admap admap =(Admap) context.getBean("admap");
