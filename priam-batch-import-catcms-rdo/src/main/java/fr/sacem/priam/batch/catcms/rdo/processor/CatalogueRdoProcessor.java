@@ -37,13 +37,10 @@ public class CatalogueRdoProcessor implements ItemProcessor<CatalogueRdoCsv, Cat
 
         Set<String> errorSet = (Set<String>) executionContext.get(LIGNE_PROGRAMME_ERRORS);
 
-        JobParameter parameter_nom_fichier = (JobParameter) executionContext.get("nomFichier");
-        JobParameter parameter_id_fichier=(JobParameter) executionContext.get("idFichier");
-
         BindingResult errors = new BeanPropertyBindingResult(catalogueRdoCsv, "CatalogueRdoCsv-"+ catalogueRdoCsv.getLineNumber());
         /*validator.validate(catalogueRdoCsv, errors);*/
 
-        if(catalogueRdoCsv.getPourcentageDP()==1){
+        if(catalogueRdoCsv !=null && catalogueRdoCsv.getPourcentageDP()==1){
             catalogueRdoCsv.setDateSortie(new Date());
             catalogueRdoCsv.setTypeSortie("Automatique");
         }
