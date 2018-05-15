@@ -43,6 +43,11 @@ public class CatalogueRdoProcessor implements ItemProcessor<CatalogueRdoCsv, Cat
         BindingResult errors = new BeanPropertyBindingResult(catalogueRdoCsv, "CatalogueRdoCsv-"+ catalogueRdoCsv.getLineNumber());
         /*validator.validate(catalogueRdoCsv, errors);*/
 
+        if(catalogueRdoCsv.getPourcentageDP()==1){
+            catalogueRdoCsv.setDateSortie(new Date());
+            catalogueRdoCsv.setTypeSortie("Automatique");
+        }
+
         if (!errors.hasErrors()) {
             return catalogueRdoCsv;
         }
@@ -50,11 +55,6 @@ public class CatalogueRdoProcessor implements ItemProcessor<CatalogueRdoCsv, Cat
             if(fe.getCode().startsWith("format.")){
                 errorSet.add(String.format(MESSAGE_FORMAT, catalogueRdoCsv.getLineNumber(), fe.getField(), fe.getRejectedValue()));
             }
-        }
-
-        if(catalogueRdoCsv.getPourcentageDP()==1){
-            catalogueRdoCsv.setDateSortie(new Date());
-            catalogueRdoCsv.setTypeSortie("Automatique");
         }
 
         return catalogueRdoCsv;
