@@ -125,6 +125,18 @@
       </span>
     </div>
 
+    <div class="mask" v-if="affectationEncours" >
+      <div class="center-div">
+        <div class="spinner">
+          <div class="rect1"></div>
+          <div class="rect2"></div>
+          <div class="rect3"></div>
+          <div class="rect4"></div>
+          <div class="rect5"></div>
+        </div>
+      </div>
+    </div>
+
 
     <modal v-if="showModalAffectation">
       <span class="homer-prompt-q control-label" slot="body">
@@ -175,6 +187,7 @@
 
             showModalAffectation :false,
             showModalDesactiver : false,
+            affectationEncours : false,
             isCollapsed : false,
             resource: {},
             programmeInfo : {},
@@ -413,6 +426,7 @@
 
         enregister(){
           console.log("Start of enregister()")
+          this.affectationEncours = true;
           this.controlerFamilleEtTypeUtilisation();
           console.log("End of enregister()")
           if( !this.showModalAffectation) {
@@ -661,12 +675,15 @@
 
         }*/
         console.log("fichiers envoyes" +this.fichiersToProgramme.fichiers.length);
+        debugger;
+
         this.resource.affectationProgramme(this.fichiersToProgramme)
           .then(response => {
               return response.json();
           })
           .then(data => {
-              console.log("affacration ok");
+              console.log("affectation ok");
+              this.affectationEncours = false;
               //this.programmeInfo = data;
               //this.initData();
               //this.rechercher();
@@ -676,6 +693,7 @@
           .catch(response => {
               alert("Erreur technique lors de l'affectation des fichiers au programme !! ");
           });
+
       },
 
 
