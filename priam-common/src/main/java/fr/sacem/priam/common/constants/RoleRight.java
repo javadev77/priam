@@ -15,5 +15,6 @@ public enum RoleRight {
     INVSEL,
     CLDSEL,
     VLDSEL,
-    ABDCHGT
+    ABDCHGT,
+    VIJREV
 }

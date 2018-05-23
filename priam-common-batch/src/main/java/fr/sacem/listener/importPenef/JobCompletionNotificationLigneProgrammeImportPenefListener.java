@@ -97,7 +97,7 @@ public class JobCompletionNotificationLigneProgrammeImportPenefListener extends 
                     LOG.debug("Pas de excution context pour le step en cours : " + myStepExecution.getStepName());
                 }
 
-                if(idFichier != null && "CMS".equalsIgnoreCase(typeFichier)) {
+                if(idFichier != null && ("CMS".equalsIgnoreCase(typeFichier) || "CP".equalsIgnoreCase(typeFichier))) {
                     fichierRepository.supprimerLigneProgrammeParIdFichier((Long)idFichier.getValue());
                 }
 
@@ -156,7 +156,7 @@ public class JobCompletionNotificationLigneProgrammeImportPenefListener extends 
                 utilFile.deplacerFichier(parameterFichierZipEnCours, parameterNomFichierOriginal, outputDirectory);
             }
 
-            if(idFichier != null && "CMS".equalsIgnoreCase(typeFichier)) {
+            if(idFichier != null && ("CMS".equalsIgnoreCase(typeFichier) || "CP".equalsIgnoreCase(typeFichier))) {
                 fichierRepository.supprimerLigneProgrammeParIdFichier(idFile);
             }
         }
