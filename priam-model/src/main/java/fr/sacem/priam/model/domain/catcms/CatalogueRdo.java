@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name = "PRIAM_CATCMS_RDO")
+@Table(name = "PRIAM_CATCMS_CATALOGUE")
 public class CatalogueRdo implements Serializable {
 
     @Id

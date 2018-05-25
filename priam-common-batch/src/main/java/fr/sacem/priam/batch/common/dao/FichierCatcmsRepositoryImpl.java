@@ -1,6 +1,5 @@
-package fr.sacem.priam.batch.catcms.rdo.dao;
+package fr.sacem.priam.batch.common.dao;
 
-import fr.sacem.priam.batch.common.dao.FichierRepository;
 import fr.sacem.priam.batch.common.domain.Fichier;
 import fr.sacem.priam.batch.common.util.DateTimeUtils;
 import fr.sacem.priam.batch.common.util.exception.PriamValidationException;

@@ -17,7 +17,6 @@ public class CalculPointsStepListener extends StepExecutionListenerSupport {
     @Override
     public ExitStatus afterStep(StepExecution stepExecution) {
 
-        System.out.println("ListenerStepCalculPoints = " + stepExecution.getStepName());
         String numProg = stepExecution.getJobParameters().getString("numProg");
         this.ligneProgrammeBatchDao.deleteDoublonsMemeMontant(numProg);
 

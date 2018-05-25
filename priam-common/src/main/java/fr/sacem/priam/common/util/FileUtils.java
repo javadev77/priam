@@ -15,6 +15,7 @@ public class FileUtils {
     public static final String PREFIX_OCTAV_CATALOGUE_ANF  = "FF_OCTAV_CATALOGUE_ANF";
 
     public static final String PREFIX_MAINFRAME_CATALOGUE  = "FF_OCTAV_CATALOGUE";
+    public static final String PREFIX_PENEF_CATALOGUE_FR  = "FF_PENEF_CATALOGUE_FR";
 
     public static final String CATALOGUE_OCTAV_TYPE_CMS_FR = "FR";
     public static final String CATALOGUE_OCTAV_TYPE_CMS_ANF = "ANF";
