@@ -5,12 +5,7 @@ import fr.sacem.frmwk.security.plugins.exception.SecurityPluginException;
 import fr.sacem.frmwk.security.plugins.guest.GuestUserProfileBuilder;
 import fr.sacem.fwk.config.Environment;
 import fr.sacem.fwk.config.FrmwkEnv;
-import fr.sacem.fwk.security.ApplicationProfile;
-import fr.sacem.fwk.security.CurrentApplicationProfile;
-import fr.sacem.fwk.security.CurrentUserProfile;
-import fr.sacem.fwk.security.TokenApplicationProfile;
-import fr.sacem.fwk.security.TokenProfile;
-import fr.sacem.fwk.security.UserProfile;
+import fr.sacem.fwk.security.*;
 import org.slf4j.Logger;
 import org.springframework.http.HttpRequest;
 

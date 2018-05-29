@@ -48,7 +48,7 @@ public class LigneProgramme implements Serializable {
     private Integer lineNumber;
     private String libelleUtilisateur;
     private Exception exception;
-
+    private String rionAnt;
 
     public String getUtilisateur() {
         return utilisateur;
@@ -85,7 +85,7 @@ public class LigneProgramme implements Serializable {
     public LigneProgramme() {
     }
 
-    public LigneProgramme(String cdeCisac, String cdeFamilTypUtil, Long numProg, String cdeUtil, String cdeTypUtil, String cdeGreDif, String cdeModDif, String cdeTypIde12, String ide12, String durDif, String nbrDif, Double mt, String ctna, String paramCoefHor, String durDifCtna, String cdeLng, String indDoubSsTit, String tax, String typMt, String cdeGreIde12Cmplx, String cdeGreIde12, String titreOriCmplx, String titreAltPppalCmplx, String titreOriOeuvPereCmplx, String titreAltOeuvPereCmplx, String titreOeuvre, String cdePaysOriIso4NCmplx, String realisateurCmplx, String roleParticipant1, String nomParticipant1, String cdeTypUtilOri, String cdeFamilTypUtilOri) {
+    public LigneProgramme(String cdeCisac, String cdeFamilTypUtil, Long numProg, String cdeUtil, String cdeTypUtil, String cdeGreDif, String cdeModDif, String cdeTypIde12, String ide12, String durDif, String nbrDif, Double mt, String ctna, String paramCoefHor, String durDifCtna, String cdeLng, String indDoubSsTit, String tax, String typMt, String cdeGreIde12Cmplx, String cdeGreIde12, String titreOriCmplx, String titreAltPppalCmplx, String titreOriOeuvPereCmplx, String titreAltOeuvPereCmplx, String titreOeuvre, String cdePaysOriIso4NCmplx, String realisateurCmplx, String roleParticipant1, String nomParticipant1, String cdeTypUtilOri, String cdeFamilTypUtilOri, String rionAnt) {
         this.cdeCisac = cdeCisac;
         this.cdeFamilTypUtil = cdeFamilTypUtil;
         this.numProg = numProg;
@@ -118,6 +118,7 @@ public class LigneProgramme implements Serializable {
         this.nomParticipant1 = nomParticipant1;
         this.cdeTypUtilOri = cdeTypUtilOri;
         this.cdeFamilTypUtilOri = cdeFamilTypUtilOri;
+        this.rionAnt = rionAnt;
     }
 
     public LigneProgramme(Exception e) {
@@ -402,5 +403,13 @@ public class LigneProgramme implements Serializable {
 
     public void setLibelleUtilisateur(String libelleUtilisateur) {
         this.libelleUtilisateur = libelleUtilisateur;
+    }
+
+    public String getRionAnt() {
+        return rionAnt;
+    }
+
+    public void setRionAnt(String rionAnt) {
+        this.rionAnt = rionAnt;
     }
 }

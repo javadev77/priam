@@ -1,6 +1,5 @@
 package fr.sacem.priam.ui.config;
 
-import fr.sacem.fwk.config.Environment;
 import fr.sacem.fwk.security.SecurityManager;
 import fr.sacem.priam.security.config.AjaxLogoutSuccessHandler;
 import fr.sacem.priam.security.config.Http401UnauthorizedEntryPoint;
@@ -15,7 +14,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDecisionVoter;
-
 import org.springframework.security.access.vote.AffirmativeBased;
 import org.springframework.security.access.vote.AuthenticatedVoter;
 import org.springframework.security.access.vote.RoleVoter;
@@ -26,7 +24,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -47,34 +44,40 @@ import java.util.List;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SecurityConfiguration.class);
-  private static final String STATIC_RESOURCES_REGEX = ".*(/static/.*)|/(error|404).*";
+  private static final String STATIC_RESOURCES_REGEX = ".*(/static/.*)|/(error|404).*|(/app/rest/.*)";
 
   @Override
   protected void  configure(HttpSecurity http) throws Exception {
-
 //    String webappMode = Environment.getParameter("webapp.mode");
 //    if("dev".equalsIgnoreCase(webappMode)) {
 //      http.cors().and();
 //    }
-    http.cors()
-      .and()
-      .csrf().disable()
-      .exceptionHandling()
-      .accessDeniedPage("/404.html")
-      .authenticationEntryPoint(authenticationEntryPoint())
-      .and()
-      .logout()
-      .invalidateHttpSession(true)
-      .deleteCookies(SsoPreAuthenticatedProcessingFilter.REQUEST_COOKIE_SSO_USER)
-      .logoutSuccessHandler(logoutSuccessHandler())
-      .and()
-      .addFilter(ssoPreAuthenticatedProcessingFilter())
-      .sessionManagement().maximumSessions(10).sessionRegistry(sessionRegistry()).and().sessionFixation().migrateSession()
-      .and()
-      .authorizeRequests()
-      .accessDecisionManager(affirmativeBased())
-      .regexMatchers(STATIC_RESOURCES_REGEX).permitAll()
-      .anyRequest().authenticated();
+
+      http.cors()
+          .and()
+            .csrf().disable()
+            .exceptionHandling()
+            .accessDeniedPage("/404.html")
+            .authenticationEntryPoint(authenticationEntryPoint())
+          .and()
+            .logout()
+            .invalidateHttpSession(true)
+            .deleteCookies(SsoPreAuthenticatedProcessingFilter.REQUEST_COOKIE_SSO_USER)
+            .logoutSuccessHandler(logoutSuccessHandler())
+          .and()
+            .addFilter(ssoPreAuthenticatedProcessingFilter())
+            .sessionManagement()
+            .maximumSessions(10)
+            .sessionRegistry(sessionRegistry())
+          .and()
+            .sessionFixation()
+            .migrateSession()
+          .and()
+            .authorizeRequests()
+            .accessDecisionManager(affirmativeBased())
+            .regexMatchers(STATIC_RESOURCES_REGEX).permitAll()
+            .anyRequest()
+          .authenticated();
 
   }
 

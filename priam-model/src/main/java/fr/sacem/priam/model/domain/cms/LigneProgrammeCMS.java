@@ -142,6 +142,8 @@ public class LigneProgrammeCMS implements Serializable {
     @ManyToOne
     @JoinColumn(name = "idOeuvreManuel")
     private LigneProgrammeCMS oeuvreManuel;
+    private Long nbrDifEdit;
+    private Double mtEdit;
 
     public String getUtilisateur() {
         return utilisateur;
@@ -495,5 +497,21 @@ public class LigneProgrammeCMS implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hashCode(id);
+    }
+
+    public void setNbrDifEdit(Long nbrDifEdit) {
+        this.nbrDifEdit = nbrDifEdit;
+    }
+
+    public Long getNbrDifEdit() {
+        return nbrDifEdit;
+    }
+
+    public void setMtEdit(Double mtEdit) {
+        this.mtEdit = mtEdit;
+    }
+
+    public Double getMtEdit() {
+        return mtEdit;
     }
 }

@@ -55,7 +55,13 @@ public class LigneProgrammeCP implements Serializable {
     
     @Column(name = "nbrDif")
     private Long nbrDif;
-    
+
+    @Column(name = "durDifEdit")
+    private Long durDifEdit;
+
+    @Column(name = "nbrDifEdit")
+    private Long nbrDifEdit;
+
     @Column(name = "mt")
     private Double mt;
     
@@ -128,7 +134,7 @@ public class LigneProgrammeCP implements Serializable {
     
     @Column(name = "ajout")
     private String ajout;
-    
+
     @Column(name = "selection")
     private boolean selection;
     
@@ -478,7 +484,23 @@ public class LigneProgrammeCP implements Serializable {
     public void setLibelleUtilisateur(String libelleUtilisateur) {
         this.libelleUtilisateur = libelleUtilisateur;
     }
-    
+
+    public Long getDurDifEdit() {
+        return durDifEdit;
+    }
+
+    public void setDurDifEdit(Long durDifEdit) {
+        this.durDifEdit = durDifEdit;
+    }
+
+    public Long getNbrDifEdit() {
+        return nbrDifEdit;
+    }
+
+    public void setNbrDifEdit(Long nbrDifEdit) {
+        this.nbrDifEdit = nbrDifEdit;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

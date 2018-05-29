@@ -166,6 +166,21 @@ const state = {
 
   ],
 
+  etatOeuvre : [
+      {
+        "code" : 'AUTOMATIQUE',
+        "libelle" : 'Automatique'
+      },
+      {
+        "code" : 'CORRIGE',
+        "libelle" : 'Corrigé'
+      },
+      {
+        "code": "MANUEL",
+        "libelle": 'Manuel'
+      }
+    ],
+
   lastProgrammesMisEnRepart : []
 };
 

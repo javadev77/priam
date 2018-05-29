@@ -1,9 +1,7 @@
 package fr.sacem.priam.model.domain.cms;
 
-import fr.sacem.priam.model.domain.Fichier;
 import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.StatutEligibilite;
-import fr.sacem.priam.model.domain.StatutFichierFelix;
 
 import javax.persistence.*;
 import java.io.Serializable;

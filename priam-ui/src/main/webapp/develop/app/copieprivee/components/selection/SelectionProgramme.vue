@@ -37,7 +37,7 @@
       <app-filtre-selection
         :filter="filter"
         :retablir="retablirFiltre"
-        :rechercher="rechercher"
+        :rechercher="launchRechercheEtCompteurs"
         :ajouter="ajouterOeuvre"
         :edition="edition"
       >
@@ -167,6 +167,10 @@
   import ActionSelection from './ActionSelection.vue';
   import ProgrammeInfo from '../../../common/components/programme/ProgrammeInfo.vue';
 
+
+  import QuantiteEditor from './cellEditors/QuantiteEditor.vue';
+  import DureeEditor from './cellEditors/DureeEditor.vue';
+
   export default {
     mixins: [chargementMixins],
 
@@ -184,6 +188,7 @@
         programmeInfo: {},
         tableauSelectionnable : false,
         isCollapsed: false,
+        fromSelection: false,
         defaultPageable : {
           page : 1,
           sort : 'ide12',
@@ -275,38 +280,53 @@
               id: 'nbrDif',
               name: "Quantité",
               sortable: true,
-              sortProperty : 'sum(nbrDif)',
-              type: 'numeric',
+              sortProperty : 'sum(nbrDifEdit)',
+              type: 'inputNum',
+              cellEditorFramework : QuantiteEditor,
               cell: {
-                toText : function(entry) {
-                  var result = entry.nbrDif;
-                  if(result !=undefined)
-                    return result ;
-                  else
-                    return "";
+                toDisabled: function(entry){
+
+                  if (!$this.isTableauSelectionnable()) {
+                    return true;
+                  }
+                  return false;
+                },
+
+                onCellValueChanged: function (entry, params) {
+                  //Re-calculer les compteurs
+                  debugger;
+                  if(entry.selection && params !== null && params.oldVal !== null) {
+                      $this.dureeSelection.duree -= params.oldVal;
+                      $this.dureeSelection.duree += params.newVal;
+
+                      if($this.dureeSelection.duree < 0) {
+                        $this.dureeSelection.duree  = 0;
+                      }
+                  }
                 }
               }
             },
             {
               id: 'ajout',
-              name: "Ajout",
+              name: "Etat",
               sortable: true,
               type: 'text-with-action',
               cell: {
                 toText : function(entry) {
                   var result = entry;
+                  var element = $this.getEtatOeuvre(result.ajout);
 
-                  if(result !=undefined)
-                  {
-                    if(result.ajout == 'Manuel') {
+                  if(result !== undefined && element !== undefined) {
+                    if(result.ajout === 'MANUEL' || result.ajout === 'CORRIGE') {
 
                       var tempalteTrash = '<span class="glyphicon glyphicon-trash" aria-hidden="true" style="padding-left: 0px;" title="Supprimer"></span>';
                       var template = [];
                       template.push({event : 'supprimer-ligne-programme', template : tempalteTrash, disabled : !$this.edition});
-                      return {value : result.ajout, template : template ,action : true};
-
+                      /*return {value : result.ajout, template : template ,action : true};*/
+                      return {value : element.libelle, template : template ,action : true};
                     }else {
-                      return {value : result, action : false};
+                      /*return {value : result.ajout, action : false};*/
+                      return {value : element.libelle, action : false};
                     }
 
                   }
@@ -334,21 +354,6 @@
                 },
 
                 isChecked: function (entry) {
-                  /*var notChecked = $this.unselectedLigneProgramme.find(elem => {
-                    return elem.ide12 == entry.ide12 && elem.libAbrgUtil == entry.libAbrgUtil;
-                  });
-
-                  if (notChecked !== undefined) {
-                    return 0;
-                  }
-
-                  var result = $this.ligneProgrammeSelected.find(elem => {
-                    return elem.ide12 == entry.ide12 && elem.libAbrgUtil == entry.libAbrgUtil;
-                  });
-
-                  if (result !== undefined) {
-                    return 1;
-                  }*/
 
                   if(entry.selection) {
                     return 1;
@@ -453,39 +458,53 @@
               id: 'durDif',
               name: "Durée",
               sortable: true,
-              sortProperty : 'sum(durDif)',
-              type: 'seconds-as-time',
+              sortProperty : 'sum(durDifEdit)',
+              type: 'inputNum',
+              editable : true,
+              cellEditorFramework : DureeEditor,
               cell: {
-                toText : function(entry) {
-                  var result = entry;
 
-                  if(result !=undefined)
-                    return result;
-                  else
-                    return "";
+                toDisabled: function(entry){
+
+                  if (!$this.isTableauSelectionnable()) {
+                    return true;
+                  }
+                  return false;
+                },
+
+                onCellValueChanged: function (entry, params) {
+                  //Re-calculer les compteurs
+                  if(entry.selection && params !== null && params.oldVal !== null) {
+                    $this.dureeSelection.duree -= params.oldVal;
+                    $this.dureeSelection.duree += params.newVal;
+
+                    if($this.dureeSelection.duree < 0) {
+                      $this.dureeSelection.duree  = 0;
+                    }
+                  }
                 }
               }
             },
             {
               id: 'ajout',
-              name: "Ajout",
+              name: "Etat",
               sortable: true,
               type: 'text-with-action',
               cell: {
                 toText : function(entry) {
                   var result = entry;
-
-                  if(result !=undefined)
+                  var element = $this.getEtatOeuvre(result.ajout);
+                  if(result !== undefined && element !== undefined)
                   {
-                    if(result.ajout == 'Manuel') {
+                    if(result.ajout === 'MANUEL' || result.ajout === 'CORRIGE') {
 
                       var tempalteTrash = '<span class="glyphicon glyphicon-trash" aria-hidden="true" style="padding-left: 0px;" title="Supprimer"></span>';
                       var template = [];
                       template.push({event : 'supprimer-ligne-programme', template : tempalteTrash, disabled : !$this.edition});
-                      return {value : result.ajout, template : template ,action : true};
+                      return {value : element.libelle, template : template ,action : true};
 
                     }else {
-                      return {value : result, action : false};
+                      return {value : element.libelle, action : false};
                     }
 
                   }
@@ -514,22 +533,7 @@
 
                 isChecked: function (entry) {
 
-                  debugger;
-                  /*var notChecked = $this.unselectedLigneProgramme.find(elem => {
-                    return elem.ide12 == entry.ide12 && elem.libAbrgUtil == entry.libAbrgUtil;
-                  });
 
-                  if (notChecked !== undefined) {
-                    return 0;
-                  }
-
-                  var result = $this.ligneProgrammeSelected.find(elem => {
-                    return elem.ide12 == entry.ide12 && elem.libAbrgUtil == entry.libAbrgUtil;
-                  });
-
-                  if (result !== undefined) {
-                    return 1;
-                  }*/
 
                   if(entry.selection) {
                       return 1;
@@ -570,6 +574,7 @@
         },
         dureeSelection : {
           auto : 0,
+          corrige : 0,
           manuel : 0,
           duree : 0
         },
@@ -615,8 +620,9 @@
           return response.json();
         }).then(data => {
 
-          this.dureeSelection.auto = data.Automatique;
-          this.dureeSelection.manuel = data.Manuel;
+          this.dureeSelection.auto = data.AUTOMATIQUE;
+          this.dureeSelection.manuel = data.MANUEL;
+          this.dureeSelection.corrige = data.CORRIGE;
           this.dureeSelection.duree = data.SOMME;
 
           this.backupDureeSelection = {
@@ -675,9 +681,9 @@
 
 
             if(this.programmeInfo.typeUtilisation==="CPRIVSONPH"){
-              this.defaultPageable.sort = 'nbrDif';
+              this.defaultPageable.sort = 'sum(nbrDifEdit)';
             }else if (this.programmeInfo.typeUtilisation==="CPRIVSONRD") {
-              this.defaultPageable.sort = 'durDif';
+              this.defaultPageable.sort = 'sum(durDifEdit)';
             }
 
             if(this.programmeInfo.statut == 'EN_COURS' || this.programmeInfo.statut == 'VALIDE') {
@@ -704,14 +710,7 @@
           })
           .then(data => {
               this.showPopupSuppression = false;
-              //this.launchRequest(this.currentGridState.pageNum, this.currentGridState.pageSize, this.currentGridState.sort, this.currentGridState.dir);
-              var index = this.indexOf(this.ligneProgramme, this.selectedLineProgramme);
-
-              if (index > -1) {
-                this.ligneProgramme.splice(index, 1);
-              }
-              this.getDuree(this.programmeInfo.statut);
-            this.$store.dispatch('getUtilisateursByProgramme', this.$route.params.numProg);
+              this.launchRechercheEtCompteurs();
           });
 
       },
@@ -724,6 +723,7 @@
 
         this.dataLoading = true;
 
+        debugger;
         this.resource.findLigneProgrammeByProgramme({page : pageNum -1 , size : pageSize,
           sort : sort, dir: dir}, this.currentFilter )
           .then(response => {
@@ -754,24 +754,33 @@
 
       onSort(currentPage, pageSize, sort) {
 
+        if (this.edition) {
+          this.modifierSelectionTemporaire();
 
-        this.modifierSelectionTemporaire();
-
-        this.resource.updateSelectionTemporaire(this.selection)
-          .then(response => {
-            return response.json();
-          }).then(data => {
+          this.resource.updateSelectionTemporaire(this.selection)
+            .then(response => {
+              return response.json();
+            }).then(data => {
 
 
-          this.launchRequest(currentPage, pageSize, sort.property, sort.direction);
+            this.launchRequest(currentPage, pageSize, sort.property, sort.direction);
 
-          this.defaultPageable.sort = sort.property;
-          this.defaultPageable.dir = sort.direction;
+            this.defaultPageable.sort = sort.property;
+            this.defaultPageable.dir = sort.direction;
 
-        })
-          .catch(response => {
-            console.log("Erreur technique lors de la validation de la selection du programme !! " + response);
-          });
+          })
+            .catch(response => {
+              console.log("Erreur technique lors de la validation de la selection du programme !! " + response);
+            });
+        } else {
+            debugger;
+            this.launchRequest(currentPage, pageSize, sort.property, sort.direction);
+
+            this.defaultPageable.sort = sort.property;
+            this.defaultPageable.dir = sort.direction;
+
+        }
+
 
 
       },
@@ -780,19 +789,24 @@
         this.defaultPageable.size = size;
         let pageSize = this.defaultPageable.size;
 
+        this.dataLoading = true;
+        if (this.edition) {
+          this.modifierSelectionTemporaire();
 
-        this.modifierSelectionTemporaire();
-
-        this.resource.updateSelectionTemporaire(this.selection)
-          .then(response => {
-            return response.json();
-          }).then(data => {
+          this.resource.updateSelectionTemporaire(this.selection)
+            .then(response => {
+              return response.json();
+            }).then(data => {
 
             this.launchRequest(pageNum, pageSize, sort.property, sort.direction);
 
-        }).catch(response => {
+          }).catch(response => {
             console.log("Erreur technique lors de la validation de la selection du programme !! " + response);
           });
+
+        } else {
+          this.launchRequest(pageNum, pageSize, sort.property, sort.direction);
+        }
 
 
       },
@@ -804,7 +818,7 @@
 
       selectAll() {
 
-        debugger;
+
         //if(!this.all) {
           for (var i in this.ligneProgramme) {
             if (this.indexOf(this.ligneProgrammeSelected, this.ligneProgramme[i]) == -1
@@ -822,40 +836,8 @@
 
       },
 
-      rechercher(){
+      launchRechercheEtCompteurs() {
 
-        function doSearch() {
-          this.dataLoading = true;
-          this.resource.findLigneProgrammeByProgramme({
-            page: this.defaultPageable.page - 1, size: this.defaultPageable.size,
-            sort: this.defaultPageable.sort, dir: this.defaultPageable.dir
-          }, this.filter)
-            .then(response => {
-              return response.json();
-            })
-            .then(data => {
-
-              var tab = [];
-              if (this.programmeInfo.typeUtilisation === "CPRIVSONPH") {
-
-                this.priamGrid_phono.gridData_phono = data;
-                this.priamGrid_phono.gridData_phono.number = data.number + 1;
-                tab = this.priamGrid_phono.gridData_phono.content;
-
-              } else if (this.programmeInfo.typeUtilisation === "CPRIVSONRD") {
-
-                this.priamGrid_sono.gridData_sono = data;
-                this.priamGrid_sono.gridData_sono.number = data.number + 1;
-                tab = this.priamGrid_sono.gridData_sono.content;
-              }
-
-              this.ligneProgramme = tab;
-              this.dataLoading = false;
-
-             // this.$store.dispatch('toutDesactiver', this.countNbSelected(this.ligneProgramme) == this.ligneProgramme.length);
-              //this.selectAll();
-            });
-        }
         this.currentFilter.ide12 = this.filter.ide12;
         this.currentFilter.ajout = this.filter.ajout;
         this.currentFilter.numProg = this.filter.numProg;
@@ -863,9 +845,47 @@
         this.currentFilter.titre = this.filter.titre;
         this.currentFilter.selection = this.filter.selection;
 
-        if(this.isActionAnnulerEdition) {
-          doSearch.call(this);
-          this.getDuree(this.programmeInfo.statut);
+        this.doSearch();
+        this.getDuree(this.programmeInfo.statut);
+      },
+
+      doSearch() {
+        this.dataLoading = true;
+        this.resource.findLigneProgrammeByProgramme({
+          page: this.defaultPageable.page - 1, size: this.defaultPageable.size,
+          sort: this.defaultPageable.sort, dir: this.defaultPageable.dir
+        }, this.filter)
+        .then(response => {
+          return response.json();
+        })
+        .then(data => {
+
+          var tab = [];
+          if (this.programmeInfo.typeUtilisation === "CPRIVSONPH") {
+
+            this.priamGrid_phono.gridData_phono = data;
+            this.priamGrid_phono.gridData_phono.number = data.number + 1;
+            tab = this.priamGrid_phono.gridData_phono.content;
+
+          } else if (this.programmeInfo.typeUtilisation === "CPRIVSONRD") {
+
+            this.priamGrid_sono.gridData_sono = data;
+            this.priamGrid_sono.gridData_sono.number = data.number + 1;
+            tab = this.priamGrid_sono.gridData_sono.content;
+          }
+
+          this.ligneProgramme = tab;
+          this.dataLoading = false;
+
+      });
+    },
+
+      rechercher(){
+
+
+        debugger;
+        if(!this.edition) {
+          this.launchRechercheEtCompteurs();
         } else {
           this.modifierSelectionTemporaire();
 
@@ -874,9 +894,7 @@
               return response.json();
             }).then(data => {
 
-            doSearch.call(this);
-            this.getDuree(this.programmeInfo.statut);
-
+            this.launchRechercheEtCompteurs();
           })
             .catch(response => {
               console.log("Erreur technique lors de la validation de la selection du programme !! " + response);
@@ -892,12 +910,16 @@
       },
 
       onEntryChecked(isChecked, entryChecked) {
+        debugger;
+        this.fromSelection = true;
 
         if(isChecked) {
 
-          if(entryChecked.ajout == 'Manuel') {
+          if(entryChecked.ajout == 'MANUEL') {
             this.dureeSelection.manuel ++;
 
+          } else if(entryChecked.ajout == 'CORRIGE') {
+            this.dureeSelection.corrige ++;
           } else {
             this.dureeSelection.auto++;
           }
@@ -925,8 +947,10 @@
 
         } else {
 
-          if(entryChecked.ajout == 'Manuel') {
+          if(entryChecked.ajout == 'MANUEL') {
             this.dureeSelection.manuel--;
+          } else if(entryChecked.ajout == 'CORRIGE') {
+            this.dureeSelection.corrige--;
           } else {
             this.dureeSelection.auto--;
           }
@@ -944,28 +968,6 @@
         }
 
         entryChecked.selection = isChecked;
-       // this.$store.dispatch('toutDesactiver', this.countNbSelected(this.ligneProgramme) == this.ligneProgramme.length);
-
-
-        /*this.selection = {
-          deselectAll : false,
-          all : false,
-          unselected : this.unselectedLigneProgramme,
-          selected : this.ligneProgrammeSelected
-        };
-
-        this.selection.numProg = this.$route.params.numProg;
-        this.resource.modifierSelection(this.selection)
-          .then(response => {
-            return response.json();
-          })
-          .then(data => {
-            //this.selectedLineProgramme = [];
-            //this.unselectedLigneProgramme = [];
-          })
-          .catch(response => {
-            alert("Erreur technique lors de la validation de la selection du programme !! " + response);
-          });*/
 
          console.log('onEntryChecked() ==> this.ligneProgrammeSelected='+this.ligneProgrammeSelected.length);
       },
@@ -983,7 +985,7 @@
       },
 
       onAllChecked(allChecked, entries) {
-
+        this.fromSelection = true;
         this.all = allChecked;
         this.ligneProgrammeSelected = [];
         this.unselectedLigneProgramme = [];
@@ -1000,14 +1002,22 @@
       },
 
       recalculerCompteurs(entry) {
-        if(entry.ajout == 'Manuel') {
+          debugger;
+        if(entry.ajout == 'MANUEL') {
           if(entry.selection) {
             this.dureeSelection.manuel++;
           } else {
             this.dureeSelection.manuel--;
           }
 
-        } else {
+        } else if(entry.ajout == 'CORRIGE') {
+          if(entry.selection) {
+            this.dureeSelection.corrige++;
+          } else {
+            this.dureeSelection.corrige--;
+          }
+        }
+        else if(entry.ajout == 'AUTOMATIQUE') {
           if(entry.selection) {
             this.dureeSelection.auto++;
           } else {
@@ -1026,6 +1036,10 @@
           this.dureeSelection.duree += duree;
         } else {
           this.dureeSelection.duree -= duree;
+        }
+
+        if(this.dureeSelection.duree < 0) {
+          this.dureeSelection.duree  = 0;
         }
       },
 
@@ -1056,7 +1070,7 @@
       },
 
       valider(selection) {
-        debugger;
+
         this.selection = selection;
 
         if(this.programmeInfo.statut == 'AFFECTE' || this.programmeInfo.statut == 'EN_COURS') {
@@ -1082,7 +1096,7 @@
       },
 
       validerSelection () {
-        debugger;
+
         /*if(this.all) {
           if(this.unselectedLigneProgramme.length != 0) {
             this.unselect();
@@ -1203,14 +1217,12 @@
             return response.json();
           })
           .then(data => {
-            this.selection = {
-              deselectAll : false,
-              all : false,
-              unselected : [],
-              selected : []
-            };
 
-            this.selection.numProg = this.$route.params.numProg;
+            /*this.selection =  {
+              numProg : this.$route.params.numProg,
+              fromSelection : this.fromSelection
+            };*/
+            this.selection.fromSelection= this.fromSelection;
             this.resource.enregistrerEdition(this.selection)
               .then(response => {
                 this.filter.selection = 'Sélectionné';
@@ -1219,16 +1231,15 @@
                 this.tableauSelectionnable = false;
                 this.edition = false;
                 this.inProcess = false;
-                this.initProgramme();
+                this.rechercher();
+              })
+              .catch(response => {
+                alert("Erreur technique lors de l'operation de enregistrer edition du programme !! " + response);
               });
           })
           .catch(response => {
             alert("Erreur technique lors de la validation de la selection du programme !! " + response);
           });
-
-
-
-
 
       },
 
@@ -1250,7 +1261,8 @@
           deselectAll : false,
           all : false,
           unselected : this.unselectedLigneProgramme,
-          selected : this.ligneProgrammeSelected
+          selected : this.ligneProgrammeSelected,
+          fromSelection : false
         };
 
         this.selection.numProg = this.$route.params.numProg;
@@ -1272,10 +1284,10 @@
           .then(response => {
             this.selectedLineProgramme = [];
             this.unselectedLigneProgramme = [];
-            this.rechercher();
             this.tableauSelectionnable = false;
             this.edition = false;
             this.inProcess = false;
+            this.rechercher();
             this.getDuree(this.programmeInfo.statut);
         });
 
@@ -1284,7 +1296,9 @@
       editSelectionClickHandler () {
         this.tableauSelectionnable = true;
         this.edition = true;
-      },
+        this.fromSelection = false;
+      }
+
     },
 
     computed : {
@@ -1317,6 +1331,10 @@
       countNbSelected : function (newValue) {
         console.log("Le nombre de selection a cahnge "+  newValue);
         this.$store.dispatch('toutDesactiver', newValue && newValue === this.lengthOfTabLigneProgramme);
+      },
+
+      ligneProgramme : function (newTab, oldTab) {
+
       }
 
     },

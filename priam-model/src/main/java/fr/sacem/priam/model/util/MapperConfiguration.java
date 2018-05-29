@@ -1,9 +1,9 @@
 package fr.sacem.priam.model.util;
 
-import fr.sacem.priam.model.domain.saref.SareftrFamiltyputil;
 import fr.sacem.priam.model.domain.Programme;
-import fr.sacem.priam.model.domain.saref.SareftrTyputil;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
+import fr.sacem.priam.model.domain.saref.SareftrFamiltyputil;
+import fr.sacem.priam.model.domain.saref.SareftrTyputil;
 import org.modelmapper.ModelMapper;
 
 /**

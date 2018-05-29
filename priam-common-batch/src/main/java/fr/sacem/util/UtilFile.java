@@ -1,22 +1,21 @@
 package fr.sacem.util;
 
-import au.com.bytecode.opencsv.CSVReader;
-import com.google.common.io.Files;
-import fr.sacem.domain.Fichier;
 import fr.sacem.service.importPenef.FichierBatchService;
 import fr.sacem.util.exception.PriamValidationException;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameter;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.batch.core.StepExecution;
+import org.springframework.batch.item.ExecutionContext;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 
 import java.io.*;
-
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -26,15 +25,18 @@ import java.util.zip.ZipOutputStream;
  * Created by fandis on 10/05/2017.
  */
 public class UtilFile {
-    private final static char SEPARATOR = ';';
     private static final Logger LOG = LoggerFactory.getLogger(UtilFile.class);
     private static final String MON_FILTER = "TRACABILITE";
-    private static final String STATUT_EN_COURS = "EN_COURS";
     private static final String EXTENTION_CSV = ".csv";
+    private static final String EXTENTION_FLAG = ".flag";
+//    private static String NOM_FICHIER_CSV_EN_COURS = "nomFichier";
+    private static String FICHIER_ZIP_EN_COURS = "fichierZipEnCours";
+    private static String NOM_ORIGINAL_FICHIER_ZIP = "nomFichierOriginal";
+    private static String REPERTOIRE_DE_DESTINATION = "output.archives";
     private FichierBatchService fichierBatchService;
 
-    @Autowired
-    public static Long nombreDeLignes(InputStream inputStream) {
+
+    public Long nombreDeLignes(InputStream inputStream) {
         String input ;
         Long count = 0L;
         try {
@@ -52,61 +54,9 @@ public class UtilFile {
         return count;
     }
 
-    public static Fichier chargerLesDonnees(InputStream inputStream, String nomFichier) {
-        Fichier fichier = new Fichier();
-        try {
-            //Traitement pour recuperer la famille et le type d'utilisation depuis le contenu du ficiher
-            Reader reader = new InputStreamReader(inputStream);
-            BufferedReader bufferedReader = new BufferedReader(reader);
-            CSVReader csvReader = new CSVReader(bufferedReader, SEPARATOR);
-            List<String[]> data = new ArrayList<String[]>();
 
-            String[] nextLine = null;
-            String[] donnee = null;
-            Long nbLignes = 0L;
-            while ((nextLine = csvReader.readNext()) != null) {
-                // ligne vide
-                if (nextLine == null || nextLine.length == 0) {
-                    continue;
-                }
-                String debut = nextLine[0].trim();
-                if (StringUtils.isBlank(debut) || StringUtils.isEmpty(debut) ) {
-                    continue;
-                }
 
-                // ligne de commentaire
-                if (debut.startsWith("#")) {
-                    continue;
-                }
-                if(donnee == null) {
-                    donnee = nextLine;
-                }
-                
-                nbLignes++;
-            }
-            // on a besoin de charger que la premiere ligne pour recuperer typeUtilisation et la famille
-            if (donnee != null) {
-                fichier.setTypeUtilisation(donnee[4]);
-                fichier.setFamille(donnee[1]);
-                fichier.setNom(nomFichier);
-                // Date de debout de chargement
-                fichier.setDateDebutChargt(UtilFile.getCurrentTimeStamp());
-                //Nom du fichier a intégrer en BDD
-                fichier.setNom(nomFichier);
-                //Nombre de lignes dans le fichier
-                fichier.setNbLignes(nbLignes);
-                fichier.setStatut(STATUT_EN_COURS);
-            }
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-        return fichier;
-    }
 
-    public static java.sql.Timestamp getCurrentTimeStamp() {
-        java.util.Date today = new java.util.Date();
-        return new java.sql.Timestamp(today.getTime());
-    }
 
     /**
      * Extract only files from the zip archive.
@@ -139,7 +89,7 @@ public class UtilFile {
         return idFichier;
     }
 
-    public static void addToZipFile(String fileName, ZipOutputStream zos) throws IOException {
+    public void addToZipFile(String fileName, ZipOutputStream zos) throws IOException {
 
         System.out.println("Writing '" + fileName + "' to zip file");
 
@@ -171,6 +121,53 @@ public class UtilFile {
             }
         }
     }
+
+    public void suppressionFlag(File fichierEnCoursDeTraitement){
+        if(fichierEnCoursDeTraitement != null){
+            String nomFichierFlag = FilenameUtils.removeExtension(fichierEnCoursDeTraitement.getAbsolutePath()) + EXTENTION_FLAG;
+//            String nomFichierFlag = FilenameUtils.removeExtension(parameterFichierZipEnCours) + EXTENTION_FLAG;
+            File fichierFlag = new File(nomFichierFlag);
+            if(fichierFlag.exists()){
+                fichierFlag.delete();
+            } else {
+                LOG.error("Suppresion flag KO ");
+            }
+        }
+    }
+
+    public void deplacerFichierEtSuppressionFlag(JobExecution jobExecution){
+        Collection<StepExecution> stepExecutions = jobExecution.getStepExecutions();
+        ExecutionContext executionContext;
+        if(!stepExecutions.isEmpty()){
+            Iterator it = stepExecutions.iterator();
+            while (it.hasNext()) {
+                StepExecution myStepExecution = (StepExecution) it.next();
+                executionContext = myStepExecution.getExecutionContext();
+                if (executionContext != null) {
+//                    JobParameter parameterNomFichierCSV = (JobParameter) executionContext.get(NOM_FICHIER_CSV_EN_COURS);
+                    JobParameter parameterFichierZipEnCours = (JobParameter) executionContext.get(FICHIER_ZIP_EN_COURS);
+                    JobParameter parameterNomFichierOriginal = (JobParameter) executionContext.get(NOM_ORIGINAL_FICHIER_ZIP);
+                    JobParameter outputDirectory = jobExecution.getJobParameters().getParameters().get(REPERTOIRE_DE_DESTINATION);
+                    /*deplacerFichier(parameterFichierZipEnCours, parameterNomFichierOriginal, outputDirectory);*/
+
+                    if (parameterNomFichierOriginal != null && parameterFichierZipEnCours != null && outputDirectory != null) {
+                        String nomFichierTraiementEnCours = (String) parameterFichierZipEnCours.getValue();
+                        File fichierTraitementEnCours = new File(nomFichierTraiementEnCours);
+                        File fichierTraitementOk = new File((String) outputDirectory.getValue() + (String) parameterNomFichierOriginal.getValue());
+                        if (fichierTraitementOk.exists())
+                            fichierTraitementOk.delete();
+                        Boolean deplacementOK = fichierTraitementEnCours.renameTo(fichierTraitementOk);
+                        if (deplacementOK) {
+                            fichierTraitementEnCours.delete();
+                        } else {
+                            LOG.error("Déplacement de ficiher en cours de traitement KO ");
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public UtilFile(FichierBatchService fichierBatchService) {
         this.fichierBatchService = fichierBatchService;
     }

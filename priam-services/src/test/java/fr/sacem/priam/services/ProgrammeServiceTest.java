@@ -3,14 +3,15 @@ package fr.sacem.priam.services;
 import com.google.common.collect.Lists;
 import fr.sacem.priam.model.dao.JpaConfigurationTest;
 import fr.sacem.priam.model.dao.jpa.FichierDao;
-import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.priam.model.dao.jpa.ProgrammeSequnceDao;
+import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.priam.model.domain.Fichier;
 import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.StatutProgramme;
 import fr.sacem.priam.model.domain.criteria.ProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
+import fr.sacem.priam.security.model.UserDTO;
 import fr.sacem.priam.services.api.LigneProgrammeService;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
@@ -19,8 +20,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -59,48 +60,7 @@ public class ProgrammeServiceTest {
 	@Autowired
 	FichierDao fichierDao;
 	
-	private static final Pageable pageable = new Pageable() {
-		
-		@Override
-		public int getPageNumber() {
-			return 0;
-		}
-		
-		@Override
-		public int getPageSize() {
-			return 5;
-		}
-		
-		@Override
-		public int getOffset() {
-			return 0;
-		}
-		
-		@Override
-		public Sort getSort() {
-			return null;
-		}
-		
-		@Override
-		public Pageable next() {
-			return null;
-		}
-		
-		@Override
-		public Pageable previousOrFirst() {
-			return null;
-		}
-		
-		@Override
-		public Pageable first() {
-			return null;
-		}
-		
-		@Override
-		public boolean hasPrevious() {
-			return false;
-		}
-	};
+	private static final Pageable pageable = new PageRequest(0, 5);
 	
 	@Before
 	public void setUp() throws Exception {
@@ -126,6 +86,7 @@ public class ProgrammeServiceTest {
 	@Transactional
 	public void addProgramme() throws Exception {
 		ProgrammeDto programmeDto = new ProgrammeDto();
+		UserDTO userDTO = new UserDTO();
 		programmeDto.setNom("Test-PR01");
 		programmeDto.setRionTheorique(619);
 		programmeDto.setFamille("COPIEPRIV");
@@ -133,7 +94,7 @@ public class ProgrammeServiceTest {
 		String lastElement = programmeSequnceDao.getLastElement("17");
 		Integer lastSeq = StringUtils.isNotEmpty(lastElement) ?  Integer.valueOf(lastElement) : 0;
 		
-		Programme programme = programmeService.addProgramme(programmeDto);
+		Programme programme = programmeService.addProgramme(programmeDto, userDTO);
 		
 		assertThat(programme.getNumProg()).isEqualTo("18" + StringUtils.leftPad(String.valueOf(lastSeq + 1), 4, "0"));
 		assertThat(programme.getNom()).isEqualTo("Test-PR01");
@@ -157,12 +118,13 @@ public class ProgrammeServiceTest {
 	@Transactional
 	public void updateProgramme() throws Exception {
 		ProgrammeDto programmeDto = new ProgrammeDto();
+		UserDTO userDTO = new UserDTO();
 		programmeDto.setNumProg(NUM_PROG);
 		programmeDto.setNom("Programme-170001");
 		programmeDto.setRionTheorique(619);
 		programmeDto.setFamille("COPIEPRIV");
 		
-		Programme programme = programmeService.updateProgramme(programmeDto);
+		Programme programme = programmeService.updateProgramme(programmeDto, userDTO);
 		
 		assertThat(programme).isNotNull();
 		assertThat(programme.getNom()).isEqualTo("Programme-170001");
@@ -174,9 +136,10 @@ public class ProgrammeServiceTest {
 	@Transactional
 	public void abandonnerProgramme() throws Exception {
 		ProgrammeDto programmeDto = new ProgrammeDto();
+		UserDTO userDTO = new UserDTO();
 		programmeDto.setNumProg(NUM_PROG);
 		
-		Programme programme = programmeService.abandonnerProgramme(programmeDto);
+		Programme programme = programmeService.abandonnerProgramme(programmeDto, userDTO);
 		
 		assertThat(programme).isNotNull();
 		assertThat(programme.getStatut()).isEqualTo(StatutProgramme.ABANDONNE);
@@ -188,7 +151,7 @@ public class ProgrammeServiceTest {
 	public void test_tout_desaffecter() throws Exception {
 		String pr170001 = NUM_PROG;
 		List<Fichier> fichiersAffectes = fichierDao.findFichiersByIdProgramme(pr170001, Status.AFFECTE);
-		programmeService.toutDeaffecter(pr170001, "GUEST");
+		programmeService.toutDeaffecter(pr170001, "USER_ID_TEST");
 		
 		Programme programme = programmeDao.findOne(pr170001);
 		
@@ -215,8 +178,9 @@ public class ProgrammeServiceTest {
 	@Transactional
 	public void validerProgramme() {
 		ProgrammeDto programmeDto = new ProgrammeDto();
+		UserDTO userDTO = new UserDTO();
 		programmeDto.setNumProg(NUM_PROG);
-		Programme programme = programmeService.validerProgramme(programmeDto);
+		Programme programme = programmeService.validerProgramme(programmeDto, userDTO);
 		assertThat(programme).isNotNull();
 		assertThat(programme.getStatut()).isEqualTo(StatutProgramme.VALIDE);
 	}
@@ -225,8 +189,9 @@ public class ProgrammeServiceTest {
 	@Transactional
 	public void invaliderProgramme() {
 		ProgrammeDto programmeDto = new ProgrammeDto();
+		UserDTO userDTO = new UserDTO();
 		programmeDto.setNumProg(NUM_PROG);
-		Programme programme = programmeService.invaliderProgramme(programmeDto);
+		Programme programme = programmeService.invaliderProgramme(programmeDto, userDTO);
 		assertThat(programme).isNotNull();
 		assertThat(programme.getStatut()).isEqualTo(StatutProgramme.EN_COURS);
 	}
@@ -235,15 +200,16 @@ public class ProgrammeServiceTest {
 	public void getDurDifProgramme(){
 		Map<String, Long> durDifProgramme = ((LigneProgrammeCPServiceImpl)ligneProgrammeService).getDurDifProgramme(NUM_PROG, AFFECTE);
 		assertThat(durDifProgramme).isNotEmpty();
-		assertThat(durDifProgramme.size()).isEqualTo(3);
+		assertThat(durDifProgramme.size()).isEqualTo(5);
 	}
 
 	@Test
 	@Transactional
 	public void updateStatutProgrammeToAffecte() {
 		ProgrammeDto programmeDto = new ProgrammeDto();
+		UserDTO userDTO = new UserDTO();
 		programmeDto.setNumProg(NUM_PROG);
-		Programme programme = programmeService.updateStatutProgrammeToAffecte(programmeDto);
+		Programme programme = programmeService.updateStatutProgrammeToAffecte(programmeDto, userDTO);
 		assertThat(programme).isNotNull();
 		assertThat(programme.getStatut()).isEqualTo(StatutProgramme.AFFECTE);
 	}

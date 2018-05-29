@@ -10,7 +10,7 @@ Vue.use(VueResource);
 
 if(process.env.DEBUG_MODE) {
   // Only for DEV MODE
-  Vue.http.headers.common['Access-Control-Allow-Origin'] = 'http://localhost:8085';
+  Vue.http.headers.common['Access-Control-Allow-Origin'] = '*';
   Vue.http.headers.common['Access-Control-Request-Method'] = '*';
 
   Vue.http.interceptors.push((request, next) => {
@@ -19,10 +19,8 @@ if(process.env.DEBUG_MODE) {
   });
 
 } else {
-
   Vue.http.interceptors.push((request, next) => {
     request.credentials = true;
     next();
   });
-
 }

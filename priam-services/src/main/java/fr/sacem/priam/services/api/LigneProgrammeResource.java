@@ -11,6 +11,9 @@ import fr.sacem.priam.security.model.UserDTO;
 import fr.sacem.priam.services.ProgrammeService;
 import fr.sacem.priam.services.dto.LigneProgrammeCritereRecherche;
 import fr.sacem.priam.services.dto.ValdierSelectionProgrammeInput;
+import fr.sacem.priam.services.journal.annotation.LogOeuvre;
+import fr.sacem.priam.services.journal.annotation.LogSuppressionOeuvre;
+import fr.sacem.priam.services.journal.annotation.TypeLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -102,7 +105,7 @@ public abstract class LigneProgrammeResource {
         programmeDTO.setUserValidation(userDTO.getDisplayName());
         getLigneProgrammeService().enregistrerEdition(input.getNumProg());
 
-        programmeService.validerProgramme(programmeDTO);
+        programmeService.validerProgramme(programmeDTO, userDTO);
 
         return new ArrayList<>();
     }
@@ -111,15 +114,15 @@ public abstract class LigneProgrammeResource {
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public List<String> modifierSelection(@RequestBody ValdierSelectionProgrammeInput input) {
+    public List<String> modifierSelection(@RequestBody ValdierSelectionProgrammeInput input, UserDTO userDTO) {
 
         if(input == null || input.getNumProg() == null || input.getNumProg().isEmpty())
             throw new InputValidationException("input or num programme must not be null !");
 
         ProgrammeDto programmeDTO = new ProgrammeDto();
         programmeDTO.setNumProg(input.getNumProg());
-
-        programmeService.invaliderProgramme(programmeDTO);
+        programmeDTO.setUsermaj(userDTO.getDisplayName());
+        programmeService.invaliderProgramme(programmeDTO, userDTO);
 
         modifierSelection(input, input.getNumProg());
 
@@ -130,7 +133,7 @@ public abstract class LigneProgrammeResource {
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public List<String> modifierSelectionTemporaire(@RequestBody ValdierSelectionProgrammeInput input) {
+    public List<String> modifierSelectionTemporaire(@RequestBody ValdierSelectionProgrammeInput input, UserDTO userDTO) {
 
         if(input == null || input.getNumProg() == null || input.getNumProg().isEmpty())
             throw new InputValidationException("input or num programme must not be null !");
@@ -158,15 +161,15 @@ public abstract class LigneProgrammeResource {
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
-    public List<String> invaliderSelection(@RequestBody String numProg) {
+    public List<String> invaliderSelection(@RequestBody String numProg, UserDTO userDTO) {
 
         if(numProg == null || numProg.isEmpty())
             throw new InputValidationException("num programme must not be empty !");
 
         ProgrammeDto programmeDTO = new ProgrammeDto();
         programmeDTO.setNumProg(numProg);
-
-        programmeService.invaliderProgramme(programmeDTO);
+        programmeDTO.setUsermaj(userDTO.getDisplayName());
+        programmeService.invaliderProgramme(programmeDTO, userDTO);
 
         return new ArrayList<>();
     }
@@ -185,8 +188,8 @@ public abstract class LigneProgrammeResource {
         programmeDTO.setNumProg(input.getNumProg());
         programmeDTO.setUseraffecte(userDTO.getDisplayName());
 
-        Programme programme = programmeService.updateStatutProgrammeToAffecte(programmeDTO);
-        getLigneProgrammeService().annulerSelection(programme.getNumProg());
+        Programme programme = programmeService.updateStatutProgrammeToAffecte(programmeDTO, userDTO);
+        getLigneProgrammeService().annulerSelection(input.getNumProg(), userDTO.getDisplayName());
 
 
         return new ArrayList<>();
@@ -196,9 +199,10 @@ public abstract class LigneProgrammeResource {
             method = RequestMethod.DELETE,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
+    @LogSuppressionOeuvre(event = TypeLog.SUPPRESSION_OEUVRE)
     public boolean supprimerLigneProgramme(@PathVariable(name = "numProg") String numProg,
                                            @PathVariable(name = "ide12") Long ide12,
-                                           @RequestBody SelectionDto selectedLigneProgramme) {
+                                           @RequestBody SelectionDto selectedLigneProgramme, UserDTO userDto) {
         getLigneProgrammeService().supprimerLigneProgramme(numProg, ide12, selectedLigneProgramme);
 
         return true;
@@ -208,24 +212,25 @@ public abstract class LigneProgrammeResource {
     @RequestMapping(value = "ligneProgramme/selection/enregistrerEdition",
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void enregistrerEdition(@RequestBody ValdierSelectionProgrammeInput input) {
+    @LogOeuvre(event = TypeLog.SELECTION)
+    public void enregistrerEdition(@RequestBody ValdierSelectionProgrammeInput input, UserDTO userDTO) {
         if(input == null || input.getNumProg() == null || input.getNumProg().isEmpty())
             throw new InputValidationException("input or num programme must not be null !");
 
         ProgrammeDto programmeDTO = new ProgrammeDto();
         programmeDTO.setNumProg(input.getNumProg());
+        programmeDTO.setUsermaj(userDTO.getDisplayName());
+        programmeService.enregistrerSelection(programmeDTO);
 
-        programmeService.invaliderProgramme(programmeDTO);
-
-        getLigneProgrammeService().enregistrerEdition(input.getNumProg());
+        getLigneProgrammeService().enregistrerEdition(input, userDTO);
     }
 
 
     @RequestMapping(value = "ligneProgramme/selection/annulerEdition",
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void annulerEdition(@RequestBody ValdierSelectionProgrammeInput input) {
-        getLigneProgrammeService().annulerEdition(input.getNumProg());
+    public void annulerEdition(@RequestBody ValdierSelectionProgrammeInput input, UserDTO userDto) {
+        getLigneProgrammeService().annulerEdition(input.getNumProg(), userDto.getDisplayName());
     }
 
     public abstract LigneProgrammeService getLigneProgrammeService();

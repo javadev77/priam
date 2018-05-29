@@ -1,30 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:p="http://www.springframework.org/schema/p"
-       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
        xsi:schemaLocation="http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch.xsd
-		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-        http://www.springframework.org/schema/jdbc
-        http://www.springframework.org/schema/jdbc/spring-jdbc-3.1.xsd">
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 
 
 
     <job id="jobEligibiliteCMSAntille" xmlns="http://www.springframework.org/schema/batch">
         <!--<step id="chargerCatalogueOctav" next="eligibiliteStep">-->
-        <step id="chargerCatalogueOctav" next="copierCatalogueOctavStep">
+
+        <step id="chargerCatalogueOctavAnt" next="copierCatalogueOctavStep">
             <tasklet>
                 <chunk
-                        reader="catalogueOctavReader"
+                        reader="catalogueOctavANTReader"
                         processor="catalogueOctavProcessor"
                         writer="catalogueOctavWriter"
-                        commit-interval="${commit-interval}">
+                        commit-interval="${commit-interval}"
+                        retry-limit="15">
+
+                    <retryable-exception-classes>
+                        <include class="org.springframework.dao.DeadlockLoserDataAccessException"/>
+                        <include class="org.springframework.dao.CannotAcquireLockException"/>
+                    </retryable-exception-classes>
                 </chunk>
             </tasklet>
         </step>
 
-        <step id="copierCatalogueOctavStep" parent="chargerCatalogueOctav" next="calculPointsANTStep">
+        <step id="copierCatalogueOctavStep" next="calculPointsANTStep">
             <tasklet>
                 <chunk
                         reader="readerCopierCatalogueOctavStep"
@@ -68,6 +71,12 @@
         </listeners>
 
     </job>
+
+    <bean id="catalogueOctavANTReader"
+          class="fr.sacem.priam.batch.affectation.reader.CatalogueOctavZipMultiResourceItemReader" scope="step">
+        <property name="delegate" ref="flatFileItemReader"/>
+        <property name="strict" value="false"/>
+    </bean>
 
     <bean id="readerCopierCatalogueOctavStep"
           class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
@@ -150,7 +159,7 @@
             <value>
                 <![CDATA[
                     UPDATE PRIAM_CATALOGUE_OCTAV_ANT
-                    set NBRDIF = (SELECT CASE WHEN temp.pt IS NOT NULL THEN sum(temp.pt) ELSE 0 END
+                    set NBRDIF = (SELECT CASE WHEN test.pt IS NOT NULL THEN sum(test.pt) ELSE 0 END
                     FROm (
                            SELECT cdeFamilTypUtilOri, RION_N_ANT, 6 as pt
                            FROM PRIAM_LIGNE_PROGRAMME_CMS l
@@ -195,7 +204,7 @@
                                  AND l.cdeFamilTypUtilOri='DTSGEN'
                                  AND l.RION_N_ANT = 'RION-4'
                            GROUP BY l.ide12, l.cdeFamilTypUtilOri, l.RION_N_ANT
-                         ) as temp) + NBRDIF
+                         ) as test) + NBRDIF
                     WHERE ide12=:ide12 and NUMPROG='#{jobParameters[numProg]}';
 
                 ]]>
@@ -237,7 +246,9 @@
                         nomParticipant1,
                         numProg,
                         nbrDif,
-                        ID_FICHIER
+                        ID_FICHIER,
+                        ajout,
+                        nbrDifEdit
                         )
                     VALUES (
                         :typeCMS,
@@ -247,7 +258,9 @@
                         :participant,
                         :numProg,
                         :nbrDif,
-                        '#{jobExecutionContext['ID_FICHIER_LINK']}'
+                        '#{jobExecutionContext['ID_FICHIER_LINK']}',
+                        'AUTOMATIQUE',
+                        :nbrDif
                         )
                       ;
                 ]]>

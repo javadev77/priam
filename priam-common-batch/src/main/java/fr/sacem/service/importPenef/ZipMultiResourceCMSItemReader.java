@@ -1,6 +1,7 @@
 package fr.sacem.service.importPenef;
 
 import fr.sacem.domain.Fichier;
+import fr.sacem.priam.common.TypeUtilisationEnum;
 import fr.sacem.priam.common.util.FileUtils;
 import fr.sacem.util.UtilFile;
 import org.slf4j.Logger;
@@ -34,6 +35,8 @@ public class ZipMultiResourceCMSItemReader<T> extends MultiResourceItemReader<T>
     private static String FILE_ZIP_EN_COURS_DE_TRAITEMENT = "_en_cours_de_traitement";
     @Autowired
     private FichierBatchService fichierBatchService;
+
+    private String typeFichier;
 
 
     /**
@@ -87,9 +90,10 @@ public class ZipMultiResourceCMSItemReader<T> extends MultiResourceItemReader<T>
                                 File file = fichiersDansLeRepertoire.get(j);
                                 LOG.debug("=== fichiers Dans Le Repertoire : "+file.getName()+" ===");
                                 //on traite qu'un seul fichier zip par lancement de batch
-                                if (file.getName().matches(EXTENTION_ZIP) && nbrDeFichierZipATraiter < 1) {
+                                if (file.getName().matches(EXTENTION_ZIP) && nbrDeFichierZipATraiter < 1 && ((file.getName().startsWith(FileUtils.PREFIX_FRA)&&(typeFichier.equals(TypeUtilisationEnum.CMS_FRA.getCode().toString()))) || (file.getName().startsWith(FileUtils.PREFIX_ANT)&&(typeFichier.equals(TypeUtilisationEnum.CMS_ANT.getCode().toString()))))) {
 
                                     File fichierEnCoursDeTraitement = new File(rep + file.getName() + FILE_ZIP_EN_COURS_DE_TRAITEMENT);
+                                    utilFile.suppressionFlag(fichierEnCoursDeTraitement);
                                     LOG.debug("=== renomer le fichier en : "+fichierEnCoursDeTraitement.getName()+" ===");
                                     JobParameter jobParameterFichierZipEnCours = new JobParameter(fichierEnCoursDeTraitement.getAbsolutePath());
                                     JobParameter jobParameterNomFichierOriginal = new JobParameter(file.getName());
@@ -124,7 +128,9 @@ public class ZipMultiResourceCMSItemReader<T> extends MultiResourceItemReader<T>
                                 this.stepExecution.getExecutionContext().put("idFichier", jobParameterIdFichier);
                                 this.stepExecution.getJobExecution().getExecutionContext().put("ID_FICHIER", idFichier);
                                 // utilisation de offset a 1 est pour cause la creation des fichier dans les zip avec un / sous linux, c'est un hack pour les fichiers creer sous linux
-                                if((!file.getName().startsWith(FileUtils.PREFIX_FRA) && !file.getName().startsWith(FileUtils.PREFIX_ANT_RION2) && !file.getName().startsWith(FileUtils.PREFIX_ANT_RION4) &(!file.getName().startsWith(FileUtils.PREFIX_FRA,1)) && (!file.getName().startsWith(FileUtils.PREFIX_ANT_RION2,1) && (!file.getName().startsWith(FileUtils.PREFIX_ANT_RION4,1))))) {
+                                if(!file.getName().startsWith(FileUtils.PREFIX_FRA)
+                                        && !file.getName().startsWith(FileUtils.PREFIX_ANT_RION2)
+                                        && !file.getName().startsWith(FileUtils.PREFIX_ANT_RION4)) {
                                     LOG.debug("==== offsite 1 ===");
                                     Set<String> errorSet = (Set<String>) executionContext.get("ligne-programme-errors");
                                     errorSet.add(MESSAGE_NOM_FICHIER_INCORRECTE);
@@ -187,5 +193,13 @@ public class ZipMultiResourceCMSItemReader<T> extends MultiResourceItemReader<T>
     }
     public void setUtilFile(UtilFile utilFile) {
         this.utilFile = utilFile;
+    }
+
+    public String getTypeFichier() {
+        return typeFichier;
+    }
+
+    public void setTypeFichier(String typeFichier) {
+        this.typeFichier = typeFichier;
     }
 }

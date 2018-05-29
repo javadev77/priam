@@ -16,8 +16,7 @@
                   {{ s }}
                 </option>
               </select>
-            </span>
-      </div>
+            </span>      </div>
       <div class="pull-right">
         <ul class="pagination-plain no-select">
           <li class="previous" :class="currentPage === 1 ? 'active': ''">

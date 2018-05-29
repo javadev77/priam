@@ -7,7 +7,6 @@ import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.StatutProgramme;
 import fr.sacem.priam.model.domain.dto.FileDto;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +40,6 @@ public class FichierServiceTest {
 	
 	@Test
 	@Transactional
-	@Ignore
 	public void deleteDonneesFichiers() throws Exception {
 		FileDto file = fichierDao.findById(2L);
 		fichierService.deleteDonneesFichiers(file.getId());
@@ -54,10 +52,9 @@ public class FichierServiceTest {
 	
 	@Test
 	@Transactional
-	@Ignore
 	public void majFichiersAffectesAuProgramme() throws Exception {
 		
-		fichierService.majFichiersAffectesAuProgramme("170001", Collections.emptyList(), "GUEST");
+		fichierService.majFichiersAffectesAuProgramme("170001", Collections.emptyList(), "USER_ID_TEST");
 		
 		Programme pr170001 = programmeDao.findOne("170001");
 		

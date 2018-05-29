@@ -4,7 +4,7 @@
       <div class="row">
 
 
-        <div class="form-group col-xs-8">
+        <div class="form-group col-xs-6">
           <label class="col-xs-15 control-label blueText text-right">Oeuvres sélectionées - Auto</label>
           <div class="col-xs-9 control-label" v-if="!dataLoadingDuree">
             {{ dureeSelection.auto | numberFormat }}
@@ -18,7 +18,21 @@
           </div>
         </div>
 
-        <div class="form-group col-xs-8">
+        <div class="form-group col-xs-6">
+          <label class="col-xs-15 control-label blueText text-right">Oeuvres sélectionées - Corrigé</label>
+          <div class="col-xs-9 control-label" v-if="!dataLoadingDuree">
+            {{ dureeSelection.corrige | numberFormat }}
+          </div>
+          <div class="col-xs-9" v-else>
+            <div class="spinner" v-if="dataLoadingDuree">
+              <div class="rect1"></div>
+              <div class="rect2"></div>
+              <div class="rect3"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group col-xs-6">
           <label class="col-xs-15 control-label blueText text-right">Oeuvres sélectionées - Manuel</label>
           <div class="col-xs-9 control-label" v-if="!dataLoadingDuree">
             {{ dureeSelection.manuel | numberFormat }}
@@ -32,12 +46,12 @@
           </div>
         </div>
 
-        <div class="form-group col-xs-8">
+        <div class="form-group col-xs-6">
 
-          <label class="col-xs-15 control-label blueText text-right" v-if="typeUtilisation == 'SONOFRA'">Points sélection</label>
+          <label class="col-xs-15 control-label blueText text-right" >Points sélection</label>
 
           <template v-if="!dataLoadingDuree">
-            <div class="col-xs-9 control-label" v-if="typeUtilisation == 'SONOFRA'">
+            <div class="col-xs-9 control-label">
               {{ montantFormate | numberFormat }}
             </div>
 

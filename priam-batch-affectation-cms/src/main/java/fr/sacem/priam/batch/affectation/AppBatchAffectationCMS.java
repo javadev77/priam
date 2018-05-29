@@ -1,7 +1,7 @@
 package fr.sacem.priam.batch.affectation;
 
 import fr.sacem.domain.Admap;
-import fr.sacem.priam.batch.affectation.config.BatchConfig;
+import fr.sacem.priam.batch.affectation.config.BatchConfigLocal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
@@ -26,9 +26,10 @@ public class AppBatchAffectationCMS {
     public static void main(String[] args) {
         LOGGER.info("Lancement du Batch Affectation CMS ");
 
-        ApplicationContext context = new AnnotationConfigApplicationContext(BatchConfig.class);
+        ApplicationContext context = new AnnotationConfigApplicationContext(BatchConfigLocal.class);
 
-        JobLauncher jobLauncher = (JobLauncher) context.getBean("jobLauncher");
+        /*Test import catalogue FRA*/
+        /*JobLauncher jobLauncher = (JobLauncher) context.getBean("jobLauncher");
         Job jobEligibiliteOctav = (Job) context.getBean("jobEligibiliteOctav");
         Admap admap =(Admap) context.getBean("admap");
         try {
@@ -41,6 +42,25 @@ public class AppBatchAffectationCMS {
             JobParameters jobParameters = new JobParameters(jobParametersMap);
 
             JobExecution execution = jobLauncher.run(jobEligibiliteOctav, jobParameters);
+            LOGGER.info("Exit Status : " + execution.getStatus());
+        } catch (Exception e) {
+            LOGGER.error("Error execution", e);
+        }*/
+
+        /*Test import catalogue ANT*/
+        JobLauncher jobLauncher = (JobLauncher) context.getBean("jobLauncher");
+        Job jobEligibiliteCMSAntille = (Job) context.getBean("jobEligibiliteCMSAntille");
+        Admap admap =(Admap) context.getBean("admap");
+
+        try {
+            Map<String, JobParameter> jobParametersMap = new HashMap<String, JobParameter>();
+            jobParametersMap.put("time", new JobParameter(System.currentTimeMillis()));
+            jobParametersMap.put("input.catalog.octav", new JobParameter(admap.getInputFile()));
+            jobParametersMap.put("archives.catalog.octav", new JobParameter(admap.getOutputFile()));
+            jobParametersMap.put("numProg", new JobParameter("180006"));
+            JobParameters jobParameters = new JobParameters(jobParametersMap);
+
+            JobExecution execution = jobLauncher.run(jobEligibiliteCMSAntille, jobParameters);
             LOGGER.info("Exit Status : " + execution.getStatus());
         } catch (Exception e) {
             LOGGER.error("Error execution", e);

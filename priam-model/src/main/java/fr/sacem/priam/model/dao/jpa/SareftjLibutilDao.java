@@ -1,7 +1,7 @@
 package fr.sacem.priam.model.dao.jpa;
 
-import fr.sacem.priam.model.domain.saref.SareftjLibutil;
 import fr.sacem.priam.model.domain.saref.SareftjLibUtilPK;
+import fr.sacem.priam.model.domain.saref.SareftjLibutil;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,7 +14,7 @@ import java.util.List;
  */
 public interface SareftjLibutilDao extends JpaRepository<SareftjLibutil, SareftjLibUtilPK> {
     
-    @Cacheable("sarefLibelleUtilisateur")
+    //@Cacheable("sarefLibelleUtilisateur")
     @Query("SELECT libUtil FROM SareftjLibutil libUtil " +
 		   "WHERE libUtil.cdeLng = :lang")
     List<SareftjLibutil> findByLang(@Param("lang") String lang);

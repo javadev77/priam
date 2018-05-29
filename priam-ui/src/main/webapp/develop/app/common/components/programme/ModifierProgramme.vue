@@ -94,7 +94,7 @@
 
               <template v-if="!isNonModifiable">
                 <div class="form-group col-md-6" :class="{'has-error': errors.has('rion.theorique') }">
-                  <label class="col-md-8 control-label">Rion statutaire <span class="mandatory">*</span></label>
+                  <label class="col-md-8 control-label">Rion cible<span class="mandatory">*</span></label>
                   <div class="col-md-16">
                     <v-select name="rion.theorique"
                               v-validate.disable="'required'"
@@ -109,7 +109,7 @@
               </template>
               <template v-else>
                 <div class="form-group col-md-6">
-                  <label class="col-md-8 control-label">Rion statutaire</label>
+                  <label class="col-md-8 control-label">Rion cible</label>
                   <div class="col-md-16">
                     <v-select name="rion.theorique"
                               :searchable="false"
@@ -497,6 +497,7 @@
 
         this.resource.updateProgramme(this.programmeData)
             .then(response => {
+              debugger;
               return response.json();
             })
             .then(data => {
@@ -504,10 +505,9 @@
               this.$emit('validate');
             })
             .catch(response => {
-                alert("Erreur technique lors de la modification du programme !! ");
+                alert("Erreur technique lors de la modification du programme  !! ");
                 this.$emit('cancel');
             });
-        //}
 
       },
 

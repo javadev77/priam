@@ -17,6 +17,8 @@ import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.priam.model.domain.*;
 import fr.sacem.priam.model.domain.dto.FelixData;
 import fr.sacem.priam.model.domain.dto.FichierFelixError;
+import fr.sacem.priam.model.domain.dto.ProgrammeDto;
+import fr.sacem.priam.security.model.UserDTO;
 import fr.sacem.priam.services.utils.FelixDataSpringValidator;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileUtils;
@@ -25,6 +27,7 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,8 +35,6 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -41,10 +42,7 @@ import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import static fr.sacem.priam.common.util.SftpUtil.SftpServer.FELIX;
 import static java.util.Arrays.asList;
@@ -86,11 +84,7 @@ public abstract class FelixDataServiceAbstract {
         
         writer = csvMapper.writer(schema);
     }
-    
-    private OutputStream out;
-    private File file;
-    private long nbLine = 0;
-    
+
     @Autowired
     private ProgrammeDao programmeDao;
     
@@ -106,9 +100,13 @@ public abstract class FelixDataServiceAbstract {
     
     @Autowired
     private FichierFelixLogDao fichierFelixLogDao;
-    
-    @PersistenceContext
-    private EntityManager entityManager;
+
+    @Autowired
+    ProgrammeService programmeService;
+
+    @Autowired
+    @Qualifier(value = "configAdmap")
+    Map<String, String> configAdmap;
     
     public abstract List<LignePreprep> getListLignesSelectionnees(String pNumprog);
 
@@ -210,7 +208,8 @@ public abstract class FelixDataServiceAbstract {
                               + programme.getTypeUtilisation().getCode() + "_"
                               + programme.getRionTheorique().getRion() + "_"
                               + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".csv";
-        File tmpFile = new File(EnvConstants.FELIX_PREPREP_DIR.toString() + File.separator + fileName);
+
+        File tmpFile = new File(getPreprepDir() + File.separator + fileName);
         OutputStream out = new FileOutputStream(tmpFile);
         
         writeLines(out, head());
@@ -248,12 +247,18 @@ public abstract class FelixDataServiceAbstract {
         
         return fichierFelixError;
     }
-    
+
+    private String getPreprepDir() {
+        return configAdmap.get(EnvConstants.FELIX_PREPREP_DIR.property());
+    }
+
     @Transactional
     @Async("threadPoolTaskExecutor")
-    public void asyncSendFichierFelix(String numProg) {
+    public void asyncSendFichierFelix(ProgrammeDto programmeDto, UserDTO userDTO) {
+        String numProg = programmeDto.getNumProg();
+        /*programmeDto.setUsermaj(utilisateur);*/
+        programmeDto.setUsermaj(userDTO.getUserId());
         try {
-            
             prepareFelixData(numProg);
             
             // Regeneration du fichier
@@ -266,12 +271,12 @@ public abstract class FelixDataServiceAbstract {
             fichierFelixDao.saveAndFlush(ff);
             
             // Envoi du fichier via FTP
-            File tempFile = new File(EnvConstants.FELIX_PREPREP_DIR.toString() + File.separator + fichierFelixWithErrors.getFilename());
+            File tempFile = new File(getPreprepDir() + File.separator + fichierFelixWithErrors.getFilename());
             LOGGER.debug("==> Debut Envoi du fichier à FELIX = " + ff.getNomFichier());
             SftpUtil.uploadFile(FELIX, tempFile, ff.getNomFichier());
             LOGGER.debug("<=== Fin Envoi du fichier à FELIX = " + ff.getNomFichier());
-            
-            majStatut(numProg, StatutProgramme.MIS_EN_REPART);
+            programmeDto.setStatut(StatutProgramme.MIS_EN_REPART);
+            programmeService.majStatut(programmeDto, userDTO);
             
             ff.setStatut(StatutFichierFelix.ENVOYE);
             fichierFelixDao.saveAndFlush(ff);
@@ -291,23 +296,20 @@ public abstract class FelixDataServiceAbstract {
     }
     
     private void createErrorMessage(FichierFelix ff, String message) {
-        ff.setStatut(StatutFichierFelix.EN_ERREUR);
-        FichierFelixLog felixLog = new FichierFelixLog();
-        felixLog.setLog(message);
-        felixLog.setDateCreation(new Date());
-        fichierFelixLogDao.save(felixLog);
-        ff.getLogs().add(felixLog);
-    
-        fichierFelixDao.saveAndFlush(ff);
+        if(ff != null) {
+            ff.setStatut(StatutFichierFelix.EN_ERREUR);
+            FichierFelixLog felixLog = new FichierFelixLog();
+            felixLog.setLog(message);
+            felixLog.setDateCreation(new Date());
+            fichierFelixLogDao.save(felixLog);
+            ff.getLogs().add(felixLog);
+
+            fichierFelixDao.saveAndFlush(ff);
+        }
     }
-    
-    private void majStatut(String numProg, StatutProgramme statutProgramme) {
-        Programme prog = programmeDao.findOne(numProg);
-        prog.setStatut(statutProgramme);
-        programmeDao.save(prog);
-        programmeDao.flush();
-    }
+
     public String getFamilleUtil(String numprog){
+
         return programmeDao.findByNumProg(numprog).getFamille().getCode();
     }
 }

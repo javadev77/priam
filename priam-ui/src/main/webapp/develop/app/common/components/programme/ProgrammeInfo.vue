@@ -56,7 +56,7 @@
       </div>
 
       <div class="form-group col-md-4">
-        <label class="col-md-9 control-label blueText text-right">Rion statutaire</label>
+        <label class="col-md-9 control-label blueText text-right">Rion cible</label>
         <div class="col-md-15 control-label">
           {{ getLibelleRionById(programmeInfo.rionTheorique) }}
         </div>

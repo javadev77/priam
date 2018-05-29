@@ -16,7 +16,7 @@ import java.util.List;
 @Lazy
 @Transactional(readOnly = true)
 public interface SareftrFamiltyputilDao extends JpaRepository<SareftrFamiltyputil, String> {
-    @Cacheable("familles")
+    //@Cacheable("familles")
     @Query("SELECT libFam FROM SareftrFamiltyputil libFam " +
 		   "WHERE (libFam.dateDebut is null OR libFam.dateDebut <= CURRENT_DATE) " +
 		   "AND (libFam.dateFin is null OR libFam.dateFin >= CURRENT_DATE) " +

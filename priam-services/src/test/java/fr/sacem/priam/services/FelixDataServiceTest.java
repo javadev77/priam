@@ -17,7 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class FelixDataServiceTest {
     
     @Autowired
-    FelixDataService felixDataService;
+    FelixDataCPService felixDataService;
     
     @Test
     public void runAsyncCreateFichierFelix() throws Exception {

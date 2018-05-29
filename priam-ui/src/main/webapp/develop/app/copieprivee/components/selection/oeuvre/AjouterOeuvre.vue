@@ -217,14 +217,15 @@
                       this.showPopup = true;
                       if(this.programme.typeUtilisation === 'CPRIVSONPH') {
                           this.messagePhono = 'Attention, cette oeuvre est déjà présente au niveau du programme avec la quantité '
-                            + ligneProg.nbrDif + ', êtes-vous sûr de vouloir la remplacer avec la quantité saisie ?';
+                            + ligneProg.nbrDif + ', êtes-vous sûr de vouloir la remplacer ?';
 
                       } else if(this.programme.typeUtilisation === 'CPRIVSONRD') {
                           this.messageRadio = 'Attention, cette oeuvre est déjà présente au niveau du programme avec la durée '
-                            + ligneProg.durDif + ', êtes-vous sûr de vouloir la remplacer avec la durée saisie ?';
+                            + ligneProg.durDif + ', êtes-vous sûr de vouloir la remplacer ?';
                       }
+                    //this.oeuvreToAdd.ajout = 'CORRIGE';
                   } else {
-
+                    //this.oeuvreToAdd.ajout = 'MANUEL';
                     this.$emit('validate-ajout-oeuvre', this.oeuvreToAdd);
                   }
               });

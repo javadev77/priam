@@ -1,11 +1,9 @@
-/*
 package fr.sacem.priam.batch.affectation.listener;
 
 import fr.sacem.dao.FichierRepository;
 import fr.sacem.dao.TraitementCmsDao;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobParameter;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.listener.StepExecutionListenerSupport;
 import org.springframework.batch.item.ExecutionContext;
@@ -36,7 +34,7 @@ public class ListnerCopierLigneProgrammeCMS extends StepExecutionListenerSupport
     @Override
     public ExitStatus afterStep(StepExecution stepExecution) {
         traitementCmsDao.viderCatalogueOctavAnt(numProg);
+
         return stepExecution.getExitStatus();
     }
 }
-*/

@@ -13,6 +13,6 @@ Vue.filter('formatDate', function (date, format) {
 });
 
 Vue.filter('numberFormat', function (number) {
-  return new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 2 }).format(number);
+  return new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 2}).format(number);
 });
 

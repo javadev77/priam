@@ -28,10 +28,11 @@
                   <label v-show="errors.has('duree')" class="control-label" :class="{'has-error': errors.has('duree') }">{{ errors.first('duree') }}</label>
                 </li>
               </template>
-              <template  v-if="programme.typeUtilisation == 'CPRIVSONPH'">
-                <li v-if="errors.has('quantite')">
-                  <i v-show="errors.has('quantite')" class="fa fa-warning"></i>
-                  <label v-show="errors.has('quantite')" :class="{'has-error': errors.has('quantite') }">{{ errors.first('quantite') }}</label>
+
+              <template  v-if="programme.typeUtilisation == 'SONOANT'">
+                <li v-if="errors.has('points')">
+                  <i v-show="errors.has('points')" class="fa fa-warning"></i>
+                  <label v-show="errors.has('points')" :class="{'has-error': errors.has('points') }">{{ errors.first('points') }}</label>
                 </li>
               </template>
 
@@ -96,26 +97,19 @@
           </div>-->
 
 
-            <div class="form-group col-md-5" v-if="programme.typeUtilisation == 'CPRIVSONRD'" :class="{'has-error': errors.has('duree') }">
-              <label class="col-md-6 control-label blueText text-right">Durée <span class="mandatory">*</span></label>
+            <div class="form-group col-md-5" :class="{'has-error': errors.has('points') }" v-if="programme.typeUtilisation == 'SONOANT'">
+              <label class="col-md-6 control-label blueText text-right">Points <span class="mandatory">*</span></label>
               <div class="col-md-18">
-                <input v-validate.disable="'required|numeric'"
-                       name="duree"
-                       class="form-control"
-                       type="text"
-                       v-model="oeuvreManuelToCreate.duree"
-                       :class="{'has-error': errors.has('duree') }" >
-              </div>
-            </div>
-            <div class="form-group col-md-5" :class="{'has-error': errors.has('quantite') }" v-if="programme.typeUtilisation == 'CPRIVSONPH'">
-              <label class="col-md-6 control-label blueText text-right">Quantité <span class="mandatory">*</span></label>
-              <div class="col-md-18">
-                <input v-validate.disable="'required|numeric'"
-                       :class="{'has-error': errors.has('quantite') }"
-                       name="quantite"
-                       class="form-control"
-                       type="text"
-                       v-model="oeuvreManuelToCreate.quantite">
+                <select v-validate.disable="'required'"
+                        name="points"
+                        type="number"
+                        v-model="oeuvreManuelToCreate.quantite">
+                  <option>6</option>
+                  <option>12</option>
+                  <option>18</option>
+                  <option>24</option>
+                  <option>30</option>
+                </select>
               </div>
             </div>
             <div class="form-group col-md-5" :class="{'has-error': errors.has('points') }" v-if="programme.typeUtilisation == 'SONOFRA'">
@@ -159,7 +153,8 @@
         'titre' : 'Titre',
         'ide12' : 'IDE12',
         'duree' : 'Durée',
-        'quantite' : 'Quantité'
+        'quantite' : 'Quantité',
+        'points' : 'Points'
       }
     }
   };
@@ -221,6 +216,9 @@
             });*/
 
         //this.oeuvreManuelToCreate.utilisateur = this.$store.getters.libelleUtilisateur[0].id;
+
+      //his.oeuvre.titre ='ISOTOPE';
+      //this.oeuvre.ide12='2869871701'
     },
 
     methods : {

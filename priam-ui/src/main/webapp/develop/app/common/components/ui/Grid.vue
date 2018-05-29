@@ -241,29 +241,34 @@
                       <template v-else-if="entryColumn.type === 'clickable-icons'">
                         <td class="columnCenter" :style="styleValue(entryColumn, entry)">
 
-                          <ul class="iconList">
-                            <template v-for="elem in entryColumn.cell.cellTemplate(entry)">
-                              <li>
-                                <a v-html="elem.template" @click="emitIconCellClick(elem.event, entry, entryColumn)">
-                                </a>
-                              </li>
-                            </template>
-
-                          </ul>
+                          <table style="margin: auto;">
+                            <tr>
+                              <!--<ul class="iconList">-->
+                              <template v-for="elem in entryColumn.cell.cellTemplate(entry)">
+                                <td style="width: 20px; border: none !important">
+                                  <a v-html="elem.template" @click="emitIconCellClick(elem.event, entry, entryColumn)">
+                                  </a>
+                                </td>
+                              </template>
+                            </tr>
+                          </table>
 
                         </td>
                       </template>
                       <template v-else-if="entryColumn.type === 'clickable-icons-or-text'">
                         <td class="columnCenter"  v-if="!entryColumn.cell.isText(entry)" :style="styleValue(entryColumn, entry)">
-                          <ul class="iconList">
+                          <!--<ul class="iconList">-->
+                           <table>
+                             <tr>
                             <template v-for="elem in entryColumn.cell.cellTemplate(entry)">
-                              <li>
+                              <td>
                                 <a v-html="elem.template" @click="emitIconCellClick(elem.event, entry, entryColumn)">
                                 </a>
-                              </li>
+                              </td>
                             </template>
-
-                          </ul>
+                             </tr>
+                           </table>
+                          <!--</ul>-->
                         </td>
                         <td class="columnCenter"  v-else :style="styleValue(entryColumn, entry)">
                           <template v-if="entryColumn.cell.toText(entry).isLink" >
@@ -313,8 +318,12 @@
                         </td>
                       </template>
                       <template v-else-if="entryColumn.type === 'seconds-as-time'">
-                        <td class="columnCenter" :style="styleValue(entryColumn, entry)">
+                        <td v-if="!entryColumn.editable" class="columnCenter" :style="styleValue(entryColumn, entry)">
                           {{ dureeFormattee(entry[entryColumn.id]) }}
+                        </td>
+                        <td v-else class="columnCenter">
+                          <component :is="entryColumn.cellEditorFramework" v-model="entry[entryColumn.id]"></component>
+
                         </td>
                       </template>
                       <template v-else-if="entryColumn.type === 'text-centre'">
@@ -334,7 +343,27 @@
 
                         </td>
                         <td class="columnCenter" v-if="!entryColumn.cell.toText(entry).action" :style="styleValue(entryColumn, entry)">
-                          {{ entryColumn.cell.toText(entry.ajout).value }}
+                          {{ entryColumn.cell.toText(entry).value }}
+                        </td>
+                      </template>
+
+                      <template v-else-if="entryColumn.type === 'inputNum'">
+                        <td style="width: 130px;">
+
+                          <template v-if="entryColumn.cell.toDisabled(entry)">
+                            <component :is="entryColumn.cellEditorFramework"
+                                       v-model="entry[entryColumn.id]"
+                                       :disabled="true"
+                            ></component>
+                          </template>
+                          <tempalte v-else>
+                            <component :is="entryColumn.cellEditorFramework"
+                                       v-model="entry[entryColumn.id]"
+                                       :disabled="false"
+                                       @valueChanged="entryColumn.cell.onCellValueChanged(entry, $event)"
+                            ></component>
+                          </tempalte>
+
                         </td>
                       </template>
 
@@ -379,30 +408,34 @@
                       </template>
                       <template v-else-if="entryColumn.type === 'clickable-icons'">
                         <td class="columnCenter" :style="styleValue(entryColumn, entry)">
-
-                          <ul class="iconList">
+                          <table style="margin: auto;">
+                            <tr>
+                          <!--<ul class="iconList">-->
                             <template v-for="elem in entryColumn.cell.cellTemplate(entry)">
-                              <li>
+                              <td style="width: 20px; border: none !important">
                                 <a v-html="elem.template" @click="emitIconCellClick(elem.event, entry, entryColumn)">
                                 </a>
-                              </li>
+                              </td>
                             </template>
+                            </tr>
+                          </table>
 
-                          </ul>
+                          <!--</ul>-->
 
                         </td>
                       </template>
                       <template v-else-if="entryColumn.type === 'clickable-icons-or-text'">
                         <td class="columnCenter"  v-if="!entryColumn.cell.isText(entry)" :style="styleValue(entryColumn, entry)">
-                          <ul class="iconList">
-                            <template v-for="elem in entryColumn.cell.cellTemplate(entry)">
-                              <li>
-                                <a v-html="elem.template" @click="emitIconCellClick(elem.event, entry, entryColumn)">
-                                </a>
-                              </li>
-                            </template>
-
-                          </ul>
+                          <table style="margin: auto;">
+                            <tr>
+                              <template v-for="elem in entryColumn.cell.cellTemplate(entry)">
+                                <td style="width: 20px; border: none !important">
+                                  <a v-html="elem.template" @click="emitIconCellClick(elem.event, entry, entryColumn)">
+                                  </a>
+                                </td>
+                              </template>
+                            </tr>
+                          </table>
                         </td>
                         <td class="columnCenter"  v-else :style="styleValue(entryColumn, entry)">
                           <template v-if="entryColumn.cell.toText(entry).isLink" >
@@ -560,7 +593,7 @@
         sortOrders: sortOrders,
         sort : [],
         currentPage : 1,
-        pageSize : 25
+        pageSize : this.$store.getters.userPageSize
 
       }
     },
@@ -629,6 +662,7 @@
 
     created() {
 
+        debugger;
         this.sort = this.data.sort !== undefined ? this.data.sort[0] : undefined;
 
         if(this.isLocalSort) {
@@ -656,7 +690,7 @@
         if(this.sort !== undefined && this.sort!== null) {
           let sortProp = entryColumn.sortProperty !== undefined  ? entryColumn.sortProperty : entryColumn.id;
           console.log("property" + this.sort.property)
-          return sortProp == this.sort.property;
+          return sortProp === this.sort.property;
         }
         return false;
       },
@@ -683,9 +717,15 @@
         this.$emit(event, entry, column);
       },
 
+      inputValue(event, column, columnModel) {
+          debugger;
+        columnModel = event;
+        this.$emit('onCellValueChanged', column, columnModel);
+      },
+
       emitCheckbox(entry, entryKey, value) {
         var key = null;//Number.parseInt(entry.id);
-        debugger;
+
         if(this.isNumber(entryKey)) {
           key = Number.parseInt(entryKey);
         } else {
@@ -739,7 +779,7 @@
         }
 
         console.log("this.checkedCurrentEntry=" +  entries.length);
-        debugger;
+
         this.$emit('all-checked', this.allChecked, entries);
 
       },
@@ -756,10 +796,11 @@
         }
 
         this.sort.ascending = isAsc;
-        this.sort.property = entryColumn.id;
+        this.sort.property = sortProp;
         this.sort.direction = isAsc ? 'ASC' : 'DESC';
 
 
+        debugger;
 
         this.$emit('on-sort', this.currentPage, this.pageSize, this.sort);
       },
@@ -858,6 +899,10 @@
     margin: auto;
     padding: 0px;
     width: 50px;
+  }
+
+  .iconList td {
+    width: 20px;
   }
 
   .iconList li {

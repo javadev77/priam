@@ -87,9 +87,12 @@ public class ZipMultiResourceCPItemReader<T> extends MultiResourceItemReader<T> 
                                 File file = fichiersDansLeRepertoire.get(j);
                                 LOG.debug("=== fichiers Dans Le Repertoire : "+file.getName()+" ===");
                                 //on traite qu'un seul fichier zip par lancement de batch
-                                if (file.getName().matches(EXTENTION_ZIP) && nbrDeFichierZipATraiter < 1) {
+                                if (file.getName().matches(EXTENTION_ZIP)
+                                        && nbrDeFichierZipATraiter < 1
+                                        && file.getName().startsWith(FileUtils.PREFIX_FILE_PENEF_CP)) {
 
                                     File fichierEnCoursDeTraitement = new File(rep + file.getName() + FILE_ZIP_EN_COURS_DE_TRAITEMENT);
+                                    utilFile.suppressionFlag(fichierEnCoursDeTraitement);
                                     LOG.debug("=== renomer le fichier en : "+fichierEnCoursDeTraitement.getName()+" ===");
                                     JobParameter jobParameterFichierZipEnCours = new JobParameter(fichierEnCoursDeTraitement.getAbsolutePath());
                                     JobParameter jobParameterNomFichierOriginal = new JobParameter(file.getName());
@@ -118,12 +121,15 @@ public class ZipMultiResourceCPItemReader<T> extends MultiResourceItemReader<T> 
                                 //Le nom du fichier est entregister dans le context du step pour pouvoir l'utiliser dans le itemWriter
                                 Long idFichier = utilFile.extractFiles(zipFile, extractedResources);
                                 Fichier fichier = fichierBatchService.findById(idFichier);
-                                JobParameter jobParameterNomDuFichier = new JobParameter(fichier.getNom());
+                                String nomFichier = fichier.getNom();
+                                JobParameter jobParameterNomDuFichier = new JobParameter(nomFichier);
                                 this.stepExecution.getExecutionContext().put("nomFichier", jobParameterNomDuFichier);
                                 JobParameter jobParameterIdFichier = new JobParameter(fichier.getId());
                                 this.stepExecution.getExecutionContext().put("idFichier", jobParameterIdFichier);
+                                this.stepExecution.getJobExecution().getExecutionContext().put("ID_FICHIER", idFichier);
                                 // utilisation de offset a 1 est pour cause la creation des fichier dans les zip avec un / sous linux, c'est un hack pour les fichiers creer sous linux
-                                if((!file.getName().startsWith(FileUtils.PREFIX_PRIV_SON_RD) && !file.getName().startsWith(FileUtils.PREFIX_PRIV_SON_PH) &(!file.getName().startsWith(FileUtils.PREFIX_PRIV_SON_RD,1)) && (!file.getName().startsWith(FileUtils.PREFIX_PRIV_SON_PH,1)))) {
+                                if(!nomFichier.startsWith(FileUtils.PREFIX_PRIV_SON_RD)
+                                        && !nomFichier.startsWith(FileUtils.PREFIX_PRIV_SON_PH)) {
                                     System.out.println("String str starts with quick: "+file.getName().startsWith(FileUtils.PREFIX_PRIV_SON_RD));
                                     System.out.println("String str starts with quick: "+file.getName().startsWith(FileUtils.PREFIX_PRIV_SON_PH));
                                     System.out.println("String str starts with quick: "+file.getName().startsWith(FileUtils.PREFIX_PRIV_SON_RD,1));
