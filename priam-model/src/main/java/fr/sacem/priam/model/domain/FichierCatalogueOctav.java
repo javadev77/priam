@@ -1,8 +1,5 @@
 package fr.sacem.priam.model.domain;
 
-import fr.sacem.priam.model.domain.saref.SareftrFamiltyputil;
-import fr.sacem.priam.model.domain.saref.SareftrTyputil;
-
 import javax.persistence.*;
 import java.util.Date;
 

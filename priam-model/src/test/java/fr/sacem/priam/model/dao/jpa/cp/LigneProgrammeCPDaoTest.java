@@ -99,7 +99,6 @@ public class LigneProgrammeCPDaoTest extends AbstractDaoTest {
 
 
     @Ignore
-    @Test
     @Transactional
     public void testUpdateSelectionByNumProgramme() throws Exception{
 

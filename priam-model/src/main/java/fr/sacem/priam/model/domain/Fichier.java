@@ -42,7 +42,7 @@ public class Fichier implements Serializable {
     private Long nbLignes;
     
     @Enumerated(EnumType.STRING)
-    @Column(name="STATUT_CODE", nullable = false)
+    @Column(name="STATUT_CODE", nullable = true)
     private Status statut;
     
     @ManyToOne(fetch = FetchType.LAZY)
@@ -51,7 +51,7 @@ public class Fichier implements Serializable {
     
     @Column(name = "SOURCE_AUTO")
     private Boolean automatique;
-    
+
     public  Fichier() {
     }
     
@@ -135,7 +135,7 @@ public class Fichier implements Serializable {
     public Boolean getAutomatique() {
         return automatique;
     }
-    
+
     @Override
     public int hashCode() {
         return (int) (id ^ (id >>> 32));

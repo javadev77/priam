@@ -4,6 +4,7 @@ import fr.sacem.priam.model.domain.LignePreprep;
 import fr.sacem.priam.model.domain.cms.LigneProgrammeCMS;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.SelectionCMSDto;
+import fr.sacem.priam.model.domain.dto.SelectionDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -37,7 +38,8 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
                     "ligneProgramme.nomParticipant1, " +
                     "ligneProgramme.ajout, " +
                     "ligneProgramme.selectionEnCours, " +
-                    "sum(ligneProgramme.mt)) " +
+            //"(CASE WHEN f.programme.typeUtilisation.code = 'SONOFRA' THEN sum(ligneProgramme.mtEdit) WHEN f.programme.typeUtilisation.code = 'SONOANT' THEN sum(ligneProgramme.nbrDifEdit) ELSE 0 END)) "+
+            "(CASE WHEN f.programme.typeUtilisation.code = 'SONOFRA' THEN ligneProgramme.mtEdit WHEN f.programme.typeUtilisation.code = 'SONOANT' THEN ligneProgramme.nbrDifEdit ELSE 0 END)) "+
             "FROM LigneProgrammeCMS ligneProgramme join ligneProgramme.fichier  f " +
             "WHERE ligneProgramme.fichier = f.id " +
             "AND f.programme.numProg = :numProg " +
@@ -45,8 +47,8 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
             "AND (ligneProgramme.ajout = :ajout OR :ajout IS NULL) " +
             "AND (ligneProgramme.selectionEnCours = :selectionEnCours OR :selectionEnCours IS NULL) " +
             "AND (ligneProgramme.titreOeuvre = :titre OR :titre IS NULL) " +
-            "AND (ligneProgramme.oeuvreManuel IS NULL) " +
-            "GROUP BY ligneProgramme.ide12 ")
+            "AND (ligneProgramme.oeuvreManuel IS NULL) ")
+            //"GROUP BY ligneProgramme.ide12 ")
     Page<SelectionCMSDto> findLigneProgrammeByCriteria(@Param("numProg") String numProg,
                                                        @Param("ide12") Long ide12,
                                                        @Param("titre") String titre,
@@ -73,7 +75,7 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
                      "'COCV', " +
                      "ligneProgramme.ide12, " +
                      "0L, " +
-                     "(CASE WHEN prog.typeUtilisation.code = 'SONOFRA' THEN 1L  ELSE ligneProgramme.mt END),  " +
+                     "(CASE WHEN prog.typeUtilisation.code = 'SONOFRA' THEN 1L  ELSE ligneProgramme.nbrDif END),  " +
                      "(CASE WHEN prog.typeUtilisation.code = 'SONOFRA' THEN ligneProgramme.mt ELSE 0 END),  " +
                      "ligneProgramme.ctna, " +
                      "ligneProgramme.paramCoefHor, " +
@@ -176,7 +178,7 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
             "WHERE  "+
             "f.NUMPROG = ?1 " +
             "AND p.ide12 = ?2 " +
-            "AND p.ajout = 'Manuel' ")
+            "AND p.ajout = 'MANUEL' ")
     void deleteLigneProgrammeByIde12AndNumProg(@Param("numProg") String numProg,
                                                @Param("ide12") Long ide12);
 
@@ -187,8 +189,19 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
                      "AND f.programme.numProg = :numProg " +
                      "AND l.ide12 = :ide12 " +
                      "AND l.oeuvreManuel IS NULL " +
-                     "AND l.ajout = 'Automatique' ")
+                     "AND l.ajout = 'AUTOMATIQUE' ")
     List<LigneProgrammeCMS> findOeuvresAutoByIde12AndCdeUtil(@Param("numProg") String numProg, @Param("ide12") Long ide12);
+
+    @Query(value="SELECT l " +
+            "FROM LigneProgrammeCMS l join l.fichier as f "+
+            "WHERE l.fichier = f.id " +
+            "AND f.programme.numProg = :numProg " +
+            "AND l.ide12 = :ide12 " +
+            "AND l.oeuvreManuel IS NOT NULL " +
+            "AND l.ajout = 'AUTOMATIQUE' ")
+    List<LigneProgrammeCMS> findOeuvresAutoLinkCorrigeByIde12AndCdeUtil(@Param("numProg") String numProg, @Param("ide12") Long ide12);
+
+
 
     @Query(value="SELECT l " +
                      "FROM LigneProgrammeCMS l join l.fichier as f "+
@@ -196,13 +209,22 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
                      "AND f.programme.numProg = :numProg " +
                      "AND l.ide12 = :ide12 " +
                      "AND l.oeuvreManuel IS NULL " +
-                     "AND l.ajout = 'Manuel' ")
+                     "AND l.ajout = 'MANUEL' ")
     LigneProgrammeCMS findOeuvreManuelByIde12(@Param("numProg") String numProg, @Param("ide12") Long ide12);
+
+
+    @Query(value="SELECT l " +
+            "FROM LigneProgrammeCMS l join l.fichier as f "+
+            "WHERE l.fichier = f.id " +
+            "AND f.programme.numProg = :numProg " +
+            "AND l.ide12 = :ide12 " +
+            "AND l.oeuvreManuel IS NULL ")
+    LigneProgrammeCMS findOeuvreACorrigeByIde12(@Param("numProg") String numProg, @Param("ide12") Long ide12);
 
     @Query(value="SELECT l " +
                      "FROM LigneProgrammeCMS l " +
                      "WHERE l.oeuvreManuel.id = :idOeuvreManuel  " +
-                     "AND l.ajout = 'Automatique' ")
+                     "AND l.ajout = 'AUTOMATIQUE' ")
     List<LigneProgrammeCMS> findOeuvresAutoByIdOeuvreManuel(@Param("idOeuvreManuel") Long idOeuvreManuel);
     
     
@@ -237,22 +259,23 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
                                            "WHERE  "+
                                            "f.NUMPROG = ?1 " +
                                            "AND p.selection=?2 " +
-                                           "AND p.ajout = 'Manuel' ")
+                                           "AND p.ajout = 'MANUEL' ")
     void deleteOeuvresManuels(@Param("numProg") String numProg, @Param("selection") boolean value);
     
     @Query(value="SELECT l " +
                      "FROM LigneProgrammeCMS l join l.fichier as f "+
                      "WHERE l.fichier = f.id " +
                      "AND f.programme.numProg = :numProg " +
-                     "AND l.selection = :selection " +
-                     "AND l.ajout = 'Manuel' ")
-    List<LigneProgrammeCMS> findOeuvresManuelsEnCoursEdition(@Param("numProg") String numProg, @Param("selection") boolean value);
+                     "AND l.selection = 0 " +
+                     "AND l.ajout = 'CORRIGE' ")
+    List<LigneProgrammeCMS> findOeuvresManuelsEnCoursEdition(@Param("numProg") String numProg);
     
     @Query(value="SELECT l " +
                      "FROM LigneProgrammeCMS l join l.fichier as f "+
                      "WHERE l.fichier = f.id " +
                      "AND f.programme.numProg = :numProg " +
-                     "AND l.ajout = 'Manuel' ")
+                     "AND l.ajout = 'MANUEL' " +
+                     "OR l.ajout = 'CORRIGE' ")
     List<LigneProgrammeCMS> findAllOeuvresManuelsByNumProg(@Param("numProg") String numProg);
     
     @Transactional
@@ -263,7 +286,7 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
                                            "PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
                                            "WHERE  "+
                                            "f.NUMPROG = ?1 " +
-                                           "AND p.ajout = 'Manuel' ")
+                                           "AND p.ajout = 'MANUEL' ")
     void deleteAllOeuvres(@Param("numProg") String numProg);
     
     
@@ -297,7 +320,8 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
                     "count(points), ajout" +
                     " from ( " +
                     "       SELECT " +
-                    "           count(l.mt) points, l.ide12, l.ajout " +
+                    "(CASE WHEN l.cdeTypUtil = 'SONOFRA' THEN count(l.mt)  WHEN l.cdeTypUtil = 'SONOANT' THEN count(l.nbrDif) ELSE 0 END) points, " +
+                    "          l.ide12, l.ajout " +
                     "       FROM " +
                     "           PRIAM_LIGNE_PROGRAMME_CMS l " +
                     "       inner join " +
@@ -315,7 +339,8 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
     @Transactional(readOnly = true)
     @Query(nativeQuery = true, value =
             "SELECT sum(points) from ( SELECT " +
-                    "sum(l.mt) points, l.ide12 " +
+                    "(CASE WHEN l.cdeTypUtil = 'SONOFRA' THEN sum(l.mtEdit) WHEN l.cdeTypUtil = 'SONOANT' THEN sum(l.nbrDifEdit) ELSE 0 END) points, " +
+                    "l.ide12 " +
                     "FROM " +
                     "PRIAM_LIGNE_PROGRAMME_CMS l inner join PRIAM_FICHIER as f " +
                     "on l.ID_FICHIER=f.ID " +
@@ -332,6 +357,112 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
             "AND f.programme.numProg = :numProg " +
             "AND l.ide12 = :ide12 " +
             "AND l.oeuvreManuel IS NULL " +
-            "AND l.ajout = 'Manuel' ")
+            "AND l.ajout = 'MANUEL' ")
     LigneProgrammeCMS findOeuvreManuelByIde12AndCdeUtil(@Param("numProg")String numProg, @Param("ide12") Long ide12);
+
+    @Query(value="SELECT l " +
+            "FROM LigneProgrammeCMS l join l.fichier as f "+
+            "WHERE l.fichier = f.id " +
+            "AND f.programme.numProg = :numProg " +
+            "AND l.ide12 = :ide12 " +
+            "AND l.oeuvreManuel IS NULL " +
+            "AND l.ajout = 'CORRIGE' ")
+    LigneProgrammeCMS findOeuvreCorrigeByIde12(@Param("numProg") String numProg, @Param("ide12") Long ide12);
+
+
+    @Modifying(clearAutomatically = true)
+    @Query(nativeQuery = true, value="update " +
+            "  PRIAM_LIGNE_PROGRAMME_CMS p " +
+            "INNER JOIN " +
+            "  PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
+            "set " +
+            "  p.nbrDifEdit=?3 "+
+            "where " +
+            "  f.NUMPROG = ?1 " +
+            " AND p.ide12 = ?2 ")
+    void updatePointsTemporaireByNumProgramme(String numProg, Long ide12, Long nbrDifEdit);
+
+    @Modifying(clearAutomatically = true)
+    @Query(nativeQuery = true, value = "update " +
+            "PRIAM_LIGNE_PROGRAMME_CMS p " +
+            "INNER JOIN " +
+            "PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
+            "set  p.nbrDif=p.nbrDifEdit " +
+            "WHERE  "+
+            "f.NUMPROG = ?1 " +
+            "AND p.SEL_EN_COURS=1 " +
+            "AND p.idOeuvreManuel is NULL " +
+            "AND p.ajout='MANUEL' OR p.ajout='CORRIGE' ")
+    void updatePoints(String numProg);
+
+
+    @Modifying(clearAutomatically = true)
+    @Query(nativeQuery = true, value = "update " +
+            "PRIAM_LIGNE_PROGRAMME_CMS p " +
+            "INNER JOIN " +
+            "PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
+            "set  p.nbrDifEdit=p.nbrDif " +
+            "WHERE  "+
+            "f.NUMPROG = ?1 AND p.selection=?2")
+    void updateNbrDifTemporaire(String numProg, Boolean aFalse);
+
+
+    @Modifying(clearAutomatically = true)
+    @Query(nativeQuery = true, value = "update " +
+            "PRIAM_LIGNE_PROGRAMME_CMS p " +
+            "INNER JOIN " +
+            "PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
+            "set  p.mt=p.mtEdit " +
+            "WHERE  "+
+            "f.NUMPROG = ?1 " +
+            "AND p.SEL_EN_COURS=1 " +
+            "AND p.idOeuvreManuel is NULL " +
+            "AND p.ajout='MANUEL' OR p.ajout='CORRIGE' ")
+    void updatePointsMt(String numProg);
+
+    @Modifying(clearAutomatically = true)
+    @Query(nativeQuery = true, value = "update " +
+            "PRIAM_LIGNE_PROGRAMME_CMS p " +
+            "INNER JOIN " +
+            "PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
+            "set  p.mtEdit=p.mt " +
+            "WHERE  "+
+            "f.NUMPROG = ?1 AND p.selection=?2")
+    void updatePointsMtTemporaire(String numProg, Boolean aTrue);
+
+
+    @Modifying(clearAutomatically = true)
+    @Query(nativeQuery = true, value="update " +
+            "  PRIAM_LIGNE_PROGRAMME_CMS p " +
+            "INNER JOIN " +
+            "  PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
+            "set " +
+            "  p.mtEdit=?3 "+
+            "where " +
+            "  f.NUMPROG = ?1 " +
+            " AND p.ide12 = ?2 ")
+    void updatePointsMtTemporaireByNumProgramme(String numProg, Long ide12, Double mtEdit);
+
+
+    @Transactional
+    @Query(value="SELECT new fr.sacem.priam.model.domain.dto.SelectionCMSDto("+
+            "ligneProgramme.ide12, " +
+            "ligneProgramme.titreOeuvre, " +
+            "ligneProgramme.roleParticipant1, " +
+            "ligneProgramme.nomParticipant1, " +
+            "ligneProgramme.ajout, " +
+            "ligneProgramme.selectionEnCours, " +
+            "(CASE WHEN f.programme.typeUtilisation.code = 'SONOFRA' THEN sum(ligneProgramme.mtEdit) WHEN f.programme.typeUtilisation.code = 'SONOANT' THEN sum(ligneProgramme.nbrDifEdit) ELSE 0 END)) "+
+            "FROM LigneProgrammeCMS ligneProgramme join ligneProgramme.fichier  f " +
+            //"SareftjLibutil lu "+
+            "WHERE ligneProgramme.fichier = f.id " +
+            //"AND lu.cdeUtil = ligneProgramme.cdeUtil "+
+            "AND f.programme.numProg = :numProg " +
+            "AND (ligneProgramme.selectionEnCours = :selectionEnCours OR :selectionEnCours IS NULL) " +
+            "AND (ligneProgramme.selection = :selection OR :selection IS NULL) " +
+            "AND (ligneProgramme.oeuvreManuel IS NULL) " +
+            "GROUP BY ligneProgramme.ide12")
+    List<SelectionCMSDto> findLigneProgrammePreselected(@Param("numProg") String numProg,
+                                                     @Param("selectionEnCours") Boolean selectionEnCours,
+                                                     @Param("selection") Boolean selection);
 }

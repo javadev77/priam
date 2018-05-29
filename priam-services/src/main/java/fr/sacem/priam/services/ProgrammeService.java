@@ -1,7 +1,6 @@
 package fr.sacem.priam.services;
 
 import fr.sacem.priam.model.dao.jpa.*;
-import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.priam.model.domain.*;
 import fr.sacem.priam.model.domain.criteria.ProgrammeCriteria;
@@ -10,6 +9,10 @@ import fr.sacem.priam.model.domain.saref.SareftrFamiltyputil;
 import fr.sacem.priam.model.domain.saref.SareftrRion;
 import fr.sacem.priam.model.domain.saref.SareftrTyputil;
 import fr.sacem.priam.model.util.MapperConfiguration;
+import fr.sacem.priam.security.model.UserDTO;
+import fr.sacem.priam.services.journal.annotation.LogEtatProgramme;
+import fr.sacem.priam.services.journal.annotation.LogProgramme;
+import fr.sacem.priam.services.journal.annotation.TypeLog;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +24,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by benmerzoukah on 07/06/2017.
@@ -63,7 +68,8 @@ public class ProgrammeService {
 	}
 	
 	@Transactional
-	public Programme addProgramme(ProgrammeDto programmeDto) {
+    @LogProgramme(event = TypeLog.CREATION)
+	public Programme addProgramme(ProgrammeDto programmeDto, UserDTO userDTO) {
 		MapperConfiguration mapperConfiguration = new MapperConfiguration();
 		ParamAppli paramAppli = paramAppliDao.getParam("ANNEE_SEQ_PROGRAMME");
 		ProgrammeSequence programmeSequence = new ProgrammeSequence();
@@ -94,7 +100,7 @@ public class ProgrammeService {
 		//construire le Id du programme
 		Programme mappedProgramme = mapperConfiguration.convertProgrammeDtoToProgramme(programmeDto);
 	    
-	    	mappedProgramme.setUsercre(programmeDto.getUsercre());
+		mappedProgramme.setUsercre(programmeDto.getUsercre());
 		mappedProgramme.setDateCreation(new Date());
 		mappedProgramme.setStatut(StatutProgramme.CREE);
 		
@@ -116,9 +122,12 @@ public class ProgrammeService {
 		}
 		return resultat;
 	}
-	
+
+
+
 	@Transactional
-	public Programme updateProgramme(ProgrammeDto programmeDto) {
+	@LogProgramme(event = TypeLog.MODIFICATION)
+	public Programme updateProgramme(ProgrammeDto programmeDto, UserDTO userDTO) {
 		Programme programme = programmeDao.findOne(programmeDto.getNumProg());
 		
 		programme.setNom(programmeDto.getNom());
@@ -149,7 +158,8 @@ public class ProgrammeService {
 	}
 	
 	@Transactional
-	public Programme abandonnerProgramme(ProgrammeDto programmeDto) {
+    @LogProgramme(event = TypeLog.SUPPRESSION)
+	public Programme abandonnerProgramme(ProgrammeDto programmeDto, UserDTO userDTO) {
 		Programme programme = programmeDao.findOne(programmeDto.getNumProg());
 		programme.setStatut(StatutProgramme.ABANDONNE);
 		
@@ -175,7 +185,8 @@ public class ProgrammeService {
 	}
 
 	@Transactional
-	public Programme validerProgramme(ProgrammeDto programmeDto) {
+	@LogEtatProgramme(event = TypeLog.VALIDATION)
+	public Programme validerProgramme(ProgrammeDto programmeDto, UserDTO userDTO) {
 		Programme programme = programmeDao.findOne(programmeDto.getNumProg());
 		programme.setStatut(StatutProgramme.VALIDE);
 		programme.setUserValidation(programmeDto.getUserValidation());
@@ -185,7 +196,8 @@ public class ProgrammeService {
 	}
 
 	@Transactional
-	public Programme invaliderProgramme(ProgrammeDto programmeDto) {
+	@LogEtatProgramme(event = TypeLog.INVALIDATION)
+	public Programme invaliderProgramme(ProgrammeDto programmeDto, UserDTO userDTO) {
 	    FichierFelix ff = fichierFelixDao.findByNumprog(programmeDto.getNumProg());
 	    if(ff != null) {
 		  fichierFelixDao.delete(ff.getId());
@@ -202,11 +214,39 @@ public class ProgrammeService {
 	}
 
 	@Transactional
-	public Programme updateStatutProgrammeToAffecte(ProgrammeDto programmeDTO) {
+	public Programme enregistrerSelection(ProgrammeDto programmeDto) {
+		FichierFelix ff = fichierFelixDao.findByNumprog(programmeDto.getNumProg());
+		if(ff != null) {
+			fichierFelixDao.delete(ff.getId());
+			fichierFelixDao.flush();
+		}
+
+		Programme programme = programmeDao.findOne(programmeDto.getNumProg());
+		programme.setStatut(StatutProgramme.EN_COURS);
+		programme.setUserValidation(null);
+		programme.setDateValidation(null);
+
+
+		return programmeDao.saveAndFlush(programme);
+	}
+
+	@Transactional
+	@LogEtatProgramme(event = TypeLog.ANNULATION)
+	public Programme updateStatutProgrammeToAffecte(ProgrammeDto programmeDTO, UserDTO userDTO) {
 		Programme programme = programmeDao.findOne(programmeDTO.getNumProg());
 		programme.setStatut(StatutProgramme.AFFECTE);
-		programme.setUseraffect(programmeDTO.getUseraffecte());
+		programme.setUseraffect(userDTO.getUserId());
 		programme.setDataffect(new Date());
 		return programmeDao.saveAndFlush(programme);
+	}
+
+	@Transactional
+	@LogEtatProgramme(event = TypeLog.REPARTITION)
+	public void majStatut(ProgrammeDto programmeDTO, UserDTO userDTO) {
+		Programme prog = programmeDao.findOne(programmeDTO.getNumProg());
+		prog.setStatut(programmeDTO.getStatut());
+		prog.setUsermaj(programmeDTO.getUsermaj());
+
+		programmeDao.saveAndFlush(prog);
 	}
 }

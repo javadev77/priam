@@ -1,6 +1,5 @@
 package fr.sacem.priam.batch.affectation.processor;
 
-import fr.sacem.priam.batch.affectation.domain.CatalogueOctavItem;
 import fr.sacem.priam.batch.affectation.mapper.PointsResult;
 import org.springframework.batch.item.ItemProcessor;
 

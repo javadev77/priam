@@ -1,8 +1,7 @@
 package fr.sacem.priam.batch.affectation.config;
+
 import fr.sacem.domain.Admap;
 import fr.sacem.priam.common.constants.EnvConstants;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.*;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 

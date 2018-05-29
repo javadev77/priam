@@ -29,7 +29,7 @@
         </div>
 
         <div class="col-sm-3">
-          <span class="pull-right blueText">Rion statutaire</span>
+          <span class="pull-right blueText">Rion cible</span>
         </div>
         <div class="col-sm-3">
           {{ getLibelleRionById(programmeInfo.rionTheorique) }}

@@ -2,35 +2,37 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:p="http://www.springframework.org/schema/p"
-       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
        xsi:schemaLocation="http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch.xsd
-		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-        http://www.springframework.org/schema/jdbc
-        http://www.springframework.org/schema/jdbc/spring-jdbc-3.1.xsd">
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <!--<jdbc:initialize-database data-source="dataSource">
-        <jdbc:script location="classpath:config/sql/initial-query.sql" />
-    </jdbc:initialize-database>-->
+
 
     <import resource="job-desaffectation-conf.xml"/>
+    <import resource="job-eligibilite-cms-ANT.xml"/>
 
-    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+   <!-- <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="searchSystemEnvironment" value="true"/>
         <property name="ignoreResourceNotFound" value="true"/>
         <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
         <property name="location" value="classpath:config/application-${spring.profiles.active}.properties"/>
-    </bean>
-
+    </bean>-->
 
 
     <job id="jobEligibiliteOctav" xmlns="http://www.springframework.org/schema/batch">
-        <step id="chargerCatalogueOctav" next="eligibiliteStep">
+        <step id="chargerCatalogueOctavFRA" next="eligibiliteStep">
+
             <tasklet>
                 <chunk
                         reader="catalogueOctavReader"
                         writer="catalogueOctavWriter"
                         processor="catalogueOctavProcessor"
-                        commit-interval="${commit-interval}">
+                        commit-interval="${commit-interval}"
+                        retry-limit="15">
+
+                    <retryable-exception-classes>
+                        <include class="org.springframework.dao.DeadlockLoserDataAccessException"/>
+                        <include class="org.springframework.dao.CannotAcquireLockException"/>
+                    </retryable-exception-classes>
                 </chunk>
             </tasklet>
         </step>
@@ -78,6 +80,8 @@
         </step>
 
 
+
+
         <listeners merge="true">
             <listener ref="listenerCompletition"/>
         </listeners>
@@ -85,7 +89,9 @@
     </job>
 
 
-    <bean id="listenerCompletition" class="fr.sacem.priam.batch.affectation.listener.JobCompletionNotificationAffectationCMSListener">
+    <bean id="listenerCompletition"
+          class="fr.sacem.priam.batch.affectation.listener.JobCompletionNotificationAffectationCMSListener"
+          scope="prototype">
         <property name="fichierBatchService" ref="fichierBatchService"/>
     </bean>
 
@@ -110,6 +116,7 @@
                                                   SELECT cat.IDE12
                                                   FROM PRIAM_CATALOGUE_OCTAV cat
                                                   WHERE cat.IDE12 IS NOT NULL
+                                                  AND cat.TYPE_CMS='FR'
                                                   GROUP BY cat.IDE12
                                               ) "/>
 
@@ -185,9 +192,8 @@
                 <![CDATA[
                    UPDATE PRIAM_LIGNE_PROGRAMME_CMS l2
                     INNER JOIN PRIAM_FICHIER f2 on f2.ID=l2.ID_FICHIER
-                    SET mt = :mt
+                    SET mt = :mt, mtEdit = :mt
                     WHERE ide12 = :ide12 AND cdeFamilTypUtilOri = :cdeFamilTypUtilOri
-                          AND l2.id= :id
                       AND f2.NUMPROG = '#{jobParameters[numProg]}'
                 ]]>
             </value>
@@ -217,7 +223,7 @@
     <bean id="ligneCMSProcessor" class="fr.sacem.priam.batch.affectation.processor.LigneCMSProcessor"/>
 
     <bean id="flatFileItemReader"
-          class="org.springframework.batch.item.file.FlatFileItemReader">
+          class="org.springframework.batch.item.file.FlatFileItemReader" scope="prototype">
         <property name="lineMapper">
             <bean class="org.springframework.batch.item.file.mapping.DefaultLineMapper">
                 <property name="lineTokenizer">
@@ -321,7 +327,6 @@
         <property name="queryProvider" ref="queryProviderStep4"/>
         <property name="pageSize" value="${commit-interval}"/>
         <property name="rowMapper" ref="rowMapperPoints"/>
-
     </bean>
 
    <!-- <bean id="queryProviderStep4" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
@@ -331,7 +336,7 @@
                                             INNER JOIN PRIAM_PROGRAMME p ON p.NUMPROG=f.NUMPROG
                                             INNER JOIN PRIAM_LIGNE_PROGRAMME_CMS l2 on l.ide12=l2.ide12
                                                 AND l.cdeFamilTypUtilOri &lt;&gt; l2.cdeFamilTypUtilOri"/>
-        <property name="whereClause" value="WHERE p.NUMPROG='#{jobParameters[numProg]}' AND p.STATUT_ELIGIBILITE = 'EN_ATTENTE_ELIGIBILITE') temp  WHERE temp.ide12 IS NOT NULL "/>
+        <property name="whereClause" value="WHERE p.NUMPROG='#{jobParameters[numProg]}' AND p.STATUT_ELIGIBILITE = 'EN_ATTENTE_ELIGIBILITtesttemp  WHtesttemp.ide12 IS NOT NULL "/>
         <property name="databaseType" value="MySQL" />
         <property name="dataSource" ref="dataSource"/>
         <property name="sortKey" value="ide12"/>
@@ -425,12 +430,18 @@
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
-    <bean id="utilFile" class="fr.sacem.util.UtilFile">
+    <bean id="journalBatchDao" class="fr.sacem.priam.batch.affectation.dao.JournalBatchDao">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <bean id="utilFile" class="fr.sacem.util.UtilFile" scope="prototype">
         <property name="fichierBatchService" ref="fichierBatchService"/>
     </bean>
 
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
     </bean>
+
+    <bean id="journalAffectationBuilder" class="fr.sacem.priam.model.util.JournalAffectationBuilder"></bean>
 
 </beans>

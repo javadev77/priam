@@ -1,6 +1,5 @@
 package fr.sacem.priam.security.config;
 
-import fr.sacem.fwk.config.Environment;
 import fr.sacem.fwk.security.SecurityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,6 +7,7 @@ import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDecisionVoter;
@@ -38,35 +38,37 @@ import java.util.List;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
 @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
+@Profile({"dev", "re7", "prod"})
 public class SecurityRestConfiguration extends WebSecurityConfigurerAdapter {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SecurityRestConfiguration.class);
   @Override
   protected void  configure(HttpSecurity http) throws Exception {
-
 //    String webappMode = Environment.getParameter("webapp.mode");
 //    if("dev".equalsIgnoreCase(webappMode)) {
 //      http.cors().and();
 //    }
-    http.cors()
-      .and()
-      .csrf().disable()
-      .exceptionHandling()
-      .accessDeniedPage("/404.html")
-      .authenticationEntryPoint(authenticationEntryPoint())
-      .and()
-      .logout()
-      .invalidateHttpSession(true)
-      .deleteCookies(SsoPreAuthenticatedProcessingFilter.REQUEST_COOKIE_SSO_USER)
-      .logoutSuccessHandler(logoutSuccessHandler())
-      .and()
-      .addFilter(ssoPreAuthenticatedProcessingFilter())
-      .sessionManagement()//.maximumSessions(10).sessionRegistry(sessionRegistry()).and().sessionFixation().migrateSession()
-      .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-      .and()
-      .authorizeRequests()
-      .accessDecisionManager(affirmativeBased())
-      .antMatchers("/app/rest/**").authenticated();
+
+      http.cors()
+          .and()
+            .csrf().disable()
+            .exceptionHandling()
+            .accessDeniedPage("/404.html")
+            .authenticationEntryPoint(authenticationEntryPoint())
+          .and()
+            .logout()
+            .invalidateHttpSession(true)
+            .deleteCookies(SsoPreAuthenticatedProcessingFilter.REQUEST_COOKIE_SSO_USER)
+            .logoutSuccessHandler(logoutSuccessHandler())
+          .and()
+            .addFilter(ssoPreAuthenticatedProcessingFilter())
+            .sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+          .and()
+            .authorizeRequests()
+            .accessDecisionManager(affirmativeBased())
+            .antMatchers("/app/rest/**")
+          .authenticated();
 
   }
 

@@ -2,10 +2,10 @@ package fr.sacem.priam.model.dao;
 
 import ch.vorburger.exec.ManagedProcessException;
 import ch.vorburger.mariadb4j.springframework.MariaDB4jSpringService;
+import org.hibernate.dialect.MySQL5InnoDBDialect;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
@@ -15,11 +15,12 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
 import java.sql.Driver;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by benmerzoukah on 09/05/2017.
@@ -62,6 +63,20 @@ public class JpaConfigurationTest {
             em.setPackagesToScan("fr.sacem.priam.model.domain");
             JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
             em.setJpaVendorAdapter(vendorAdapter);
+            Map<String, Object> properties = new HashMap<>();
+
+            properties.put("hibernate.show_sql", true);
+            properties.put("hibernate.dialect", MySQL5InnoDBDialect.class.getName());
+            properties.put("hibernate.bytecode.use_reflection_optimizer", true);
+            properties.put("hibernate.jdbc.batch_size", 50);
+            properties.put("hibernate.order_inserts", true);
+            properties.put("hibernate.order_updates", true);
+            properties.put("hibernate.jdbc.batch_versioned_data", true);
+            properties.put("hibernate.connection.zeroDateTimeBehavior", "convertToNull");
+            properties.put("javax.persistence.lock.timeout", 2000);
+
+            em.setJpaPropertyMap(properties);
+
         }catch (ClassNotFoundException e){
             e.getMessage();
         }
@@ -77,7 +92,8 @@ public class JpaConfigurationTest {
             throw new RuntimeException(e);
         }
     }
-    @Bean(name = "dataSource")
+    @Bean(
+            name = "dataSource")
     @DependsOn(DB_SERVICE)
     @Qualifier("testDS")
     public DataSource dataSource(DataSourceProperties dataSourceProperties) throws ClassNotFoundException {
@@ -86,6 +102,7 @@ public class JpaConfigurationTest {
         dataSource.setUrl(dataSourceProperties.getUrl());
         dataSource.setUsername(dataSourceProperties.getUsername());
         dataSource.setPassword(dataSourceProperties.getPassword());
+
         try{
             mariaDb().getDB().createDB(dbName);
             mariaDb().getDB().source("init-schema_test.sql");
@@ -116,6 +133,8 @@ public class JpaConfigurationTest {
         dataSourceProperties.setPassword(dbPassword);
         dataSourceProperties.setDriverClassName(dbDriver);
         dataSourceProperties.setPlatform(dbDialect);
+
+
         return dataSourceProperties;
     }
     @Bean

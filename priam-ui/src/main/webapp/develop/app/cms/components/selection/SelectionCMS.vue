@@ -39,7 +39,7 @@
       <app-filtre-selection
         :filter="filter"
         :retablir="retablirFiltre"
-        :rechercher="rechercher"
+        :rechercher="launchRechercheEtCompteurs"
         :ajouter="ajouterOeuvre"
         :edition="edition"
       >
@@ -72,27 +72,13 @@
               </div>
             </div>
 
-            <div v-if = "!dataLoading && this.programmeInfo.typeUtilisation=='SONOANT'">
+           <div v-if = "!dataLoading">
               <priam-grid
-                v-if="priamGrid_sono.gridData_sono.content"
-                :data="priamGrid_sono.gridData_sono"
-                :columns="priamGrid_sono.gridColumns"
+                v-if="priamGrid_SONOCMS.gridData_SONOCMS.content"
+                :data="priamGrid_SONOCMS.gridData_SONOCMS"
+                :columns="priamGrid_SONOCMS.gridColumns"
                 noResultText="Aucun résultat."
-                :filter-key="priamGrid_sono.searchQuery"
-                @load-page="loadPage"
-                @on-sort="onSort"
-                @all-checked="onAllChecked"
-                @entry-checked="onEntryChecked"
-                @supprimer-ligne-programme="onSupprimerLigneProgramme">
-              </priam-grid>
-            </div>
-            <div v-else-if = "!dataLoading && this.programmeInfo.typeUtilisation=='SONOFRA'">
-              <priam-grid
-                v-if="priamGrid_SONOFRA.gridData_SONOFRA.content"
-                :data="priamGrid_SONOFRA.gridData_SONOFRA"
-                :columns="priamGrid_SONOFRA.gridColumns"
-                noResultText="Aucun résultat."
-                :filter-key="priamGrid_SONOFRA.searchQuery"
+                :filter-key="priamGrid_SONOCMS.searchQuery"
                 @load-page="loadPage"
                 @on-sort="onSort"
                 @all-checked="onAllChecked"
@@ -185,6 +171,9 @@
   import ProgrammeInfo from '../../../common/components/programme/ProgrammeInfo.vue';
   import Navbar from '../../../common/components/ui/priam-navbar.vue';
 
+  import PointsMontantEditor from './cellEditors/PointsMontantEditor.vue';
+  import PointsEditor from './cellEditors/PointsEditor.vue';
+
   export default {
     mixins: [chargementMixins],
 
@@ -210,6 +199,8 @@
 
         showPopupInfoTmtCMS : false,
 
+        pointsSelection : 0,
+
         all : false,
         edition : false,
         ligneProgramme : [],
@@ -218,6 +209,7 @@
         programmeInfo: {},
         tableauSelectionnable : false,
         isCollapsed: false,
+        fromSelection: false,
         defaultPageable : {
           page : 1,
           sort : 'ide12',
@@ -227,7 +219,7 @@
 
         currentGridState : {},
 
-        priamGrid_SONOFRA: {
+        priamGrid_SONOCMS: {
           gridColumns: [
             {
               id: 'ide12',
@@ -237,7 +229,7 @@
               cell: {
                 toText : function(entry) {
                   var result = entry;
-                  if(result !=undefined)
+                  if(result !== undefined)
                     return result ;
                   else
                     return "";
@@ -252,7 +244,7 @@
               cell : {
                 toText : function(entry) {
                   var result = entry;
-                  if(result !=undefined)
+                  if(result !== undefined)
                     return result ;
                   else
                     return "";
@@ -267,7 +259,7 @@
               cell : {
                 toText : function(entry) {
                   var result = entry;
-                  if(result !=undefined)
+                  if(result !== undefined)
                     return result ;
                   else
                     return "";
@@ -282,7 +274,7 @@
               cell: {
                 toText : function(entry) {
                   var result = entry;
-                  if(result !=undefined)
+                  if(result !== undefined)
                     return result ;
                   else
                     return "";
@@ -290,18 +282,32 @@
               }
             },
             {
-              id: 'mt',
+              id: 'pointsMontant',
               name: "Points",
               sortable: true,
-              sortProperty : 'sum(mt)',
-              type: 'numeric',
+              sortProperty : 'mt', // l'equivalent du JpaSort dans le back
+              type: 'inputNum',
+              cellEditorFramework : undefined,
               cell: {
-                toText : function(entry) {
+                toDisabled: function(entry){
 
-                  if(entry.pointsMontant !== undefined)
-                    return entry.pointsMontant;
-                  else
-                    return "";
+                  if (!$this.isTableauSelectionnable()) {
+                    return true;
+                  }
+                  return false;
+                },
+
+                onCellValueChanged: function (entry, params) {
+                  //Re-calculer les compteurs
+                  if(entry.selection && params !== null && params.oldVal !== null) {
+                    let points = params.newVal;
+                    $this.dureeSelection.duree -= params.oldVal;
+                    $this.dureeSelection.duree += points;
+
+                    if($this.dureeSelection.duree < 0) {
+                      $this.dureeSelection.duree  = 0;
+                    }
+                  }
                 }
               }
             },
@@ -314,19 +320,17 @@
                 toText : function(entry) {
                   var result = entry;
 
-                  if(result !=undefined)
+                  if(result !== undefined)
                   {
-                    if(result.ajout == 'Manuel') {
-
+                    var element = $this.getEtatOeuvre(result.ajout);
+                    if(result.ajout === 'MANUEL' || result.ajout === 'CORRIGE') {
                       var tempalteTrash = '<span class="glyphicon glyphicon-trash" aria-hidden="true" style="padding-left: 0px;" title="Supprimer"></span>';
                       var template = [];
                       template.push({event : 'supprimer-ligne-programme', template : tempalteTrash, disabled : !$this.edition});
-                      return {value : result.ajout, template : template ,action : true};
-
-                    }else {
-                      return {value : result, action : false};
+                      return {value : element.libelle, template : template ,action : true};
+                    } else {
+                      return {value : element.libelle, action : false};
                     }
-
                   }
                   else
                     return "";
@@ -369,7 +373,7 @@
             }
 
           ],
-          gridData_SONOFRA : {},
+          gridData_SONOCMS : {},
           searchQuery : ''
         },
 
@@ -391,6 +395,7 @@
         },
         dureeSelection : {
           auto : 0,
+          corrige : 0,
           manuel : 0,
           duree : 0
         },
@@ -412,7 +417,8 @@
         this.initProgramme();
     },
 
-    methods :{
+    methods : {
+
       openPopupInfoTraitementCMS() {
           this.showPopupInfoTmtCMS = true;
 
@@ -437,13 +443,15 @@
           return response.json();
         }).then(data => {
 
-          this.dureeSelection.auto = data.Automatique;
-          this.dureeSelection.manuel = data.Manuel;
+          this.dureeSelection.auto = data.AUTOMATIQUE;
+          this.dureeSelection.manuel = data.MANUEL;
+          this.dureeSelection.corrige = data.CORRIGE
           this.dureeSelection.duree = data.SOMME;
+          //this.pointsSelection = this.countPointsSelection();
 
-          debugger;
           this.backupDureeSelection = {
             auto: this.dureeSelection.auto,
+            corrige: this.dureeSelection.corrige,
             manuel: this.dureeSelection.manuel,
             duree: this.dureeSelection.duree
           }
@@ -511,9 +519,22 @@
               this.tableauSelectionnable = false;
 
 
-            if(this.programmeInfo.typeUtilisation==="SONOFRA"){
-              this.defaultPageable.sort = 'mt';
-            }
+              this.defaultPageable.sort = 'pointsMontant';
+
+                var pointsColumn = this.priamGrid_SONOCMS.gridColumns.find(function (elem) {
+                  return elem.id === 'pointsMontant';
+                });
+
+                if(pointsColumn !== undefined) {
+                  if(this.programmeInfo.typeUtilisation === "SONOANT"){
+                    pointsColumn.sortProperty = 'nbrDifEdit';
+                    pointsColumn.cellEditorFramework = PointsEditor;
+                  } else {
+                    pointsColumn.sortProperty = 'mtEdit';
+                    pointsColumn.cellEditorFramework = PointsMontantEditor;
+                  }
+
+               }
 
             if(this.programmeInfo.statut == 'EN_COURS' || this.programmeInfo.statut == 'VALIDE') {
               this.filter.selection = 'Sélectionné';
@@ -538,12 +559,7 @@
           })
           .then(data => {
               this.showPopupSuppression = false;
-              var index = this.indexOf(this.ligneProgramme, this.selectedLineProgramme);
-
-              if (index > -1) {
-                this.ligneProgramme.splice(index, 1);
-              }
-              this.calculerCompteurs(this.programmeInfo.statut);
+              this.launchRechercheEtCompteurs();
           });
 
       },
@@ -564,13 +580,11 @@
           .then(data => {
 
             this.dataLoading = false;
-            if(this.programmeInfo.typeUtilisation === 'SONOFRA'){
 
-              this.priamGrid_SONOFRA.gridData_SONOFRA = data;
-              this.priamGrid_SONOFRA.gridData_SONOFRA.number = data.number + 1;
-              this.ligneProgramme = this.priamGrid_SONOFRA.gridData_SONOFRA.content;
+              this.priamGrid_SONOCMS.gridData_SONOCMS = data;
+              this.priamGrid_SONOCMS.gridData_SONOCMS.number = data.number + 1;
+              this.ligneProgramme = this.priamGrid_SONOCMS.gridData_SONOCMS.content;
 
-            }
           });
       },
 
@@ -645,35 +659,40 @@
 
       },
 
-      rechercher(){
+      launchRechercheEtCompteurs() {
 
-        function doSearch() {
-          this.dataLoading = true;
-          this.resource.findLigneProgrammeByProgramme({
-            page: this.defaultPageable.page - 1, size: this.defaultPageable.size,
-            sort: this.defaultPageable.sort, dir: this.defaultPageable.dir
+        this.doSearch();
+        this.calculerCompteurs(this.programmeInfo.statut);
+      },
+
+      doSearch() {
+        this.dataLoading = true;
+        this.resource.findLigneProgrammeByProgramme({
+          page: this.defaultPageable.page - 1, size: this.defaultPageable.size,
+          sort: this.defaultPageable.sort, dir: this.defaultPageable.dir
           }, this.filter)
-            .then(response => {
-              return response.json();
-            })
-            .then(data => {
+          .then(response => {
+            return response.json();
+          })
+          .then(data => {
 
-              var tab = [];
-              if (this.programmeInfo.typeUtilisation === "SONOFRA") {
+            var tab = [];
 
-                this.priamGrid_SONOFRA.gridData_SONOFRA = data;
-                this.priamGrid_SONOFRA.gridData_SONOFRA.number = data.number + 1;
-                tab = this.priamGrid_SONOFRA.gridData_SONOFRA.content;
+            this.priamGrid_SONOCMS.gridData_SONOCMS = data;
+            this.priamGrid_SONOCMS.gridData_SONOCMS.number = data.number + 1;
+            tab = this.priamGrid_SONOCMS.gridData_SONOCMS.content;
 
-              }
 
-              this.ligneProgramme = tab;
-              this.dataLoading = false;
+            this.ligneProgramme = tab;
+            this.dataLoading = false;
 
-             // this.$store.dispatch('toutDesactiver', this.countNbSelected(this.ligneProgramme) == this.ligneProgramme.length);
-              //this.selectAll();
-            });
-        }
+            // this.$store.dispatch('toutDesactiver', this.countNbSelected(this.ligneProgramme) == this.ligneProgramme.length);
+            //this.selectAll();
+          });
+      }
+
+      ,
+      rechercher(){
 
         this.currentFilter.ide12 = this.filter.ide12;
         this.currentFilter.ajout = this.filter.ajout;
@@ -681,9 +700,8 @@
         this.currentFilter.titre = this.filter.titre;
         this.currentFilter.selection = this.filter.selection;
 
-        if(this.isActionAnnulerEdition) {
-          doSearch.call(this);
-          this.calculerCompteurs(this.programmeInfo.statut);
+        if(!this.edition) {
+          this.launchRechercheEtCompteurs();
         } else {
           this.modifierSelectionTemporaire();
 
@@ -692,16 +710,13 @@
               return response.json();
             }).then(data => {
 
-            doSearch.call(this);
-            this.calculerCompteurs(this.programmeInfo.statut);
+            this.launchRechercheEtCompteurs();
 
           })
             .catch(response => {
               console.log("Erreur technique lors de la validation de la selection du programme !! " + response);
             });
 
-          /*doSearch.call(this);
-          this.calculerCompteurs(this.programmeInfo.statut);*/
         }
 
       },
@@ -714,19 +729,19 @@
 
       onEntryChecked(isChecked, entryChecked) {
 
+
+        this.fromSelection = true;
         if(isChecked) {
 
-          if(entryChecked.ajout == 'Manuel') {
+          if(entryChecked.ajout === 'MANUEL') {
             this.dureeSelection.manuel ++;
-
+          } else if(entryChecked.ajout === 'CORRIGE'){
+            this.dureeSelection.corrige ++;
           } else {
             this.dureeSelection.auto++;
           }
 
-
-          if(this.programmeInfo.typeUtilisation==="SONOFRA"){
             this.dureeSelection.duree += entryChecked.pointsMontant;
-          }
 
           var found = this.ligneProgrammeSelected.find( elem => {
             return  elem.ide12 === entryChecked.ide12;
@@ -745,15 +760,15 @@
 
         } else {
 
-          if(entryChecked.ajout == 'Manuel') {
+          if(entryChecked.ajout === 'MANUEL') {
             this.dureeSelection.manuel--;
-          } else {
+          } else if(entryChecked.ajout === 'CORRIGE'){
+            this.dureeSelection.corrige--;
+          }else {
             this.dureeSelection.auto--;
           }
 
-          if(this.programmeInfo.typeUtilisation==="SONOFRA"){
             this.dureeSelection.duree -= entryChecked.pointsMontant;
-          }
 
           let number = this.indexOf(this.ligneProgrammeSelected, entryChecked);
           this.ligneProgrammeSelected.splice(number, 1);
@@ -769,7 +784,7 @@
       indexOf(array, obj) {
 
           for(let i = 0; i < array.length; i++ ) {
-              if(obj.ide12 == array[i].ide12) {
+              if(obj.ide12 === array[i].ide12) {
                   return i;
               }
           }
@@ -779,6 +794,8 @@
       },
 
       onAllChecked(allChecked, entries) {
+
+        this.fromSelection = true;
 
         this.all = allChecked;
         this.ligneProgrammeSelected = [];
@@ -796,14 +813,21 @@
       },
 
       recalculerCompteurs(entry) {
-        if(entry.ajout == 'Manuel') {
+        if(entry.ajout === 'MANUEL') {
           if(entry.selection) {
             this.dureeSelection.manuel++;
           } else {
             this.dureeSelection.manuel--;
           }
 
-        } else {
+        } else if(entry.ajout === 'CORRIGE') {
+          if(entry.selection) {
+            this.dureeSelection.corrige++;
+          } else {
+            this.dureeSelection.corrige--;
+          }
+        }
+        else  if(entry.ajout === 'AUTOMATIQUE') {
           if(entry.selection) {
             this.dureeSelection.auto++;
           } else {
@@ -811,10 +835,7 @@
           }
         }
 
-        let points;
-        if(this.programmeInfo.typeUtilisation==="SONOFRA"){
-          points = entry.pointsMontant;
-        }
+        let points = entry.pointsMontant;
 
         if(entry.selection) {
           this.dureeSelection.duree += points;
@@ -858,7 +879,7 @@
 
         if(this.programmeInfo.statut == 'AFFECTE' || this.programmeInfo.statut == 'EN_COURS') {
 
-          if(this.programmeInfo.typeUtilisation == 'SONOFRA' && this.dureeSelection.duree == 0) {
+          if(this.dureeSelection.duree == 0) {
             this.modalWaring  = true;
             this.modalVisible = true;
             this.modalMessage  = 'Attention la somme des points sur le programme est égale à 0';
@@ -983,7 +1004,11 @@
               selected : []
             };
 
-            this.selection.numProg = this.$route.params.numProg;
+            this.selection =  {
+              numProg : this.$route.params.numProg,
+              fromSelection : this.fromSelection
+            };
+            debugger;
             this.resource.enregistrerEdition(this.selection)
               .then(response => {
                 this.filter.selection = 'Sélectionné';
@@ -1034,7 +1059,7 @@
         this.annulerAction = true;
         this.modalVisible = true;
         this.tableauSelectionnable = true;
-        this.modalMessage  = 'Toutes les opérations seront perdues. Etes-vous sûr de vouloir annuler la sélection?';
+        this.modalMessage  = 'Toutes les opérations seront perdues. Etes-vous sûr de vouloir annuler la sélection ?';
 
 
       },
@@ -1045,10 +1070,11 @@
           .then(response => {
             this.selectedLineProgramme = [];
             this.unselectedLigneProgramme = [];
-            this.rechercher();
+
             this.tableauSelectionnable = false;
             this.edition = false;
             this.inProcess = false;
+            this.rechercher();
             this.calculerCompteurs(this.programmeInfo.statut);
         });
 
@@ -1057,6 +1083,7 @@
       editSelectionClickHandler () {
         this.tableauSelectionnable = true;
         this.edition = true;
+        this.fromSelection = false;
       }
 
     },
@@ -1079,10 +1106,23 @@
 
       lengthOfTabLigneProgramme() {
        return this.ligneProgramme !== undefined ? this.ligneProgramme.length : 0;
+      },
+
+      countPointsSelection() {
+        var countPt = 0;
+        for(var i in this.ligneProgramme) {
+          if(this.ligneProgramme[i].selection) {
+            countPt += this.ligneProgramme[i].pointsMontant ;
+          }
+        }
+
+        return countPt;
+
       }
     },
 
     watch: {
+
       lengthOfTabLigneProgramme : function (newValue) {
         console.log("The length of tab has changed  "+  newValue);
         this.$store.dispatch('toutDesactiver', newValue && newValue === this.countNbSelected);
@@ -1091,6 +1131,12 @@
       countNbSelected : function (newValue) {
         console.log("Le nombre de selection a cahnge "+  newValue);
         this.$store.dispatch('toutDesactiver', newValue && newValue === this.lengthOfTabLigneProgramme);
+      },
+
+      countPointsSelection : function (newValue) {
+        console.log("Points sélection a cahnge "+  newValue);
+        //this.dureeSelection.duree = newValue;
+        //this.calculerCompteurs();
       }
 
     },

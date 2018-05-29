@@ -55,7 +55,14 @@ module.exports = {
 
        return result !== undefined ? result.value : '';
 
-     }
+     },
+
+    getEtatOeuvre(code) {
+      var result = this.$store.getters.etatOeuvre.find(function (element) {
+        return element.code == code;
+      })
+      return result;
+    }
 
 
   }

@@ -265,9 +265,9 @@
                           this.messageSonoFra = 'Attention, cette oeuvre est déjà présente au niveau du programme avec Points = '
                             + ligneProg.pointsMontant + ', êtes-vous sûr de vouloir la remplacer ?';
 
-                      } else if(this.programme.typeUtilisation === 'CPRIVSONRD') {
-                          this.messageSonoAnt = 'Attention, cette oeuvre est déjà présente au niveau du programme avec la durée '
-                            + ligneProg.durDif + ', êtes-vous sûr de vouloir la remplacer avec la durée saisie ?';
+                      } else if(this.programme.typeUtilisation === 'SONOANT') {
+                          this.messageSonoAnt = 'Attention, cette oeuvre est déjà présente au niveau du programme avec Points '
+                            + ligneProg.pointsMontant + ', êtes-vous sûr de vouloir la remplacer ?';
                       }
                   } else {
                     // IDE12 n'existe pas alors verifier avec le catalogue
@@ -312,7 +312,7 @@
                     if(this.programme.typeUtilisation === 'SONOFRA') {
                       typeCMS = 'FR';
                     } else if (this.programme.typeUtilisation === 'SONOANT') {
-                      typeCMS = 'ANT';
+                      typeCMS = 'ANF';
                     }
                     self.resource.isEligible({ide12: oeuvre.ide12, typeCMS: typeCMS})
                       .then(response => {

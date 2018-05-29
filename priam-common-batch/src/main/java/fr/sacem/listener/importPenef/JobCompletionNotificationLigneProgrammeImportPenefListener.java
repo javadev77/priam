@@ -1,10 +1,10 @@
 package fr.sacem.listener.importPenef;
 
 import fr.sacem.dao.FichierRepository;
+import fr.sacem.priam.common.TypeUtilisationEnum;
 import fr.sacem.service.importPenef.FichierBatchServiceImpl;
 import fr.sacem.util.UtilFile;
 import fr.sacem.util.exception.PriamValidationException;
-import org.omg.CORBA.FREE_MEM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.BatchStatus;
@@ -14,7 +14,6 @@ import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -34,9 +33,6 @@ public class JobCompletionNotificationLigneProgrammeImportPenefListener extends 
     public static final String FORMAT_DATE = "dd/MM/yyyy HH:mm";
     public static final String MESSAGE_FORMAT_FICHIER = "Le fichier ne peut être chargé car il n'a pas le bon format";
     private static String NOM_FICHIER_CSV_EN_COURS = "nomFichier";
-    private static String FICHIER_ZIP_EN_COURS = "fichierZipEnCours";
-    private static String NOM_ORIGINAL_FICHIER_ZIP = "nomFichierOriginal";
-    private static String REPERTOIRE_DE_DESTINATION = "output.archives";
     private static String FILE_ERREUR = "erreur" ;
     private ExecutionContext executionContext;
     private FichierBatchServiceImpl fichierBatchService;
@@ -46,7 +42,6 @@ public class JobCompletionNotificationLigneProgrammeImportPenefListener extends 
     @Autowired
     FichierRepository fichierRepository;
 
-    /*@Value("${type.fichier}")*/
     String typeFichier;
 
     @Autowired
@@ -58,9 +53,10 @@ public class JobCompletionNotificationLigneProgrammeImportPenefListener extends 
     @Override
     public void afterJob(JobExecution jobExecution) {
 
+        Collection<StepExecution> stepExecutions = jobExecution.getStepExecutions();
+
         if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
 
-            Collection<StepExecution> stepExecutions = jobExecution.getStepExecutions();
             Iterator it = stepExecutions.iterator();
             JobParameter idFichier = null;
             while (it.hasNext()) {
@@ -69,12 +65,7 @@ public class JobCompletionNotificationLigneProgrammeImportPenefListener extends 
 
                 if (executionContext != null) {
                     JobParameter parameterNomFichierCSV = (JobParameter) executionContext.get(NOM_FICHIER_CSV_EN_COURS);
-                    JobParameter parameterFichierZipEnCours = (JobParameter) executionContext.get(FICHIER_ZIP_EN_COURS);
-                    JobParameter parameterNomFichierOriginal = (JobParameter) executionContext.get(NOM_ORIGINAL_FICHIER_ZIP);
-                    JobParameter outputDirectory = jobExecution.getJobParameters().getParameters().get(REPERTOIRE_DE_DESTINATION);
-
                     Set<String> errors = (Set<String>) executionContext.get(LIGNE_PROGRAMME_ERRORS);
-
                     if(errors == null || errors.isEmpty()) {
                         if (parameterNomFichierCSV != null) {
                             idFichier = (JobParameter)executionContext.get("idFichier");
@@ -91,20 +82,18 @@ public class JobCompletionNotificationLigneProgrammeImportPenefListener extends 
                         idFichier =(JobParameter) executionContext.get("idFichier");
                         fichierBatchService.rejeterFichier((Long)idFichier.getValue(), errors);
                     }
-
-                    utilFile.deplacerFichier(parameterFichierZipEnCours, parameterNomFichierOriginal, outputDirectory);
                 } else {
                     LOG.debug("Pas de excution context pour le step en cours : " + myStepExecution.getStepName());
                 }
 
                 if(idFichier != null && ("CMS".equalsIgnoreCase(typeFichier) || "CP".equalsIgnoreCase(typeFichier))) {
+
                     fichierRepository.supprimerLigneProgrammeParIdFichier((Long)idFichier.getValue());
                 }
 
             }
 
         } else {
-            Collection<StepExecution> stepExecutions = jobExecution.getStepExecutions();
             Iterator it = stepExecutions.iterator();
             JobParameter idFichier = null;
 
@@ -112,9 +101,6 @@ public class JobCompletionNotificationLigneProgrammeImportPenefListener extends 
             while (it.hasNext()) {
                 StepExecution myStepExecution = (StepExecution) it.next();
                 executionContext = myStepExecution.getExecutionContext();
-                JobParameter parameterFichierZipEnCours = (JobParameter) executionContext.get(FICHIER_ZIP_EN_COURS);
-                JobParameter parameterNomFichierOriginal = (JobParameter) executionContext.get(NOM_ORIGINAL_FICHIER_ZIP);
-                JobParameter outputDirectory = jobExecution.getJobParameters().getParameters().get(REPERTOIRE_DE_DESTINATION);
 
                 Set<String> errors = (Set<String>) executionContext.get("ligne-programme-errors");
                 if(myStepExecution.getStatus() == BatchStatus.STOPPED){
@@ -151,16 +137,15 @@ public class JobCompletionNotificationLigneProgrammeImportPenefListener extends 
                     }
 
                     fichierBatchService.rejeterFichier(idFile, errors);
-
                 }
-                utilFile.deplacerFichier(parameterFichierZipEnCours, parameterNomFichierOriginal, outputDirectory);
             }
+
 
             if(idFichier != null && ("CMS".equalsIgnoreCase(typeFichier) || "CP".equalsIgnoreCase(typeFichier))) {
                 fichierRepository.supprimerLigneProgrammeParIdFichier(idFile);
             }
         }
-
+        utilFile.deplacerFichierEtSuppressionFlag(jobExecution);
     }
 
 

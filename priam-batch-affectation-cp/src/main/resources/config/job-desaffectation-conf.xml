@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+    <!-- job de desaffectation -->
+
+    <job id="jobDesaffectation" xmlns="http://www.springframework.org/schema/batch">
+
+        <step id="deleteDonneesTableCMS" next="copyDonneesVersTableCMS">
+            <tasklet>
+                <chunk
+                        reader="ligneProgCMSReader"
+                        writer="ligneProgCMSWriter"
+                        processor="ligneCMSProcessor"
+                        commit-interval="${commit-interval}">
+                </chunk>
+            </tasklet>
+        </step>
+
+
+        <step id="copyDonneesVersTableCMS">
+            <tasklet>
+                <chunk
+                        reader="copyDonneesReader"
+                        writer="copyDonneesWriter"
+                        commit-interval="${commit-interval}">
+                </chunk>
+            </tasklet>
+        </step>
+
+        <listeners>
+            <listener ref="listenerJobDesaffectation"></listener>
+        </listeners>
+
+
+    </job>
+
+
+    <bean id="listenerJobDesaffectation" class="fr.sacem.priam.batch.affectation.cp.listener.JobDesaffectationListener">
+        <property name="fichierBatchService" ref="fichierBatchService"/>
+    </bean>
+
+
+    <bean id="ligneProgCMSReader"
+          class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="queryProvider" ref="queryLigneProgCMSReader"/>
+        <property name="pageSize" value="${commit-interval}"/>
+        <property name="rowMapper" ref="ligneProgrammeRowMapper"/>
+
+    </bean>
+
+    <bean id="ligneProgCMSWriter" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                   DELETE FROM PRIAM_LIGNE_PROGRAMME_CMS WHERE id = :id
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
+
+    <bean id="copyDonneesReader"
+          class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="queryProvider" ref="queryCopyDonneesReader"/>
+        <property name="pageSize" value="${commit-interval}"/>
+        <property name="rowMapper" ref="ligneProgrammeCmsAntSQLMapper"/>
+
+    </bean>
+
+    <bean id="copyDonneesWriter" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    INSERT INTO PRIAM_LIGNE_PROGRAMME_CMS (
+                            id_fichier,
+                            cdeCisac,
+                            cdeFamilTypUtil,
+                            numProg,
+                            cdeUtil,
+                            cdeTypUtil,
+                            cdeGreDif,
+                            cdeModDif,
+                            cdeTypIde12,
+                            ide12,
+                            durDif,
+                            nbrDif,
+                            mt,
+                            ctna,
+                            paramCoefHor,
+                            durDifCtna,
+                            cdeLng,
+                            indDoubSsTit,
+                            tax,
+                            typMt,
+                            cdeGreIde12Cmplx,
+                            cdeGreIde12,
+                            titreOriCmplx,
+                            titreAltPppalCmplx,
+                            titreOriOeuvPereCmplx,
+                            titreAltOeuvPereCmplx,
+                            titreOeuvre,
+                            cdePaysOriIso4NCmplx,
+                            realisateurCmplx,
+                            roleParticipant1,
+                            nomParticipant1,
+                            cdeTypUtilOri,
+                            cdeFamilTypUtilOri,
+                            libelleUtilisateur,
+                            utilisateur,
+                            date_insertion,
+                            ajout,
+                            selection,
+                            RION_N_ANT,
+                            mtEdit,
+                            nbrDifEdit
+                        )
+                        VALUES (
+                            :idFichier,
+                            :cdeCisac,
+                            :cdeFamilTypUtil,
+                            :numProg,
+                            :cdeUtil,
+                            :cdeTypUtil,
+                            :cdeGreDif,
+                            :cdeModDif,
+                            :cdeTypIde12,
+                            :ide12,
+                            :durDif,
+                            :nbrDif,
+                            :mt,
+                            :ctna,
+                            :paramCoefHor,
+                            :durDifCtna,
+                            :cdeLng,
+                            :indDoubSsTit,
+                            :tax,
+                            :typMt,
+                            :cdeGreIde12Cmplx,
+                            :cdeGreIde12,
+                            :titreOriCmplx,
+                            :titreAltPppalCmplx,
+                            :titreOriOeuvPereCmplx,
+                            :titreAltOeuvPereCmplx,
+                            :titreOeuvre,
+                            :cdePaysOriIso4NCmplx,
+                            :realisateurCmplx,
+                            :roleParticipant1,
+                            :nomParticipant1,
+                            :cdeTypUtilOri,
+                            :cdeFamilTypUtilOri,
+                            :libelleUtilisateur,
+                            :utilisateur,
+                            :date_insertion,
+                            :ajout,
+                            :selection,
+                            :rionAnt,
+                            :mt,
+                            :nbrDif
+                        )
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
+
+    <bean id="queryLigneProgCMSReader" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
+        <property name="databaseType" value="MySQL" />
+        <property name="selectClause" value="select l.* "/>
+        <property name="fromClause" value="FROM PRIAM_LIGNE_PROGRAMME_CMS l
+                                            INNER JOIN PRIAM_FICHIER f ON l.ID_FICHIER=f.ID
+                                            INNER JOIN PRIAM_PROGRAMME p ON p.NUMPROG=f.NUMPROG"/>
+        <property name="whereClause" value="WHERE p.NUMPROG='#{jobParameters[numProg]}'"/>
+
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sortKey" value="ide12"/>
+    </bean>
+
+
+    <bean id="queryCopyDonneesReader" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
+        <property name="databaseType" value="MySQL" />
+        <property name="selectClause" value="select l.* "/>
+        <property name="fromClause" value="FROM PRIAM_LIGNE_PROGRAMME_CMS_COPY l
+                                            INNER JOIN PRIAM_FICHIER f ON l.ID_FICHIER=f.ID
+                                            INNER JOIN PRIAM_PROGRAMME p ON p.NUMPROG=f.NUMPROG"/>
+        <property name="whereClause" value="WHERE p.NUMPROG='#{jobParameters[numProg]}'"/>
+
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sortKey" value="ide12"/>
+    </bean>
+
+    <bean id="journalBatchDao" class="fr.sacem.priam.batch.affectation.cp.dao.JournalBatchDao">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <bean id="ligneProgrammeCmsAntSQLMapper" class="fr.sacem.util.mapper.importPenef.PriamLigneProgrammeCmsAntSQLMapper"/>
+
+
+
+
+</beans>

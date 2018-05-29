@@ -57,7 +57,7 @@
                 </div>
 
                 <div class="col-sm-2">
-                  <label class="control-label pull-right">Rion statutaire</label>
+                  <label class="control-label pull-right">Rion cible</label>
                 </div>
                 <div class="col-sm-3">
                 <!--  <v-select :searchable="false" label="value" v-model="rionTheoriqueSelected" :options="rionTheoriqueOptions">
@@ -152,6 +152,7 @@
               :rowTooltip="afficherTootlip"
               noResultText="Aucun résultat."
               @cellClick="onCellClick"
+              @log-programme="onLogProgramme"
               @update-programme="onUpdateProgramme"
               @abondon-programme="onAbondonProgramme"
               @mise-en-repart="onMiseEnRepartition"
@@ -172,6 +173,13 @@
           </modifier-programme>
         </template>
     </ecran-modal>
+
+    <ecran-modal v-if="showPopupLog">
+      <template>
+        <journal-programme :numProg="selectedProgramme.numProg" slot="body" @cancel="closePopupLog"></journal-programme>
+      </template>
+    </ecran-modal>
+
 
     <modal v-if="showPopupAbandon">
       <label class="homer-prompt-q control-label" slot="body">
@@ -217,6 +225,7 @@
   import Grid from '../ui/Grid.vue';
   import EcranModal from '../ui/EcranModal.vue';
   import ModifierProgramme from './ModifierProgramme.vue';
+  import JournalProgramme from './JournalProgramme'
   import AjouterProgramme from './ajouterProgramme.vue';
   import vSelect from '../ui/Select.vue';
   import DatePicker from '../ui/DatePicker.vue';
@@ -245,6 +254,7 @@
             nomProgItems : [],
             isCollapsed : false,
             showEcranModal : false,
+            showPopupLog : false,
             showPopupAbandon : false,
             ecranAjouterProgramme : false,
             showEcranModalMisEnRepart : false,
@@ -348,7 +358,7 @@
                 },
                 {
                   id :  'rionTheorique',
-                  name :   'Rion statutaire',
+                  name :   'Rion cible',
                   sortable : true,
                   type : 'code-value',
                   cell : {
@@ -633,32 +643,35 @@
                     },
 
                     cellTemplate: function (cellValue) {
+                      var tempalteLog = '<span class="glyphicon glyphicon-list-alt" aria-hidden="true" style="padding-left: 0px;" title="Journal"></span>';
                       var tempalteTrash = '<span class="glyphicon glyphicon-trash" aria-hidden="true" style="padding-left: 0px;" title="Abandonner"></span>';
                       var tempalteUpdate = '<span class="glyphicon glyphicon-pencil" aria-hidden="true" style="padding-left: 0px;" title="Modifier"></span>';
                       var statusCode = cellValue.statut;
 
-                      var tempalte = [];
+                      var tempalte = [{}, {}, {}];
 
-                      if(cellValue.statutEligibilite === 'FIN_ELIGIBILITE' || cellValue.statutEligibilite === null) {
+
+
+                      if(cellValue.statutEligibilite === 'FIN_ELIGIBILITE' || cellValue.statutEligibilite === 'FIN_DESAFFECTATION' || cellValue.statutEligibilite === null) {
                         if(statusCode !== undefined && ('CREE' === statusCode || 'AFFECTE' === statusCode
                           || 'EN_COURS' === statusCode || 'VALIDE' === statusCode) ) {
                           if($this.isRightMDYPRG){
-                            tempalte.push({event : 'update-programme', template : tempalteUpdate});
+                            tempalte[0] = {event : 'update-programme', template : tempalteUpdate};
                           }
                         }
 
                         if(statusCode !== undefined && 'CREE' === statusCode) {
                           if($this.isRightABDPRG){
-                            tempalte.push({event : 'abondon-programme', template : tempalteTrash});
+                            tempalte[1] = {event : 'abondon-programme', template : tempalteTrash};
                           }
                         }
 
+                        if($this.hasRight('VIJREV')) {
+                          tempalte[2] = {event : 'log-programme', template : tempalteLog};
+                        }
                       }
 
 
-                      if(tempalte.length == 1) {
-                        tempalte.push({event : 'no', template : '<span aria-hidden="true" style="padding-left: 0px;"></span>'});
-                      }
 
 
                       return tempalte;
@@ -897,6 +910,15 @@
             this.showEcranModal = false;
           },
 
+          onLogProgramme(row, column){
+            this.selectedProgramme = row;
+            this.showPopupLog = true;
+          },
+
+          closePopupLog(){
+            this.showPopupLog = false;
+          },
+
           onUpdateProgramme(row, column) {
              this.selectedProgramme = row;
 
@@ -1103,7 +1125,8 @@
       },
 
       components : {
-          priamGrid : Grid,
+        JournalProgramme,
+        priamGrid : Grid,
           ecranModal : EcranModal,
           modifierProgramme : ModifierProgramme,
           ajouterProgramme : AjouterProgramme,

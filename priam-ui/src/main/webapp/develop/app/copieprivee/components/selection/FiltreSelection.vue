@@ -60,7 +60,7 @@
               </div>
 
               <div class="form-group col-md-4">
-                <label class="col-md-8 control-label blueText text-right">Ajout</label>
+                <label class="col-md-8 control-label blueText text-right">Etat</label>
                 <div class="col-md-16">
                   <v-select :searchable="false" v-model="filter.ajout" :options="ajoutOptions"></v-select>
                 </div>
@@ -135,7 +135,8 @@
         return [
             'Tous',
             'Manuel',
-            'Automatique'
+            'Automatique',
+            'Corrigé'
         ];
       },
       selectionOptions() {
@@ -183,22 +184,23 @@
               cdeTypIde12 : oeuvreToAdd.cdeTypeIde12,
               titreOeuvre : oeuvreToAdd.titre,
               durDif : oeuvreToAdd.duree,
+              durDifEdit : oeuvreToAdd.duree,
               nbrDif : oeuvreToAdd.quantite,
+              nbrDifEdit : oeuvreToAdd.quantite,
               cdeUtil : oeuvreToAdd.utilisateur,
               roleParticipant1 : oeuvreToAdd.roleParticipant1,
               nomParticipant1 : oeuvreToAdd.nomParticipant1,
-              libelleUtilisateur : oeuvreToAdd.libelleUtilisateur
+              libelleUtilisateur : oeuvreToAdd.libelleUtilisateur,
+              selectionEnCours : true,
+              selection : true
           }
           this.resource.ajouterOeuvreManuel(lingeProgramme)
             .then(response => {
               return response.json();
             })
             .then(data => {
-              //
-              console.log('ok ajout');
-              this.rechercher();
-              this.$store.dispatch('getUtilisateursByProgramme', this.$route.params.numProg);
 
+              this.rechercher();
             })
             .catch(error => {
 

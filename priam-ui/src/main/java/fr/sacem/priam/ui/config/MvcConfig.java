@@ -67,11 +67,11 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
 
         webappMode = Environment.getParameter("webapp.mode");
 
-        if("dev".equalsIgnoreCase(webappMode)) {
+        /*if("dev".equalsIgnoreCase(webappMode)) {
             registry.addMapping("/app/rest/**")
                     .allowedMethods("PUT", "DELETE", "GET", "POST", "OPTIONS")
                     .allowedOrigins(vuejsDevServerUrl);
-        }
+        }*/
 
     }
 

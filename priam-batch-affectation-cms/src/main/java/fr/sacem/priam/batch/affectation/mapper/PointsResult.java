@@ -1,7 +1,5 @@
 package fr.sacem.priam.batch.affectation.mapper;
 
-import java.awt.*;
-
 /**
  * Created by fandis on 15/12/2017.
  */

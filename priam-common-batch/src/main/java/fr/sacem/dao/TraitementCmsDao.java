@@ -1,13 +1,14 @@
 package fr.sacem.dao;
 
+import fr.sacem.priam.common.util.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 
@@ -23,6 +24,8 @@ public class TraitementCmsDao {
 
     }
 
+
+    @Transactional
     public long createTraitement(String numProg, Long nbOeuvres) {
         String sql =  "INSERT INTO PRIAM_TRAITEMENT_ELIGIBILITE_CMS (DATE_DEBUT_TMT, NUMPROG, STATUT_ELIGIBILITE, NB_OEUVRES_EXTRACT)" +
                 "  VALUES (?, ?, ?, ?)";
@@ -43,14 +46,16 @@ public class TraitementCmsDao {
         return keyHolder.getKey().longValue();
     }
 
+
+    @Transactional
     public void majTraitment(Long idTraitementCMS, Long nbOeuvresCatalogue,
-                             Long oeuvresRetenues, Double sommePoints) {
+                             Long oeuvresRetenues, Double sommePoints, String statutEligibilite) {
         String sql =  "UPDATE PRIAM_TRAITEMENT_ELIGIBILITE_CMS SET STATUT_ELIGIBILITE = ?, DATE_FIN_TMT = ?, " +
                 "NB_OEUVRES_CATALOGUE = ?, NB_OEUVRES_RETENUES = ?, SOMME_POINTS=? " +
                 " WHERE ID = ?";
         java.util.Date now = new java.util.Date();
         jdbcTemplate.update(sql, stmt -> {
-            stmt.setString(1, "FIN_ELIGIBILITE");
+            stmt.setString(1, statutEligibilite);
             stmt.setTimestamp(2, new java.sql.Timestamp(now.getTime()));
             stmt.setLong(3, nbOeuvresCatalogue);
             stmt.setLong(4, oeuvresRetenues);
@@ -59,11 +64,26 @@ public class TraitementCmsDao {
         });
     }
 
-    public void viderCatalogueOctav() {
+
+    @Transactional
+    public void viderCatalogueOctav(String type_cms) {
         LOG.info("=== Suppression du contenu de la table PRIAM_CATALOGUE_OCTAV ====");
         //TODO HABIB : Ajouter DELETE FROM WHERE TYPE_CMS=FR
-        String sql =  "TRUNCATE PRIAM_CATALOGUE_OCTAV";
+        /*String sql =  "TRUNCATE PRIAM_CATALOGUE_OCTAV";*/
+        String sql = "";
+        if(type_cms.equals(FileUtils.CATALOGUE_OCTAV_TYPE_CMS_FR)){
+            sql = "DELETE FROM PRIAM_CATALOGUE_OCTAV WHERE TYPE_CMS="+ "'" + type_cms + "'";
+        } else {
+            sql = "DELETE FROM PRIAM_CATALOGUE_OCTAV WHERE TYPE_CMS=" + "'" + type_cms + "'";
+        }
+        jdbcTemplate.update(sql);
+    }
 
+
+    @Transactional
+    public void viderCatalogueOctavAnt(String numProg){
+        LOG.info("=== Suppression du contenu de la table PRIAM_CATALOGUE_OCTAV ====");
+        String sql = "DELETE FROM PRIAM_CATALOGUE_OCTAV_ANT WHERE NUMPROG="+ "'" + numProg + "'";
         jdbcTemplate.update(sql);
     }
 

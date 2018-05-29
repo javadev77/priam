@@ -1,6 +1,5 @@
 package fr.sacem.Batch.util;
 
-import fr.sacem.domain.Fichier;
 import fr.sacem.util.UtilFile;
 import org.junit.Assert;
 import org.junit.Test;
@@ -30,18 +29,5 @@ public class UtilFileTest {
         InputStream targetStream = new FileInputStream(file);
         Long nombreDeLignes = utilFile.nombreDeLignes(targetStream);
         Assert.assertEquals(nombreDeLignes.longValue(), 10);
-    }
-
-    @Test
-    public void chargerLesDonneesTest() throws IOException {
-        UtilFile utilFile = new UtilFile();
-        File file = new File(SINGLE_FILE);
-        InputStream targetStream = new FileInputStream(file);
-        Fichier fichier = utilFile.chargerLesDonnees(targetStream, NOM_FICHIER_CSV);
-        Assert.assertEquals(fichier.getNom(), NOM_FICHIER_CSV);
-        Assert.assertEquals(fichier.getFamille(), "COPIEPRIV");
-        Assert.assertEquals(fichier.getTypeUtilisation(), "CPRIVSONRD");
-        Assert.assertNotNull(fichier.getDateDebutChargt());
-
     }
 }

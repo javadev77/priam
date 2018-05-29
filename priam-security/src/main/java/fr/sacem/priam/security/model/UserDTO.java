@@ -24,12 +24,12 @@ public class UserDTO implements Serializable{
 
       @Override
       public String getDisplayName() {
-        return "Guest";
+        return "GUEST";
       }
 
       @Override
       public String getUserId() {
-        return "guest";
+        return "GUEST";
       }
 
       @Override
@@ -46,6 +46,7 @@ public class UserDTO implements Serializable{
 
     public static final String ROLE_GEST_CP = "Gest_CP";
     public static final String ROLE_GEST_CMS = "Gest_CMS";
+    public static final String ROLE_ADM = "ADM";
 
     private String userId;
 
@@ -98,25 +99,22 @@ public class UserDTO implements Serializable{
       List<String> roleList = getRoleList();
       if(roleList != null && !roleList.isEmpty()) {
         for(String role : roleList) {
-          switch (role) {
-            case ROLE_GEST_CP:
+          if(ROLE_GEST_CP.equals(role) || ROLE_ADM.equals(role)) {
               codes.add(COPIE_PRIVEE_SONORE_PHONO.getCode());
               codes.add(COPIE_PRIVEE_SONORE_RADIO.getCode());
-              break;
-            case ROLE_GEST_CMS:
+          }
+          if(ROLE_GEST_CMS.equals(role) || ROLE_ADM.equals(role))
               codes.add(SONOFRA.getCode());
               codes.add(SONOANT.getCode());
-              break;
           }
-        }
       }
 
-        if(codes.isEmpty()) {
-            codes.add(COPIE_PRIVEE_SONORE_PHONO.getCode());
-            codes.add(COPIE_PRIVEE_SONORE_RADIO.getCode());
-            codes.add(SONOFRA.getCode());
-            codes.add(SONOANT.getCode());
-        }
+      if(codes.isEmpty()) {
+          codes.add(COPIE_PRIVEE_SONORE_PHONO.getCode());
+          codes.add(COPIE_PRIVEE_SONORE_RADIO.getCode());
+          codes.add(SONOFRA.getCode());
+          codes.add(SONOANT.getCode());
+      }
 
 
         return codes;
@@ -127,14 +125,11 @@ public class UserDTO implements Serializable{
     List<String> roleList = getRoleList();
     if(roleList != null && !roleList.isEmpty()) {
       for(String role : roleList) {
-        switch (role) {
-          case ROLE_GEST_CP :
-            codes.add(COPIE_PRIVEE.getCode());
-            break;
-          case ROLE_GEST_CMS :
-            codes.add(CMS.getCode());
-            break;
-        }
+          if(ROLE_GEST_CP.equals(role) || ROLE_ADM.equals(role)) {
+              codes.add(COPIE_PRIVEE.getCode());
+          }
+          if(ROLE_GEST_CMS.equals(role) || ROLE_ADM.equals(role))
+              codes.add(CMS.getCode());
       }
     }
 

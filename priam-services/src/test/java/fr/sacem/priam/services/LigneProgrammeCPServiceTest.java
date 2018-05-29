@@ -1,9 +1,13 @@
 package fr.sacem.priam.services;
 
+import com.google.common.collect.Iterables;
 import fr.sacem.priam.model.dao.JpaConfigurationTest;
+import fr.sacem.priam.model.dao.jpa.cp.LigneProgrammeCPDao;
+import fr.sacem.priam.model.domain.cp.LigneProgrammeCP;
 import fr.sacem.priam.model.domain.criteria.LigneProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.SelectionDto;
+import fr.sacem.priam.security.model.UserDTO;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -31,12 +35,16 @@ public class LigneProgrammeCPServiceTest {
 
 
     public static final String CDE_UTIL = "";
+
     @Autowired
-    LigneProgrammeCPServiceImpl ligneProgrammeService;
+    LigneProgrammeCPServiceImpl ligneProgrammeCPService;
+
+    @Autowired
+    LigneProgrammeCPDao ligneProgrammeCPDao;
 
     private static final String NUM_PROG = "170001";
     private static final Long INITIAL_IDE12 = 772L;
-    private static final Long IDE12 = 6829877211L;
+    private static final String IDE12 = "6829877211";
     private static final String INITIAL_TITRES = "Tes";
 
     private static final Pageable pageable = new Pageable() {
@@ -88,7 +96,7 @@ public class LigneProgrammeCPServiceTest {
 
     @Test
     public void getListIDE12ByProgramme() throws Exception {
-        List<KeyValueDto> listIDE12ByProgramme = ligneProgrammeService.getListIDE12ByProgramme(INITIAL_IDE12, NUM_PROG);
+        List<KeyValueDto> listIDE12ByProgramme = ligneProgrammeCPService.getListIDE12ByProgramme(INITIAL_IDE12, NUM_PROG);
         assertThat(listIDE12ByProgramme).isNotNull().isNotEmpty();
 
         assertThat(listIDE12ByProgramme.stream().anyMatch(keyValue -> keyValue.getCode().toString().contains(INITIAL_IDE12.toString()))).isEqualTo(true);
@@ -96,7 +104,7 @@ public class LigneProgrammeCPServiceTest {
 
     @Test
     public void getTitresByProgramme() throws Exception {
-        List<KeyValueDto> titresByProgramme = ligneProgrammeService.getTitresByProgramme(INITIAL_TITRES, NUM_PROG);
+        List<KeyValueDto> titresByProgramme = ligneProgrammeCPService.getTitresByProgramme(INITIAL_TITRES, NUM_PROG);
         assertThat(titresByProgramme).isNotNull().isNotEmpty();
 
         assertThat(titresByProgramme.stream().anyMatch(keyValue -> keyValue.getValue().toString().contains(INITIAL_TITRES))).isEqualTo(true);
@@ -104,7 +112,7 @@ public class LigneProgrammeCPServiceTest {
 
     @Test
     public void getUtilisateursByProgramme() throws Exception {
-        List<String> utilisateursByProgramme = ligneProgrammeService.getUtilisateursByProgramme(NUM_PROG);
+        List<String> utilisateursByProgramme = ligneProgrammeCPService.getUtilisateursByProgramme(NUM_PROG);
         assertThat(utilisateursByProgramme).isNotNull().isNotEmpty();
     }
 
@@ -112,54 +120,109 @@ public class LigneProgrammeCPServiceTest {
     public void findLigneProgrammeByCriteria() throws Exception {
         LigneProgrammeCriteria criteria = new LigneProgrammeCriteria();
         criteria.setNumProg(NUM_PROG);
-        criteria.setIde12(IDE12);
-        Page<SelectionDto> ligneProgrammeByCriteria = ligneProgrammeService.findLigneProgrammeByCriteria(criteria, pageable);
+        criteria.setIde12(Long.valueOf(IDE12));
+        Page<SelectionDto> ligneProgrammeByCriteria = ligneProgrammeCPService.findLigneProgrammeByCriteria(criteria, pageable);
         assertThat(ligneProgrammeByCriteria).isNotNull();
     }
 
-    /***
-     *
-     * org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "UPDATE   PRIAM_LIGNE_PROGRAMME P INNER[*] JOIN   PRIAM_FICHIER F ON P.ID_FICHIER = F.ID SET   P.SELECTION=? WHERE   F.NUMPROG = ? ";
-     * @throws Exception
-     */
+
     @Test
     @Transactional
     public void selectLigneProgramme() throws Exception {
-        boolean flag = true;
-        try{
-            Set<Map<String, String>> listIDE12 = new HashSet<>();
+        Set<Map<String, String>> listIDE12 = new HashSet<>();
 
-            Map<String, String> list = new HashMap<>();
-            list.put("ide12", IDE12+"");
-            list.put("cdeUtil", CDE_UTIL);
+        Map<String, String> list = new HashMap<>();
+        list.put("ide12", IDE12);
+        list.put("libAbrgUtil", CDE_UTIL);
+        listIDE12.add(list);
 
-            ligneProgrammeService.selectLigneProgramme(NUM_PROG, listIDE12);
-        } catch (Exception e ) {
-            flag = false;
-        }
+        ligneProgrammeCPService.selectLigneProgramme(NUM_PROG, listIDE12);
 
-        assertThat(flag).isEqualTo(true);
+        List<LigneProgrammeCP> ligneProgrammeCP = ligneProgrammeCPDao.findLigneProgrammeByNumProg(NUM_PROG);
+        Iterable<LigneProgrammeCP> selectedLigneCP = Iterables.filter(ligneProgrammeCP, lp -> lp.isSelectionEnCours());
+
+        assertThat(Iterables.size(selectedLigneCP)).isEqualTo(3);
     }
 
 
 
-    /***
-     * impossible d'executer cette requete sur la base de test (h2)
-     * org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "UPDATE   PRIAM_LIGNE_PROGRAMME P INNER[*] JOIN   PRIAM_FICHIER F ON P.ID_FICHIER = F.ID SET   P.SELECTION=? WHERE   F.NUMPROG = ? ";
-     * @throws Exception
-     */
+
     @Test
     @Transactional
     @Ignore
-    public void supprimerLigneProgramme() throws Exception {
-        boolean flag = true;
-        try{
-            ligneProgrammeService.supprimerLigneProgramme(NUM_PROG, IDE12, new SelectionDto());
-        } catch (Exception e ) {
-            flag = false;
-        }
+    public void testSupprimerLigneProgramme() throws Exception {
+        LigneProgrammeCP oeuvreToDelete = new LigneProgrammeCP();
+        oeuvreToDelete.setNumProg(NUM_PROG);
+        oeuvreToDelete.setIde12(6547891L);
+        oeuvreToDelete.setCdeUtil("CDE-TEST");
 
-        assertThat(flag).isEqualTo(false);
+        UserDTO userDTO = new UserDTO();
+
+        SelectionDto selectedLigneProgramme = new SelectionDto();
+        selectedLigneProgramme.setCdeUtil(oeuvreToDelete.getCdeUtil());
+
+
+        ligneProgrammeCPService.ajouterOeuvreManuel(oeuvreToDelete, userDTO);
+
+        ligneProgrammeCPService.supprimerLigneProgramme(NUM_PROG, oeuvreToDelete.getIde12(), selectedLigneProgramme);
+
+        LigneProgrammeCP ligneProgrammeCP = ligneProgrammeCPDao.findByIde12AndCdeUtil(NUM_PROG, oeuvreToDelete.getIde12(), selectedLigneProgramme.getCdeUtil());
+
+        assertThat(ligneProgrammeCP).isNull();
     }
 
+
+
+    @Test
+    @Transactional
+    public void testEnregistrerEdition() throws Exception {
+        ligneProgrammeCPDao.updateSelectionTemporaire(NUM_PROG, true);
+        List<LigneProgrammeCP> before = ligneProgrammeCPDao.findLigneProgrammeByNumProg(NUM_PROG);
+        Iterable<LigneProgrammeCP> filtredBefore = Iterables.filter(before, ligneProgrammeCP -> ligneProgrammeCP.isSelectionEnCours());
+
+        ligneProgrammeCPService.enregistrerEdition(NUM_PROG);
+
+        List<LigneProgrammeCP> after = ligneProgrammeCPDao.findLigneProgrammeByNumProg(NUM_PROG);
+        Iterable<LigneProgrammeCP> filtredAfter = Iterables.filter(after, ligneProgrammeCP -> ligneProgrammeCP.isSelection());
+
+        assertThat(Iterables.size(filtredAfter)).isEqualTo(Iterables.size(filtredBefore));
+    }
+
+    @Test
+    @Transactional
+    public void testAnnulerEdition() throws Exception {
+
+        List<LigneProgrammeCP> before = ligneProgrammeCPDao.findLigneProgrammeByNumProg(NUM_PROG);
+        Iterable<LigneProgrammeCP> filtredBefore = Iterables.filter(before, ligneProgrammeCP -> ligneProgrammeCP.isSelectionEnCours());
+
+        ligneProgrammeCPDao.updateSelection(NUM_PROG, true);
+
+
+      //  ligneProgrammeCPService.annulerEdition(NUM_PROG);
+
+        List<LigneProgrammeCP> after = ligneProgrammeCPDao.findLigneProgrammeByNumProg(NUM_PROG);
+        Iterable<LigneProgrammeCP> filtredAfter = Iterables.filter(after, ligneProgrammeCP -> ligneProgrammeCP.isSelectionEnCours());
+
+        assertThat(Iterables.size(filtredAfter)).isEqualTo(Iterables.size(filtredBefore));
+    }
+
+    @Test
+    @Transactional
+    public void testDeselectLignesProgrammes() throws Exception {
+        Set<Map<String, String>> listIDE12 = new HashSet<>();
+
+        Map<String, String> list = new HashMap<>();
+        list.put("ide12", IDE12);
+        list.put("libAbrgUtil", "0002");
+        list.put("durDif", "30");
+        listIDE12.add(list);
+
+        ligneProgrammeCPService.deselectLigneProgramme(NUM_PROG, listIDE12);
+
+        List<LigneProgrammeCP> ligneProgrammeCP = ligneProgrammeCPDao.findLigneProgrammeByNumProg(NUM_PROG);
+        Iterable<LigneProgrammeCP> unselectedLigneCP = Iterables.filter(ligneProgrammeCP, lp -> !lp.isSelectionEnCours());
+
+        assertThat(Iterables.size(unselectedLigneCP)).isEqualTo(1);
+        assertThat(unselectedLigneCP).extracting("ide12").contains(Long.valueOf(IDE12));
+   }
 }

@@ -125,7 +125,8 @@
         return [
             'Tous',
             'Manuel',
-            'Automatique'
+            'Automatique',
+            'Corrigé'
         ];
       },
       selectionOptions() {
@@ -160,17 +161,6 @@
         this.retablir();
       },
 
-      getUtilisateursByProgramme() {
-
-        this.resource.getUtilisateursByProgramme()
-          .then(response => {
-            return response.json();
-          })
-          .then(data => {
-            this.utilisateursOptions = data;
-          });
-      },
-
       ajouterOeuvre() {
         debugger;
         this.showMipsa = true;
@@ -184,13 +174,14 @@
               ide12 : oeuvreToAdd.ide12,
               cdeTypIde12 : oeuvreToAdd.cdeTypeIde12,
               titreOeuvre : oeuvreToAdd.titre,
-              // durDif : oeuvreToAdd.duree,
-            // nbrDif : oeuvreToAdd.quantite,
-            // cdeUtil : oeuvreToAdd.utilisateur,
+              nbrDif : oeuvreToAdd.quantite,
+              nbrDifEdit : oeuvreToAdd.quantite,
               mt: oeuvreToAdd.points,
+              mtEdit: oeuvreToAdd.points,
               roleParticipant1 : oeuvreToAdd.roleParticipant1,
-              nomParticipant1 : oeuvreToAdd.nomParticipant1
-              /*libelleUtilisateur : oeuvreToAdd.libelleUtilisateur*/
+              nomParticipant1 : oeuvreToAdd.nomParticipant1,
+              selectionEnCours : true,
+              selection : true
           }
           this.resource.ajouterOeuvreManuel(ligneProgramme)
             .then(response => {
@@ -220,12 +211,10 @@
 
     created() {
       const customActions = {
-        getUtilisateursByProgramme : {method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_CMS + 'app/rest/ligneProgramme/utilisateurs?programme='+this.$route.params.numProg},
         ajouterOeuvreManuel : {method : 'POST', url : process.env.CONTEXT_ROOT_PRIAM_CMS + 'app/rest/ligneProgramme/selection/ajoutOeuvre'}
       }
-      this.resource= this.$resource('', {}, customActions);
 
-      this.getUtilisateursByProgramme();
+      this.resource= this.$resource('', {}, customActions);
     }
   }
 </script>
