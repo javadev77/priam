@@ -14,7 +14,10 @@ Vue.use(VeeValidate, {
         'rion.theorique' : 'Rion statuaire',
         'typeUtilisation' : "Type d'utilisation",
         'dateDebutProgramme' : 'Date de début',
-        'dateFinProgramme' : 'Date de fin'
+        'dateFinProgramme' : 'Date de fin',
+        'periodeEntree' : 'période d\'entrée',
+        'periodeRenouvellement' : 'période de renouvellement',
+        'periodeSortie' : 'période de sortie'
       },
 
       messages: {
@@ -28,3 +31,20 @@ Vue.use(VeeValidate, {
   }
 });
 Validator.installDateTimeValidators(moment);
+
+Validator.extend('periodeRule', {
+  getMessage: field => 'La date de début de la ' + field + ' doit être antérieure à la date de fin.',
+  validate: (value, format) => {
+    console.log("The periodRule value = " + value);
+    if(value.dateDebut == null || value.dateFin==null) {
+      return true;
+    }
+    const dateDebut = moment(value.dateDebut, format, true);
+    const dateFin = moment(value.dateFin, format, true);
+    // if either is not valid.
+    if (! dateDebut.isValid() || ! dateFin.isValid()) {
+      return false;
+    }
+    return dateDebut.isBefore(dateFin) || (dateDebut.isSame(dateFin));
+  }
+});

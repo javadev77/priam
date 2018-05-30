@@ -1,6 +1,5 @@
 package fr.sacem.priam.model.domain.catcms;
 
-
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import fr.sacem.priam.model.util.SimpleDateSerializer;
 
@@ -9,7 +8,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name = "PRIAM_CATCMS_RDO")
+@Table(name = "PRIAM_CATCMS_CATALOGUE")
 public class CatalogueRdo implements Serializable {
 
     @Id
@@ -30,7 +29,7 @@ public class CatalogueRdo implements Serializable {
     private String typUtilGen;
 
     @Column(name = "DATE_ENTREE")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     @JsonSerialize(using = SimpleDateSerializer.class)
     private Date dateEntree;
 
@@ -38,12 +37,12 @@ public class CatalogueRdo implements Serializable {
     private String typeInscription;
 
     @Column(name = "DATE_RENOUVELLEMENT")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     @JsonSerialize(using = SimpleDateSerializer.class)
     private Date dateRenouvellement;
 
     @Column(name = "DATE_SORTIE")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     @JsonSerialize(using = SimpleDateSerializer.class)
     private Date dateSortie;
 
