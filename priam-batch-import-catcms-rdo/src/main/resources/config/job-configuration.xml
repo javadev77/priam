@@ -2,8 +2,17 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
        xsi:schemaLocation="http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch.xsd
-		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/jdbc
+        http://www.springframework.org/schema/jdbc/spring-jdbc-3.1.xsd">
+
+
+
+    <jdbc:initialize-database data-source="dataSource">
+        <jdbc:script location="classpath:config/initial-query.sql" />
+    </jdbc:initialize-database>
 
     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="searchSystemEnvironment" value="true"/>
@@ -13,12 +22,22 @@
     </bean>
 
     <job id="jobImportCatalogueCMSRDO" xmlns="http://www.springframework.org/schema/batch">
-        <step id="csvArchiveFlatFileReaderStep">
+        <step id="csvArchiveFlatFileReaderStep" next="copyDataToCatCmsCatalogueStep">
             <tasklet>
                 <chunk
                         reader="readerPriamCatCmsCsv"
-                        writer="writerPriamCatCmsCsv"
+                        writer="writerPriamCatRdo"
+                        commit-interval="2000">
+                </chunk>
+            </tasklet>
+        </step>
+
+        <step id="copyDataToCatCmsCatalogueStep">
+            <tasklet>
+                <chunk
+                        reader="readerFromTableRdo"
                         processor="priamCatCmsProcessor"
+                        writer="writerToTableCatalogueCms"
                         commit-interval="2000">
                 </chunk>
             </tasklet>
@@ -35,6 +54,26 @@
         <property name="strict" value="false"/>
         <property name="utilFile" ref="utilFile"/>
     </bean>
+
+
+    <bean id="readerFromTableRdo"
+          class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="queryProvider" ref="queryProvider"/>
+        <property name="pageSize" value="${commit-interval}"/>
+        <property name="rowMapper" ref="catalogueRdoRowMapper"/>
+    </bean>
+
+
+    <bean id="queryProvider" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
+        <property name="selectClause" value="SELECT IDE12,TYPE_CMS,TITRE,TYP_UTIL_GEN,DATE_CATAL,ROLE,PARTICIPANT,POURCENTAGE_DP"/>
+        <property name="fromClause" value="FROM PRIAM_CATCMS_RDO"/>
+        <property name="databaseType" value="MySQL" />
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sortKey" value="IDE12"/>
+    </bean>
+
+    <bean id="catalogueRdoRowMapper" class="fr.sacem.priam.batch.catcms.rdo.mapper.CatalogueRdoRowMapper"></bean>
 
     <bean id="flatFileItemReader"
           class="fr.sacem.priam.batch.catcms.rdo.util.mapper.CsvPriamFileItemReader">
@@ -63,7 +102,7 @@
         </property>
     </bean>
 
-    <bean id="writerPriamCatCmsCsv" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+    <bean id="writerPriamCatRdo" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
         <property name="dataSource" ref="dataSource"/>
         <property name="assertUpdates" value="false"/>
         <property name="sql">
@@ -74,9 +113,42 @@
                             IDE12,
                             TITRE,
                             TYP_UTIL_GEN,
+                            DATE_CATAL,
+                            ROLE,
+                            PARTICIPANT,
+                            POURCENTAGE_DP
+                        )
+                        VALUES (
+                            :typeCMS,
+                            :ide12,
+                            :titre,
+                            :typUtilGen,
+                            :dateCatal,
+                            :role,
+                            :participant,
+                            :pourcentageDP
+                        )
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
+
+    <bean id="writerToTableCatalogueCms" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    INSERT INTO PRIAM_CATCMS_CATALOGUE (
+                            TYPE_CMS,
+                            IDE12,
+                            TITRE,
+                            TYP_UTIL_GEN,
                             DATE_ENTREE,
                             TYPE_INSCRIPTION,
-                            POURCENTAGE_DP,
                             DATE_SORTIE,
                             TYPE_SORTIE,
                             ROLE,
@@ -87,9 +159,8 @@
                             :ide12,
                             :titre,
                             :typUtilGen,
-                            :dateCatal,
-                            'Automatique',
-                            :pourcentageDP,
+                            :dateEntree,
+                            :typeInscription,
                             :dateSortie,
                             :typeSortie,
                             :role,
@@ -135,7 +206,7 @@
     <bean id="fichierBatchService" class="fr.sacem.priam.batch.common.service.importPenef.FichierBatchServiceImpl">
         <constructor-arg ref="fichierRepository"/>
     </bean>
-    <bean id="fichierRepository" class="fr.sacem.priam.batch.catcms.rdo.dao.FichierCatcmsRepositoryImpl">
+    <bean id="fichierRepository" class="fr.sacem.priam.batch.common.dao.FichierCatcmsRepositoryImpl">
         <property name="dataSource" ref="dataSource"/>
         <property name="nomTableFichier" value="${nom.table.fichier}"/>
     </bean>

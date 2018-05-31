@@ -16,12 +16,10 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.io.*;
-import java.nio.channels.FileChannel;
-import java.nio.channels.FileLock;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.ZipEntry;
@@ -73,7 +71,7 @@ public class JobImportCatalogueCMSRDOTest {
     @Test
     public void launchJobTest()throws Exception{
 
-        Map<String, JobParameter> jobParametersMap = new HashMap<String, JobParameter>();
+        Map<String, JobParameter> jobParametersMap = new HashMap<>();
         jobParametersMap.put("input.archives", new JobParameter(inputDirectory));
         jobParametersMap.put("output.archives", new JobParameter(outputDirectory));
         JobParameters jobParameters = new JobParameters(jobParametersMap);

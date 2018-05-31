@@ -66,52 +66,7 @@
               self.$emit('input', null);
             }
         });
-        /*var inputValidate = function() {
-          var regExp = new RegExp(/^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/);
-          var validDate = regExp.test(element.val());
-          if(validDate){
-            let date = self.stringToDate(element.val());
-            var newStringVal = self.dateToString(date);
 
-            element.datepicker('setDate', date);
-            self.$emit('input', date);
-
-            if(element.val() !== newStringVal){
-              element.val( newStringVal );
-            }
-          }else {
-            element.val('');
-          }
-        } ;
-
-        element.bind('keypress', function(e){
-          var code = e.which||e.charCode||e.keyCode ;
-          // backspace, suppr, arrow left and right, enter, tab, F8, start, end
-          var special = [8,46,37,39,13,9,119,36,35] ;
-          if ( special.indexOf(code) > -1  ) {
-            return ;
-          }
-
-          var inputchar = '0123456789/:';
-          var char = String.fromCharCode(code) ;
-          if ( inputchar.indexOf(char) < 0 ) {
-            e.preventDefault() ;
-          }
-        });
-
-        element.on('keydown', function (e) {
-          if (e.which === 13) {
-            inputValidate() ;
-          }
-        });
-        element.on('blur', inputValidate);*/
-
-//        element.on('blur', function () {
-//          console.log('blur event fired !!!');
-//          var date = element.val();
-//          var val = self.stringToDate(date);
-//          self.$emit('input', val);
-//        });
 
       },
 

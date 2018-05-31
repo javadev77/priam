@@ -138,7 +138,7 @@
     <bean id="fichierBatchService" class="fr.sacem.priam.batch.common.service.importPenef.FichierBatchServiceImpl">
         <constructor-arg ref="fichierRepository"/>
     </bean>
-    <bean id="fichierRepository" class="fr.sacem.priam.batch.catcms.rdo.dao.FichierCatcmsRepositoryImpl">
+    <bean id="fichierRepository" class="fr.sacem.priam.batch.common.dao.FichierCatcmsRepositoryImpl">
         <property name="dataSource" ref="dataSource"/>
         <property name="nomTableFichier" value="${nom.table.fichier}"/>
     </bean>

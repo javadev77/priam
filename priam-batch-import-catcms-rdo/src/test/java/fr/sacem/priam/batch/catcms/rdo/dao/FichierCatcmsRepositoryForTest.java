@@ -1,12 +1,8 @@
 package fr.sacem.priam.batch.catcms.rdo.dao;
 
-import fr.sacem.priam.batch.common.domain.Fichier;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 public class FichierCatcmsRepositoryForTest {
 

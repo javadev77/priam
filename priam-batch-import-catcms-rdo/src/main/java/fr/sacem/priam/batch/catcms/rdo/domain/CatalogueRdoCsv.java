@@ -1,31 +1,18 @@
 package fr.sacem.priam.batch.catcms.rdo.domain;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 public class CatalogueRdoCsv {
-    private Long id;
     private String typeCMS;
     private Long ide12;
     private String titre;
     private String typUtilGen;
     private LocalDate dateCatal;
-    private String typeInscription;
-    private Date dateSortie;
-    private String typeSortie;
     private Short pourcentageDP;
     private String role;
     private String participant;
     private Integer lineNumber;
     private Exception exception;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getTypeCMS() {
         return typeCMS;
@@ -97,29 +84,6 @@ public class CatalogueRdoCsv {
 
     public void setException(Exception exception) { this.exception = exception; }
 
-    public String getTypeInscription() {
-        return typeInscription;
-    }
-
-    public void setTypeInscription(String typeInscription) {
-        this.typeInscription = typeInscription;
-    }
-
-    public Date getDateSortie() {
-        return dateSortie;
-    }
-
-    public void setDateSortie(Date dateSortie) {
-        this.dateSortie = dateSortie;
-    }
-
-    public String getTypeSortie() {
-        return typeSortie;
-    }
-
-    public void setTypeSortie(String typeSortie) {
-        this.typeSortie = typeSortie;
-    }
 
     public CatalogueRdoCsv() {
     }
