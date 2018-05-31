@@ -38,8 +38,9 @@
           }).mask("99/99/9999", {
               completed : function() {
                 var date = this.val();
-                element.datepicker('setDate', date);
+
                 var val = self.stringToDate(date);
+                element.datepicker('setDate', val);
                 self.$emit('input', val);
               }
 
@@ -110,6 +111,7 @@
                       date = moment.utc([parts[2], parts[1] - 1, parts[0], 23, 59, 59, 999]).toDate();
                   }
 
+                  debugger;
                   return date;
 
               }
@@ -117,12 +119,13 @@
           },
 
         dateToString(date) {
+          debugger;
              if(date !== null) {
                var m = moment.utc(date);
                return m.format("DD/MM/YYYY");
              }
 
-             return '';
+             return null;
         }
 
 
@@ -130,14 +133,16 @@
 
       watch : {
 
-        value: function (value) {
-            console.log("The date value changed !!! " + value );
-            let formattedDate = this.dateToString(value);
+        value: function (dateValue) {
+            console.log("The date value changed !!! " + dateValue );
+            let formattedDate = this.dateToString(dateValue);
             let element = $(this.$el);
             element.val(formattedDate);
 
-            element.datepicker('setDate', value);
-            this.$emit('input', value);
+
+            element.datepicker('setDate', formattedDate);
+            debugger;
+            this.$emit('input', dateValue);
         },
 
         dateValue : function (value) {
@@ -145,6 +150,8 @@
               let element = $(this.$el);
               element.val(value);
               let date = this.stringToDate(value);
+
+            debugger;
               element.datepicker('setDate', date);
               this.$emit('input', date);
           }

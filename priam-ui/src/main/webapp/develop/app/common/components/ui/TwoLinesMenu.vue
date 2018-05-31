@@ -96,7 +96,6 @@
 
           menuClass(menu) {
               return 'menu-' +  menu.id + ' ' + (this.isActive(menu) ? 'active' : '');
-
           },
 
           menuClass2(menu, item) {

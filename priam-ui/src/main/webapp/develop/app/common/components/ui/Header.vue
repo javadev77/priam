@@ -115,7 +115,6 @@
             let menu = this.menus.find(elem => {
               return elem.routes && elem.routes.indexOf(routeViewName) > -1;
             });
-
             return menu;
         },
 
