@@ -35,8 +35,8 @@ public class JobImportCatalogueCMSRDOTest {
 
     private JobLauncherTestUtils jobLauncherTestUtils;
     private ApplicationContext context;
-    private String inputDirectory = "src/test/resources/inputDirectory/";
-    private String outputDirectory = "src/test/resources/outputDirectory/";
+    private String inputDirectory = "target/inputDirectory/";
+    private String outputDirectory = "target/outputDirectory/";
 
     private static final String CSV_FILE_NAME = "FF_OCTAV_CATALOGUE_FR.csv";
     private static final String CSV_FILE_PATH = "src/test/resources/inputCsv/FF_OCTAV_CATALOGUE_FR.csv";
