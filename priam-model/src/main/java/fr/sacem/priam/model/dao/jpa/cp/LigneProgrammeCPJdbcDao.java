@@ -222,4 +222,16 @@ public class LigneProgrammeCPJdbcDao {
                 ,
                 (resultSet, i) -> resultSet.getLong(1));
     }
+
+    public Long calculerDureeOeuvres(String numProg) {
+        return  jdbcTemplate.queryForObject("SELECT sum(ajout) "+
+                        "FROM(SELECT lp.durDifEdit as ajout "+
+                        "FROM PRIAM_LIGNE_PROGRAMME_CP lp "+
+                        "INNER JOIN PRIAM_FICHIER as f on f.ID=lp.ID_FICHIER AND f.NUMPROG=? "+
+                        "WHERE lp.SEL_EN_COURS=1 AND lp.idOeuvreManuel is null "+
+                        ") as temp",
+                new Object[]{numProg}
+                ,
+                (resultSet, i) -> resultSet.getLong(1));
+    }
 }

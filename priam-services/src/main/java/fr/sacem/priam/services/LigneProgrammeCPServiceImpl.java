@@ -296,8 +296,8 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
         }*/
 
 
-        List<LigneProgrammeCP> collected = workingList.stream().filter(p -> !p.getAjout().equals(AUTOMATIQUE)).collect(Collectors.toList());
-        collected.forEach(lp -> {
+        //List<LigneProgrammeCP> collected = workingList.stream().filter(p -> !p.getAjout().equals(AUTOMATIQUE)).collect(Collectors.toList());
+        workingList.forEach(lp -> {
             if(prog.getTypeUtilisation().getCode().equals(TypeUtilisationPriam.COPIE_PRIVEE_SONORE_PHONO.getCode())) {
                // ligneProgrammeCPJdbcDao.batchUpdateNbrDifTemporaireByNumProgramme(collected);
                 ligneProgrammeCPDao.updateNbrDifTemporaireByNumProgramme(numProg, lp.getIde12(), lp.getCdeUtil(), lp.getNbrDifEdit(), lp.isSelectionEnCours());
@@ -779,7 +779,7 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
         if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_PHONO.getCode().equals(programme.getTypeUtilisation().getCode())) {
             result.put(SOMME, ligneProgrammeCPJdbcDao.calculerQuantiteOeuvres(numProg));
         } else if(TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode().equals(programme.getTypeUtilisation().getCode())) {
-            //result.put(SOMME, ligneProgrammeCPJdbcDao.calculerDureeOeuvres(numProg));
+            result.put(SOMME, ligneProgrammeCPJdbcDao.calculerDureeOeuvres(numProg));
         }
 
         return result;

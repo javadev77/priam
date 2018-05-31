@@ -285,22 +285,6 @@ public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Lon
                                                  @Param("cdeUtil") String cdeUtil,
                                                  @Param("sel") int select);
 
-    @Modifying(clearAutomatically = true)
-    @Query(nativeQuery = true, value="update " +
-            "  PRIAM_LIGNE_PROGRAMME_CP p " +
-            "INNER JOIN " +
-            "  PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
-            "set " +
-            "  p.durDifEdit=?4, , p.SEL_EN_COURS=?5 "+
-            "where " +
-            "  f.NUMPROG = ?1 " +
-            " AND p.ide12 = ?2 " +
-            " AND p.cdeUtil = ?3 ")
-    void updateDurDifTemporaireByNumProgramme(@Param("numProg") String numProg,
-                                              @Param("ide12") Long ide12,
-                                              @Param("cdeUtil") String cdeUtil,
-                                              @Param("durDif") Long durDifEdit,
-                                              @Param("selectionEnCours") boolean selectionEnCours);
 
     @Transactional
     @Modifying(clearAutomatically = true)
@@ -594,6 +578,25 @@ public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Lon
                                               @Param("cdeUtil") String cdeUtil,
                                               @Param("durDif") Long nbrDifEdit,
                                               @Param("selectionEnCours") Boolean selectionEnCours);
+
+
+
+  @Modifying(clearAutomatically = true)
+  @Query(nativeQuery = true, value="update " +
+          "  PRIAM_LIGNE_PROGRAMME_CP p " +
+          "INNER JOIN " +
+          "  PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
+          "set " +
+          "  p.durDifEdit=?4, p.SEL_EN_COURS=?5 "+
+          "where " +
+          "  f.NUMPROG = ?1 " +
+          " AND p.ide12 = ?2 " +
+          " AND p.cdeUtil = ?3 ")
+  void updateDurDifTemporaireByNumProgramme(@Param("numProg") String numProg,
+                                            @Param("ide12") Long ide12,
+                                            @Param("cdeUtil") String cdeUtil,
+                                            @Param("durDif") Long durDifEdit,
+                                            @Param("selectionEnCours") Boolean selectionEnCours);
 
 
     @Modifying(clearAutomatically = true)
