@@ -25,7 +25,7 @@
 
           <priam-grid
             v-if="catalogueGrid.gridData.content"
-            :isPaginable="false"
+            :isPaginable="true"
             :data="catalogueGrid.gridData"
             :columns="catalogueGrid.gridColumns"
             noResultText="Aucun résultat."
@@ -69,13 +69,6 @@
 
       return {
 
-        defaultPageable : {
-          page : 1,
-          sort : 'ide12',
-          dir : 'DESC',
-          size : this.$store.getters.userPageSize
-        },
-
         showPopupDeleteOeuvre : false,
 
         oeuvreToDelete : {},
@@ -83,9 +76,7 @@
         resource : {},
 
         catalogueGrid : {
-          gridData : {
-            //"content":[{"ide12":3516649111,"titreOeuvre":"JE TE PARDONNE FEAT SIA","roleParticipant1":"C","nomParticipant1":"REBILLAUD RENAUD","durDif":null,"ajout":"CORRIGE","nbrDif":871830,"libAbrgUtil":"SONYBMG - SONY BMG","selection":true,"cdeUtil":"SONYBMG"},{"ide12":2986577411,"titreOeuvre":"LA MORALE","roleParticipant1":"CA","nomParticipant1":"DESSART CHRISTIAN","durDif":null,"ajout":"CORRIGE","nbrDif":871830,"libAbrgUtil":"UNIVERSAL - Universal Music France","selection":true,"cdeUtil":"UNIVERSAL"},{"ide12":2960328811,"titreOeuvre":"SAPES COMME JAMAIS","roleParticipant1":"C","nomParticipant1":"KOUELOUKOUENDA DANIEL","durDif":null,"ajout":"CORRIGE","nbrDif":871830,"libAbrgUtil":"SONYBMG - SONY BMG","selection":true,"cdeUtil":"SONYBMG"},{"ide12":2930892411,"titreOeuvre":"EST CE QUE TU M AIMES","roleParticipant1":"C","nomParticipant1":"REBILLAUD RENAUD","durDif":null,"ajout":"CORRIGE","nbrDif":871830,"libAbrgUtil":"SONYBMG - SONY BMG","selection":true,"cdeUtil":"SONYBMG"},{"ide12":2986577611,"titreOeuvre":"AMOR Y LIBERTAD","roleParticipant1":"C","nomParticipant1":"MAILLIE KENDJI","durDif":null,"ajout":"CORRIGE","nbrDif":871830,"libAbrgUtil":"UNIVERSAL - Universal Music France","selection":true,"cdeUtil":"UNIVERSAL"},{"ide12":2977109111,"titreOeuvre":"LES YEUX DE LA MAMA","roleParticipant1":"CA","nomParticipant1":"ERRAMI JOHAN    MERCURY GR","durDif":null,"ajout":"CORRIGE","nbrDif":871830,"libAbrgUtil":"UNIVERSAL - Universal Music France","selection":true,"cdeUtil":"UNIVERSAL"},{"ide12":3501341911,"titreOeuvre":"MUJER I NEED A GIRL","roleParticipant1":"CA","nomParticipant1":"SALDIVIA FELIPE","durDif":null,"ajout":"CORRIGE","nbrDif":871830,"libAbrgUtil":"UNIVERSAL - Universal Music France","selection":true,"cdeUtil":"UNIVERSAL"},{"ide12":3058787911,"titreOeuvre":"INTERLUDE LE PRISONNIER","roleParticipant1":"C","nomParticipant1":"CIOSI JEROME","durDif":null,"ajout":"CORRIGE","nbrDif":871830,"libAbrgUtil":"SONYBMG - SONY BMG","selection":true,"cdeUtil":"SONYBMG"},{"ide12":2943823211,"titreOeuvre":"LAISSEZ PASSER","roleParticipant1":"C","nomParticipant1":"REBILLAUD RENAUD","durDif":null,"ajout":"CORRIGE","nbrDif":871830,"libAbrgUtil":"SONYBMG - SONY BMG","selection":true,"cdeUtil":"SONYBMG"},{"ide12":2965587411,"titreOeuvre":"MAIN DU ROI","roleParticipant1":"C","nomParticipant1":"KENDOUSSI ADIL","durDif":null,"ajout":"CORRIGE","nbrDif":871830,"libAbrgUtil":"SONYBMG - SONY BMG","selection":true,"cdeUtil":"SONYBMG"},{"ide12":3560846811,"titreOeuvre":"JE NOUS VEUX","roleParticipant1":"CA","nomParticipant1":"DUPRE MARC","durDif":null,"ajout":"CORRIGE","nbrDif":784565,"libAbrgUtil":"SONYBMG - SONY BMG","selection":true,"cdeUtil":"SONYBMG"},{"ide12":2986395211,"titreOeuvre":"C EST TROP","roleParticipant1":"CA","nomParticipant1":"ESPOSITO DAVIDE","durDif":null,"ajout":"CORRIGE","nbrDif":784565,"libAbrgUtil":"UNIVERSAL - Universal Music France","selection":true,"cdeUtil":"UNIVERSAL"},{"ide12":2986369711,"titreOeuvre":"NO ME MIRES MAS","roleParticipant1":"CA","nomParticipant1":"KENDJI GIRAC","durDif":null,"ajout":"CORRIGE","nbrDif":784565,"libAbrgUtil":"UNIVERSAL - Universal Music France","selection":true,"cdeUtil":"UNIVERSAL"},{"ide12":2937044211,"titreOeuvre":"JEUNE","roleParticipant1":"CA","nomParticipant1":"BLACK DANIEL EDWARD","durDif":null,"ajout":"CORRIGE","nbrDif":784565,"libAbrgUtil":"UNIVERSAL - Universal Music France","selection":true,"cdeUtil":"UNIVERSAL"},{"ide12":3078390510,"titreOeuvre":"SI C ETAIT A REFAIRE","roleParticipant1":"C","nomParticipant1":"VENERUSO JACQUES","durDif":null,"ajout":"CORRIGE","nbrDif":784565,"libAbrgUtil":"SONYBMG - SONY BMG","selection":true,"cdeUtil":"SONYBMG"},{"ide12":3560923011,"titreOeuvre":"MA FAILLE","roleParticipant1":"C","nomParticipant1":"COMPAGNON FLAVIEN","durDif":null,"ajout":"CORRIGE","nbrDif":784565,"libAbrgUtil":"SONYBMG - SONY BMG","selection":true,"cdeUtil":"SONYBMG"},{"ide12":2986567011,"titreOeuvre":"TU Y YO","roleParticipant1":"CA","nomParticipant1":"KENDJI GIRAC","durDif":null,"ajout":"CORRIGE","nbrDif":784565,"libAbrgUtil":"UNIVERSAL - Universal Music France","selection":true,"cdeUtil":"UNIVERSAL"},{"ide12":2960333011,"titreOeuvre":"ME QUEMO","roleParticipant1":"CA","nomParticipant1":"KENDJI GIRAC","durDif":null,"ajout":"CORRIGE","nbrDif":784565,"libAbrgUtil":"UNIVERSAL - Universal Music France","selection":true,"cdeUtil":"UNIVERSAL"},{"ide12":3560919211,"titreOeuvre":"LES YEUX AU CIEL","roleParticipant1":"C","nomParticipant1":"LISBONNE SILVIO","durDif":null,"ajout":"CORRIGE","nbrDif":784565,"libAbrgUtil":"SONYBMG - SONY BMG","selection":true,"cdeUtil":"SONYBMG"},{"ide12":3577328911,"titreOeuvre":"A LA PLUS HAUTE BRANCHE","roleParticipant1":"CA","nomParticipant1":"PICARD DANIEL A","durDif":null,"ajout":"CORRIGE","nbrDif":784565,"libAbrgUtil":"SONYBMG - SONY BMG","selection":true,"cdeUtil":"SONYBMG"},{"ide12":3560846911,"titreOeuvre":"TOUTES CES CHOSES","roleParticipant1":"CA","nomParticipant1":"DUPRE MARC","durDif":null,"ajout":"CORRIGE","nbrDif":784565,"libAbrgUtil":"SONYBMG - SONY BMG","selection":true,"cdeUtil":"SONYBMG"},{"ide12":3560918711,"titreOeuvre":"L ETOILE","roleParticipant1":"C","nomParticipant1":"LISBONNE SILVIO","durDif":null,"ajout":"CORRIGE","nbrDif":784565,"libAbrgUtil":"SONYBMG - SONY BMG","selection":true,"cdeUtil":"SONYBMG"},{"ide12":2833258111,"titreOeuvre":"LE CHANT DES SIRENES","roleParticipant1":"C","nomParticipant1":"FLO DELAVEGA","durDif":null,"ajout":"CORRIGE","nbrDif":784565,"libAbrgUtil":"UNIVERSAL - Universal Music France","selection":true,"cdeUtil":"UNIVERSAL"},{"ide12":2945128511,"titreOeuvre":"PLUS QU AILLEURS","roleParticipant1":"CA","nomParticipant1":"CABREL FRANCIS","durDif":null,"ajout":"CORRIGE","nbrDif":784565,"libAbrgUtil":"SONYBMG - SONY BMG","selection":true,"cdeUtil":"SONYBMG"},{"ide12":6656641211,"titreOeuvre":"ORDINAIRE","roleParticipant1":"C","nomParticipant1":"CHARLEBOIS ROBERT","durDif":null,"ajout":"CORRIGE","nbrDif":784565,"libAbrgUtil":"SONYBMG - SONY BMG","selection":true,"cdeUtil":"SONYBMG"}],"last":false,"totalPages":9319,"totalElements":232965,"size":25,"number":0,"sort":[{"direction":"DESC","property":"sum(nbrDifEdit)","ignoreCase":false,"nullHandling":"NATIVE","unsafe":true,"descending":true,"ascending":false}],"numberOfElements":25,"first":true
-          },
+          gridData : {},
 
           gridColumns : [
             {
@@ -368,7 +359,8 @@
                 }
               }
             }
-          ]
+          ],
+          searchQuery : ''
         },
 
         filter : {
@@ -403,7 +395,15 @@
           periodeSortieDateDebut: null,
           periodeSortieDateFin: null,
           displayOeuvreNonEligible: false
-        }
+        },
+
+        defaultPageable : {
+          page : 1,
+          sort : 'dateEntree',
+          dir : 'DESC',
+          size : this.$store.getters.userPageSize
+        },
+
       }
     },
 
@@ -515,9 +515,13 @@
             this.catalogueGrid.gridData.number = data.number + 1;
 
           });
-
-
       },
+
+      loadPage: function(pageNum, size, sort) {
+        this.defaultPageable.size = size;
+        let pageSize = this.defaultPageable.size;
+        this.launchRequest(pageNum, pageSize, sort.property, sort.direction);
+      }
     },
 
 

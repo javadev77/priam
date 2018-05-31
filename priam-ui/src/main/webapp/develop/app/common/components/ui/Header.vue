@@ -38,11 +38,8 @@
 
 <script>
   import TwoLinesMenu from './TwoLinesMenu.vue';
-  import programmeMixin from '../../mixins/programmeMixin';
 
   export default {
-
-    mixins : [programmeMixin],
 
     props :['activeMenu', 'activeSubMenu'],
     data() {
@@ -73,6 +70,13 @@
             name : 'parametrage',
             label : 'Paramétrage',
             routes : ['parametrage']
+          },
+
+          {
+            id : 'catalogue',
+            name : 'catalogue-cms',
+            label : 'Catalogue CMS',
+            routes : ['catalogue-cms']
           }
 
         ],
@@ -91,7 +95,6 @@
 
         let currentRoute = this.$route.matched;
         this.setCurrentActiveMenu(currentRoute[0].name);
-        this.authenticatedMenus();
 
     },
 
@@ -104,9 +107,7 @@
 
       priamVersion() {
           return this.$store.getters.appInfo['priam.version'];
-      },
-
-
+      }
     },
 
     methods : {
@@ -127,32 +128,7 @@
                                      foundMenu.items[0] !== undefined ?
                                      foundMenu.items[0].id : '';
           }
-        },
-
-      authenticatedMenus() {
-       // var menusAuth = this.menus;
-        if(this.hasRight('VIJREV')) {
-          this.menus.push( {
-            id : 'catalogue',
-            name : 'catalogue-cms',
-            label : 'Catalogue CMS',
-            routes : ['catalogue-cms'],
-            items : [
-              {
-                id : 'Catalogue',
-                name : 'Catalogue',
-                label : 'Catalogue'
-              },
-              {
-                id : 'Journal',
-                name : 'Journal',
-                label : 'Journal'
-              }
-            ]
-          });
         }
-       // return menusAuth;
-      }
 
     },
 
