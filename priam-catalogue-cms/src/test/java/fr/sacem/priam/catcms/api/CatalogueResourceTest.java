@@ -33,12 +33,6 @@ public class CatalogueResourceTest extends RestResourceTest {
 //    private MariaDB4jSpringService mariaDB4jSpringService;
 
 
-//    @Override
-//    public void beforeTestClass(TestContext testContext) throws Exception {
-//       mariaDB4jSpringService = testContext.getApplicationContext().getBean("dbServiceBean", MariaDB4jSpringService.class);
-//       mariaDB4jSpringService.getDB().source("priam_app_PRIAM_CATCMS_RDO.sql");
-//
-//    }
 
     @Test
     public void findAllByCriteria_TypeCMS_FR_NonEligible() throws Exception {
@@ -159,6 +153,25 @@ public class CatalogueResourceTest extends RestResourceTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.numberOfElements", is(1)))
                 .andExpect(jsonPath("$.content[0].ide12", is(2007281411)));
+    }
+
+    @Test
+    public void findAllByCriteria_tri_dateEntree() throws Exception {
+
+        List<CatalogueRdo> all = catalogueRdoDao.findAll();
+
+        catalogueCritereRecherche.setTypeCMS("FR");
+        catalogueCritereRecherche.setDisplayOeuvreNonEligible(false);
+
+
+        mockMvc.perform(
+                post(APP_REST_CATALOGUE_SEARCH + "?page=0&size=25&sort=dateEntree,DESC")
+                        .content(this.json(catalogueCritereRecherche))
+                        .contentType(contentType))
+
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[9].ide12", is(2007279511)))
+                .andExpect(jsonPath("$.content[0].ide12", is(2007278711)));
     }
 
 }

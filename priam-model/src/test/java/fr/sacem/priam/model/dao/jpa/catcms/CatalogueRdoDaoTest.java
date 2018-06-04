@@ -6,6 +6,8 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -21,7 +23,6 @@ public class CatalogueRdoDaoTest extends AbstractDaoTest {
 
     @Autowired
     CatalogueRdoDao catalogueRdoDao;
-
 
     @Test
     public void findByCriteriaWithNonEligible() throws Exception {
@@ -94,6 +95,19 @@ public class CatalogueRdoDaoTest extends AbstractDaoTest {
         assertThat(result).isNotNull().isNotEmpty();
         assertThat(result.getTotalElements()).isEqualTo(1);
 
+    }
+
+    @Test
+    public void findByCriteria_Tri() throws Exception {
+
+        Page<CatalogueRdo> result = catalogueRdoDao.findByCriteriaWithNonEligible("FR",
+                null, null, null, null, null,
+                null, null, null,
+                null, new PageRequest(0, 25, Sort.Direction.DESC, "dateEntree"));
+
+        assertThat(result).isNotNull().isNotEmpty();
+        assertThat(result.getContent().get(10).getIde12()).isEqualTo(2007279511);
+        assertThat(result.getContent().get(0).getIde12()).isEqualTo(2007278711);
     }
 
 
