@@ -129,8 +129,9 @@ public class CatalogueResourceTest extends RestResourceTest {
                         .content(this.json(catalogueCritereRecherche))
                         .contentType(contentType))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.numberOfElements", is(1)))
-                .andExpect(jsonPath("$.content[0].ide12", is(2002665711)));
+                .andExpect(jsonPath("$.numberOfElements", is(2)))
+                .andExpect(jsonPath("$.content[0].ide12", is(2002665711)))
+                .andExpect(jsonPath("$.content[1].ide12", is(2007278711)));
     }
 
     @Test
@@ -172,6 +173,22 @@ public class CatalogueResourceTest extends RestResourceTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[9].ide12", is(2007279511)))
                 .andExpect(jsonPath("$.content[0].ide12", is(2007278711)));
+    }
+
+    @Test
+    public void findAllByCriteria_periodeEntree_periodeSortie_null() throws Exception {
+
+        catalogueCritereRecherche.setTypeCMS("FR");
+        catalogueCritereRecherche.setPeriodeEntreeDateFin(null);
+        catalogueCritereRecherche.setPeriodeSortieDateFin(null);
+
+        mockMvc.perform(
+                post(APP_REST_CATALOGUE_SEARCH + "?page=0&size=25&sort=dateEntree,DESC")
+                        .content(this.json(catalogueCritereRecherche))
+                        .contentType(contentType))
+
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.numberOfElements", is(10)));
     }
 
 }
