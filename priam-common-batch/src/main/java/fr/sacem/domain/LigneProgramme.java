@@ -1,5 +1,7 @@
 package fr.sacem.domain;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 import java.io.Serializable;
 
 /**
@@ -412,4 +414,10 @@ public class LigneProgramme implements Serializable {
     public void setRionAnt(String rionAnt) {
         this.rionAnt = rionAnt;
     }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
+    }
+
 }
