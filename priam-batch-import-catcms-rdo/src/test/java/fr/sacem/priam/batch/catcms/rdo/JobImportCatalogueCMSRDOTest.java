@@ -1,6 +1,7 @@
 package fr.sacem.priam.batch.catcms.rdo;
 
 import fr.sacem.priam.batch.catcms.rdo.dao.FichierCatcmsRepositoryForTest;
+import fr.sacem.priam.batch.utils.TestUtils;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Assert;
@@ -17,13 +18,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import static org.junit.Assert.assertEquals;
 
@@ -62,10 +59,13 @@ public class JobImportCatalogueCMSRDOTest {
 
             outDir = new File(outputDirectory);
             FileUtils.forceMkdir(outDir);
+
+            TestUtils.csvToZip(ZIP_FILE_PATH, CSV_FILE_PATH, CSV_FILE_NAME);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        csvToZip();
+
+
     }
 
     @Test
@@ -101,32 +101,4 @@ public class JobImportCatalogueCMSRDOTest {
             e.printStackTrace();
         }
     }
-
-    private void csvToZip() {
-        byte[] buffer = new byte[1024];
-        try {
-            FileOutputStream fos = new FileOutputStream(ZIP_FILE_PATH);
-            ZipOutputStream zos = new ZipOutputStream(fos);
-            ZipEntry ze = new ZipEntry(CSV_FILE_NAME);
-            zos.putNextEntry(ze);
-            FileInputStream in = new FileInputStream(CSV_FILE_PATH);
-
-            int len;
-            while ((len = in.read(buffer)) > 0) {
-                zos.write(buffer, 0, len);
-            }
-
-            in.close();
-            zos.closeEntry();
-
-            //remember close it
-            zos.close();
-
-            System.out.println("Done");
-
-        }
-        catch(IOException ex){
-                ex.printStackTrace();
-            }
-        }
 }

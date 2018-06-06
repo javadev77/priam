@@ -38,6 +38,7 @@ public class CataloguePenefFraStep2Processor implements ItemProcessor<CatalogueP
         catalogueFra.setParticipant(cataloguePenefFra.getNomParticipant1());
         catalogueFra.setRole(cataloguePenefFra.getRoleParticipant1());
         catalogueFra.setDateRenouvellement(new Date());
+        catalogueFra.setTitre(cataloguePenefFra.getTitreOeuvre());
 
         log.info("---- Current Line ---- " + catalogueFra);
 
