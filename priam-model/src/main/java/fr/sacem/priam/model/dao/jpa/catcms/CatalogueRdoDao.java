@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,8 +23,8 @@ public interface CatalogueRdoDao extends JpaRepository<CatalogueRdo, Long> {
     Page<CatalogueRdo> findByCriteria(Pageable pageable);*/
 
     @Query(value = "SELECT cat FROM CatalogueRdo cat where cat.typeCMS= :typeCMS " +
-            "AND (cat.ide12 = :ide12 OR :ide12 IS NULL) " +
-            "AND (cat.titre = :titre OR :titre IS NULL) " +
+            "AND (CONCAT(cat.ide12, '') LIKE %:ide12% OR :ide12 IS NULL) " +
+            "AND (cat.titre LIKE %:titre% OR :titre IS NULL) " +
             "AND (cat.participant LIKE %:participant% OR :participant IS NULL) " +
             "AND (cat.dateEntree >= :periodeEntreeDateDebut or :periodeEntreeDateDebut IS NULL)" +
             "AND (cat.dateEntree <= :periodeEntreeDateFin or :periodeEntreeDateFin IS NULL) " +
@@ -32,7 +33,7 @@ public interface CatalogueRdoDao extends JpaRepository<CatalogueRdo, Long> {
             "AND (cat.dateSortie >= :periodeSortieDateDebut or :periodeSortieDateDebut IS NULL) " +
             "AND (cat.dateSortie <= :periodeSortieDateFin or :periodeSortieDateFin IS NULL) ")
     Page<CatalogueRdo> findByCriteriaWithNonEligible(@Param("typeCMS") String typeCMS,
-                                      @Param("ide12") Long ide12,
+                                      @Param("ide12") String ide12,
                                       @Param("titre") String titre,
                                       @Param("participant") String participant,
                                       @Param("periodeEntreeDateDebut") Date periodeEntreeDateDebut,
@@ -44,8 +45,8 @@ public interface CatalogueRdoDao extends JpaRepository<CatalogueRdo, Long> {
 
 
     @Query(value = "SELECT cat FROM CatalogueRdo cat where cat.typeCMS= :typeCMS " +
-            "AND (cat.ide12 = :ide12 OR :ide12 IS NULL) " +
-            "AND (cat.titre = :titre OR :titre IS NULL) " +
+            "AND (CONCAT(cat.ide12, '') LIKE %:ide12% OR :ide12 IS NULL) " +
+            "AND (cat.titre LIKE %:titre% OR :titre IS NULL) " +
             "AND (cat.participant LIKE %:participant% OR :participant IS NULL) " +
             "AND (cat.dateEntree >= :periodeEntreeDateDebut or :periodeEntreeDateDebut IS NULL)" +
             "AND (cat.dateEntree <= :periodeEntreeDateFin or :periodeEntreeDateFin IS NULL) " +
@@ -53,7 +54,7 @@ public interface CatalogueRdoDao extends JpaRepository<CatalogueRdo, Long> {
             "AND (cat.dateRenouvellement <= :periodeRenouvellementDateFin or :periodeRenouvellementDateFin IS NULL) " +
             "AND (cat.dateSortie IS NULL OR cat.dateSortie >= :periodeSortieDateFin) ")
     Page<CatalogueRdo> findByCriteriaWithoutNonEligible(@Param("typeCMS") String typeCMS,
-                                                        @Param("ide12") Long ide12,
+                                                        @Param("ide12") String ide12,
                                                         @Param("titre") String titre,
                                                         @Param("participant") String participant,
                                                         @Param("periodeEntreeDateDebut") Date periodeEntreeDateDebut,
@@ -61,4 +62,6 @@ public interface CatalogueRdoDao extends JpaRepository<CatalogueRdo, Long> {
                                                         @Param("periodeRenouvellementDateDebut") Date periodeRenouvellementDateDebut,
                                                         @Param("periodeRenouvellementDateFin") Date periodeRenouvellementDateFin,
                                                         @Param("periodeSortieDateFin") Date periodeSortieDateFin, Pageable pageable);
+
+
 }

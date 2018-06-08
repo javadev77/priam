@@ -7,7 +7,8 @@ import java.util.Date;
 
 public class CatalogueCritereRecherche {
     private String typeCMS;
-    private Long ide12;
+    /*private Long ide12;*/
+    private String ide12;
     private String titre;
     private String participant;
 
@@ -39,11 +40,19 @@ public class CatalogueCritereRecherche {
         this.typeCMS = typeCMS;
     }
 
-    public Long getIde12() {
+    /*public Long getIde12() {
         return ide12;
     }
 
     public void setIde12(Long ide12) {
+        this.ide12 = ide12;
+    }*/
+
+    public String getIde12() {
+        return ide12;
+    }
+
+    public void setIde12(String ide12) {
         this.ide12 = ide12;
     }
 

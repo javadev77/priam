@@ -49,6 +49,9 @@ public class CatalogueRdo implements Serializable {
     @Column(name = "TYPE_SORTIE")
     private String typeSortie;
 
+    @Column(name = "RAISON_SORTIE")
+    private String raisonSortie;
+
     @Column(name = "ROLE")
     private String role;
 
@@ -134,6 +137,14 @@ public class CatalogueRdo implements Serializable {
 
     public void setTypeSortie(String typeSortie) {
         this.typeSortie = typeSortie;
+    }
+
+    public String getRaisonSortie() {
+        return raisonSortie;
+    }
+
+    public void setRaisonSortie(String raisonSortie) {
+        this.raisonSortie = raisonSortie;
     }
 
     public String getRole() {
