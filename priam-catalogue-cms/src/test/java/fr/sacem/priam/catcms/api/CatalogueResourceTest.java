@@ -12,7 +12,9 @@ import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -26,6 +28,7 @@ public class CatalogueResourceTest extends RestResourceTest {
     Calendar calendar = Calendar.getInstance();
 
     public static final String APP_REST_CATALOGUE_SEARCH = "/app/rest/catalogue/search";
+    public static final String APP_REST_CATALOGUE_DELETE = "/app/rest/catalogue/oeuvre/delete/";
 
     @Autowired
     CatalogueRdoDao catalogueRdoDao;
@@ -66,7 +69,7 @@ public class CatalogueResourceTest extends RestResourceTest {
     @Test
     public void findAllByCriteria_ide12_inexistant() throws Exception {
         catalogueCritereRecherche.setTypeCMS("ANF");
-        catalogueCritereRecherche.setIde12(12121212121L);
+        catalogueCritereRecherche.setIde12("12121212121");
 
         mockMvc.perform(
                 post(APP_REST_CATALOGUE_SEARCH)
@@ -79,10 +82,10 @@ public class CatalogueResourceTest extends RestResourceTest {
     @Test
     public void findAllByCriteria_ide12_existant() throws Exception {
 
-        int ide12Existant = 2002665711;
+        String ide12Existant = "2002665711";
 
         catalogueCritereRecherche.setTypeCMS("ANF");
-        catalogueCritereRecherche.setIde12(Long.valueOf(ide12Existant));
+        catalogueCritereRecherche.setIde12(ide12Existant);
 
         mockMvc.perform(
                 post(APP_REST_CATALOGUE_SEARCH)
@@ -90,7 +93,7 @@ public class CatalogueResourceTest extends RestResourceTest {
                         .contentType(contentType))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.numberOfElements", is(1)))
-                .andExpect(jsonPath("$.content[0].ide12", is(ide12Existant)));
+                .andExpect(jsonPath("$.content[0].ide12", is(2002665711)));
     }
 
     @Test
@@ -190,5 +193,24 @@ public class CatalogueResourceTest extends RestResourceTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.numberOfElements", is(10)));
     }
+
+
+    @Test
+    public void deleteOeuvreWithRaison() throws Exception {
+        CatalogueRdo deletedOeuvre = new CatalogueRdo();
+        deletedOeuvre.setRaisonSortie("raison sortie");
+
+        mockMvc.perform(
+                delete(APP_REST_CATALOGUE_DELETE + "22")
+                .content(this.json(deletedOeuvre))
+                .contentType(contentType))
+
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("ide12", is(2007282611)))
+                .andExpect(jsonPath("raisonSortie", is("raison sortie")))
+                .andExpect(jsonPath("typeSortie", is("Manuelle")));
+    }
+
+
 
 }

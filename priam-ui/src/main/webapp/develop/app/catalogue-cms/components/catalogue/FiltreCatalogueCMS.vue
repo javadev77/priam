@@ -52,12 +52,12 @@
                   </div>
                   <div class="col-md-8">
                     <div class="form-group has-feedback">
-                      <input  type="text"
+                      <input  type="number"
                               id="filterIde12"
-                              :class="'autocomplete-input form-control  input-sm'"
                               v-model="filter.ide12"
+                              :class="'autocomplete-input form-control  input-sm'"
+                              @keypress="numberKey"
                       />
-                      <i class="form-control-feedback glyphicon glyphicon-search"></i>
                     </div>
                   </div>
                   <div class="col-md-2">
@@ -84,7 +84,6 @@
                               :class="'autocomplete-input form-control  input-sm'"
                               v-model="filter.participant"
                       />
-                      <i class="form-control-feedback glyphicon glyphicon-search"></i>
                     </div>
                   </div>
                 </div>
@@ -196,7 +195,6 @@
       },
 
       mounted() {
-
         this.dateDebutSortie = this.filter.periodeSortieFilter.dateDebut;
       },
 
@@ -205,7 +203,7 @@
         Autocomplete,
         periodeFilter
       },
-      methods:{
+      methods: {
         resetForm() {
           $("#filterIde12").val("");
           $("#filterTitre").val("");
@@ -220,15 +218,24 @@
           });
         },
 
-        /*isChecked () {
+        numberKey(event) {
+          debugger;
+          let charCode = (event.which) ? event.which : event.keyCode;
+          if (charCode != undefined) {
+            if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+              event.preventDefault();
+            }
+          }
+
+          /*isChecked () {
           if(this.filter.displayOeuvreNonEligible==true)
           {
             return true;
           }
           return false;
         }*/
-      },
-
+        },
+      }
     }
 </script>
 

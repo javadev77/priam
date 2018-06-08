@@ -40,15 +40,32 @@
     </div>
 
 
-    <modal v-show="showPopupDeleteOeuvre">
-      <label class="homer-prompt-q control-label" slot="body">
-        Suppression Oeuvre
-      </label>
-      <template slot="footer">
-        <button class="btn btn-default btn-primary pull-right no" @click="showPopupDeleteOeuvre = false">Non</button>
-        <button class="btn btn-default btn-primary pull-right yes" @click="onYesDeleteOeuvre">Oui</button>
+    <modalWithTitle :showHeader="true" v-show="showPopupDeleteOeuvre">
+      <template slot="header" >
+        <h4 class="modal-title" style="font-size: medium">Suppression de l'oeuvre du CMS</h4>
       </template>
-    </modal>
+      <template slot="body">
+        <div class="form-group">
+          <label class="control-label col-sm-7">Raison de la suppression :</label>
+          <div class="col-sm-17">
+            <input class="form-control input-normal" type="text" maxlength="60" v-model="deletedOeuvre.raisonSortie"/>
+          </div>
+        </div>
+      </template>
+
+      <template slot="footer">
+        <div class="form-horizontal" style="padding-top: 15px">
+          <div class="col-sm-24">
+            <label class="control-label pull-left" style="color: red; font-weight: bold">Attention: Cette action est irréversible</label>
+            <div class="pull-right">
+              <button class="btn btn-default btn-primary pull-right no" @click="onYesDeleteOeuvre">Valider</button>
+              <button class="btn btn-default btn-primary pull-right yes" @click="showPopupDeleteOeuvre = false">Annuler</button>
+            </div>
+          </div>
+
+        </div>
+      </template>
+    </modalWithTitle>
   </div>
 </template>
 
@@ -56,7 +73,7 @@
 
   import PriamGrid from './../../../common/components/ui/Grid.vue';
   import PriamNavbar from  './../../../common/components/ui/priam-navbar.vue';
-  import Modal from './../../../common/components/ui/Modal.vue';
+  import ModalWithTitle from './../../../common/components/ui/ModalWithTitle';
   import FiltreCatalogue from './FiltreCatalogueCMS.vue';
 
 
@@ -73,7 +90,8 @@
 
         showPopupDeleteOeuvre : false,
 
-        oeuvreToDelete : {},
+        oeuvreToDelete : {
+        },
 
         resource : {},
 
@@ -357,9 +375,13 @@
 
                 cellTemplate: function (cellValue) {
                   var tempalteTrash = '<span class="glyphicon glyphicon-trash" aria-hidden="true" style="padding-left: 0px;" title="Abandonner"></span>';
-                  var template = [
+                  /*var template = [
                     {event : 'delete-oeuvre',
-                      template : tempalteTrash}];
+                      template : tempalteTrash}];*/
+                  var template = [{}];
+                  if(cellValue.typeSortie==null){
+                    template[0] = {event : 'delete-oeuvre', template : tempalteTrash};
+                  }
                   return template;
                 }
               }
@@ -409,6 +431,10 @@
           size : this.$store.getters.userPageSize
         },
 
+        deletedOeuvre : {
+          raisonSortie: ''
+        },
+
       }
     },
 
@@ -418,6 +444,10 @@
         searchCatalogueRdo : {
           method : 'POST',
           url : process.env.CONTEXT_ROOT_PRIAM_CAT_RDO + 'app/rest/catalogue/search?page={page}&size={size}&sort={sort},{dir}'},
+        deleteOeuvreCatalogueRdo : {
+          method : 'DELETE',
+          url : process.env.CONTEXT_ROOT_PRIAM_CAT_RDO + 'app/rest/catalogue/oeuvre/delete/{id}'
+        }
       }
       this.resource= this.$resource('', {}, customActions);
       this.findCatalogueByCriteria();
@@ -466,14 +496,23 @@
 
       onDeleteOeuvre(row, column) {
         this.showPopupDeleteOeuvre = true;
+        this.deletedOeuvre.raisonSortie = '';
         this.oeuvreToDelete = row;
         console.log('this.oeuvreToDelete => ide12 = ', this.oeuvreToDelete.ide12)
-
       },
 
       onYesDeleteOeuvre() {
         console.log('Deleting Oeuvre ide12 = ', this.oeuvreToDelete.ide12);
         this.showPopupDeleteOeuvre = false;
+        this.resource.deleteOeuvreCatalogueRdo({id : this.oeuvreToDelete.id}, this.deletedOeuvre)
+          .then(response => {
+            return response.json();
+          })
+          .then(data => {
+            console.log('data = ' + data);
+            this.oeuvreToDelete.typeSortie = data.typeSortie;
+            this.oeuvreToDelete.dateSortie = data.dateSortie;
+          });
       },
 
       onAjouterOeuvre() {
@@ -537,7 +576,7 @@
     components : {
       'priam-grid' : PriamGrid,
       'priam-navbar' : PriamNavbar,
-      'modal': Modal,
+      'modalWithTitle': ModalWithTitle,
       appFiltreCatalogue : FiltreCatalogue,
     }
   }

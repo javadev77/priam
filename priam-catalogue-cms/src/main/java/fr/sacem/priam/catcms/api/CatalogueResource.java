@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -61,6 +58,36 @@ public class CatalogueResource {
                 catalogueCritereRecherche.getPeriodeRenouvellementDateDebut(),
                 catalogueCritereRecherche.getPeriodeRenouvellementDateFin(),
                 catalogueCritereRecherche.getPeriodeSortieDateFin(), pageable);
+    }
+
+    /*@RequestMapping(
+            value = "catalogue/oeuvre/delete/{ide12}",
+            method = RequestMethod.DELETE,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public CatalogueRdo deleteOeuvre(@PathVariable(name = "ide12") Long ide12, @RequestBody CatalogueRdo catalogueRdo){
+//        CatalogueRdo deletedOeuvre = catalogueRdoDao.findByIde12AndTypeCMS(ide12, catalogueRdo.getTypeCMS());
+        CatalogueRdo deletedOeuvre = catalogueRdoDao.findOne(catalogueRdo.getId());
+
+        deletedOeuvre.setDateSortie(new Date());
+        deletedOeuvre.setTypeSortie("Manuelle");
+        *//*deletedOeuvre.setDateSortie(catalogueRdo.getDateSortie());
+        deletedOeuvre.setTypeSortie(catalogueRdo.getTypeSortie());*//*
+        deletedOeuvre.setRaisonSortie(catalogueRdo.getRaisonSortie());
+        return catalogueRdoDao.saveAndFlush(deletedOeuvre);
+    }*/
+
+    @RequestMapping(
+            value = "catalogue/oeuvre/delete/{id}",
+            method = RequestMethod.DELETE,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public CatalogueRdo deleteOeuvre(@PathVariable(name = "id") Long id, @RequestBody CatalogueRdo catalogueRdo){
+        CatalogueRdo deletedOeuvre = catalogueRdoDao.findOne(id);
+        deletedOeuvre.setDateSortie(new Date());
+        deletedOeuvre.setTypeSortie("Manuelle");
+        deletedOeuvre.setRaisonSortie(catalogueRdo.getRaisonSortie());
+        return catalogueRdoDao.saveAndFlush(deletedOeuvre);
     }
 
 
