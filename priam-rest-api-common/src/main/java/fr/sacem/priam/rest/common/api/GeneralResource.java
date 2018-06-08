@@ -34,27 +34,25 @@ import static fr.sacem.priam.common.constants.EnvConstants.*;
 public class GeneralResource {
 
     private static final Integer RION_639 = 639 ;
-    public static final String RION_FORMAT_MMMM_yyyy = "MMMM yyyy";
-    public static final String USER_FAMILLE = "USER_FAMILLE";
-    public static final String USER_FAMILLE_ALL = "ALL,Toutes";
-    public static final String USER_FAMILLE_COPIEPRIV = "COPIEPRIV,Copie Privée";
-    public static final String USER_FAMILLE_UC = "UC,Usagers Communs";
-    public static final String REGEX_USER_FAMILLE = ",";
+    private static final String RION_FORMAT_MMMM_yyyy = "MMMM yyyy";
+    private static final String USER_FAMILLE = "USER_FAMILLE";
+    private static final String USER_FAMILLE_ALL = "ALL,Toutes";
+    private static final String REGEX_USER_FAMILLE = ",";
 
     private static Logger logger = LoggerFactory.getLogger(GeneralResource.class);
 
     @Autowired
-    LibelleFamilleDao libelleFamilleDao;
+    private LibelleFamilleDao libelleFamilleDao;
 
 
     @Autowired
-    SareftjLibtyputilDao sareftjLibtyputilDao;
+    private SareftjLibtyputilDao sareftjLibtyputilDao;
 
     @Autowired
-    SareftrFamiltyputilDao sareftrFamiltyputilDao;
+    private SareftrFamiltyputilDao sareftrFamiltyputilDao;
 
     @Autowired
-    SareftrRionDao sareftrRionDao;
+    private SareftrRionDao sareftrRionDao;
 
     @Autowired
     private SareftjLibterDao sareftjLibterDao;

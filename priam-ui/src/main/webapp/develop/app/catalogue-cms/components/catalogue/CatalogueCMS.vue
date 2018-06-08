@@ -23,6 +23,8 @@
             <button class="btn btn-default btn-primary pull-right"  type="button" style="width: 120px;" @click="onAjouterOeuvre">Ajouter Oeuvre</button>
           </div>
 
+
+
           <priam-grid
             v-if="catalogueGrid.gridData.content"
             :isPaginable="false"
@@ -419,6 +421,8 @@
     },
 
     methods : {
+
+
 
       findCatalogueByCriteria() {
         if(this.filter.typeCMS == 'CMS France'){
