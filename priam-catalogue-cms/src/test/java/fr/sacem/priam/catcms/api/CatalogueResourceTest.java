@@ -93,7 +93,7 @@ public class CatalogueResourceTest extends RestResourceTest {
                         .contentType(contentType))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.numberOfElements", is(1)))
-                .andExpect(jsonPath("$.content[0].ide12", is(ide12Existant)));
+                .andExpect(jsonPath("$.content[0].ide12", is(2002665711)));
     }
 
     @Test
