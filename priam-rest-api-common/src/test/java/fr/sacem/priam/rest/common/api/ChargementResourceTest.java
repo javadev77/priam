@@ -37,6 +37,26 @@ public class ChargementResourceTest extends RestResourceTest {
                .contentType(contentType))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.content[0].famille", is("COPIEPRIV")));
+//          .andExpect(jsonPath("$.content", new BaseMatcher() {
+//            @Override
+//            public void describeTo(Description description) {
+//
+//            }
+//
+//            @Override
+//            public boolean matches(Object o) {
+//              JSONArray data = (JSONArray) o;
+//              for (Iterator<Object> it = data.iterator(); it.hasNext(); ) {
+//                Object element = it.next();
+//                if(element instanceof JSONObject) {
+//                  JSONObject element1 = (JSONObject) element;
+//
+//                }
+//
+//              }
+//              return o instanceof JSONArray && data.size() == 4;
+//            }
+//          }));
     }
 
     @Test

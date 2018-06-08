@@ -12,10 +12,10 @@
     </appender>
 
     <appender name="priam-file" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${priam.log.default.directory}/@artifactId@.log</file>
+        <file>${priam.log.default.directory}/priam-batch-enrichissement-cat-fra.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <fileNamePattern>${priam.log.default.directory}/@artifactId@.%i.log</fileNamePattern>
-            <maxIndex>10</maxIndex>
+            <fileNamePattern>${priam.log.default.directory}/priam-batch-enrichissement-cat-fra.%i.log</fileNamePattern>
+            <maxIndex>20</maxIndex>
         </rollingPolicy>
         <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
             <maxFileSize>10MB</maxFileSize>

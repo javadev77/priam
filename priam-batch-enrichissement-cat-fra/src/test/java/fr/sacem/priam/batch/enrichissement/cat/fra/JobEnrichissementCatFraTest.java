@@ -1,6 +1,8 @@
 package fr.sacem.priam.batch.enrichissement.cat.fra;
 
+import fr.sacem.priam.batch.utils.TestUtils;
 import org.apache.commons.io.FileUtils;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,8 +35,13 @@ public class JobEnrichissementCatFraTest {
 
     private JobLauncherTestUtils jobLauncherTestUtils;
     private ApplicationContext context;
-    private String inputDirectory = "target/inputDir";
-    private String outputDirectory = "target/outDir";
+    private static final String inputDirectory = "target/inputDir";
+    private static final String outputDirectory = "target/outDir";
+
+    private static final String CSV_FILE_NAME = "FF_PENEF_CATALOGUE_FR_Test02.csv";
+    private static final String ZIP_FILE_PATH = inputDirectory + "/FF_PENEF_CATALOGUE_FR_Test02.zip";
+    private static final String CSV_FILE_PATH = "src/test/resources/inputCsv/FF_PENEF_CATALOGUE_FR_Test02.csv";
+
 
     @Before
     public void setUp() {
@@ -46,7 +53,7 @@ public class JobEnrichissementCatFraTest {
 
             FileUtils.forceMkdir( new File(inputDirectory));
             FileUtils.forceMkdir( new File(outputDirectory));
-            //FileUtils.copyFile(new File("src/test/resources/inputCsv"));
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -70,6 +77,9 @@ public class JobEnrichissementCatFraTest {
 
     @Test
     public void import_fichier_catalogue_penef_FR_OK() throws Exception {
+
+        TestUtils.csvToZip(ZIP_FILE_PATH, CSV_FILE_PATH, CSV_FILE_NAME);
+
         Map<String, JobParameter> jobParametersMap = new HashMap<>();
         jobParametersMap.put("input.archives", new JobParameter(inputDirectory));
         jobParametersMap.put("output.archives", new JobParameter(outputDirectory));
@@ -80,5 +90,15 @@ public class JobEnrichissementCatFraTest {
 
         // assert job run status
         assertEquals(BatchStatus.COMPLETED, jobExecution.getStatus());
+    }
+
+    @After
+    public void cleanUp() {
+        try {
+            FileUtils.deleteDirectory(new File(inputDirectory));
+            FileUtils.deleteDirectory(new File(outputDirectory));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

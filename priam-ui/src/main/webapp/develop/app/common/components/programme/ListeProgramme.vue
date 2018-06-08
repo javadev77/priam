@@ -16,6 +16,7 @@
 
 
         </div>
+
         <div class="panel-collapse" :class="{collapse : isCollapsed}">
           <div class="panel-body">
             <form class="form-horizontal" role="form">
