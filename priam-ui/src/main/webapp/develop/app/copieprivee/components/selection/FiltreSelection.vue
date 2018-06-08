@@ -38,6 +38,7 @@
                     :min="3"
                     :on-select="selectIde12"
                     :on-input="selectIde12"
+                    :is-alpha-numeric="true"
                   >
                   </autocomplete>
                 </div>

@@ -2,19 +2,36 @@
   <div :class="(className ? className + '-wrapper ' : '') + 'autocomplete-wrapper'">
 
     <div class="form-group has-feedback">
-      <input  type="text"
-              :id="id"
-              :class="(className ? className + '-input ' : '') + 'autocomplete-input form-control  input-sm'"
-              :placeholder="placeholder"
-              v-model="type"
-              @input="input(type)"
-              @dblclick="showAll"
-              @blur="hideAll"
-              @keydown="keydown"
-              @focus="focus"
-              autocomplete="off"
+      <template v-if="isAlphaNumeric">
+        <input  type="text"
+                :id="id"
+                :class="(className ? className + '-input ' : '') + 'autocomplete-input form-control  input-sm'"
+                :placeholder="placeholder"
+                v-model="type"
+                @input="input(type)"
+                @dblclick="showAll"
+                @blur="hideAll"
+                @keydown="keydown"
+                @focus="focus"
+                autocomplete="off"
+                @keypress="numberKey"/>
 
-      />
+      </template>
+      <template v-else>
+
+        <input  type="text"
+                :id="id"
+                :class="(className ? className + '-input ' : '') + 'autocomplete-input form-control  input-sm'"
+                :placeholder="placeholder"
+                v-model="type"
+                @input="input(type)"
+                @dblclick="showAll"
+                @blur="hideAll"
+                @keydown="keydown"
+                @focus="focus"
+                autocomplete="off"
+        />
+      </template>
       <i class="form-control-feedback glyphicon glyphicon-search"></i>
     </div>
 
@@ -118,6 +135,10 @@
       onBeforeAjax: Function,
       onAjaxProgress: Function,
       onAjaxLoaded: Function,
+      isAlphaNumeric: {
+        type: Boolean,
+        default: false
+      },
     },
 
 
@@ -271,7 +292,16 @@
       },
       setValue(val) {
         this.type = val
-      }
+      },
+      numberKey(event) {
+        debugger;
+        let charCode = (event.which) ? event.which : event.keyCode;
+        if (charCode != undefined) {
+          if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            event.preventDefault();
+          }
+        }
+      },
     },
     created(){
       // Sync parent model with initValue Props
