@@ -43,7 +43,7 @@
                     <label class="control-label pull-right">Type du Catalogue</label>
                   </div>
                   <div class="col-md-6">
-                    <v-select :searchable="false" v-model="filter.typeCMS" :options="typeCatalogueOptions"></v-select>
+                    <v-select :searchable="false" label="value" v-model="filter.typeCMS" :options="typeCatalogueOptions"></v-select>
                   </div>
                 </div>
                 <div class="row">
@@ -169,8 +169,8 @@
       computed : {
         typeCatalogueOptions() {
           return [
-            'CMS France',
-            'CMS Antilles'
+            {id : 'FRA', value : 'CMS France'},
+            {id : 'ANF', value : 'CMS Antilles'}
           ];
         },
 

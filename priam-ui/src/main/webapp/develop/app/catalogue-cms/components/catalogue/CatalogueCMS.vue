@@ -369,7 +369,7 @@
         },
 
         filter : {
-          typeCMS : 'CMS France',
+          typeCMS : {id :'FRA', value : 'CMS France'},
           ide12: null,
           titre: null,
           participant:null,
@@ -389,7 +389,7 @@
         },
 
         currentFilter : {
-          typeCMS : 'FR',
+          typeCMS : {id : 'FRA', value : 'CMS France'},
           ide12: null,
           titre: null,
           participant:null,
@@ -428,11 +428,13 @@
 
 
       findCatalogueByCriteria() {
-        if(this.filter.typeCMS == 'CMS France'){
+        if(this.filter.typeCMS.id === 'FRA'){
           this.currentFilter.typeCMS = 'FR'
         } else {
           this.currentFilter.typeCMS = 'ANF'
         }
+
+
         this.currentFilter.ide12 = this.filter.ide12;
         this.currentFilter.titre = this.filter.titre;
         this.currentFilter.participant = this.filter.participant;
@@ -480,7 +482,7 @@
 
       retablirFiltre() {
         this.filter = {
-          typeCMS : 'CMS France',
+          typeCMS : {'id' :'FRA', 'value' : 'CMS France'},
           ide12: null,
           titre: null,
           participant: null,
