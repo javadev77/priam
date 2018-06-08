@@ -30,6 +30,4 @@
         <jdbc:script location="org/springframework/batch/core/schema-h2.sql"/>
     </jdbc:initialize-database>
 
-
-    <bean id="jobLauncherTestUtils" class="org.springframework.batch.test.JobLauncherTestUtils"/>
 </beans>

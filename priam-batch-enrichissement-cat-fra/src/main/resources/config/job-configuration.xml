@@ -16,7 +16,7 @@
 
     <job id="jobEnrichissementFRA" xmlns="http://www.springframework.org/schema/batch">
         <step id="archiveFlatFileReaderStep">
-            <tasklet>
+            <tasklet >
                 <chunk
                         reader="readerPriamCatCmsCsv"
                         processor="processorPriamCatCmsCsv"
@@ -25,7 +25,7 @@
                 </chunk>
             </tasklet>
 
-            <end on="NOOP"/>
+            <end on="NOOP" />
             <fail on="FAILED"/>
             <next on="*" to="stepIDE12ExistEtDateSortieVide"/>
 

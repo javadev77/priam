@@ -23,6 +23,8 @@
             <button class="btn btn-default btn-primary pull-right"  type="button" style="width: 120px;" @click="onAjouterOeuvre">Ajouter Oeuvre</button>
           </div>
 
+
+
           <priam-grid
             v-if="catalogueGrid.gridData.content"
             :isPaginable="true"
@@ -101,7 +103,7 @@
               id : 'iconIde12',
               name : '',
               sortable :false,
-              type : 'clickable-icon',
+              type : 'clickable-icons',
               cell : {
                 css : function (entry) {
 
@@ -113,10 +115,13 @@
                 },
 
                 cellTemplate: function (cellValue) {
-                  var tempalte = '<span class="glyphicon glyphicon-trash" aria-hidden="true" title="Abandonner"></span>';
 
-                  return '';
+                  var template = [
+                    {event : 'oeuvre',
+                      template : '<img src="static/images/Musique.png" title="Mise en répartition" width="20px"/>'}];
+                  return template;
                 }
+
               }
 
             },
@@ -149,7 +154,7 @@
               id: 'titre',
               name: "Titre",
               sortable: true,
-              type: 'text-centre',
+              type: 'text',
               cell : {
 
                 css : function (entry) {
@@ -174,7 +179,7 @@
               id: 'participant',
               name: "Participant",
               sortable: true,
-              type: 'text-centre',
+              type: 'text',
               cell: {
                 css : function (entry) {
                   return {
@@ -274,7 +279,7 @@
                 css : function (entry) {
                   return {
                     style : {
-                      width : '200px'
+                      width : '150px'
                     }
                   }
                 },
@@ -449,6 +454,8 @@
     },
 
     methods : {
+
+
 
       findCatalogueByCriteria() {
         if(this.filter.typeCMS == 'CMS France'){

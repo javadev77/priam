@@ -152,4 +152,6 @@
         <property name="fichierBatchService" ref="fichierBatchService"/>
     </bean>
 
+    <bean id="jobLauncherTestUtils" class="org.springframework.batch.test.JobLauncherTestUtils"/>
+
 </beans>

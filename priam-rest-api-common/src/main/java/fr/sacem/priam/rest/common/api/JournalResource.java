@@ -2,7 +2,6 @@ package fr.sacem.priam.rest.common.api;
 
 
 import fr.sacem.priam.model.domain.Journal;
-import fr.sacem.priam.model.domain.dto.JournalDto;
 import fr.sacem.priam.services.JournalService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 
 /**
@@ -39,11 +41,4 @@ public class JournalResource {
         return journalService.findJournalByNumProg(numProg, pageable);
     }
 
-    /*@RequestMapping(value = "programme/numProg/{numProg}",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<Journal> findByNumProg(@PathVariable("numProg") String numProg, Pageable pageable) {
-
-        return  journalService.findByNumProg(numProg, pageable);
-    }*/
 }
