@@ -12,7 +12,7 @@
 
     <groupId>fr.sacem.priam</groupId>
     <artifactId>priam-batch-archetype</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
 
     <packaging>maven-archetype</packaging>
 
