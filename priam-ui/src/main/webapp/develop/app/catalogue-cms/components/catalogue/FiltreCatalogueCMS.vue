@@ -226,14 +226,6 @@
               event.preventDefault();
             }
           }
-
-          /*isChecked () {
-          if(this.filter.displayOeuvreNonEligible==true)
-          {
-            return true;
-          }
-          return false;
-        }*/
         },
       }
     }
