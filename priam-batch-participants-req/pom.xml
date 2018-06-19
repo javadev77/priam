@@ -72,7 +72,7 @@
     </dependencies>
 
     <build>
-        <finalName>priam-batch-participants</finalName>
+        <finalName>priam-batch-participants-req</finalName>
 
         <plugins>
 

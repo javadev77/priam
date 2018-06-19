@@ -197,6 +197,14 @@ public enum EnvConstants implements ConfigurableProperty {
         public String property() {
             return "priam.catcms.enrichissement.archives";
         }
+    },
+
+    PARTICIPANTS_REQ_OCTAV_CSV_DIR {
+        @Override
+        public String property() {
+            return "priam.catcms.participants.req.octav.dir";
+        }
+
     };
 
     @Override
