@@ -12,11 +12,14 @@ import javax.sql.DataSource;
  * Created by fandis on 09/10/2017.
  */
 @Configuration
-@ComponentScan(basePackages = {"fr.sacem.priam.batch.participants", "fr.sacem.priam.batch.common"})
+@ComponentScan(basePackages = {"fr.sacem.priam.batch.participants"})
 @ImportResource(value = "classpath:config/job-configuration.xml")
 @Profile({"dev","local","integ","dev2"})
 @PropertySource("classpath:config/application-local.properties")
 public class ConfigurationPriamLocal {
+
+
+
     @Value("${spring.datasource.url}")
     String urlDb;
     @Value("${spring.datasource.username}")
@@ -25,10 +28,11 @@ public class ConfigurationPriamLocal {
     String driverDb;
     @Value("${spring.datasource.password}")
     String passwordDb;
-    @Value("${input.archives}")
-    String inputDirectory;
-    @Value("${output.archives}")
-    String outputDirectory;
+
+    @Value("${csvFile}")
+    String ouputCsvFile;
+
+
     @Bean
     public DataSource dataSource() {
         return DataSourceBuilder
@@ -40,11 +44,14 @@ public class ConfigurationPriamLocal {
                 .build();
     }
 
+
+
     @Bean
     public Admap admap(){
         Admap admap = new Admap();
-        admap.setInputFile(inputDirectory);
-        admap.setOutputFile(outputDirectory);
+
+        admap.setOutputFile(ouputCsvFile);
+
         return admap;
     }
     ConfigurationPriamLocal(){

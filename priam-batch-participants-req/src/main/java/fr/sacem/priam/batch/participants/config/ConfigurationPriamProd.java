@@ -14,15 +14,14 @@ import java.util.Properties;
  * Created by fandis on 09/10/2017.
  */
 @Configuration
-@ComponentScan(basePackages = {"fr.sacem.priam.batch.participants", "fr.sacem.priam.batch.common"})
+@ComponentScan(basePackages = {"fr.sacem.priam.batch.participants"})
 @ImportResource(value = "classpath:config/job-configuration.xml")
-@Profile({"prod", "re7"})
+@Profile({"production", "re7"})
 @PropertySource("classpath:config/application-production.properties")
 public class ConfigurationPriamProd {
 
     private Enum ConfigurationFromAdMap = EnvConstants.BATCH_CONFIG_PROPERTIES;
-    private String inputDirectory = String.valueOf(EnvConstants.PENEF_ZIP_IN);
-    private String outputDirectory = String.valueOf(EnvConstants.PENEF_ZIP_ARCHIVES);
+    private String outputDirectory = String.valueOf(EnvConstants.PARTICIPANTS_REQ_OCTAV_CSV_DIR);
 
     @Bean
     public DataSource dataSource() {
@@ -46,8 +45,8 @@ public class ConfigurationPriamProd {
     public Admap admap(){
         Admap admap = new Admap();
 
-        admap.setInputFile(inputDirectory);
         admap.setOutputFile(outputDirectory);
+
         return admap;
     }
     ConfigurationPriamProd(){

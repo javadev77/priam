@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="searchSystemEnvironment" value="true"/>
+        <property name="ignoreResourceNotFound" value="true"/>
+        <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+        <property name="location" value="classpath:config/application-${spring.profiles.active}.properties"/>
+    </bean>
+
+    <job id="jobCsvREQ" xmlns="http://www.springframework.org/schema/batch">
+        <step id="stepGenerateCsvREQ">
+            <tasklet>
+                <chunk
+                        reader="readFromTableCatalogueCMSFRA"
+                        writer="csvFileWriter"
+                        commit-interval="100">
+                </chunk>
+            </tasklet>
+
+            <listeners merge="true">
+                <listener ref="stepListener"/>
+            </listeners>
+        </step>
+
+        <!--<step id="stepFlagDemiInterface">-->
+            <!--<tasklet ref="generateFlagFileTasklet"></tasklet>-->
+        <!--</step>-->
+
+        <!--<listeners merge="true">-->
+            <!--<listener ref="listenerCompletition"/>-->
+        <!--</listeners>-->
+    </job>
+
+    <!--<bean id="listenerCompletition" class="fr.sacem.priam.batch.participants.listener."></bean>-->
+
+    <bean id="stepListener" class="fr.sacem.priam.batch.participants.listener.FlagDemiInterfaceStepListener"/>
+    <!--<bean id="generateFlagFileTasklet" class="fr.sacem.priam.batch.participants.tasklet.GenerateFlagFileTasklet"></bean>-->
+
+    <bean id="readFromTableCatalogueCMSFRA"
+          class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="queryProvider" ref="queryProvider"/>
+        <property name="pageSize" value="${commit-interval}"/>
+        <property name="rowMapper" ref="catalogueCmsRowMapper"/>
+    </bean>
+
+    <bean id="catalogueCmsRowMapper" class="fr.sacem.priam.batch.participants.mapper.CatalogueCmsMapper"/>
+
+    <bean id="queryProvider" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
+        <property name="selectClause" value="SELECT ID,IDE12"/>
+        <property name="fromClause" value="FROM PRIAM_CATCMS_CATALOGUE"/>
+        <property name="whereClause" value="WHERE DATE_SORTIE IS NULL AND TYPE_CMS='FR'"/>
+        <property name="databaseType" value="MySQL" />
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sortKey" value="ID"/>
+    </bean>
+
+
+    <!--<bean id="writerFichierCsvREQ" class="org.springframework.batch.item.file.FlatFileItemWriter">-->
+        <!--&lt;!&ndash; write to this csv file &ndash;&gt;-->
+        <!--<property name="resource" value="file:#{jobParameters[outputCsvFile]}" />-->
+        <!--<property name="shouldDeleteIfExists" value="true" />-->
+
+        <!--<property name="lineAggregator">-->
+            <!--<bean-->
+                    <!--class="org.springframework.batch.item.file.transform.DelimitedLineAggregator">-->
+                <!--<property name="delimiter" value=";" />-->
+                <!--<property name="fieldExtractor">-->
+                    <!--<bean-->
+                            <!--class="org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor">-->
+                        <!--<property name="names" value="ide12, cdeTypIde12,datConslt" />-->
+                    <!--</bean>-->
+                <!--</property>-->
+            <!--</bean>-->
+        <!--</property>-->
+    <!--</bean>-->
+
+
+
+    <bean id="jobOperator" class="org.springframework.batch.core.launch.support.SimpleJobOperator"
+          p:jobLauncher-ref="jobLauncher" p:jobExplorer-ref="jobExplorer"
+          p:jobRepository-ref="jobRepository" p:jobRegistry-ref="jobRegistry"/>
+
+    <bean id="jobExplorer" class="org.springframework.batch.core.explore.support.JobExplorerFactoryBean"
+          p:dataSource-ref="dataSource"/>
+
+    <bean id="jobRegistry" class="org.springframework.batch.core.configuration.support.MapJobRegistry"/>
+
+    <bean class="org.springframework.batch.core.configuration.support.JobRegistryBeanPostProcessor"
+          p:jobRegistry-ref="jobRegistry"/>
+
+    <bean id="jobLauncher" class="org.springframework.batch.core.launch.support.SimpleJobLauncher"
+          p:jobRepository-ref="jobRepository"/>
+
+    <bean id="jobRepository" class="org.springframework.batch.core.repository.support.JobRepositoryFactoryBean"
+          p:dataSource-ref="dataSource"
+          p:transactionManager-ref="transactionManager"/>
+
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+
+</beans>
