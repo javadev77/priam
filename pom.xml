@@ -38,6 +38,7 @@
         <module>priam-batch-import-catcms-rdo</module>
         <module>priam-batch-enrichissement-cat-fra</module>
         <module>priam-batch-participants</module>
+        <module>priam-batch-participant-rep</module>
 
     </modules>
 
