@@ -367,6 +367,16 @@
                         </td>
                       </template>
 
+                      <template v-else-if="entryColumn.type === 'list-render'">
+                         <td :style="styleValue(entryColumn, entry)">
+                            <template v-for="elem in entryColumn.cell.getData(entry)">
+                              <span v-if="entryColumn.listStyle === 'circle'">&nbsp;•&nbsp;</span>
+                              <span> {{ elem }} </span>
+                              <br/>
+                            </template>
+                          </td>
+                      </template>
+
                       <template  v-else>
                         <td :style="styleValue(entryColumn, entry)">
                           {{ entry[entryColumn.id] }}
@@ -509,6 +519,8 @@
                           {{ entryColumn.cell.toText(entry.ajout).value }}
                         </td>
                       </template>
+
+
 
                       <template  v-else>
                         <td :style="styleValue(entryColumn, entry)">

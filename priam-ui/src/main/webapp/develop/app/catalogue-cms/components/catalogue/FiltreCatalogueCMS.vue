@@ -89,14 +89,17 @@
                 </div>
 
                 <div class="row">
-                  <div class="col">
-                    <div class="col-md-8" style="margin-left: 111px">
-                      <label class="checkbox" :class="{'checked' : isPeriodeSortieSaisie || filter.displayOeuvreNonEligible}">
-                        <input type="checkbox" v-model="filter.displayOeuvreNonEligible">Afficher oeuvres non éligibles
-                        <span class="icons"><span class="first-icon fui-checkbox-unchecked"></span><span class="second-icon fui-checkbox-checked"></span></span>
-                      </label>
-                    </div>
+                  <div class="col-md-4">
+
                   </div>
+                  <div class="col-md-14">
+                    <label class="checkbox checkbox-inline pull-left"  :class="{'checked' : isPeriodeSortieSaisie || filter.displayOeuvreNonEligible}">
+                      <input type="checkbox" v-model="filter.displayOeuvreNonEligible">&nbsp;Afficher oeuvres non éligibles
+                      <span class="icons"><span class="first-icon fui-checkbox-unchecked"></span>
+                        <span class="second-icon fui-checkbox-checked"></span></span>
+                    </label>
+                  </div>
+
                 </div>
 
 

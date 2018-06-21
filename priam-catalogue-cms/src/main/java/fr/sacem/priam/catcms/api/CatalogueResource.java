@@ -1,18 +1,14 @@
 package fr.sacem.priam.catcms.api;
 
 import fr.sacem.priam.catcms.api.dto.CatalogueCritereRecherche;
-import fr.sacem.priam.model.dao.jpa.catcms.CatalogueRdoDao;
-import fr.sacem.priam.model.domain.catcms.CatalogueRdo;
+import fr.sacem.priam.model.dao.jpa.catcms.CatalogueCmsDao;
+import fr.sacem.priam.model.domain.catcms.CatalogueCms;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.util.Calendar;
 import java.util.Date;
 
 @RestController
@@ -20,14 +16,14 @@ import java.util.Date;
 public class CatalogueResource {
 
     @Autowired
-    CatalogueRdoDao catalogueRdoDao;
+    CatalogueCmsDao catalogueRdoDao;
 
     @RequestMapping(
             value = "catalogue/search",
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<CatalogueRdo> findByCriteria(@RequestBody CatalogueCritereRecherche catalogueCritereRecherche, Pageable pageable) {
+    public Page<CatalogueCms> findByCriteria(@RequestBody CatalogueCritereRecherche catalogueCritereRecherche, Pageable pageable) {
 
 
         if(catalogueCritereRecherche.isDisplayOeuvreNonEligible()){
@@ -65,9 +61,9 @@ public class CatalogueResource {
             method = RequestMethod.DELETE,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public CatalogueRdo deleteOeuvre(@PathVariable(name = "ide12") Long ide12, @RequestBody CatalogueRdo catalogueRdo){
-//        CatalogueRdo deletedOeuvre = catalogueRdoDao.findByIde12AndTypeCMS(ide12, catalogueRdo.getTypeCMS());
-        CatalogueRdo deletedOeuvre = catalogueRdoDao.findOne(catalogueRdo.getId());
+    public CatalogueCms deleteOeuvre(@PathVariable(name = "ide12") Long ide12, @RequestBody CatalogueCms catalogueRdo){
+//        CatalogueCms deletedOeuvre = catalogueRdoDao.findByIde12AndTypeCMS(ide12, catalogueRdo.getTypeCMS());
+        CatalogueCms deletedOeuvre = catalogueRdoDao.findOne(catalogueRdo.getId());
 
         deletedOeuvre.setDateSortie(new Date());
         deletedOeuvre.setTypeSortie("Manuelle");
@@ -82,8 +78,8 @@ public class CatalogueResource {
             method = RequestMethod.DELETE,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public CatalogueRdo deleteOeuvre(@PathVariable(name = "id") Long id, @RequestBody CatalogueRdo catalogueRdo){
-        CatalogueRdo deletedOeuvre = catalogueRdoDao.findOne(id);
+    public CatalogueCms deleteOeuvre(@PathVariable(name = "id") Long id, @RequestBody CatalogueCms catalogueRdo){
+        CatalogueCms deletedOeuvre = catalogueRdoDao.findOne(id);
         deletedOeuvre.setDateSortie(new Date());
         deletedOeuvre.setTypeSortie("Manuelle");
         deletedOeuvre.setRaisonSortie(catalogueRdo.getRaisonSortie());

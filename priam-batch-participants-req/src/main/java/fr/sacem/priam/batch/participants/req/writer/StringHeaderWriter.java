@@ -1,4 +1,4 @@
-package fr.sacem.priam.batch.participants.writer;
+package fr.sacem.priam.batch.participants.req.writer;
 
 import org.springframework.batch.item.file.FlatFileHeaderCallback;
 

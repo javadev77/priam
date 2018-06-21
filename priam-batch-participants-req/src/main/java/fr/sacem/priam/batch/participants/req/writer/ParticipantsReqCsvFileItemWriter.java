@@ -1,6 +1,6 @@
-package fr.sacem.priam.batch.participants.writer;
+package fr.sacem.priam.batch.participants.req.writer;
 
-import fr.sacem.priam.batch.participants.domain.CatalogueCms;
+import fr.sacem.priam.batch.participants.req.domain.CatalogueCms;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.AfterStep;
 import org.springframework.batch.item.ExecutionContext;

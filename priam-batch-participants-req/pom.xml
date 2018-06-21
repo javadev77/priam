@@ -37,6 +37,13 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>fr.sacem.priam</groupId>
+            <artifactId>priam-common-batch</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.batch</groupId>
             <artifactId>spring-batch-infrastructure</artifactId>
         </dependency>
@@ -87,7 +94,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>fr.sacem.priam.batch.participants.App</mainClass>
+                            <mainClass>fr.sacem.priam.batch.participants.req.App</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

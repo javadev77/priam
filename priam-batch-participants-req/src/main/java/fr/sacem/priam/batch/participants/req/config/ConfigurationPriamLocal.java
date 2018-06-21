@@ -1,4 +1,4 @@
-package fr.sacem.priam.batch.participants.config;
+package fr.sacem.priam.batch.participants.req.config;
 
 import fr.sacem.priam.batch.common.domain.Admap;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +14,7 @@ import javax.sql.DataSource;
 @Configuration
 @ComponentScan(basePackages = {"fr.sacem.priam.batch.participants"})
 @ImportResource(value = "classpath:config/job-configuration.xml")
-@Profile({"dev","local","integ","dev2"})
+@Profile({"dev","local"})
 @PropertySource("classpath:config/application-local.properties")
 public class ConfigurationPriamLocal {
 

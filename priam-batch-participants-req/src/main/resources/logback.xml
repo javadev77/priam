@@ -15,7 +15,7 @@
         <file>${priam.log.default.directory}priam-batch-participants-req.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
             <fileNamePattern>${priam.log.default.directory}/priam-batch-participants-req.%i.log</fileNamePattern>
-            <maxIndex>10</maxIndex>
+            <maxIndex>20</maxIndex>
         </rollingPolicy>
         <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
             <maxFileSize>10MB</maxFileSize>

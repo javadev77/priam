@@ -2,8 +2,8 @@ package fr.sacem.priam.catcms.api;
 
 import fr.sacem.priam.catcms.api.dto.CatalogueCritereRecherche;
 import fr.sacem.priam.catcms.config.RestResourceTest;
-import fr.sacem.priam.model.dao.jpa.catcms.CatalogueRdoDao;
-import fr.sacem.priam.model.domain.catcms.CatalogueRdo;
+import fr.sacem.priam.model.dao.jpa.catcms.CatalogueCmsDao;
+import fr.sacem.priam.model.domain.catcms.CatalogueCms;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -14,7 +14,6 @@ import java.util.List;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -31,7 +30,7 @@ public class CatalogueResourceTest extends RestResourceTest {
     public static final String APP_REST_CATALOGUE_DELETE = "/app/rest/catalogue/oeuvre/delete/";
 
     @Autowired
-    CatalogueRdoDao catalogueRdoDao;
+    CatalogueCmsDao catalogueRdoDao;
 
 //    private MariaDB4jSpringService mariaDB4jSpringService;
 
@@ -40,7 +39,7 @@ public class CatalogueResourceTest extends RestResourceTest {
     @Test
     public void findAllByCriteria_TypeCMS_FR_NonEligible() throws Exception {
 
-        List<CatalogueRdo> all = catalogueRdoDao.findAll();
+        List<CatalogueCms> all = catalogueRdoDao.findAll();
 
         catalogueCritereRecherche.setTypeCMS("FR");
         catalogueCritereRecherche.setDisplayOeuvreNonEligible(false);
@@ -162,7 +161,7 @@ public class CatalogueResourceTest extends RestResourceTest {
     @Test
     public void findAllByCriteria_tri_dateEntree() throws Exception {
 
-        List<CatalogueRdo> all = catalogueRdoDao.findAll();
+        List<CatalogueCms> all = catalogueRdoDao.findAll();
 
         catalogueCritereRecherche.setTypeCMS("FR");
         catalogueCritereRecherche.setDisplayOeuvreNonEligible(false);
@@ -197,7 +196,7 @@ public class CatalogueResourceTest extends RestResourceTest {
 
     @Test
     public void deleteOeuvreWithRaison() throws Exception {
-        CatalogueRdo deletedOeuvre = new CatalogueRdo();
+        CatalogueCms deletedOeuvre = new CatalogueCms();
         deletedOeuvre.setRaisonSortie("raison sortie");
 
         mockMvc.perform(

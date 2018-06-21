@@ -5,11 +5,13 @@ import fr.sacem.priam.model.util.SimpleDateSerializer;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "PRIAM_CATCMS_CATALOGUE")
-public class CatalogueRdo implements Serializable {
+public class CatalogueCms implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,12 +54,21 @@ public class CatalogueRdo implements Serializable {
     @Column(name = "RAISON_SORTIE")
     private String raisonSortie;
 
-    @Column(name = "ROLE")
-    private String role;
+    @OneToMany
+    @JoinColumns({
+            @JoinColumn(name="TYPE_CMS", referencedColumnName = "TYPE_CMS"),
+            @JoinColumn(name="IDE12", referencedColumnName = "IDE12")})
+    private List<ParticipantsCatcms> participants = new ArrayList<>();
 
-    @Column(name = "PARTICIPANT")
-    private String participant;
+    private transient List<ParticipantsCatcms> roles;
 
+    public List<ParticipantsCatcms> getRoles() {
+        return this.getParticipants();
+    }
+
+    public void setRoles(List<ParticipantsCatcms> roles) {
+        this.roles = roles;
+    }
 
     public Long getId() {
         return id;
@@ -147,22 +158,13 @@ public class CatalogueRdo implements Serializable {
         this.raisonSortie = raisonSortie;
     }
 
-    public String getRole() {
-        return role;
+    public List<ParticipantsCatcms> getParticipants() {
+        return participants;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setParticipants(List<ParticipantsCatcms> participants) {
+        this.participants = participants;
     }
 
-    public String getParticipant() {
-        return participant;
-    }
-
-    public void setParticipant(String participant) {
-        this.participant = participant;
-    }
-
-    public CatalogueRdo() {
-    }
+    public CatalogueCms() {}
 }

@@ -1,4 +1,4 @@
-package fr.sacem.priam.batch.participants.domain;
+package fr.sacem.priam.batch.participants.req.domain;
 
 /**
  * Created by benmerzoukah on 13/06/2018.

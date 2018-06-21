@@ -1,4 +1,4 @@
-package fr.sacem.priam.batch.participants.dao;
+package fr.sacem.priam.batch.participants.req.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;

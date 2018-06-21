@@ -1,4 +1,4 @@
-package fr.sacem.priam.batch.participants.listener;
+package fr.sacem.priam.batch.participants.req.listener;
 
 import fr.sacem.priam.batch.common.domain.Admap;
 import org.slf4j.Logger;

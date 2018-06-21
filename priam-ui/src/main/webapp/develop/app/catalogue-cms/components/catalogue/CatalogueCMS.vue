@@ -76,7 +76,6 @@
   import ModalWithTitle from './../../../common/components/ui/ModalWithTitle';
   import FiltreCatalogue from './FiltreCatalogueCMS.vue';
 
-
   export default {
 
     props : {
@@ -167,7 +166,7 @@
 
                 toText : function(entry) {
                   var result = entry;
-                  if(result !=undefined)
+                  if(result !== undefined)
                     return result ;
                   else
                     return "";
@@ -176,49 +175,63 @@
             },
 
             {
-              id: 'participant',
+              id: 'participants',
               name: "Participant",
-              sortable: true,
-              type: 'text',
+              sortable: false,
+              type: 'list-render',
+              listStyle : 'circle',
               cell: {
                 css : function (entry) {
                   return {
                     style : {
+                      'text-align' : 'left',
                       width : '200px'
                     }
                   }
                 },
-                toText : function(entry) {
-                  var result = entry;
-                  if(result !== undefined)
-                    return result ;
-                  else
-                    return "";
+
+                getData: function (entry) {
+                  var part = entry.participants;
+                  var data = [];
+                  for(var i in part) {
+                      data.push(part[i].participant);
+                  }
+
+                  return data;
                 }
+
+
               }
             },
 
             {
-              id: 'role',
+              id: 'roles',
               name: 'Rôle',
-              sortable: true,
-              type: 'text-centre',
+              sortable: false,
+              type: 'list-render',
+              listStyle : 'none',
               cell : {
                 css : function (entry) {
                   return {
                     style : {
-                      width : '50px'
+                      'text-align' : 'center',
+                       width : '50px'
                     }
                   }
                 },
 
-                toText : function(entry) {
-                  var result = entry;
-                  if(result !== undefined)
-                    return result ;
-                  else
-                    return "";
+                getData: function (entry) {
+                  var part = entry.participants;
+                  var data = [];
+                  for(var i in part) {
+
+                    data.push(part[i].role);
+                  }
+
+                  return data;
                 }
+
+
               }
             },
 
@@ -485,7 +498,9 @@
             return response.json();
           })
           .then(data => {
+
             this.catalogueGrid.gridData = data;
+
             this.catalogueGrid.gridData.number = data.number + 1;
           })
           .catch(error => {

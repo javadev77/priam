@@ -1,8 +1,8 @@
-package fr.sacem.priam.batch.participants.writer;
+package fr.sacem.priam.batch.participants.req.writer;
 
 import fr.sacem.priam.batch.common.domain.Admap;
-import fr.sacem.priam.batch.participants.dao.CatalogueCmsDao;
-import fr.sacem.priam.batch.participants.domain.CatalogueCms;
+import fr.sacem.priam.batch.participants.req.dao.CatalogueCmsDao;
+import fr.sacem.priam.batch.participants.req.domain.CatalogueCms;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor;
