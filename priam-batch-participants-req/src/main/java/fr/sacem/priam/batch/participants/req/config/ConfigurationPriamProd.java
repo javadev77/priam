@@ -14,7 +14,7 @@ import java.util.Properties;
  * Created by fandis on 09/10/2017.
  */
 @Configuration
-@ComponentScan(basePackages = {"fr.sacem.priam.batch.participants"})
+@ComponentScan(basePackages = {"fr.sacem.priam.batch.participants.req"})
 @ImportResource(value = "classpath:config/job-configuration.xml")
 @Profile({"production", "re7"})
 @PropertySource("classpath:config/application-production.properties")

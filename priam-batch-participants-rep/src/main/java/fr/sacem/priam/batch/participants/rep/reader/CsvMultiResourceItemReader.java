@@ -1,4 +1,4 @@
-package fr.sacem.priam.batch.particpants.rep.service;
+package fr.sacem.priam.batch.participants.rep.reader;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

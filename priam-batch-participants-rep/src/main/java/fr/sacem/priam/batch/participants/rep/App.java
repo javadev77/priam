@@ -1,8 +1,8 @@
-package fr.sacem.priam.batch.particpants.rep;
+package fr.sacem.priam.batch.participants.rep;
 
 import fr.sacem.priam.batch.common.domain.Admap;
-import fr.sacem.priam.batch.particpants.rep.config.ConfigurationPriamLocal;
-import fr.sacem.priam.batch.particpants.rep.config.ConfigurationPriamProd;
+import fr.sacem.priam.batch.participants.rep.config.ConfigurationPriamLocal;
+import fr.sacem.priam.batch.participants.rep.config.ConfigurationPriamProd;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;

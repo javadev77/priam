@@ -1,8 +1,7 @@
-package fr.sacem.priam.batch.particpants.rep.mapper;
+package fr.sacem.priam.batch.participants.rep.mapper;
 
-import fr.sacem.priam.batch.common.domain.Repartition;
 import fr.sacem.priam.batch.common.util.exception.PriamValidationException;
-import fr.sacem.priam.batch.particpants.rep.domaine.Participant;
+import fr.sacem.priam.batch.participants.rep.domaine.Participant;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.batch.item.ReaderNotOpenException;

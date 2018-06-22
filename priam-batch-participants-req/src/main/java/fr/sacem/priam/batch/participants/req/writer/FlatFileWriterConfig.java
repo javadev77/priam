@@ -36,7 +36,7 @@ public class FlatFileWriterConfig {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.FRANCE);
         return       "#-------------------------------------------------------------------------------------------------------------------;;\n" +
                      "# Fichier a destination de OCTAV;;\n"+
-                     "# en provenance de PRIAM pour service PARTICIPANTS FRA;;\n"+
+                     "# en provenance de PRIAM pour reader PARTICIPANTS FRA;;\n"+
                      "#-------------------------------------------------------------------------------------------------------------------;;\n"+
                      "# JJ/MM/AAAA HH:MM - Auteur - Objet;;\n"+
                      "#-------------------------------------------------------------------------------------------------------------------;;\n"+

@@ -1,4 +1,4 @@
-package fr.sacem.priam.batch.particpants.rep.domaine;
+package fr.sacem.priam.batch.participants.rep.domaine;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

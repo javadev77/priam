@@ -1,6 +1,6 @@
-package fr.sacem.priam.batch.particpants.rep.mapper;
+package fr.sacem.priam.batch.participants.rep.mapper;
 
-import fr.sacem.priam.batch.particpants.rep.domaine.Participant;
+import fr.sacem.priam.batch.participants.rep.domaine.Participant;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;

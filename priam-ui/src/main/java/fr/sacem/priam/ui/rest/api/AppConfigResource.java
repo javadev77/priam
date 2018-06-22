@@ -26,9 +26,9 @@ public class AppConfigResource {
 
     Map<String, String> appConfig = new HashMap<>();
 
-    appConfig.put("priam.service.common.url", String.valueOf(EnvConstants.PRIAM_SERVICE_REST_COMMON_URL));
-    appConfig.put("priam.service.cms.url", String.valueOf(EnvConstants.PRIAM_SERVICE_REST_CMS_URL));
-    appConfig.put("priam.service.cp.url", String.valueOf(EnvConstants.PRIAM_SERVICE_REST_CP_URL));
+    appConfig.put("priam.reader.common.url", String.valueOf(EnvConstants.PRIAM_SERVICE_REST_COMMON_URL));
+    appConfig.put("priam.reader.cms.url", String.valueOf(EnvConstants.PRIAM_SERVICE_REST_CMS_URL));
+    appConfig.put("priam.reader.cp.url", String.valueOf(EnvConstants.PRIAM_SERVICE_REST_CP_URL));
 
 
     return appConfig;

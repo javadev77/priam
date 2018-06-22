@@ -68,15 +68,15 @@
     </job>
 
     <bean id="readerPriamParticipantCsv"
-          class="fr.sacem.priam.batch.particpants.rep.service.CsvMultiResourceItemReader" scope="step">
+          class="fr.sacem.priam.batch.participants.rep.reader.CsvMultiResourceItemReader" scope="step">
         <property name="delegate" ref="flatFileItemReader"/>
         <property name="strict" value="false"/>
     </bean>
 
     <bean id="flatFileItemReader"
-          class="fr.sacem.priam.batch.particpants.rep.mapper.ParticipantFileItemReader">
+          class="fr.sacem.priam.batch.participants.rep.mapper.ParticipantFileItemReader">
         <property name="lineMapper">
-            <bean class="fr.sacem.priam.batch.particpants.rep.mapper.ParticipantFraLineMapper">
+            <bean class="fr.sacem.priam.batch.participants.rep.mapper.ParticipantFraLineMapper">
                 <property name="lineTokenizer">
                     <bean class="org.springframework.batch.item.file.transform.DelimitedLineTokenizer">
                         <property name="names" value="ide12,cdeTypUtilIde12,dateConslt,rolPart,nomPart,statut"/>
@@ -85,7 +85,7 @@
                 </property>
                 <property name="fieldSetMapper">
                     <bean class="org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper">
-                        <property name="targetType" value="fr.sacem.priam.batch.particpants.rep.domaine.Participant"/>
+                        <property name="targetType" value="fr.sacem.priam.batch.participants.rep.domaine.Participant"/>
                         <property name="customEditors">
                             <map>
                                 <entry key="java.time.LocalDateTime">
@@ -130,10 +130,10 @@
         </property>
     </bean>
 
-    <bean id="processorPriamParticipantCsv" class="fr.sacem.priam.batch.particpants.rep.processor.ParticipantFraProcessor"/>
+    <bean id="processorPriamParticipantCsv" class="fr.sacem.priam.batch.participants.rep.processor.ParticipantFraProcessor"/>
 
 
-    <bean id="jobCompletionParticipantListener" class="fr.sacem.priam.batch.particpants.rep.listener.JobCompletionParticipantListener"></bean>
+    <bean id="jobCompletionParticipantListener" class="fr.sacem.priam.batch.participants.rep.listener.JobCompletionParticipantListener"></bean>
 
     <bean id="readerStepStatutRoleParticipant"
           class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
@@ -154,9 +154,9 @@
         <property name="sortKey" value="ID"/>
     </bean>
 
-    <bean id="participantRowMapper" class="fr.sacem.priam.batch.particpants.rep.mapper.ParticipantRowMapper"/>
+    <bean id="participantRowMapper" class="fr.sacem.priam.batch.participants.rep.mapper.ParticipantRowMapper"/>
 
-    <bean id="processorStep2" class="fr.sacem.priam.batch.particpants.rep.processor.ParticipantFraStep2Processor"/>
+    <bean id="processorStep2" class="fr.sacem.priam.batch.participants.rep.processor.ParticipantFraStep2Processor"/>
 
     <bean id="writerStepStatutRoleParticipant" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
         <property name="dataSource" ref="dataSource"/>
@@ -277,7 +277,7 @@
         </property>
     </bean>
 
-    <bean id="processorStep3" class="fr.sacem.priam.batch.particpants.rep.processor.ParticipantFraStep3Processor"/>
+    <bean id="processorStep3" class="fr.sacem.priam.batch.participants.rep.processor.ParticipantFraStep3Processor"/>
 
     <bean id="jobOperator" class="org.springframework.batch.core.launch.support.SimpleJobOperator"
           p:jobLauncher-ref="jobLauncher" p:jobExplorer-ref="jobExplorer"
