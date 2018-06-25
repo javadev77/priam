@@ -2,11 +2,9 @@ package fr.sacem.priam.model.domain.catcms;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Created by benmerzoukah on 20/06/2018.
@@ -16,17 +14,31 @@ import java.io.Serializable;
 @JsonSerialize(using = ParticipantsSerializer.class)
 public class ParticipantsCatcms implements Serializable {
 
-    @EmbeddedId
-    ParticipantsPK id;
+//    @EmbeddedId
+//    ParticipantsPK id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    private Long id;
+
+    @Column(name = "TYPE_CMS")
+    private String typeCMS;
+
+    @Column(name = "IDE12")
+    private Long ide12;
+
+    @Column(name = "ROLE")
+    private String role;
 
     @Column(name = "PARTICIPANT")
     private String nomParticpant;
 
-    public ParticipantsPK getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(ParticipantsPK id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -38,7 +50,47 @@ public class ParticipantsCatcms implements Serializable {
         this.nomParticpant = nomParticpant;
     }
 
+    public String getTypeCMS() {
+        return typeCMS;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public Long getIde12() {
+        return ide12;
+    }
+
+    public void setTypeCMS(String typeCMS) {
+        this.typeCMS = typeCMS;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public void setIde12(Long ide12) {
+        this.ide12 = ide12;
+    }
+
     public ParticipantsCatcms() {
 
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Long)) return false;
+
+        Long that = (Long) o;
+
+
+        return Objects.equals(getId(), that);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
     }
 }

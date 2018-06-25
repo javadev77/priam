@@ -24,7 +24,7 @@ public class ParticipantsSerializer extends StdSerializer<ParticipantsCatcms> {
 
         jgen.writeStartObject();
 
-        jgen.writeStringField("role", participantsCatcms.getId().getRole());
+        jgen.writeStringField("role", participantsCatcms.getRole());
         jgen.writeStringField("participant", participantsCatcms.getNomParticpant());
 
 

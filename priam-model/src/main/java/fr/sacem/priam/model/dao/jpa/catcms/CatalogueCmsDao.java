@@ -21,7 +21,7 @@ public interface CatalogueCmsDao extends JpaRepository<CatalogueCms, Long> {
     /*@Query(value = "SELECT cat FROM CatalogueCms cat")
     Page<CatalogueCms> findByCriteria(Pageable pageable);*/
 
-    @Query(value = "SELECT distinct cat FROM CatalogueCms cat INNER JOIN cat.participants part " +
+    @Query(value = "SELECT cat FROM CatalogueCms cat LEFT JOIN cat.participants part " +
             "where cat.typeCMS= :typeCMS " +
             "AND (CONCAT(cat.ide12, '') LIKE %:ide12% OR :ide12 IS NULL) " +
             "AND (cat.titre LIKE %:titre% OR :titre IS NULL) " +
@@ -31,7 +31,8 @@ public interface CatalogueCmsDao extends JpaRepository<CatalogueCms, Long> {
             "AND (cat.dateRenouvellement >= :periodeRenouvellementDateDebut or :periodeRenouvellementDateDebut IS NULL) " +
             "AND (cat.dateRenouvellement <= :periodeRenouvellementDateFin or :periodeRenouvellementDateFin IS NULL) " +
             "AND (cat.dateSortie >= :periodeSortieDateDebut or :periodeSortieDateDebut IS NULL) " +
-            "AND (cat.dateSortie <= :periodeSortieDateFin or :periodeSortieDateFin IS NULL) ")
+            "AND (cat.dateSortie <= :periodeSortieDateFin or :periodeSortieDateFin IS NULL) " +
+            "GROUP BY cat.ide12, cat.typeCMS ")
     Page<CatalogueCms> findByCriteriaWithNonEligible(@Param("typeCMS") String typeCMS,
                                                      @Param("ide12") String ide12,
                                                      @Param("titre") String titre,
@@ -44,7 +45,7 @@ public interface CatalogueCmsDao extends JpaRepository<CatalogueCms, Long> {
                                                      @Param("periodeSortieDateFin") Date periodeSortieDateFin, Pageable pageable);
 
 
-    @Query(value = "SELECT distinct cat FROM CatalogueCms cat INNER JOIN cat.participants part " +
+    @Query(value = "SELECT cat FROM CatalogueCms cat LEFT JOIN cat.participants part " +
             "where cat.typeCMS= :typeCMS " +
             "AND (CONCAT(cat.ide12, '') LIKE %:ide12% OR :ide12 IS NULL) " +
             "AND (cat.titre LIKE %:titre% OR :titre IS NULL) " +
@@ -53,7 +54,8 @@ public interface CatalogueCmsDao extends JpaRepository<CatalogueCms, Long> {
             "AND (cat.dateEntree <= :periodeEntreeDateFin or :periodeEntreeDateFin IS NULL) " +
             "AND (cat.dateRenouvellement >= :periodeRenouvellementDateDebut or :periodeRenouvellementDateDebut IS NULL) " +
             "AND (cat.dateRenouvellement <= :periodeRenouvellementDateFin or :periodeRenouvellementDateFin IS NULL) " +
-            "AND (cat.dateSortie IS NULL OR cat.dateSortie >= :periodeSortieDateFin) ")
+            "AND (cat.dateSortie IS NULL OR cat.dateSortie >= :periodeSortieDateFin) " +
+            "GROUP BY cat.ide12, cat.typeCMS ")
     Page<CatalogueCms> findByCriteriaWithoutNonEligible(@Param("typeCMS") String typeCMS,
                                                         @Param("ide12") String ide12,
                                                         @Param("titre") String titre,

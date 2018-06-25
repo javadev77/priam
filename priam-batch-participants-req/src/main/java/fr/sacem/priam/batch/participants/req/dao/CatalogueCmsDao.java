@@ -28,7 +28,7 @@ public class CatalogueCmsDao {
                 "count(l.ID) as NB_LIGNES " +
                 "FROM " +
                 "PRIAM_CATCMS_CATALOGUE l " +
-                "WHERE l.DATE_SORTIE IS NULL AND l.TYPE_CMS=?";
+                "WHERE (l.DATE_SORTIE IS NULL OR l.DATE_SORTIE>= CURRENT_DATE) AND l.TYPE_CMS=?";
         return jdbcTemplate.queryForObject(sql, (resultSet, i) -> resultSet.getLong("NB_LIGNES"), typeCms);
     }
 }
