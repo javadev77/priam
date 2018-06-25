@@ -207,8 +207,8 @@
     <bean id="compositeWriter" class="org.springframework.batch.item.support.CompositeItemWriter">
         <property name="delegates">
             <list>
-                <ref bean="writerToTableParticipants" />
                 <ref bean="writerToTableCatalogueCms" />
+                <ref bean="writerToTableParticipants" />
             </list>
         </property>
     </bean>
