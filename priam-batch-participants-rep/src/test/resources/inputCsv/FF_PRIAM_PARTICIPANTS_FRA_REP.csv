@@ -1,0 +1,38 @@
+#-------------------------------------------------------------------------------------------------------------------;;;;;
+# Fichier a destination de PRIAM;;;;;
+# en provenance de OCTAV pour service PARTICIPANTS FRA;;;;;
+#-------------------------------------------------------------------------------------------------------------------;;;;;
+# JJ/MM/AAAA HH:MM - Auteur - Objet;;;;;
+#-------------------------------------------------------------------------------------------------------------------;;;;;
+# 24/08/2017 16:00:00 - PRIAM - Creation;;;;;
+#DEBUT;;;;;
+#IDE12;CDETYPIDE12    ;DATCONSLT       ;ROLPART;NOMPART ;STATUT
+10000111;COCV;;C;YYYY;0
+10000111;COCV;;CA;ZZZZ;0
+2000001411;COCV;;C;YYYY;0
+2000001411;COCV;;AR;ZZZZ;0
+2000001411;COCV;;SA;AAAA;0
+2000001411;COCV;;CA;BBBB;0
+2000001411;COCV;;X;CCCC;0
+2000002411;COCV;;C;YYYY;-1
+2000002411;COCV;;CA;ZZZZ;0
+2000002411;COCV;;A;AAAA;-1
+2000002411;COCV;;AR;BBBB;0
+2000002411;COCV;;SA;CCCC;0
+2000012511;COCV;;C;YYYY;1
+2000012511;COCV;;CA;ZZZZ;0
+2000012511;COCV;;A;AAAA;0
+2000012511;COCV;;AR;BBBB;0
+2000012511;COCV;;SA;CCCC;0
+2000014011;COCV;;C;YYYY;0
+2000014011;COCV;;CA;ZZZZ;0
+2000014011;COCV;;A;AAAA;0
+2000014011;COCV;;AR;BBBB;0
+2000014011;COCV;;SA;CCCC;0
+2000013811;COCV;;SA;YYYY;0
+#FIN;;;;;
+#20171205 10:54:53;;;;;
+#Nbr lignes de donnees = 2;;;;;
+#FIN;;;;;
+#24/08/2017 16:30:00;;;;;
+#Nbr lignes de donnees = 2;;;;;
