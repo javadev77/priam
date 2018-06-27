@@ -24,9 +24,19 @@
           </div>
 
 
+          <div class="row center-div">
+            <div class="spinner" v-if="dataLoading">
+              <div class="rect1"></div>
+              <div class="rect2"></div>
+              <div class="rect3"></div>
+              <div class="rect4"></div>
+              <div class="rect5"></div>
+            </div>
+          </div>
+
 
           <priam-grid
-            v-if="catalogueGrid.gridData.content"
+            v-if="catalogueGrid.gridData.content && !dataLoading"
             :isPaginable="true"
             :data="catalogueGrid.gridData"
             :columns="catalogueGrid.gridColumns"
@@ -86,6 +96,8 @@
     data() {
 
       return {
+
+        dataLoading : true,
 
         showPopupDeleteOeuvre : false,
 
@@ -191,13 +203,10 @@
                 },
 
                 getData: function (entry) {
-                  var part = entry.participants;
-                  var data = [];
-                  for(var i in part) {
-                      data.push(part[i].participant);
-                  }
-
-                  return data;
+                  let participants = entry.participants;
+                  return participants !== null &&
+                         participants !== undefined &&
+                         participants.split(",");
                 }
 
 
@@ -221,14 +230,10 @@
                 },
 
                 getData: function (entry) {
-                  var part = entry.participants;
-                  var data = [];
-                  for(var i in part) {
-
-                    data.push(part[i].role);
-                  }
-
-                  return data;
+                  let roles = entry.roles;
+                  return roles !== null &&
+                    roles !== undefined &&
+                    roles.split(",");
                 }
 
 
@@ -489,6 +494,7 @@
         this.currentFilter.periodeSortieDateFin = this.filter.periodeSortieFilter.dateFin;
         this.currentFilter.displayOeuvreNonEligible = this.filter.displayOeuvreNonEligible;
 
+        this.dataLoading = true;
         this.resource.searchCatalogueRdo({
           page : this.defaultPageable.page - 1,
           size : this.defaultPageable.size,
@@ -502,6 +508,7 @@
             this.catalogueGrid.gridData = data;
 
             this.catalogueGrid.gridData.number = data.number + 1;
+            this.dataLoading = false;
           })
           .catch(error => {
             alert("Erreur lors de la recherche !!! ")
@@ -568,6 +575,8 @@
       },
 
       launchRequest(pageNum, pageSize, sort, dir) {
+
+        this.dataLoading = true;
         this.resource.searchCatalogueRdo({page : pageNum - 1, size : pageSize,
           sort : sort, dir: dir}, this.currentFilter)
           .then(response => {
@@ -576,6 +585,7 @@
           .then(data => {
             this.catalogueGrid.gridData = data;
             this.catalogueGrid.gridData.number = data.number + 1;
+            this.dataLoading = false;
 
           });
       },
@@ -598,6 +608,62 @@
 
 </script>
 
-<style>
+<style scoped>
+  .spinner {
+    float:  left;
+    width: 50px;
+    height: 40px;
+    text-align: center;
+    font-size: 10px;
+  }
 
+  .spinner > div {
+    background-color: #333;
+    height: 100%;
+    width: 6px;
+    display: inline-block;
+
+    -webkit-animation: sk-stretchdelay 1.2s infinite ease-in-out;
+    animation: sk-stretchdelay 1.2s infinite ease-in-out;
+  }
+
+  .spinner .rect2 {
+    -webkit-animation-delay: -1.1s;
+    animation-delay: -1.1s;
+  }
+
+  .spinner .rect3 {
+    -webkit-animation-delay: -1.0s;
+    animation-delay: -1.0s;
+  }
+
+  .spinner .rect4 {
+    -webkit-animation-delay: -0.9s;
+    animation-delay: -0.9s;
+  }
+
+  .spinner .rect5 {
+    -webkit-animation-delay: -0.8s;
+    animation-delay: -0.8s;
+  }
+
+  @-webkit-keyframes sk-stretchdelay {
+    0%, 40%, 100% { -webkit-transform: scaleY(0.4) }
+    20% { -webkit-transform: scaleY(1.0) }
+  }
+
+  @keyframes sk-stretchdelay {
+    0%, 40%, 100% {
+      transform: scaleY(0.4);
+      -webkit-transform: scaleY(0.4);
+    }  20% {
+         transform: scaleY(1.0);
+         -webkit-transform: scaleY(1.0);
+       }
+  }
+
+  .center-div {
+    width: 0%;
+    margin: 0 auto;
+  }
 </style>

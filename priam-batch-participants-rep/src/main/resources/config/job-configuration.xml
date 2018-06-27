@@ -56,7 +56,7 @@
             <tasklet>
                 <chunk
                         reader="readerStepInsertParticipant"
-                        writer="writerInsertToTableParticipants"
+                        writer="compositeWriter"
                         processor="processorStep3"
                         commit-interval="${commit-interval}">
                 </chunk>
@@ -66,6 +66,17 @@
             <listener ref="jobCompletionParticipantListener"/>
         </listeners>
     </job>
+
+
+
+    <bean id="compositeWriter" class="org.springframework.batch.item.support.CompositeItemWriter">
+        <property name="delegates">
+            <list>
+                <ref bean="writerInsertToTableParticipants" />
+                <ref bean="updateParticipants" />
+            </list>
+        </property>
+    </bean>
 
     <bean id="readerPriamParticipantCsv"
           class="fr.sacem.priam.batch.participants.rep.reader.CsvMultiResourceItemReader" scope="step">
@@ -269,6 +280,30 @@
                             :rolPart,
                             :nomPart
                         )
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
+
+    <bean id="updateParticipants" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    UPDATE PRIAM_CATCMS_CATALOGUE
+                          SET ROLES=(SELECT GROUP_CONCAT(PART.ROLE SEPARATOR ',' )
+                                          FROM PRIAM_CATCMS_PARTICIPANTS PART
+                                          WHERE PART.IDE12=:ide12 AND PART.TYPE_CMS=:typeCMS
+                                          GROUP BY PART.TYPE_CMS, PART.IDE12),
+                            PARTICIPANTS=(SELECT GROUP_CONCAT(PART.PARTICIPANT SEPARATOR ',' )
+                                          FROM PRIAM_CATCMS_PARTICIPANTS PART
+                                          WHERE PART.IDE12=:ide12 AND PART.TYPE_CMS=:typeCMS
+                                          GROUP BY PART.TYPE_CMS, PART.IDE12)
+                                   WHERE IDE12=:ide12 AND TYPE_CMS = :typeCMS
                 ]]>
             </value>
         </property>

@@ -152,7 +152,9 @@
                             DATE_ENTREE,
                             TYPE_INSCRIPTION,
                             DATE_SORTIE,
-                            TYPE_SORTIE
+                            TYPE_SORTIE,
+                            ROLES,
+                            PARTICIPANTS
                         )
                         VALUES (
                             :typeCMS,
@@ -162,7 +164,16 @@
                             :dateEntree,
                             :typeInscription,
                             :dateSortie,
-                            :typeSortie
+                            :typeSortie,
+                            (SELECT GROUP_CONCAT(PART.ROLE SEPARATOR ',' )
+                             FROM PRIAM_CATCMS_PARTICIPANTS PART
+                              WHERE PART.IDE12 = :ide12 AND PART.TYPE_CMS=:typeCMS
+                               GROUP BY PART.TYPE_CMS, PART.IDE12),
+
+                             (SELECT GROUP_CONCAT(PART.PARTICIPANT SEPARATOR ',' )
+                             FROM PRIAM_CATCMS_PARTICIPANTS PART
+                              WHERE PART.IDE12=:ide12 AND PART.TYPE_CMS=:typeCMS
+                               GROUP BY PART.TYPE_CMS, PART.IDE12)
                         )
                 ]]>
             </value>
