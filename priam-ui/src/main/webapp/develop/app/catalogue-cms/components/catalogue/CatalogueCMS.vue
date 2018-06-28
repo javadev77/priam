@@ -76,6 +76,10 @@
         </div>
       </template>
     </modalWithTitle>
+
+    <ecran-modal v-if="showEcranAjoutOeuvreMipsa">
+      <ajouter-oeuvre   slot="body" @cancel="showEcranAjoutOeuvreMipsa = false"></ajouter-oeuvre>
+    </ecran-modal>
   </div>
 </template>
 
@@ -85,6 +89,10 @@
   import PriamNavbar from  './../../../common/components/ui/priam-navbar.vue';
   import ModalWithTitle from './../../../common/components/ui/ModalWithTitle';
   import FiltreCatalogue from './FiltreCatalogueCMS.vue';
+
+  import EcranModal from '../../../common/components/ui/EcranModal.vue';
+  import AjouterOeuvre from './oeuvre/AjouterOeuvre.vue';
+
 
   export default {
 
@@ -449,6 +457,8 @@
           size : this.$store.getters.userPageSize
         },
 
+        showEcranAjoutOeuvreMipsa : false,
+
         deletedOeuvre : {
           raisonSortie: ''
         },
@@ -538,6 +548,7 @@
       },
 
       onAjouterOeuvre() {
+          this.showEcranAjoutOeuvreMipsa = false;
 
       },
 
@@ -603,6 +614,8 @@
       'priam-navbar' : PriamNavbar,
       'modalWithTitle': ModalWithTitle,
       appFiltreCatalogue : FiltreCatalogue,
+      ecranModal : EcranModal,
+      ajouterOeuvre : AjouterOeuvre
     }
   }
 
