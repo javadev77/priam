@@ -1,0 +1,21 @@
+package fr.sacem.priam.batch.participants.req.mapper;
+
+import fr.sacem.priam.batch.participants.req.domain.CatalogueCms;
+import org.springframework.jdbc.core.RowMapper;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public class CatalogueCmsMapper implements RowMapper<CatalogueCms> {
+
+    @Override
+    public CatalogueCms mapRow(ResultSet resultSet, int i) throws SQLException {
+        CatalogueCms catalogueCms = new CatalogueCms();
+
+        catalogueCms.setId(resultSet.getLong("ID"));
+        catalogueCms.setIde12(resultSet.getLong("IDE12"));
+        catalogueCms.setCdeTypIde12("COCV");
+
+        return catalogueCms;
+    }
+}

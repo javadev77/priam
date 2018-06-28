@@ -43,7 +43,7 @@
                     <label class="control-label pull-right">Type du Catalogue</label>
                   </div>
                   <div class="col-md-6">
-                    <v-select :searchable="false" v-model="filter.typeCMS" :options="typeCatalogueOptions"></v-select>
+                    <v-select :searchable="false" label="value" v-model="filter.typeCMS" :options="typeCatalogueOptions"></v-select>
                   </div>
                 </div>
                 <div class="row">
@@ -52,12 +52,12 @@
                   </div>
                   <div class="col-md-8">
                     <div class="form-group has-feedback">
-                      <input  type="text"
+                      <input  type="number"
                               id="filterIde12"
-                              :class="'autocomplete-input form-control  input-sm'"
                               v-model="filter.ide12"
+                              :class="'autocomplete-input form-control  input-sm'"
+                              @keypress="numberKey"
                       />
-                      <i class="form-control-feedback glyphicon glyphicon-search"></i>
                     </div>
                   </div>
                   <div class="col-md-2">
@@ -84,20 +84,22 @@
                               :class="'autocomplete-input form-control  input-sm'"
                               v-model="filter.participant"
                       />
-                      <i class="form-control-feedback glyphicon glyphicon-search"></i>
                     </div>
                   </div>
                 </div>
 
                 <div class="row">
-                  <div class="col">
-                    <div class="col-md-8" style="margin-left: 111px">
-                      <label class="checkbox" :class="{'checked' : isPeriodeSortieSaisie || filter.displayOeuvreNonEligible}">
-                        <input type="checkbox" v-model="filter.displayOeuvreNonEligible">Afficher oeuvres non éligibles
-                        <span class="icons"><span class="first-icon fui-checkbox-unchecked"></span><span class="second-icon fui-checkbox-checked"></span></span>
-                      </label>
-                    </div>
+                  <div class="col-md-4">
+
                   </div>
+                  <div class="col-md-14">
+                    <label class="checkbox checkbox-inline pull-left"  :class="{'checked' : isPeriodeSortieSaisie || filter.displayOeuvreNonEligible}">
+                      <input type="checkbox" v-model="filter.displayOeuvreNonEligible">&nbsp;Afficher oeuvres non éligibles
+                      <span class="icons"><span class="first-icon fui-checkbox-unchecked"></span>
+                        <span class="second-icon fui-checkbox-checked"></span></span>
+                    </label>
+                  </div>
+
                 </div>
 
 
@@ -169,8 +171,8 @@
       computed : {
         typeCatalogueOptions() {
           return [
-            'CMS France',
-            'CMS Antilles'
+            {id : 'FRA', value : 'CMS France'},
+            {id : 'ANF', value : 'CMS Antilles'}
           ];
         },
 
@@ -196,7 +198,6 @@
       },
 
       mounted() {
-
         this.dateDebutSortie = this.filter.periodeSortieFilter.dateDebut;
       },
 
@@ -205,7 +206,7 @@
         Autocomplete,
         periodeFilter
       },
-      methods:{
+      methods: {
         resetForm() {
           $("#filterIde12").val("");
           $("#filterTitre").val("");
@@ -220,15 +221,16 @@
           });
         },
 
-        /*isChecked () {
-          if(this.filter.displayOeuvreNonEligible==true)
-          {
-            return true;
+        numberKey(event) {
+          debugger;
+          let charCode = (event.which) ? event.which : event.keyCode;
+          if (charCode != undefined) {
+            if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+              event.preventDefault();
+            }
           }
-          return false;
-        }*/
-      },
-
+        },
+      }
     }
 </script>
 

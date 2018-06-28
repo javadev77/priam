@@ -30,8 +30,6 @@ public class App {
         try {
             Map<String, JobParameter> jobParametersMap = new HashMap<String, JobParameter>();
             jobParametersMap.put("time", new JobParameter(System.currentTimeMillis()));
-            System.out.println("inputDirectory "+ admap.getInputFile());
-            System.out.println("inputDirectory "+ admap.getOutputFile());
             jobParametersMap.put("input.archives", new JobParameter(admap.getInputFile()));
             jobParametersMap.put("output.archives", new JobParameter(admap.getOutputFile()));
             JobParameters jobParameters = new JobParameters(jobParametersMap);

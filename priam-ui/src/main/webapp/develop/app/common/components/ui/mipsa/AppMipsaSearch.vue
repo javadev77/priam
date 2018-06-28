@@ -69,7 +69,7 @@
           if (response && response.originalEvent && response.originalEvent.detail && response.originalEvent.detail.error) {
             detail = '\nDétail : "' + response.originalEvent.detail.error + '"';
           }
-          window.alert('Une erreur s\'est produite au sein du service mips ' + detail);
+          window.alert('Une erreur s\'est produite au sein du reader mips ' + detail);
 //          }, 1000);
         });
 

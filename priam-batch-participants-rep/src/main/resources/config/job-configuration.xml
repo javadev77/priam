@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xsi:schemaLocation="http://www.springframework.org/schema/batch
+       http://www.springframework.org/schema/batch/spring-batch.xsd
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/jdbc
+        http://www.springframework.org/schema/jdbc/spring-jdbc-3.1.xsd">
+
+
+    <jdbc:initialize-database data-source="dataSource">
+        <jdbc:script location="classpath:config/initial-query.sql" />
+    </jdbc:initialize-database>
+
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="searchSystemEnvironment" value="true"/>
+        <property name="ignoreResourceNotFound" value="true"/>
+        <property name="location" value="classpath:config/application-${spring.profiles.active}.properties"/>
+    </bean>
+
+    <job id="jobParticipantFRA" xmlns="http://www.springframework.org/schema/batch">
+        <step id="csvArchiveFlatFileReaderStep" next="suppressionParticipantErreur">
+            <tasklet>
+                <chunk
+                        reader="readerPriamParticipantCsv"
+                        writer="writerPriamParticipantCsv"
+                        processor="processorPriamParticipantCsv"
+                        commit-interval="${commit-interval}">
+                </chunk>
+            </tasklet>
+        </step>
+        <step id="suppressionParticipantErreur" next="deleteParticipant">
+            <tasklet>
+                <chunk
+                        reader="readerStepStatutRoleParticipant"
+                        writer="writerStepStatutRoleParticipant"
+                        processor="processorStep2"
+                        commit-interval="${commit-interval}">
+                </chunk>
+            </tasklet>
+        </step>
+        <step id="deleteParticipant" next="insertParticipant">
+            <tasklet>
+                <chunk
+                        reader="readerStepMajParticipant"
+                        writer="writerStepMajParticipant"
+                        processor="processorStep3"
+                        commit-interval="${commit-interval}">
+                </chunk>
+            </tasklet>
+        </step>
+        <step id="insertParticipant" parent="deleteParticipant">
+            <tasklet>
+                <chunk
+                        reader="readerStepInsertParticipant"
+                        writer="compositeWriter"
+                        processor="processorStep3"
+                        commit-interval="${commit-interval}">
+                </chunk>
+            </tasklet>
+        </step>
+        <listeners merge="true">
+            <listener ref="jobCompletionParticipantListener"/>
+        </listeners>
+    </job>
+
+
+
+    <bean id="compositeWriter" class="org.springframework.batch.item.support.CompositeItemWriter">
+        <property name="delegates">
+            <list>
+                <ref bean="writerInsertToTableParticipants" />
+                <ref bean="updateParticipants" />
+            </list>
+        </property>
+    </bean>
+
+    <bean id="readerPriamParticipantCsv"
+          class="fr.sacem.priam.batch.participants.rep.reader.CsvMultiResourceItemReader" scope="step">
+        <property name="delegate" ref="flatFileItemReader"/>
+        <property name="strict" value="false"/>
+    </bean>
+
+    <bean id="flatFileItemReader"
+          class="fr.sacem.priam.batch.participants.rep.mapper.ParticipantFileItemReader">
+        <property name="lineMapper">
+            <bean class="fr.sacem.priam.batch.participants.rep.mapper.ParticipantFraLineMapper">
+                <property name="lineTokenizer">
+                    <bean class="org.springframework.batch.item.file.transform.DelimitedLineTokenizer">
+                        <property name="names" value="ide12,cdeTypUtilIde12,dateConslt,rolPart,nomPart,statut"/>
+                        <property name="delimiter" value=";"/>
+                    </bean>
+                </property>
+                <property name="fieldSetMapper">
+                    <bean class="org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper">
+                        <property name="targetType" value="fr.sacem.priam.batch.participants.rep.domaine.Participant"/>
+                        <property name="customEditors">
+                            <map>
+                                <entry key="java.time.LocalDateTime">
+                                    <bean class="fr.sacem.priam.batch.common.util.DatePropertyEditor">
+                                    </bean>
+                                </entry>
+                            </map>
+                        </property>
+                    </bean>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="writerPriamParticipantCsv" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    INSERT INTO PRIAM_CATCMS_PARTICIPANTS_TRTMT (
+                        ID,
+                        TYPE_CMS,
+                        IDE12,
+                        ROLE,
+                        PARTICIPANT,
+                        STATUT
+                    )
+                    VALUES (
+                        :id,
+                        :typeCMS,
+                        :ide12,
+                        :rolPart,
+                        :nomPart,
+                        :statut
+                    )
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
+
+    <bean id="processorPriamParticipantCsv" class="fr.sacem.priam.batch.participants.rep.processor.ParticipantFraProcessor"/>
+
+
+    <bean id="jobCompletionParticipantListener" class="fr.sacem.priam.batch.participants.rep.listener.JobCompletionParticipantListener"></bean>
+
+    <bean id="readerStepStatutRoleParticipant"
+          class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="queryProvider" ref="qpReaderStepStatutRoleParticipant"/>
+        <property name="pageSize" value="${commit-interval}"/>
+        <property name="rowMapper" ref="participantRowMapper"/>
+    </bean>
+
+
+    <bean id="qpReaderStepStatutRoleParticipant" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
+        <property name="selectClause" value="SELECT ID, TYPE_CMS, ROLE, PARTICIPANT, IDE12, BIT_AND(STATUT) AS STATUT"/>
+        <property name="fromClause" value="FROM PRIAM_CATCMS_PARTICIPANTS_TRTMT"/>
+        <property name="whereClause" value="STATUT=0"/>
+        <property name="groupClause" value="GROUP BY IDE12, TYPE_CMS"/>
+        <property name="databaseType" value="MySQL" />
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sortKey" value="ID"/>
+    </bean>
+
+    <bean id="participantRowMapper" class="fr.sacem.priam.batch.participants.rep.mapper.ParticipantRowMapper"/>
+
+    <bean id="processorStep2" class="fr.sacem.priam.batch.participants.rep.processor.ParticipantFraStep2Processor"/>
+
+    <bean id="writerStepStatutRoleParticipant" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                   DELETE FROM PRIAM_CATCMS_PARTICIPANTS_TRTMT
+                      WHERE IDE12 = :ide12
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
+
+    <bean id="readerStepMajParticipant"
+          class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="queryProvider" ref="qpReaderStepMajParticipant"/>
+        <property name="pageSize" value="${commit-interval}"/>
+        <property name="rowMapper" ref="participantRowMapper"/>
+    </bean>
+
+    <bean id="qpReaderStepMajParticipant" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
+        <property name="selectClause" value="SELECT *"/>
+        <property name="fromClause" value="FROM PRIAM_CATCMS_PARTICIPANTS_TRTMT"/>
+        <property name="groupClause" value="GROUP BY IDE12"/>
+        <property name="databaseType" value="MySQL" />
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sortKey" value="ID"/>
+    </bean>
+
+
+    <bean id="writerStepMajParticipant" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                   DELETE FROM PRIAM_CATCMS_PARTICIPANTS
+                      WHERE IDE12 = :ide12
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
+
+    <!--<bean id="compositeWriterStepMajParticipant" class="org.springframework.batch.item.support.CompositeItemWriter">
+        <property name="delegates">
+            <list>
+                <ref bean="writerDeleteToTableParticipants" />
+                <ref bean="writerInsertToTableParticipants" />
+            </list>
+        </property>
+    </bean>-->
+
+    <!--<bean id="writerDeleteToTableParticipants" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    DELETE FROM PRIAM_CATCMS_PARTICIPANTS
+                      WHERE IDE12 =:ide12
+                      AND TYPE_CMS =:typeCMS
+                      AND ROLE =:rolPart
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>-->
+
+    <bean id="readerStepInsertParticipant"
+          class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="queryProvider" ref="qpReaderStepInsertParticipant"/>
+        <property name="pageSize" value="${commit-interval}"/>
+        <property name="rowMapper" ref="participantRowMapper"/>
+    </bean>
+
+    <bean id="qpReaderStepInsertParticipant" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
+        <property name="selectClause" value="SELECT *"/>
+        <property name="fromClause" value="FROM PRIAM_CATCMS_PARTICIPANTS_TRTMT"/>
+        <property name="databaseType" value="MySQL" />
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sortKey" value="ID"/>
+    </bean>
+
+    <bean id="writerInsertToTableParticipants" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    INSERT INTO PRIAM_CATCMS_PARTICIPANTS (
+                            TYPE_CMS,
+                            IDE12,
+                            ROLE,
+                            PARTICIPANT
+                        )
+                        VALUES (
+                            :typeCMS,
+                            :ide12,
+                            :rolPart,
+                            :nomPart
+                        )
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
+
+    <bean id="updateParticipants" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    UPDATE PRIAM_CATCMS_CATALOGUE
+                          SET ROLES=(SELECT GROUP_CONCAT(PART.ROLE SEPARATOR ',' )
+                                          FROM PRIAM_CATCMS_PARTICIPANTS PART
+                                          WHERE PART.IDE12=:ide12 AND PART.TYPE_CMS=:typeCMS
+                                          GROUP BY PART.TYPE_CMS, PART.IDE12),
+                            PARTICIPANTS=(SELECT GROUP_CONCAT(PART.PARTICIPANT SEPARATOR ',' )
+                                          FROM PRIAM_CATCMS_PARTICIPANTS PART
+                                          WHERE PART.IDE12=:ide12 AND PART.TYPE_CMS=:typeCMS
+                                          GROUP BY PART.TYPE_CMS, PART.IDE12)
+                                   WHERE IDE12=:ide12 AND TYPE_CMS = :typeCMS
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
+
+    <bean id="processorStep3" class="fr.sacem.priam.batch.participants.rep.processor.ParticipantFraStep3Processor"/>
+
+    <bean id="jobOperator" class="org.springframework.batch.core.launch.support.SimpleJobOperator"
+          p:jobLauncher-ref="jobLauncher" p:jobExplorer-ref="jobExplorer"
+          p:jobRepository-ref="jobRepository" p:jobRegistry-ref="jobRegistry"/>
+
+    <bean id="jobExplorer" class="org.springframework.batch.core.explore.support.JobExplorerFactoryBean"
+          p:dataSource-ref="dataSource"/>
+
+    <bean id="jobRegistry" class="org.springframework.batch.core.configuration.support.MapJobRegistry"/>
+
+    <bean class="org.springframework.batch.core.configuration.support.JobRegistryBeanPostProcessor"
+          p:jobRegistry-ref="jobRegistry"/>
+
+    <bean id="jobLauncher" class="org.springframework.batch.core.launch.support.SimpleJobLauncher"
+          p:jobRepository-ref="jobRepository"/>
+
+    <bean id="jobRepository" class="org.springframework.batch.core.repository.support.JobRepositoryFactoryBean"
+          p:dataSource-ref="dataSource"
+          p:transactionManager-ref="transactionManager"/>
+
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+</beans>

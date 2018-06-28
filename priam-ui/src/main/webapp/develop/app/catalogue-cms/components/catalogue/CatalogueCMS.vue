@@ -24,10 +24,20 @@
           </div>
 
 
+          <div class="row center-div">
+            <div class="spinner" v-if="dataLoading">
+              <div class="rect1"></div>
+              <div class="rect2"></div>
+              <div class="rect3"></div>
+              <div class="rect4"></div>
+              <div class="rect5"></div>
+            </div>
+          </div>
+
 
           <priam-grid
-            v-if="catalogueGrid.gridData.content"
-            :isPaginable="false"
+            v-if="catalogueGrid.gridData.content && !dataLoading"
+            :isPaginable="true"
             :data="catalogueGrid.gridData"
             :columns="catalogueGrid.gridColumns"
             noResultText="Aucun résultat."
@@ -40,15 +50,36 @@
     </div>
 
 
-    <modal v-show="showPopupDeleteOeuvre">
-      <label class="homer-prompt-q control-label" slot="body">
-        Suppression Oeuvre
-      </label>
-      <template slot="footer">
-        <button class="btn btn-default btn-primary pull-right no" @click="showPopupDeleteOeuvre = false">Non</button>
-        <button class="btn btn-default btn-primary pull-right yes" @click="onYesDeleteOeuvre">Oui</button>
+    <modalWithTitle :showHeader="true" v-show="showPopupDeleteOeuvre">
+      <template slot="header" >
+        <h4 class="modal-title" style="font-size: medium">Suppression de l'oeuvre du CMS</h4>
       </template>
-    </modal>
+      <template slot="body">
+        <div class="form-group">
+          <label class="control-label col-sm-7">Raison de la suppression :</label>
+          <div class="col-sm-17">
+            <input class="form-control input-normal" type="text" maxlength="60" v-model="deletedOeuvre.raisonSortie"/>
+          </div>
+        </div>
+      </template>
+
+      <template slot="footer">
+        <div class="form-horizontal" style="padding-top: 15px">
+          <div class="col-sm-24">
+            <label class="control-label pull-left" style="color: red; font-weight: bold">Attention: Cette action est irréversible</label>
+            <div class="pull-right">
+              <button class="btn btn-default btn-primary pull-right no" @click="onYesDeleteOeuvre">Valider</button>
+              <button class="btn btn-default btn-primary pull-right yes" @click="showPopupDeleteOeuvre = false">Annuler</button>
+            </div>
+          </div>
+
+        </div>
+      </template>
+    </modalWithTitle>
+
+    <ecran-modal v-if="showEcranAjoutOeuvreMipsa">
+      <ajouter-oeuvre   slot="body" @cancel="showEcranAjoutOeuvreMipsa = false"></ajouter-oeuvre>
+    </ecran-modal>
   </div>
 </template>
 
@@ -56,8 +87,11 @@
 
   import PriamGrid from './../../../common/components/ui/Grid.vue';
   import PriamNavbar from  './../../../common/components/ui/priam-navbar.vue';
-  import Modal from './../../../common/components/ui/Modal.vue';
+  import ModalWithTitle from './../../../common/components/ui/ModalWithTitle';
   import FiltreCatalogue from './FiltreCatalogueCMS.vue';
+
+  import EcranModal from '../../../common/components/ui/EcranModal.vue';
+  import AjouterOeuvre from './oeuvre/AjouterOeuvre.vue';
 
 
   export default {
@@ -71,30 +105,24 @@
 
       return {
 
-        defaultPageable : {
-          page : 1,
-          sort : 'ide12',
-          dir : 'DESC',
-          size : this.$store.getters.userPageSize
-        },
+        dataLoading : true,
 
         showPopupDeleteOeuvre : false,
 
-        oeuvreToDelete : {},
+        oeuvreToDelete : {
+        },
 
         resource : {},
 
         catalogueGrid : {
-          gridData : {
-            //"content":[{"ide12":3516649111,"titreOeuvre":"JE TE PARDONNE FEAT SIA","roleParticipant1":"C","nomParticipant1":"REBILLAUD RENAUD","durDif":null,"ajout":"CORRIGE","nbrDif":871830,"libAbrgUtil":"SONYBMG - SONY BMG","selection":true,"cdeUtil":"SONYBMG"},{"ide12":2986577411,"titreOeuvre":"LA MORALE","roleParticipant1":"CA","nomParticipant1":"DESSART CHRISTIAN","durDif":null,"ajout":"CORRIGE","nbrDif":871830,"libAbrgUtil":"UNIVERSAL - Universal Music France","selection":true,"cdeUtil":"UNIVERSAL"},{"ide12":2960328811,"titreOeuvre":"SAPES COMME JAMAIS","roleParticipant1":"C","nomParticipant1":"KOUELOUKOUENDA DANIEL","durDif":null,"ajout":"CORRIGE","nbrDif":871830,"libAbrgUtil":"SONYBMG - SONY BMG","selection":true,"cdeUtil":"SONYBMG"},{"ide12":2930892411,"titreOeuvre":"EST CE QUE TU M AIMES","roleParticipant1":"C","nomParticipant1":"REBILLAUD RENAUD","durDif":null,"ajout":"CORRIGE","nbrDif":871830,"libAbrgUtil":"SONYBMG - SONY BMG","selection":true,"cdeUtil":"SONYBMG"},{"ide12":2986577611,"titreOeuvre":"AMOR Y LIBERTAD","roleParticipant1":"C","nomParticipant1":"MAILLIE KENDJI","durDif":null,"ajout":"CORRIGE","nbrDif":871830,"libAbrgUtil":"UNIVERSAL - Universal Music France","selection":true,"cdeUtil":"UNIVERSAL"},{"ide12":2977109111,"titreOeuvre":"LES YEUX DE LA MAMA","roleParticipant1":"CA","nomParticipant1":"ERRAMI JOHAN    MERCURY GR","durDif":null,"ajout":"CORRIGE","nbrDif":871830,"libAbrgUtil":"UNIVERSAL - Universal Music France","selection":true,"cdeUtil":"UNIVERSAL"},{"ide12":3501341911,"titreOeuvre":"MUJER I NEED A GIRL","roleParticipant1":"CA","nomParticipant1":"SALDIVIA FELIPE","durDif":null,"ajout":"CORRIGE","nbrDif":871830,"libAbrgUtil":"UNIVERSAL - Universal Music France","selection":true,"cdeUtil":"UNIVERSAL"},{"ide12":3058787911,"titreOeuvre":"INTERLUDE LE PRISONNIER","roleParticipant1":"C","nomParticipant1":"CIOSI JEROME","durDif":null,"ajout":"CORRIGE","nbrDif":871830,"libAbrgUtil":"SONYBMG - SONY BMG","selection":true,"cdeUtil":"SONYBMG"},{"ide12":2943823211,"titreOeuvre":"LAISSEZ PASSER","roleParticipant1":"C","nomParticipant1":"REBILLAUD RENAUD","durDif":null,"ajout":"CORRIGE","nbrDif":871830,"libAbrgUtil":"SONYBMG - SONY BMG","selection":true,"cdeUtil":"SONYBMG"},{"ide12":2965587411,"titreOeuvre":"MAIN DU ROI","roleParticipant1":"C","nomParticipant1":"KENDOUSSI ADIL","durDif":null,"ajout":"CORRIGE","nbrDif":871830,"libAbrgUtil":"SONYBMG - SONY BMG","selection":true,"cdeUtil":"SONYBMG"},{"ide12":3560846811,"titreOeuvre":"JE NOUS VEUX","roleParticipant1":"CA","nomParticipant1":"DUPRE MARC","durDif":null,"ajout":"CORRIGE","nbrDif":784565,"libAbrgUtil":"SONYBMG - SONY BMG","selection":true,"cdeUtil":"SONYBMG"},{"ide12":2986395211,"titreOeuvre":"C EST TROP","roleParticipant1":"CA","nomParticipant1":"ESPOSITO DAVIDE","durDif":null,"ajout":"CORRIGE","nbrDif":784565,"libAbrgUtil":"UNIVERSAL - Universal Music France","selection":true,"cdeUtil":"UNIVERSAL"},{"ide12":2986369711,"titreOeuvre":"NO ME MIRES MAS","roleParticipant1":"CA","nomParticipant1":"KENDJI GIRAC","durDif":null,"ajout":"CORRIGE","nbrDif":784565,"libAbrgUtil":"UNIVERSAL - Universal Music France","selection":true,"cdeUtil":"UNIVERSAL"},{"ide12":2937044211,"titreOeuvre":"JEUNE","roleParticipant1":"CA","nomParticipant1":"BLACK DANIEL EDWARD","durDif":null,"ajout":"CORRIGE","nbrDif":784565,"libAbrgUtil":"UNIVERSAL - Universal Music France","selection":true,"cdeUtil":"UNIVERSAL"},{"ide12":3078390510,"titreOeuvre":"SI C ETAIT A REFAIRE","roleParticipant1":"C","nomParticipant1":"VENERUSO JACQUES","durDif":null,"ajout":"CORRIGE","nbrDif":784565,"libAbrgUtil":"SONYBMG - SONY BMG","selection":true,"cdeUtil":"SONYBMG"},{"ide12":3560923011,"titreOeuvre":"MA FAILLE","roleParticipant1":"C","nomParticipant1":"COMPAGNON FLAVIEN","durDif":null,"ajout":"CORRIGE","nbrDif":784565,"libAbrgUtil":"SONYBMG - SONY BMG","selection":true,"cdeUtil":"SONYBMG"},{"ide12":2986567011,"titreOeuvre":"TU Y YO","roleParticipant1":"CA","nomParticipant1":"KENDJI GIRAC","durDif":null,"ajout":"CORRIGE","nbrDif":784565,"libAbrgUtil":"UNIVERSAL - Universal Music France","selection":true,"cdeUtil":"UNIVERSAL"},{"ide12":2960333011,"titreOeuvre":"ME QUEMO","roleParticipant1":"CA","nomParticipant1":"KENDJI GIRAC","durDif":null,"ajout":"CORRIGE","nbrDif":784565,"libAbrgUtil":"UNIVERSAL - Universal Music France","selection":true,"cdeUtil":"UNIVERSAL"},{"ide12":3560919211,"titreOeuvre":"LES YEUX AU CIEL","roleParticipant1":"C","nomParticipant1":"LISBONNE SILVIO","durDif":null,"ajout":"CORRIGE","nbrDif":784565,"libAbrgUtil":"SONYBMG - SONY BMG","selection":true,"cdeUtil":"SONYBMG"},{"ide12":3577328911,"titreOeuvre":"A LA PLUS HAUTE BRANCHE","roleParticipant1":"CA","nomParticipant1":"PICARD DANIEL A","durDif":null,"ajout":"CORRIGE","nbrDif":784565,"libAbrgUtil":"SONYBMG - SONY BMG","selection":true,"cdeUtil":"SONYBMG"},{"ide12":3560846911,"titreOeuvre":"TOUTES CES CHOSES","roleParticipant1":"CA","nomParticipant1":"DUPRE MARC","durDif":null,"ajout":"CORRIGE","nbrDif":784565,"libAbrgUtil":"SONYBMG - SONY BMG","selection":true,"cdeUtil":"SONYBMG"},{"ide12":3560918711,"titreOeuvre":"L ETOILE","roleParticipant1":"C","nomParticipant1":"LISBONNE SILVIO","durDif":null,"ajout":"CORRIGE","nbrDif":784565,"libAbrgUtil":"SONYBMG - SONY BMG","selection":true,"cdeUtil":"SONYBMG"},{"ide12":2833258111,"titreOeuvre":"LE CHANT DES SIRENES","roleParticipant1":"C","nomParticipant1":"FLO DELAVEGA","durDif":null,"ajout":"CORRIGE","nbrDif":784565,"libAbrgUtil":"UNIVERSAL - Universal Music France","selection":true,"cdeUtil":"UNIVERSAL"},{"ide12":2945128511,"titreOeuvre":"PLUS QU AILLEURS","roleParticipant1":"CA","nomParticipant1":"CABREL FRANCIS","durDif":null,"ajout":"CORRIGE","nbrDif":784565,"libAbrgUtil":"SONYBMG - SONY BMG","selection":true,"cdeUtil":"SONYBMG"},{"ide12":6656641211,"titreOeuvre":"ORDINAIRE","roleParticipant1":"C","nomParticipant1":"CHARLEBOIS ROBERT","durDif":null,"ajout":"CORRIGE","nbrDif":784565,"libAbrgUtil":"SONYBMG - SONY BMG","selection":true,"cdeUtil":"SONYBMG"}],"last":false,"totalPages":9319,"totalElements":232965,"size":25,"number":0,"sort":[{"direction":"DESC","property":"sum(nbrDifEdit)","ignoreCase":false,"nullHandling":"NATIVE","unsafe":true,"descending":true,"ascending":false}],"numberOfElements":25,"first":true
-          },
+          gridData : {},
 
           gridColumns : [
             {
               id : 'iconIde12',
               name : '',
               sortable :false,
-              type : 'clickable-icon',
+              type : 'clickable-icons',
               cell : {
                 css : function (entry) {
 
@@ -106,10 +134,13 @@
                 },
 
                 cellTemplate: function (cellValue) {
-                  var tempalte = '<span class="glyphicon glyphicon-trash" aria-hidden="true" title="Abandonner"></span>';
 
-                  return '';
+                  var template = [
+                    {event : 'oeuvre',
+                      template : '<img src="static/images/Musique.png" title="Mise en répartition" width="20px"/>'}];
+                  return template;
                 }
+
               }
 
             },
@@ -142,7 +173,7 @@
               id: 'titre',
               name: "Titre",
               sortable: true,
-              type: 'text-centre',
+              type: 'text',
               cell : {
 
                 css : function (entry) {
@@ -155,7 +186,7 @@
 
                 toText : function(entry) {
                   var result = entry;
-                  if(result !=undefined)
+                  if(result !== undefined)
                     return result ;
                   else
                     return "";
@@ -164,49 +195,56 @@
             },
 
             {
-              id: 'participant',
+              id: 'participants',
               name: "Participant",
-              sortable: true,
-              type: 'text-centre',
+              sortable: false,
+              type: 'list-render',
+              listStyle : 'circle',
               cell: {
                 css : function (entry) {
                   return {
                     style : {
+                      'text-align' : 'left',
                       width : '200px'
                     }
                   }
                 },
-                toText : function(entry) {
-                  var result = entry;
-                  if(result !== undefined)
-                    return result ;
-                  else
-                    return "";
+
+                getData: function (entry) {
+                  let participants = entry.participants;
+                  return participants !== null &&
+                         participants !== undefined &&
+                         participants.split(",");
                 }
+
+
               }
             },
 
             {
-              id: 'role',
+              id: 'roles',
               name: 'Rôle',
-              sortable: true,
-              type: 'text-centre',
+              sortable: false,
+              type: 'list-render',
+              listStyle : 'none',
               cell : {
                 css : function (entry) {
                   return {
                     style : {
-                      width : '50px'
+                      'text-align' : 'center',
+                       width : '50px'
                     }
                   }
                 },
 
-                toText : function(entry) {
-                  var result = entry;
-                  if(result !== undefined)
-                    return result ;
-                  else
-                    return "";
+                getData: function (entry) {
+                  let roles = entry.roles;
+                  return roles !== null &&
+                    roles !== undefined &&
+                    roles.split(",");
                 }
+
+
               }
             },
 
@@ -267,7 +305,7 @@
                 css : function (entry) {
                   return {
                     style : {
-                      width : '200px'
+                      width : '150px'
                     }
                   }
                 },
@@ -363,18 +401,23 @@
 
                 cellTemplate: function (cellValue) {
                   var tempalteTrash = '<span class="glyphicon glyphicon-trash" aria-hidden="true" style="padding-left: 0px;" title="Abandonner"></span>';
-                  var template = [
+                  /*var template = [
                     {event : 'delete-oeuvre',
-                      template : tempalteTrash}];
+                      template : tempalteTrash}];*/
+                  var template = [{}];
+                  if(cellValue.typeSortie==null){
+                    template[0] = {event : 'delete-oeuvre', template : tempalteTrash};
+                  }
                   return template;
                 }
               }
             }
-          ]
+          ],
+          searchQuery : ''
         },
 
         filter : {
-          typeCMS : 'CMS France',
+          typeCMS : {id :'FRA', value : 'CMS France'},
           ide12: null,
           titre: null,
           participant:null,
@@ -394,7 +437,7 @@
         },
 
         currentFilter : {
-          typeCMS : 'FR',
+          typeCMS : {id : 'FRA', value : 'CMS France'},
           ide12: null,
           titre: null,
           participant:null,
@@ -405,7 +448,21 @@
           periodeSortieDateDebut: null,
           periodeSortieDateFin: null,
           displayOeuvreNonEligible: false
-        }
+        },
+
+        defaultPageable : {
+          page : 1,
+          sort : 'dateEntree',
+          dir : 'DESC',
+          size : this.$store.getters.userPageSize
+        },
+
+        showEcranAjoutOeuvreMipsa : false,
+
+        deletedOeuvre : {
+          raisonSortie: ''
+        },
+
       }
     },
 
@@ -415,6 +472,10 @@
         searchCatalogueRdo : {
           method : 'POST',
           url : process.env.CONTEXT_ROOT_PRIAM_CAT_RDO + 'app/rest/catalogue/search?page={page}&size={size}&sort={sort},{dir}'},
+        deleteOeuvreCatalogueRdo : {
+          method : 'DELETE',
+          url : process.env.CONTEXT_ROOT_PRIAM_CAT_RDO + 'app/rest/catalogue/oeuvre/delete/{id}'
+        }
       }
       this.resource= this.$resource('', {}, customActions);
       this.findCatalogueByCriteria();
@@ -425,11 +486,13 @@
 
 
       findCatalogueByCriteria() {
-        if(this.filter.typeCMS == 'CMS France'){
+        if(this.filter.typeCMS.id === 'FRA'){
           this.currentFilter.typeCMS = 'FR'
         } else {
           this.currentFilter.typeCMS = 'ANF'
         }
+
+
         this.currentFilter.ide12 = this.filter.ide12;
         this.currentFilter.titre = this.filter.titre;
         this.currentFilter.participant = this.filter.participant;
@@ -441,6 +504,7 @@
         this.currentFilter.periodeSortieDateFin = this.filter.periodeSortieFilter.dateFin;
         this.currentFilter.displayOeuvreNonEligible = this.filter.displayOeuvreNonEligible;
 
+        this.dataLoading = true;
         this.resource.searchCatalogueRdo({
           page : this.defaultPageable.page - 1,
           size : this.defaultPageable.size,
@@ -450,8 +514,11 @@
             return response.json();
           })
           .then(data => {
+
             this.catalogueGrid.gridData = data;
+
             this.catalogueGrid.gridData.number = data.number + 1;
+            this.dataLoading = false;
           })
           .catch(error => {
             alert("Erreur lors de la recherche !!! ")
@@ -461,23 +528,33 @@
 
       onDeleteOeuvre(row, column) {
         this.showPopupDeleteOeuvre = true;
+        this.deletedOeuvre.raisonSortie = '';
         this.oeuvreToDelete = row;
         console.log('this.oeuvreToDelete => ide12 = ', this.oeuvreToDelete.ide12)
-
       },
 
       onYesDeleteOeuvre() {
         console.log('Deleting Oeuvre ide12 = ', this.oeuvreToDelete.ide12);
         this.showPopupDeleteOeuvre = false;
+        this.resource.deleteOeuvreCatalogueRdo({id : this.oeuvreToDelete.id}, this.deletedOeuvre)
+          .then(response => {
+            return response.json();
+          })
+          .then(data => {
+            console.log('data = ' + data);
+            this.oeuvreToDelete.typeSortie = data.typeSortie;
+            this.oeuvreToDelete.dateSortie = data.dateSortie;
+          });
       },
 
       onAjouterOeuvre() {
+          this.showEcranAjoutOeuvreMipsa = false;
 
       },
 
       retablirFiltre() {
         this.filter = {
-          typeCMS : 'CMS France',
+          typeCMS : {'id' :'FRA', 'value' : 'CMS France'},
           ide12: null,
           titre: null,
           participant: null,
@@ -509,6 +586,8 @@
       },
 
       launchRequest(pageNum, pageSize, sort, dir) {
+
+        this.dataLoading = true;
         this.resource.searchCatalogueRdo({page : pageNum - 1, size : pageSize,
           sort : sort, dir: dir}, this.currentFilter)
           .then(response => {
@@ -517,24 +596,87 @@
           .then(data => {
             this.catalogueGrid.gridData = data;
             this.catalogueGrid.gridData.number = data.number + 1;
+            this.dataLoading = false;
 
           });
-
-
       },
+
+      loadPage: function(pageNum, size, sort) {
+        this.defaultPageable.size = size;
+        let pageSize = this.defaultPageable.size;
+        this.launchRequest(pageNum, pageSize, sort.property, sort.direction);
+      }
     },
 
 
     components : {
       'priam-grid' : PriamGrid,
       'priam-navbar' : PriamNavbar,
-      'modal': Modal,
+      'modalWithTitle': ModalWithTitle,
       appFiltreCatalogue : FiltreCatalogue,
+      ecranModal : EcranModal,
+      ajouterOeuvre : AjouterOeuvre
     }
   }
 
 </script>
 
-<style>
+<style scoped>
+  .spinner {
+    float:  left;
+    width: 50px;
+    height: 40px;
+    text-align: center;
+    font-size: 10px;
+  }
 
+  .spinner > div {
+    background-color: #333;
+    height: 100%;
+    width: 6px;
+    display: inline-block;
+
+    -webkit-animation: sk-stretchdelay 1.2s infinite ease-in-out;
+    animation: sk-stretchdelay 1.2s infinite ease-in-out;
+  }
+
+  .spinner .rect2 {
+    -webkit-animation-delay: -1.1s;
+    animation-delay: -1.1s;
+  }
+
+  .spinner .rect3 {
+    -webkit-animation-delay: -1.0s;
+    animation-delay: -1.0s;
+  }
+
+  .spinner .rect4 {
+    -webkit-animation-delay: -0.9s;
+    animation-delay: -0.9s;
+  }
+
+  .spinner .rect5 {
+    -webkit-animation-delay: -0.8s;
+    animation-delay: -0.8s;
+  }
+
+  @-webkit-keyframes sk-stretchdelay {
+    0%, 40%, 100% { -webkit-transform: scaleY(0.4) }
+    20% { -webkit-transform: scaleY(1.0) }
+  }
+
+  @keyframes sk-stretchdelay {
+    0%, 40%, 100% {
+      transform: scaleY(0.4);
+      -webkit-transform: scaleY(0.4);
+    }  20% {
+         transform: scaleY(1.0);
+         -webkit-transform: scaleY(1.0);
+       }
+  }
+
+  .center-div {
+    width: 0%;
+    margin: 0 auto;
+  }
 </style>

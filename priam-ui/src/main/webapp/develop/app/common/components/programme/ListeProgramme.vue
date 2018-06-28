@@ -811,7 +811,6 @@
 
               return "Le programme est en cours de desaffectation";
           }
-
           return '';
         },
 
@@ -836,9 +835,7 @@
 
 
         updateValue(selectedValue) {
-
             this.critereRechercheData.numProg = selectedValue;
-
           },
 
           retablir() {

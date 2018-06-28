@@ -153,21 +153,21 @@ public enum EnvConstants implements ConfigurableProperty {
     PRIAM_SERVICE_REST_COMMON_URL {
         @Override
         public String property() {
-            return "priam.service.common.url";
+            return "priam.reader.common.url";
         }
     },
 
     PRIAM_SERVICE_REST_CMS_URL {
         @Override
         public String property() {
-            return "priam.service.cms.url";
+            return "priam.reader.cms.url";
         }
     },
 
     PRIAM_SERVICE_REST_CP_URL {
         @Override
         public String property() {
-            return "priam.service.cp.url";
+            return "priam.reader.cp.url";
         }
     },
 
@@ -197,6 +197,30 @@ public enum EnvConstants implements ConfigurableProperty {
         public String property() {
             return "priam.catcms.enrichissement.archives";
         }
+    },
+
+    PARTICIPANTS_REQ_OCTAV_CSV_DIR {
+        @Override
+        public String property() {
+            return "priam.catcms.participants.req.octav.dir";
+        }
+
+    },
+
+    PARTICIPANTS_REP_OCTAV_CSV_INPUT_DIR {
+        @Override
+        public String property() {
+            return "priam.catcms.participants.rep.octav.input";
+        }
+
+    },
+
+    PARTICIPANTS_REP_OCTAV_CSV_ARCHIVES {
+        @Override
+        public String property() {
+            return "priam.catcms.participants.rep.octav.archives";
+        }
+
     };
 
     @Override

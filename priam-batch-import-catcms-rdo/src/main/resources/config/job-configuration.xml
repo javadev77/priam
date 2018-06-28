@@ -37,7 +37,7 @@
                 <chunk
                         reader="readerFromTableRdo"
                         processor="priamCatCmsProcessor"
-                        writer="writerToTableCatalogueCms"
+                        writer="compositeWriter"
                         commit-interval="2000">
                 </chunk>
             </tasklet>
@@ -136,6 +136,8 @@
         </property>
     </bean>
 
+
+
     <bean id="writerToTableCatalogueCms" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
         <property name="dataSource" ref="dataSource"/>
         <property name="assertUpdates" value="false"/>
@@ -151,8 +153,8 @@
                             TYPE_INSCRIPTION,
                             DATE_SORTIE,
                             TYPE_SORTIE,
-                            ROLE,
-                            PARTICIPANT
+                            ROLES,
+                            PARTICIPANTS
                         )
                         VALUES (
                             :typeCMS,
@@ -163,8 +165,15 @@
                             :typeInscription,
                             :dateSortie,
                             :typeSortie,
-                            :role,
-                            :participant
+                            (SELECT GROUP_CONCAT(PART.ROLE SEPARATOR ',' )
+                             FROM PRIAM_CATCMS_PARTICIPANTS PART
+                              WHERE PART.IDE12 = :ide12 AND PART.TYPE_CMS=:typeCMS
+                               GROUP BY PART.TYPE_CMS, PART.IDE12),
+
+                             (SELECT GROUP_CONCAT(PART.PARTICIPANT SEPARATOR ',' )
+                             FROM PRIAM_CATCMS_PARTICIPANTS PART
+                              WHERE PART.IDE12=:ide12 AND PART.TYPE_CMS=:typeCMS
+                               GROUP BY PART.TYPE_CMS, PART.IDE12)
                         )
                 ]]>
             </value>
@@ -178,6 +187,41 @@
 
     <bean id="listenerCompletition" class="fr.sacem.priam.batch.catcms.rdo.listener.JobCompletionNotificationCatcmsRdoListener">
         <property name="fichierBatchService" ref="fichierBatchService"/>
+    </bean>
+
+
+    <bean id="writerToTableParticipants" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    INSERT INTO PRIAM_CATCMS_PARTICIPANTS (
+                            TYPE_CMS,
+                            IDE12,
+                            ROLE,
+                            PARTICIPANT
+                        )
+                        VALUES (
+                            :typeCMS,
+                            :ide12,
+                            :role,
+                            :participant
+                        )
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
+    <bean id="compositeWriter" class="org.springframework.batch.item.support.CompositeItemWriter">
+        <property name="delegates">
+            <list>
+                <ref bean="writerToTableParticipants" />
+                <ref bean="writerToTableCatalogueCms" />
+            </list>
+        </property>
     </bean>
 
     <bean id="jobOperator" class="org.springframework.batch.core.launch.support.SimpleJobOperator"
