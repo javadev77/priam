@@ -39,6 +39,7 @@
         <module>priam-batch-enrichissement-cat-fra</module>
         <module>priam-batch-participants-rep</module>
         <module>priam-batch-participants-req</module>
+        <module>priam-batch-filiation-npu</module>
 
     </modules>
 

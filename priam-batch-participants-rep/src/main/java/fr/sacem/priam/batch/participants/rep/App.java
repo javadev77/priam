@@ -38,6 +38,7 @@ public class App {
             jobParametersMap.put("time", new JobParameter(System.currentTimeMillis()));
             jobParametersMap.put("input.archives", new JobParameter(admap.getInputFile()));
             jobParametersMap.put("output.archives", new JobParameter(admap.getOutputFile()));
+            jobParametersMap.put("pattern.file.name", new JobParameter(admap.getPatternFileName()));
 
             JobParameters jobParameters = new JobParameters(jobParametersMap);
             JobExecution execution = jobLauncher.run(job, jobParameters);

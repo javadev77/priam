@@ -1,6 +1,5 @@
-package fr.sacem.priam.batch.participants.rep.domaine;
+package fr.sacem.priam.batch.participants.rep.domain;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class Participant {

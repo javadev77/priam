@@ -1,4 +1,4 @@
-package fr.sacem.priam.batch.participants.rep.domaine;
+package fr.sacem.priam.batch.participants.rep.domain;
 
 public enum StatutRoleParticipant {
 

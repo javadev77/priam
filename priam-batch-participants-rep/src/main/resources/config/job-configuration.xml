@@ -68,7 +68,7 @@
     </job>
 
     <bean id="readerPriamParticipantCsv"
-          class="fr.sacem.priam.batch.participants.rep.reader.CsvMultiResourceItemReader" scope="step">
+          class="fr.sacem.priam.batch.common.reader.CsvMultiResourceItemReader" scope="step">
         <property name="delegate" ref="flatFileItemReader"/>
         <property name="strict" value="false"/>
     </bean>
@@ -85,7 +85,7 @@
                 </property>
                 <property name="fieldSetMapper">
                     <bean class="org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper">
-                        <property name="targetType" value="fr.sacem.priam.batch.participants.rep.domaine.Participant"/>
+                        <property name="targetType" value="fr.sacem.priam.batch.participants.rep.domain.Participant"/>
                         <property name="customEditors">
                             <map>
                                 <entry key="java.time.LocalDateTime">

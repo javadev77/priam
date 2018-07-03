@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/batch
+        http://www.springframework.org/schema/batch/spring-batch.xsd
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util
+        http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <context:component-scan base-package="fr.sacem.priam.batch.filiation.npu"/>
+    <context:property-placeholder location="classpath:configuration/application-test.properties"/>
+    <util:properties id="envProperties" location="classpath:configuration/application-test.properties"/>
+    <import resource="classpath:configuration/job-database-test.xml"/>
+
+    <job id="jobFiliationNPU" xmlns="http://www.springframework.org/schema/batch">
+        <step id="csvArchiveFlatFileReaderStep">
+            <tasklet>
+                <chunk
+                        reader="readerPriamFiliationNpuCsv"
+                        writer="writerPriamFiliationNpuCsv"
+                        commit-interval="${commit-interval}">
+                </chunk>
+            </tasklet>
+        </step>
+    </job>
+
+    <bean id="readerPriamFiliationNpuCsv"
+          class="fr.sacem.priam.batch.filiation.npu.reader.CsvMultiResourceItemReader" scope="step">
+        <property name="delegate" ref="flatFileItemReader"/>
+        <property name="strict" value="false"/>
+    </bean>
+
+    <bean id="flatFileItemReader"
+          class="fr.sacem.priam.batch.filiation.npu.mapper.OeuvreFiliationNPUFileItemReader">
+        <property name="lineMapper">
+            <bean class="fr.sacem.priam.batch.filiation.npu.mapper.OeuvreFiliationNPULineMapper">
+                <property name="lineTokenizer">
+                    <bean class="org.springframework.batch.item.file.transform.DelimitedLineTokenizer">
+                        <property name="names" value="ide12,ide12Rep,titreOriginal"/>
+                        <property name="delimiter" value=";"/>
+                    </bean>
+                </property>
+                <property name="fieldSetMapper">
+                    <bean class="org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper">
+                        <property name="targetType" value="fr.sacem.priam.batch.filiation.npu.domain.OeuvreFiliationNPU"/>
+                        <property name="customEditors">
+                            <map>
+                                <entry key="java.time.LocalDateTime">
+                                    <bean class="fr.sacem.priam.batch.common.util.DatePropertyEditor">
+                                    </bean>
+                                </entry>
+                            </map>
+                        </property>
+                    </bean>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="writerPriamFiliationNpuCsv" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    UPDATE PRIAM_CATCMS_CATALOGUE
+                    SET IDE12 = :ide12Rep, TITRE = :titreOriginal
+                    WHERE IDE12  = :ide12;
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
+
+    <bean id="jobOperator" class="org.springframework.batch.core.launch.support.SimpleJobOperator"
+          p:jobLauncher-ref="jobLauncher" p:jobExplorer-ref="jobExplorer"
+          p:jobRepository-ref="jobRepository" p:jobRegistry-ref="jobRegistry"/>
+
+    <bean id="jobExplorer" class="org.springframework.batch.core.explore.support.JobExplorerFactoryBean"
+          p:dataSource-ref="dataSource"/>
+
+    <bean id="jobRegistry" class="org.springframework.batch.core.configuration.support.MapJobRegistry"/>
+
+    <bean class="org.springframework.batch.core.configuration.support.JobRegistryBeanPostProcessor"
+          p:jobRegistry-ref="jobRegistry"/>
+
+    <bean id="jobLauncher" class="org.springframework.batch.core.launch.support.SimpleJobLauncher"
+          p:jobRepository-ref="jobRepository"/>
+
+    <bean id="jobRepository" class="org.springframework.batch.core.repository.support.JobRepositoryFactoryBean"
+          p:dataSource-ref="dataSource"
+          p:transactionManager-ref="transactionManager"/>
+
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <bean id="oeuvreFiliationNPURepositoryForTest" class="fr.sacem.priam.batch.filiation.npu.dao.OeuvreFiliationNPURepositoryForTest">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="nomTableFichier" value="${nom.table.fichier}"/>
+    </bean>
+
+    <bean id="jobLauncherTestUtils" class="org.springframework.batch.test.JobLauncherTestUtils"/>
+
+</beans>
