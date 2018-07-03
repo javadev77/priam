@@ -5,9 +5,7 @@ import fr.sacem.priam.model.util.SimpleDateSerializer;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Table(name = "PRIAM_CATCMS_CATALOGUE")
@@ -54,21 +52,40 @@ public class CatalogueCms implements Serializable {
     @Column(name = "RAISON_SORTIE")
     private String raisonSortie;
 
-    @OneToMany
-    @JoinColumns({
-            @JoinColumn(name="TYPE_CMS", referencedColumnName = "TYPE_CMS"),
-            @JoinColumn(name="IDE12", referencedColumnName = "IDE12")})
-    private List<ParticipantsCatcms> participants = new ArrayList<>();
+    @Column(name = "ROLES")
+    private String roles;
 
-    private transient List<ParticipantsCatcms> roles;
+    @Column(name = "PARTICIPANTS")
+    private String participants;
 
-    public List<ParticipantsCatcms> getRoles() {
-        return this.getParticipants();
+
+
+
+//    @OneToMany
+//    @JoinColumns({
+//            @JoinColumn(name="TYPE_CMS", referencedColumnName = "TYPE_CMS"),
+//            @JoinColumn(name="IDE12", referencedColumnName = "IDE12")})
+//    @JsonIgnore
+//    private List<ParticipantsCatcms> participantsCatcms = new ArrayList<>();
+//
+//
+//    private transient List<ParticipantsCatcms> participants = new ArrayList<>();
+//
+
+    //    @OneToMany
+//    @JoinColumns({
+//            @JoinColumn(name="TYPE_CMS", referencedColumnName = "TYPE_CMS"),
+//            @JoinColumn(name="IDE12", referencedColumnName = "IDE12")})
+//    private transient List<ParticipantsCatcms> roles = new ArrayList<>();
+
+    public String getRoles() {
+        return this.roles;
     }
 
-    public void setRoles(List<ParticipantsCatcms> roles) {
+    public void setRoles(String roles) {
         this.roles = roles;
     }
+
 
     public Long getId() {
         return id;
@@ -158,11 +175,11 @@ public class CatalogueCms implements Serializable {
         this.raisonSortie = raisonSortie;
     }
 
-    public List<ParticipantsCatcms> getParticipants() {
+    public String getParticipants() {
         return participants;
     }
 
-    public void setParticipants(List<ParticipantsCatcms> participants) {
+    public void setParticipants(String participants) {
         this.participants = participants;
     }
 

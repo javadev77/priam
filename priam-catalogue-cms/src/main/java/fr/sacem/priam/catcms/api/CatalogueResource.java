@@ -2,6 +2,7 @@ package fr.sacem.priam.catcms.api;
 
 import fr.sacem.priam.catcms.api.dto.CatalogueCritereRecherche;
 import fr.sacem.priam.model.dao.jpa.catcms.CatalogueCmsDao;
+import fr.sacem.priam.model.dao.jpa.catcms.ParticipantsCatcmsDao;
 import fr.sacem.priam.model.domain.catcms.CatalogueCms;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,10 @@ public class CatalogueResource {
     @Autowired
     CatalogueCmsDao catalogueRdoDao;
 
+    @Autowired
+    ParticipantsCatcmsDao  participantsCatcmsDao;
+
+
     @RequestMapping(
             value = "catalogue/search",
             method = RequestMethod.POST,
@@ -25,9 +30,9 @@ public class CatalogueResource {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<CatalogueCms> findByCriteria(@RequestBody CatalogueCritereRecherche catalogueCritereRecherche, Pageable pageable) {
 
-
-        if(catalogueCritereRecherche.isDisplayOeuvreNonEligible()){
-            return catalogueRdoDao.findByCriteriaWithNonEligible(catalogueCritereRecherche.getTypeCMS(),
+        Page<CatalogueCms> datas = null;
+        if(catalogueCritereRecherche.isDisplayOeuvreNonEligible()) {
+            datas = catalogueRdoDao.findByCriteriaWithNonEligible(catalogueCritereRecherche.getTypeCMS(),
                     catalogueCritereRecherche.getIde12(),
                     catalogueCritereRecherche.getTitre(),
                     catalogueCritereRecherche.getParticipant(),
@@ -37,23 +42,35 @@ public class CatalogueResource {
                     catalogueCritereRecherche.getPeriodeRenouvellementDateFin(),
                     catalogueCritereRecherche.getPeriodeSortieDateDebut(),
                     catalogueCritereRecherche.getPeriodeSortieDateFin(), pageable);
+
+        } else {
+            if(catalogueCritereRecherche.getPeriodeEntreeDateFin()== null ||
+                    catalogueCritereRecherche.getPeriodeSortieDateFin() == null){
+                catalogueCritereRecherche.setPeriodeEntreeDateFin(new Date());
+                catalogueCritereRecherche.setPeriodeSortieDateFin(new Date());
+            }
+
+            datas = catalogueRdoDao.findByCriteriaWithoutNonEligible(catalogueCritereRecherche.getTypeCMS(),
+                    catalogueCritereRecherche.getIde12(),
+                    catalogueCritereRecherche.getTitre(),
+                    catalogueCritereRecherche.getParticipant(),
+                    catalogueCritereRecherche.getPeriodeEntreeDateDebut(),
+                    catalogueCritereRecherche.getPeriodeEntreeDateFin(),
+                    catalogueCritereRecherche.getPeriodeRenouvellementDateDebut(),
+                    catalogueCritereRecherche.getPeriodeRenouvellementDateFin(),
+                    catalogueCritereRecherche.getPeriodeSortieDateFin(), pageable);
+
         }
 
-        if(catalogueCritereRecherche.getPeriodeEntreeDateFin()== null ||
-                catalogueCritereRecherche.getPeriodeSortieDateFin() == null){
-            catalogueCritereRecherche.setPeriodeEntreeDateFin(new Date());
-            catalogueCritereRecherche.setPeriodeSortieDateFin(new Date());
-        }
 
-        return catalogueRdoDao.findByCriteriaWithoutNonEligible(catalogueCritereRecherche.getTypeCMS(),
-                catalogueCritereRecherche.getIde12(),
-                catalogueCritereRecherche.getTitre(),
-                catalogueCritereRecherche.getParticipant(),
-                catalogueCritereRecherche.getPeriodeEntreeDateDebut(),
-                catalogueCritereRecherche.getPeriodeEntreeDateFin(),
-                catalogueCritereRecherche.getPeriodeRenouvellementDateDebut(),
-                catalogueCritereRecherche.getPeriodeRenouvellementDateFin(),
-                catalogueCritereRecherche.getPeriodeSortieDateFin(), pageable);
+
+       /* datas.forEach(data -> {
+            List<ParticipantsCatcms> result = participantsCatcmsDao.findParticipantsCatcmsByIde12AndTypeCMS(data.getIde12(), data.getTypeCMS());
+            data.setParticipants(result);
+            data.setRoles(result);
+        });*/
+
+        return datas;
     }
 
     /*@RequestMapping(
