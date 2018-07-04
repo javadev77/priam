@@ -148,14 +148,10 @@
             <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
         </property>
     </bean>
-<<<<<<< HEAD
+
     <bean id="ligneProgrammeItemProcessor" class="fr.sacem.priam.batch.common.service.importPenef.LigneProgrammeCPItemProcessor"/>
-=======
 
-    <bean id="ligneProgrammeItemProcessor" class="fr.sacem.service.importPenef.LigneProgrammeCPItemProcessor"/>
->>>>>>> release-INT-2.1.x
-
-    <bean id="ligneProgrammeDedoublonnageStepTwoProcessor" class="fr.sacem.service.importPenef.LigneProgrammeDedoublonnageStepTwoProcessor"/>
+    <bean id="ligneProgrammeDedoublonnageStepTwoProcessor" class="fr.sacem.priam.batch.common.service.importPenef.LigneProgrammeDedoublonnageStepTwoProcessor"/>
 
     <bean id="flatFileItemReader"
           class="fr.sacem.priam.batch.common.util.mapper.importPenef.PriamFileItemReader">
@@ -337,7 +333,7 @@
 </bean>
 
 
-    <bean id="ligneProgrammeRowMapper" class="fr.sacem.util.mapper.importPenef.PriamLigneProgrammeSQLMapper"/>
+    <bean id="ligneProgrammeRowMapper" class="fr.sacem.priam.batch.common.util.mapper.importPenef.PriamLigneProgrammeSQLMapper"/>
 
     <bean id="queryProvider" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
         <property name="selectClause" value="select id,

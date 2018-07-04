@@ -1,4 +1,4 @@
-package fr.sacem.config;
+package fr.sacem.priam.batch.repartition.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;

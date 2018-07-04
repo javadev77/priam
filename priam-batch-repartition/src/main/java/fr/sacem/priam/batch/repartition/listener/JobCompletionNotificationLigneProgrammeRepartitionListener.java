@@ -1,4 +1,4 @@
-package fr.sacem.listener.repartition;
+package fr.sacem.priam.batch.repartition.listener;
 
 import fr.sacem.priam.batch.common.util.UtilFile;
 import fr.sacem.priam.batch.common.util.exception.PriamValidationException;

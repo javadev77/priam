@@ -3,3 +3,6 @@ spring:
     active: @spring.active.profiles@
   jmx:
     enabled: false
+
+mipsa:
+  local: false

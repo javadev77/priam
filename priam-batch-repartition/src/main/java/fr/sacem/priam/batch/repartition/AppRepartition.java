@@ -1,6 +1,6 @@
-package fr.sacem;
+package fr.sacem.priam.batch.repartition;
 
-import fr.sacem.config.ConfigurationPriam;
+import fr.sacem.priam.batch.repartition.config.ConfigurationPriam;
 import fr.sacem.priam.batch.common.domain.Admap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

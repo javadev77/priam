@@ -1,4 +1,4 @@
-package fr.sacem.config;
+package fr.sacem.priam.batch.repartition.config;
 import fr.sacem.priam.batch.common.domain.Admap;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
@@ -11,7 +11,7 @@ import javax.sql.DataSource;
  * Created by fandis on 09/10/2017.
  */
 @Configuration
-@ComponentScan(basePackages = "fr.sacem.*")
+@ComponentScan(basePackages = {"fr.sacem.priam.batch.repartition", "fr.sacem.priam.batch.common.util"})
 @ImportResource(value = "classpath:config/job-configuration.xml")
 @Profile("local")
 public class ConfigurationPriamLocal {

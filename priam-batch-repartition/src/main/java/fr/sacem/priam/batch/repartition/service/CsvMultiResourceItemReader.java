@@ -1,4 +1,4 @@
-package fr.sacem.service.repartition;
+package fr.sacem.priam.batch.repartition.service;
 
 
 import org.slf4j.Logger;

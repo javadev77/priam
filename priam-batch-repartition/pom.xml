@@ -138,7 +138,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>fr.sacem.AppRepartition</mainClass>
+                            <mainClass>fr.sacem.priam.batch.repartition.AppRepartition</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

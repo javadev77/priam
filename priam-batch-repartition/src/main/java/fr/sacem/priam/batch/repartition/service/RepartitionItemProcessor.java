@@ -1,4 +1,4 @@
-package fr.sacem.service.repartition;
+package fr.sacem.priam.batch.repartition.service;
 
 import fr.sacem.priam.batch.common.domain.Repartition;
 import fr.sacem.priam.batch.common.util.valdiator.repartition.RepartitionSpringValidator;

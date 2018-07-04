@@ -1,4 +1,4 @@
-package fr.sacem.priam.batch.common.util.mapper.repartition;
+package fr.sacem.priam.batch.repartition.mapper;
 
 import fr.sacem.priam.batch.common.domain.Repartition;
 import fr.sacem.priam.batch.common.util.exception.PriamValidationException;
