@@ -24,6 +24,20 @@ public class ProgrammeView {
     private String usermaj;
     private String useraffect;
     private Date dataffect;
+
+    private Date dateDbtPrg;
+    private Date dateFinPrg;
+    private Integer cdeTer;
+
+    private String userValidation;
+    private Date dateValidation;
+    
+    private StatutFichierFelix statutFichierFelix;
+    
+    private Date dateRepartition;
+
+    private StatutEligibilite statutEligibilite;
+
     
     public ProgrammeView() {
     }
@@ -108,11 +122,50 @@ public class ProgrammeView {
     public Date getDataffect() {
         return dataffect;
     }
+
+    @Column(name = "DATEDBTPRG")
+    @Temporal(TemporalType.DATE)
+    public Date getDateDbtPrg() { return dateDbtPrg; }
+
+    @Column(name = "DATEFINPRG")
+    @Temporal(TemporalType.DATE)
+    public Date getDateFinPrg() { return dateFinPrg; }
+
+    @Column(name = "CDETER")
+    public Integer getCdeTer() { return cdeTer; }
+
+    @Column(name = "DATEVALIDATION")
+    @Temporal(TemporalType.TIMESTAMP)
+    public Date getDateValidation() { return dateValidation; }
+
+    @Column(name = "USERVALIDATION")
+    public String getUserValidation() {
+        return userValidation;
+    }
     
+    @Column(name = "STATUT_FICHIER_FELIX")
+    @Enumerated(EnumType.STRING)
+    public StatutFichierFelix getStatutFichierFelix() {
+        
+        return statutFichierFelix;
+    }
+    
+    @Column(name = "DATE_REPARTITION")
+    @Temporal(TemporalType.TIMESTAMP)
+    public Date getDateRepartition() {
+        return dateRepartition;
+    }
+
+    @Column(name = "STATUT_ELIGIBILITE")
+    @Enumerated(EnumType.STRING)
+    public StatutEligibilite getStatutEligibilite() {
+        return statutEligibilite;
+    }
+
     public void setNumProg(String numProg) {
         this.numProg = numProg;
     }
-    
+
     public void setNom(String nom) {
         this.nom = nom;
     }
@@ -167,5 +220,27 @@ public class ProgrammeView {
     
     public void setUseraffect(String useraffect) {
         this.useraffect = useraffect;
+    }
+
+    public void setDateDbtPrg(Date dateDbtPrg) { this.dateDbtPrg = dateDbtPrg; }
+
+    public void setDateFinPrg(Date dateFinPrg) { this.dateFinPrg = dateFinPrg; }
+
+    public void setCdeTer(Integer cdeTer) { this.cdeTer = cdeTer; }
+
+    public void setUserValidation(String userValidation) { this.userValidation = userValidation; }
+
+    public void setDateValidation(Date dateValidation) { this.dateValidation = dateValidation; }
+    
+    public void setStatutFichierFelix(StatutFichierFelix statutFichierFelix) {
+        this.statutFichierFelix = statutFichierFelix;
+    }
+    
+    public void setDateRepartition(Date dateRepartition) {
+        this.dateRepartition = dateRepartition;
+    }
+
+    public void setStatutEligibilite(StatutEligibilite statutEligibilite) {
+        this.statutEligibilite = statutEligibilite;
     }
 }

@@ -1,5 +1,8 @@
 package fr.sacem.priam.model.domain;
 
+import fr.sacem.priam.model.domain.saref.SareftrFamiltyputil;
+import fr.sacem.priam.model.domain.saref.SareftrTyputil;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -21,11 +24,11 @@ public class Fichier implements Serializable {
     
     @ManyToOne
     @JoinColumn(name = "CDEFAMILTYPUTIL")
-    private Famille famille;
+    private SareftrFamiltyputil famille;
     
     @ManyToOne
     @JoinColumn(name = "CDETYPUTIL")
-    private TypeUtilisation typeUtilisation;
+    private SareftrTyputil typeUtilisation;
     
     @Column(name = "DATE_DEBUT_CHGT")
     @Temporal(TemporalType.TIMESTAMP)
@@ -39,13 +42,16 @@ public class Fichier implements Serializable {
     private Long nbLignes;
     
     @Enumerated(EnumType.STRING)
-    @Column(name="STATUT_CODE", nullable = false)
+    @Column(name="STATUT_CODE", nullable = true)
     private Status statut;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "NUMPROG")
     private Programme programme;
     
+    @Column(name = "SOURCE_AUTO")
+    private Boolean automatique;
+
     public  Fichier() {
     }
     
@@ -57,11 +63,11 @@ public class Fichier implements Serializable {
         return nomFichier;
     }
     
-    public Famille getFamille() {
+    public SareftrFamiltyputil getFamille() {
         return famille;
     }
     
-    public TypeUtilisation getTypeUtilisation() {
+    public SareftrTyputil getTypeUtilisation() {
         return typeUtilisation;
     }
     
@@ -90,11 +96,11 @@ public class Fichier implements Serializable {
         this.nomFichier = nomFichier;
     }
     
-    public void setFamille(Famille famille) {
+    public void setFamille(SareftrFamiltyputil famille) {
         this.famille = famille;
     }
     
-    public void setTypeUtilisation(TypeUtilisation typeUtilisation) {
+    public void setTypeUtilisation(SareftrTyputil typeUtilisation) {
         this.typeUtilisation = typeUtilisation;
     }
     
@@ -122,6 +128,14 @@ public class Fichier implements Serializable {
         this.programme = programme;
     }
     
+    public void setAutomatique(Boolean automatique) {
+        this.automatique = automatique;
+    }
+    
+    public Boolean getAutomatique() {
+        return automatique;
+    }
+
     @Override
     public int hashCode() {
         return (int) (id ^ (id >>> 32));

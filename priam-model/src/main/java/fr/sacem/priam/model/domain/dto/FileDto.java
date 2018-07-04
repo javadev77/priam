@@ -18,7 +18,7 @@ public class FileDto {
 	@JsonSerialize(using = CustomDateSerializer.class)
 	private Date dateDebutChargt;
 	
-	//@JsonSerialize(using = CustomDateSerializer.class)
+	@JsonSerialize(using = CustomDateSerializer.class)
 	private Date dateFinChargt;
 	
 	
@@ -38,7 +38,16 @@ public class FileDto {
 		this.nbLignes = nbLignes;
 		this.statut = statut;
 	}
-	
+
+	public FileDto(Long id, String nomFichier, Date dateDebutChargt, Date dateFinChargt, Long nbLignes, Status statut) {
+		this.id = id;
+		this.nomFichier = nomFichier;
+		this.dateDebutChargt = dateDebutChargt;
+		this.dateFinChargt = dateFinChargt;
+		this.nbLignes = nbLignes;
+		this.statut = statut;
+	}
+
 	public Long getId() {
 		return id;
 	}

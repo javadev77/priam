@@ -1,0 +1,44 @@
+<html>
+<head>
+  <title>Dev login</title>
+</head>
+<body style="margin: 0; padding: 0; text-align: center; display: block;">
+<div style="margin: 50px auto; padding: 0; width: 120px;font-size: 13px;">
+  <h3>Select your role: </h3>
+  <select id="changeRole" onchange="changeRole()">
+    <option value="">Select Role</option>
+    <option value="AQIC5wM2LY4Sfcy7n2yEu51jwCc1A01fqg78P5YQGJNkpb0.*AAJTSQACMDIAAlMxAAIwMQ..*">ADM</option>
+    <option value="AQIC5wM2LY4Sfczmprsedb1zMYx2Tt65bzngr_eofd_NwIw.*AAJTSQACMDIAAlMxAAIwMQ..*">INV</option>
+  </select>
+</div>
+<script type="text/javascript">
+
+  function changeRole(){
+    var e = document.getElementById("changeRole");
+    var role = e.options[e.selectedIndex].value;
+    eraseCookie("JSESSIONID");
+    createCookie("iPlanetDirectoryPro", role);
+    createCookie("iPlanetDirectoryProDev", role);
+    var url = document.URL;
+    url = url.substring(0, url.lastIndexOf("/"));
+    //window.location.replace("/priambenmerzoukah/logout?goto=" + url);
+    window.location.replace(url);
+  }
+
+  function createCookie(name,value,days) {
+    if (days) {
+      var date = new Date();
+      date.setTime(date.getTime()+(days*24*60*60*1000));
+      var expires = "; expires="+date.toGMTString();
+    }
+    else var expires = "";
+    document.cookie = name+"="+value+expires+"; path=/";
+    document.cookie = name+"="+value+expires+"; path=/priambenmerzoukah";
+  }
+
+  function eraseCookie(name) {
+    createCookie(name,"",-1);
+  }
+</script>
+</body>
+</html>

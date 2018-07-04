@@ -2,7 +2,7 @@ package fr.sacem.priam.services;
 
 import fr.sacem.priam.model.dao.JpaConfigurationTest;
 import fr.sacem.priam.model.dao.jpa.FichierDao;
-import fr.sacem.priam.model.dao.jpa.ProgrammeDao;
+import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.StatutProgramme;
@@ -10,6 +10,7 @@ import fr.sacem.priam.model.domain.dto.FileDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes={JpaConfigurationTest.class, ConfigurationTest.class})
+@ActiveProfiles("test")
 public class FichierServiceTest {
 	
 	@Autowired
@@ -34,7 +36,7 @@ public class FichierServiceTest {
 	FichierDao fichierDao;
 	
 	@Autowired
-	ProgrammeDao programmeDao;
+    ProgrammeDao programmeDao;
 	
 	@Test
 	@Transactional
@@ -52,9 +54,9 @@ public class FichierServiceTest {
 	@Transactional
 	public void majFichiersAffectesAuProgramme() throws Exception {
 		
-		fichierService.majFichiersAffectesAuProgramme("PR170001", Collections.emptyList());
+		fichierService.majFichiersAffectesAuProgramme("170001", Collections.emptyList(), "USER_ID_TEST");
 		
-		Programme pr170001 = programmeDao.findOne("PR170001");
+		Programme pr170001 = programmeDao.findOne("170001");
 		
 		assertThat(pr170001).isNotNull();
 		assertThat(pr170001.getStatut()).isEqualTo(StatutProgramme.CREE);

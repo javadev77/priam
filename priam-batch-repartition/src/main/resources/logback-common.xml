@@ -1,0 +1,4 @@
+<included>
+
+    <property name="priam.log.default.directory" value="/export/home/mylogs/priam" />
+</included>

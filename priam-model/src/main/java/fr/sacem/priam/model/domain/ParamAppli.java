@@ -1,7 +1,10 @@
 package fr.sacem.priam.model.domain;
 
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  * Created by fandis on 22/06/2017.

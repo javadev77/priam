@@ -1,5 +1,9 @@
 package fr.sacem.priam.model.domain;
 
+import fr.sacem.priam.model.domain.saref.SareftrFamiltyputil;
+import fr.sacem.priam.model.domain.saref.SareftrRion;
+import fr.sacem.priam.model.domain.saref.SareftrTyputil;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -12,20 +16,29 @@ import java.util.Date;
 public class Programme implements Serializable {
 	private String numProg;
 	private String nom;
-	private Rion rionTheorique;
-	private Famille famille;
-	private TypeUtilisation typeUtilisation;
+	private SareftrRion rionTheorique;
+	private SareftrFamiltyputil famille;
+	private SareftrTyputil typeUtilisation;
 	private TypeRepart typeRepart;
 	private Date dateCreation;
 	private StatutProgramme statut;
-	private Rion rionPaiement;
+	private SareftrRion rionPaiement;
 	//private List<Fichier> fichiers;
 	private String usercre;
 	private Date datmaj;
 	private String usermaj;
 	private String useraffect;
 	private Date dataffect;
+
+	private String userValidation;
+	private Date dateValidation;
+
+	private Date dateDbtPrg;
+	private Date dateFinPrg;
+	private Integer cdeTer;
 	
+	private Date dateRepartition;
+	private StatutEligibilite statutEligibilite;
 	
 	public Programme() {
 	}
@@ -43,19 +56,19 @@ public class Programme implements Serializable {
 	
 	@ManyToOne
 	@JoinColumn(name = "RION_THEORIQUE")
-	public Rion getRionTheorique() {
+	public SareftrRion getRionTheorique() {
 		return rionTheorique;
 	}
 	
 	@ManyToOne
 	@JoinColumn(name = "CDEFAMILTYPUTIL")
-	public Famille getFamille() {
+	public SareftrFamiltyputil getFamille() {
 		return famille;
 	}
 	
 	@ManyToOne
 	@JoinColumn(name = "CDETYPUTIL")
-	public TypeUtilisation getTypeUtilisation() {
+	public SareftrTyputil getTypeUtilisation() {
 		return typeUtilisation;
 	}
 	
@@ -79,15 +92,10 @@ public class Programme implements Serializable {
 	
 	@ManyToOne
 	@JoinColumn(name = "RION_PAIEMENT")
-	public Rion getRionPaiement() {
+	public SareftrRion getRionPaiement() {
 		return rionPaiement;
 	}
-	
-	//@OneToMany(mappedBy = "programme")
-	//public List<Fichier> getFichiers() {
-	//	return fichiers;
-	//}
-	
+
 	@Column(name = "USERCRE")
 	public String getUsercre() {
 		return usercre;
@@ -114,7 +122,37 @@ public class Programme implements Serializable {
 	public Date getDataffect() {
 		return dataffect;
 	}
-	
+
+	@Column(name = "USER_VALIDATION")
+	public String getUserValidation() { return userValidation; }
+
+	@Column(name = "DATE_VALIDATION")
+	@Temporal(TemporalType.TIMESTAMP)
+	public Date getDateValidation() { return dateValidation; }
+
+	@Column(name = "DATE_DBT_PRG")
+	@Temporal(TemporalType.DATE)
+	public Date getDateDbtPrg() { return dateDbtPrg; }
+
+	@Column(name = "DATE_FIN_PRG")
+	@Temporal(TemporalType.DATE)
+	public Date getDateFinPrg() { return dateFinPrg; }
+
+	@Column(name = "CDE_TER")
+	public Integer getCdeTer() { return cdeTer; }
+   
+	@Column(name = "DATE_REPARTITION")
+	@Temporal(TemporalType.TIMESTAMP)
+	public Date getDateRepartition() {
+		return dateRepartition;
+	  }
+
+	@Column(name = "STATUT_ELIGIBILITE")
+	@Enumerated(EnumType.STRING)
+	public StatutEligibilite getStatutEligibilite() {
+		return statutEligibilite;
+	}
+
 	public void setUsercre(String usercre) {
 		this.usercre = usercre;
 	}
@@ -125,18 +163,6 @@ public class Programme implements Serializable {
 	
 	public void setNom(String nom) {
 		this.nom = nom;
-	}
-	
-	public void setRionTheorique(Rion rionTheorique) {
-		this.rionTheorique = rionTheorique;
-	}
-	
-	public void setFamille(Famille famille) {
-		this.famille = famille;
-	}
-	
-	public void setTypeUtilisation(TypeUtilisation typeUtilisation) {
-		this.typeUtilisation = typeUtilisation;
 	}
 	
 	public void setTypeRepart(TypeRepart typeRepart) {
@@ -150,15 +176,7 @@ public class Programme implements Serializable {
 	public void setStatut(StatutProgramme statut) {
 		this.statut = statut;
 	}
-	
-	public void setRionPaiement(Rion rionPaiement) {
-		this.rionPaiement = rionPaiement;
-	}
-	
-	/*public void setFichiers(List<Fichier> fichiers) {
-		this.fichiers = fichiers;
-	}*/
-	
+
 	public void setUsermaj(String usermaj) {
 		this.usermaj = usermaj;
 	}
@@ -173,5 +191,39 @@ public class Programme implements Serializable {
 	
 	public void setDataffect(Date dataffect) {
 		this.dataffect = dataffect;
+	}
+
+    	public void setUserValidation(String userValidation) { this.userValidation = userValidation; }
+
+	public void setDateValidation(Date dateValidation) { this.dateValidation = dateValidation; }
+
+	public void setDateDbtPrg(Date dateDbtPrg) { this.dateDbtPrg = dateDbtPrg; }
+
+	public void setDateFinPrg(Date dateFinPrg) { this.dateFinPrg = dateFinPrg; }
+
+	public void setCdeTer(Integer cdeTer) { this.cdeTer = cdeTer; }
+    
+    public void setTypeUtilisation(SareftrTyputil typeUtilisation) {
+	  this.typeUtilisation = typeUtilisation;
+    }
+    
+    public void setFamille(SareftrFamiltyputil famille) {
+	  this.famille = famille;
+    }
+    
+    public void setRionPaiement(SareftrRion rionPaiement) {
+	  this.rionPaiement = rionPaiement;
+    }
+    
+    public void setRionTheorique(SareftrRion rionTheorique) {
+	  this.rionTheorique = rionTheorique;
+    }
+    
+    public void setDateRepartition(Date dateRepartition) {
+	  this.dateRepartition = dateRepartition;
+    }
+
+	public void setStatutEligibilite(StatutEligibilite statutEligibilite) {
+		this.statutEligibilite = statutEligibilite;
 	}
 }

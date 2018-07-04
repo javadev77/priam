@@ -1,19 +1,18 @@
 package fr.sacem.priam.services;
 
 import fr.sacem.priam.model.dao.jpa.*;
-
-
+import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.priam.model.domain.*;
-
-import fr.sacem.priam.model.domain.ParamAppli;
-import fr.sacem.priam.model.domain.Programme;
-import fr.sacem.priam.model.domain.ProgrammeSequence;
-import fr.sacem.priam.model.domain.StatutProgramme;
-
-
 import fr.sacem.priam.model.domain.criteria.ProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
+import fr.sacem.priam.model.domain.saref.SareftrFamiltyputil;
+import fr.sacem.priam.model.domain.saref.SareftrRion;
+import fr.sacem.priam.model.domain.saref.SareftrTyputil;
 import fr.sacem.priam.model.util.MapperConfiguration;
+import fr.sacem.priam.security.model.UserDTO;
+import fr.sacem.priam.services.journal.annotation.LogEtatProgramme;
+import fr.sacem.priam.services.journal.annotation.LogProgramme;
+import fr.sacem.priam.services.journal.annotation.TypeLog;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,14 +28,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static fr.sacem.priam.services.FichierService.GUEST;
-
 /**
  * Created by benmerzoukah on 07/06/2017.
  */
 @Component
 public class ProgrammeService {
-	
+
+	public static final int SELECTION = 1;
+
 	@Autowired
 	ProgrammeViewDao programmeViewDao;
 	
@@ -52,21 +51,25 @@ public class ProgrammeService {
 	@Autowired
 	ProgrammeSequnceDao programmeSequnceDao;
 	
+	@Autowired
+	FichierFelixDao fichierFelixDao;
+	
 	private static final Logger LOG = LoggerFactory.getLogger(ProgrammeService.class);
 	
 	@Transactional
 	public Page<ProgrammeDto> findProgrammeByCriteria(ProgrammeCriteria criteria, Pageable pageable) {
 		
 		Page<ProgrammeDto> pageProgramme = programmeViewDao.findAllProgrammeByCriteria(criteria.getNumProg(), criteria.getNom(),
-			criteria.getStatut(), criteria.getDateCreationDebut(), criteria.getDateCreationFin(), criteria.getFamille(),
-			criteria.getTypeUtilisation(), criteria.getRionTheorique(), criteria.getRionPaiement(), criteria.getTypeRepart(),
+			criteria.getStatut(), criteria.getDateCreationDebut(), criteria.getDateCreationFin(), criteria.getSareftrFamiltyputil(),
+			criteria.getTypeUtilisation(), criteria.getSareftrRionTheorique(), criteria.getSareftrRionPaiement(), criteria.getTypeRepart(),
 			pageable);
 		
 		return pageProgramme;
 	}
 	
 	@Transactional
-	public Programme addProgramme(ProgrammeDto programmeDto) {
+    @LogProgramme(event = TypeLog.CREATION)
+	public Programme addProgramme(ProgrammeDto programmeDto, UserDTO userDTO) {
 		MapperConfiguration mapperConfiguration = new MapperConfiguration();
 		ParamAppli paramAppli = paramAppliDao.getParam("ANNEE_SEQ_PROGRAMME");
 		ProgrammeSequence programmeSequence = new ProgrammeSequence();
@@ -81,14 +84,13 @@ public class ProgrammeService {
 		}
 		if (max_value == null)
 			max_value = "0";
-		Long max_value_to_add = Long.valueOf(max_value) + 1;
+		Long max_value_to_add = Long.valueOf(max_value) + SELECTION;
 		String formated_max_value_to_add = StringUtils.leftPad(max_value_to_add.toString(), 4, "0");
 		programmeKey.setAnnee(year);
 		programmeKey.setCodeSequence(max_value_to_add);
-		programmeKey.setPrefix("PR");
 		programmeSequence.setProgrammeKey(programmeKey);
 		programmeSequnceDao.save(programmeSequence);
-		programmeDto.setNumProg(programmeKey.getPrefix() + programmeKey.getAnnee() + formated_max_value_to_add);
+		programmeDto.setNumProg(programmeKey.getAnnee() + formated_max_value_to_add);
 		// if(Long.getLong(paramAppli.getVal())<today.getYear()){
 		//update la sequence
 		//appdate la table paramAppli
@@ -97,7 +99,8 @@ public class ProgrammeService {
 		//recuperer la derniere ligne ajouter dans la tavle Programme Sequence
 		//construire le Id du programme
 		Programme mappedProgramme = mapperConfiguration.convertProgrammeDtoToProgramme(programmeDto);
-		mappedProgramme.setUsercre("GUEST"); // TODO : HABIB - A changer qaund le module SSO sera intégré
+	    
+		mappedProgramme.setUsercre(programmeDto.getUsercre());
 		mappedProgramme.setDateCreation(new Date());
 		mappedProgramme.setStatut(StatutProgramme.CREE);
 		
@@ -119,36 +122,44 @@ public class ProgrammeService {
 		}
 		return resultat;
 	}
-	
+
+
+
 	@Transactional
-	public Programme updateProgramme(ProgrammeDto programmeDto) {
+	@LogProgramme(event = TypeLog.MODIFICATION)
+	public Programme updateProgramme(ProgrammeDto programmeDto, UserDTO userDTO) {
 		Programme programme = programmeDao.findOne(programmeDto.getNumProg());
 		
 		programme.setNom(programmeDto.getNom());
 		
-		Famille famille = new Famille();
-		famille.setCode(programmeDto.getFamille());
-		programme.setFamille(famille);
+		SareftrFamiltyputil sareftrFamiltyputil = new SareftrFamiltyputil();
+		sareftrFamiltyputil.setCode(programmeDto.getFamille());
+		programme.setFamille(sareftrFamiltyputil);
 		
-		TypeUtilisation typeUtilisation = new TypeUtilisation();
-		typeUtilisation.setCode(programmeDto.getTypeUtilisation());
-		typeUtilisation.setCodeFamille(programmeDto.getFamille());
-		programme.setTypeUtilisation(typeUtilisation);
+		SareftrTyputil sareftrTyputil = new SareftrTyputil();
+		sareftrTyputil.setCode(programmeDto.getTypeUtilisation());
+		sareftrTyputil.setCodeFamille(programmeDto.getFamille());
+		programme.setTypeUtilisation(sareftrTyputil);
 		
-		Rion rion = new Rion();
-		rion.setRion(programmeDto.getRionTheorique());
-		programme.setRionTheorique(rion);
+		SareftrRion sareftrRion = new SareftrRion();
+		sareftrRion.setRion(programmeDto.getRionTheorique());
+		programme.setRionTheorique(sareftrRion);
 		
 		programme.setTypeRepart(programmeDto.getTypeRepart());
 		programme.setDatmaj(new Date());
-		programme.setUsermaj("GUEST"); //TODO HABIB => A implementer lors  la mise en place du SSO SACEM
-		
+		programme.setUsermaj(programmeDto.getUsermaj());
+
+		programme.setDateDbtPrg(programmeDto.getDateDbtPrg());
+		programme.setDateFinPrg(programmeDto.getDateFinPrg());
+		programme.setCdeTer(programmeDto.getCdeTer());
+
 		return programmeDao.save(programme);
 		
 	}
 	
 	@Transactional
-	public Programme abandonnerProgramme(ProgrammeDto programmeDto) {
+    @LogProgramme(event = TypeLog.SUPPRESSION)
+	public Programme abandonnerProgramme(ProgrammeDto programmeDto, UserDTO userDTO) {
 		Programme programme = programmeDao.findOne(programmeDto.getNumProg());
 		programme.setStatut(StatutProgramme.ABANDONNE);
 		
@@ -156,12 +167,12 @@ public class ProgrammeService {
 	}
 	
 	@Transactional
-	public void toutDeaffecter(String numProg) {
+	public void toutDeaffecter(String numProg, String user) {
 		LOG.info("Debut :Deaffecter les fichiers lies au programme (" + numProg + ")");
 		fichierDao.clearSelectedFichiers(numProg, Status.CHARGEMENT_OK);
 		Programme programme = programmeDao.findOne(numProg);
 		programme.setStatut(StatutProgramme.CREE);
-		programme.setUsermaj(GUEST);
+		programme.setUsermaj(user);
 		programme.setDatmaj(new Date());
 		
 		programmeDao.saveAndFlush(programme);
@@ -169,7 +180,73 @@ public class ProgrammeService {
 	}
 
 	@Transactional
-	public List<String> findAllNomProgByCriteria(){
+	public List<String> findAllNomProgByCriteria() {
 		return programmeViewDao.findAllNomProgByCriteria();
+	}
+
+	@Transactional
+	@LogEtatProgramme(event = TypeLog.VALIDATION)
+	public Programme validerProgramme(ProgrammeDto programmeDto, UserDTO userDTO) {
+		Programme programme = programmeDao.findOne(programmeDto.getNumProg());
+		programme.setStatut(StatutProgramme.VALIDE);
+		programme.setUserValidation(programmeDto.getUserValidation());
+		programme.setDateValidation(new Date());
+
+		return programmeDao.saveAndFlush(programme);
+	}
+
+	@Transactional
+	@LogEtatProgramme(event = TypeLog.INVALIDATION)
+	public Programme invaliderProgramme(ProgrammeDto programmeDto, UserDTO userDTO) {
+	    FichierFelix ff = fichierFelixDao.findByNumprog(programmeDto.getNumProg());
+	    if(ff != null) {
+		  fichierFelixDao.delete(ff.getId());
+		  fichierFelixDao.flush();
+	    }
+	    
+	    Programme programme = programmeDao.findOne(programmeDto.getNumProg());
+	    programme.setStatut(StatutProgramme.EN_COURS);
+	    programme.setUserValidation(null);
+	    programme.setDateValidation(null);
+		
+		
+	    return programmeDao.saveAndFlush(programme);
+	}
+
+	@Transactional
+	public Programme enregistrerSelection(ProgrammeDto programmeDto) {
+		FichierFelix ff = fichierFelixDao.findByNumprog(programmeDto.getNumProg());
+		if(ff != null) {
+			fichierFelixDao.delete(ff.getId());
+			fichierFelixDao.flush();
+		}
+
+		Programme programme = programmeDao.findOne(programmeDto.getNumProg());
+		programme.setStatut(StatutProgramme.EN_COURS);
+		programme.setUserValidation(null);
+		programme.setDateValidation(null);
+
+
+		return programmeDao.saveAndFlush(programme);
+	}
+
+	@Transactional
+	@LogEtatProgramme(event = TypeLog.ANNULATION)
+	public Programme updateStatutProgrammeToAffecte(ProgrammeDto programmeDTO, UserDTO userDTO) {
+		Programme programme = programmeDao.findOne(programmeDTO.getNumProg());
+		programme.setStatut(StatutProgramme.AFFECTE);
+		programme.setUseraffect(userDTO.getUserId());
+		programme.setDataffect(new Date());
+		return programmeDao.saveAndFlush(programme);
+	}
+
+	@Transactional
+	@LogEtatProgramme(event = TypeLog.REPARTITION)
+	public void majStatut(ProgrammeDto programmeDTO, UserDTO userDTO) {
+		Programme prog = programmeDao.findOne(programmeDTO.getNumProg());
+		prog.setStatut(programmeDTO.getStatut());
+		prog.setUsermaj(programmeDTO.getUsermaj());
+
+		programmeDao.saveAndFlush(prog);
 	}
 }

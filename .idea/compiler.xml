@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="priam-batch-affectation-cms" />
+        <module name="priam-batch-import-cms" />
+        <module name="priam-batch-import-cp" />
+        <module name="priam-batch-repartition" />
+        <module name="priam-common" />
+        <module name="priam-common-batch" />
+        <module name="priam-model" />
+        <module name="priam-rest-api-cms" />
+        <module name="priam-rest-api-common" />
+        <module name="priam-rest-api-copieprivee" />
+        <module name="priam-security" />
+        <module name="priam-services" />
+        <module name="priam-ui" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="priam-batch-affectation-cms" target="1.8" />
+      <module name="priam-batch-affectation-cms-ant" target="1.8" />
+      <module name="priam-batch-import-cms" target="1.8" />
+      <module name="priam-batch-import-cms-ant" target="1.8" />
+      <module name="priam-batch-import-cms-fra" target="1.8" />
+      <module name="priam-batch-import-cp" target="1.8" />
+      <module name="priam-batch-repartition" target="1.8" />
+      <module name="priam-common" target="1.8" />
+      <module name="priam-common-batch" target="1.8" />
+      <module name="priam-model" target="1.8" />
+      <module name="priam-parent" target="1.8" />
+      <module name="priam-rest-api-cms" target="1.8" />
+      <module name="priam-rest-api-common" target="1.8" />
+      <module name="priam-rest-api-copieprivee" target="1.8" />
+      <module name="priam-security" target="1.8" />
+      <module name="priam-services" target="1.8" />
+      <module name="priam-ui" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+    <context:component-scan base-package="fr.sacem.*"/>
+    <context:property-placeholder location="classpath:config/application.properties"/>
+    <util:properties id="envProperties"
+                     location="classpath:config/application.properties"/>
+    <job id="csvArchiveFlatFileReaderJob" xmlns="http://www.springframework.org/schema/batch">
+
+        <step id="csvArchiveFlatFileReaderStep">
+            <tasklet>
+                <chunk
+                        reader="readerPriamCsv"
+                        writer="writerPriamCsv"
+                        processor="repartitionItemProcessor"
+                        commit-interval="${commit-interval}">
+                </chunk>
+            </tasklet>
+        </step>
+        <listeners merge="true">
+            <listener ref="listenerCompletition"/>
+        </listeners>
+    </job>
+
+
+    <bean id="listenerCompletition" class="fr.sacem.listener.repartition.JobCompletionNotificationLigneProgrammeRepartitionListener">
+    </bean>
+    <bean id="readerPriamCsv"
+          class="fr.sacem.service.repartition.CsvMultiResourceItemReader" scope="step">
+        <property name="delegate" ref="flatFileItemReader"/>
+        <property name="strict" value="false"/>
+    </bean>
+
+    <bean id="writerPriamCsv" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    UPDATE PRIAM_PROGRAMME
+                    SET
+                            NUMPROG=:numeroProgramme,
+                            DATE_REPARTITION=:datcalc,
+                            RION_PAIEMENT=:rion,
+                            STATUT_PROG_CODE=:status
+                    WHERE
+                            NUMPROG=:numeroProgramme
+                    AND
+                            STATUT_PROG_CODE = 'MIS_EN_REPART'
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
+    <bean id="repartitionItemProcessor" class="fr.sacem.service.repartition.RepartitionItemProcessor"/>
+
+    <bean id="flatFileItemReader"
+          class="fr.sacem.util.mapper.repartition.CsvPriamFileItemReader">
+        <property name="lineMapper">
+            <bean class="fr.sacem.util.mapper.repartition.CsvPriamLineMapper">
+                <property name="lineTokenizer">
+                    <bean class="org.springframework.batch.item.file.transform.DelimitedLineTokenizer">
+                        <property name="names" value="numeroProgramme,datcalc,rion,status"/>
+                        <property name="delimiter" value=";"/>
+                    </bean>
+                </property>
+                <property name="fieldSetMapper">
+                    <bean class="org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper">
+                        <property name="targetType" value="fr.sacem.domain.Repartition"/>
+                        <property name="customEditors">
+                            <map>
+                                <entry key="java.time.LocalDateTime">
+                                    <bean class="fr.sacem.util.DatePropertyEditor">
+                                    </bean>
+                                </entry>
+                            </map>
+                        </property>
+                    </bean>
+                </property>
+            </bean>
+        </property>
+    </bean>
+    <bean id="jobOperator" class="org.springframework.batch.core.launch.support.SimpleJobOperator"
+          p:jobLauncher-ref="jobLauncher" p:jobExplorer-ref="jobExplorer"
+          p:jobRepository-ref="jobRepository" p:jobRegistry-ref="jobRegistry"/>
+
+    <bean id="jobExplorer" class="org.springframework.batch.core.explore.support.JobExplorerFactoryBean"
+          p:dataSource-ref="dataSource"/>
+
+    <bean id="jobRegistry" class="org.springframework.batch.core.configuration.support.MapJobRegistry"/>
+
+    <bean class="org.springframework.batch.core.configuration.support.JobRegistryBeanPostProcessor"
+          p:jobRegistry-ref="jobRegistry"/>
+
+    <bean id="jobLauncher" class="org.springframework.batch.core.launch.support.SimpleJobLauncher"
+          p:jobRepository-ref="jobRepository"/>
+
+    <bean id="jobRepository" class="org.springframework.batch.core.repository.support.JobRepositoryFactoryBean"
+          p:dataSource-ref="dataSource"
+          p:transactionManager-ref="transactionManager"/>
+
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <!--
+        <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+            <property name="driverClassName" value="${spring.datasource.driver-class-name}"/>
+            <property name="url" value="${spring.datasource.url}"/>
+            <property name="username" value="${spring.datasource.username}"/>
+            <property name="password" value="${spring.datasource.password}"/>
+        </bean>
+    -->
+</beans>

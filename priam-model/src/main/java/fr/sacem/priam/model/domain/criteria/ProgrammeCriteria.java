@@ -13,14 +13,14 @@ import java.util.List;
 public class ProgrammeCriteria {
     private String numProg;
     private String nom;
-    private String famille;
-    private String typeUtilisation;
-    private Integer rionTheorique;
+    private List<String> sareftrFamiltyputil;
+    private List<String> typeUtilisation;
+    private Integer sareftrRionTheorique;
     private Date dateCreationDebut;
     private Date dateCreationFin;
     private TypeRepart typeRepart;
     private List<StatutProgramme> statut = Arrays.asList(StatutProgramme.values());
-    private Integer rionPaiement;
+    private Integer sareftrRionPaiement;
     
     public ProgrammeCriteria() {
     
@@ -42,28 +42,28 @@ public class ProgrammeCriteria {
         this.nom = nom;
     }
     
-    public String getFamille() {
-        return famille;
+    public List<String> getSareftrFamiltyputil() {
+        return sareftrFamiltyputil;
     }
     
-    public void setFamille(String famille) {
-        this.famille = famille;
+    public void setSareftrFamiltyputil(List<String> sareftrFamiltyputil) {
+        this.sareftrFamiltyputil = sareftrFamiltyputil;
     }
     
-    public String getTypeUtilisation() {
+    public List<String> getTypeUtilisation() {
         return typeUtilisation;
     }
     
-    public void setTypeUtilisation(String typeUtilisation) {
+    public void setTypeUtilisation(List<String> typeUtilisation) {
         this.typeUtilisation = typeUtilisation;
     }
     
-    public Integer getRionTheorique() {
-        return rionTheorique;
+    public Integer getSareftrRionTheorique() {
+        return sareftrRionTheorique;
     }
     
-    public void setRionTheorique(Integer rionTheorique) {
-        this.rionTheorique = rionTheorique;
+    public void setSareftrRionTheorique(Integer sareftrRionTheorique) {
+        this.sareftrRionTheorique = sareftrRionTheorique;
     }
     
     public Date getDateCreationDebut() {
@@ -98,11 +98,11 @@ public class ProgrammeCriteria {
         this.statut = statut;
     }
     
-    public Integer getRionPaiement() {
-        return rionPaiement;
+    public Integer getSareftrRionPaiement() {
+        return sareftrRionPaiement;
     }
     
-    public void setRionPaiement(Integer rionPaiement) {
-        this.rionPaiement = rionPaiement;
+    public void setSareftrRionPaiement(Integer sareftrRionPaiement) {
+        this.sareftrRionPaiement = sareftrRionPaiement;
     }
 }

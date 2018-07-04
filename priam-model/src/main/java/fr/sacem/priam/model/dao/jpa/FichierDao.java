@@ -14,29 +14,32 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 
 /**
  * Created by benmerzoukah on 09/05/2017.
  */
 @Lazy
+@Transactional
 public interface FichierDao extends JpaRepository<Fichier, Long> {
     
     @Transactional(readOnly = true)
     @Query("SELECT DISTINCT new fr.sacem.priam.model.domain.dto.FileDto(f.id, f.nomFichier, fam.code, typu.code, f.dateDebutChargt, f.dateFinChargt, f.nbLignes, f.statut) " +
-            "FROM Fichier AS f JOIN f.famille AS fam JOIN f.typeUtilisation AS typu " +
+            "FROM Fichier AS f LEFT JOIN f.famille AS fam LEFT JOIN f.typeUtilisation AS typu " +
             "WHERE f.statut IN (:status) " +
-            "AND (:familleCode IS NULL OR fam.code = :familleCode) " +
-            "AND (:typeUtilisationCode IS NULL OR typu.code = :typeUtilisationCode)")
-    Page<FileDto> findAllFichiersByCriteria(@Param("familleCode") String familleCode, @Param("typeUtilisationCode") String typeUtilisationCode, @Param("status") List<Status> status, Pageable pageable);
+            "AND (fam.code IN (:familleCode) OR fam.code IS NULL) " +
+            "AND (typu.code IN (:typeUtilisationCode) OR typu.code IS NULL) " +
+            "AND f.automatique = true ")
+    Page<FileDto> findAllFichiersByCriteria(@Param("familleCode") List<String> familleCode, @Param("typeUtilisationCode") List<String> typeUtilisationCode, @Param("status") List<Status> status, Pageable pageable);
     
     @Transactional(readOnly = true)
     @Query("SELECT DISTINCT new fr.sacem.priam.model.domain.dto.FileDto(f.id, f.nomFichier, fam.code, typu.code, f.dateDebutChargt, f.dateFinChargt, f.nbLignes, f.statut) " +
             "FROM Fichier AS f JOIN f.famille AS fam JOIN f.typeUtilisation AS typu " +
-            "WHERE f.statut IN (:status) ")
-      
+            "WHERE f.statut IN (:status) AND f.automatique = true ")
+
     Page<FileDto> findAllFichiersByStatus(@Param("status") List<Status> status, Pageable pageable);
-    
+
     @Transactional
     @Modifying(clearAutomatically = true)
     @Query("UPDATE Fichier f SET f.statut= :statut WHERE f.id = :id")
@@ -52,31 +55,51 @@ public interface FichierDao extends JpaRepository<Fichier, Long> {
     @Query("SELECT DISTINCT new fr.sacem.priam.model.domain.dto.FileDto(f.id, f.nomFichier, fam.code, typu.code, f.dateDebutChargt, f.dateFinChargt, f.nbLignes, f.statut) " +
         "FROM Fichier AS f JOIN f.famille AS fam JOIN f.typeUtilisation AS typu " +
         "WHERE f.statut IN (:status) " +
-        "AND (:familleCode IS NULL OR fam.code = :familleCode) " +
+        "AND (fam.code IN (:familleCode)) " +
         "AND (f.programme.numProg IS NULL OR f.programme.numProg = :numProg) " +
-        "AND (:typeUtilisationCode IS NULL OR typu.code = :typeUtilisationCode) " +
+        "AND (typu.code IN (:typeUtilisationCode)) " +
+        "AND f.automatique = true " +
         "ORDER BY f.dateFinChargt DESC ")
-    List<FileDto> findFichiersAffectes(@Param("familleCode") String familleCode, @Param("typeUtilisationCode") String typeUtilisationCode,
-                                            @Param("status") List<Status> status, @Param("numProg") String numProg);
+    List<FileDto> findFichiersAffectes(@Param("familleCode") List<String> familleCode, @Param("typeUtilisationCode") List<String> typeUtilisationCode,
+                                       @Param("status") List<Status> status, @Param("numProg") String numProg);
     @Transactional(readOnly =true)
     @Query("SELECT f " +
             "FROM Fichier AS f " +
             "WHERE f.programme.numProg = :numProg " +
             "AND f.statut=:status")
     List<Fichier> findFichiersByIdProgramme(@Param("numProg") String numProg, @Param("status") Status status);
+
+    @Transactional(readOnly =true)
+    @Query("SELECT new fr.sacem.priam.model.domain.dto.FileDto(f.id, f.nomFichier, f.dateDebutChargt, f.dateFinChargt, f.nbLignes, f.statut) " +
+            "FROM Fichier AS f " +
+            "WHERE f.programme.numProg = :numProg " +
+            "AND f.statut=:status")
+    List<FileDto> findFichiersAffecteByIdProgramme(@Param("numProg") String numProg, @Param("status") Status status);
     
     
     @Transactional
     @Modifying(clearAutomatically = true)
     @Query("UPDATE Fichier f SET f.programme.numProg = NULL, f.statut =:status WHERE f.programme.numProg = :numProg")
     void clearSelectedFichiers(@Param("numProg") String numProg,@Param("status") Status status);
-    
-    
+
+
     @Transactional
     @Modifying(clearAutomatically = true)
     @Query("UPDATE Fichier f SET f.programme.numProg = :numProg, f.statut =:status  WHERE f.id IN (:idFichiers) ")
     void updateStatusFichiersAffectes(@Param("numProg") String numProg,@Param("status") Status status,@Param("idFichiers") List<Long> idFichiers);
     
     Fichier findByNomFichier(String s);
+
+    @Transactional(readOnly =true)
+    @Query(nativeQuery = true, value="SELECT LOG from  PRIAM_FICHIER_LOG FL WHERE FL.ID_FICHIER = ?1 ORDER BY LOG")
+    Set<String> getChargementLog(@Param("idFichier") Long idFichier);
+
+
+    @Transactional(readOnly =true)
+    @Query("SELECT f " +
+            "FROM Fichier AS f " +
+            "WHERE f.programme.numProg = :numProg " +
+            "AND f.automatique = false ")
+    Fichier findFichierLink(@Param("numProg")String numProg);
 }
 

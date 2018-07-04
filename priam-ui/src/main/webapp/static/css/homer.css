@@ -94,8 +94,7 @@
 }
 .bg-ico-context-manual {
   background: url(../images/iconescontextes/icoEdit.png) no-repeat;
-}
-.bg-ico-context-running {
+}.bg-ico-context-running {
   background: url(../images/iconescontextes/icoQuestion.png) no-repeat;
 }
 .bg-ico-context-red-cross {
@@ -167,6 +166,11 @@
 .bg-ico-btn-action {
   background: url(../images/iconescontextes/btnediter.gif) no-repeat;
 }
+
+.bg-ico-btn-info {
+  background: url(../images/iconescontextes/btninformation.gif) no-repeat;
+}
+
 .bg-ico-file-excel {
   background: url(../images/iconescontextes/icofichierexcel.gif) no-repeat center;
 }
@@ -3748,7 +3752,7 @@ input[sacem-combo-rion][readonly] {
   cursor: pointer;
 }
 .homer #HomerPrompt .modal-body {
-  padding: 20px 48px;
+  padding: 20px 18px;
 }
 .homer #HomerPrompt .modal-body > textarea {
   min-height: 84px;
