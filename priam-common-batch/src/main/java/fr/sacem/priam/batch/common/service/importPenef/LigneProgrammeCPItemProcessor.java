@@ -45,7 +45,7 @@ public class LigneProgrammeCPItemProcessor implements ItemProcessor<LigneProgram
 
         // recupération de Id fichier , Id fichier est obtenu apres la creation du fichier
         ligneProgramme.setIdFichier(idFichier);
-        log.info("Fichier : < " + nomFichier + " > Traitement de la ligne_programme id12 =(" + ligneProgramme.getIde12() + ")");
+        log.info("Fichier : < " + nomFichier + " > Traitement de la ligne_programme " + ligneProgramme.toString());
 
         BindingResult errors = new BeanPropertyBindingResult(ligneProgramme, "ligneProgramme-"+ ligneProgramme.getLineNumber());
         validator.validate(ligneProgramme, errors);

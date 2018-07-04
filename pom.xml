@@ -14,6 +14,7 @@
     <groupId>fr.sacem.priam</groupId>
     <artifactId>priam-parent</artifactId>
 
+
     <version>2.3.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
@@ -26,6 +27,7 @@
         <module>priam-security</module>
         <module>priam-services</module>
         <module>priam-ui</module>
+        <module>priam-batch-affectation-cms</module>
         <module>priam-rest-api-common</module>
         <module>priam-rest-api-copieprivee</module>
         <module>priam-rest-api-cms</module>
@@ -33,7 +35,6 @@
         <module>priam-batch-repartition</module>
         <module>priam-batch-import-cms-fra</module>
         <module>priam-batch-import-cms-ant</module>
-        <module>priam-batch-affectation-cms</module>
         <module>priam-catalogue-cms</module>
         <module>priam-batch-import-catcms-rdo</module>
         <module>priam-batch-enrichissement-cat-fra</module>
@@ -79,7 +80,7 @@
 
         <priam.project.version>${project.version}</priam.project.version>
         <priam.project.security.name.ui>PRIAMInt2.0.X</priam.project.security.name.ui>
-        <spring.active.profiles>dev</spring.active.profiles>
+        <spring.active.profiles>re7</spring.active.profiles>
 
     </properties>
 
