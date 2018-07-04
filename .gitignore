@@ -41,3 +41,21 @@ nbdist/
 
 
 dist/
+/.idea/
+/.idea/codeStyleSettings.xml
+/.idea/sqldialects.xml
+/.idea/libraries/
+/.idea/dataSources.local.xml
+/.idea/modules.xml
+/.idea/kotlinc.xml
+/.idea/uiDesigner.xml
+/.idea/dataSources.xml
+/.idea/runConfigurations/
+/.idea/compiler.xml
+/.idea/misc.xml
+/.idea/vcs.xml
+/.idea/dataSources/
+/.idea/artifacts/
+/.idea/inspectionProfiles/
+/.idea/workspace.xml
+/.idea/encodings.xml

@@ -1,5 +1,6 @@
 package fr.sacem.priam.batch.common.reader;
 
+import fr.sacem.priam.batch.common.util.UtilFile;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +11,7 @@ import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemStreamException;
 import org.springframework.batch.item.file.MultiResourceItemReader;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
@@ -32,6 +34,9 @@ public class CsvMultiResourceItemReader<T> extends MultiResourceItemReader<T> {
     private String patternFileName = null;
 
     private static String FILE_CSV_EN_COURS_DE_TRAITEMENT = "_en_cours_de_traitement";
+
+    @Autowired
+    private UtilFile utilFile;
 
 
     @Override
@@ -81,6 +86,8 @@ public class CsvMultiResourceItemReader<T> extends MultiResourceItemReader<T> {
                                     File fichierEnCoursDeTraitement = new File(rep + file.getName() + FILE_CSV_EN_COURS_DE_TRAITEMENT);
                                     JobParameter jobParameterFichierCSVEnCours = new JobParameter(fichierEnCoursDeTraitement.getAbsolutePath());
                                     JobParameter jobParameterNomFichierOriginal = new JobParameter(file.getName());
+                                    utilFile.suppressionFlag(fichierEnCoursDeTraitement);
+                                    LOG.debug("=== renomer le fichier en : "+fichierEnCoursDeTraitement.getName()+" ===");
 
 
                                     boolean renommageOk = file.renameTo(fichierEnCoursDeTraitement);
