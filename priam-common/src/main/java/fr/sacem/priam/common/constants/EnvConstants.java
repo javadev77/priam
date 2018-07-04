@@ -221,6 +221,24 @@ public enum EnvConstants implements ConfigurableProperty {
             return "priam.catcms.participants.rep.octav.archives";
         }
 
+    },
+    CATCMS_FILIATION_NPU_INPUT {
+        @Override
+        public String property() {
+            return "priam.catcms.filiation.npu.input";
+        }
+    },
+
+    CATCMS_FILIATION_NPU_ARCHIVES {
+        @Override
+        public String property() {
+            return "priam.catcms.filiation.npu.archives"; }
+        },
+
+        PATTERN_FILE_NAME {
+            public String property() {
+                return "priam.pattern.file.name";
+            }
     };
 
     @Override

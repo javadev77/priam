@@ -1,7 +1,7 @@
 package fr.sacem.priam.batch.participants.rep.mapper;
 
 import fr.sacem.priam.batch.common.util.exception.PriamValidationException;
-import fr.sacem.priam.batch.participants.rep.domaine.Participant;
+import fr.sacem.priam.batch.participants.rep.domain.Participant;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.mapping.FieldSetMapper;
 import org.springframework.batch.item.file.transform.IncorrectTokenCountException;
