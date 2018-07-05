@@ -16,11 +16,13 @@ public interface LigneProgrammeCPService {
     @Transactional
     void ajouterOeuvreManuel(LigneProgrammeCP input, UserDTO userDTO);
 
+
+
     Map<String, Long> getDurDifProgramme(String numProg, String statut);
 
     List<String> getUtilisateursByProgramme(String programme);
 
 
     @Transactional
-    void modifierDurOrNbrDifTemporaire(String numProg, Set<Map<String, String>> idLingesProgrammes, boolean isSelected, UserDTO userDTO);
+    void modifierDurOrNbrDifTemporaire(String numProg, Set<Map<String, String>> idLingesProgrammes, Set<Map<String, String>> isSelected, UserDTO userDTO);
 }

@@ -13,7 +13,7 @@ public class LigneProgrammeDedoublonnageStepTwoProcessor implements ItemProcesso
 
     @Override
     public LigneProgramme process(final LigneProgramme ligneProgramme) throws Exception {
-
+        log.info("Step Dedoublonnage >>>>> Traitement de la ligne_programme : " + ligneProgramme.toString());
         return ligneProgramme;
     }
 }

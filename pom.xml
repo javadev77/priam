@@ -14,7 +14,8 @@
     <groupId>fr.sacem.priam</groupId>
     <artifactId>priam-parent</artifactId>
 
-    <version>2.3.1-SNAPSHOT</version>
+
+    <version>2.3.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>PRIAM</name>
@@ -26,6 +27,7 @@
         <module>priam-security</module>
         <module>priam-services</module>
         <module>priam-ui</module>
+        <module>priam-batch-affectation-cms</module>
         <module>priam-rest-api-common</module>
         <module>priam-rest-api-copieprivee</module>
         <module>priam-rest-api-cms</module>
@@ -33,7 +35,6 @@
         <module>priam-batch-repartition</module>
         <module>priam-batch-import-cms-fra</module>
         <module>priam-batch-import-cms-ant</module>
-        <module>priam-batch-affectation-cms</module>
         <module>priam-catalogue-cms</module>
         <module>priam-batch-import-catcms-rdo</module>
         <module>priam-batch-enrichissement-cat-fra</module>

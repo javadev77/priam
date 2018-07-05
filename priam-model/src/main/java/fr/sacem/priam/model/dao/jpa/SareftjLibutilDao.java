@@ -14,7 +14,7 @@ import java.util.List;
  */
 public interface SareftjLibutilDao extends JpaRepository<SareftjLibutil, SareftjLibUtilPK> {
     
-    @Cacheable("sarefLibelleUtilisateur")
+    //@Cacheable("sarefLibelleUtilisateur")
     @Query("SELECT libUtil FROM SareftjLibutil libUtil " +
 		   "WHERE libUtil.cdeLng = :lang")
     List<SareftjLibutil> findByLang(@Param("lang") String lang);

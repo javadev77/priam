@@ -3,8 +3,11 @@ package fr.sacem.priam.services.api;
 import fr.sacem.priam.model.domain.criteria.LigneProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.SelectionDto;
+import fr.sacem.priam.security.model.UserDTO;
+import fr.sacem.priam.services.dto.ValdierSelectionProgrammeInput;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -28,6 +31,9 @@ public interface LigneProgrammeService {
     void deselectLigneProgramme(String numProg, Set<Map<String, String>> unselected);
 
     void enregistrerEdition(String numProg);
+
+    @Transactional
+    void enregistrerEdition(ValdierSelectionProgrammeInput input, UserDTO userDTO);
 
     void annulerEdition(String numProg, String utilisateur);
 

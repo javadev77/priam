@@ -1,11 +1,14 @@
 package fr.sacem.priam.model.domain.catcms;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import fr.sacem.priam.model.util.SimpleDateSerializer;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "PRIAM_CATCMS_CATALOGUE")
@@ -61,12 +64,12 @@ public class CatalogueCms implements Serializable {
 
 
 
-//    @OneToMany
-//    @JoinColumns({
-//            @JoinColumn(name="TYPE_CMS", referencedColumnName = "TYPE_CMS"),
-//            @JoinColumn(name="IDE12", referencedColumnName = "IDE12")})
-//    @JsonIgnore
-//    private List<ParticipantsCatcms> participantsCatcms = new ArrayList<>();
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumns({
+            @JoinColumn(name="TYPE_CMS", referencedColumnName = "TYPE_CMS"),
+            @JoinColumn(name="IDE12", referencedColumnName = "IDE12")})
+    @JsonIgnore
+    private List<ParticipantsCatcms> participantsCatcms = new ArrayList<>();
 //
 //
 //    private transient List<ParticipantsCatcms> participants = new ArrayList<>();
@@ -181,6 +184,14 @@ public class CatalogueCms implements Serializable {
 
     public void setParticipants(String participants) {
         this.participants = participants;
+    }
+
+    public List<ParticipantsCatcms> getParticipantsCatcms() {
+        return participantsCatcms;
+    }
+
+    public void setParticipantsCatcms(List<ParticipantsCatcms> participantsCatcms) {
+        this.participantsCatcms = participantsCatcms;
     }
 
     public CatalogueCms() {}

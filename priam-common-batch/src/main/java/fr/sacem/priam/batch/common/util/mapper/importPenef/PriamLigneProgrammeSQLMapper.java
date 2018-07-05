@@ -12,7 +12,9 @@ public class PriamLigneProgrammeSQLMapper implements RowMapper<LigneProgramme> {
 
 
     public LigneProgramme mapRow(ResultSet rs, int rowNum) throws SQLException {
+
         LigneProgramme ligneProgramme = new LigneProgramme();
+
         ligneProgramme.setIdFichier(rs.getLong("ID_FICHIER"));
         ligneProgramme.setCdeCisac(rs.getString("cdeCisac"));
         ligneProgramme.setCdeFamilTypUtil(rs.getString("cdeFamilTypUtil"));
@@ -47,6 +49,7 @@ public class PriamLigneProgrammeSQLMapper implements RowMapper<LigneProgramme> {
         ligneProgramme.setCdeTypUtilOri(rs.getString("cdeTypUtilOri"));
         ligneProgramme.setCdeFamilTypUtilOri(rs.getString("cdeFamilTypUtilOri"));
         ligneProgramme.setUtilisateur(rs.getString("utilisateur"));
+        ligneProgramme.setLibelleUtilisateur(rs.getString("libelleUtilisateur"));
         ligneProgramme.setDate_insertion(rs.getString("date_insertion"));
         ligneProgramme.setAjout(rs.getString("ajout"));
         ligneProgramme.setSelection(rs.getString("selection"));

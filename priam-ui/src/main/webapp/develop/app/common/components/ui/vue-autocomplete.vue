@@ -2,7 +2,6 @@
   <div :class="(className ? className + '-wrapper ' : '') + 'autocomplete-wrapper'">
 
     <div class="form-group has-feedback">
-
       <template v-if="isAlphaNumeric">
         <input  type="text"
                 :id="id"
@@ -16,7 +15,6 @@
                 @focus="focus"
                 autocomplete="off"
                 @keypress="numberKey"/>
-
       </template>
       <template v-else>
 
@@ -33,9 +31,6 @@
                 autocomplete="off"
         />
       </template>
-
-
-
       <i class="form-control-feedback glyphicon glyphicon-search"></i>
     </div>
 
@@ -297,7 +292,6 @@
       setValue(val) {
         this.type = val
       },
-
       numberKey(event) {
         debugger;
         let charCode = (event.which) ? event.which : event.keyCode;

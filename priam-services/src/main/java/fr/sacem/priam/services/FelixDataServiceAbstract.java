@@ -13,6 +13,7 @@ import fr.sacem.priam.common.util.csv.*;
 import fr.sacem.priam.model.dao.jpa.FichierFelixDao;
 import fr.sacem.priam.model.dao.jpa.FichierFelixLogDao;
 import fr.sacem.priam.model.dao.jpa.LignePreprepDao;
+import fr.sacem.priam.model.dao.jpa.LignePreprepJdbcDao;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.priam.model.domain.*;
 import fr.sacem.priam.model.domain.dto.FelixData;
@@ -107,15 +108,25 @@ public abstract class FelixDataServiceAbstract {
     @Autowired
     @Qualifier(value = "configAdmap")
     Map<String, String> configAdmap;
+
+    @Autowired
+    LignePreprepJdbcDao lignePreprepJdbcDao;
     
     public abstract List<LignePreprep> getListLignesSelectionnees(String pNumprog);
 
-    private void prepareFelixData(String numProg) {
+    private List<LignePreprep> prepareFelixData(String numProg) {
+        LOGGER.info(">>>>>> prepare FelixData <<<<<<");
         lignePreprepDao.deleteAll(numProg);
         
         List<LignePreprep> lignesSelectionnes = getListLignesSelectionnees(numProg);
-        lignePreprepDao.save(lignesSelectionnes);
-        lignePreprepDao.flush();
+//        lignePreprepDao.save(lignesSelectionnes);
+//        lignePreprepDao.flush();
+        LOGGER.info(">>>>>> Debut insert en mode Batch Jdbc des LignesPrepreps taille : " + lignesSelectionnes.size());
+        lignePreprepJdbcDao.insertLignesPreprep(lignesSelectionnes);
+
+        LOGGER.info("<<<<<<< Fin insert en mode Batch");
+
+        return lignesSelectionnes;
     }
     
     private List<String> head() {
@@ -259,11 +270,11 @@ public abstract class FelixDataServiceAbstract {
         /*programmeDto.setUsermaj(utilisateur);*/
         programmeDto.setUsermaj(userDTO.getUserId());
         try {
-            prepareFelixData(numProg);
             
             // Regeneration du fichier
-            List<LignePreprep> lignePrepreps = lignePreprepDao.findByNumProg(numProg);
+            List<LignePreprep> lignePrepreps = prepareFelixData(numProg);
             FichierFelixError fichierFelixWithErrors = createFichierFelixWithErrors(numProg, lignePrepreps);
+            lignePrepreps.clear();
             
             FichierFelix ff = fichierFelixDao.findByNumprog(numProg);
             ff.setNomFichier(fichierFelixWithErrors.getFilename());

@@ -78,7 +78,10 @@
     </modalWithTitle>
 
     <ecran-modal v-if="showEcranAjoutOeuvreMipsa">
-      <ajouter-oeuvre   slot="body" @cancel="showEcranAjoutOeuvreMipsa = false"></ajouter-oeuvre>
+      <ajouter-oeuvre :typeCatalogue="filter.typeCMS.value"
+                      slot="body"
+                      @ajoutOeuvre="onActionAjouterOeuvre"
+                      @cancel="showEcranAjoutOeuvreMipsa = false"></ajouter-oeuvre>
     </ecran-modal>
   </div>
 </template>
@@ -474,7 +477,12 @@
           url : process.env.CONTEXT_ROOT_PRIAM_CAT_RDO + 'app/rest/catalogue/search?page={page}&size={size}&sort={sort},{dir}'},
         deleteOeuvreCatalogueRdo : {
           method : 'DELETE',
-          url : process.env.CONTEXT_ROOT_PRIAM_CAT_RDO + 'app/rest/catalogue/oeuvre/delete/{id}'
+          url : process.env.CONTEXT_ROOT_PRIAM_CAT_RDO + 'app/rest/catalogue/oeuvre/{id}'
+        },
+
+        ajoputerOeuvreCatalogueRdo : {
+          method : 'POST',
+          url : process.env.CONTEXT_ROOT_PRIAM_CAT_RDO + 'app/rest/catalogue/oeuvre'
         }
       }
       this.resource= this.$resource('', {}, customActions);
@@ -548,7 +556,7 @@
       },
 
       onAjouterOeuvre() {
-          this.showEcranAjoutOeuvreMipsa = false;
+          this.showEcranAjoutOeuvreMipsa = true;
 
       },
 
@@ -605,7 +613,41 @@
         this.defaultPageable.size = size;
         let pageSize = this.defaultPageable.size;
         this.launchRequest(pageNum, pageSize, sort.property, sort.direction);
+      },
+
+
+      onActionAjouterOeuvre(selectedOeuvre) {
+          console.log("Selected Oeuvre ==> " + selectedOeuvre.ide12);
+          console.log("\t\t Role Size==> " + selectedOeuvre.tiersList.length);
+
+
+          //this.showEcranAjoutOeuvreMipsa = false;
+
+
+        let participantsList = selectedOeuvre.tiersList.map(tiers => [{
+          typeCMS : this.filter.value,
+          ide12:  selectedOeuvre.ide12,
+          role : tiers.oeuvreroleSacem,
+          nomParticpant : tiers.nom
+        }]);
+        debugger;
+         let oeuvreCatalogue = {
+           typeCMS : this.filter.value,
+           ide12 : selectedOeuvre.ide12,
+           typUtiGen : 'PHONOFR',
+           typeInscription : 'Manuelle',
+           titre : selectedOeuvre.titre,
+           participantsCatcms : participantsList
+         }
+
+         this.resource.ajoputerOeuvreCatalogueRdo(oeuvreCatalogue)
+           .then(resp => {
+              console.log(resp)
+           });
       }
+
+
+
     },
 
 

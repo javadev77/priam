@@ -38,7 +38,8 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
                     "ligneProgramme.nomParticipant1, " +
                     "ligneProgramme.ajout, " +
                     "ligneProgramme.selectionEnCours, " +
-            "(CASE WHEN f.programme.typeUtilisation.code = 'SONOFRA' THEN sum(ligneProgramme.mtEdit) WHEN f.programme.typeUtilisation.code = 'SONOANT' THEN sum(ligneProgramme.nbrDifEdit) ELSE 0 END)) "+
+            //"(CASE WHEN f.programme.typeUtilisation.code = 'SONOFRA' THEN sum(ligneProgramme.mtEdit) WHEN f.programme.typeUtilisation.code = 'SONOANT' THEN sum(ligneProgramme.nbrDifEdit) ELSE 0 END)) "+
+            "(CASE WHEN f.programme.typeUtilisation.code = 'SONOFRA' THEN ligneProgramme.mtEdit WHEN f.programme.typeUtilisation.code = 'SONOANT' THEN ligneProgramme.nbrDifEdit ELSE 0 END)) "+
             "FROM LigneProgrammeCMS ligneProgramme join ligneProgramme.fichier  f " +
             "WHERE ligneProgramme.fichier = f.id " +
             "AND f.programme.numProg = :numProg " +
@@ -46,8 +47,8 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
             "AND (ligneProgramme.ajout = :ajout OR :ajout IS NULL) " +
             "AND (ligneProgramme.selectionEnCours = :selectionEnCours OR :selectionEnCours IS NULL) " +
             "AND (ligneProgramme.titreOeuvre = :titre OR :titre IS NULL) " +
-            "AND (ligneProgramme.oeuvreManuel IS NULL) " +
-            "GROUP BY ligneProgramme.ide12 ")
+            "AND (ligneProgramme.oeuvreManuel IS NULL) ")
+            //"GROUP BY ligneProgramme.ide12 ")
     Page<SelectionCMSDto> findLigneProgrammeByCriteria(@Param("numProg") String numProg,
                                                        @Param("ide12") Long ide12,
                                                        @Param("titre") String titre,

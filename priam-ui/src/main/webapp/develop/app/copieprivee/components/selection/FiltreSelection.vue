@@ -211,7 +211,6 @@
             .then(data => {
 
               this.rechercher();
-              //this.$emit("ajout-oeuvre-sucess");
             })
             .catch(error => {
 

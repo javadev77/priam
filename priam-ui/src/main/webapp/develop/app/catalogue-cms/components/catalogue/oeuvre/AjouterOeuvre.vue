@@ -10,52 +10,18 @@
       <div class="panel-collapse">
 
         <div class="panel-body">
+            <div class="row">
+              <div class="col-md-3">
+                <label class="control-label">Type du Catalogue : {{ typeCatalogue }}</label>
+              </div>
+            </div>
+
             <app-mipsa :configuration="mipsaConfig" @ready-to-search="readyToSearch"></app-mipsa>
 
         </div>
       </div>
     </div>
 
-
-    <div class="mask" v-if="chgtCatalogueEncours" >
-      <div class="center-div">
-        <div class="spinner">
-          <div class="rect1"></div>
-          <div class="rect2"></div>
-          <div class="rect3"></div>
-          <div class="rect4"></div>
-          <div class="rect5"></div>
-        </div>
-      </div>
-    </div>
-
-
-    <modal v-if="showPopup">
-
-        <template slot="body" v-if="programme.typeUtilisation === 'SONOFRA'">
-          <div style="text-align: justify" v-html="messageSonoFra">
-          </div>
-        </template>
-        <template  slot="body" v-if="programme.typeUtilisation === 'SONOANT'">
-          <div style="text-align: justify" v-html="messageSonoAnt">
-          </div>
-        </template>
-
-      <template slot="footer">
-        <button class="btn btn-default btn-primary pull-right no" @click.prevent="afficherEcranSelection">Non</button>
-        <button class="btn btn-default btn-primary pull-right yes" @click.prevent="ajouterOeuvreManuel">Oui</button>
-      </template>
-    </modal>
-
-    <modal v-if="showPopupEligibilite">
-      <template slot="body">
-        <div style="text-align: justify" v-html="messageEligibilite">
-        </div>
-      </template>
-      <template slot="footer">
-        <button class="btn btn-default btn-primary pull-right yes" @click.prevent="showPopupEligibilite=false">Fermer</button>
-      </template>
-    </modal>
 
   </div>
 </template>
@@ -67,6 +33,15 @@
   import Modal from '../../../../common/components/ui/Modal.vue';
 
   export default {
+
+      props : {
+
+        typeCatalogue : {
+            type : String,
+            default : 'CMS FRANCE'
+        }
+
+      },
 
       created() {
         const customActions = {
@@ -194,14 +169,16 @@
                 target: '',
                 preventDefault: true,
                 onclick: function(nativeEvent, oeuvre) {
-                  let tiersCA = vm.getRoleCA(oeuvre.tiersList);
-                  vm.selectedOeuvre = {
+                    //alert("Hello  Habib !!!!");
+                  let tiersList = vm.getRoleCatalogueCMS(oeuvre.tiersList);
+                  let selectedOeuvre = {
                     ide12 : oeuvre.ide12 ? oeuvre.ide12: oeuvre.keyToDisplay.cde,
-                    cdeTypeIde12 : oeuvre.cdetypcleoeuv,
                     titre : oeuvre.titrePrincipal ? oeuvre.titrePrincipal: oeuvre.titrList[0].titr,
-                    roleParticipant1 : tiersCA !== undefined ? tiersCA.oeuvreroleSacem : oeuvre.tiersList[0].oeuvreroleSacem,
-                    nomParticipant1 : tiersCA !== undefined ? tiersCA.nom : oeuvre.tiersList[0].nom
+                    tiersList : tiersList !== undefined ? tiersList : new Array(oeuvre.tiersList[0])
                   }
+
+                  vm.$emit('ajoutOeuvre', selectedOeuvre);
+
                 }
               },
               linkOnCode: {   // used to activate the copy behaviour of IDE12
@@ -226,10 +203,14 @@
 
       methods : {
 
-        getRoleCA(tiersList) {
-          var result =  tiersList.find(function (tiers) {
-            return tiers.oeuvreroleSacem === 'CA';
-          })
+        getRoleCatalogueCMS(tiersList) {
+          var result =  tiersList.filter(function (tiers) {
+            return tiers.oeuvreroleSacem === 'A'  ||
+                   tiers.oeuvreroleSacem === 'AR' ||
+                   tiers.oeuvreroleSacem === 'C'  ||
+                   tiers.oeuvreroleSacem === 'CA' ||
+                   tiers.oeuvreroleSacem === 'SA';
+          });
 
           return result;
         },

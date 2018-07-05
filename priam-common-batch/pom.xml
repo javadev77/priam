@@ -5,7 +5,8 @@
     <parent>
         <artifactId>priam-parent</artifactId>
         <groupId>fr.sacem.priam</groupId>
-        <version>2.3.1-SNAPSHOT</version>
+
+        <version>2.3.2-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -14,10 +15,10 @@
 
     <dependencies>
         <dependency>
-        <groupId>fr.sacem.priam</groupId>
-        <artifactId>priam-common</artifactId>
-        <version>${project.version}</version>
-    </dependency>
+            <groupId>fr.sacem.priam</groupId>
+            <artifactId>priam-common</artifactId>
+            <version>${project.version}</version>
+            </dependency>
         <dependency>
             <groupId>net.sf.opencsv</groupId>
             <artifactId>opencsv</artifactId>

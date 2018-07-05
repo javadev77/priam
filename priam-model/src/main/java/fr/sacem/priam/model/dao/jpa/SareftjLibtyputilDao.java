@@ -18,7 +18,7 @@ import java.util.List;
 @Transactional(readOnly = true)
 public interface SareftjLibtyputilDao extends JpaRepository<SareftjLibtyputil, SareftjLibtyputilPK> {
     
-    @Cacheable("typeUtilisation")
+    //@Cacheable("typeUtilisation")
     @Query("SELECT lib FROM SareftjLibtyputil lib " +
             "WHERE(lib.sareftrTyputil.dateDebut is null OR " +
                "DATE_FORMAT(lib.sareftrTyputil.dateDebut, '%Y-%d-%m') = '0000-00-00' OR "+
@@ -30,7 +30,7 @@ public interface SareftjLibtyputilDao extends JpaRepository<SareftjLibtyputil, S
             "AND lib.code IN (:codes) ")
     List<SareftjLibtyputil> findByLang(@Param("lang") String lang, @Param("codes") List<String> codes);
     
-    @Cacheable("typeUtilisationByCodeAndLang")
+    //@Cacheable("typeUtilisationByCodeAndLang")
     @Query("SELECT lib " +
            "FROM SareftjLibtyputil AS lib " +
            "WHERE (lib.code is null or lib.code in (:codes)) " +

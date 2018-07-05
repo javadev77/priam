@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -64,34 +65,11 @@ public class CatalogueResource {
 
 
 
-       /* datas.forEach(data -> {
-            List<ParticipantsCatcms> result = participantsCatcmsDao.findParticipantsCatcmsByIde12AndTypeCMS(data.getIde12(), data.getTypeCMS());
-            data.setParticipants(result);
-            data.setRoles(result);
-        });*/
-
         return datas;
     }
 
-    /*@RequestMapping(
-            value = "catalogue/oeuvre/delete/{ide12}",
-            method = RequestMethod.DELETE,
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public CatalogueCms deleteOeuvre(@PathVariable(name = "ide12") Long ide12, @RequestBody CatalogueCms catalogueRdo){
-//        CatalogueCms deletedOeuvre = catalogueRdoDao.findByIde12AndTypeCMS(ide12, catalogueRdo.getTypeCMS());
-        CatalogueCms deletedOeuvre = catalogueRdoDao.findOne(catalogueRdo.getId());
-
-        deletedOeuvre.setDateSortie(new Date());
-        deletedOeuvre.setTypeSortie("Manuelle");
-        *//*deletedOeuvre.setDateSortie(catalogueRdo.getDateSortie());
-        deletedOeuvre.setTypeSortie(catalogueRdo.getTypeSortie());*//*
-        deletedOeuvre.setRaisonSortie(catalogueRdo.getRaisonSortie());
-        return catalogueRdoDao.saveAndFlush(deletedOeuvre);
-    }*/
-
     @RequestMapping(
-            value = "catalogue/oeuvre/delete/{id}",
+            value = "catalogue/oeuvre/{id}",
             method = RequestMethod.DELETE,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -101,6 +79,15 @@ public class CatalogueResource {
         deletedOeuvre.setTypeSortie("Manuelle");
         deletedOeuvre.setRaisonSortie(catalogueRdo.getRaisonSortie());
         return catalogueRdoDao.saveAndFlush(deletedOeuvre);
+    }
+
+    @RequestMapping(
+            value = "catalogue/oeuvre",
+            method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity ajouterOeuvreFromMipsa(@RequestBody CatalogueCms catalogueCms) {
+
+        return ResponseEntity.ok().build();
     }
 
 

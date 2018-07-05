@@ -840,7 +840,6 @@
       },
 
       styleValue(entryColumn, entry) {
-
           if(entryColumn.cell !== undefined && entryColumn.cell.css !== undefined) {
             return entryColumn.cell.css(entry).style
           }

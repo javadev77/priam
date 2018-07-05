@@ -788,7 +788,7 @@
         this.defaultPageable.size = size;
         let pageSize = this.defaultPageable.size;
 
-
+        this.dataLoading = true;
         if (this.edition) {
           this.modifierSelectionTemporaire();
 
@@ -837,6 +837,13 @@
 
       launchRechercheEtCompteurs() {
 
+        this.currentFilter.ide12 = this.filter.ide12;
+        this.currentFilter.ajout = this.filter.ajout;
+        this.currentFilter.numProg = this.filter.numProg;
+        this.currentFilter.utilisateur = this.filter.utilisateur;
+        this.currentFilter.titre = this.filter.titre;
+        this.currentFilter.selection = this.filter.selection;
+
         this.doSearch();
         this.getDuree(this.programmeInfo.statut);
       },
@@ -869,12 +876,11 @@
           this.ligneProgramme = tab;
           this.dataLoading = false;
 
-        // this.$store.dispatch('toutDesactiver', this.countNbSelected(this.ligneProgramme) == this.ligneProgramme.length);
-        //this.selectAll();
       });
     },
 
       rechercher(){
+
 
         this.currentFilter.ide12 = this.filter.ide12;
         this.currentFilter.ajout = this.filter.ajout;
@@ -967,28 +973,6 @@
         }
 
         entryChecked.selection = isChecked;
-       // this.$store.dispatch('toutDesactiver', this.countNbSelected(this.ligneProgramme) == this.ligneProgramme.length);
-
-
-        /*this.selection = {
-          deselectAll : false,
-          all : false,
-          unselected : this.unselectedLigneProgramme,
-          selected : this.ligneProgrammeSelected
-        };
-
-        this.selection.numProg = this.$route.params.numProg;
-        this.resource.modifierSelection(this.selection)
-          .then(response => {
-            return response.json();
-          })
-          .then(data => {
-            //this.selectedLineProgramme = [];
-            //this.unselectedLigneProgramme = [];
-          })
-          .catch(response => {
-            alert("Erreur technique lors de la validation de la selection du programme !! " + response);
-          });*/
 
          console.log('onEntryChecked() ==> this.ligneProgrammeSelected='+this.ligneProgrammeSelected.length);
       },
@@ -1239,10 +1223,11 @@
           })
           .then(data => {
 
-            this.selection =  {
+            /*this.selection =  {
               numProg : this.$route.params.numProg,
               fromSelection : this.fromSelection
-            };
+            };*/
+            this.selection.fromSelection= this.fromSelection;
             this.resource.enregistrerEdition(this.selection)
               .then(response => {
                 this.filter.selection = 'Sélectionné';
@@ -1251,7 +1236,10 @@
                 this.tableauSelectionnable = false;
                 this.edition = false;
                 this.inProcess = false;
-                this.initProgramme();
+                this.rechercher();
+              })
+              .catch(response => {
+                alert("Erreur technique lors de l'operation de enregistrer edition du programme !! " + response);
               });
           })
           .catch(response => {
@@ -1351,19 +1339,6 @@
       },
 
       ligneProgramme : function (newTab, oldTab) {
-
-        console.log("newTab "+  newTab);
-        /*for(var i in newTab) {
-
-          //this.recalculerCompteurs(newTab[i]);
-          if(newTab[i].nbrDif != oldTab[i].nbrDif) {
-            console.log("newTab[i].nbrDif "+  newTab[i].nbrDif);
-            this.recalculerCompteurs(newTab[i]);
-          }
-
-        }*/
-
-        //this.getDuree();
 
       }
 

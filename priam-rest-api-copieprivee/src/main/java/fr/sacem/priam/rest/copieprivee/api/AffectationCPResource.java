@@ -1,14 +1,12 @@
 package fr.sacem.priam.rest.copieprivee.api;
 
 import com.google.common.base.Strings;
-import fr.sacem.priam.model.dao.jpa.FichierDao;
+import fr.sacem.priam.common.TypeLog;
 import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
 import fr.sacem.priam.model.domain.Fichier;
-import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.dto.AffectationDto;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.rest.copieprivee.journal.annotation.LogFichier;
-import fr.sacem.priam.common.TypeLog;
 import fr.sacem.priam.security.model.UserDTO;
 import fr.sacem.priam.services.FichierService;
 import fr.sacem.priam.services.ProgrammeService;
@@ -22,9 +20,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+
+
 
 /**
  * Created by benmerzoukah on 16/11/2017.
@@ -61,8 +59,37 @@ public class AffectationCPResource {
             programmeDto = programmeViewDao.findByNumProg(numProg);
         }
 
+       // launchJobAffectation(programmeDto, currentUser);
+
+
         return programmeDto;
     }
+
+/*    private void launchJobAffectation(ProgrammeDto programmeDto, UserDTO userDTO) {
+        //lancer le job
+        LOGGER.info("====== Lancement du job Affectation CP ======");
+
+        try {
+
+            Map<String, JobParameter> jobParametersMap = new HashMap<>();
+            jobParametersMap.put("time", new JobParameter(System.currentTimeMillis()));
+            jobParametersMap.put("numProg", new JobParameter(programmeDto.getNumProg()));
+            jobParametersMap.put("userId", new JobParameter(userDTO.getUserId()));
+
+
+//            jobParametersMap.put("listNomFichier", new JobParameter(listNomFichiersAvantAffectation));
+
+            JobParameters jobParameters = new JobParameters(jobParametersMap);
+
+            jobLauncher.run(jobAffectationCP, jobParameters);
+
+
+        } catch (Exception e) {
+            LOGGER.error("Error d'exécution du Batch Affectation CP", e);
+        }
+
+        LOGGER.info("====== Fin de Traitement ======");
+    }*/
 
 
     @RequestMapping(value = "programme/toutDesaffecter",

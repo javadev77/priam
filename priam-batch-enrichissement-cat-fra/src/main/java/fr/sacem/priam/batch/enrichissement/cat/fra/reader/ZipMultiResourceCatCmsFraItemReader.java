@@ -77,6 +77,8 @@ public class ZipMultiResourceCatCmsFraItemReader<T> extends MultiResourceItemRea
                                         && file.getName().startsWith(FileUtils.PREFIX_PENEF_CATALOGUE_FR)) {
 
                                     File fichierEnCoursDeTraitement = new File(rep + file.getName() + FILE_ZIP_EN_COURS_DE_TRAITEMENT);
+                                    utilFile.suppressionFlag(fichierEnCoursDeTraitement);
+
                                     JobParameter jobParameterFichierZipEnCours = new JobParameter(fichierEnCoursDeTraitement.getAbsolutePath());
                                     JobParameter jobParameterNomFichierOriginal = new JobParameter(file.getName());
 

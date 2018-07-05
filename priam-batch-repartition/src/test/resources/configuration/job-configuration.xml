@@ -28,10 +28,10 @@
             <listener ref="listenerCompletition"/>
         </listeners>
     </job>
-    <bean id="listenerCompletition" class="fr.sacem.listener.repartition.JobCompletionNotificationLigneProgrammeRepartitionListener">
+    <bean id="listenerCompletition" class="fr.sacem.priam.batch.repartition.listener.JobCompletionNotificationLigneProgrammeRepartitionListener">
     </bean>
     <bean id="readerPriamCsv"
-          class="fr.sacem.service.repartition.CsvMultiResourceItemReader" scope="step">
+          class="fr.sacem.priam.batch.repartition.service.CsvMultiResourceItemReader" scope="step">
         <property name="delegate" ref="flatFileItemReader"/>
         <property name="strict" value="false"/>
     </bean>
@@ -56,12 +56,12 @@
             <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
         </property>
     </bean>
-    <bean id="repartitionItemProcessor" class="fr.sacem.service.repartition.RepartitionItemProcessor"/>
+    <bean id="repartitionItemProcessor" class="fr.sacem.priam.batch.repartition.service.RepartitionItemProcessor"/>
 
     <bean id="flatFileItemReader"
-          class="fr.sacem.priam.batch.common.util.mapper.repartition.CsvPriamFileItemReader">
+          class="fr.sacem.priam.batch.repartition.mapper.CsvPriamFileItemReader">
         <property name="lineMapper">
-            <bean class="fr.sacem.priam.batch.common.util.mapper.repartition.CsvPriamLineMapper">
+            <bean class="fr.sacem.priam.batch.repartition.mapper.CsvPriamLineMapper">
                 <property name="lineTokenizer">
                     <bean class="org.springframework.batch.item.file.transform.DelimitedLineTokenizer">
                         <property name="names" value="numeroProgramme,datcalc,sareftrRion,status"/>

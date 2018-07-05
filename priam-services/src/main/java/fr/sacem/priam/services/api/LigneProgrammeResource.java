@@ -222,7 +222,7 @@ public abstract class LigneProgrammeResource {
         programmeDTO.setUsermaj(userDTO.getDisplayName());
         programmeService.enregistrerSelection(programmeDTO);
 
-        getLigneProgrammeService().enregistrerEdition(input.getNumProg());
+        getLigneProgrammeService().enregistrerEdition(input, userDTO);
     }
 
 

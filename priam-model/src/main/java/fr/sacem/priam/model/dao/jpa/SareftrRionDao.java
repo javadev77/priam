@@ -17,12 +17,12 @@ import java.util.List;
 @Transactional(readOnly = true)
 public interface SareftrRionDao extends JpaRepository<SareftrRion, Integer> {
     
-    @Cacheable("rions")
+    //@Cacheable("rions")
     @Query("SELECT r FROM SareftrRion r " +
             "WHERE r.rion >= :rion ")
     List<SareftrRion> findAfterRion(@Param("rion") Integer rion);
     
-    @Cacheable("rions_creation")
+    //@Cacheable("rions_creation")
     @Query("SELECT r FROM SareftrRion r " +
            "WHERE r.datrglmt >= CURRENT_DATE " +
            "AND r.datrglmt is not null ")

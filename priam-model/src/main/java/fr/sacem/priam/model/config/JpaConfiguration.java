@@ -69,8 +69,8 @@ public class JpaConfiguration {
     private  Map<String, Object> additionalProperties() {
         Map<String, Object> properties = new HashMap<>();
         
-        properties.put("hibernate.show_sql", true);
-        //properties.put("hibernate.connection.driver_class", ""
+        properties.put("hibernate.show_sql", false);
+        properties.put("hibernate.format_sql", false);
         properties.put("hibernate.dialect", MySQL5InnoDBDialect.class.getName());
         properties.put("hibernate.bytecode.use_reflection_optimizer", true);
         properties.put("hibernate.jdbc.batch_size", 50);
