@@ -101,7 +101,7 @@ public class LignePreprepJdbcDao {
             if( lignePreprep.getTax() != null) {
                 ps.setDouble(31, lignePreprep.getTax());
             } else {
-                ps.setNull(28, Types.DOUBLE);
+                ps.setNull(31, Types.DOUBLE);
             }
 
 
