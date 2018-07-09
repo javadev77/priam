@@ -27,7 +27,7 @@ public class CatalogueResourceTest extends RestResourceTest {
     Calendar calendar = Calendar.getInstance();
 
     public static final String APP_REST_CATALOGUE_SEARCH = "/app/rest/catalogue/search";
-    public static final String APP_REST_CATALOGUE_DELETE = "/app/rest/catalogue/oeuvre/delete/";
+    public static final String APP_REST_CATALOGUE_DELETE = "/app/rest/catalogue/oeuvre/";
 
     @Autowired
     CatalogueCmsDao catalogueRdoDao;

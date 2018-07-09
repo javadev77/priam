@@ -15,7 +15,7 @@ public class ParticipantRepositoryForTest {
 
     public Long getNbParticipants(Long ide12){
         String sql = "SELECT COUNT(*) " +
-                " FROM " + this.nomTableFichier +
+                " FROM PRIAM_CATCMS_PARTICIPANTS " +
                 " WHERE IDE12=? ";
         return jdbcTemplate.queryForObject(sql, new Object[] {ide12}, Long.class);
     }

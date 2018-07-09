@@ -5,6 +5,7 @@ import fr.sacem.priam.batch.common.util.DateTimeUtils;
 import fr.sacem.priam.batch.common.util.exception.PriamValidationException;
 import fr.sacem.priam.common.TypeUtilisationEnum;
 import fr.sacem.priam.common.util.FileUtils;
+import org.springframework.context.annotation.Primary;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -26,6 +27,7 @@ import java.util.Set;
  * Created by fandis on 17/05/2017.
  */
 @Repository
+@Primary
 public class FichierRepositoryImpl implements FichierRepository {
 
 

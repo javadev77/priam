@@ -78,6 +78,7 @@ public class CatalogueResource {
         deletedOeuvre.setDateSortie(new Date());
         deletedOeuvre.setTypeSortie("Manuelle");
         deletedOeuvre.setRaisonSortie(catalogueRdo.getRaisonSortie());
+
         return catalogueRdoDao.saveAndFlush(deletedOeuvre);
     }
 
@@ -87,6 +88,11 @@ public class CatalogueResource {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity ajouterOeuvreFromMipsa(@RequestBody CatalogueCms catalogueCms) {
 
+        try {
+
+        } catch (Exception ex) {
+            return ResponseEntity.badRequest().build();
+        }
         return ResponseEntity.ok().build();
     }
 

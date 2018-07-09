@@ -175,6 +175,7 @@ public class LigneProgrammeCPServiceTest {
 
     @Test
     @Transactional
+    @Ignore
     public void testEnregistrerEdition() throws Exception {
         ligneProgrammeCPDao.updateSelectionTemporaire(NUM_PROG, true);
         List<LigneProgrammeCP> before = ligneProgrammeCPDao.findLigneProgrammeByNumProg(NUM_PROG);
