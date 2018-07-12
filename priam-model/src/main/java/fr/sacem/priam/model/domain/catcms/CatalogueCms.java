@@ -68,7 +68,7 @@ public class CatalogueCms implements Serializable {
     @JoinColumns({
             @JoinColumn(name="TYPE_CMS", referencedColumnName = "TYPE_CMS"),
             @JoinColumn(name="IDE12", referencedColumnName = "IDE12")})
-    @JsonIgnore
+    @JsonIgnore //C'est ça qui pose probleme , on va faire autrement on mappe que participants  & roles et on insere directement via DAO de ParticipantsCatcms
     private List<ParticipantsCatcms> participantsCatcms = new ArrayList<>();
 //
 //

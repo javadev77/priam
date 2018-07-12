@@ -7,6 +7,7 @@ import fr.sacem.priam.model.domain.catcms.CatalogueCms;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -27,7 +29,11 @@ public class CatalogueResourceTest extends RestResourceTest {
     Calendar calendar = Calendar.getInstance();
 
     public static final String APP_REST_CATALOGUE_SEARCH = "/app/rest/catalogue/search";
-    public static final String APP_REST_CATALOGUE_DELETE = "/app/rest/catalogue/oeuvre/delete/";
+    public static final String APP_REST_CATALOGUE_DELETE = "/app/rest/catalogue/oeuvre/";
+    public static final String APP_REST_CATALOGUE_OEUVRE_EXISTANTE = "/app/rest/catalogue/oeuvre/search";
+    public static final String APP_REST_CATALOGUE_OEUVRE_RENEW = "/app/rest/catalogue/oeuvre/";
+    public static final String TYPE_CMS_FR = "FR";
+    public static final String TYPE_CMS_ANF = "ANF";
 
     @Autowired
     CatalogueCmsDao catalogueRdoDao;
@@ -41,7 +47,7 @@ public class CatalogueResourceTest extends RestResourceTest {
 
         List<CatalogueCms> all = catalogueRdoDao.findAll();
 
-        catalogueCritereRecherche.setTypeCMS("FR");
+        catalogueCritereRecherche.setTypeCMS(TYPE_CMS_FR);
         catalogueCritereRecherche.setDisplayOeuvreNonEligible(false);
 
         mockMvc.perform(
@@ -54,7 +60,7 @@ public class CatalogueResourceTest extends RestResourceTest {
 
     @Test
     public void findAllByCriteria_TypeCMS_ANF_Eligible() throws Exception {
-        catalogueCritereRecherche.setTypeCMS("ANF");
+        catalogueCritereRecherche.setTypeCMS(TYPE_CMS_ANF);
         catalogueCritereRecherche.setDisplayOeuvreNonEligible(true);
 
         mockMvc.perform(
@@ -67,7 +73,7 @@ public class CatalogueResourceTest extends RestResourceTest {
 
     @Test
     public void findAllByCriteria_ide12_inexistant() throws Exception {
-        catalogueCritereRecherche.setTypeCMS("ANF");
+        catalogueCritereRecherche.setTypeCMS(TYPE_CMS_ANF);
         catalogueCritereRecherche.setIde12("12121212121");
 
         mockMvc.perform(
@@ -83,7 +89,7 @@ public class CatalogueResourceTest extends RestResourceTest {
 
         String ide12Existant = "2002665711";
 
-        catalogueCritereRecherche.setTypeCMS("ANF");
+        catalogueCritereRecherche.setTypeCMS(TYPE_CMS_ANF);
         catalogueCritereRecherche.setIde12(ide12Existant);
 
         mockMvc.perform(
@@ -100,7 +106,7 @@ public class CatalogueResourceTest extends RestResourceTest {
 
         String titre = "PRISCA AVEC TOI JE VEUX VOYAGE";
 
-        catalogueCritereRecherche.setTypeCMS("ANF");
+        catalogueCritereRecherche.setTypeCMS(TYPE_CMS_ANF);
         catalogueCritereRecherche.setTitre(titre);
 
         mockMvc.perform(
@@ -121,7 +127,7 @@ public class CatalogueResourceTest extends RestResourceTest {
         calendar.set(2018, Calendar.MAY, 7);
         Date periodeEntreeDateFin = calendar.getTime();
 
-        catalogueCritereRecherche.setTypeCMS("FR");
+        catalogueCritereRecherche.setTypeCMS(TYPE_CMS_FR);
         catalogueCritereRecherche.setPeriodeEntreeDateDebut(periodeEntreeDateDebut);
         catalogueCritereRecherche.setPeriodeSortieDateDebut(periodeEntreeDateFin);
 
@@ -144,7 +150,7 @@ public class CatalogueResourceTest extends RestResourceTest {
         calendar.set(2018, Calendar.MAY, 10);
         Date periodeRenouvellementDateFin = calendar.getTime();
 
-        catalogueCritereRecherche.setTypeCMS("FR");
+        catalogueCritereRecherche.setTypeCMS(TYPE_CMS_FR);
         catalogueCritereRecherche.setPeriodeRenouvellementDateDebut(periodeRenouvellementDateDebut);
         catalogueCritereRecherche.setPeriodeRenouvellementDateFin(periodeRenouvellementDateFin);
 
@@ -163,7 +169,7 @@ public class CatalogueResourceTest extends RestResourceTest {
 
         List<CatalogueCms> all = catalogueRdoDao.findAll();
 
-        catalogueCritereRecherche.setTypeCMS("FR");
+        catalogueCritereRecherche.setTypeCMS(TYPE_CMS_FR);
         catalogueCritereRecherche.setDisplayOeuvreNonEligible(false);
 
 
@@ -180,7 +186,7 @@ public class CatalogueResourceTest extends RestResourceTest {
     @Test
     public void findAllByCriteria_periodeEntree_periodeSortie_null() throws Exception {
 
-        catalogueCritereRecherche.setTypeCMS("FR");
+        catalogueCritereRecherche.setTypeCMS(TYPE_CMS_FR);
         catalogueCritereRecherche.setPeriodeEntreeDateFin(null);
         catalogueCritereRecherche.setPeriodeSortieDateFin(null);
 
@@ -210,6 +216,29 @@ public class CatalogueResourceTest extends RestResourceTest {
                 .andExpect(jsonPath("typeSortie", is("Manuelle")));
     }
 
+    @Test
+    public void findOeuvreExistanteCatalogue() throws Exception {
+        CatalogueCms catalogueCms = new CatalogueCms();
+        catalogueCms.setIde12(2000163011L);
+        catalogueCms.setTypeCMS(TYPE_CMS_ANF);
+        mockMvc.perform(
+                post(APP_REST_CATALOGUE_OEUVRE_EXISTANTE)
+                        .content(json(catalogueCms))
+                        .contentType(contentType))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void renouvelerOeuvre() throws Exception {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        mockMvc.perform(
+                put(APP_REST_CATALOGUE_OEUVRE_RENEW + 22)
+                        .contentType(contentType))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("ide12", is(2007282611)))
+                .andExpect(jsonPath("typeCMS", is(TYPE_CMS_FR)))
+                .andExpect(jsonPath("dateRenouvellement", is(sdf.format(new Date()))));
+    }
 
 
 }

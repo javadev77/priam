@@ -170,10 +170,7 @@
       },
       computed : {
         typeCatalogueOptions() {
-          return [
-            {id : 'FRA', value : 'CMS France'},
-            {id : 'ANF', value : 'CMS Antilles'}
-          ];
+          return this.$store.getters.libelleTypeCatalogue;
         },
 
         isPeriodeSortieSaisie () {

@@ -20,6 +20,7 @@
         <div class="result-panel-body panel-body">
 
           <div class="row">
+            <!--<button class="btn btn-default btn-primary pull-right"  type="button" style="width: 120px;" @click="onAjouterOeuvre">Ajouter Oeuvre</button>-->
             <button class="btn btn-default btn-primary pull-right"  type="button" style="width: 120px;" @click="onAjouterOeuvre">Ajouter Oeuvre</button>
           </div>
 
@@ -77,12 +78,12 @@
       </template>
     </modalWithTitle>
 
-    <ecran-modal v-if="showEcranAjoutOeuvreMipsa">
+    <!--<ecran-modal v-if="showEcranAjoutOeuvreMipsa">
       <ajouter-oeuvre :typeCatalogue="filter.typeCMS.value"
                       slot="body"
                       @ajoutOeuvre="onActionAjouterOeuvre"
                       @cancel="showEcranAjoutOeuvreMipsa = false"></ajouter-oeuvre>
-    </ecran-modal>
+    </ecran-modal>-->
   </div>
 </template>
 
@@ -94,8 +95,6 @@
   import FiltreCatalogue from './FiltreCatalogueCMS.vue';
 
   import EcranModal from '../../../common/components/ui/EcranModal.vue';
-  import AjouterOeuvre from './oeuvre/AjouterOeuvre.vue';
-
 
   export default {
 
@@ -420,7 +419,7 @@
         },
 
         filter : {
-          typeCMS : {id :'FRA', value : 'CMS France'},
+          typeCMS : {id :'FR', value : 'CMS France'},
           ide12: null,
           titre: null,
           participant:null,
@@ -440,7 +439,7 @@
         },
 
         currentFilter : {
-          typeCMS : {id : 'FRA', value : 'CMS France'},
+          typeCMS : {id : 'FR', value : 'CMS France'},
           ide12: null,
           titre: null,
           participant:null,
@@ -480,7 +479,7 @@
           url : process.env.CONTEXT_ROOT_PRIAM_CAT_RDO + 'app/rest/catalogue/oeuvre/{id}'
         },
 
-        ajoputerOeuvreCatalogueRdo : {
+        ajouterOeuvreCatalogueRdo : {
           method : 'POST',
           url : process.env.CONTEXT_ROOT_PRIAM_CAT_RDO + 'app/rest/catalogue/oeuvre'
         }
@@ -494,13 +493,8 @@
 
 
       findCatalogueByCriteria() {
-        if(this.filter.typeCMS.id === 'FRA'){
-          this.currentFilter.typeCMS = 'FR'
-        } else {
-          this.currentFilter.typeCMS = 'ANF'
-        }
 
-
+        this.currentFilter.typeCMS = this.filter.typeCMS.id;
         this.currentFilter.ide12 = this.filter.ide12;
         this.currentFilter.titre = this.filter.titre;
         this.currentFilter.participant = this.filter.participant;
@@ -513,6 +507,7 @@
         this.currentFilter.displayOeuvreNonEligible = this.filter.displayOeuvreNonEligible;
 
         this.dataLoading = true;
+        debugger;
         this.resource.searchCatalogueRdo({
           page : this.defaultPageable.page - 1,
           size : this.defaultPageable.size,
@@ -556,13 +551,14 @@
       },
 
       onAjouterOeuvre() {
-          this.showEcranAjoutOeuvreMipsa = true;
-
+          /*this.showEcranAjoutOeuvreMipsa = true;*/
+        this.$router.push({ name: 'ajout-oeuvre', params: { typeCatalogue: this.filter.typeCMS.id }});
+        /*this.$router.push({ name: 'ajout-oeuvre'});*/
       },
 
       retablirFiltre() {
         this.filter = {
-          typeCMS : {'id' :'FRA', 'value' : 'CMS France'},
+          typeCMS : {'id' :'FR', 'value' : 'CMS France'},
           ide12: null,
           titre: null,
           participant: null,
@@ -616,7 +612,7 @@
       },
 
 
-      onActionAjouterOeuvre(selectedOeuvre) {
+        onActionAjouterOeuvre(selectedOeuvre) {
           console.log("Selected Oeuvre ==> " + selectedOeuvre.ide12);
           console.log("\t\t Role Size==> " + selectedOeuvre.tiersList.length);
 
@@ -640,7 +636,7 @@
            participantsCatcms : participantsList
          }
 
-         this.resource.ajoputerOeuvreCatalogueRdo(oeuvreCatalogue)
+         this.resource.ajouterOeuvreCatalogueRdo(oeuvreCatalogue)
            .then(resp => {
               console.log(resp)
            });
@@ -656,8 +652,7 @@
       'priam-navbar' : PriamNavbar,
       'modalWithTitle': ModalWithTitle,
       appFiltreCatalogue : FiltreCatalogue,
-      ecranModal : EcranModal,
-      ajouterOeuvre : AjouterOeuvre
+      ecranModal : EcranModal
     }
   }
 
