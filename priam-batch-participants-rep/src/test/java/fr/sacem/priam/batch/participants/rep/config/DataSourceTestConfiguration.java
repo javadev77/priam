@@ -25,6 +25,11 @@ public class DataSourceTestConfiguration {
     @Value("spring.datasource.password")
     String passwordDb;
 
+    @Value("${pattern.file.name}")
+    String patternFileName;
+
+
+
     @Bean
     public DataSource dataSource() {
         return DataSourceBuilder

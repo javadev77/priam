@@ -85,6 +85,7 @@ public class CatalogueResource {
         deletedOeuvre.setDateSortie(new Date());
         deletedOeuvre.setTypeSortie("Manuelle");
         deletedOeuvre.setRaisonSortie(catalogueRdo.getRaisonSortie());
+
         return catalogueRdoDao.saveAndFlush(deletedOeuvre);
     }
 
@@ -94,20 +95,19 @@ public class CatalogueResource {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     public ResponseEntity ajouterOeuvreFromMipsa(@RequestBody CatalogueCms catalogueCms) {
-
         catalogueCms.setDateEntree(new Date());
         catalogueCms.setTypUtilGen("PHONOFR");
-        catalogueRdoDao.save(catalogueCms);
 
-        //Vasy je te laisse faire ça
+        catalogueRdoDao.save(catalogueCms);
         List<ParticipantsCatcms> participants = participantsFromCatalogueCms(catalogueCms);
-        for (ParticipantsCatcms participant: participants) {
+        for (ParticipantsCatcms participant : participants) {
             participant.setIde12(catalogueCms.getIde12());
             participant.setTypeCMS(catalogueCms.getTypeCMS());
             participantsCatcmsDao.save(participant);
         }
         return ResponseEntity.ok().build();
     }
+
 
     private List<ParticipantsCatcms> participantsFromCatalogueCms(CatalogueCms catalogueCms) {
         List<ParticipantsCatcms> result = new ArrayList<>();

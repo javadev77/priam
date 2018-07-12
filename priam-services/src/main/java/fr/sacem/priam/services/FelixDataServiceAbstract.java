@@ -119,14 +119,13 @@ public abstract class FelixDataServiceAbstract {
         lignePreprepDao.deleteAll(numProg);
         
         List<LignePreprep> lignesSelectionnes = getListLignesSelectionnees(numProg);
-//        lignePreprepDao.save(lignesSelectionnes);
-//        lignePreprepDao.flush();
+
         LOGGER.info(">>>>>> Debut insert en mode Batch Jdbc des LignesPrepreps taille : " + lignesSelectionnes.size());
         lignePreprepJdbcDao.insertLignesPreprep(lignesSelectionnes);
 
         LOGGER.info("<<<<<<< Fin insert en mode Batch");
 
-        return lignesSelectionnes;
+        return lignePreprepDao.findByNumProg(numProg);
     }
     
     private List<String> head() {

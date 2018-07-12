@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Created by benmerzoukah on 25/05/2018.
@@ -39,11 +38,13 @@ public class JobParticipantsREPTest {
     private JobLauncherTestUtils jobLauncherTestUtils;
     private ApplicationContext context;
 
-    private static final String PATH_FILE_CSV = "src/test/resources/inputCsv/FF_PRIAM_PARTICIPANTS_FRA_REP.csv";
-    private static final String CSV_FILE_NAME = "FF_PRIAM_PARTICIPANTS_FRA_REP.csv";
+    private static final String PATH_FILE_CSV = "src/test/resources/inputCsv/FF_PRIAM_PARTICIPANTS_FRA_REP_14102018010155.csv";
+    private static final String CSV_FILE_NAME = "FF_PRIAM_PARTICIPANTS_FRA_REP_14102018010155.csv";
 
     private static final String inputDirectory = "target/inputDirectory/";
     private static final String outputDirectory = "target/outputDirectory/";
+
+    private static final String PATTERN_FILE_NAME = "^FF_PRIAM_PARTICIPANTS_FRA_REP_\\d{14}$";
 
 
     private ParticipantRepositoryForTest participantRepository;
@@ -79,6 +80,8 @@ public class JobParticipantsREPTest {
         Map<String, JobParameter> jobParametersMap = new HashMap<>();
         jobParametersMap.put("input.archives", new JobParameter(inputDirectory));
         jobParametersMap.put("output.archives", new JobParameter(outputDirectory));
+        jobParametersMap.put("pattern.file.name", new JobParameter(PATTERN_FILE_NAME));
+
         JobParameters jobParameters = new JobParameters(jobParametersMap);
 
         // launch the job

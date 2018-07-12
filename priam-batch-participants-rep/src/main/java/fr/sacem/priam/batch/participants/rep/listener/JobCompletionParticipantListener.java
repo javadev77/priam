@@ -28,11 +28,17 @@ public class JobCompletionParticipantListener extends JobExecutionListenerSuppor
     public static final String MESSAGE_FORMAT_FICHIER = "Le fichier ne peut être chargé car il n'a pas le bon format";
     private static String MESSAGE_ERREUR_TECHNIQUE = "Erreur technique dans l'application priam" ;
     private ExecutionContext executionContext;
-    private UtilFile utilFile;
+
     private static final Logger LOG = LoggerFactory.getLogger(JobCompletionParticipantListener.class);
 
+
+    private UtilFile utilFile;
+
     @Autowired
-    public JobCompletionParticipantListener() {utilFile = new UtilFile();}
+    public JobCompletionParticipantListener(UtilFile utilFile) {
+        this.utilFile = utilFile;
+    }
+
 
     @Override
     public void afterJob(JobExecution jobExecution) {
