@@ -64,12 +64,12 @@ public class CatalogueCms implements Serializable {
 
 
 
-    @OneToMany(fetch = FetchType.LAZY)
+    /*@OneToMany(fetch = FetchType.LAZY)
     @JoinColumns({
             @JoinColumn(name="TYPE_CMS", referencedColumnName = "TYPE_CMS"),
             @JoinColumn(name="IDE12", referencedColumnName = "IDE12")})
     @JsonIgnore //C'est ça qui pose probleme , on va faire autrement on mappe que participants  & roles et on insere directement via DAO de ParticipantsCatcms
-    private List<ParticipantsCatcms> participantsCatcms = new ArrayList<>();
+    private List<ParticipantsCatcms> participantsCatcms = new ArrayList<>();*/
 //
 //
 //    private transient List<ParticipantsCatcms> participants = new ArrayList<>();
@@ -186,13 +186,13 @@ public class CatalogueCms implements Serializable {
         this.participants = participants;
     }
 
-    public List<ParticipantsCatcms> getParticipantsCatcms() {
+   /* public List<ParticipantsCatcms> getParticipantsCatcms() {
         return participantsCatcms;
     }
 
     public void setParticipantsCatcms(List<ParticipantsCatcms> participantsCatcms) {
         this.participantsCatcms = participantsCatcms;
-    }
+    }*/
 
     public CatalogueCms() {}
 }

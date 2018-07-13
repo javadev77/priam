@@ -252,7 +252,7 @@ public class GeneralResource {
               result.replace(USER_FAMILLE, USER_FAMILLE_ALL);
           }
       } else {
-          result.replace(USER_FAMILLE, USER_FAMILLE_ALL);
+          result.put(USER_FAMILLE, USER_FAMILLE_ALL);
       }
       return result;
   }
