@@ -1,15 +1,24 @@
 package fr.sacem.priam.rest.common.config;
 
 import fr.sacem.fwk.config.Environment;
+import fr.sacem.priam.security.model.UserDTO;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
+import org.springframework.core.MethodParameter;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.support.WebDataBinderFactory;
+import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -23,6 +32,7 @@ import java.util.Map;
 
 @Configuration
 @EnableWebMvc
+@Profile("test")
 public class RestMvcConfigTest extends WebMvcConfigurerAdapter {
 
     @Autowired
@@ -58,7 +68,22 @@ public class RestMvcConfigTest extends WebMvcConfigurerAdapter {
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
-        argumentResolvers.add(new UserDTOHandlerMethodArgumentResolverTest());
+        argumentResolvers.add(new HandlerMethodArgumentResolver() {
+            @Override
+            public boolean supportsParameter(MethodParameter methodParameter) {
+                return UserDTO.class.equals(methodParameter.getParameterType());
+            }
+
+            @Override
+            public Object resolveArgument(MethodParameter methodParameter, ModelAndViewContainer modelAndViewContainer, NativeWebRequest nativeWebRequest, WebDataBinderFactory webDataBinderFactory) throws Exception {
+                UserDTO userDTO = null;
+                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+                if(authentication instanceof TestingAuthenticationToken){
+                    userDTO = (UserDTO) authentication.getPrincipal();
+                }
+                return userDTO == null ? UserDTO.GUEST : userDTO;
+            }
+        });
     }
 
     @Bean(name = "error")
