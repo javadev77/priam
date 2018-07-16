@@ -237,7 +237,7 @@
                     <destFile>${sonar.jacoco.reportPath}</destFile>
                     <append>true</append>
                     <excludes>
-                        <exclude>**/*fr/sacem/priam/rest/common/config/UserDTOHandlerMethodArgumentResolverTest.class</exclude>
+                        <exclude>**/*fr/sacem/priam/rest/common/config/UserDTOHandlerMethodArgumentResolverTest</exclude>
                     </excludes>
                 </configuration>
                 <executions>
