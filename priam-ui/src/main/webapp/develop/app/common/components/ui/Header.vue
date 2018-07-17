@@ -3,7 +3,7 @@
     <nav class="navbar navbar-default navbar-fixed-top">
 
             <div class="navbar-header">
-              <a class="navbar-brand logo" href="#/">
+              <a class="navbar-brand logo" href="#/" @click="$router.push('listeProg')">
                 <img src="static/images/Logo_Priam.png" width="100px" height="40px" alt="PRIAM"/>
               </a>
             </div>
@@ -38,6 +38,7 @@
 
 <script>
   import TwoLinesMenu from './TwoLinesMenu.vue';
+  import ProgrammeMixin from  './../../mixins/programmeMixin';
 
   export default {
 
@@ -48,36 +49,75 @@
 
           {
             id : 'programme',
-            name : 'programme',
+            routeName : 'programme',
             label : 'Programme',
-            routes : ['programme', 'selection', 'selection-cms','affectation', 'affectation-cms', 'ListePrg'],
+            routes : ['programme', 'selection', 'selection-cms','affectation', 'affectation-cms', 'listeProg'],
+            authorized : true,
             items : [
               {
-                id : 'ListePrg',
-                name : 'ListePrg',
-                label : 'Liste programmes'
+                id : 'listeProg',
+                routeName : 'programme',
+                label : 'Liste programmes',
+                authorized : true
               }
             ]
           },
           {
             id : 'chargement',
-            name : 'chargement',
+            routeName : 'chargement',
             label : 'Chargement',
-            routes : ['chargement']
-          },
-          {
-            id : 'parametrage',
-            name : 'parametrage',
-            label : 'Paramétrage',
-            routes : ['parametrage']
+            authorized : true,
+            routes : ['chargement', 'fichiers'],
+            items : [
+              {
+                id : 'fichiers',
+                routeName : 'chargement',
+                label : 'Fichiers',
+                authorized : true
+              }
+            ]
           },
 
           {
             id : 'catalogue',
-            name : 'catalogue-cms',
+            routeName : 'catalogue-cms',
             label : 'Catalogue CMS',
-            routes : ['catalogue-cms']
+            authorized : true,//this.hasRight('MENUCATAL'),
+            routes : ['catalogue-cms', 'journal', 'stat'],
+
+            items : [
+              {
+                id : 'catalogue',
+                routeName : 'catalogue-cms',
+                label : 'Catalogue',
+                authorized : true,//this.hasRight('MENUCATAL'),
+              },
+
+              {
+                id : 'journal',
+                routeName : 'journal',
+                label : 'Journal',
+                authorized : true,//this.hasRight('MENUCATAL'),
+              },
+
+              {
+                id : 'stat',
+                routeName : 'stat',
+                label : 'Statistiques',
+                authorized : this.hasRight('MENUCATAL')
+              }
+            ]
+          },
+
+          {
+            id : 'parametrage',
+            routeName : 'parametrage',
+            label : 'Paramétrage',
+            routes : ['parametrage'],
+            authorized : true
           }
+
+
 
         ],
         currentActiveMenu :  {
@@ -91,8 +131,11 @@
       }
     },
 
+    mixins : [ProgrammeMixin],
+
     created()  {
 
+        debugger;
         let currentRoute = this.$route.matched;
         this.setCurrentActiveMenu(currentRoute[0].name);
 
@@ -101,6 +144,7 @@
 
     computed : {
       displayName() {
+          debugger;
         let currentUser = this.$store.getters.getCurrentUser;
         return currentUser.displayName;
       },
@@ -120,13 +164,19 @@
         },
 
         setCurrentActiveMenu(currentRouteViewName) {
+            debugger;
           let foundMenu = this.findMenu(currentRouteViewName);
           if(foundMenu && foundMenu !== undefined) {
             this.currentActiveMenu.id = foundMenu.id;
-            this.currentSubMenu.id = foundMenu.items !== undefined &&
-                                     foundMenu.items.length >= 1 &&
-                                     foundMenu.items[0] !== undefined ?
-                                     foundMenu.items[0].id : '';
+
+            let subMenu = foundMenu.items.find(elem => {
+              return elem && elem.routeName.indexOf(currentRouteViewName) > -1;
+            });
+
+            if(subMenu !== undefined && subMenu !== null) {
+              this.currentSubMenu.id = subMenu.id;
+            }
+
           }
         }
 

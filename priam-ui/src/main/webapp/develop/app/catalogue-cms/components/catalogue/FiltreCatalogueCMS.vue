@@ -171,20 +171,17 @@
       computed : {
         typeCatalogueOptions() {
           return [
-            {id : 'FRA', value : 'CMS France'},
+            {id : 'FR', value : 'CMS France'},
             {id : 'ANF', value : 'CMS Antilles'}
           ];
         },
 
         isPeriodeSortieSaisie () {
-          if(this.filter.periodeSortieFilter.dateDebut!=null || this.filter.periodeSortieFilter.dateFin!=null ) {
-            return true;
-          }
-          return false;
+          return this.filter.periodeSortieFilter.dateDebut !== null || this.filter.periodeSortieFilter.dateFin !== null;
         },
       },
 
-      watch:{
+      watch : {
         isPeriodeSortieSaisie: function (value) {
           this.filter.displayOeuvreNonEligible=value;
         },

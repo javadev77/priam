@@ -77,7 +77,7 @@ public class CatalogueResource {
         CatalogueCms deletedOeuvre = catalogueRdoDao.findOne(id);
         deletedOeuvre.setDateSortie(new Date());
         deletedOeuvre.setTypeSortie("Manuelle");
-        deletedOeuvre.setRaisonSortie(catalogueRdo.getRaisonSortie());
+        deletedOeuvre.  setRaisonSortie(catalogueRdo.getRaisonSortie());
 
         return catalogueRdoDao.saveAndFlush(deletedOeuvre);
     }

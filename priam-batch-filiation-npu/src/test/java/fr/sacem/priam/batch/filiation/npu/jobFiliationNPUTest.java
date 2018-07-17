@@ -1,8 +1,6 @@
 package fr.sacem.priam.batch.filiation.npu;
 
-import fr.sacem.priam.batch.common.domain.CatalogueFra;
 import fr.sacem.priam.batch.filiation.npu.dao.OeuvreFiliationNPURepositoryForTest;
-import fr.sacem.priam.model.dao.jpa.catcms.CatalogueCmsDao;
 import fr.sacem.priam.model.domain.catcms.CatalogueCms;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;

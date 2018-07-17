@@ -1,7 +1,7 @@
 <template>
 
   <div>
-    <priam-navbar titre1="Catalogue Musique des Sonorisations" :backButton="false"></priam-navbar>
+    <priam-navbar titre1="Catalogue Musique des Sonorisations":backButton="false"></priam-navbar>
     <app-filtre-catalogue
       :filter="filter"
       :retablir="retablirFiltre"
@@ -164,7 +164,7 @@
 
                 toText : function(entry) {
                   var result = entry;
-                  if(result !=undefined)
+                  if(result !== undefined)
                     return result ;
                   else
                     return "";
@@ -420,7 +420,7 @@
         },
 
         filter : {
-          typeCMS : {id :'FRA', value : 'CMS France'},
+          typeCMS : {id :'FR', value : 'CMS France'},
           ide12: null,
           titre: null,
           participant:null,
@@ -440,7 +440,7 @@
         },
 
         currentFilter : {
-          typeCMS : {id : 'FRA', value : 'CMS France'},
+          typeCMS : {id : 'FR', value : 'CMS France'},
           ide12: null,
           titre: null,
           participant:null,
@@ -494,11 +494,8 @@
 
 
       findCatalogueByCriteria() {
-        if(this.filter.typeCMS.id === 'FRA'){
-          this.currentFilter.typeCMS = 'FR'
-        } else {
-          this.currentFilter.typeCMS = 'ANF'
-        }
+
+        this.currentFilter.typeCMS = this.filter.typeCMS.id;
 
 
         this.currentFilter.ide12 = this.filter.ide12;
@@ -562,7 +559,7 @@
 
       retablirFiltre() {
         this.filter = {
-          typeCMS : {'id' :'FRA', 'value' : 'CMS France'},
+          typeCMS : {'id' :'FR', 'value' : 'CMS France'},
           ide12: null,
           titre: null,
           participant: null,
