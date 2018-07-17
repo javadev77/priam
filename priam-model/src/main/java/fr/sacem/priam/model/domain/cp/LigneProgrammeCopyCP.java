@@ -1,57 +1,147 @@
-package fr.sacem.domain;
+package fr.sacem.priam.model.domain.cp;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
+import com.google.common.base.Objects;
+import fr.sacem.priam.model.domain.Fichier;
 
+import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
- * Created by fandis on 03/05/2017.
+ * Created by benmerzoukah on 29/05/2017.
  */
+@Entity
+@Table(name = "PRIAM_LIGNE_PROGRAMME_CP_COPY")
+public class LigneProgrammeCopyCP implements Serializable {
 
-public class LigneProgramme implements Serializable {
-
-    private Long idFichier;
-    private String cdeCisac;
-    private String cdeFamilTypUtil;
-    private Long numProg;
-    private String cdeUtil;
-    private String cdeTypUtil;
-    private String cdeGreDif;
-    private String cdeModDif;
-    private String cdeTypIde12;
-    private String ide12;
-    private String durDif;
-    private String nbrDif;
-    private Double mt;
-    private String ctna;
-    private String paramCoefHor;
-    private String durDifCtna;
-    private String cdeLng;
-    private String indDoubSsTit;
-    private String tax;
-    private String typMt;
-    private String cdeGreIde12Cmplx;
-    private String cdeGreIde12;
-    private String titreOriCmplx;
-    private String titreAltPppalCmplx;
-    private String titreOriOeuvPereCmplx;
-    private String titreAltOeuvPereCmplx;
-    private String titreOeuvre;
-    private String cdePaysOriIso4NCmplx;
-    private String realisateurCmplx;
-    private String roleParticipant1;
-    private String nomParticipant1;
-    private String cdeTypUtilOri;
-    private String cdeFamilTypUtilOri;
-    private String utilisateur;
-    private String date_insertion;
-    private String ajout;
-    private String selection;
-    private Integer lineNumber;
-    private String libelleUtilisateur;
-    private Exception exception;
-    private String rionAnt;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "ID_FICHIER")
+    private Fichier fichier;
+
+    @Column(name = "cdeCisac")
+    private String cdeCisac;
+
+    @Column(name = "cdeFamilTypUtil")
+    private String cdeFamilTypUtil;
+
+    //@Column(name = "numProg")
+    private String numProg;
+
+    @Column(name = "cdeUtil")
+    private String cdeUtil;
+
+    @Column(name = "cdeTypUtil")
+    private String cdeTypUtil;
+
+    @Column(name = "cdeGreDif")
+    private String cdeGreDif;
+
+    @Column(name = "cdeModDif")
+    private String cdeModDif;
+
+    @Column(name = "cdeTypIde12")
+    private String cdeTypIde12;
+
+    @Column(name = "ide12")
+    private Long ide12;
+
+    @Column(name = "durDif")
+    private Long durDif;
+
+    @Column(name = "nbrDif")
+    private Long nbrDif;
+
+    @Column(name = "mt")
+    private Double mt;
+
+    @Column(name = "ctna")
+    private String ctna;
+
+    @Column(name = "paramCoefHor")
+    private String paramCoefHor;
+
+    @Column(name = "durDifCtna")
+    private Long durDifCtna;
+
+    @Column(name = "cdeLng")
+    private String cdeLng;
+
+    @Column(name = "indDoubSsTit")
+    private String indDoubSsTit;
+
+    @Column(name = "tax")
+    private Double tax;
+
+    @Column(name = "typMt")
+    private String typMt;
+
+    @Column(name = "cdeGreIde12Cmplx")
+    private String cdeGreIde12Cmplx;
+
+    @Column(name = "cdeGreIde12")
+    private String cdeGreIde12;
+
+    @Column(name = "titreOriCmplx")
+    private String titreOriCmplx;
+
+    @Column(name = "titreAltPppalCmplx")
+    private String titreAltPppalCmplx;
+
+    @Column(name = "titreOriOeuvPereCmplx")
+    private String titreOriOeuvPereCmplx;
+
+    @Column(name = "titreAltOeuvPereCmplx")
+    private String titreAltOeuvPereCmplx;
+
+    @Column(name = "titreOeuvre")
+    private String titreOeuvre;
+
+    @Column(name = "cdePaysOriIso4NCmplx")
+    private String cdePaysOriIso4NCmplx;
+
+    @Column(name = "realisateurCmplx")
+    private String realisateurCmplx;
+
+    @Column(name = "roleParticipant1")
+    private String roleParticipant1;
+
+    @Column(name = "nomParticipant1")
+    private String nomParticipant1;
+
+    @Column(name = "cdeTypUtilOri")
+    private String cdeTypUtilOri;
+
+    @Column(name = "cdeFamilTypUtilOri")
+    private String cdeFamilTypUtilOri;
+
+    @Column(name = "utilisateur")
+    private String utilisateur;
+
+    @Column(name = "date_insertion")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateInsertion;
+
+    @Column(name = "ajout")
+    private String ajout;
+
+    @Column(name = "selection")
+    private boolean selection;
+
+    @Column(name = "SEL_EN_COURS")
+    private boolean selectionEnCours;
+
+    @Column(name = "libelleUtilisateur")
+    private String libelleUtilisateur;
+
+
+    @ManyToOne
+    @JoinColumn(name = "idOeuvreManuel")
+    private LigneProgrammeCopyCP oeuvreManuel;
 
     public String getUtilisateur() {
         return utilisateur;
@@ -61,12 +151,8 @@ public class LigneProgramme implements Serializable {
         this.utilisateur = utilisateur;
     }
 
-    public String getDate_insertion() {
-        return date_insertion;
-    }
-
-    public void setDate_insertion(String date_insertion) {
-        this.date_insertion = date_insertion;
+    public void setDateInsertion(Date dateInsertion) {
+        this.dateInsertion = dateInsertion;
     }
 
     public String getAjout() {
@@ -77,63 +163,32 @@ public class LigneProgramme implements Serializable {
         this.ajout = ajout;
     }
 
-    public String getSelection() {
+    public boolean getSelection() {
         return selection;
     }
 
-    public void setSelection(String selection) {
+    public void setSelection(boolean selection) {
         this.selection = selection;
     }
 
-    public LigneProgramme() {
+    public Fichier getFichier() {
+        return fichier;
     }
 
-    public LigneProgramme(String cdeCisac, String cdeFamilTypUtil, Long numProg, String cdeUtil, String cdeTypUtil, String cdeGreDif, String cdeModDif, String cdeTypIde12, String ide12, String durDif, String nbrDif, Double mt, String ctna, String paramCoefHor, String durDifCtna, String cdeLng, String indDoubSsTit, String tax, String typMt, String cdeGreIde12Cmplx, String cdeGreIde12, String titreOriCmplx, String titreAltPppalCmplx, String titreOriOeuvPereCmplx, String titreAltOeuvPereCmplx, String titreOeuvre, String cdePaysOriIso4NCmplx, String realisateurCmplx, String roleParticipant1, String nomParticipant1, String cdeTypUtilOri, String cdeFamilTypUtilOri, String rionAnt) {
-        this.cdeCisac = cdeCisac;
-        this.cdeFamilTypUtil = cdeFamilTypUtil;
-        this.numProg = numProg;
-        this.cdeUtil = cdeUtil;
-        this.cdeTypUtil = cdeTypUtil;
-        this.cdeGreDif = cdeGreDif;
-        this.cdeModDif = cdeModDif;
-        this.cdeTypIde12 = cdeTypIde12;
-        this.ide12 = ide12;
-        this.durDif = durDif;
-        this.nbrDif = nbrDif;
-        this.mt = mt;
-        this.ctna = ctna;
-        this.paramCoefHor = paramCoefHor;
-        this.durDifCtna = durDifCtna;
-        this.cdeLng = cdeLng;
-        this.indDoubSsTit = indDoubSsTit;
-        this.tax = tax;
-        this.typMt = typMt;
-        this.cdeGreIde12Cmplx = cdeGreIde12Cmplx;
-        this.cdeGreIde12 = cdeGreIde12;
-        this.titreOriCmplx = titreOriCmplx;
-        this.titreAltPppalCmplx = titreAltPppalCmplx;
-        this.titreOriOeuvPereCmplx = titreOriOeuvPereCmplx;
-        this.titreAltOeuvPereCmplx = titreAltOeuvPereCmplx;
-        this.titreOeuvre = titreOeuvre;
-        this.cdePaysOriIso4NCmplx = cdePaysOriIso4NCmplx;
-        this.realisateurCmplx = realisateurCmplx;
-        this.roleParticipant1 = roleParticipant1;
-        this.nomParticipant1 = nomParticipant1;
-        this.cdeTypUtilOri = cdeTypUtilOri;
-        this.cdeFamilTypUtilOri = cdeFamilTypUtilOri;
-        this.rionAnt = rionAnt;
+    public void setFichier(Fichier fichier) {
+        this.fichier = fichier;
     }
 
-    public LigneProgramme(Exception e) {
-        this.exception = e;
+    public LigneProgrammeCopyCP() {
+    
     }
 
-    public Long getIdFichier() {
-        return idFichier;
+    public Long getId() {
+        return id;
     }
 
-    public void setIdFichier(Long idFichier) {
-        this.idFichier = idFichier;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getCdeCisac() {
@@ -152,11 +207,11 @@ public class LigneProgramme implements Serializable {
         this.cdeFamilTypUtil = cdeFamilTypUtil;
     }
 
-    public Long getNumProg() {
+    public String getNumProg() {
         return numProg;
     }
 
-    public void setNumProg(Long numProg) {
+    public void setNumProg(String numProg) {
         this.numProg = numProg;
     }
 
@@ -200,27 +255,27 @@ public class LigneProgramme implements Serializable {
         this.cdeTypIde12 = cdeTypIde12;
     }
 
-    public String getIde12() {
+    public Long getIde12() {
         return ide12;
     }
 
-    public void setIde12(String ide12) {
+    public void setIde12(Long ide12) {
         this.ide12 = ide12;
     }
 
-    public String getDurDif() {
+    public Long getDurDif() {
         return durDif;
     }
 
-    public void setDurDif(String durDif) {
+    public void setDurDif(Long durDif) {
         this.durDif = durDif;
     }
 
-    public String getNbrDif() {
+    public Long getNbrDif() {
         return nbrDif;
     }
 
-    public void setNbrDif(String nbrDif) {
+    public void setNbrDif(Long nbrDif) {
         this.nbrDif = nbrDif;
     }
 
@@ -248,11 +303,11 @@ public class LigneProgramme implements Serializable {
         this.paramCoefHor = paramCoefHor;
     }
 
-    public String getDurDifCtna() {
+    public Long getDurDifCtna() {
         return durDifCtna;
     }
 
-    public void setDurDifCtna(String durDifCtna) {
+    public void setDurDifCtna(Long durDifCtna) {
         this.durDifCtna = durDifCtna;
     }
 
@@ -272,11 +327,11 @@ public class LigneProgramme implements Serializable {
         this.indDoubSsTit = indDoubSsTit;
     }
 
-    public String getTax() {
+    public Double getTax() {
         return tax;
     }
 
-    public void setTax(String tax) {
+    public void setTax(Double tax) {
         this.tax = tax;
     }
 
@@ -391,41 +446,54 @@ public class LigneProgramme implements Serializable {
     public void setCdeFamilTypUtilOri(String cdeFamilTypUtilOri) {
         this.cdeFamilTypUtilOri = cdeFamilTypUtilOri;
     }
-
-    public Integer getLineNumber() { return lineNumber; }
-
-    public void setLineNumber(Integer lineNumber) { this.lineNumber = lineNumber; }
-
-    public Exception getException() { return exception; }
-
-    public void setException(Exception exception) { this.exception = exception; }
-
+    
+    public LigneProgrammeCopyCP getOeuvreManuel() {
+        return oeuvreManuel;
+    }
+    
+    public void setOeuvreManuel(LigneProgrammeCopyCP oeuvreManuel) {
+        this.oeuvreManuel = oeuvreManuel;
+    }
+    
+    public Date getDateInsertion() {
+        return dateInsertion;
+    }
+    
+    public boolean isSelection() {
+        return selection;
+    }
+    
+    public boolean isSelectionEnCours() {
+        return selectionEnCours;
+    }
+    
+    public void setSelectionEnCours(boolean selectionEnCours) {
+        this.selectionEnCours = selectionEnCours;
+    }
+    
     public String getLibelleUtilisateur() {
         return libelleUtilisateur;
     }
-
+    
     public void setLibelleUtilisateur(String libelleUtilisateur) {
         this.libelleUtilisateur = libelleUtilisateur;
     }
-
-    public String getRionAnt() {
-        return rionAnt;
-    }
-
-    public void setRionAnt(String rionAnt) {
-        this.rionAnt = rionAnt;
-    }
-
+    
     @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+    
+        LigneProgrammeCopyCP that = (LigneProgrammeCopyCP) o;
+    
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        
+    
+        return true;
     }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
+    
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

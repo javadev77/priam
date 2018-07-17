@@ -193,21 +193,12 @@ public class LigneProgrammeCPJdbcDao {
                 "       INNER JOIN PRIAM_FICHIER as f on f.ID=lp.ID_FICHIER AND f.NUMPROG=? " +
                 "     WHERE lp.SEL_EN_COURS=1 AND lp.idOeuvreManuel IS NULL " +
                 "    ) as temp " +
-                "GROUP BY temp.ajout ", new PreparedStatementSetter() {
-            @Override
-            public void setValues(PreparedStatement ps) throws SQLException {
-
-                ps.setString(1, numProg);
-
-            }
-        }, new RowMapper<Map<String, Long>>() {
-            @Override
-            public Map<String, Long> mapRow(ResultSet resultSet, int i) throws SQLException {
-                Map<String, Long> map = new HashMap<>();
-                map.put(resultSet.getString(2), resultSet.getLong(1));
-                return map;
-            }
-        });
+                "GROUP BY temp.ajout ", ps -> ps.setString(1, numProg),
+                (resultSet, i) -> {
+                    Map<String, Long> map = new HashMap<>();
+                    map.put(resultSet.getString(2), resultSet.getLong(1));
+                    return map;
+                });
     }
 
     public Long calculerQuantiteOeuvres(String numProg) {

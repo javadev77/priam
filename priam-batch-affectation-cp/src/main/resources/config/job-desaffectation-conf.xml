@@ -7,21 +7,20 @@
 
     <!-- job de desaffectation -->
 
-    <job id="jobDesaffectation" xmlns="http://www.springframework.org/schema/batch">
+    <job id="jobDesaffectationCP" xmlns="http://www.springframework.org/schema/batch">
 
-        <step id="deleteDonneesTableCMS" next="copyDonneesVersTableCMS">
-            <tasklet>
-                <chunk
-                        reader="ligneProgCMSReader"
-                        writer="ligneProgCMSWriter"
-                        processor="ligneCMSProcessor"
-                        commit-interval="${commit-interval}">
-                </chunk>
-            </tasklet>
-        </step>
+        <!--<step id="deleteDonneesTableCP" next="copyDonneesVersTableCP">-->
+            <!--<tasklet>-->
+                <!--<chunk-->
+                        <!--reader="ligneProgCPReader"-->
+                        <!--writer="ligneProgCPWriter"-->
+                        <!--commit-interval="${commit-interval}">-->
+                <!--</chunk>-->
+            <!--</tasklet>-->
+        <!--</step>-->
 
 
-        <step id="copyDonneesVersTableCMS">
+        <step id="copyDonneesVersTableCP">
             <tasklet>
                 <chunk
                         reader="copyDonneesReader"
@@ -32,7 +31,7 @@
         </step>
 
         <listeners>
-            <listener ref="listenerJobDesaffectation"></listener>
+            <listener ref="listenerJobDesaffectation"/>
         </listeners>
 
 
@@ -44,21 +43,21 @@
     </bean>
 
 
-    <bean id="ligneProgCMSReader"
+    <bean id="ligneProgCPReader"
           class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
         <property name="dataSource" ref="dataSource"/>
-        <property name="queryProvider" ref="queryLigneProgCMSReader"/>
+        <property name="queryProvider" ref="queryLigneProgCPReader"/>
         <property name="pageSize" value="${commit-interval}"/>
         <property name="rowMapper" ref="ligneProgrammeRowMapper"/>
 
     </bean>
 
-    <bean id="ligneProgCMSWriter" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+    <bean id="ligneProgCPWriter" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
         <property name="dataSource" ref="dataSource"/>
         <property name="sql">
             <value>
                 <![CDATA[
-                   DELETE FROM PRIAM_LIGNE_PROGRAMME_CMS WHERE id = :id
+                   DELETE FROM PRIAM_LIGNE_PROGRAMME_CP WHERE id = :id
                 ]]>
             </value>
         </property>
@@ -72,7 +71,7 @@
         <property name="dataSource" ref="dataSource"/>
         <property name="queryProvider" ref="queryCopyDonneesReader"/>
         <property name="pageSize" value="${commit-interval}"/>
-        <property name="rowMapper" ref="ligneProgrammeCmsAntSQLMapper"/>
+        <property name="rowMapper" ref="ligneProgrammeRowMapper"/>
 
     </bean>
 
@@ -81,7 +80,7 @@
         <property name="sql">
             <value>
                 <![CDATA[
-                    INSERT INTO PRIAM_LIGNE_PROGRAMME_CMS (
+                    INSERT INTO PRIAM_LIGNE_PROGRAMME_CP (
                             id_fichier,
                             cdeCisac,
                             cdeFamilTypUtil,
@@ -120,8 +119,7 @@
                             date_insertion,
                             ajout,
                             selection,
-                            RION_N_ANT,
-                            mtEdit,
+                            durDifEdit,
                             nbrDifEdit
                         )
                         VALUES (
@@ -163,9 +161,9 @@
                             :date_insertion,
                             :ajout,
                             :selection,
-                            :rionAnt,
-                            :mt,
+                            :durDif,
                             :nbrDif
+
                         )
                 ]]>
             </value>
@@ -175,10 +173,10 @@
         </property>
     </bean>
 
-    <bean id="queryLigneProgCMSReader" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
+    <bean id="queryLigneProgCPReader" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
         <property name="databaseType" value="MySQL" />
         <property name="selectClause" value="select l.* "/>
-        <property name="fromClause" value="FROM PRIAM_LIGNE_PROGRAMME_CMS l
+        <property name="fromClause" value="FROM PRIAM_LIGNE_PROGRAMME_CP l
                                             INNER JOIN PRIAM_FICHIER f ON l.ID_FICHIER=f.ID
                                             INNER JOIN PRIAM_PROGRAMME p ON p.NUMPROG=f.NUMPROG"/>
         <property name="whereClause" value="WHERE p.NUMPROG='#{jobParameters[numProg]}'"/>
@@ -191,7 +189,7 @@
     <bean id="queryCopyDonneesReader" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
         <property name="databaseType" value="MySQL" />
         <property name="selectClause" value="select l.* "/>
-        <property name="fromClause" value="FROM PRIAM_LIGNE_PROGRAMME_CMS_COPY l
+        <property name="fromClause" value="FROM PRIAM_LIGNE_PROGRAMME_CP_COPY l
                                             INNER JOIN PRIAM_FICHIER f ON l.ID_FICHIER=f.ID
                                             INNER JOIN PRIAM_PROGRAMME p ON p.NUMPROG=f.NUMPROG"/>
         <property name="whereClause" value="WHERE p.NUMPROG='#{jobParameters[numProg]}'"/>
@@ -203,9 +201,6 @@
     <bean id="journalBatchDao" class="fr.sacem.priam.batch.affectation.cp.dao.JournalBatchDao">
         <property name="dataSource" ref="dataSource"/>
     </bean>
-
-    <bean id="ligneProgrammeCmsAntSQLMapper" class="fr.sacem.util.mapper.importPenef.PriamLigneProgrammeCmsAntSQLMapper"/>
-
 
 
 

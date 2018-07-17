@@ -809,32 +809,7 @@
                   this.showModalDesactiver = false;
 
                   this.$router.push({name: 'ListePrg'});
-                  //this.deaffectationEncours = true;
 
-                  //this.programmeInfo = data;
-                  /*this.initData();
-              this.rechercher();
-              this.$store.dispatch('toutDesactiver', false);*/
-                  /*var self = this;
-              var timer = setInterval(function () {
-
-                self.resource.findByNumProg({numProg: numProgramme})
-                  .then(response => {
-                    return response.json();
-                  })
-                  .then(programme => {
-                    if(programme.statutEligibilite === 'FIN_DESAFFECTATION') {
-                      clearInterval(timer);
-                      self.programmeInfo = programme;
-                      self.deaffectationEncours = false;
-                      self.initData();
-                      self.rechercher();
-                      self.$store.dispatch('toutDesactiver', false);
-                    }
-                  });
-
-
-              }, 1000);*/
 
                 })
                 .catch(response => {

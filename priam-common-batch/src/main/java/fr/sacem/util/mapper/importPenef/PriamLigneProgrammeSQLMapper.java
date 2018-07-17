@@ -15,6 +15,7 @@ public class PriamLigneProgrammeSQLMapper implements RowMapper<LigneProgramme> {
 
         LigneProgramme ligneProgramme = new LigneProgramme();
 
+        ligneProgramme.setId(rs.getLong("id"));
         ligneProgramme.setIdFichier(rs.getLong("ID_FICHIER"));
         ligneProgramme.setCdeCisac(rs.getString("cdeCisac"));
         ligneProgramme.setCdeFamilTypUtil(rs.getString("cdeFamilTypUtil"));

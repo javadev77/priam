@@ -15,7 +15,7 @@ import org.springframework.test.context.ActiveProfiles;
 /**
  * Created by benmerzoukah on 18/04/2017.
  */
-@Import({JpaConfigurationTest.class, RestMvcConfig.class})
+@Import({JpaConfigurationTest.class, RestMvcConfigTest.class})
 @SpringBootApplication(scanBasePackages = {"fr.sacem.priam.rest.common", "fr.sacem.priam.common", "fr.sacem.priam.services", "fr.sacem.priam.model"})
 @EnableCaching
 @ActiveProfiles("test")

@@ -25,7 +25,7 @@ public class AppBatchAffectationCP {
     private static  final Logger LOGGER = LoggerFactory.getLogger(AppBatchAffectationCP.class);
 
     public static void main(String[] args) {
-        LOGGER.info("Lancement du Batch Affectation CMS ");
+        LOGGER.info("Lancement du Batch Affectation CP ");
 
         ApplicationContext context = new AnnotationConfigApplicationContext(BatchConfigLocal.class, BatchConfigProd.class);
 

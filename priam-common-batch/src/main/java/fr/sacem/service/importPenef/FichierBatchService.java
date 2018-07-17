@@ -2,8 +2,10 @@ package fr.sacem.service.importPenef;
 
 import fr.sacem.domain.Fichier;
 import fr.sacem.util.exception.PriamValidationException;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.InputStream;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -25,4 +27,7 @@ public interface FichierBatchService {
     void creerlog(Long idFichier, String log);
 
     void clearSelectedFichiers(String numProg, String chargement_ok);
+
+    @Transactional
+    void majFichiersAffectesAuProgramme(String numProg, List<Fichier> nouveauxfichiersAffectes, String currentUserName);
 }

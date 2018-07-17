@@ -3,6 +3,7 @@ package fr.sacem.service.importPenef;
 import au.com.bytecode.opencsv.CSVReader;
 import fr.sacem.dao.FichierRepository;
 import fr.sacem.domain.Fichier;
+import fr.sacem.domain.Status;
 import fr.sacem.util.DateTimeUtils;
 import fr.sacem.util.exception.PriamValidationException;
 import org.apache.commons.lang.StringUtils;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -139,4 +141,10 @@ public class FichierBatchServiceImpl implements FichierBatchService {
     public void clearSelectedFichiers(String numProg, String statut) {
         fichierRepository.clearSelectedFichiers(numProg, statut);
     }
+
+    @Override
+    public void majFichiersAffectesAuProgramme(String numProg, List<Fichier> nouveauxfichiersAffectes, String currentUserName) {
+
+    }
+
 }

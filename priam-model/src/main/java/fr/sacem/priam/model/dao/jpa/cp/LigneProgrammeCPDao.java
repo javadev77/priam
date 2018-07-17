@@ -47,8 +47,8 @@ public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Lon
                     "ligneProgramme.roleParticipant1, " +
                     "ligneProgramme.nomParticipant1, " +
                     "ligneProgramme.ajout, " +
-                    "sum(ligneProgramme.durDifEdit), " +
-                    "sum(ligneProgramme.nbrDifEdit), " +
+                    "ligneProgramme.durDifEdit, " + //"sum(ligneProgramme.durDifEdit), " +
+                    "ligneProgramme.nbrDifEdit, " + //"sum(ligneProgramme.nbrDifEdit), " +
                     "ligneProgramme.selectionEnCours, " +
                     "ligneProgramme.libelleUtilisateur, " +
                     "ligneProgramme.cdeUtil) " +
@@ -64,8 +64,8 @@ public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Lon
             "AND (ligneProgramme.selectionEnCours = :selectionEnCours OR :selectionEnCours IS NULL) " +
             "AND (ligneProgramme.titreOeuvre = :titre OR :titre IS NULL) " +
             "AND (ligneProgramme.cdeUtil = :utilisateur OR :utilisateur IS NULL) " +
-            "AND (ligneProgramme.oeuvreManuel IS NULL) " +
-            "GROUP BY ligneProgramme.ide12, ligneProgramme.cdeUtil")
+            "AND (ligneProgramme.oeuvreManuel IS NULL) ")// +
+            //"GROUP BY ligneProgramme.ide12, ligneProgramme.cdeUtil")
 
     /*@Query(nativeQuery = true,
            countQuery = "SELECT count(*) " +
@@ -435,7 +435,6 @@ public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Lon
     
     
     @Modifying(clearAutomatically = true)
-    @Transactional
     @Query(nativeQuery = true, value="update " +
                                          "  PRIAM_LIGNE_PROGRAMME_CP p " +
                                          "INNER JOIN " +

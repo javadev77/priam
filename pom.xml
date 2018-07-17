@@ -26,7 +26,7 @@
         <module>priam-security</module>
         <module>priam-services</module>
         <module>priam-ui</module>
-        <!--<module>priam-batch-affectation-cp</module>-->
+        <module>priam-batch-affectation-cp</module>
         <module>priam-batch-affectation-cms</module>
         <module>priam-rest-api-common</module>
         <module>priam-rest-api-copieprivee</module>
@@ -73,7 +73,7 @@
 
         <priam.project.version>${project.version}</priam.project.version>
         <priam.project.security.name.ui>PRIAMInt2.0.X</priam.project.security.name.ui>
-        <spring.active.profiles>re7</spring.active.profiles>
+        <spring.active.profiles>dev</spring.active.profiles>
 
     </properties>
 

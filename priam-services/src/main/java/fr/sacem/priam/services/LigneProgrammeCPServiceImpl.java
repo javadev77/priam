@@ -146,9 +146,9 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
                 "durDifEdit".equals(sortBy.getProperty()) ||
                 "durDif".equals(sortBy.getProperty())) {
             if (TypeUtilisationEnum.COPIE_PRIVEE_SONORE_PHONO.getCode().equals(programme.getTypeUtilisation().getCode())) {
-                sort = JpaSort.unsafe(sortBy.getDirection(), "sum(nbrDifEdit)");
+                sort = JpaSort.unsafe(sortBy.getDirection(), "nbrDifEdit");
             } else if (TypeUtilisationEnum.COPIE_PRIVEE_SONORE_RADIO.getCode().equals(programme.getTypeUtilisation().getCode())) {
-                sort = JpaSort.unsafe(sortBy.getDirection(), "sum(durDifEdit)");
+                sort = JpaSort.unsafe(sortBy.getDirection(), "durDifEdit");
             }
         } else if("libAbrgUtil".equals(sortBy.getProperty())) {
             sort = JpaSort.unsafe(sortBy.getDirection(), "cdeUtil");
