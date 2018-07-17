@@ -81,9 +81,9 @@
             url: process.env.CONTEXT_ROOT_PRIAM_CMS + 'app/rest/ligneProgramme/search'
           },
 
-          isEligible : {
+          findOeuvreExistanteCatalogue : {
             method: 'POST',
-            url: process.env.CONTEXT_ROOT_PRIAM_CMS + 'app/rest/ligneProgramme/selection/isEligible'
+            url: process.env.CONTEXT_ROOT_PRIAM_CAT_RDO  + 'app/rest/catalogue/oeuvre/search'
           },
 
           downloadCatalogueOctav : {
@@ -224,6 +224,7 @@
                 ide12 : '',
                 titre : ''
             }
+
           }
 
 
@@ -314,19 +315,21 @@
                     } else if (this.programme.typeUtilisation === 'SONOANT') {
                       typeCMS = 'ANF';
                     }
-                    self.resource.isEligible({ide12: oeuvre.ide12, typeCMS: typeCMS})
+                    self.resource.findOeuvreExistanteCatalogue({ide12: oeuvre.ide12, typeCMS: typeCMS})
                       .then(response => {
-                        return response.json();
+                         return response.json();
                       })
-                      .then(isEligible => {
-                        console.log("isEligible = " + isEligible);
-                        debugger;
-                        if (isEligible) {
+                      .then(data => {
+                        if (data !== null && data.ide12 != null) {
                           self.$emit('validate-ajout-oeuvre', self.oeuvreToAdd);
                         } else {
                           self.showPopupEligibilite = true;
                           self.messageEligibilite = 'Cette oeuvre n\'est pas éligible et donc ne peut être ajoutée au programme !';
                         }
+                      })
+                      .catch(response => {
+                        alert("Erreur technique lors de l'ajout de l'oeuvre !!")
+                        console.log("Erreur technique lors de l'ajout de l'oeuvre !! " + response);
                       });
                   }
               });

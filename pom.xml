@@ -82,6 +82,8 @@
         <priam.project.security.name.ui>PRIAMInt2.0.X</priam.project.security.name.ui>
         <spring.active.profiles>dev</spring.active.profiles>
 
+        <sonar.exclusions>**/fr/sacem/priam/rest/common/config/UserDTOHandlerMethodArgumentResolverTest.java</sonar.exclusions>
+
     </properties>
 
 
@@ -232,6 +234,7 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.7.9</version>
+
                 <configuration>
                     <destFile>${sonar.jacoco.reportPath}</destFile>
                     <append>true</append>

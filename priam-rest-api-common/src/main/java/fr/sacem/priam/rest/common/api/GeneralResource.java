@@ -246,8 +246,13 @@ public class GeneralResource {
   public Map<String, String> getParametrageByUser(UserDTO currentUser) {
       List<String> typeFamilles = currentUser.authorizedFamilles();
       Map<String, String> result = parametrageService.findByUserId(currentUser.getUserId());
-      if(!isRightUserFamille(typeFamilles, result.get(USER_FAMILLE).split(REGEX_USER_FAMILLE)[0])){
-          result.replace(USER_FAMILLE, USER_FAMILLE_ALL);
+
+      if(result.size() > 0){
+          if(!isRightUserFamille(typeFamilles ,result.get(USER_FAMILLE).split(REGEX_USER_FAMILLE)[0])){
+              result.replace(USER_FAMILLE, USER_FAMILLE_ALL);
+          }
+      } else {
+          result.put(USER_FAMILLE, USER_FAMILLE_ALL);
       }
       return result;
   }

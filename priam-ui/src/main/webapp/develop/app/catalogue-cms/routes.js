@@ -9,6 +9,8 @@ export default [
 
   { path: '/catalogue/journal', name: 'journal', component: components.EcranJournalCatalogueCMS },
 
-  { path: '/catalogue/stat', name: 'stat', component: components.EcranStatCatalogueCMS }
+  { path: '/catalogue/stat', name: 'stat', component: components.EcranStatCatalogueCMS },
+
+  { path: '/catalogue/ajout-oeuvre', name: 'ajout-oeuvre', component: components.EcranAjoutOeuvre }
 
 ]

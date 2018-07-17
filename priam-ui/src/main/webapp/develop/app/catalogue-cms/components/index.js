@@ -4,3 +4,5 @@
 export { default as EcranCatalogueCMS } from './catalogue/CatalogueCMS.vue';
 export { default as EcranJournalCatalogueCMS } from './journal/JournalCatalogue.vue';
 export { default as EcranStatCatalogueCMS } from './stat/StatCatalogue.vue';
+export { default as EcranAjoutOeuvre } from './catalogue/AjouterOeuvre.vue';
+

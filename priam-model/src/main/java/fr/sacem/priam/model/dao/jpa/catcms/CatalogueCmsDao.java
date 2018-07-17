@@ -68,5 +68,13 @@ public interface CatalogueCmsDao extends JpaRepository<CatalogueCms, Long> {
                                                         @Param("periodeRenouvellementDateFin") Date periodeRenouvellementDateFin,
                                                         @Param("periodeSortieDateFin") Date periodeSortieDateFin, Pageable pageable);
 
+    @Transactional
+    @Query(value ="Select c from CatalogueCms c where c.ide12 = :ide12 and c.typeCMS = :typeCMS")
+    CatalogueCms findByIde12AndTypeCMS (@Param("ide12") Long ide12,@Param("typeCMS") String typeCMS);
+
+    @Transactional
+    @Query(value ="Select c from CatalogueCms c where c.ide12 = :ide12 and c.typeCMS = :typeCMS and (c.dateSortie is null or c.dateSortie >= current_date)")
+    CatalogueCms findOeuvreExistanteCatalogueByIde12AndTypeCMS (@Param("ide12") Long ide12,@Param("typeCMS") String typeCMS);
+
 
 }
