@@ -41,6 +41,7 @@
         <module>priam-batch-participants-rep</module>
         <module>priam-batch-participants-req</module>
         <module>priam-batch-filiation-npu</module>
+        <module>priam-batch-sortie-catcms</module>
 
     </modules>
 

@@ -104,7 +104,7 @@
                 id : 'stat',
                 routeName : 'stat',
                 label : 'Statistiques',
-                authorized : this.hasRight('MENUCATAL')
+                authorized : true, //this.hasRight('MENUCATAL')
               }
             ]
           },
