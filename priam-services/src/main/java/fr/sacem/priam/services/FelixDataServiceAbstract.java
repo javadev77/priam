@@ -265,7 +265,6 @@ public abstract class FelixDataServiceAbstract {
     @Async("threadPoolTaskExecutor")
     public void asyncSendFichierFelix(ProgrammeDto programmeDto, UserDTO userDTO) {
         String numProg = programmeDto.getNumProg();
-        /*programmeDto.setUsermaj(utilisateur);*/
         programmeDto.setUsermaj(userDTO.getUserId());
         try {
             

@@ -30,6 +30,7 @@ public class AffectationCPResourceTest extends RestResourceTest {
 
     @Test
     @Transactional
+    @Ignore
     public void test_affecterFichiers_all_vide() throws Exception {
         mockMvc.perform(
                 put("/app/rest/programme/affectation")
@@ -57,6 +58,7 @@ public class AffectationCPResourceTest extends RestResourceTest {
 
     @Test
     @Transactional
+    @Ignore
     public void test_deaffecterFichiers() throws Exception {
         mockMvc.perform(
                 put("/app/rest/programme/toutDesaffecter")

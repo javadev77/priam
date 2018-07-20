@@ -9,6 +9,12 @@
     <import  resource="job-desaffectation-conf.xml"/>
 
     <job id="jobAffectationCP" xmlns="http://www.springframework.org/schema/batch">
+        <step id="desaffecterStep" next="dedoublonnageStep">
+
+            <job ref="jobDesaffectationCP" job-launcher="jobLauncher2"/>
+
+
+        </step>
         <step id="dedoublonnageStep" >
             <tasklet>
                 <chunk
@@ -139,6 +145,8 @@
     <bean id="jobLauncher" class="org.springframework.batch.core.launch.support.SimpleJobLauncher"
           p:jobRepository-ref="jobRepository" p:taskExecutor-ref="taskExecutor"  />
 
+    <bean id="jobLauncher2" class="org.springframework.batch.core.launch.support.SimpleJobLauncher"
+          p:jobRepository-ref="jobRepository" />
 
    <bean id="taskExecutor"
         class="org.springframework.core.task.SimpleAsyncTaskExecutor" >
@@ -171,9 +179,7 @@
         <property name="nomTableLigneProgramme" value="${nom.table.ligneprogramme}"/>
     </bean>
 
-    <bean id="traitementCmsDao" class="fr.sacem.dao.TraitementCmsDao">
-        <property name="dataSource" ref="dataSource"/>
-    </bean>
+
 
     <bean id="journalBatchDao" class="fr.sacem.priam.batch.affectation.cp.dao.JournalBatchDao">
         <property name="dataSource" ref="dataSource"/>
@@ -183,8 +189,11 @@
         <property name="fichierBatchService" ref="fichierBatchService"/>
     </bean>
 
+    <!--
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
     </bean>
+
+    -->
 
 </beans>

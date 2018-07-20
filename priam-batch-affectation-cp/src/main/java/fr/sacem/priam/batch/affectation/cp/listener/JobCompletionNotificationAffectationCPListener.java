@@ -58,12 +58,6 @@ public class JobCompletionNotificationAffectationCPListener extends JobExecution
     JournalBatchDao journalBatchDao;
 
     @Autowired
-    TraitementCmsDao traitementCmsDao;
-
-    @Autowired
-    LigneProgrammeBatchDao ligneProgrammeBatchDao;
-
-    @Autowired
     FichierService fichierService;
 
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
@@ -80,10 +74,10 @@ public class JobCompletionNotificationAffectationCPListener extends JobExecution
     @Override
     public void beforeJob(JobExecution jobExecution) {
         String numProg = jobExecution.getJobParameters().getString("numProg");
-//        String[] fichiersAffectes = jobExecution.getJobParameters().getString("fichiersAffectes").split(",");
-//        List<Long> fichiersAffectesIds = Stream.of(fichiersAffectes).map(Long::parseLong).collect(Collectors.toList());
-//        List<Fichier> listFichiersByIds = fichierService.findListFichiersByIds(fichiersAffectesIds);
-//        fichierService.majFichiersAffectesAuProgramme(numProg, listFichiersByIds, "GUEST");
+        /*String[] fichiersAffectes = jobExecution.getJobParameters().getString("fichiersAffectes").split(",");
+        List<Long> fichiersAffectesIds = Stream.of(fichiersAffectes).map(Long::parseLong).collect(Collectors.toList());
+        List<Fichier> listFichiersByIds = fichierService.findListFichiersByIds(fichiersAffectesIds);
+        fichierService.majFichiersAffectesAuProgramme(numProg, listFichiersByIds, "GUEST");*/
     }
 
     @Override

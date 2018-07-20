@@ -701,7 +701,20 @@
             this.fichiersDesaffectes.numProg = numProg;
             this.fichiersDesaffectes.allDesaffecte = false;
 
-            this.resource.toutDeaffecterProg(this.fichiersDesaffectes)
+
+            this.resource.affectationProgramme(this.fichiersToProgramme)
+              .then(response => {
+                return response.json();
+              })
+              .then(data => {
+                this.affectationEncours = false;
+
+                this.$router.push({name: 'ListePrg'});
+              })
+              .catch(response => {
+                alert("Erreur technique lors de l'affectation des fichiers au programme !! ");
+              });
+            /*this.resource.toutDeaffecterProg(this.fichiersDesaffectes)
               .then(response => {
                 return response.json();
               })
@@ -718,18 +731,7 @@
                       if (programme.statutEligibilite === 'FIN_DESAFFECTATION') {
                         clearInterval(timer);
 
-                        self.resource.affectationProgramme(self.fichiersToProgramme)
-                          .then(response => {
-                            return response.json();
-                          })
-                          .then(data => {
-                            self.affectationEncours = false;
 
-                            self.$router.push({name: 'ListePrg'});
-                          })
-                          .catch(response => {
-                            alert("Erreur technique lors de l'affectation des fichiers au programme !! ");
-                          });
                       }
                     });
 
@@ -739,7 +741,7 @@
               })
               .catch(response => {
                 alert("Erreur technique !!! ");
-              });
+              });*/
           });
 
 //        this.resource.affectationProgramme(this.fichiersToProgramme)

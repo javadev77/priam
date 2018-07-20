@@ -29,16 +29,35 @@
             </tasklet>
         </step>
 
-        <step id="dedoublonnageStep" >
+        <step id="dedoublonnageStep">
             <tasklet>
                 <chunk
                         reader="readerPriamFromTable"
                         processor="ligneProgrammeDedoublonnageStepTwoProcessor"
                         writer="compositeWriter"
-                        commit-interval="${commit-interval}">
+                        commit-interval="${commit-interval}"
+                        retry-limit="15">
+
+                    <retryable-exception-classes>
+                        <include class="org.springframework.dao.DeadlockLoserDataAccessException"/>
+                        <include class="org.springframework.dao.CannotAcquireLockException"/>
+                    </retryable-exception-classes>
                 </chunk>
             </tasklet>
         </step>
+
+        <!--<step id="sauvegardeStep">-->
+            <!--<tasklet>-->
+                <!--<chunk-->
+                        <!--reader="readerPriamFromTable"-->
+                        <!--writer="sauvegardeWriter"-->
+                        <!--processor="ligneProgrammeDedoublonnageStepTwoProcessor"-->
+                        <!--commit-interval="${commit-interval}">-->
+                <!--</chunk>-->
+            <!--</tasklet>-->
+
+
+        <!--</step>-->
 
         <listeners merge="true">
             <listener ref="listenerCompletition"/>

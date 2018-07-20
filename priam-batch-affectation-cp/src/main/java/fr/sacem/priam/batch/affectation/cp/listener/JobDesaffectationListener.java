@@ -69,7 +69,7 @@ public class JobDesaffectationListener extends JobExecutionListenerSupport {
 
             programmeBatchDao.majStattutEligibilite(numProg, "FIN_DESAFFECTATION");
 
-
+          //  fichierRepository.deleteFichierLinkForAntille(numProg);
             fichierBatchService.clearSelectedFichiers(numProg, "CHARGEMENT_OK");
 
             String user = jobExecution.getJobParameters().getString("username");

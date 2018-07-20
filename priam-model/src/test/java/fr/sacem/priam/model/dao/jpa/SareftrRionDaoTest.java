@@ -5,6 +5,7 @@ import fr.sacem.priam.model.domain.saref.SareftrRion;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,9 +39,11 @@ public class SareftrRionDaoTest extends AbstractDaoTest {
     @Test
     public void should_return_all_rions_after_current_date() {
         List<SareftrRion> all = sareftrRionDao.findAllByDateRglmtAfterCurrentDate();
-        
+
+        Date currentDate = new Date();
+
         assertThat(all).isNotNull().isNotEmpty();
-        assertThat(all).extracting("rion").contains(639);
+        all.forEach(s -> assertThat(s.getDatrglmt()).isAfterOrEqualsTo(currentDate));
     }
     
     

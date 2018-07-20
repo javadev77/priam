@@ -48,7 +48,7 @@ public class JpaConfiguration {
         return em;
     }
     
-    @Bean
+    @Bean(name = "dataSource")
     @Primary
     public DataSource dataSource2() {
         JndiDataSourceLookup jndiDataSourceLookup = new JndiDataSourceLookup();

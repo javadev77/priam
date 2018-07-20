@@ -277,25 +277,25 @@
             </execution>
 
 
-            <execution>
-              <id>yarn run devsacem</id>
-              <goals>
-                <goal>yarn</goal>
-              </goals>
-              <configuration>
-                <arguments>run devsacem</arguments>
-              </configuration>
-            </execution>
-
             <!--<execution>-->
-              <!--<id>yarn run re7</id>-->
+              <!--<id>yarn run devsacem</id>-->
               <!--<goals>-->
                 <!--<goal>yarn</goal>-->
               <!--</goals>-->
               <!--<configuration>-->
-                <!--<arguments>run re7</arguments>-->
+                <!--<arguments>run devsacem</arguments>-->
               <!--</configuration>-->
             <!--</execution>-->
+
+            <execution>
+              <id>yarn run re7</id>
+              <goals>
+                <goal>yarn</goal>
+              </goals>
+              <configuration>
+                <arguments>run re7</arguments>
+              </configuration>
+            </execution>
 
           </executions>
       </plugin>

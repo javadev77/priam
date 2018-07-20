@@ -98,7 +98,7 @@ public class AffectationCPResource {
         }
 
         if(!Strings.isNullOrEmpty(numProg)){
-            fichierService.majFichiersAffectesAuProgramme(numProg, fichiers, currentUser.getDisplayName());
+            //fichierService.majFichiersAffectesAuProgramme(numProg, fichiers, currentUser.getDisplayName());
             programmeDto = programmeViewDao.findByNumProg(numProg);
         }
 
