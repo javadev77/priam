@@ -60,7 +60,7 @@ done
 echo ${LOCALCLASSPATH}
 echo ${SACEM_CONFIG}
 
-$JAVACMD -jar -Dspring.profiles.active=production /usr1/priam/BatchSortie/bin/priam-batch-sortie-catcms.jar
+$JAVACMD -jar -Dspring.profiles.active=production /usr1/priam/BatchPurge/bin/priam-batch-purge-catcms.jar
 # Memoriser le numero de processus du programme java
 CHILD_PID=$
 

@@ -6,10 +6,10 @@
         <version>2.3.2-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>priam-batch-sortie-catcms</artifactId>
+    <artifactId>priam-batch-purge-catcms</artifactId>
     <packaging>jar</packaging>
 
-    <name>BatchSortie</name>
+    <name>BatchPurge</name>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -31,13 +31,6 @@
             <groupId>fr.sacem.priam</groupId>
             <artifactId>priam-common-batch</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>fr.sacem.priam</groupId>
-            <artifactId>priam-common-batch</artifactId>
-            <version>${project.version}</version>
-            <type>test-jar</type>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.batch</groupId>
@@ -75,7 +68,7 @@
     </dependencies>
 
     <build>
-        <finalName>priam-batch-sortie-catcms</finalName>
+        <finalName>priam-batch-purge-catcms</finalName>
 
         <plugins>
 
@@ -90,7 +83,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>fr.sacem.priam.batch.sortie.catcms.App</mainClass>
+                            <mainClass>fr.sacem.priam.batch.purge.catcms.App</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

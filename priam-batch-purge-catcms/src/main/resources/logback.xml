@@ -12,9 +12,9 @@
     </appender>
 
     <appender name="priam-file" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${priam.log.default.directory}/priam-batch-sortie-catcms.log</file>
+        <file>${priam.log.default.directory}/priam-batch-purge-catcms.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <fileNamePattern>${priam.log.default.directory}/priam-batch-sortie-catcms.%i.log</fileNamePattern>
+            <fileNamePattern>${priam.log.default.directory}/priam-batch-purge-catcms.%i.log</fileNamePattern>
             <maxIndex>10</maxIndex>
         </rollingPolicy>
         <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">

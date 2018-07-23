@@ -1,9 +1,8 @@
-package fr.sacem.priam.batch.sortie.catcms.mapper;
+package fr.sacem.priam.batch.purge.catcms.mapper;
 
 import fr.sacem.priam.batch.common.domain.CatalogueCms;
 import org.springframework.jdbc.core.RowMapper;
 
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
