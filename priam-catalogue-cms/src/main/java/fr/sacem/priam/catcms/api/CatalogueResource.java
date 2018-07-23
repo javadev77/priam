@@ -5,6 +5,7 @@ import fr.sacem.priam.model.dao.jpa.catcms.CatalogueCmsDao;
 import fr.sacem.priam.model.dao.jpa.catcms.ParticipantsCatcmsDao;
 import fr.sacem.priam.model.domain.catcms.CatalogueCms;
 import fr.sacem.priam.model.domain.catcms.ParticipantsCatcms;
+import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -151,7 +152,13 @@ public class CatalogueResource {
         return catalogueRdoDao.saveAndFlush(oeuvreARenouvele);
     }
 
-
+    @RequestMapping(value = "catalogue/titre",
+            method = RequestMethod.GET,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<KeyValueDto> getTitresByProgramme(@RequestParam(value = "q") String titre, @RequestParam(value = "typeCMS") String typeCMS) {
+        return catalogueRdoDao.findTitresByTypeCMS(titre, typeCMS);
+    }
 
 
 }

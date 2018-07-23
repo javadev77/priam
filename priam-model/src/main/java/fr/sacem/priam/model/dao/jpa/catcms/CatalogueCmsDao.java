@@ -1,6 +1,7 @@
 package fr.sacem.priam.model.dao.jpa.catcms;
 
 import fr.sacem.priam.model.domain.catcms.CatalogueCms;
+import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by benmerzoukah on 03/05/2018.
@@ -76,5 +78,13 @@ public interface CatalogueCmsDao extends JpaRepository<CatalogueCms, Long> {
     @Query(value ="Select c from CatalogueCms c where c.ide12 = :ide12 and c.typeCMS = :typeCMS and (c.dateSortie is null or c.dateSortie >= current_date)")
     CatalogueCms findOeuvreExistanteCatalogueByIde12AndTypeCMS (@Param("ide12") Long ide12,@Param("typeCMS") String typeCMS);
 
+    @Transactional(readOnly = true)
+    @Query(value ="SELECT " +
+            "DISTINCT NEW fr.sacem.priam.model.domain.dto.KeyValueDto(c.titre)" +
+            "FROM CatalogueCms c " +
+            "WHERE UPPER(c.titre) LIKE %:titre% " +
+            "AND c.typeCMS =:typeCMS " +
+            "ORDER BY c.titre")
+    List<KeyValueDto> findTitresByTypeCMS(@Param("titre") String titre, @Param("typeCMS") String typeCMS);
 
 }

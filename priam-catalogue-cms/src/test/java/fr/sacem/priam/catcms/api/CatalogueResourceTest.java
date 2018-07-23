@@ -16,9 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -36,6 +34,7 @@ public class CatalogueResourceTest extends RestResourceTest {
     public static final String APP_REST_CATALOGUE_OEUVRE_EXISTANTE = "/app/rest/catalogue/oeuvre/search";
     public static final String APP_REST_CATALOGUE_OEUVRE_RENEW = "/app/rest/catalogue/oeuvre/";
     public static final String APP_REST_CATALOGUE_OEUVRE_ADD = "/app/rest/catalogue/oeuvre";
+    public static final String APP_REST_CATALOGUE_TITRE = "/app/rest/catalogue/titre";
     public static final String TYPE_CMS_FR = "FR";
     public static final String TYPE_CMS_ANF = "ANF";
 
@@ -265,6 +264,20 @@ public class CatalogueResourceTest extends RestResourceTest {
                 //.content(this.json(oeuvreToAdd)))
                 .andExpect(status().isOk());
                 //.andExpect(jsonPath("typeCMS", is(TYPE_CMS_FR)));
+
+    }
+
+    @Test
+    public void getTitresByProgramme() throws Exception {
+
+        String titre = "wap";
+        mockMvc.perform(get(APP_REST_CATALOGUE_TITRE + "?q=" + titre +
+                "&typeCMS=" + TYPE_CMS_FR +
+                "&displayOeuvreNonEligible="+false
+        )
+                .contentType(contentType))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].value", is("WAP")));
 
     }
 
