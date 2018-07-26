@@ -298,10 +298,21 @@ public class CatalogueResourceTest extends RestResourceTest {
                 .contentType(contentType))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$['TYPE_INSCRIPTION'].[0]['code']", is("Automatique")))
+                .andExpect(jsonPath("$['TYPE_INSCRIPTION'].[0]['value']", is(9)))
+                .andExpect(jsonPath("$['TYPE_UTILISATION'].[0]['code']", is("PHONOFR")))
+                .andExpect(jsonPath("$['TYPE_UTILISATION'].[0]['value']", is(9)));
+
+        catalogueCritereRecherche.setDisplayOeuvreNonEligible(true);
+
+        mockMvc.perform(post(APP_REST_CATALOGUE_COMPTEUR)
+                .content(this.json(catalogueCritereRecherche))
+                .contentType(contentType))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$['TYPE_INSCRIPTION'].[0]['code']", is("Automatique")))
                 .andExpect(jsonPath("$['TYPE_INSCRIPTION'].[0]['value']", is(11)))
                 .andExpect(jsonPath("$['TYPE_UTILISATION'].[0]['code']", is("PHONOFR")))
                 .andExpect(jsonPath("$['TYPE_UTILISATION'].[0]['value']", is(11)));
-    }
 
+    }
 
 }
