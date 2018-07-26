@@ -35,17 +35,44 @@
             </div>
           </div>
 
-
-          <priam-grid
-            v-if="catalogueGrid.gridData.content && !dataLoading"
-            :isPaginable="true"
-            :data="catalogueGrid.gridData"
-            :columns="catalogueGrid.gridColumns"
-            noResultText="Aucun résultat."
-            @delete-oeuvre="onDeleteOeuvre"
-            @on-sort="onSort"
-            @load-page="loadPage">
-          </priam-grid>
+          <div class="row">
+            <div class="panel panel-default col-sm-4 sacem-formula" style="margin-top: 23px">
+              <div class="panel-heading">
+                <h5 class="panel-title">
+                  <a>Critères supplémentaires</a>
+                </h5>
+              </div>
+              <div class="panel-collapse sacem-formula" :class="{collapse : isCollapsed}">
+                <div class="panel-body">
+                  <img src="static/images/iconescontextes/ajxrep-search3.gif" alt="">
+                  <span> Type d'inscription</span>
+                  <ul style="list-style: none;">
+                    <li v-for="metric in typeInscription">
+                      {{metric.code}} : (<b>{{metric.value}}</b>)
+                    </li>
+                  </ul>
+                  <img src="static/images/iconescontextes/ajxrep-search3.gif" alt="">
+                  <span> Type utilisation générateur</span>
+                  <ul style="list-style: none;">
+                    <li v-for="metric in typeUtilisation">
+                      {{metric.code}} : (<b>{{metric.value}}</b>)
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+              <priam-grid
+                v-if="catalogueGrid.gridData.content && !dataLoading"
+                :isPaginable="true"
+                :data="catalogueGrid.gridData"
+                :columns="catalogueGrid.gridColumns"
+                noResultText="Aucun résultat."
+                @delete-oeuvre="onDeleteOeuvre"
+                @on-sort="onSort"
+                @load-page="loadPage"
+                class="col-sm-20">
+              </priam-grid>
+          </div>
         </div>
       </div>
     </div>
@@ -464,7 +491,16 @@
         deletedOeuvre : {
           raisonSortie: ''
         },
+        isCollapsed : false,
 
+        typeInscription : {
+          code: '',
+          value: ''
+        },
+        typeUtilisation : {
+          code: '',
+          value: ''
+        }
       }
     },
 
@@ -482,6 +518,10 @@
         ajouterOeuvreCatalogueRdo : {
           method : 'POST',
           url : process.env.CONTEXT_ROOT_PRIAM_CAT_RDO + 'app/rest/catalogue/oeuvre'
+        },
+        compteurCatalogueRdo : {
+          method : 'POST',
+          url : process.env.CONTEXT_ROOT_PRIAM_CAT_RDO + 'app/rest/catalogue/compteur'
         }
       }
       this.resource= this.$resource('', {}, customActions);
@@ -521,6 +561,7 @@
 
             this.catalogueGrid.gridData.number = data.number + 1;
             this.dataLoading = false;
+            this.calculerCompteurs();
           })
           .catch(error => {
             alert("Erreur lors de la recherche !!! ")
@@ -639,10 +680,18 @@
            .then(resp => {
               console.log(resp)
            });
+      },
+
+      calculerCompteurs: function () {
+        this.resource.compteurCatalogueRdo(this.currentFilter)
+          .then(response => {
+            return response.json();
+          }).then(data => {
+          this.typeInscription = data.TYPE_INSCRIPTION;
+          this.typeUtilisation = data.TYPE_UTILISATION;
+        })
+        ;
       }
-
-
-
     },
 
 

@@ -1,6 +1,7 @@
 package fr.sacem.priam.catcms.api;
 
 import fr.sacem.priam.catcms.api.dto.CatalogueCritereRecherche;
+import fr.sacem.priam.catcms.api.dto.KeyValueDtoCatcms;
 import fr.sacem.priam.model.dao.jpa.catcms.CatalogueCmsDao;
 import fr.sacem.priam.model.dao.jpa.catcms.ParticipantsCatcmsDao;
 import fr.sacem.priam.model.domain.catcms.CatalogueCms;
@@ -14,9 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static fr.sacem.priam.common.util.FileUtils.CATALOGUE_OCTAV_TYPE_CMS_ANF;
 import static fr.sacem.priam.common.util.FileUtils.CATALOGUE_OCTAV_TYPE_CMS_FR;
@@ -24,6 +23,11 @@ import static fr.sacem.priam.common.util.FileUtils.CATALOGUE_OCTAV_TYPE_CMS_FR;
 @RestController
 @RequestMapping("/app/rest/")
 public class CatalogueResource {
+
+    public static final String MANUEL = "Manuel";
+    public static final String AUTOMATIQUE = "Automatique";
+    public static final String TYPE_INSCRIPTION = "TYPE_INSCRIPTION";
+    public static final String TYPE_UTILISATION = "TYPE_UTILISATION";
 
     @Autowired
     CatalogueCmsDao catalogueRdoDao;
@@ -158,6 +162,96 @@ public class CatalogueResource {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public List<KeyValueDto> getTitresByProgramme(@RequestParam(value = "q") String titre, @RequestParam(value = "typeCMS") String typeCMS) {
         return catalogueRdoDao.findTitresByTypeCMS(titre, typeCMS);
+    }
+
+    @RequestMapping(value = "catalogue/compteur",
+            method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, List<KeyValueDtoCatcms>> compteurByCriteria(@RequestBody CatalogueCritereRecherche catalogueCritereRecherche) {
+
+        //Map<String, Map<String, Long>> result = new HashMap<>();
+        Map<String, List<KeyValueDtoCatcms>> result = new HashMap<>();
+
+        result.put(TYPE_INSCRIPTION, getMetricTypeInscription(catalogueCritereRecherche));
+        result.put(TYPE_UTILISATION, getMetricTypeUtilisation(catalogueCritereRecherche));
+
+        return result;
+    }
+
+    private List<KeyValueDtoCatcms> getMetricTypeInscription(CatalogueCritereRecherche catalogueCritereRecherche){
+        List<KeyValueDtoCatcms> resultTypeInscription = new ArrayList<>();
+
+        List<Object> nombreTypeInscription = new ArrayList<>();
+
+        if(catalogueCritereRecherche.isDisplayOeuvreNonEligible()){
+            nombreTypeInscription = catalogueRdoDao.compterNombreTypeInscriptionInclusNonEligible(catalogueCritereRecherche.getTypeCMS(),
+                    catalogueCritereRecherche.getIde12(),
+                    catalogueCritereRecherche.getTitre(),
+                    catalogueCritereRecherche.getParticipant(),
+                    catalogueCritereRecherche.getPeriodeEntreeDateDebut(),
+                    catalogueCritereRecherche.getPeriodeEntreeDateFin(),
+                    catalogueCritereRecherche.getPeriodeRenouvellementDateDebut(),
+                    catalogueCritereRecherche.getPeriodeRenouvellementDateFin(),
+                    catalogueCritereRecherche.getPeriodeSortieDateDebut(),
+                    catalogueCritereRecherche.getPeriodeSortieDateFin());
+        } else {
+            nombreTypeInscription = catalogueRdoDao.compterNombreTypeInscriptionExclusNonEligible(catalogueCritereRecherche.getTypeCMS(),
+                    catalogueCritereRecherche.getIde12(),
+                    catalogueCritereRecherche.getTitre(),
+                    catalogueCritereRecherche.getParticipant(),
+                    catalogueCritereRecherche.getPeriodeEntreeDateDebut(),
+                    catalogueCritereRecherche.getPeriodeEntreeDateFin(),
+                    catalogueCritereRecherche.getPeriodeRenouvellementDateDebut(),
+                    catalogueCritereRecherche.getPeriodeRenouvellementDateFin(),
+                    catalogueCritereRecherche.getPeriodeSortieDateFin());
+        }
+        for (Object typeInscription: nombreTypeInscription) {
+            Object[] typeInscriptionObjects = (Object[]) typeInscription;
+            KeyValueDtoCatcms keyValueDtoCatcms = new KeyValueDtoCatcms((String) typeInscriptionObjects[0],(Long) typeInscriptionObjects[1]);
+            resultTypeInscription.add(keyValueDtoCatcms);
+        }
+
+        return resultTypeInscription;
+    }
+
+
+    private List<KeyValueDtoCatcms> getMetricTypeUtilisation(CatalogueCritereRecherche catalogueCritereRecherche) {
+
+        List<KeyValueDtoCatcms> resultTypeUtilisation = new ArrayList<>();
+
+        List<Object> nombreTypeInscription = new ArrayList<>();
+        if(catalogueCritereRecherche.isDisplayOeuvreNonEligible()){
+            nombreTypeInscription = catalogueRdoDao.compterNombreTypeUtilisationInclusNonEligible(catalogueCritereRecherche.getTypeCMS(),
+                    catalogueCritereRecherche.getIde12(),
+                    catalogueCritereRecherche.getTitre(),
+                    catalogueCritereRecherche.getParticipant(),
+                    catalogueCritereRecherche.getPeriodeEntreeDateDebut(),
+                    catalogueCritereRecherche.getPeriodeEntreeDateFin(),
+                    catalogueCritereRecherche.getPeriodeRenouvellementDateDebut(),
+                    catalogueCritereRecherche.getPeriodeRenouvellementDateFin(),
+                    catalogueCritereRecherche.getPeriodeSortieDateDebut(),
+                    catalogueCritereRecherche.getPeriodeSortieDateFin());
+        } else {
+            nombreTypeInscription = catalogueRdoDao.compterNombreTypeUtilisationExclusNonEligible(catalogueCritereRecherche.getTypeCMS(),
+                    catalogueCritereRecherche.getIde12(),
+                    catalogueCritereRecherche.getTitre(),
+                    catalogueCritereRecherche.getParticipant(),
+                    catalogueCritereRecherche.getPeriodeEntreeDateDebut(),
+                    catalogueCritereRecherche.getPeriodeEntreeDateFin(),
+                    catalogueCritereRecherche.getPeriodeRenouvellementDateDebut(),
+                    catalogueCritereRecherche.getPeriodeRenouvellementDateFin(),
+                    catalogueCritereRecherche.getPeriodeSortieDateFin());
+        }
+
+
+        for (Object typeInscription : nombreTypeInscription) {
+            Object[] typeUtilisationObjects = (Object[]) typeInscription;
+            KeyValueDtoCatcms keyValueDtoCatcms = new KeyValueDtoCatcms((String) typeUtilisationObjects[0], (Long) typeUtilisationObjects[1]);
+            resultTypeUtilisation.add(keyValueDtoCatcms);
+        }
+
+        return resultTypeUtilisation;
     }
 
 

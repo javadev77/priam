@@ -125,4 +125,27 @@ public class CatalogueCmsDaoTest extends AbstractDaoTest {
         assertThat(titresByTypeCMS).isNotNull().isNotEmpty();
         assertThat(titresByTypeCMS.stream().anyMatch(keyValue -> keyValue.getValue().toString().contains("OEU"))).isEqualTo(true);
     }
+
+    @Test
+    public void compterNombreTypeInscriptionInclusNonEligible(){
+        List<Object> nombreTypeInscription = catalogueRdoDao.compterNombreTypeInscriptionInclusNonEligible("ANF",null,
+                null, null, null, null, null
+                , null, null, null);
+        assertThat(nombreTypeInscription).isNotNull();
+    }
+    @Test
+    public void compterNombreTypeInscriptionExclusNonEligible(){
+        List<Object> nombreTypeInscription = catalogueRdoDao.compterNombreTypeInscriptionExclusNonEligible("ANF",null,
+                null, null, null, null, null
+                , null, null);
+        assertThat(nombreTypeInscription).isNotNull();
+    }
+
+    @Test
+    public void compterNombreTypeUtilisationInclusNonEligible(){
+        List<Object> nombreTypeUtilisation= catalogueRdoDao.compterNombreTypeUtilisationInclusNonEligible("ANF",null,
+                null, null, null, null, null
+                , null, null, null);
+        assertThat(nombreTypeUtilisation).isNotNull();
+    }
 }

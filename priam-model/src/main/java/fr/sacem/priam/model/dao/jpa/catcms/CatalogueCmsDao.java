@@ -87,4 +87,98 @@ public interface CatalogueCmsDao extends JpaRepository<CatalogueCms, Long> {
             "ORDER BY c.titre")
     List<KeyValueDto> findTitresByTypeCMS(@Param("titre") String titre, @Param("typeCMS") String typeCMS);
 
+    @Transactional(readOnly = true)
+    @Query(value ="SELECT cat.typeInscription, COUNT(cat.typeInscription)" +
+            "FROM CatalogueCms cat " +
+            "WHERE cat.typeCMS= :typeCMS " +
+            "AND (CONCAT(cat.ide12, '') LIKE %:ide12% OR :ide12 IS NULL) " +
+            "AND (cat.titre LIKE %:titre% OR :titre IS NULL) " +
+            "AND (cat.participants LIKE %:participant% OR :participant IS NULL) " +
+            "AND (cat.dateEntree >= :periodeEntreeDateDebut or :periodeEntreeDateDebut IS NULL) " +
+            "AND (cat.dateEntree <= :periodeEntreeDateFin or :periodeEntreeDateFin IS NULL) " +
+            "AND (cat.dateRenouvellement >= :periodeRenouvellementDateDebut or :periodeRenouvellementDateDebut IS NULL) " +
+            "AND (cat.dateRenouvellement <= :periodeRenouvellementDateFin or :periodeRenouvellementDateFin IS NULL) " +
+            "AND (cat.dateSortie >= :periodeSortieDateDebut or :periodeSortieDateDebut IS NULL) " +
+            "AND (cat.dateSortie <= :periodeSortieDateFin or :periodeSortieDateFin IS NULL)" +
+            "GROUP BY cat.typeInscription")
+    List<Object> compterNombreTypeInscriptionInclusNonEligible(@Param("typeCMS") String typeCMS,
+                                         @Param("ide12") String ide12,
+                                         @Param("titre") String titre,
+                                         @Param("participant") String participant,
+                                         @Param("periodeEntreeDateDebut") Date periodeEntreeDateDebut,
+                                         @Param("periodeEntreeDateFin") Date periodeEntreeDateFin,
+                                         @Param("periodeRenouvellementDateDebut") Date periodeRenouvellementDateDebut,
+                                         @Param("periodeRenouvellementDateFin") Date periodeRenouvellementDateFin,
+                                         @Param("periodeSortieDateDebut") Date periodeSortieDateDebut,
+                                         @Param("periodeSortieDateFin") Date periodeSortieDateFin);
+
+    @Transactional(readOnly = true)
+    @Query(value ="SELECT cat.typeInscription, COUNT(cat.typeInscription)" +
+            "FROM CatalogueCms cat " +
+            "WHERE cat.typeCMS= :typeCMS " +
+            "AND (CONCAT(cat.ide12, '') LIKE %:ide12% OR :ide12 IS NULL) " +
+            "AND (cat.titre LIKE %:titre% OR :titre IS NULL) " +
+            "AND (cat.participants LIKE %:participant% OR :participant IS NULL) " +
+            "AND (cat.dateEntree >= :periodeEntreeDateDebut or :periodeEntreeDateDebut IS NULL) " +
+            "AND (cat.dateEntree <= :periodeEntreeDateFin or :periodeEntreeDateFin IS NULL) " +
+            "AND (cat.dateRenouvellement >= :periodeRenouvellementDateDebut or :periodeRenouvellementDateDebut IS NULL) " +
+            "AND (cat.dateRenouvellement <= :periodeRenouvellementDateFin or :periodeRenouvellementDateFin IS NULL) " +
+            "AND (cat.dateSortie IS NULL OR cat.dateSortie >= :periodeSortieDateFin)" +
+            "GROUP BY cat.typeInscription")
+    List<Object> compterNombreTypeInscriptionExclusNonEligible(@Param("typeCMS") String typeCMS,
+                                                               @Param("ide12") String ide12,
+                                                               @Param("titre") String titre,
+                                                               @Param("participant") String participant,
+                                                               @Param("periodeEntreeDateDebut") Date periodeEntreeDateDebut,
+                                                               @Param("periodeEntreeDateFin") Date periodeEntreeDateFin,
+                                                               @Param("periodeRenouvellementDateDebut") Date periodeRenouvellementDateDebut,
+                                                               @Param("periodeRenouvellementDateFin") Date periodeRenouvellementDateFin,
+                                                               @Param("periodeSortieDateFin") Date periodeSortieDateFin);
+
+    @Query(value ="SELECT cat.typUtilGen, COUNT(cat.typUtilGen)" +
+            "FROM CatalogueCms cat " +
+            "WHERE cat.typeCMS= :typeCMS " +
+            "AND (CONCAT(cat.ide12, '') LIKE %:ide12% OR :ide12 IS NULL) " +
+            "AND (cat.titre LIKE %:titre% OR :titre IS NULL) " +
+            "AND (cat.participants LIKE %:participant% OR :participant IS NULL) " +
+            "AND (cat.dateEntree >= :periodeEntreeDateDebut or :periodeEntreeDateDebut IS NULL) " +
+            "AND (cat.dateEntree <= :periodeEntreeDateFin or :periodeEntreeDateFin IS NULL) " +
+            "AND (cat.dateRenouvellement >= :periodeRenouvellementDateDebut or :periodeRenouvellementDateDebut IS NULL) " +
+            "AND (cat.dateRenouvellement <= :periodeRenouvellementDateFin or :periodeRenouvellementDateFin IS NULL) " +
+            "AND (cat.dateSortie >= :periodeSortieDateDebut or :periodeSortieDateDebut IS NULL) " +
+            "AND (cat.dateSortie <= :periodeSortieDateFin or :periodeSortieDateFin IS NULL)" +
+            "GROUP BY cat.typUtilGen")
+    List<Object> compterNombreTypeUtilisationInclusNonEligible(@Param("typeCMS") String typeCMS,
+                                              @Param("ide12") String ide12,
+                                              @Param("titre") String titre,
+                                              @Param("participant") String participant,
+                                              @Param("periodeEntreeDateDebut") Date periodeEntreeDateDebut,
+                                              @Param("periodeEntreeDateFin") Date periodeEntreeDateFin,
+                                              @Param("periodeRenouvellementDateDebut") Date periodeRenouvellementDateDebut,
+                                              @Param("periodeRenouvellementDateFin") Date periodeRenouvellementDateFin,
+                                              @Param("periodeSortieDateDebut") Date periodeSortieDateDebut,
+                                              @Param("periodeSortieDateFin") Date periodeSortieDateFin);
+
+    @Query(value ="SELECT cat.typUtilGen, COUNT(cat.typUtilGen)" +
+            "FROM CatalogueCms cat " +
+            "WHERE cat.typeCMS= :typeCMS " +
+            "AND (CONCAT(cat.ide12, '') LIKE %:ide12% OR :ide12 IS NULL) " +
+            "AND (cat.titre LIKE %:titre% OR :titre IS NULL) " +
+            "AND (cat.participants LIKE %:participant% OR :participant IS NULL) " +
+            "AND (cat.dateEntree >= :periodeEntreeDateDebut or :periodeEntreeDateDebut IS NULL) " +
+            "AND (cat.dateEntree <= :periodeEntreeDateFin or :periodeEntreeDateFin IS NULL) " +
+            "AND (cat.dateRenouvellement >= :periodeRenouvellementDateDebut or :periodeRenouvellementDateDebut IS NULL) " +
+            "AND (cat.dateRenouvellement <= :periodeRenouvellementDateFin or :periodeRenouvellementDateFin IS NULL) " +
+            "AND (cat.dateSortie IS NULL OR cat.dateSortie >= :periodeSortieDateFin)" +
+            "GROUP BY cat.typUtilGen")
+    List<Object> compterNombreTypeUtilisationExclusNonEligible(@Param("typeCMS") String typeCMS,
+                                                               @Param("ide12") String ide12,
+                                                               @Param("titre") String titre,
+                                                               @Param("participant") String participant,
+                                                               @Param("periodeEntreeDateDebut") Date periodeEntreeDateDebut,
+                                                               @Param("periodeEntreeDateFin") Date periodeEntreeDateFin,
+                                                               @Param("periodeRenouvellementDateDebut") Date periodeRenouvellementDateDebut,
+                                                               @Param("periodeRenouvellementDateFin") Date periodeRenouvellementDateFin,
+                                                               @Param("periodeSortieDateFin") Date periodeSortieDateFin);
+
 }
