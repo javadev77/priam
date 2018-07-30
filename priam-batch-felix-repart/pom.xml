@@ -1,45 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-
-    <groupId>fr.sacem.priam</groupId>
-    <artifactId>priam-batch-repartition</artifactId>
-
-    <packaging>jar</packaging>
-
-    <name>priam-batch-repartition</name>
-    <description>Batch de repartition</description>
-
     <parent>
         <artifactId>priam-parent</artifactId>
         <groupId>fr.sacem.priam</groupId>
         <version>2.1.9</version>
     </parent>
+    <modelVersion>4.0.0</modelVersion>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.8</java.version>
-    </properties>
+    <artifactId>priam-batch-felix-repart</artifactId>
+
+    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
             <groupId>fr.sacem.priam</groupId>
             <artifactId>priam-common</artifactId>
             <version>${project.version}</version>
-
         </dependency>
+
         <dependency>
             <groupId>fr.sacem.priam</groupId>
             <artifactId>priam-common-batch</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>fr.sacem.priam</groupId>
+            <artifactId>priam-services</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+
         <dependency>
             <groupId>org.springframework.batch</groupId>
             <artifactId>spring-batch-infrastructure</artifactId>
         </dependency>
-
         <dependency>
             <groupId>net.sf.opencsv</groupId>
             <artifactId>opencsv</artifactId>
@@ -70,11 +67,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>21.0</version>
         </dependency>
         <dependency>
             <groupId>commons-collections</groupId>
@@ -111,50 +103,36 @@
             <version>1.4.195</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
-            <groupId>ch.vorburger.mariaDB4j</groupId>
-            <artifactId>mariaDB4j</artifactId>
-            <version>2.2.3</version>
+            <groupId>fr.sacem.priam</groupId>
+            <artifactId>priam-model</artifactId>
+            <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.mariadb.jdbc</groupId>
-            <artifactId>mariadb-java-client</artifactId>
-            <version>2.1.2</version>
-        </dependency>
+
     </dependencies>
-    <build>
+
+ <!--   <build>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-            <!-- Maven Assembly Plugin -->
+            &lt;!&ndash; Maven Assembly Plugin &ndash;&gt;
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>fr.sacem.AppRepartition</mainClass>
+                            <mainClass>fr.App</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
             </plugin>
-           <!-- <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.7.9</version>
-                <executions>
-                    <execution>
-                        <id>report-aggregate</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>report-aggregate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>-->
+
         </plugins>
-    </build>
+    </build>-->
+
 
 </project>

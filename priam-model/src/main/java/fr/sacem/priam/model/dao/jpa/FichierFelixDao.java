@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -13,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Lazy
 public interface FichierFelixDao extends JpaRepository<FichierFelix, Long> {
     
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
     @Query(value = "SELECT f FROM FichierFelix f where f.numProg = :numProg")
     FichierFelix findByNumprog(@Param("numProg") String numProg);
 }

@@ -16,5 +16,6 @@ public enum RoleRight {
     CLDSEL,
     VLDSEL,
     ABDCHGT,
-    VIJREV
+    VIJREV,
+    MENUCATAL
 }

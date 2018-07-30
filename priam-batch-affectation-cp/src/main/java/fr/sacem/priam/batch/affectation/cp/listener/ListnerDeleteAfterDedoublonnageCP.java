@@ -30,7 +30,8 @@ public class ListnerDeleteAfterDedoublonnageCP extends StepExecutionListenerSupp
         String[] fichiersAffectes = stepExecution.getJobParameters().getString("fichiersAffectes").split(",");
         List<Long> fichiersAffectesIds = Stream.of(fichiersAffectes).map(Long::parseLong).collect(Collectors.toList());
         List<Fichier> listFichiersByIds = fichierService.findListFichiersByIds(fichiersAffectesIds);
-        fichierService.majFichiersAffectesAuProgramme(numProg, listFichiersByIds, "GUEST");
+        String userId = stepExecution.getJobParameters().getString("userId");
+        fichierService.majFichiersAffectesAuProgramme(numProg, listFichiersByIds, userId);
     }
 
     @Override

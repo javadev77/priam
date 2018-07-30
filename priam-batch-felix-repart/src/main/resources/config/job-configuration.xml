@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+
+    <job id="jobFelixRepart" xmlns="http://www.springframework.org/schema/batch">
+
+        <step id="prepareFelixData" next="generateFelixData">
+
+            <tasklet>
+                <chunk
+                        reader="readLigneProgramme"
+                        writer="writerToPreprep"
+                        commit-interval="100">
+                </chunk>
+            </tasklet>
+
+        </step>
+        <step id="generateFelixData" >
+            <tasklet>
+                <chunk
+                        reader="readPreprep"
+                        writer="csvFileWriter"
+                        commit-interval="100">
+                </chunk>
+            </tasklet>
+
+            <listeners>
+                <listener ref="generateFelixFileStepListener"/>
+            </listeners>
+        </step>
+
+        <listeners>
+            <listener ref="jobCompletion"/>
+        </listeners>
+
+    </job>
+
+    <bean id="jobCompletion" class="fr.sacem.priam.batch.felix.listener.JobCompletionFelixRepartListener" scope="prototype"/>
+    <bean id="generateFelixFileStepListener" class="fr.sacem.priam.batch.felix.listener.GenerateFelixFileStepListener"/>
+
+
+    <bean id="readPreprep"
+          class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="queryProvider" ref="queryProviderStep3"/>
+        <property name="pageSize" value="100"/>
+        <property name="rowMapper" ref="ligneProgrammeRowMapper"/>
+
+    </bean>
+
+    <bean id="ligneProgrammeRowMapper" class="fr.sacem.priam.batch.felix.mapper.FelixDataRowMapper"/>
+
+    <bean id="lignePreprepMapper" class="fr.sacem.priam.batch.felix.mapper.LignePreprepRowMapper"/>
+
+    <bean id="queryProviderStep3" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
+        <property name="selectClause" value="select lp.* "/>
+        <property name="fromClause" value="from PRIAM_LIGNE_PREPREP lp "/>
+        <property name="whereClause" value="WHERE lp.numProg='#{jobParameters[numProg]}'"/>
+        <property name="databaseType" value="MySQL" />
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sortKey" value="lp.keyLigPenel"/>
+        <!--<property name="sortKeys" >-->
+            <!--<map>-->
+                <!--<entry key="lp.cdeCisac" value="ASCENDING"/>-->
+                <!--<entry key="lp.cdeTer" value="ASCENDING"/>-->
+                <!--<entry key="lp.rionEffet" value="ASCENDING"/>-->
+                <!--<entry key="lp.cdeFamilTypUtil" value="ASCENDING"/>-->
+                <!--<entry key="lp.cdeTypUtil" value="ASCENDING"/>-->
+                <!--<entry key="lp.cdeUtil" value="ASCENDING"/>-->
+                <!--<entry key="lp.cdeModFac" value="ASCENDING"/>-->
+                <!--<entry key="lp.cdeTypProg" value="ASCENDING"/>-->
+                <!--<entry key="lp.cdeCompl" value="ASCENDING"/>-->
+                <!--<entry key="lp.datDbtProg" value="ASCENDING"/>-->
+                <!--<entry key="lp.datFinProg" value="ASCENDING"/>-->
+
+            <!--</map>-->
+        <!--</property>-->
+    </bean>
+
+
+
+    <bean id="readLigneProgramme"
+          class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="queryProvider" ref="qp4"/>
+        <property name="pageSize" value="100"/>
+        <property name="rowMapper" ref="lignePreprepMapper"/>
+
+    </bean>
+
+
+    <bean id="qp4" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
+        <property name="selectClause" value="select
+                                                ligneProgramme.id as id,
+                                                ligneProgramme.cdeCisac as cdeCisac,
+                                                prog.CDE_TER as cdeTer,
+                                                prog.RION_THEORIQUE as rionEffet,
+                                                prog.CDEFAMILTYPUTIL as cdeFamilTypUtil,
+                                                prog.NUMPROG as numProg,
+                                                ligneProgramme.cdeUtil as cdeUtil,
+                                                'FORFAI' as cdeModFac,
+                                                prog.CDETYPUTIL as cdeTypUtil,
+                                                'PRINC' as cdeTypProg,
+                                                'SANS' as cdeCompl,
+                                                prog.NOM as libProg,
+                                                prog.DATE_DBT_PRG as datDbtProg,
+                                                prog.DATE_FIN_PRG as datFinProg,
+                                                ligneProgramme.cdeGreDif as cdeGreDif,
+                                                ligneProgramme.cdeModDif as cdeModDif,
+                                                ligneProgramme.cdeTypIde12 as cdeTypIde12,
+                                                ligneProgramme.ide12 as ide12,
+                                                sum(ligneProgramme.durDif) as durDif,
+                                                (CASE WHEN prog.CDETYPUTIL = 'CPRIVSONRD' THEN 1 ELSE sum(ligneProgramme.nbrDif) END) as nbrDif,
+                                                0.0 as mt,
+                                                ligneProgramme.ctna as ctna,
+                                                ligneProgramme.paramCoefHor as paramCoefHor,
+                                                ligneProgramme.durDifCtna as durDifCtna,
+                                                ligneProgramme.cdeLng as cdeLng,
+                                                ligneProgramme.indDoubSsTit as indDoubSsTit,
+                                                ligneProgramme.tax as tax"/>
+        <property name="fromClause" value="from PRIAM_LIGNE_PROGRAMME_CP ligneProgramme
+                                            INNER JOIN PRIAM_FICHIER f ON ligneProgramme.ID_FICHIER=f.ID
+                                            INNER JOIN PRIAM_PROGRAMME prog ON prog.NUMPROG=f.NUMPROG"/>
+        <property name="whereClause" value="WHERE prog.NUMPROG='#{jobParameters[numProg]}' AND ligneProgramme.selection=1 AND ligneProgramme.idOeuvreManuel IS NULL "/>
+        <property name="groupClause" value="GROUP BY ligneProgramme.ide12, ligneProgramme.cdeUtil "/>
+        <property name="databaseType" value="MySQL" />
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sortKey" value="id"/>
+        <!--<property name="sortKeys">-->
+            <!--<map>-->
+                <!--<entry key="cdeCisac" value="ASCENDING"/>-->
+                <!--<entry key="cdeTer" value="ASCENDING"/>-->
+                <!--<entry key="rionEffet" value="ASCENDING"/>-->
+                <!--<entry key="cdeFamilTypUtil" value="ASCENDING"/>-->
+                <!--<entry key="cdeTypUtil" value="ASCENDING"/>-->
+                <!--<entry key="cdeUtil" value="ASCENDING"/>-->
+                <!--<entry key="datDbtProg" value="ASCENDING"/>-->
+                <!--<entry key="datFinProg" value="ASCENDING"/>-->
+            <!--</map>-->
+        <!--</property>-->
+    </bean>
+
+
+    <bean id="writerToPreprep" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                  INSERT INTO PRIAM_LIGNE_PREPREP (cdeCisac, cdeTer, rionEffet, cdeFamilTypUtil, cdeModFac, numProg, cdeUtil,
+                                          cdeTypUtil, cdeTypProg, cdeCompl, libProg, compLibProg, datDbtProg, datFinProg, hrDbt, hrFin, cdeGreDif,
+                                          cdeModDif, cdeTypIde12, ide12, datDif, hrDif, durDif, nbrDif, mt, ctna, paramCoefHor, durDifCtna, cdeLng, indDoubSsTit, tax)
+                           VALUES (:cdeCisac, :cdeTer, :rionEffet, :cdeFamilTypUtil, :cdeModFac, :numProg, :cdeUtil, :cdeTypUtil, :cdeTypProg,
+                            :cdeCompl, :libProg, :compLibProg, :datDbtProg, :datFinProg, :hrDbt, :hrFin, :cdeGreDif, :cdeModDif, :cdeTypIde12,
+                            :ide12, :datDif, :hrDif, :durDif, :nbrDif, :mt, :ctna, :paramCoefHor, :durDifCtna, :cdeLng, :indDoubSsTit, :tax)
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
+
+    <bean id="jobOperator" class="org.springframework.batch.core.launch.support.SimpleJobOperator"
+          p:jobLauncher-ref="jobLauncher" p:jobExplorer-ref="jobExplorer"
+          p:jobRepository-ref="jobRepository" p:jobRegistry-ref="jobRegistry"/>
+
+    <bean id="jobExplorer" class="org.springframework.batch.core.explore.support.JobExplorerFactoryBean"
+          p:dataSource-ref="dataSource"/>
+
+    <bean id="jobRegistry" class="org.springframework.batch.core.configuration.support.MapJobRegistry"/>
+
+    <bean class="org.springframework.batch.core.configuration.support.JobRegistryBeanPostProcessor"
+          p:jobRegistry-ref="jobRegistry"/>
+
+    <bean id="jobLauncher" class="org.springframework.batch.core.launch.support.SimpleJobLauncher"
+          p:jobRepository-ref="jobRepository" p:taskExecutor-ref="taskExecutor"  />
+
+   <bean id="taskExecutor"
+        class="org.springframework.core.task.SimpleAsyncTaskExecutor" >
+    </bean>
+
+    <bean id="jobRepository" class="org.springframework.batch.core.repository.support.JobRepositoryFactoryBean"
+          p:dataSource-ref="dataSource"
+          p:transactionManager-ref="transactionManager"/>
+
+
+
+    <!--<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">-->
+        <!--<property name="dataSource" ref="dataSource"/>-->
+    <!--</bean>-->
+
+
+</beans>

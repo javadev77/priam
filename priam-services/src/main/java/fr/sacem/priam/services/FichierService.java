@@ -86,14 +86,10 @@ public class FichierService {
 
         }
 
-
         if(idsNouveauxFichiersAffectes.isEmpty()) {
             programme.setStatut(StatutProgramme.CREE);
-        } else {
-            if(programme.getFamille().getCode().equals(FamillePriam.COPIE_PRIVEE.getCode())) {
-                programme.setStatut(StatutProgramme.AFFECTE);
-            }
         }
+
         programme.setUsermaj(currentUserName);
         programme.setDatmaj(new Date());
         programme.setUseraffect(currentUserName);

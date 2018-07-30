@@ -81,9 +81,8 @@ public class AffectationCPResource {
             produces = MediaType.APPLICATION_JSON_VALUE)
     //@LogFichier(event = TypeLog.AFFECTATION_DESAFFECTATION)
     public ProgrammeDto affecterFichiers (@RequestBody AffectationDto affectationDto, UserDTO currentUser) {
-
-        ProgrammeDto programmeDto = null;
         String numProg=affectationDto.getNumProg();
+        ProgrammeDto programmeDto =  programmeViewDao.findByNumProg(numProg);
         List<Fichier> fichiers = affectationUtil.getFichiersAffectes(affectationDto);
 
         List<Fichier> fichiersAvantAffectation = getListFichierByIdFichier(affectationDto.getFichersAvantAffectation());
@@ -92,8 +91,9 @@ public class AffectationCPResource {
 
         if(fichiers == null || fichiers.isEmpty()) {
             JournalAffectationBuilder journalAffectationBuilder = new JournalAffectationBuilder();
-            Journal journal = journalAffectationBuilder.create(programmeDto.getNumProg(), listNomFichiersAvantAffectation, fichiers, currentUser.getUserId());
+            Journal journal = journalAffectationBuilder.create(numProg, listNomFichiersAvantAffectation, fichiers, currentUser.getUserId());
             journalDao.save(journal);
+
             return programmeDto;
         }
 
@@ -101,6 +101,11 @@ public class AffectationCPResource {
             //fichierService.majFichiersAffectesAuProgramme(numProg, fichiers, currentUser.getDisplayName());
             programmeDto = programmeViewDao.findByNumProg(numProg);
         }
+
+        Programme programme = programmeDao.findByNumProg(numProg);
+        programme.setStatutEligibilite(StatutEligibilite.EN_COURS_DESAFFECTATION);
+
+        programmeDao.saveAndFlush(programme);
 
         launchJobAffectation(programmeDto, fichiers,  currentUser, listNomFichiersAvantAffectation);
 
