@@ -14,7 +14,7 @@
     <groupId>fr.sacem.priam</groupId>
     <artifactId>priam-parent</artifactId>
 
-    <version>2.1.9.2</version>
+    <version>2.1.10</version>
     <packaging>pom</packaging>
 
     <name>PRIAM</name>
