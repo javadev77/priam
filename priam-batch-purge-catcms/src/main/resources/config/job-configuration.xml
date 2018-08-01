@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/batch
+       http://www.springframework.org/schema/batch/spring-batch.xsd
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="searchSystemEnvironment" value="true"/>
+        <property name="ignoreResourceNotFound" value="true"/>
+        <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+        <property name="location" value="classpath:config/application-${spring.profiles.active}.properties"/>
+    </bean>
+
+    <job id="jobPurgeCatalogue" xmlns="http://www.springframework.org/schema/batch">
+        <step id="PurgeCatalogueFr" next="PurgeCatalogueAnf">
+            <tasklet>
+                <chunk
+                        reader="readerPriamPurgeCatalogueFr"
+                        writer="writerPriamPurgeCatalogue"
+                        commit-interval="${commit-interval}">
+                </chunk>
+            </tasklet>
+        </step>
+        <step id="PurgeCatalogueAnf">
+            <tasklet>
+                <chunk
+                        reader="readerPriamPurgeCatalogueAnf"
+                        writer="writerPriamPurgeCatalogue"
+                        commit-interval="${commit-interval}">
+                </chunk>
+            </tasklet>
+        </step>
+
+    </job>
+
+    <bean id="readerPriamPurgeCatalogueFr"
+          class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="queryProvider" ref="qpReaderPriamPurgeCatalogueFr"/>
+        <property name="pageSize" value="${commit-interval}"/>
+        <property name="rowMapper" ref="catalogueCMSRowMapper"/>
+    </bean>
+
+    <bean id="qpReaderPriamPurgeCatalogueFr" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
+        <property name="selectClause" value="SELECT ID"/>
+        <property name="fromClause" value="FROM PRIAM_CATCMS_CATALOGUE"/>
+        <property name="whereClause" value="CURRENT_DATE() > DATE_ADD(DATE_SORTIE, INTERVAL #{jobParameters['param.annee.fr']} YEAR)
+                                            AND TYPE_CMS = 'FR'"/>
+        <property name="databaseType" value="MySQL" />
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sortKey" value="ID"/>
+    </bean>
+
+    <bean id="readerPriamPurgeCatalogueAnf"
+          class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="queryProvider" ref="qpReaderPriamPurgeCatalogueAnf"/>
+        <property name="pageSize" value="${commit-interval}"/>
+        <property name="rowMapper" ref="catalogueCMSRowMapper"/>
+    </bean>
+
+    <bean id="qpReaderPriamPurgeCatalogueAnf" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
+        <property name="selectClause" value="SELECT ID"/>
+        <property name="fromClause" value="FROM PRIAM_CATCMS_CATALOGUE"/>
+        <property name="whereClause" value="CURRENT_DATE() > DATE_ADD(DATE_SORTIE, INTERVAL #{jobParameters['param.annee.anf']} YEAR)
+                                            AND TYPE_CMS = 'ANF'"/>
+        <property name="databaseType" value="MySQL" />
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sortKey" value="ID"/>
+    </bean>
+
+    <bean id="catalogueCMSRowMapper" class="fr.sacem.priam.batch.purge.catcms.mapper.CatalogueCMSRowMapper"/>
+
+    <bean id="writerPriamPurgeCatalogue" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    DELETE FROM PRIAM_CATCMS_CATALOGUE
+                    WHERE ID  = :id;
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
+
+    <bean id="jobOperator" class="org.springframework.batch.core.launch.support.SimpleJobOperator"
+          p:jobLauncher-ref="jobLauncher" p:jobExplorer-ref="jobExplorer"
+          p:jobRepository-ref="jobRepository" p:jobRegistry-ref="jobRegistry"/>
+
+    <bean id="jobExplorer" class="org.springframework.batch.core.explore.support.JobExplorerFactoryBean"
+          p:dataSource-ref="dataSource"/>
+
+    <bean id="jobRegistry" class="org.springframework.batch.core.configuration.support.MapJobRegistry"/>
+
+    <bean class="org.springframework.batch.core.configuration.support.JobRegistryBeanPostProcessor"
+          p:jobRegistry-ref="jobRegistry"/>
+
+    <bean id="jobLauncher" class="org.springframework.batch.core.launch.support.SimpleJobLauncher"
+          p:jobRepository-ref="jobRepository"/>
+
+    <bean id="jobRepository" class="org.springframework.batch.core.repository.support.JobRepositoryFactoryBean"
+          p:dataSource-ref="dataSource"
+          p:transactionManager-ref="transactionManager"/>
+
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+
+</beans>

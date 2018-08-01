@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="searchSystemEnvironment" value="true"/>
+        <property name="ignoreResourceNotFound" value="true"/>
+        <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+        <property name="location" value="classpath:config/application-${spring.profiles.active}.properties"/>
+    </bean>
+
+    <job id="jobGenerationCatalogue" xmlns="http://www.springframework.org/schema/batch">
+        <!--<step id="GenerationCatalogueFr" next="GenerationCatalogueAnf">-->
+        <step id="GenerationCatalogueFr">
+            <tasklet>
+                <chunk
+                        reader="readerPriamGenerationCatalogueFr"
+                        writer="writerPriamGenerationCatalogue"
+                        commit-interval="${commit-interval}">
+                </chunk>
+            </tasklet>
+        </step>
+        <!--<step id="GenerationCatalogueAnf">
+            <tasklet>
+                <chunk
+                        reader="readerPriamGenerationCatalogueAnf"
+                        writer="writerPriamGenerationCatalogue"
+                        commit-interval="${commit-interval}">
+                </chunk>
+            </tasklet>
+        </step>-->
+    </job>
+
+    <bean id="readerPriamGenerationCatalogueFr"
+          class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="queryProvider" ref="qpReaderPriamGenerationCatalogueFr"/>
+        <property name="pageSize" value="${commit-interval}"/>
+        <property name="rowMapper" ref="catalogueRdoRowMapper"/>
+    </bean>
+
+    <bean id="qpReaderPriamGenerationCatalogueFr" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
+        <property name="selectClause" value="SELECT CATALOGUE.TYPE_CMS, CATALOGUE.IDE12, CATALOGUE.TITRE, PARTICIPANTS.PARTICIPANT, PARTICIPANTS.ROLE"/>
+        <property name="fromClause" value="FROM PRIAM_CATCMS_CATALOGUE CATALOGUE INNER JOIN PRIAM_CATCMS_PARTICIPANTS PARTICIPANTS
+                                            ON CATALOGUE.IDE12 = PARTICIPANTS.IDE12 AND CATALOGUE.TYPE_CMS = PARTICIPANTS.TYPE_CMS"/>
+        <property name="whereClause" value="WHERE CATALOGUE.TYPE_CMS = 'FR' AND CATALOGUE.DATE_SORTIE IS NULL ORDER BY CATALOGUE.IDE12;"/>
+        <property name="databaseType" value="MySQL" />
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sortKey" value="ID"/>
+    </bean>
+
+    <bean id="catalogueRdoRowMapper" class="fr.sacem.priam.batch.generation.catalogue.mapper.CatalogueRowMapper"></bean>
+
+    <bean id="jobOperator" class="org.springframework.batch.core.launch.support.SimpleJobOperator"
+          p:jobLauncher-ref="jobLauncher" p:jobExplorer-ref="jobExplorer"
+          p:jobRepository-ref="jobRepository" p:jobRegistry-ref="jobRegistry"/>
+
+    <bean id="jobExplorer" class="org.springframework.batch.core.explore.support.JobExplorerFactoryBean"
+          p:dataSource-ref="dataSource"/>
+
+    <bean id="jobRegistry" class="org.springframework.batch.core.configuration.support.MapJobRegistry"/>
+
+    <bean class="org.springframework.batch.core.configuration.support.JobRegistryBeanPostProcessor"
+          p:jobRegistry-ref="jobRegistry"/>
+
+    <bean id="jobLauncher" class="org.springframework.batch.core.launch.support.SimpleJobLauncher"
+          p:jobRepository-ref="jobRepository"/>
+
+    <bean id="jobRepository" class="org.springframework.batch.core.repository.support.JobRepositoryFactoryBean"
+          p:dataSource-ref="dataSource"
+          p:transactionManager-ref="transactionManager"/>
+
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+</beans>

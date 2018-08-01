@@ -82,7 +82,7 @@
             id : 'catalogue',
             routeName : 'catalogue-cms',
             label : 'Catalogue CMS',
-            authorized : true,//this.hasRight('MENUCATAL'),
+            authorized : this.hasRight('MENUCATAL'),
             routes : ['catalogue-cms', 'journal', 'stat'],
 
             items : [
@@ -90,14 +90,14 @@
                 id : 'catalogue',
                 routeName : 'catalogue-cms',
                 label : 'Catalogue',
-                authorized : true,//this.hasRight('MENUCATAL'),
+                authorized : this.hasRight('MENUCATAL'),
               },
 
               {
                 id : 'journal',
                 routeName : 'journal',
                 label : 'Journal',
-                authorized : true,//this.hasRight('MENUCATAL'),
+                authorized : this.hasRight('MENUCATAL'),
               },
 
               {

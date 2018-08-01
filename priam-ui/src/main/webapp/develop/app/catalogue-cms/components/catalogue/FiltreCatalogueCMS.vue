@@ -65,12 +65,17 @@
                   </div>
                   <div class="col-md-8">
                     <div class="form-group has-feedback">
-                      <input  type="text"
-                              id="filterTitre"
-                              :class="'autocomplete-input form-control  input-sm'"
-                              v-model="filter.titre"
-                      />
-                      <i class="form-control-feedback glyphicon glyphicon-search"></i>
+
+                      <autocomplete
+                        id="filterTitre"
+                        :url="urlAutoCompleteTitreOeuvre"
+                        :custom-params="{ typeCMS: filter.typeCMS.id}"
+                        anchor="value"
+                        :min="3"
+                        :on-select="selectTitreOeuvre"
+                        :on-input="selectTitreOeuvre"
+                      >
+                      </autocomplete>
                     </div>
                   </div>
                 </div>
@@ -155,6 +160,9 @@
       name: "filtre-catalogue",
       data() {
         return {
+
+          urlAutoCompleteTitreOeuvre : process.env.CONTEXT_ROOT_PRIAM_CAT_RDO + 'app/rest/catalogue/titre/',
+
           titrePeriodeEntree:'Période d\'entrée',
           titrePeriodeRenouv:'Période de renouvellement',
           titrePeriodeSortie:'Période de sortie',
@@ -223,6 +231,10 @@
               event.preventDefault();
             }
           }
+        },
+
+        selectTitreOeuvre(data) {
+          this.filter.titre = (data.value) ? data.value : data;
         },
       }
     }

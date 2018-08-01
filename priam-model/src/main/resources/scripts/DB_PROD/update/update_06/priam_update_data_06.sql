@@ -1,4 +1,8 @@
 USE priam_app;
 
+INSERT INTO `PRIAM_ROLE` (`ID`, `EXTERNAL_ID`, `ROLE`) VALUES (6,'Gest_Catal','Gest_Catal');
+
+INSERT INTO `PRIAM_ROLE_RIGHTS` (`ROLE_ID`, `RIGHTS`, `LIBELLE`) VALUES (1,'MENUCATAL', 'Accès Menu Principal Catalogue');
+INSERT INTO `PRIAM_ROLE_RIGHTS` (`ROLE_ID`, `RIGHTS`, `LIBELLE`) VALUES (6,'MENUCATAL', 'Accès Menu Principal Catalogue');
 
 COMMIT;

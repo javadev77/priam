@@ -28,53 +28,53 @@ public enum EnvConstants implements ConfigurableProperty {
         }
 
     },
-    
+
     FELIX_PREPREP_DIR {
         @Override
         public String property() {
             return "priam.felix.preprep.dir";
         }
-        
+
     },
-    
+
     MIPSA_WEB_COMPONENT_HTML_URL {
         @Override
         public String property() {
             return "priam.mipsa.wc.html.url";
         }
-        
+
     },
-    
+
     MIPSA_WEB_COMPONENT_CDEDECL {
         @Override
         public String property() {
             return "priam.mipsa.wc.cdedecl";
         }
-        
+
     },
-    
+
     MIPSA_WEB_COMPONENT_BASEURL {
         @Override
         public String property() {
             return "priam.mipsa.wc.baseurl";
         }
-        
+
     },
-    
+
     MIPSA_WEB_COMPONENT_CDETYPINTERLOC {
         @Override
         public String property() {
             return "priam.mipsa.wc.cdetypinterloc";
         }
-        
+
     },
-    
+
     MIPSA_WEB_COMPONENT_USESSOTOKEN {
         @Override
         public String property() {
             return "priam.mipsa.wc.usessotoken";
         }
-        
+
     },
     BATCH_CONFIG_PROPERTIES {
         @Override
@@ -85,19 +85,19 @@ public enum EnvConstants implements ConfigurableProperty {
     FTP_FELIX_HOME_DIR {
         @Override
         public String property() {return "priam.ftp.felix.home.directory";}
-        
+
     },
     FTP_FELIX_SERVER {
         @Override
         public String property() {return "priam.ftp.felix.server.host";}
-        
+
     },
     FTP_FELIX_PORT {
-        
+
         @Override
         public String property() {return "priam.ftp.felix.server.port";}
-        
-        
+
+
         @Override
         public String defaultValue() {
             return "22";
@@ -106,27 +106,27 @@ public enum EnvConstants implements ConfigurableProperty {
     FTP_FELIX_USERNAME {
         @Override
         public String property() {return "priam.ftp.felix.user.name";}
-        
-      
+
+
     },
     FTP_FELIX_PASSWORD {
         @Override
         public String property() {return "priam.ftp.felix.user.password";}
     },
-    
+
     FELIX_ACQT_INPUT_DIR {
         @Override
         public String property() {
             return "priam.felix.acquittement.in";
         }
     },
-    
+
     FELIX_ACQT_ARCHIVES_DIR {
         @Override
         public String property() {
             return "priam.felix.acquittement.archives";
         }
-        
+
     },
 
     PRIAM_DB_JNDI {
@@ -233,20 +233,34 @@ public enum EnvConstants implements ConfigurableProperty {
         @Override
         public String property() {
             return "priam.catcms.filiation.npu.archives"; }
-        },
+    },
 
-        PATTERN_FILE_NAME {
-            public String property() {
-                return "priam.pattern.file.name";
-            }
-    };
+    PATTERN_FILE_NAME {
+        @Override
+        public String property() {
+            return "priam.pattern.file.name";
+        }
+    },
+
+    PARAM_ANNEE_FR {
+        public String property() {
+            return "priam.param.annee.fr";
+        }
+    },
+
+    PARAM_ANNEE_ANF {
+        public String property() {
+            return "priam.param.annee.anf";
+        }
+    }
+    ;
 
     @Override
     public String toString() {
-        
+
         return getParameter(property(), defaultValue());
     }
-    
+
     public String defaultValue(){
         return "";
     }

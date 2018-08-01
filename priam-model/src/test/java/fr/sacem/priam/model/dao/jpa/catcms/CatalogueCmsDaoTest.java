@@ -2,6 +2,7 @@ package fr.sacem.priam.model.dao.jpa.catcms;
 
 import fr.sacem.priam.model.dao.AbstractDaoTest;
 import fr.sacem.priam.model.domain.catcms.CatalogueCms;
+import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Sort;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -117,4 +119,33 @@ public class CatalogueCmsDaoTest extends AbstractDaoTest {
         assertThat(result).isNotNull();
     }
 
+    @Test
+    public void findTitresByTypeCMS(){
+        List<KeyValueDto> titresByTypeCMS = catalogueRdoDao.findTitresByTypeCMS("oeu", "FR");
+        assertThat(titresByTypeCMS).isNotNull().isNotEmpty();
+        assertThat(titresByTypeCMS.stream().anyMatch(keyValue -> keyValue.getValue().toString().contains("OEU"))).isEqualTo(true);
+    }
+
+    @Test
+    public void compterNombreTypeInscriptionInclusNonEligible(){
+        List<Object> nombreTypeInscription = catalogueRdoDao.compterNombreTypeInscriptionInclusNonEligible("ANF",null,
+                null, null, null, null, null
+                , null, null, null);
+        assertThat(nombreTypeInscription).isNotNull();
+    }
+    @Test
+    public void compterNombreTypeInscriptionExclusNonEligible(){
+        List<Object> nombreTypeInscription = catalogueRdoDao.compterNombreTypeInscriptionExclusNonEligible("ANF",null,
+                null, null, null, null, null
+                , null, null);
+        assertThat(nombreTypeInscription).isNotNull();
+    }
+
+    @Test
+    public void compterNombreTypeUtilisationInclusNonEligible(){
+        List<Object> nombreTypeUtilisation= catalogueRdoDao.compterNombreTypeUtilisationInclusNonEligible("ANF",null,
+                null, null, null, null, null
+                , null, null, null);
+        assertThat(nombreTypeUtilisation).isNotNull();
+    }
 }

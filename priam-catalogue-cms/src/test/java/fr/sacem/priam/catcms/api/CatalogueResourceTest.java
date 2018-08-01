@@ -4,21 +4,23 @@ import fr.sacem.priam.catcms.api.dto.CatalogueCritereRecherche;
 import fr.sacem.priam.catcms.config.RestResourceTest;
 import fr.sacem.priam.model.dao.jpa.catcms.CatalogueCmsDao;
 import fr.sacem.priam.model.domain.catcms.CatalogueCms;
+import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -36,6 +38,10 @@ public class CatalogueResourceTest extends RestResourceTest {
     public static final String APP_REST_CATALOGUE_OEUVRE_EXISTANTE = "/app/rest/catalogue/oeuvre/search";
     public static final String APP_REST_CATALOGUE_OEUVRE_RENEW = "/app/rest/catalogue/oeuvre/";
     public static final String APP_REST_CATALOGUE_OEUVRE_ADD = "/app/rest/catalogue/oeuvre";
+    public static final String APP_REST_CATALOGUE_TITRE = "/app/rest/catalogue/titre";
+    public static final String APP_REST_CATALOGUE_COMPTEUR = "/app/rest/catalogue/compteur";
+
+
     public static final String TYPE_CMS_FR = "FR";
     public static final String TYPE_CMS_ANF = "ANF";
 
@@ -268,5 +274,45 @@ public class CatalogueResourceTest extends RestResourceTest {
 
     }
 
+    @Test
+    public void getTitresByProgramme() throws Exception {
+
+        String titre = "wap";
+        mockMvc.perform(get(APP_REST_CATALOGUE_TITRE + "?q=" + titre +
+                "&typeCMS=" + TYPE_CMS_FR +
+                "&displayOeuvreNonEligible="+false
+        )
+                .contentType(contentType))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].value", is("WAP")));
+    }
+
+    @Test
+    public void compteurByCriteria() throws Exception {
+
+        catalogueCritereRecherche.setTypeCMS(TYPE_CMS_ANF);
+        catalogueCritereRecherche.setDisplayOeuvreNonEligible(false);
+
+        mockMvc.perform(post(APP_REST_CATALOGUE_COMPTEUR)
+                .content(this.json(catalogueCritereRecherche))
+                .contentType(contentType))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$['TYPE_INSCRIPTION'].[0]['code']", is("Automatique")))
+                .andExpect(jsonPath("$['TYPE_INSCRIPTION'].[0]['value']", is(9)))
+                .andExpect(jsonPath("$['TYPE_UTILISATION'].[0]['code']", is("PHONOFR")))
+                .andExpect(jsonPath("$['TYPE_UTILISATION'].[0]['value']", is(9)));
+
+        catalogueCritereRecherche.setDisplayOeuvreNonEligible(true);
+
+        mockMvc.perform(post(APP_REST_CATALOGUE_COMPTEUR)
+                .content(this.json(catalogueCritereRecherche))
+                .contentType(contentType))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$['TYPE_INSCRIPTION'].[0]['code']", is("Automatique")))
+                .andExpect(jsonPath("$['TYPE_INSCRIPTION'].[0]['value']", is(11)))
+                .andExpect(jsonPath("$['TYPE_UTILISATION'].[0]['code']", is("PHONOFR")))
+                .andExpect(jsonPath("$['TYPE_UTILISATION'].[0]['value']", is(11)));
+
+    }
 
 }
