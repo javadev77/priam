@@ -33,7 +33,7 @@ public class FlatFileWriterConfig {
     CatalogueCmsDao catalogueCmsDao;
 
     private String head() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.FRANCE);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.FRANCE);
         return       "#-------------------------------------------------------------------------------------------------------------------;;\n" +
                      "# Fichier a destination de OCTAV;;\n"+
                      "# en provenance de PRIAM pour reader PARTICIPANTS FRA;;\n"+
@@ -46,7 +46,7 @@ public class FlatFileWriterConfig {
     }
 
     private String foot(Long lignes) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.FRANCE);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.FRANCE);
         return
                 "#FIN;;\n" +
                 "#" + dateFormat.format(new Date())  + "\n" +
@@ -76,13 +76,13 @@ public class FlatFileWriterConfig {
         DelimitedLineAggregator<CatalogueCms> lineAggregator = new DelimitedLineAggregator<>();
         lineAggregator.setDelimiter(";");
 
-        FieldExtractor<CatalogueCms> fieldExtractor = createStudentFieldExtractor();
+        FieldExtractor<CatalogueCms> fieldExtractor = createExtractor();
         lineAggregator.setFieldExtractor(fieldExtractor);
 
         return lineAggregator;
     }
 
-    private FieldExtractor<CatalogueCms> createStudentFieldExtractor() {
+    private FieldExtractor<CatalogueCms> createExtractor() {
         BeanWrapperFieldExtractor<CatalogueCms> extractor = new BeanWrapperFieldExtractor<>();
         extractor.setNames(new String[] {"ide12", "cdeTypIde12", "datConslt"});
         return extractor;
