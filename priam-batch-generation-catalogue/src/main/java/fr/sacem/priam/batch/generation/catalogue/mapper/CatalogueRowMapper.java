@@ -10,7 +10,8 @@ public class CatalogueRowMapper extends AbstractCatalogueRowMapper {
 
     @Override
     public CatalogueRdoCsv mapRow(ResultSet resultSet, int i) throws SQLException {
-        catalogueRdo.setIde12(resultSet.getLong("IDE12"));
-        return catalogueRdo;
+        CatalogueRdoCsv catalogueRdoCsv = super.mapRow(resultSet, i);
+        catalogueRdoCsv.setIde12(resultSet.getLong("IDE12"));
+        return catalogueRdoCsv;
     }
 }

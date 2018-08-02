@@ -1,7 +1,8 @@
 package fr.sacem.priam.batch.generation.catalogue.writer;
 
 import fr.sacem.priam.batch.common.domain.Admap;
-import fr.sacem.priam.batch.common.domain.CatalogueRdoCsv;;
+import fr.sacem.priam.batch.generation.catalogue.dao.CatalogueCmsDao;
+import fr.sacem.priam.batch.generation.catalogue.domain.CatalogueCmsGenerated;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor;
@@ -34,56 +35,55 @@ public class FlatFileWriterConfig {
     private String head() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.FRANCE);
         return       "#-------------------------------------------------------------------------------------------------------------------;;\n" +
-                     "# Fichier a destination de OCTAV;;\n"+
-                     "# en provenance de PRIAM pour reader PARTICIPANTS FRA;;\n"+
+                     "# FICHIER CMS RDO "+" ;;;;;\n"+
                      "#-------------------------------------------------------------------------------------------------------------------;;\n"+
-                     "# JJ/MM/AAAA HH:MM - Auteur - Objet;;\n"+
+                     "# JJ/MM/AAAA HH:MM - Auteur - Objet;;;;;\n"+
                      "#-------------------------------------------------------------------------------------------------------------------;;\n"+
-                     "# " + dateFormat.format(new Date()) + " - PRIAM - Creation\n"+
+                     "# " + dateFormat.format(new Date()) + " - PRIAM - Catalogue\n"+
                      "#DEBUT=====================================================================\n"+
-                     "#IDE12;CDETYPIDE12;DATCONSLT";
+                     "#typeCms;ide12;Titre;Participant;Role;";
     }
 
     private String foot(Long lignes) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.FRANCE);
         return
-                "#FIN;;\n" +
+                "#FIN;;;;;\n" +
                 "#" + dateFormat.format(new Date())  + "\n" +
                 "# Nbr lignes de donnees       = " + lignes;
     }
 
-    @Bean(name = "csvFileWriter")
-    ItemWriter<CatalogueRdoCsv> databaseCsvItemWriter(Environment environment) {
-        FlatFileItemWriter<CatalogueRdoCsv> csvFileWriter = new ParticipantsReqCsvFileItemWriter();
+    @Bean(name = "csvCatalogueFileWriter")
+    ItemWriter<CatalogueCmsGenerated> databaseCsvItemWriter(Environment environment) {
+        FlatFileItemWriter<CatalogueCmsGenerated> csvFileWriter = new CatalogueCsvFileItemWriter();
 
 
         StringHeaderWriter headerWriter = new StringHeaderWriter(head());
         csvFileWriter.setHeaderCallback(headerWriter);
         csvFileWriter.setFooterCallback(writer -> writer.write(foot(catalogueCmsDao.countNbLignes("FR"))));
 
-        String fileName = "FF_PRIAM_PARTICIPANTS_FRA_REQ_"
+        String fileName = "FF_PRIAM_CATALOGUE_FRA_"
                 + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".csv";
         csvFileWriter.setResource(new FileSystemResource(admap.getOutputFile() + fileName));
 
-        LineAggregator<CatalogueRdoCsv> lineAggregator = createCatalogueCmsLineAggregator();
+        LineAggregator<CatalogueCmsGenerated> lineAggregator = createCatalogueCmsLineAggregator();
         csvFileWriter.setLineAggregator(lineAggregator);
 
         return csvFileWriter;
     }
 
-    private LineAggregator<CatalogueRdoCsv> createCatalogueCmsLineAggregator() {
-        DelimitedLineAggregator<CatalogueRdoCsv> lineAggregator = new DelimitedLineAggregator<>();
+    private LineAggregator<CatalogueCmsGenerated> createCatalogueCmsLineAggregator() {
+        DelimitedLineAggregator<CatalogueCmsGenerated> lineAggregator = new DelimitedLineAggregator<>();
         lineAggregator.setDelimiter(";");
 
-        FieldExtractor<CatalogueRdoCsv> fieldExtractor = createStudentFieldExtractor();
+        FieldExtractor<CatalogueCmsGenerated> fieldExtractor = createStudentFieldExtractor();
         lineAggregator.setFieldExtractor(fieldExtractor);
 
         return lineAggregator;
     }
 
-    private FieldExtractor<CatalogueRdoCsv> createStudentFieldExtractor() {
-        BeanWrapperFieldExtractor<CatalogueRdoCsv> extractor = new BeanWrapperFieldExtractor<>();
-        extractor.setNames(new String[] {"ide12", "cdeTypIde12", "datConslt"});
+    private FieldExtractor<CatalogueCmsGenerated> createStudentFieldExtractor() {
+        BeanWrapperFieldExtractor<CatalogueCmsGenerated> extractor = new BeanWrapperFieldExtractor<>();
+        extractor.setNames(new String[] {"ide12"});
         return extractor;
     }
 }
