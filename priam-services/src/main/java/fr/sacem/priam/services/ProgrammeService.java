@@ -122,7 +122,7 @@ public class ProgrammeService {
 			transactionManager.rollback(ts);
 		} finally {
 			lock.unlock();
-			System.out.println("I'm finish wating for lock");
+
 		}
 
 

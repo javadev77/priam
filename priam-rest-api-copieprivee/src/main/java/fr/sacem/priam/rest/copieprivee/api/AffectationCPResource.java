@@ -26,6 +26,9 @@ import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -74,6 +77,9 @@ public class AffectationCPResource {
     @Autowired
     private FichierDao fichierDao;
 
+    @Autowired
+    private PlatformTransactionManager transactionManager;
+
 
     @RequestMapping(value = "programme/affectation",
             method = RequestMethod.PUT,
@@ -81,39 +87,54 @@ public class AffectationCPResource {
             produces = MediaType.APPLICATION_JSON_VALUE)
     //@LogFichier(event = TypeLog.AFFECTATION_DESAFFECTATION)
     public ProgrammeDto affecterFichiers (@RequestBody AffectationDto affectationDto, UserDTO currentUser) {
-        String numProg=affectationDto.getNumProg();
-        ProgrammeDto programmeDto =  programmeViewDao.findByNumProg(numProg);
-        List<Fichier> fichiers = affectationUtil.getFichiersAffectes(affectationDto);
+        ProgrammeDto programmeDto = null;
+        TransactionStatus ts = transactionManager.getTransaction(new DefaultTransactionDefinition());
+        try {
 
-        List<Fichier> fichiersAvantAffectation = getListFichierByIdFichier(affectationDto.getFichersAvantAffectation());
-        String listNomFichiersAvantAffectation = getListNomFichier(fichiersAvantAffectation);
+            String numProg = affectationDto.getNumProg();
 
-
-        if(fichiers == null || fichiers.isEmpty()) {
-            JournalAffectationBuilder journalAffectationBuilder = new JournalAffectationBuilder();
-            Journal journal = journalAffectationBuilder.create(numProg, listNomFichiersAvantAffectation, fichiers, currentUser.getUserId());
-            journalDao.save(journal);
-
-            return programmeDto;
-        }
-
-        if(!Strings.isNullOrEmpty(numProg)){
-            //fichierService.majFichiersAffectesAuProgramme(numProg, fichiers, currentUser.getDisplayName());
             programmeDto = programmeViewDao.findByNumProg(numProg);
+            List<Fichier> fichiers = affectationUtil.getFichiersAffectes(affectationDto);
+
+            List<Fichier> fichiersAvantAffectation = getListFichierByIdFichier(affectationDto.getFichersAvantAffectation());
+            String listNomFichiersAvantAffectation = getListNomFichier(fichiersAvantAffectation);
+
+
+            if(fichiers == null || fichiers.isEmpty()) {
+                JournalAffectationBuilder journalAffectationBuilder = new JournalAffectationBuilder();
+                Journal journal = journalAffectationBuilder.create(numProg, listNomFichiersAvantAffectation, fichiers, currentUser.getUserId());
+                journalDao.save(journal);
+
+                transactionManager.commit(ts);
+
+                return programmeDto;
+            }
+
+            if(!Strings.isNullOrEmpty(numProg)){
+                programmeDto = programmeViewDao.findByNumProg(numProg);
+            }
+
+            Programme programme = programmeDao.findByNumProg(numProg);
+            programme.setStatutEligibilite(StatutEligibilite.EN_COURS_DESAFFECTATION);
+
+            programmeDao.saveAndFlush(programme);
+
+            transactionManager.commit(ts);
+
+
+            launchJobAffectation(numProg, fichiers,  currentUser, listNomFichiersAvantAffectation);
+
+        }catch (Exception ex) {
+            LOGGER.error("Erreur lors l'affectation du programme ", ex);
+            transactionManager.rollback(ts);
         }
 
-        Programme programme = programmeDao.findByNumProg(numProg);
-        programme.setStatutEligibilite(StatutEligibilite.EN_COURS_DESAFFECTATION);
-
-        programmeDao.saveAndFlush(programme);
-
-        launchJobAffectation(programmeDto, fichiers,  currentUser, listNomFichiersAvantAffectation);
 
 
         return programmeDto;
     }
 
-    private void launchJobAffectation(ProgrammeDto programmeDto, List<Fichier> fichiers, UserDTO userDTO, String listNomFichiersAvantAffectation) {
+    private void launchJobAffectation(String numProg, List<Fichier> fichiers, UserDTO userDTO, String listNomFichiersAvantAffectation) {
         //lancer le job
         LOGGER.info("====== Lancement du job Affectation CP ======");
 
@@ -121,7 +142,7 @@ public class AffectationCPResource {
 
             Map<String, JobParameter> jobParametersMap = new HashMap<>();
             jobParametersMap.put("time", new JobParameter(System.currentTimeMillis()));
-            jobParametersMap.put("numProg", new JobParameter(programmeDto.getNumProg()));
+            jobParametersMap.put("numProg", new JobParameter(numProg));
             jobParametersMap.put("currentUser" , new JobParameter(userDTO.getDisplayName()));
             List<Long> collectedIds = fichiers.stream().map(Fichier::getId).collect(Collectors.toList());
 
@@ -152,10 +173,22 @@ public class AffectationCPResource {
     public ProgrammeDto deaffecterFichiers (@RequestBody DesaffectationDto desaffectationDto, UserDTO userDTO){
         LOGGER.info("desaffecterFichiers() ==> numProg=" + desaffectationDto.getNumProg());
 
-        Programme programme = programmeDao.findByNumProg(desaffectationDto.getNumProg());
+        TransactionStatus ts = transactionManager.getTransaction(new DefaultTransactionDefinition());
+        try {
 
-        programme.setStatutEligibilite(StatutEligibilite.EN_COURS_DESAFFECTATION);
-        programmeDao.saveAndFlush(programme);
+            Programme programme = programmeDao.findByNumProg(desaffectationDto.getNumProg());
+
+            programme.setStatutEligibilite(StatutEligibilite.EN_COURS_DESAFFECTATION);
+            programmeDao.saveAndFlush(programme);
+
+            transactionManager.commit(ts);
+
+        }catch (Exception ex) {
+            LOGGER.error("Erreur lors du commit de la transaction !!! ", ex);
+            transactionManager.rollback(ts);
+        }
+
+
 
         //lancer le job
         LOGGER.info("====== Lancement du job desaffectation CP ======");
