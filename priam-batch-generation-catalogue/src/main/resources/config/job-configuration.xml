@@ -20,11 +20,12 @@
                         reader="readerPriamGenerationCatalogueFr"
                         writer="csvCatalogueFileWriter"
                         commit-interval="1000">
+                        <listeners>
+                            <listener ref="listener"></listener>
+                        </listeners>
                 </chunk>
             </tasklet>
-            <listeners>
-                <listener ref="listener"></listener>
-            </listeners>
+
         </step>
         <!--<step id="GenerationCatalogueAnf">
             <tasklet>
@@ -55,9 +56,9 @@
         <property name="sortKey" value="IDE12"/>
     </bean>
 
-    <bean id="catalogueRdoRowMapper" class="fr.sacem.priam.batch.generation.catalogue.mapper.CatalogueRowMapper"></bean>
+    <bean id="catalogueRdoRowMapper" class="fr.sacem.priam.batch.generation.catalogue.mapper.GenerationRowMapper"></bean>
 
-    <bean id="listener" class="fr.sacem.priam.batch.generation.catalogue.listener">
+    <bean id="listener" class="fr.sacem.priam.batch.generation.catalogue.listener.StepBeginGenerationCatalogueFraListener">
 
     </bean>
 
