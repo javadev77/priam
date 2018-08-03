@@ -8,11 +8,13 @@ import java.sql.SQLException;
 
 public class AbstractCatalogueRowMapper implements RowMapper<CatalogueRdoCsv> {
 
-    protected CatalogueRdoCsv catalogueRdo = new CatalogueRdoCsv();
+
 
     @Override
     public CatalogueRdoCsv mapRow(ResultSet resultSet, int i) throws SQLException {
+        CatalogueRdoCsv catalogueRdo = new CatalogueRdoCsv();
         catalogueRdo.setTypeCMS(resultSet.getString("TYPE_CMS"));
+
         return catalogueRdo;
     }
 }
