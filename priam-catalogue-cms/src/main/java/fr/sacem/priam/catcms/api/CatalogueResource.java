@@ -9,12 +9,17 @@ import fr.sacem.priam.model.domain.catcms.ParticipantsCatcms;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.*;
 import java.util.*;
 
 import static fr.sacem.priam.common.util.FileUtils.CATALOGUE_OCTAV_TYPE_CMS_ANF;
@@ -35,6 +40,9 @@ public class CatalogueResource {
     @Autowired
     ParticipantsCatcmsDao  participantsCatcmsDao;
 
+    @Autowired
+    EntityManagerFactory emf;
+
 
     @RequestMapping(
             value = "catalogue/search",
@@ -44,7 +52,7 @@ public class CatalogueResource {
     public Page<CatalogueCms> findByCriteria(@RequestBody CatalogueCritereRecherche catalogueCritereRecherche, Pageable pageable) {
 
         Page<CatalogueCms> datas = null;
-        if(catalogueCritereRecherche.isDisplayOeuvreNonEligible()) {
+        /*if(catalogueCritereRecherche.isDisplayOeuvreNonEligible()) {
             datas = catalogueRdoDao.findByCriteriaWithNonEligible(catalogueCritereRecherche.getTypeCMS(),
                     catalogueCritereRecherche.getIde12(),
                     catalogueCritereRecherche.getTitre(),
@@ -73,8 +81,83 @@ public class CatalogueResource {
                     catalogueCritereRecherche.getPeriodeRenouvellementDateFin(),
                     catalogueCritereRecherche.getPeriodeSortieDateFin(), pageable);
 
+        }*/
+
+        EntityManager em = emf.createEntityManager();
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<CatalogueCms> query = builder.createQuery(CatalogueCms.class);
+        Root<CatalogueCms> root = query.from(CatalogueCms.class);
+
+
+        Predicate typeCMSPredicate = builder.equal(root.get("typeCMS"), catalogueCritereRecherche.getTypeCMS());
+        Predicate andPredicateAll = builder.and(typeCMSPredicate);
+
+        if(catalogueCritereRecherche.isDisplayOeuvreNonEligible()) {
+
+            if(catalogueCritereRecherche.getPeriodeSortieDateDebut() != null) {
+                Predicate dateEntree = builder.greaterThanOrEqualTo(root.get("dateSortie"), catalogueCritereRecherche.getPeriodeSortieDateDebut());
+                andPredicateAll = builder.and(dateEntree, andPredicateAll);
+            }
+
+            if(catalogueCritereRecherche.getPeriodeSortieDateFin() != null) {
+                Predicate dateEntree = builder.lessThanOrEqualTo(root.get("dateSortie"), catalogueCritereRecherche.getPeriodeSortieDateFin());
+                andPredicateAll = builder.and(dateEntree, andPredicateAll);
+            }
+        } else {
+            if(catalogueCritereRecherche.getPeriodeEntreeDateFin()== null ||
+                    catalogueCritereRecherche.getPeriodeSortieDateFin() == null){
+                catalogueCritereRecherche.setPeriodeEntreeDateFin(new Date());
+                catalogueCritereRecherche.setPeriodeSortieDateFin(new Date());
+            }
+
+            andPredicateAll = builder.and(
+                    builder.or(
+                        builder.isNull(root.get("dateSortie")), builder.greaterThanOrEqualTo(root.get("dateSortie"), catalogueCritereRecherche.getPeriodeSortieDateFin())
+                    )
+                    ,
+                    andPredicateAll);
+
         }
 
+
+
+        Predicate titrePredicate = null;
+        if(catalogueCritereRecherche.getTitre() != null) {
+            titrePredicate = builder.like(root.get("titre"), "%"+catalogueCritereRecherche.getTitre() + "%");
+            andPredicateAll = builder.and(titrePredicate, andPredicateAll);
+        }
+
+
+        if(catalogueCritereRecherche.getIde12() != null) {
+            Predicate concatPredicate = builder.like(builder.function("CONCAT", String.class, root.get("ide12"), builder.literal("")),
+                    "%" + catalogueCritereRecherche.getIde12() + "%");
+            andPredicateAll = builder.and(concatPredicate, andPredicateAll);
+        }
+
+        if(catalogueCritereRecherche.getPeriodeEntreeDateDebut() != null) {
+            Predicate dateEntree = builder.greaterThanOrEqualTo(root.get("dateEntree"), catalogueCritereRecherche.getPeriodeEntreeDateDebut());
+            andPredicateAll = builder.and(dateEntree, andPredicateAll);
+        }
+
+        if(catalogueCritereRecherche.getPeriodeEntreeDateFin() != null) {
+            Predicate dateEntree = builder.lessThanOrEqualTo(root.get("dateEntree"), catalogueCritereRecherche.getPeriodeEntreeDateFin());
+            andPredicateAll = builder.and(dateEntree, andPredicateAll);
+        }
+
+
+
+
+        query.where(andPredicateAll);
+        TypedQuery<CatalogueCms> finalQuery = em.createQuery(query.select(root));
+
+        finalQuery.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
+        finalQuery.setMaxResults(pageable.getPageSize());
+
+
+        List<CatalogueCms> resultList = finalQuery.getResultList();
+        int totalRows = resultList.size();
+
+        datas = new PageImpl<>(resultList, pageable, totalRows);
 
 
         return datas;
