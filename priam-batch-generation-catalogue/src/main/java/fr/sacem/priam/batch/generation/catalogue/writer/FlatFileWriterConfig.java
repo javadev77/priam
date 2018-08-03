@@ -1,7 +1,7 @@
 package fr.sacem.priam.batch.generation.catalogue.writer;
 
 import fr.sacem.priam.batch.common.domain.Admap;
-import fr.sacem.priam.batch.common.domain.CatalogueRdoCsv;;
+import fr.sacem.priam.batch.common.domain.CatalogueRdoCsv;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor;

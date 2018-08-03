@@ -3,7 +3,7 @@
     <nav class="navbar navbar-default navbar-fixed-top">
 
             <div class="navbar-header">
-              <a class="navbar-brand logo" href="#/" @click="$router.push('listeProg')">
+              <a class="navbar-brand logo" href="#/" @click="$router.push('programme')">
                 <img src="static/images/Logo_Priam.png" width="100px" height="40px" alt="PRIAM"/>
               </a>
             </div>

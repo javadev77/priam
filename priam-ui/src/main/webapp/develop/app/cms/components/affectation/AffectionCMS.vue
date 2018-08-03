@@ -752,7 +752,7 @@
                             //this.initData();
                             //this.rechercher();
 
-                            self.$router.push({name: 'ListePrg'});
+                            self.$router.push({name: 'programme'});
                           })
                           .catch(response => {
                             alert("Erreur technique lors de l'affectation des fichiers au programme !! ");
@@ -806,7 +806,7 @@
                   console.log("Déaffactation ok");
                   this.showModalDesactiver = false;
 
-                  this.$router.push({name: 'ListePrg'});
+                  this.$router.push({name: 'programme'});
 
                 })
                 .catch(response => {
