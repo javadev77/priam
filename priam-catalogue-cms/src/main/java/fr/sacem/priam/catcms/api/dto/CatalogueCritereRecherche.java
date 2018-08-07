@@ -32,6 +32,10 @@ public class CatalogueCritereRecherche {
 
     private boolean displayOeuvreNonEligible;
 
+    private String typeInscription;
+
+    private String typeUtilisation;
+
     public String getTypeCMS() {
         return typeCMS;
     }
@@ -126,6 +130,22 @@ public class CatalogueCritereRecherche {
 
     public void setDisplayOeuvreNonEligible(boolean displayOeuvreNonEligible) {
         this.displayOeuvreNonEligible = displayOeuvreNonEligible;
+    }
+
+    public String getTypeInscription() {
+        return typeInscription;
+    }
+
+    public void setTypeInscription(String typeInscription) {
+        this.typeInscription = typeInscription;
+    }
+
+    public String getTypeUtilisation() {
+        return typeUtilisation;
+    }
+
+    public void setTypeUtilisation(String typeUtilisation) {
+        this.typeUtilisation = typeUtilisation;
     }
 
     public CatalogueCritereRecherche() {

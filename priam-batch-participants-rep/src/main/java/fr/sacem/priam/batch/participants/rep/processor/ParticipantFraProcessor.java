@@ -1,7 +1,7 @@
 package fr.sacem.priam.batch.participants.rep.processor;
 
-import fr.sacem.priam.batch.participants.rep.domaine.Participant;
-import fr.sacem.priam.batch.participants.rep.domaine.StatutRoleParticipant;
+import fr.sacem.priam.batch.participants.rep.domain.Participant;
+import fr.sacem.priam.batch.participants.rep.domain.StatutRoleParticipant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepExecution;

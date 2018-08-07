@@ -14,7 +14,7 @@
         http://www.springframework.org/schema/util/spring-util.xsd">
 
 
-    <context:component-scan base-package="fr.sacem.priam.batch.participants.rep"/>
+    <context:component-scan base-package="fr.sacem.priam.batch.participants.rep, fr.sacem.priam.batch.common"/>
     <context:property-placeholder location="classpath:configuration/application-test.properties"/>
     <util:properties id="envProperties" location="classpath:configuration/application-test.properties"/>
     <import resource="classpath:configuration/job-database-test.xml"/>
@@ -66,7 +66,7 @@
     </job>
 
     <bean id="readerPriamParticipantCsv"
-          class="fr.sacem.priam.batch.participants.rep.reader.CsvMultiResourceItemReader" scope="step">
+          class="fr.sacem.priam.batch.common.reader.CsvMultiResourceItemReader" scope="step">
         <property name="delegate" ref="flatFileItemReader"/>
         <property name="strict" value="false"/>
     </bean>
@@ -83,7 +83,7 @@
                 </property>
                 <property name="fieldSetMapper">
                     <bean class="org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper">
-                        <property name="targetType" value="fr.sacem.priam.batch.participants.rep.domaine.Participant"/>
+                        <property name="targetType" value="fr.sacem.priam.batch.participants.rep.domain.Participant"/>
                         <property name="customEditors">
                             <map>
                                 <entry key="java.time.LocalDateTime">
@@ -303,6 +303,18 @@
     <bean id="participantRepositoryForTest" class="fr.sacem.priam.batch.participants.rep.dao.ParticipantRepositoryForTest">
         <property name="dataSource" ref="dataSource"/>
         <property name="nomTableFichier" value="${nom.table.fichier}"/>
+    </bean>
+
+    <bean id="fichierRepository" class="fr.sacem.priam.batch.common.dao.FichierCatcmsRepositoryImpl">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="nomTableFichier" value="${nom.table.fichier}"/>
+    </bean>
+
+    <bean id="fichierBatchService" class="fr.sacem.priam.batch.common.service.importPenef.FichierBatchServiceImpl">
+        <constructor-arg ref="fichierRepository"/>
+    </bean>
+    <bean id="utilFile" class="fr.sacem.priam.batch.common.util.UtilFile">
+        <property name="fichierBatchService" ref="fichierBatchService"/>
     </bean>
 
     <bean id="jobLauncherTestUtils" class="org.springframework.batch.test.JobLauncherTestUtils"/>

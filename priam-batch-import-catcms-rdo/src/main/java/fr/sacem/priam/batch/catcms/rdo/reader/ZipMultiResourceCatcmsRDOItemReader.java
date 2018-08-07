@@ -81,7 +81,7 @@ public class ZipMultiResourceCatcmsRDOItemReader <T> extends MultiResourceItemRe
                                         && file.getName().startsWith(FileUtils.PREFIX_MAINFRAME_CATALOGUE)) {
 
                                     File fichierEnCoursDeTraitement = new File(rep + file.getName() + FILE_ZIP_EN_COURS_DE_TRAITEMENT);
-//                                    utilFile.suppressionFlag(fichierEnCoursDeTraitement);
+                                    utilFile.suppressionFlag(fichierEnCoursDeTraitement);
                                     LOG.debug("=== renomer le fichier en : "+fichierEnCoursDeTraitement.getName()+" ===");
                                     JobParameter jobParameterFichierZipEnCours = new JobParameter(fichierEnCoursDeTraitement.getAbsolutePath());
                                     JobParameter jobParameterNomFichierOriginal = new JobParameter(file.getName());

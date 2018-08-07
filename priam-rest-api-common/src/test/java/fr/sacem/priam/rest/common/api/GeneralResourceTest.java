@@ -11,6 +11,9 @@ import fr.sacem.priam.rest.common.config.RestResourceTest;
 import fr.sacem.priam.security.model.UserDTO;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
@@ -147,6 +150,20 @@ public class GeneralResourceTest extends RestResourceTest {
       .andExpect(status().isOk())
       .andExpect(jsonPath("$['USER_PAGE_SIZE']", is("25")))
       .andExpect(jsonPath("$['USER_FAMILLE']", is("COPIEPRIV,Copie Privée")));
+  }
+
+  @Test
+  public void getParametrageByUserInexistant() throws Exception {
+
+    TestingAuthenticationToken testingAuthenticationToken  = new TestingAuthenticationToken(new UserDTO("idrissi"), null);
+    SecurityContextHolder.getContext().setAuthentication(testingAuthenticationToken);
+
+    mockMvc.perform(
+            get("/app/rest/general/parametres")
+                    .contentType(contentType)
+                    .principal(testingAuthenticationToken))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$['USER_FAMILLE']", is("ALL,Toutes")));
   }
 
   @Test

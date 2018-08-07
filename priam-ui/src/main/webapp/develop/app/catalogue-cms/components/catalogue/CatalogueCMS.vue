@@ -1,11 +1,11 @@
 <template>
 
   <div>
-    <priam-navbar titre1="Catalogue Musique des Sonorisations" :backButton="false"></priam-navbar>
+    <priam-navbar titre1="Catalogue Musique des Sonorisations":backButton="false"></priam-navbar>
     <app-filtre-catalogue
       :filter="filter"
       :retablir="retablirFiltre"
-      :rechercher="findCatalogueByCriteria"
+      :rechercher="onSearchCatalogue"
     >
     </app-filtre-catalogue>
     <div class="panel panel-default">
@@ -20,6 +20,7 @@
         <div class="result-panel-body panel-body">
 
           <div class="row">
+            <!--<button class="btn btn-default btn-primary pull-right"  type="button" style="width: 120px;" @click="onAjouterOeuvre">Ajouter Oeuvre</button>-->
             <button class="btn btn-default btn-primary pull-right"  type="button" style="width: 120px;" @click="onAjouterOeuvre">Ajouter Oeuvre</button>
           </div>
 
@@ -34,17 +35,67 @@
             </div>
           </div>
 
+          <div class="row">
+            <div class="panel panel-default col-sm-4 sacem-formula" style="margin-top: 23px">
+              <div class="panel-heading">
+                <h5 class="panel-title">
+                  <a>Critères supplémentaires</a>
+                </h5>
+              </div>
+              <div class="panel-collapse sacem-formula" :class="{collapse : isCollapsed}">
+                <div class="panel-body">
+                  <img src="static/images/iconescontextes/ajxrep-search3.gif" alt="">
+                  <span> Type d'inscription</span>
 
-          <priam-grid
-            v-if="catalogueGrid.gridData.content && !dataLoading"
-            :isPaginable="true"
-            :data="catalogueGrid.gridData"
-            :columns="catalogueGrid.gridColumns"
-            noResultText="Aucun résultat."
-            @delete-oeuvre="onDeleteOeuvre"
-            @on-sort="onSort"
-            @load-page="loadPage">
-          </priam-grid>
+
+
+                  <ul style="list-style: none;">
+                    <div class="row">
+                      <div class="spinner" v-if="dataLoadingCompteur">
+                        <div class="rect1"></div>
+                        <div class="rect2"></div>
+                        <div class="rect3"></div>
+                        <div class="rect4"></div>
+                        <div class="rect5"></div>
+                      </div>
+                    </div>
+                    <li v-if="!dataLoadingCompteur" v-for="metric in typeInscription">
+                      <a href="#" @click.prevent="findCatalogueByExtraCriteria(metric.code,null)">{{metric.code}} : (<b>{{metric.value}}</b>)</a>
+                    </li>
+                  </ul>
+
+                  <img src="static/images/iconescontextes/ajxrep-search3.gif" alt="">
+                  <span> Type utilisation générateur</span>
+                  <ul style="list-style: none;">
+
+                    <div class="row">
+                      <div class="spinner" v-if="dataLoadingCompteur">
+                        <div class="rect1"></div>
+                        <div class="rect2"></div>
+                        <div class="rect3"></div>
+                        <div class="rect4"></div>
+                        <div class="rect5"></div>
+                      </div>
+                    </div>
+                    <li v-if="!dataLoadingCompteur" v-for="metric in typeUtilisation">
+                      <a href="#" @click.prevent="findCatalogueByExtraCriteria(null, metric.code)">{{metric.code}} : (<b>{{metric.value}}</b>)</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+              <priam-grid
+                v-if="catalogueGrid.gridData.content && !dataLoading"
+                :isPaginable="true"
+                :data="catalogueGrid.gridData"
+                :columns="catalogueGrid.gridColumns"
+                noResultText="Aucun résultat."
+                @delete-oeuvre="onDeleteOeuvre"
+                @on-sort="onSort"
+                @load-page="loadPage"
+                class="col-sm-20">
+              </priam-grid>
+          </div>
         </div>
       </div>
     </div>
@@ -77,9 +128,12 @@
       </template>
     </modalWithTitle>
 
-    <ecran-modal v-if="showEcranAjoutOeuvreMipsa">
-      <ajouter-oeuvre   slot="body" @cancel="showEcranAjoutOeuvreMipsa = false"></ajouter-oeuvre>
-    </ecran-modal>
+    <!--<ecran-modal v-if="showEcranAjoutOeuvreMipsa">
+      <ajouter-oeuvre :typeCatalogue="filter.typeCMS.value"
+                      slot="body"
+                      @ajoutOeuvre="onActionAjouterOeuvre"
+                      @cancel="showEcranAjoutOeuvreMipsa = false"></ajouter-oeuvre>
+    </ecran-modal>-->
   </div>
 </template>
 
@@ -91,8 +145,6 @@
   import FiltreCatalogue from './FiltreCatalogueCMS.vue';
 
   import EcranModal from '../../../common/components/ui/EcranModal.vue';
-  import AjouterOeuvre from './oeuvre/AjouterOeuvre.vue';
-
 
   export default {
 
@@ -161,7 +213,7 @@
 
                 toText : function(entry) {
                   var result = entry;
-                  if(result !=undefined)
+                  if(result !== undefined)
                     return result ;
                   else
                     return "";
@@ -417,7 +469,7 @@
         },
 
         filter : {
-          typeCMS : {id :'FRA', value : 'CMS France'},
+          typeCMS : {id :'FR', value : 'CMS France'},
           ide12: null,
           titre: null,
           participant:null,
@@ -433,11 +485,13 @@
             dateDebut: null,
             dateFin: null
           },
-          displayOeuvreNonEligible: false
+          displayOeuvreNonEligible: false,
+          typeInscription: null,
+          typeUtilisation: null
         },
 
         currentFilter : {
-          typeCMS : {id : 'FRA', value : 'CMS France'},
+          typeCMS : {id : 'FR', value : 'CMS France'},
           ide12: null,
           titre: null,
           participant:null,
@@ -447,7 +501,9 @@
           periodeRenouvellementDateFin: null,
           periodeSortieDateDebut: null,
           periodeSortieDateFin: null,
-          displayOeuvreNonEligible: false
+          displayOeuvreNonEligible: false,
+          typeInscription: null,
+          typeUtilisation: null
         },
 
         defaultPageable : {
@@ -462,7 +518,17 @@
         deletedOeuvre : {
           raisonSortie: ''
         },
+        isCollapsed : false,
 
+        typeInscription : {
+          code: '',
+          value: ''
+        },
+        typeUtilisation : {
+          code: '',
+          value: ''
+        },
+        dataLoadingCompteur: false
       }
     },
 
@@ -474,11 +540,21 @@
           url : process.env.CONTEXT_ROOT_PRIAM_CAT_RDO + 'app/rest/catalogue/search?page={page}&size={size}&sort={sort},{dir}'},
         deleteOeuvreCatalogueRdo : {
           method : 'DELETE',
-          url : process.env.CONTEXT_ROOT_PRIAM_CAT_RDO + 'app/rest/catalogue/oeuvre/delete/{id}'
+          url : process.env.CONTEXT_ROOT_PRIAM_CAT_RDO + 'app/rest/catalogue/oeuvre/{id}'
+        },
+
+        ajouterOeuvreCatalogueRdo : {
+          method : 'POST',
+          url : process.env.CONTEXT_ROOT_PRIAM_CAT_RDO + 'app/rest/catalogue/oeuvre'
+        },
+        compteurCatalogueRdo : {
+          method : 'POST',
+          url : process.env.CONTEXT_ROOT_PRIAM_CAT_RDO + 'app/rest/catalogue/compteur'
         }
       }
       this.resource= this.$resource('', {}, customActions);
       this.findCatalogueByCriteria();
+      this.calculerCompteurs();
     },
 
     methods : {
@@ -486,13 +562,7 @@
 
 
       findCatalogueByCriteria() {
-        if(this.filter.typeCMS.id === 'FRA'){
-          this.currentFilter.typeCMS = 'FR'
-        } else {
-          this.currentFilter.typeCMS = 'ANF'
-        }
-
-
+        this.currentFilter.typeCMS = this.filter.typeCMS.id;
         this.currentFilter.ide12 = this.filter.ide12;
         this.currentFilter.titre = this.filter.titre;
         this.currentFilter.participant = this.filter.participant;
@@ -503,8 +573,14 @@
         this.currentFilter.periodeSortieDateDebut = this.filter.periodeSortieFilter.dateDebut;
         this.currentFilter.periodeSortieDateFin = this.filter.periodeSortieFilter.dateFin;
         this.currentFilter.displayOeuvreNonEligible = this.filter.displayOeuvreNonEligible;
+        this.currentFilter.typeInscription = this.filter.typeInscription;
+        this.currentFilter.typeUtilisation = this.filter.typeUtilisation;
+
+
 
         this.dataLoading = true;
+        debugger;
+
         this.resource.searchCatalogueRdo({
           page : this.defaultPageable.page - 1,
           size : this.defaultPageable.size,
@@ -523,6 +599,18 @@
           .catch(error => {
             alert("Erreur lors de la recherche !!! ")
           });
+      },
+
+      findCatalogueByExtraCriteria(typeInscriptionCriteria, typeUtilisationCriteria){
+
+        this.filter.typeInscription = typeInscriptionCriteria;
+        this.filter.typeUtilisation = typeUtilisationCriteria;
+        this.findCatalogueByCriteria();
+      },
+
+      onSearchCatalogue(){
+        this.findCatalogueByExtraCriteria(null, null);
+        this.calculerCompteurs();
       },
 
 
@@ -548,13 +636,14 @@
       },
 
       onAjouterOeuvre() {
-          this.showEcranAjoutOeuvreMipsa = false;
-
+          /*this.showEcranAjoutOeuvreMipsa = true;*/
+        this.$router.push({ name: 'ajout-oeuvre', params: { typeCatalogue: this.filter.typeCMS.id }});
+        /*this.$router.push({ name: 'ajout-oeuvre'});*/
       },
 
       retablirFiltre() {
         this.filter = {
-          typeCMS : {'id' :'FRA', 'value' : 'CMS France'},
+          typeCMS : {'id' :'FR', 'value' : 'CMS France'},
           ide12: null,
           titre: null,
           participant: null,
@@ -570,10 +659,12 @@
             dateDebut: null,
             dateFin: null
           },
-          displayOeuvreNonEligible: false
+          displayOeuvreNonEligible: false,
+          typeInscription: null,
+          typeUtilisation: null
         }
-
         this.findCatalogueByCriteria();
+        this.calculerCompteurs();
       },
 
       onSort(currentPage, pageSize, sort) {
@@ -605,6 +696,50 @@
         this.defaultPageable.size = size;
         let pageSize = this.defaultPageable.size;
         this.launchRequest(pageNum, pageSize, sort.property, sort.direction);
+      },
+
+
+        onActionAjouterOeuvre(selectedOeuvre) {
+          console.log("Selected Oeuvre ==> " + selectedOeuvre.ide12);
+          console.log("\t\t Role Size==> " + selectedOeuvre.tiersList.length);
+
+
+          //this.showEcranAjoutOeuvreMipsa = false;
+
+
+        let participantsList = selectedOeuvre.tiersList.map(tiers => [{
+          typeCMS : this.filter.value,
+          ide12:  selectedOeuvre.ide12,
+          role : tiers.oeuvreroleSacem,
+          nomParticpant : tiers.nom
+        }]);
+        debugger;
+         let oeuvreCatalogue = {
+           typeCMS : this.filter.value,
+           ide12 : selectedOeuvre.ide12,
+           typUtiGen : 'PHONOFR',
+           typeInscription : 'Manuelle',
+           titre : selectedOeuvre.titre,
+           participantsCatcms : participantsList
+         }
+
+         this.resource.ajouterOeuvreCatalogueRdo(oeuvreCatalogue)
+           .then(resp => {
+              console.log(resp)
+           });
+      },
+
+      calculerCompteurs: function () {
+          this.dataLoadingCompteur = true;
+        this.resource.compteurCatalogueRdo(this.currentFilter)
+          .then(response => {
+            return response.json();
+          }).then(data => {
+          this.typeInscription = data.TYPE_INSCRIPTION;
+          this.typeUtilisation = data.TYPE_UTILISATION;
+          this.dataLoadingCompteur = false;
+        })
+        ;
       }
     },
 
@@ -614,8 +749,7 @@
       'priam-navbar' : PriamNavbar,
       'modalWithTitle': ModalWithTitle,
       appFiltreCatalogue : FiltreCatalogue,
-      ecranModal : EcranModal,
-      ajouterOeuvre : AjouterOeuvre
+      ecranModal : EcranModal
     }
   }
 

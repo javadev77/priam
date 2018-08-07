@@ -42,6 +42,7 @@ public class ConfigurationPriamProd {
                 .driverClassName(defaultProps.getProperty("spring.datasource.driver-class-name"))
                 .build();
     }
+
     @Bean
     public Admap admap(){
         Admap admap = new Admap();

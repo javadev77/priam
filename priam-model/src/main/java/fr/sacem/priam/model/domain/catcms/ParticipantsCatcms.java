@@ -1,7 +1,5 @@
 package fr.sacem.priam.model.domain.catcms;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
@@ -11,11 +9,7 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "PRIAM_CATCMS_PARTICIPANTS")
-@JsonSerialize(using = ParticipantsSerializer.class)
 public class ParticipantsCatcms implements Serializable {
-
-//    @EmbeddedId
-//    ParticipantsPK id;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

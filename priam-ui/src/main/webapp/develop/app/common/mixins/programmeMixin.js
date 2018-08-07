@@ -8,8 +8,9 @@ module.exports = {
     hasRight(right) {
       let rights = this.$store.getters.getCurrentUser.rights;
       var rightEle = rights.find(function (elem) {
-        return elem == right;
+        return elem === right;
       });
+      debugger;
       return rightEle !== undefined;
     }
   }

@@ -671,7 +671,7 @@
               //this.initData();
               //this.rechercher();
 
-              this.$router.push({ name: 'ListePrg'});
+              this.$router.push({ name: 'programme'});
           })
           .catch(response => {
               debugger;
@@ -697,7 +697,7 @@
                 this.rechercher();
                 this.$store.dispatch('toutDesactiver', false);*/
 
-                this.$router.push({ name: 'ListePrg'});
+                this.$router.push({ name: 'programme'});
               })
               .catch(response => {
                 alert("Erreur technique lors de désaffectation des fichiers du programme !! ");

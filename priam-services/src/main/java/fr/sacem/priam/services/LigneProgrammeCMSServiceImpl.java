@@ -17,6 +17,7 @@ import fr.sacem.priam.model.util.TypeUtilisationPriam;
 import fr.sacem.priam.security.model.UserDTO;
 import fr.sacem.priam.services.api.LigneProgrammeService;
 import fr.sacem.priam.services.cms.LigneProgrammeCMSService;
+import fr.sacem.priam.services.dto.ValdierSelectionProgrammeInput;
 import fr.sacem.priam.services.journal.annotation.TypeLog;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,11 +112,11 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
             String typeUtilCode = programme.getTypeUtilisation().getCode();
             Sort.Direction direction = sortBy.getDirection();
             if (TypeUtilisationEnum.CMS_FRA.getCode().equals(typeUtilCode)) {
-                sort = JpaSort.unsafe(direction, "sum(mtEdit)");
+                sort = JpaSort.unsafe(direction, "mtEdit");
             }
 
             if (TypeUtilisationEnum.CMS_ANT.getCode().equals(typeUtilCode)) {
-                sort = JpaSort.unsafe(direction, "sum(nbrDifEdit)");
+                sort = JpaSort.unsafe(direction, "nbrDifEdit");
             }
         }
 
@@ -192,6 +193,11 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
         }
 
         ligneProgrammeCMSDao.flush();
+    }
+
+    @Override
+    public void enregistrerEdition(ValdierSelectionProgrammeInput input, UserDTO userDTO) {
+
     }
 
     @Override

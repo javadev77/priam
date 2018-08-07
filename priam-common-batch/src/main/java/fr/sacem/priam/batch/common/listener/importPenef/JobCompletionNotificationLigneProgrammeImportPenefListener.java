@@ -1,10 +1,9 @@
 package fr.sacem.priam.batch.common.listener.importPenef;
 
-import fr.sacem.priam.batch.common.service.importPenef.FichierBatchServiceImpl;
 import fr.sacem.priam.batch.common.dao.FichierRepository;
+import fr.sacem.priam.batch.common.service.importPenef.FichierBatchServiceImpl;
 import fr.sacem.priam.batch.common.util.UtilFile;
 import fr.sacem.priam.batch.common.util.exception.PriamValidationException;
-import fr.sacem.priam.common.TypeUtilisationEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.BatchStatus;
@@ -86,7 +85,8 @@ public class JobCompletionNotificationLigneProgrammeImportPenefListener extends 
                     LOG.debug("Pas de excution context pour le step en cours : " + myStepExecution.getStepName());
                 }
 
-                if(idFichier != null && TypeUtilisationEnum.CMS_FRA.getCode().equalsIgnoreCase(typeFichier)) {
+                if(idFichier != null && ("CMS".equalsIgnoreCase(typeFichier) || "CP".equalsIgnoreCase(typeFichier))) {
+
                     fichierRepository.supprimerLigneProgrammeParIdFichier((Long)idFichier.getValue());
                 }
 
@@ -139,7 +139,8 @@ public class JobCompletionNotificationLigneProgrammeImportPenefListener extends 
                 }
             }
 
-            if(idFichier != null && TypeUtilisationEnum.CMS_FRA.getCode().equalsIgnoreCase(typeFichier)) {
+
+            if(idFichier != null && ("CMS".equalsIgnoreCase(typeFichier) || "CP".equalsIgnoreCase(typeFichier))) {
                 fichierRepository.supprimerLigneProgrammeParIdFichier(idFile);
             }
         }

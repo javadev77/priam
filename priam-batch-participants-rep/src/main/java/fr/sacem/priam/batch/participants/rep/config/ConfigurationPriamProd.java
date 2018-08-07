@@ -14,7 +14,7 @@ import java.util.Properties;
  * Created by fandis on 09/10/2017.
  */
 @Configuration
-@ComponentScan(basePackages = {"fr.sacem.priam.batch.participants.rep"})
+@ComponentScan(basePackages = {"fr.sacem.priam.batch.participants.rep", "fr.sacem.priam.batch.common"})
 @Profile("production")
 @PropertySource("classpath:config/application-production.properties")
 @ImportResource(value = "classpath:config/job-configuration.xml")
@@ -23,6 +23,7 @@ public class ConfigurationPriamProd {
     private Enum configurationFromAdMap = EnvConstants.BATCH_CONFIG_PROPERTIES;
     private String inputDirectory = String.valueOf(EnvConstants.PARTICIPANTS_REP_OCTAV_CSV_INPUT_DIR);
     private String outputDirectory = String.valueOf(EnvConstants.PARTICIPANTS_REP_OCTAV_CSV_ARCHIVES);
+    private String prefixFileName = String.valueOf(EnvConstants.PATTERN_FILE_NAME);
 
     @Bean
     public DataSource dataSource() {
@@ -48,6 +49,7 @@ public class ConfigurationPriamProd {
 
         admap.setInputFile(inputDirectory);
         admap.setOutputFile(outputDirectory);
+        admap.setPatternFileName(prefixFileName);
 
         return admap;
     }

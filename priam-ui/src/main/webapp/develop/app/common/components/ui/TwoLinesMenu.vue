@@ -5,7 +5,7 @@
 
         <template v-for="menu in menuData">
           <!--<router-link  :to="{name : routeName(menu)}" :activeClass="menuClass(menu)" tag="li" @click.native="selectMenu(menu)"><a >{{ menu.label }}</a></router-link>-->
-          <li :class="menuClass(menu)">
+          <li v-if="menu.authorized" :class="menuClass(menu)">
             <a @click="selectMenu(menu)">{{ menu.label }}</a>
           </li>
         </template>
@@ -19,7 +19,7 @@
 
         <template v-for="item in menu.items">
 
-          <li :class="menuClass2(menu, item)">
+          <li v-if="menu.authorized && item.authorized"  :class="menuClass2(menu, item)">
             <a @click="selectItem(menu, item)">{{ item.label }}</a>
           </li>
         </template>
@@ -108,6 +108,7 @@
           },
 
           selectMenu(menu) {
+              debugger;
               function _hasSubItems(menu) {
                 return menu && (menu.items instanceof Array) && menu.items.length > 0;
               }
@@ -120,9 +121,9 @@
               debugger;
               if(item != null) {
                 this.activeSubMenu = item.id;
-                this.$router.push({name : item.name})
+                this.$router.push({name : item.routeName})
               } else {
-                this.$router.push({name : menu.name})
+                this.$router.push({name : menu.routeName})
               }
 
               this.activeMenu = menu.id;
@@ -130,7 +131,7 @@
           },
 
           routeName(menu) {
-              return menu.name;
+              return menu.routeName;
           }
       }
 

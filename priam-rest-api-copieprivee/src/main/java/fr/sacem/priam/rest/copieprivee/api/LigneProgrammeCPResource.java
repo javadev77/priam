@@ -86,14 +86,14 @@ public class LigneProgrammeCPResource extends LigneProgrammeResource {
                     consumes = MediaType.APPLICATION_JSON_VALUE)
     @Override
     public List<String> modifierSelectionTemporaire(@RequestBody ValdierSelectionProgrammeInput input, UserDTO userDTO) {
-        super.modifierSelectionTemporaire(input, userDTO);
+        //super.modifierSelectionTemporaire(input, userDTO);
         String numProg = input.getNumProg();
-        if (!input.getSelected().isEmpty()) {
-            ligneProgrammeCPService.modifierDurOrNbrDifTemporaire(numProg, input.getSelected(), Boolean.TRUE, userDTO);
-        }
+        //if (!input.getSelected().isEmpty()) {
+            ligneProgrammeCPService.modifierDurOrNbrDifTemporaire(numProg, input.getSelected(), input.getUnselected(), userDTO);
+        /*}
         if (!input.getUnselected().isEmpty()) {
             ligneProgrammeCPService.modifierDurOrNbrDifTemporaire(numProg, input.getUnselected(), Boolean.FALSE, userDTO);
-        }
+        }*/
 
         return new ArrayList<>();
     }

@@ -8,7 +8,7 @@ import org.springframework.context.annotation.*;
 import javax.sql.DataSource;
 
 @Configuration
-@ComponentScan(basePackages = {"fr.sacem.priam.batch.participants.rep"})
+@ComponentScan(basePackages = {"fr.sacem.priam.batch.participants.rep", "fr.sacem.priam.batch.common"})
 @Profile({"local"})
 @PropertySource("classpath:config/application-local.properties")
 @ImportResource(value = "classpath:config/job-configuration.xml")
@@ -31,6 +31,9 @@ public class ConfigurationPriamLocal {
     @Value("${output.archives}")
     String outputDirectory;
 
+    @Value("${pattern.file.name}")
+    String patternFileName;
+
     @Bean
     public DataSource dataSource() {
         return DataSourceBuilder
@@ -47,6 +50,7 @@ public class ConfigurationPriamLocal {
         Admap admap = new Admap();
         admap.setInputFile(inputDirectory);
         admap.setOutputFile(outputDirectory);
+        admap.setPatternFileName(patternFileName);
         return admap;
     }
 
