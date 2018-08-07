@@ -21,7 +21,6 @@ import java.util.Set;
  * Created by benmerzoukah on 09/05/2017.
  */
 @Lazy
-@Transactional
 public interface FichierDao extends JpaRepository<Fichier, Long> {
     
     @Transactional(readOnly = true)
@@ -76,14 +75,12 @@ public interface FichierDao extends JpaRepository<Fichier, Long> {
             "AND f.statut=:status")
     List<FileDto> findFichiersAffecteByIdProgramme(@Param("numProg") String numProg, @Param("status") Status status);
     
-    
-    @Transactional
+
     @Modifying(clearAutomatically = true)
     @Query("UPDATE Fichier f SET f.programme.numProg = NULL, f.statut =:status WHERE f.programme.numProg = :numProg")
     void clearSelectedFichiers(@Param("numProg") String numProg,@Param("status") Status status);
 
 
-    @Transactional
     @Modifying(clearAutomatically = true)
     @Query("UPDATE Fichier f SET f.programme.numProg = :numProg, f.statut =:status  WHERE f.id IN (:idFichiers) ")
     void updateStatusFichiersAffectes(@Param("numProg") String numProg,@Param("status") Status status,@Param("idFichiers") List<Long> idFichiers);

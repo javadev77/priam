@@ -5,6 +5,7 @@ import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.dao.jpa.cms.LigneProgrammeCMSDao;
 import fr.sacem.priam.model.dao.jpa.cms.LigneProgrammeCopyCMSDao;
 import fr.sacem.priam.model.dao.jpa.cp.LigneProgrammeCPDao;
+import fr.sacem.priam.model.dao.jpa.cp.LigneProgrammeCopyCPDao;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.priam.model.domain.*;
 import fr.sacem.priam.model.util.FamillePriam;
@@ -40,12 +41,16 @@ public class FichierService {
     @Autowired
     private LigneProgrammeCopyCMSDao ligneProgrammeCopyCMSDao;
 
+    @Autowired
+    private LigneProgrammeCopyCPDao ligneProgrammeCopyCPDao;
+
     @Transactional
     public void deleteDonneesFichiers(Long fileId) {
         Fichier fichier = fichierDao.findOne(fileId);
 
         if(FamillePriam.COPIE_PRIVEE.getCode().equals(fichier.getFamille().getCode())) {
             ligneProgrammeCPDao.deleteAllByFichierId(fileId);
+            ligneProgrammeCopyCPDao.deleteAllCopyByFichierId(fileId);
         } else if(FamillePriam.CMS.getCode().equals(fichier.getFamille().getCode())) {
             ligneProgrammeCMSDao.deleteAllByFichierId(fileId);
             ligneProgrammeCopyCMSDao.deleteAllCopyByFichierId(fileId);
@@ -78,19 +83,16 @@ public class FichierService {
             programme.setStatutEligibilite(StatutEligibilite.EN_ATTENTE_ELIGIBILITE);
         } else if(programme.getFamille().getCode().equals(FamillePriam.COPIE_PRIVEE.getCode())) {
             //Mettre par defaut les oeuvre à  selectionne
+            programme.setStatutEligibilite(StatutEligibilite.EN_ATTENTE_ELIGIBILITE);
             ligneProgrammeCPDao.updateSelectionTemporaireByNumProgramme(numProg, true);
             ligneProgrammeCPDao.deselectAllByNumProgramme(numProg, true);
 
         }
 
-
         if(idsNouveauxFichiersAffectes.isEmpty()) {
             programme.setStatut(StatutProgramme.CREE);
-        } else {
-            if(programme.getFamille().getCode().equals(FamillePriam.COPIE_PRIVEE.getCode())) {
-                programme.setStatut(StatutProgramme.AFFECTE);
-            }
         }
+
         programme.setUsermaj(currentUserName);
         programme.setDatmaj(new Date());
         programme.setUseraffect(currentUserName);
@@ -117,5 +119,12 @@ public class FichierService {
 
     public Set<String> getChargementLog(Long idFichier) {
         return fichierDao.getChargementLog(idFichier);
+    }
+
+
+    public List<Fichier> findListFichiersByIds(List<Long> ids) {
+        List<Fichier> result = new ArrayList<>();
+        ids.forEach(id -> result.add(fichierDao.findOne(id)));
+        return result;
     }
 }

@@ -25,6 +25,7 @@
         <module>priam-security</module>
         <module>priam-services</module>
         <module>priam-ui</module>
+        <module>priam-batch-affectation-cp</module>
         <module>priam-batch-affectation-cms</module>
         <module>priam-rest-api-common</module>
         <module>priam-rest-api-copieprivee</module>
@@ -346,4 +347,38 @@
             <url>http://repository.sacem.fr:8081/nexus/content/repositories/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
+
+
+
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <spring.active.profiles>dev</spring.active.profiles>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>re7</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <spring.active.profiles>re7</spring.active.profiles>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>prod</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <spring.active.profiles>prod</spring.active.profiles>
+            </properties>
+        </profile>
+    </profiles>
 </project>

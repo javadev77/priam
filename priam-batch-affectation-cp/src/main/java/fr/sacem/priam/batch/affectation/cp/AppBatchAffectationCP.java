@@ -1,6 +1,6 @@
 package fr.sacem.priam.batch.affectation.cp;
 
-import fr.sacem.domain.Admap;
+
 import fr.sacem.priam.batch.affectation.cp.config.BatchConfigLocal;
 import fr.sacem.priam.batch.affectation.cp.config.BatchConfigProd;
 import org.slf4j.Logger;
@@ -25,7 +25,7 @@ public class AppBatchAffectationCP {
     private static  final Logger LOGGER = LoggerFactory.getLogger(AppBatchAffectationCP.class);
 
     public static void main(String[] args) {
-        LOGGER.info("Lancement du Batch Affectation CMS ");
+        LOGGER.info("Lancement du Batch Affectation CP ");
 
         ApplicationContext context = new AnnotationConfigApplicationContext(BatchConfigLocal.class, BatchConfigProd.class);
 

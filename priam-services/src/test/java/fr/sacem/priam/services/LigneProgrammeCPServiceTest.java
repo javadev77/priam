@@ -184,7 +184,7 @@ public class LigneProgrammeCPServiceTest {
         ligneProgrammeCPService.enregistrerEdition(NUM_PROG);
 
         List<LigneProgrammeCP> after = ligneProgrammeCPDao.findLigneProgrammeByNumProg(NUM_PROG);
-        Iterable<LigneProgrammeCP> filtredAfter = Iterables.filter(after, ligneProgrammeCP -> ligneProgrammeCP.isSelection());
+        Iterable<LigneProgrammeCP> filtredAfter = Iterables.filter(after, ligneProgrammeCP -> ligneProgrammeCP.isSelectionEnCours());
 
         assertThat(Iterables.size(filtredAfter)).isEqualTo(Iterables.size(filtredBefore));
     }

@@ -103,10 +103,11 @@ public class UserDTO implements Serializable{
               codes.add(COPIE_PRIVEE_SONORE_PHONO.getCode());
               codes.add(COPIE_PRIVEE_SONORE_RADIO.getCode());
           }
-          if(ROLE_GEST_CMS.equals(role) || ROLE_ADM.equals(role))
+          if(ROLE_GEST_CMS.equals(role) || ROLE_ADM.equals(role)) {
               codes.add(SONOFRA.getCode());
               codes.add(SONOANT.getCode());
           }
+        }
       }
 
       if(codes.isEmpty()) {
