@@ -704,6 +704,13 @@
       },
 
       created() {
+
+        let rights = this.$store.getters.getCurrentUser.rights;
+        debugger
+        if(this.hasRight('MENUCATAL') && rights.length ===1 ){
+          this.$router.push('/catalogue');
+        }
+
         const customActions = {
             searchProgramme : {method : 'POST', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/programme/search?page={page}&size={size}&sort={sort},{dir}'},
             abandonnerProgramme : {method : 'PUT', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/programme/abandon'},

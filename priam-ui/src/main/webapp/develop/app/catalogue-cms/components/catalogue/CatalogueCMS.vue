@@ -5,7 +5,7 @@
     <app-filtre-catalogue
       :filter="filter"
       :retablir="retablirFiltre"
-      :rechercher="findCatalogueByCriteria"
+      :rechercher="onSearchCatalogue"
     >
     </app-filtre-catalogue>
     <div class="panel panel-default">
@@ -46,16 +46,39 @@
                 <div class="panel-body">
                   <img src="static/images/iconescontextes/ajxrep-search3.gif" alt="">
                   <span> Type d'inscription</span>
+
+
+
                   <ul style="list-style: none;">
-                    <li v-for="metric in typeInscription">
-                      {{metric.code}} : (<b>{{metric.value}}</b>)
+                    <div class="row">
+                      <div class="spinner" v-if="dataLoadingCompteur">
+                        <div class="rect1"></div>
+                        <div class="rect2"></div>
+                        <div class="rect3"></div>
+                        <div class="rect4"></div>
+                        <div class="rect5"></div>
+                      </div>
+                    </div>
+                    <li v-if="!dataLoadingCompteur" v-for="metric in typeInscription">
+                      <a href="#" @click.prevent="findCatalogueByExtraCriteria(metric.code,null)">{{metric.code}} : (<b>{{metric.value}}</b>)</a>
                     </li>
                   </ul>
+
                   <img src="static/images/iconescontextes/ajxrep-search3.gif" alt="">
                   <span> Type utilisation générateur</span>
                   <ul style="list-style: none;">
-                    <li v-for="metric in typeUtilisation">
-                      {{metric.code}} : (<b>{{metric.value}}</b>)
+
+                    <div class="row">
+                      <div class="spinner" v-if="dataLoadingCompteur">
+                        <div class="rect1"></div>
+                        <div class="rect2"></div>
+                        <div class="rect3"></div>
+                        <div class="rect4"></div>
+                        <div class="rect5"></div>
+                      </div>
+                    </div>
+                    <li v-if="!dataLoadingCompteur" v-for="metric in typeUtilisation">
+                      <a href="#" @click.prevent="findCatalogueByExtraCriteria(null, metric.code)">{{metric.code}} : (<b>{{metric.value}}</b>)</a>
                     </li>
                   </ul>
                 </div>
@@ -462,7 +485,9 @@
             dateDebut: null,
             dateFin: null
           },
-          displayOeuvreNonEligible: false
+          displayOeuvreNonEligible: false,
+          typeInscription: null,
+          typeUtilisation: null
         },
 
         currentFilter : {
@@ -476,7 +501,9 @@
           periodeRenouvellementDateFin: null,
           periodeSortieDateDebut: null,
           periodeSortieDateFin: null,
-          displayOeuvreNonEligible: false
+          displayOeuvreNonEligible: false,
+          typeInscription: null,
+          typeUtilisation: null
         },
 
         defaultPageable : {
@@ -500,7 +527,8 @@
         typeUtilisation : {
           code: '',
           value: ''
-        }
+        },
+        dataLoadingCompteur: false
       }
     },
 
@@ -526,6 +554,7 @@
       }
       this.resource= this.$resource('', {}, customActions);
       this.findCatalogueByCriteria();
+      this.calculerCompteurs();
     },
 
     methods : {
@@ -544,9 +573,14 @@
         this.currentFilter.periodeSortieDateDebut = this.filter.periodeSortieFilter.dateDebut;
         this.currentFilter.periodeSortieDateFin = this.filter.periodeSortieFilter.dateFin;
         this.currentFilter.displayOeuvreNonEligible = this.filter.displayOeuvreNonEligible;
+        this.currentFilter.typeInscription = this.filter.typeInscription;
+        this.currentFilter.typeUtilisation = this.filter.typeUtilisation;
+
+
 
         this.dataLoading = true;
         debugger;
+
         this.resource.searchCatalogueRdo({
           page : this.defaultPageable.page - 1,
           size : this.defaultPageable.size,
@@ -561,11 +595,22 @@
 
             this.catalogueGrid.gridData.number = data.number + 1;
             this.dataLoading = false;
-            this.calculerCompteurs();
           })
           .catch(error => {
             alert("Erreur lors de la recherche !!! ")
           });
+      },
+
+      findCatalogueByExtraCriteria(typeInscriptionCriteria, typeUtilisationCriteria){
+
+        this.filter.typeInscription = typeInscriptionCriteria;
+        this.filter.typeUtilisation = typeUtilisationCriteria;
+        this.findCatalogueByCriteria();
+      },
+
+      onSearchCatalogue(){
+        this.findCatalogueByExtraCriteria(null, null);
+        this.calculerCompteurs();
       },
 
 
@@ -614,10 +659,12 @@
             dateDebut: null,
             dateFin: null
           },
-          displayOeuvreNonEligible: false
+          displayOeuvreNonEligible: false,
+          typeInscription: null,
+          typeUtilisation: null
         }
-
         this.findCatalogueByCriteria();
+        this.calculerCompteurs();
       },
 
       onSort(currentPage, pageSize, sort) {
@@ -683,12 +730,14 @@
       },
 
       calculerCompteurs: function () {
+          this.dataLoadingCompteur = true;
         this.resource.compteurCatalogueRdo(this.currentFilter)
           .then(response => {
             return response.json();
           }).then(data => {
           this.typeInscription = data.TYPE_INSCRIPTION;
           this.typeUtilisation = data.TYPE_UTILISATION;
+          this.dataLoadingCompteur = false;
         })
         ;
       }

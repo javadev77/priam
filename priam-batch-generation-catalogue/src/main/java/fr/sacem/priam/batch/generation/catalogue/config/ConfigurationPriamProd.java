@@ -15,7 +15,7 @@ import java.util.Properties;
  */
 @Configuration
 @ComponentScan(basePackages = {"fr.sacem.priam.batch.generation.catalogue"})
-@ImportResource(value = "classpath:config/job-configuration.xml")
+@ImportResource(value = "classpath:config/job-generation-catalogue-fr.xml")
 @Profile({"production", "re7"})
 @PropertySource("classpath:config/application-production.properties")
 public class ConfigurationPriamProd {
