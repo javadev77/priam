@@ -127,7 +127,6 @@ public class AffectationCMSResource {
             jobParametersMap.put("numProg", new JobParameter(programmeDto.getNumProg()));
             jobParametersMap.put("userId", new JobParameter(userDTO.getUserId()));
 
-//            String listNomFichier = fichiers.stream().map(e -> e.getNomFichier() + " " + e.getDateFinChargt()).collect(Collectors.joining(","));
             jobParametersMap.put("listNomFichier", new JobParameter(listNomFichiersAvantAffectation));
 
             JobParameters jobParameters = new JobParameters(jobParametersMap);
@@ -206,9 +205,8 @@ public class AffectationCMSResource {
 
     private List<Fichier> getListFichierByIdFichier(List<Long> listIdFichier){
         List<Fichier> result = new ArrayList<>();
-        listIdFichier.forEach(id -> {
-            result.add(fichierDao.findOne(id));
-        });
+        listIdFichier.forEach(id -> result.add(fichierDao.findOne(id)));
+
         return result;
     }
 

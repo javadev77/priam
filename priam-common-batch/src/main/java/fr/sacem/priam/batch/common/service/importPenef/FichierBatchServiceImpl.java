@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+
 /**
  * Created by fandis on 17/05/2017.
  */
@@ -139,4 +140,10 @@ public class FichierBatchServiceImpl implements FichierBatchService {
     public void clearSelectedFichiers(String numProg, String statut) {
         fichierRepository.clearSelectedFichiers(numProg, statut);
     }
+
+    @Override
+    public void majFichiersAffectesAuProgramme(String numProg, List<Fichier> nouveauxfichiersAffectes, String currentUserName) {
+
+    }
+
 }

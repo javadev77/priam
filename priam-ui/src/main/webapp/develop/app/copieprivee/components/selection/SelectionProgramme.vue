@@ -280,7 +280,7 @@
               id: 'nbrDif',
               name: "Quantité",
               sortable: true,
-              sortProperty : 'sum(nbrDifEdit)',
+              sortProperty : 'nbrDifEdit',
               type: 'inputNum',
               cellEditorFramework : QuantiteEditor,
               cell: {
@@ -458,8 +458,7 @@
               id: 'durDif',
               name: "Durée",
               sortable: true,
-              sortProperty : 'sum(durDifEdit)',
-              sortProperty : 'sum(durDifEdit)',
+              sortProperty : 'durDifEdit',
               type: 'inputNum',
               editable : true,
               cellEditorFramework : DureeEditor,

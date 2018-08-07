@@ -30,10 +30,15 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
+
+/**
+ * Created by benmerzoukah on 13/07/2018.
+ */
 @Configuration
 @EnableWebMvc
 @Profile("test")
 public class RestMvcConfigTest extends WebMvcConfigurerAdapter {
+
 
     @Autowired
     private ResourceLoader resourceLoader;

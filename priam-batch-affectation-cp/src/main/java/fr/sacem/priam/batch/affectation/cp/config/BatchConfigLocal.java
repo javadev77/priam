@@ -1,5 +1,5 @@
 package fr.sacem.priam.batch.affectation.cp.config;
-import fr.sacem.domain.Admap;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.*;

@@ -42,6 +42,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.nio.charset.Charset;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -90,9 +91,6 @@ public abstract class FelixDataServiceAbstract {
     private ProgrammeDao programmeDao;
     
     @Autowired
-    private LignePreprepDao lignePreprepDao;
-    
-    @Autowired
     private FelixDataSpringValidator validator;
     
     
@@ -111,10 +109,13 @@ public abstract class FelixDataServiceAbstract {
 
     @Autowired
     LignePreprepJdbcDao lignePreprepJdbcDao;
+
+    @Autowired
+    LignePreprepDao lignePreprepDao;
     
     public abstract List<LignePreprep> getListLignesSelectionnees(String pNumprog);
 
-    private List<LignePreprep> prepareFelixData(String numProg) {
+    private void prepareFelixData(String numProg) {
         LOGGER.info(">>>>>> prepare FelixData <<<<<<");
         lignePreprepDao.deleteAll(numProg);
         
@@ -125,11 +126,10 @@ public abstract class FelixDataServiceAbstract {
 
         LOGGER.info("<<<<<<< Fin insert en mode Batch");
 
-        return lignePreprepDao.findByNumProg(numProg);
     }
     
     private List<String> head() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.FRANCE);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.FRANCE);
         return asList(
             "#--------------------------------------------------------------------------",
             "# Extraction à destination de FELIX pour les calculs de répartition",
@@ -142,7 +142,7 @@ public abstract class FelixDataServiceAbstract {
     }
     
     private List<String> foot(int lignes) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.FRANCE);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.FRANCE);
         return asList(
             "#FIN" + dateFormat.format(new Date()),
             "# Nbr lignes de donnees       = " + lignes);
@@ -170,7 +170,7 @@ public abstract class FelixDataServiceAbstract {
         try {
             ff = fichierFelixDao.findByNumprog(numProg);
             List<LignePreprep> lignePrepreps = getListLignesSelectionnees(numProg);
-            FichierFelixError fichierFelixWithErrors = createFichierFelixWithErrors(numProg, lignePrepreps);
+            FichierFelixError fichierFelixWithErrors = createFichierFelixWithErrors(numProg, lignePrepreps, true);
     
             
             ff.setNomFichier(fichierFelixWithErrors.getFilename());
@@ -204,7 +204,7 @@ public abstract class FelixDataServiceAbstract {
     
     @Transactional
     public FichierFelixError createFichierFelixWithErrors(String numProg,
-                                                          List<LignePreprep> lignePrepreps
+                                                          List<LignePreprep> lignePrepreps, boolean isToValidate
                                                           ) throws IOException {
         Programme programme = programmeDao.findOne(numProg);
         if(programme == null) {
@@ -229,17 +229,20 @@ public abstract class FelixDataServiceAbstract {
         List<String> errorsList = Lists.newArrayList();
         for (LignePreprep lignePreprep: lignePrepreps ) {
             FelixData felixData = modelMapper.map(lignePreprep, FelixData.class);
-            
-            BindingResult errors = new BeanPropertyBindingResult(felixData, "lignePreprep-"+line);
-            validator.validate(felixData, errors);
-            
-            if(errors.hasErrors()) {
-                for(FieldError fe : errors.getFieldErrors()) {
-                    errorsList.add(String.format("Ligne %s: Le champ %s est obligatoire et non renseigné",
-                        line, fe.getField()));
+
+            if(isToValidate) {
+                BindingResult errors = new BeanPropertyBindingResult(felixData, "lignePreprep-"+line);
+                validator.validate(felixData, errors);
+
+                if(errors.hasErrors()) {
+                    for(FieldError fe : errors.getFieldErrors()) {
+                        errorsList.add(String.format("Ligne %s: Le champ %s est obligatoire et non renseigné",
+                            line, fe.getField()));
+                    }
                 }
+
             }
-    
+
             writeLine(out, writer.writeValueAsString(felixData), false);
             line++;
         }
@@ -266,15 +269,14 @@ public abstract class FelixDataServiceAbstract {
     @Async("threadPoolTaskExecutor")
     public void asyncSendFichierFelix(ProgrammeDto programmeDto, UserDTO userDTO) {
         String numProg = programmeDto.getNumProg();
-        /*programmeDto.setUsermaj(utilisateur);*/
         programmeDto.setUsermaj(userDTO.getUserId());
         try {
             
             // Regeneration du fichier
-            List<LignePreprep> lignePrepreps = prepareFelixData(numProg);
-            FichierFelixError fichierFelixWithErrors = createFichierFelixWithErrors(numProg, lignePrepreps);
-            lignePrepreps.clear();
-            
+            prepareFelixData(numProg);
+            List<LignePreprep> lignePrepreps = lignePreprepDao.findByNumProg(numProg);
+            FichierFelixError fichierFelixWithErrors = createFichierFelixWithErrors(numProg, lignePrepreps, false);
+
             FichierFelix ff = fichierFelixDao.findByNumprog(numProg);
             ff.setNomFichier(fichierFelixWithErrors.getFilename());
             
@@ -296,9 +298,9 @@ public abstract class FelixDataServiceAbstract {
             }
             
         } catch (Exception e) {
+            LOGGER.error(String.format("Erreur lors de la mise en repartition du programme %s !!", numProg), e);
             FichierFelix ff = fichierFelixDao.findByNumprog(numProg);
             String message = String.format("Probleme lors de l'envoi du fichier PREPREP  %s à FELIX", ff.getNomFichier());
-            LOGGER.error(message, e);
             createErrorMessage(ff, message);
 
         }
