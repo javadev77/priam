@@ -11,6 +11,8 @@ import fr.sacem.priam.rest.common.config.RestResourceTest;
 import fr.sacem.priam.security.model.UserDTO;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
@@ -40,10 +42,15 @@ public class GeneralResourceTest extends RestResourceTest {
 
   @Test
   public void getAllLibelleFamille() throws Exception {
-      mockMvc.perform(
+    TestingAuthenticationToken principal = new TestingAuthenticationToken(new UserDTO("benmerzoukah"), null);
+    SecurityContextHolder.getContext().setAuthentication(principal);
+
+    mockMvc.perform(
         get("/app/rest/general/libellefamille")
           .contentType(contentType)
+              .principal(principal)
           )
+
         .andExpect(status().isOk())
         .andExpect(jsonPath("$[0].id", is("COPIEPRIV")))
         .andExpect(jsonPath("$[0].value", is("Copie Privée")));
@@ -134,19 +141,21 @@ public class GeneralResourceTest extends RestResourceTest {
       get("/app/rest/general/currentUser")
         .contentType(contentType))
       .andExpect(status().isOk())
-      .andExpect(jsonPath("$.userId", is(UserDTO.GUEST.getUserId())))
-      .andExpect(jsonPath("$.displayName", is(UserDTO.GUEST.getDisplayName())));
+      .andExpect(jsonPath("$.userId", is("benmerzoukah")));
+      //.andExpect(jsonPath("$.displayName", is(UserDTO.GUEST.getDisplayName())));
   }
 
   @Test
   public void getParametrageByUser() throws Exception {
+    TestingAuthenticationToken principal = new TestingAuthenticationToken(new UserDTO("benmerzoukah"), null);
+    SecurityContextHolder.getContext().setAuthentication(principal);
 
     mockMvc.perform(
       get("/app/rest/general/parametres")
-        .contentType(contentType))
+        .contentType(contentType)
+              .principal(principal))
       .andExpect(status().isOk())
-      .andExpect(jsonPath("$['USER_PAGE_SIZE']", is("25")))
-      .andExpect(jsonPath("$['USER_FAMILLE']", is("COPIEPRIV,Copie Privée")));
+      .andExpect(jsonPath("$['USER_FAMILLE']", is("ALL,Toutes")));
   }
 
   @Test

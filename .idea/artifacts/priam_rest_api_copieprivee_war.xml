@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="war" name="priam-rest-api-copieprivee:war">
-    <output-path>$PROJECT_DIR$/priam-rest-api-copieprivee/target</output-path>
-    <root id="archive" name="priam-cp.war">
-      <element id="artifact" artifact-name="priam-rest-api-copieprivee:war exploded" />
-    </root>
-  </artifact>
-</component>

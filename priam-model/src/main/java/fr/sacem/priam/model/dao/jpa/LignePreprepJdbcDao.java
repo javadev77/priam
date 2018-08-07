@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
+import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.Date;
 import java.util.List;
@@ -55,8 +56,24 @@ public class LignePreprepJdbcDao {
             ps.setString(10, lignePreprep.getCdeCompl());
             ps.setString(11, lignePreprep.getLibProg());
             ps.setString(12, lignePreprep.getCompLibProg());
-            ps.setTimestamp(13, getCurrentTimeStamp(lignePreprep.getDatDbtProg()));
-            ps.setTimestamp(14, getCurrentTimeStamp(lignePreprep.getDatFinProg()));
+
+
+            Timestamp datDbProg = getCurrentTimeStamp(lignePreprep.getDatDbtProg());
+            if(datDbProg == null) {
+             ps.setNull(13, Types.TIMESTAMP);
+            } else {
+                ps.setTimestamp(13, datDbProg);
+            }
+
+            Timestamp datFinProg = getCurrentTimeStamp(lignePreprep.getDatFinProg());
+            if(datFinProg == null) {
+                ps.setNull(14, Types.TIMESTAMP);
+            } else {
+
+                ps.setTimestamp(14, datFinProg);
+            }
+
+
 
             ps.setInt(15, lignePreprep.getHrDbt() != null ? lignePreprep.getHrDbt() : 0);
             ps.setInt(16, lignePreprep.getHrFin() != null ? lignePreprep.getHrFin() : 0 );
@@ -101,7 +118,7 @@ public class LignePreprepJdbcDao {
             if( lignePreprep.getTax() != null) {
                 ps.setDouble(31, lignePreprep.getTax());
             } else {
-                ps.setNull(28, Types.DOUBLE);
+                ps.setNull(31, Types.DOUBLE);
             }
 
 
@@ -113,5 +130,13 @@ public class LignePreprepJdbcDao {
         if(date == null)
             return null;
         return new java.sql.Timestamp(date.getTime());
+    }
+
+    public Long countNbLignes(String numProg) {
+        String sql =  "SELECT " +
+                "count(l.keyLigPenel) as NB_LIGNES " +
+                "FROM PRIAM_LIGNE_PREPREP l " +
+                "WHERE l.numProg=?";
+        return jdbcTemplate.queryForObject(sql, (resultSet, i) -> resultSet.getLong("NB_LIGNES"), numProg);
     }
 }

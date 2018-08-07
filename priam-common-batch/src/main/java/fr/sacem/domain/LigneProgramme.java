@@ -51,6 +51,7 @@ public class LigneProgramme implements Serializable {
     private String libelleUtilisateur;
     private Exception exception;
     private String rionAnt;
+    private Long id;
 
     public String getUtilisateur() {
         return utilisateur;
@@ -420,4 +421,11 @@ public class LigneProgramme implements Serializable {
         return ToStringBuilder.reflectionToString(this);
     }
 
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public Long getId() {
+        return id;
+    }
 }

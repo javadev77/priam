@@ -24,21 +24,46 @@
                         reader="readerPriamZip"
                         processor="ligneProgrammeItemProcessor"
                         writer="writerPriam"
-                        commit-interval="${commit-interval}">
+                        commit-interval="${commit-interval}"
+                        retry-limit="5">
+
+                    <retryable-exception-classes>
+                        <include class="org.springframework.dao.DeadlockLoserDataAccessException"/>
+                        <include class="org.springframework.dao.CannotAcquireLockException"/>
+                    </retryable-exception-classes>
                 </chunk>
             </tasklet>
         </step>
 
-        <step id="dedoublonnageStep" >
+        <step id="dedoublonnageStep">
             <tasklet>
                 <chunk
                         reader="readerPriamFromTable"
                         processor="ligneProgrammeDedoublonnageStepTwoProcessor"
-                        writer="writerDedoublonnagePriam"
-                        commit-interval="${commit-interval}">
+                        writer="compositeWriter"
+                        commit-interval="${commit-interval}"
+                        retry-limit="15">
+
+                    <retryable-exception-classes>
+                        <include class="org.springframework.dao.DeadlockLoserDataAccessException"/>
+                        <include class="org.springframework.dao.CannotAcquireLockException"/>
+                    </retryable-exception-classes>
                 </chunk>
             </tasklet>
         </step>
+
+        <!--<step id="sauvegardeStep">-->
+            <!--<tasklet>-->
+                <!--<chunk-->
+                        <!--reader="readerPriamFromTable"-->
+                        <!--writer="sauvegardeWriter"-->
+                        <!--processor="ligneProgrammeDedoublonnageStepTwoProcessor"-->
+                        <!--commit-interval="${commit-interval}">-->
+                <!--</chunk>-->
+            <!--</tasklet>-->
+
+
+        <!--</step>-->
 
         <listeners merge="true">
             <listener ref="listenerCompletition"/>
@@ -236,6 +261,18 @@
     </bean>
 
 
+    <bean id="compositeWriter" class="org.springframework.batch.item.support.CompositeItemWriter">
+        <property name="delegates">
+            <list>
+                <ref bean="writerDedoublonnagePriam" />
+                <ref bean="sauvegardeWriter" />
+            </list>
+        </property>
+    </bean>
+
+
+
+
     <bean id="writerDedoublonnagePriam" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
     <property name="dataSource" ref="dataSource"/>
     <property name="sql">
@@ -332,6 +369,103 @@
         <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
     </property>
 </bean>
+
+    <bean id="sauvegardeWriter" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    INSERT INTO PRIAM_LIGNE_PROGRAMME_CP_COPY (
+                            id_fichier,
+                            cdeCisac,
+                            cdeFamilTypUtil,
+                            numProg,
+                            cdeUtil,
+                            cdeTypUtil,
+                            cdeGreDif,
+                            cdeModDif,
+                            cdeTypIde12,
+                            ide12,
+                            durDif,
+                            nbrDif,
+                            mt,
+                            ctna,
+                            paramCoefHor,
+                            durDifCtna,
+                            cdeLng,
+                            indDoubSsTit,
+                            tax,
+                            typMt,
+                            cdeGreIde12Cmplx,
+                            cdeGreIde12,
+                            titreOriCmplx,
+                            titreAltPppalCmplx,
+                            titreOriOeuvPereCmplx,
+                            titreAltOeuvPereCmplx,
+                            titreOeuvre,
+                            cdePaysOriIso4NCmplx,
+                            realisateurCmplx,
+                            roleParticipant1,
+                            nomParticipant1,
+                            cdeTypUtilOri,
+                            cdeFamilTypUtilOri,
+                            libelleUtilisateur,
+                            utilisateur,
+                            date_insertion,
+                            ajout,
+                            selection,
+                            durDifEdit,
+                            nbrDifEdit
+                        )
+                        VALUES (
+                            :idFichier,
+                            :cdeCisac,
+                            :cdeFamilTypUtil,
+                            :numProg,
+                            :cdeUtil,
+                            :cdeTypUtil,
+                            :cdeGreDif,
+                            :cdeModDif,
+                            :cdeTypIde12,
+                            :ide12,
+                            :durDif,
+                            :nbrDif,
+                            :mt,
+                            :ctna,
+                            :paramCoefHor,
+                            :durDifCtna,
+                            :cdeLng,
+                            :indDoubSsTit,
+                            :tax,
+                            :typMt,
+                            :cdeGreIde12Cmplx,
+                            :cdeGreIde12,
+                            :titreOriCmplx,
+                            :titreAltPppalCmplx,
+                            :titreOriOeuvPereCmplx,
+                            :titreAltOeuvPereCmplx,
+                            :titreOeuvre,
+                            :cdePaysOriIso4NCmplx,
+                            :realisateurCmplx,
+                            :roleParticipant1,
+                            :nomParticipant1,
+                            :cdeTypUtilOri,
+                            :cdeFamilTypUtilOri,
+                            :libelleUtilisateur,
+                            :utilisateur,
+                            :date_insertion,
+                            'AUTOMATIQUE',
+                            :selection,
+                            :durDif,
+                            :nbrDif
+                        )
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
 
 
     <bean id="ligneProgrammeRowMapper" class="fr.sacem.util.mapper.importPenef.PriamLigneProgrammeSQLMapper"/>

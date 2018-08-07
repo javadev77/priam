@@ -182,7 +182,15 @@
 
             fichiersToProgramme: {
                 numProg : '',
-                fichiers : []
+                fichiers : [],
+                fichiersUnChecked : [],
+                fichersAvantAffectation : []
+            },
+
+            fichiersDesaffectes: {
+              numProg: '',
+              allDesaffecte: false,
+              fichersAvantDesaffectation : []
             },
 
             showModalAffectation :false,
@@ -210,6 +218,7 @@
             showButtonAnnuler : false,
 
             fichiersChecked : [],
+            fichiersUnChecked : [],
 
             priamGrid : {
               gridColumns : [
@@ -328,6 +337,7 @@
               affectationProgramme : {method: 'PUT', url : process.env.CONTEXT_ROOT_PRIAM_CP + 'app/rest/programme/affectation'},
               toutDeaffecterProg : {method: 'PUT', url : process.env.CONTEXT_ROOT_PRIAM_CP + 'app/rest/programme/toutDesaffecter'},
               findAllFichiers : {method : 'POST', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/chargement/allFichiers'}
+
           }
           this.resource= this.$resource('', {}, customActions);
 
@@ -625,22 +635,23 @@
             console.log('isChecked='+isChecked);
 
             if(isChecked) {
-                var found = this.fichiersChecked.find( elem => {
+                var found = this.fichiersUnChecked.find( elem => {
                    return  elem === entryChecked.id;
                 });
                 if(found !== undefined && found) {
-
+                  let number = this.fichiersUnChecked.indexOf(entryChecked.id);
+                  this.fichiersUnChecked.splice(number, 1);
                 } else {
                   this.fichiersChecked.push(entryChecked.id);
                 }
 
             } else {
-              console.log('this.fichiersChecked='+this.fichiersChecked);
               let number = this.fichiersChecked.indexOf(entryChecked.id);
-              console.log('indexOf='+number);
               this.fichiersChecked.splice(number, 1);
+
+              this.fichiersUnChecked.push(entryChecked.id);
             }
-          console.log('onEntryChecked() ==> this.fichiersChecked='+this.fichiersChecked.length);
+
         },
 
         onAllChecked(allChecked, entries) {
@@ -648,52 +659,105 @@
             this.fichiersChecked = [];
             if(allChecked) {
                 this.fichiersChecked = entries.slice();
-                /*for(var i in entries) {
-                    console.log("element of entry = " + entries[i]);
-                  this.fichiersChecked.push(entries[i]);
-                }*/
+                this.fichiersUnChecked = [];
             } else {
-              this.fichiersChecked = [];
+                this.fichiersUnChecked = entries.slice();
+                this.fichiersChecked = [];
             }
 
-          this.$store.dispatch('toutDesactiver', true);
-          console.log('onAllChecked() ==> this.fichiersChecked='+this.fichiersChecked.length);
+          this.$store.dispatch('toutDesactiver', allChecked);
         },
 
       affecterFichiersAuProgramme(){
-        this.fichiersToProgramme.numProg = this.programmeInfo.numProg;
+        let numProg = this.programmeInfo.numProg;
+        this.fichiersToProgramme.numProg = numProg;
         this.fichiersToProgramme.fichiers=[];
 
         this.fichiersToProgramme.fichiers = this.fichiersChecked.map(function (idFichier) {
           return {id : idFichier}
         });
-        /*for(var i in this.fichiersChecked){
-            var idFichier = this.fichiersChecked[i];
-            if( idFichier !== null || idFichier !== '' ){
-              this.fichiersToProgramme.fichiers.push({id:idFichier});
-            }
 
-        }*/
-        console.log("fichiers envoyes" +this.fichiersToProgramme.fichiers.length);
-        debugger;
+        this.fichiersToProgramme.fichiersUnChecked = this.fichiersUnChecked.map(function (idFichier) {
+          return {id : idFichier}
+        });
 
-        this.resource.affectationProgramme(this.fichiersToProgramme)
+
+        let inputChgtCriteria=  {
+          numProg  : numProg,
+          statutCode : ['AFFECTE']
+
+        };
+
+        this.resource.findAllFichiers(inputChgtCriteria)
           .then(response => {
-              return response.json();
+            return response.json();
           })
           .then(data => {
-              console.log("affectation ok");
-              this.affectationEncours = false;
-              //this.programmeInfo = data;
-              //this.initData();
-              //this.rechercher();
+            for (let key in data) {
+              this.fichiersDesaffectes.fichersAvantDesaffectation.push(data[key].id);
+              this.fichiersToProgramme.fichersAvantAffectation.push(data[key].id)
+            }
 
-              this.$router.push({ name: 'ListePrg'});
-          })
-          .catch(response => {
-              debugger;
-              alert("Erreur technique lors de l'affectation des fichiers au programme !! ");
+            this.fichiersDesaffectes.numProg = numProg;
+            this.fichiersDesaffectes.allDesaffecte = false;
+
+
+            this.resource.affectationProgramme(this.fichiersToProgramme)
+              .then(response => {
+                return response.json();
+              })
+              .then(data => {
+                this.affectationEncours = false;
+
+                this.$router.push({name: 'ListePrg'});
+              })
+              .catch(response => {
+                alert("Erreur technique lors de l'affectation des fichiers au programme !! ");
+              });
+            /*this.resource.toutDeaffecterProg(this.fichiersDesaffectes)
+              .then(response => {
+                return response.json();
+              })
+              .then(data => {
+
+                var self = this;
+                var timer = setInterval(function () {
+
+                  self.resource.findByNumProg({numProg: numProg})
+                    .then(response => {
+                      return response.json();
+                    })
+                    .then(programme => {
+                      if (programme.statutEligibilite === 'FIN_DESAFFECTATION') {
+                        clearInterval(timer);
+
+
+                      }
+                    });
+
+
+                }, 1000);
+
+              })
+              .catch(response => {
+                alert("Erreur technique !!! ");
+              });*/
           });
+
+//        this.resource.affectationProgramme(this.fichiersToProgramme)
+//          .then(response => {
+//              return response.json();
+//          })
+//          .then(data => {
+//              console.log("affectation ok");
+//              this.affectationEncours = false;
+//
+//              this.$router.push({ name: 'ListePrg'});
+//          })
+//          .catch(response => {
+//              debugger;
+//              alert("Erreur technique lors de l'affectation des fichiers au programme !! ");
+//          });
 
       },
 
@@ -702,23 +766,38 @@
           console.log('toutDeaffecter()');
           var numProgramme =this.programmeInfo.numProg;
           if(numProgramme!==null || numProgramme!==""){
-            console.log("fichiers envoyes" +this.fichiersToProgramme.fichiers);
-            this.resource.toutDeaffecterProg(numProgramme)
-              .then(response => {
-                  return response.json();
-                })
-              .then(data => {
-                console.log("Déaffactaation ok");
-                this.showModalDesactiver = false;
-                /*this.programmeInfo = data;
-                this.initData();
-                this.rechercher();
-                this.$store.dispatch('toutDesactiver', false);*/
+            let inputChgtCriteria=  {
+              numProg  : this.programmeInfo.numProg,
+              statutCode : ['AFFECTE']
 
-                this.$router.push({ name: 'ListePrg'});
+            };
+            this.resource.findAllFichiers(inputChgtCriteria)
+              .then(response => {
+                return response.json();
               })
-              .catch(response => {
-                alert("Erreur technique lors de désaffectation des fichiers du programme !! ");
+              .then(data => {
+                for (let key in data) {
+                  this.fichiersDesaffectes.fichersAvantDesaffectation.push(data[key].id);
+                }
+
+                this.fichiersDesaffectes.numProg = numProgramme;
+                this.fichiersDesaffectes.allDesaffecte = true;
+
+                this.resource.toutDeaffecterProg(this.fichiersDesaffectes)
+                  .then(response => {
+                    return response.json();
+                  })
+                  .then(data => {
+                    console.log("Déaffactation ok");
+                    this.showModalDesactiver = false;
+
+                    this.$router.push({name: 'ListePrg'});
+
+
+                  })
+                  .catch(response => {
+                    alert("Erreur technique lors de désaffectation des fichiers du programme !! ");
+                  });
               });
           }
         },

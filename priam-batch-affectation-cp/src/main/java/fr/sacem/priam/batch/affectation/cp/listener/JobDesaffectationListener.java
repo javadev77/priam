@@ -1,11 +1,13 @@
 package fr.sacem.priam.batch.affectation.cp.listener;
 
 import fr.sacem.dao.FichierRepository;
+import fr.sacem.dao.LigneProgrammeBatchDao;
 import fr.sacem.dao.ProgrammeBatchDao;
 import fr.sacem.priam.batch.affectation.cp.dao.JournalBatchDao;
 import fr.sacem.priam.common.TypeLog;
 import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.domain.*;
+import fr.sacem.priam.model.domain.dto.FileDto;
 import fr.sacem.priam.model.journal.JournalBuilder;
 import fr.sacem.service.importPenef.FichierBatchService;
 import org.slf4j.Logger;
@@ -33,9 +35,6 @@ public class JobDesaffectationListener extends JobExecutionListenerSupport {
     ProgrammeBatchDao programmeBatchDao;
 
     @Autowired
-    FichierRepository fichierRepository;
-
-    @Autowired
     private FichierBatchService fichierBatchService;
 
     @Autowired
@@ -44,6 +43,9 @@ public class JobDesaffectationListener extends JobExecutionListenerSupport {
     @Autowired
     JournalBatchDao journalBatchDao;
 
+    @Autowired
+    LigneProgrammeBatchDao ligneProgrammeBatchDao;
+
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
 
@@ -51,6 +53,10 @@ public class JobDesaffectationListener extends JobExecutionListenerSupport {
     public void beforeJob(JobExecution jobExecution) {
         String numProg = jobExecution.getJobParameters().getString("numProg");
         programmeBatchDao.majStattutEligibilite(numProg, "EN_COURS_DESAFFECTATION");
+
+        List<FileDto> files = fichierDao.findFichiersAffecteByIdProgramme(numProg, Status.AFFECTE);
+        files.forEach(f -> ligneProgrammeBatchDao.deleteDonneesLigneCP(f.getId()));
+
     }
 
     @Override
@@ -63,8 +69,7 @@ public class JobDesaffectationListener extends JobExecutionListenerSupport {
 
             programmeBatchDao.majStattutEligibilite(numProg, "FIN_DESAFFECTATION");
 
-            fichierRepository.deleteFichierLinkForAntille(numProg);
-
+          //  fichierRepository.deleteFichierLinkForAntille(numProg);
             fichierBatchService.clearSelectedFichiers(numProg, "CHARGEMENT_OK");
 
             String user = jobExecution.getJobParameters().getString("username");

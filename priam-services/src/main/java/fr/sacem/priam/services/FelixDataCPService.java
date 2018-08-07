@@ -1,5 +1,6 @@
 package fr.sacem.priam.services;
 
+import fr.sacem.priam.model.dao.jpa.LignePreprepDao;
 import fr.sacem.priam.model.dao.jpa.cp.LigneProgrammeCPDao;
 import fr.sacem.priam.model.domain.LignePreprep;
 import org.springframework.beans.factory.annotation.Autowired;
