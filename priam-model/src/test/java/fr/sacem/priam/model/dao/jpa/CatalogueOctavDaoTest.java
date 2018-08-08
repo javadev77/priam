@@ -4,10 +4,12 @@ import fr.sacem.priam.model.dao.AbstractDaoTest;
 import fr.sacem.priam.model.domain.CatalogueOctav;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 
+@Transactional
 public class CatalogueOctavDaoTest extends AbstractDaoTest {
 
     @Autowired
