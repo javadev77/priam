@@ -28,7 +28,7 @@ public class App {
 
         ApplicationContext context = new AnnotationConfigApplicationContext(ConfigurationPriamLocal.class, ConfigurationPriamProd.class);
         JobLauncher jobLauncher = (JobLauncher) context.getBean("jobLauncher");
-        Job job = (Job) context.getBean("baseJob");
+        Job job = (Job) context.getBean("jobGenerationCatalogue");
         Admap admap =(Admap) context.getBean("admap");
 
         try {

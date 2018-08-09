@@ -243,14 +243,23 @@ public enum EnvConstants implements ConfigurableProperty {
     },
 
     PARAM_ANNEE_FR {
+        @Override
         public String property() {
             return "priam.param.annee.fr";
         }
     },
 
     PARAM_ANNEE_ANF {
+        @Override
         public String property() {
             return "priam.param.annee.anf";
+        }
+    },
+
+    GENERATION_CATALOGUE_OUTPUT {
+        @Override
+        public String property() {
+            return "priam.generation.catalogue.output";
         }
     }
     ;

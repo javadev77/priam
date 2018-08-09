@@ -65,7 +65,7 @@ public class FlatFileWriterConfig {
 
         StringHeaderWriter headerWriter = new StringHeaderWriter(head(getTitreTypeCMS(typeCMS)));
         csvFileWriter.setHeaderCallback(headerWriter);
-        csvFileWriter.setFooterCallback(writer -> writer.write(foot(catalogueCmsDao.countNbLignes("FR"))));
+        csvFileWriter.setFooterCallback(writer -> writer.write(foot(catalogueCmsDao.countNbLignes(typeCMS))));
 
         System.out.println("TYPE_CMS = " + typeCMS);
         String fileName = "FF_PRIAM_CATALOGUE_" + typeCMS + "_"

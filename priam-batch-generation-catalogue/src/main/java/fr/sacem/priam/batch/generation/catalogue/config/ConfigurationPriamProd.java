@@ -15,13 +15,13 @@ import java.util.Properties;
  */
 @Configuration
 @ComponentScan(basePackages = {"fr.sacem.priam.batch.generation.catalogue"})
-@ImportResource(value = "classpath:config/job-generation-catalogue-fr.xml")
+@ImportResource(value = "classpath:config/job-configuration.xml")
 @Profile({"production", "re7"})
 @PropertySource("classpath:config/application-production.properties")
 public class ConfigurationPriamProd {
 
     private Enum ConfigurationFromAdMap = EnvConstants.BATCH_CONFIG_PROPERTIES;
-    private String outputDirectory = String.valueOf(EnvConstants.PARTICIPANTS_REQ_OCTAV_CSV_DIR);
+    private String outputDirectory = String.valueOf(EnvConstants.GENERATION_CATALOGUE_OUTPUT);
 
     @Bean
     public DataSource dataSource() {
