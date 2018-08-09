@@ -115,6 +115,7 @@ public class JpaConfigurationTest {
 
         }catch(ManagedProcessException e){
             logger.error(e.getMessage());
+            throw new RuntimeException("Erreur lors de l'execution du script SQL", e);
         }
         return dataSource;
     }

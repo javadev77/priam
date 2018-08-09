@@ -11,7 +11,8 @@ import java.util.List;
  */
 public class AffectationDto {
     private String numProg;
-    private List<Fichier> fichiers= new ArrayList<>();
+    private List<Fichier> fichiers = new ArrayList<>();
+    private List<Fichier> fichiersUnChecked = new ArrayList<>();
     private List<Long> fichersAvantAffectation = new ArrayList<>();
 
 
@@ -42,6 +43,14 @@ public class AffectationDto {
 
     public void setFichersAvantAffectation(List<Long> fichersAvantAffectation) {
         this.fichersAvantAffectation = fichersAvantAffectation;
+    }
+
+    public List<Fichier> getFichiersUnChecked() {
+        return fichiersUnChecked;
+    }
+
+    public void setFichiersUnChecked(List<Fichier> fichiersUnChecked) {
+        this.fichiersUnChecked = fichiersUnChecked;
     }
 
     public AffectationDto() {

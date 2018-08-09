@@ -1,6 +1,7 @@
 package fr.sacem.priam.services.utils;
 
-import fr.sacem.priam.common.TypeUtilisationEnum;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.priam.model.domain.Fichier;
@@ -12,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -25,17 +28,21 @@ public class AffectationUtil {
     private ProgrammeDao programmeDao;
 
     public List<Fichier> getFichiersAffectes(AffectationDto affectationDto){
-        List<Fichier> result = new ArrayList<>();
+        List<Fichier> fichiersAffectes = new ArrayList<>();
 
+        Set<Long> fichiersAvantAffectation = new HashSet<>(affectationDto.getFichersAvantAffectation());
+        Set<Long> fichiersSelectionnes = affectationDto.getFichiers().stream().map(Fichier::getId).collect(Collectors.toSet());
+        Set<Long> fichiersDeselectionnes = affectationDto.getFichiersUnChecked().stream().map(Fichier::getId).collect(Collectors.toSet());
 
-        Programme programme = programmeDao.findByNumProg(affectationDto.getNumProg());
+        Sets.SetView<Long> difference = Sets.difference(fichiersAvantAffectation, fichiersDeselectionnes);
+        Sets.SetView<Long> result = Sets.union(difference, fichiersSelectionnes);
+
+        /*Programme programme = programmeDao.findByNumProg(affectationDto.getNumProg());
 
         List<Fichier> listFichierDejaAffecte = new ArrayList<>();
         if(programme.getFamille().getCode().equals(FamillePriam.CMS.getCode())){
-            affectationDto.getFichersAvantAffectation().forEach(id ->{
-                        listFichierDejaAffecte.add(fichierDao.findOne(id));
-                    }
-            );
+            affectationDto.getFichersAvantAffectation()
+                    .forEach(id -> listFichierDejaAffecte.add(fichierDao.findOne(id)));
         } else {
             listFichierDejaAffecte.addAll(fichierDao.findFichiersByIdProgramme(programme.getNumProg(), Status.AFFECTE));
         }
@@ -43,9 +50,7 @@ public class AffectationUtil {
 
 
         List<Fichier> listFichierDto = new ArrayList<>();
-        affectationDto.getFichiers().forEach(fichier -> {
-            listFichierDto.add(fichierDao.findOne(fichier.getId()));
-        });
+        affectationDto.getFichiers().forEach(fichier -> listFichierDto.add(fichierDao.findOne(fichier.getId())));
 
 
         List<Fichier> listNouveauFichierAffecte = listFichierDto.stream().filter(elem -> !listFichierDejaAffecte.contains(elem)).collect(Collectors.toList());
@@ -54,9 +59,10 @@ public class AffectationUtil {
         if(listFichierDejaAffecte.size() > listFichierDto.size()){
             List<Fichier> listFichierDesaffecte = listFichierDejaAffecte.stream().filter(elem -> !listFichierDto.contains(elem)).collect(Collectors.toList());
             result.removeAll(listFichierDesaffecte);
-        }
+        }*/
+        result.immutableCopy().forEach(idFichier -> fichiersAffectes.add(fichierDao.findOne(idFichier)));
 
-        return result;
+        return fichiersAffectes;
     }
 
 }

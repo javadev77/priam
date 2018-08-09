@@ -5,6 +5,7 @@ import fr.sacem.priam.model.dao.AbstractDaoTest;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.Status;
+import fr.sacem.priam.model.domain.StatutEligibilite;
 import fr.sacem.priam.model.domain.StatutProgramme;
 import fr.sacem.priam.model.domain.criteria.ProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.FileDto;
@@ -238,26 +239,33 @@ public class ProgrammeViewDaoTest extends AbstractDaoTest{
     @Test
     public void add_programme(){
         java.util.Date date = new java.util.Date();
+
         SareftrFamiltyputil sareftrFamiltyputil = new SareftrFamiltyputil();
         sareftrFamiltyputil.setCode("monCdeFam1");
         sareftrFamiltyputil.setDateDebut(date);
+
         sareftrFamiltyputilDao.save(sareftrFamiltyputil);
+
         SareftrTyputil sareftrTyputil = new SareftrTyputil();
         sareftrTyputil.setCode("cdeTyUt1");
         sareftrTyputil.setCodeFamille("monCdeFam1");
         sareftrTyputil.setDateDebut(date);
         sareftrTyputilDao.save(sareftrTyputil);
+
         SareftrRion sareftrRionPaiement = new SareftrRion();
         sareftrRionPaiement.setRion(998);
         sareftrRionDao.save(sareftrRionPaiement);
+
         SareftrRion sareftrRionTheorique = new SareftrRion();
         sareftrRionTheorique.setRion(999);
         sareftrRionDao.save(sareftrRionTheorique);
+
         Programme programme = new Programme();
         programme.setNumProg("myNum1");
         programme.setNom("mon programme 1");
         programme.setTypeUtilisation(sareftrTyputil);
         programme.setFamille(sareftrFamiltyputil);
+        programme.setStatutEligibilite(StatutEligibilite.EN_ATTENTE_ELIGIBILITE);
         //programme.setRionPaiement(sareftrRionPaiement);
         programme.setRionTheorique(sareftrRionTheorique);
         programmeDao.save(programme);

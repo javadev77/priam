@@ -2,6 +2,8 @@ package fr.sacem.priam.catcms.api;
 
 import fr.sacem.priam.catcms.api.dto.CatalogueCritereRecherche;
 import fr.sacem.priam.catcms.api.dto.KeyValueDtoCatcms;
+import fr.sacem.priam.catcms.journal.annotation.LogCatalogue;
+import fr.sacem.priam.catcms.journal.annotation.TypeLog;
 import fr.sacem.priam.model.dao.jpa.catcms.CatalogueCmsDao;
 import fr.sacem.priam.model.dao.jpa.catcms.ParticipantsCatcmsDao;
 import fr.sacem.priam.model.domain.catcms.CatalogueCms;
@@ -206,6 +208,7 @@ public class CatalogueResource {
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
+    @LogCatalogue(event = TypeLog.AJOUT_OEUVRE)
     public ResponseEntity ajouterOeuvreFromMipsa(@RequestBody CatalogueCms catalogueCms) {
         catalogueCms.setDateEntree(new Date());
         catalogueCms.setTypUtilGen("PHONOFR");

@@ -21,12 +21,16 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by benmerzoukah on 07/06/2017.
@@ -53,6 +57,11 @@ public class ProgrammeService {
 	
 	@Autowired
 	FichierFelixDao fichierFelixDao;
+
+	@Autowired
+	private PlatformTransactionManager transactionManager;
+
+	private final ReentrantLock lock = new ReentrantLock();
 	
 	private static final Logger LOG = LoggerFactory.getLogger(ProgrammeService.class);
 	
@@ -66,8 +75,7 @@ public class ProgrammeService {
 		
 		return pageProgramme;
 	}
-	
-	@Transactional
+
     @LogProgramme(event = TypeLog.CREATION)
 	public Programme addProgramme(ProgrammeDto programmeDto, UserDTO userDTO) {
 		MapperConfiguration mapperConfiguration = new MapperConfiguration();
@@ -76,21 +84,49 @@ public class ProgrammeService {
 		ProgrammeKey programmeKey = new ProgrammeKey();
 		LocalDate today = LocalDate.now();
 		String year = String.valueOf(today.getYear()).substring(2, 4);
-		String max_value = programmeSequnceDao.getLastElement(year);
-		if (Long.valueOf(year) > Long.valueOf(paramAppli.getVal())) {
-			max_value = "0";
-			paramAppli.setVal(year);
-			paramAppliDao.saveAndFlush(paramAppli);
+		//locke
+
+		Programme mappedProgramme = null;
+		lock.lock();
+		TransactionStatus ts = transactionManager.getTransaction(new DefaultTransactionDefinition());
+		try {
+			String max_value = programmeSequnceDao.getLastElement(year);
+
+
+			if (Long.valueOf(year) > Long.valueOf(paramAppli.getVal())) {
+				max_value = "0";
+				paramAppli.setVal(year);
+				paramAppliDao.saveAndFlush(paramAppli);
+			}
+			if (max_value == null)
+				max_value = "0";
+			Long max_value_to_add = Long.valueOf(max_value) + SELECTION;
+			String formated_max_value_to_add = StringUtils.leftPad(max_value_to_add.toString(), 4, "0");
+			programmeKey.setAnnee(year);
+			programmeKey.setCodeSequence(max_value_to_add);
+			programmeSequence.setProgrammeKey(programmeKey);
+			programmeSequnceDao.saveAndFlush(programmeSequence);
+			programmeDto.setNumProg(programmeKey.getAnnee() + formated_max_value_to_add);
+
+			mappedProgramme = mapperConfiguration.convertProgrammeDtoToProgramme(programmeDto);
+
+			mappedProgramme.setUsercre(programmeDto.getUsercre());
+			mappedProgramme.setDateCreation(new Date());
+			mappedProgramme.setStatut(StatutProgramme.CREE);
+
+			mappedProgramme = programmeDao.saveAndFlush(mappedProgramme);
+
+			transactionManager.commit(ts);
+
+		} catch (Exception e) {
+			transactionManager.rollback(ts);
+		} finally {
+			lock.unlock();
+
 		}
-		if (max_value == null)
-			max_value = "0";
-		Long max_value_to_add = Long.valueOf(max_value) + SELECTION;
-		String formated_max_value_to_add = StringUtils.leftPad(max_value_to_add.toString(), 4, "0");
-		programmeKey.setAnnee(year);
-		programmeKey.setCodeSequence(max_value_to_add);
-		programmeSequence.setProgrammeKey(programmeKey);
-		programmeSequnceDao.save(programmeSequence);
-		programmeDto.setNumProg(programmeKey.getAnnee() + formated_max_value_to_add);
+
+
+
 		// if(Long.getLong(paramAppli.getVal())<today.getYear()){
 		//update la sequence
 		//appdate la table paramAppli
@@ -98,13 +134,7 @@ public class ProgrammeService {
 		//ajouter une ligne dans la table ProgrammeSequence
 		//recuperer la derniere ligne ajouter dans la tavle Programme Sequence
 		//construire le Id du programme
-		Programme mappedProgramme = mapperConfiguration.convertProgrammeDtoToProgramme(programmeDto);
-	    
-		mappedProgramme.setUsercre(programmeDto.getUsercre());
-		mappedProgramme.setDateCreation(new Date());
-		mappedProgramme.setStatut(StatutProgramme.CREE);
-		
-		mappedProgramme = programmeDao.save(mappedProgramme);
+
 		
 		return mappedProgramme;
 	}

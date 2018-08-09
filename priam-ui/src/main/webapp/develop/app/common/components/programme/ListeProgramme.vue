@@ -811,12 +811,11 @@
 
         afficherTootlip(entry) {
 
-          if(entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE' || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE' ) {
+          if(entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
+            || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE' ||
+            entry.statutEligibilite === 'EN_COURS_DESAFFECTATION') {
 
-              return "Le programme est en cours de traitement d'éligibilité et de dédoublonnage";
-          } else if(entry.statutEligibilite === 'EN_COURS_DESAFFECTATION'  ) {
-
-              return "Le programme est en cours de desaffectation";
+            return "Le programme est en cours de traitement";
           }
           return '';
         },
