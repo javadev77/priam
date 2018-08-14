@@ -21,6 +21,7 @@ import java.util.Set;
  * Created by benmerzoukah on 09/05/2017.
  */
 @Lazy
+@Transactional
 public interface FichierDao extends JpaRepository<Fichier, Long> {
     
     @Transactional(readOnly = true)

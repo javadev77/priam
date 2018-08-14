@@ -32,8 +32,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigInteger;
 import java.util.*;
 
-import static fr.sacem.priam.common.util.FileUtils.CATALOGUE_OCTAV_TYPE_CMS_ANF;
-import static fr.sacem.priam.common.util.FileUtils.CATALOGUE_OCTAV_TYPE_CMS_FR;
+import static fr.sacem.priam.common.util.FileUtils.CATALOGUE_TYPE_CMS_ANF;
+import static fr.sacem.priam.common.util.FileUtils.CATALOGUE_TYPE_CMS_FR;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
@@ -393,10 +393,10 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
     public boolean isEligible(Long ide12, String typeCMS){
         boolean result = false;
         CatalogueOctav oeuvreCatalogueOctav = null;
-        if(CATALOGUE_OCTAV_TYPE_CMS_ANF.equals(typeCMS)){
-            oeuvreCatalogueOctav = catalogueOctavDao.findByIde12(ide12, CATALOGUE_OCTAV_TYPE_CMS_ANF);
+        if(CATALOGUE_TYPE_CMS_ANF.equals(typeCMS)){
+            oeuvreCatalogueOctav = catalogueOctavDao.findByIde12(ide12, CATALOGUE_TYPE_CMS_ANF);
         } else {
-            oeuvreCatalogueOctav = catalogueOctavDao.findByIde12(ide12, CATALOGUE_OCTAV_TYPE_CMS_FR);
+            oeuvreCatalogueOctav = catalogueOctavDao.findByIde12(ide12, CATALOGUE_TYPE_CMS_FR);
         }
         if (oeuvreCatalogueOctav!=null){
             result = true;

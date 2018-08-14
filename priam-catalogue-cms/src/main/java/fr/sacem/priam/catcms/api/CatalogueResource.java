@@ -2,13 +2,15 @@ package fr.sacem.priam.catcms.api;
 
 import fr.sacem.priam.catcms.api.dto.CatalogueCritereRecherche;
 import fr.sacem.priam.catcms.api.dto.KeyValueDtoCatcms;
-import fr.sacem.priam.catcms.journal.annotation.LogCatalogue;
+import fr.sacem.priam.catcms.journal.annotation.LogCatalogueAjout;
+import fr.sacem.priam.catcms.journal.annotation.LogCatalogueSuppression;
 import fr.sacem.priam.catcms.journal.annotation.TypeLog;
 import fr.sacem.priam.model.dao.jpa.catcms.CatalogueCmsDao;
 import fr.sacem.priam.model.dao.jpa.catcms.ParticipantsCatcmsDao;
 import fr.sacem.priam.model.domain.catcms.CatalogueCms;
 import fr.sacem.priam.model.domain.catcms.ParticipantsCatcms;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
+import fr.sacem.priam.security.model.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -24,8 +26,8 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.util.*;
 
-import static fr.sacem.priam.common.util.FileUtils.CATALOGUE_OCTAV_TYPE_CMS_ANF;
-import static fr.sacem.priam.common.util.FileUtils.CATALOGUE_OCTAV_TYPE_CMS_FR;
+import static fr.sacem.priam.common.util.FileUtils.CATALOGUE_TYPE_CMS_ANF;
+import static fr.sacem.priam.common.util.FileUtils.CATALOGUE_TYPE_CMS_FR;
 
 @RestController
 @RequestMapping("/app/rest/")
@@ -194,11 +196,12 @@ public class CatalogueResource {
             method = RequestMethod.DELETE,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public CatalogueCms deleteOeuvre(@PathVariable(name = "id") Long id, @RequestBody CatalogueCms catalogueRdo){
+    @LogCatalogueSuppression(event = TypeLog.SUPPRESSION_OEUVRE)
+    public CatalogueCms deleteOeuvre(@PathVariable(name = "id") Long id, @RequestBody CatalogueCms catalogueRdo, UserDTO userDTO){
         CatalogueCms deletedOeuvre = catalogueRdoDao.findOne(id);
         deletedOeuvre.setDateSortie(new Date());
         deletedOeuvre.setTypeSortie("Manuelle");
-        deletedOeuvre.  setRaisonSortie(catalogueRdo.getRaisonSortie());
+        deletedOeuvre.setRaisonSortie(catalogueRdo.getRaisonSortie());
 
         return catalogueRdoDao.saveAndFlush(deletedOeuvre);
     }
@@ -208,8 +211,8 @@ public class CatalogueResource {
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
-    @LogCatalogue(event = TypeLog.AJOUT_OEUVRE)
-    public ResponseEntity ajouterOeuvreFromMipsa(@RequestBody CatalogueCms catalogueCms) {
+    @LogCatalogueAjout(event = TypeLog.AJOUT_OEUVRE)
+    public ResponseEntity ajouterOeuvreFromMipsa(@RequestBody CatalogueCms catalogueCms, UserDTO userDTO) {
         catalogueCms.setDateEntree(new Date());
         catalogueCms.setTypUtilGen("PHONOFR");
 
@@ -245,10 +248,10 @@ public class CatalogueResource {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public CatalogueCms findOeuvreExistanteCatalogue(@RequestBody CatalogueCms catalogueCms) {
         CatalogueCms catalogueCmsFound = new CatalogueCms();
-        if(CATALOGUE_OCTAV_TYPE_CMS_ANF.equals(catalogueCms.getTypeCMS())){
-            catalogueCmsFound = catalogueRdoDao.findOeuvreExistanteCatalogueByIde12AndTypeCMS(catalogueCms.getIde12(), CATALOGUE_OCTAV_TYPE_CMS_ANF);
+        if(CATALOGUE_TYPE_CMS_ANF.equals(catalogueCms.getTypeCMS())){
+            catalogueCmsFound = catalogueRdoDao.findOeuvreExistanteCatalogueByIde12AndTypeCMS(catalogueCms.getIde12(), CATALOGUE_TYPE_CMS_ANF);
         } else {
-            catalogueCmsFound = catalogueRdoDao.findOeuvreExistanteCatalogueByIde12AndTypeCMS(catalogueCms.getIde12(), CATALOGUE_OCTAV_TYPE_CMS_FR);
+            catalogueCmsFound = catalogueRdoDao.findOeuvreExistanteCatalogueByIde12AndTypeCMS(catalogueCms.getIde12(), CATALOGUE_TYPE_CMS_FR);
         }
         if (catalogueCmsFound == null){
             return new CatalogueCms();
@@ -260,7 +263,8 @@ public class CatalogueResource {
             value = "catalogue/oeuvre/{id}",
             method = RequestMethod.PUT,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public CatalogueCms renouvelerOeuvre(@PathVariable(name = "id") Long id){
+    @LogCatalogueAjout(event = TypeLog.RENOUVELLEMENT_OEUVRE)
+    public CatalogueCms renouvelerOeuvre(@PathVariable(name = "id") Long id, UserDTO userDTO){
         CatalogueCms oeuvreARenouvele = catalogueRdoDao.findOne(id);
         oeuvreARenouvele.setDateRenouvellement(new Date());
         return catalogueRdoDao.saveAndFlush(oeuvreARenouvele);
