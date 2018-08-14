@@ -1,4 +1,5 @@
 package fr.sacem.priam.batch.affectation.config;
+
 import fr.sacem.priam.batch.common.domain.Admap;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
@@ -10,10 +11,10 @@ import javax.sql.DataSource;
  * Created by benmerzoukah on 04/12/2017.
  */
 @Configuration
-@ComponentScan(basePackages = "fr.sacem.priam.batch.affectation.*")
-@ImportResource(value = "classpath:config/job-configuration.xml")
-@Profile({"local", "test"})
+@ComponentScan(basePackages = {"fr.sacem.priam.batch.affectation.*", "fr.sacem.priam.model.dao.*"})
+@Profile({"local"})
 @PropertySource("classpath:config/application-local.properties")
+@ImportResource(value = "classpath:config/job-configuration.xml")
 public class BatchConfigLocal {
 
     @Value("${spring.datasource.url}")

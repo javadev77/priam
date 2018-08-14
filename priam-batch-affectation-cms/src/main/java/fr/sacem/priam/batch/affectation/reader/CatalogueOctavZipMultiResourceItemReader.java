@@ -105,9 +105,8 @@ public class CatalogueOctavZipMultiResourceItemReader<T> extends MultiResourceIt
                                 LOG.debug("=== fichiers Dans Le Repertoire : "+file.getName()+" ===");
                                 //on traite qu'un seul fichier zip par lancement de batch
                                 if (file.getName().matches(EXTENTION_ZIP) && nbrDeFichierZipATraiter < 1 &&
-                                        ((file.getName().startsWith(FileUtils.PREFIX_OCTAV_CATALOGUE_FR))
-                                        && typeUtilisationProgramme.equals(TypeUtilisationEnum.CMS_FRA.getCode().toString()) || (file.getName().startsWith(FileUtils.PREFIX_OCTAV_CATALOGUE_ANF))
-                                        && typeUtilisationProgramme.equals(TypeUtilisationEnum.CMS_ANT.getCode().toString()))) {
+                                        (((file.getName().startsWith(FileUtils.PREFIX_PRIAM_CATALOGUE_FR)) && typeUtilisationProgramme.equals(TypeUtilisationEnum.CMS_FRA.getCode().toString())&& flagExist(inputDirectory, file)) ||
+                                                ((file.getName().startsWith(FileUtils.PREFIX_PRIAM_CATALOGUE_ANF)) && typeUtilisationProgramme.equals(TypeUtilisationEnum.CMS_ANT.getCode().toString()) && flagExist(inputDirectory, file)))) {
 
                                     File fichierEnCoursDeTraitement = new File(rep + file.getName() + FILE_ZIP_EN_COURS_DE_TRAITEMENT);
                                     utilFile.suppressionFlag(fichierEnCoursDeTraitement);
@@ -134,15 +133,15 @@ public class CatalogueOctavZipMultiResourceItemReader<T> extends MultiResourceIt
                                 File file = fichiersZipDansLeRepertoire.get(0);
 
                                 String fileName = file.getName();
-                                if((fileName.startsWith(FileUtils.PREFIX_OCTAV_CATALOGUE_FR)) || (fileName.startsWith(FileUtils.PREFIX_OCTAV_CATALOGUE_FR,1))
-                                        ||(fileName.startsWith(FileUtils.PREFIX_OCTAV_CATALOGUE_ANF)) || (fileName.startsWith(FileUtils.PREFIX_OCTAV_CATALOGUE_ANF,1))) {
+                                if((fileName.startsWith(FileUtils.PREFIX_PRIAM_CATALOGUE_FR)) || (fileName.startsWith(FileUtils.PREFIX_PRIAM_CATALOGUE_FR,1))
+                                        ||(fileName.startsWith(FileUtils.PREFIX_PRIAM_CATALOGUE_ANF)) || (fileName.startsWith(FileUtils.PREFIX_PRIAM_CATALOGUE_ANF,1))) {
                                     // vider la baser et lancer le chargement
-                                    if((fileName.startsWith(FileUtils.PREFIX_OCTAV_CATALOGUE_FR))){
-                                        traitementCmsDao.viderCatalogueOctav(FileUtils.CATALOGUE_OCTAV_TYPE_CMS_FR);
-                                        //stepExecution.getJobExecution().getExecutionContext().put("TYPE_CMS", FileUtils.CATALOGUE_OCTAV_TYPE_CMS_FR);
+                                    if((fileName.startsWith(FileUtils.PREFIX_PRIAM_CATALOGUE_FR))){
+                                        traitementCmsDao.viderCatalogueOctav(FileUtils.CATALOGUE_TYPE_CMS_FR);
+                                        //stepExecution.getJobExecution().getExecutionContext().put("TYPE_CMS", FileUtils.CATALOGUE_TYPE_CMS_FR);
                                     } else {
-                                        traitementCmsDao.viderCatalogueOctav(FileUtils.CATALOGUE_OCTAV_TYPE_CMS_ANF);
-                                        //stepExecution.getJobExecution().getExecutionContext().put("TYPE_CMS", FileUtils.CATALOGUE_OCTAV_TYPE_CMS_ANF);
+                                        traitementCmsDao.viderCatalogueOctav(FileUtils.CATALOGUE_TYPE_CMS_ANF);
+                                        //stepExecution.getJobExecution().getExecutionContext().put("TYPE_CMS", FileUtils.CATALOGUE_TYPE_CMS_ANF);
                                     }
 
                                     Charset cs = Charset.forName("IBM437");
@@ -237,4 +236,11 @@ public class CatalogueOctavZipMultiResourceItemReader<T> extends MultiResourceIt
     public void setTypeUtilisationProgramme(String typeUtilisationProgramme) {
         this.typeUtilisationProgramme = typeUtilisationProgramme;
     }
+
+    private boolean flagExist(String outputDirectory, File file){
+        String nameFileZip = file.getName().substring(0, file.getName().lastIndexOf('.'));
+        File flagFileZip = new File(outputDirectory + nameFileZip + ".flag");
+        return flagFileZip.exists();
+    }
+
 }

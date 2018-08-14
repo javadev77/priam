@@ -25,7 +25,6 @@
                         </listeners>
                 </chunk>
             </tasklet>
-
         </step>
         <step id="GenerationCatalogueAnf">
             <tasklet>
@@ -39,6 +38,9 @@
                 </chunk>
             </tasklet>
         </step>
+        <listeners merge="true">
+            <listener ref="zipAndFlagListener"></listener>
+        </listeners>
     </job>
 
     <bean id="readerPriamGenerationCatalogue"
@@ -64,6 +66,8 @@
     <bean id="generationCatalogueFraListener" class="fr.sacem.priam.batch.generation.catalogue.listener.StepBeginGenerationCatalogueFraListener"/>
 
     <bean id="generationCatalogueAnfListener" class="fr.sacem.priam.batch.generation.catalogue.listener.StepBeginGenerationCatalogueAnfListener"/>
+
+    <bean id="zipAndFlagListener" class="fr.sacem.priam.batch.generation.catalogue.listener.JobCompletionGenerationCatalogueListener"/>
 
     <bean id="jobOperator" class="org.springframework.batch.core.launch.support.SimpleJobOperator"
           p:jobLauncher-ref="jobLauncher" p:jobExplorer-ref="jobExplorer"

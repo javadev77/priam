@@ -1,5 +1,6 @@
 package fr.sacem.priam.batch.affectation;
 
+import fr.sacem.priam.batch.affectation.config.BatchConfigProd;
 import fr.sacem.priam.batch.common.domain.Admap;
 import fr.sacem.priam.batch.affectation.config.BatchConfigLocal;
 import org.slf4j.Logger;
@@ -26,7 +27,7 @@ public class AppBatchAffectationCMS {
     public static void main(String[] args) {
         LOGGER.info("Lancement du Batch Affectation CMS ");
 
-        ApplicationContext context = new AnnotationConfigApplicationContext(BatchConfigLocal.class);
+        ApplicationContext context = new AnnotationConfigApplicationContext(BatchConfigLocal.class, BatchConfigProd.class);
 
         /*Test import catalogue FRA*/
         /*JobLauncher jobLauncher = (JobLauncher) context.getBean("jobLauncher");

@@ -12,6 +12,7 @@ public class CatalogueCMSRowMapper implements RowMapper<CatalogueCms> {
     public CatalogueCms mapRow(ResultSet resultSet, int i) throws SQLException {
         CatalogueCms catalogueCms = new CatalogueCms();
         catalogueCms.setId(resultSet.getLong("ID"));
+        catalogueCms.setIde12(resultSet.getLong("IDE12"));
         return catalogueCms;
     }
 }

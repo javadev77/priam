@@ -183,10 +183,10 @@ public class FichierCatcmsRepositoryImpl implements FichierRepository {
 
     private String getTypeFichierCatcms(String nomFichierCatcms){
         String result;
-        if(nomFichierCatcms.startsWith(FileUtils.PREFIX_OCTAV_CATALOGUE_FR)){
-            result = FileUtils.CATALOGUE_OCTAV_TYPE_CMS_FR;
+        if(nomFichierCatcms.startsWith(FileUtils.PREFIX_PRIAM_CATALOGUE_FR)){
+            result = FileUtils.CATALOGUE_TYPE_CMS_FR;
         } else {
-            result = FileUtils.CATALOGUE_OCTAV_TYPE_CMS_ANF;
+            result = FileUtils.CATALOGUE_TYPE_CMS_ANF;
         }
         return result;
     }

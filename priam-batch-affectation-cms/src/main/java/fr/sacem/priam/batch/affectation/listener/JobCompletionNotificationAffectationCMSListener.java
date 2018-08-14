@@ -150,9 +150,9 @@ public class JobCompletionNotificationAffectationCMSListener extends JobExecutio
                     Programme programme = programmeBatchDao.findByNumProg(numProg);
                     String typeCms = null;
                     if(TypeUtilisationPriam.SONOFRA.getCode().equals(programme.getTypeUtilisation())) {
-                        typeCms = FileUtils.CATALOGUE_OCTAV_TYPE_CMS_FR;
+                        typeCms = FileUtils.CATALOGUE_TYPE_CMS_FR;
                     } else if(TypeUtilisationPriam.SONOANT.getCode().equals(programme.getTypeUtilisation())) {
-                        typeCms = FileUtils.CATALOGUE_OCTAV_TYPE_CMS_ANF;
+                        typeCms = FileUtils.CATALOGUE_TYPE_CMS_ANF;
                     }
 
                     Long nbOeuvresCatalogue = ligneProgrammeBatchDao.countNbOeuvresCatalogue(typeCms);
@@ -195,7 +195,6 @@ public class JobCompletionNotificationAffectationCMSListener extends JobExecutio
 
         }
 
-
     }
 
     public FichierBatchService getFichierBatchService() {
@@ -205,5 +204,6 @@ public class JobCompletionNotificationAffectationCMSListener extends JobExecutio
     public void setFichierBatchService(FichierBatchService fichierBatchService) {
         this.fichierBatchService = fichierBatchService;
     }
+
 }
 

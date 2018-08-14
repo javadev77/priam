@@ -1,6 +1,7 @@
 package fr.sacem.priam.batch.generation.catalogue.writer;
 
 import fr.sacem.priam.batch.common.domain.Admap;
+import fr.sacem.priam.batch.common.util.UtilFile;
 import fr.sacem.priam.batch.generation.catalogue.dao.CatalogueCmsDao;
 import fr.sacem.priam.batch.generation.catalogue.domain.CatalogueCmsGenerated;
 import org.springframework.batch.core.JobExecution;
@@ -21,9 +22,13 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.FileSystemResource;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.zip.ZipOutputStream;
 
 /**
  * Created by benmerzoukah on 13/06/2018.
