@@ -8,6 +8,9 @@ import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemProcessor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 
 public class ParticipantFraProcessor implements ItemProcessor<Participant, Participant> {
 
@@ -19,9 +22,14 @@ public class ParticipantFraProcessor implements ItemProcessor<Participant, Parti
 
     private ExecutionContext executionContext;
 
+    @Value("#{jobParameters['typeCMS']}")
+    private String typeCMS;
+
     @Override
     public Participant process(Participant participant) throws Exception {
-        participant.setTypeCMS("FR");
+//        participant.setTypeCMS("FR");
+        participant.setTypeCMS(typeCMS);
+
         if(participant.getRolPart().equals(StatutRoleParticipant.getValue("ROLE_A").getCodeStatutRole())
                 || participant.getRolPart().equals(StatutRoleParticipant.getValue("ROLE_AR").getCodeStatutRole())
                 || participant.getRolPart().equals(StatutRoleParticipant.getValue("ROLE_C").getCodeStatutRole())
@@ -43,5 +51,9 @@ public class ParticipantFraProcessor implements ItemProcessor<Participant, Parti
     @BeforeStep
     public void beforeStep(StepExecution stepExecution) {
         this.executionContext = stepExecution.getExecutionContext();
+    }
+
+    public void setTypeCMS(String typeCMS) {
+        this.typeCMS = typeCMS;
     }
 }

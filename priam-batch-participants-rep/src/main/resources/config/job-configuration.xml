@@ -21,7 +21,7 @@
         <property name="location" value="classpath:config/application-${spring.profiles.active}.properties"/>
     </bean>
 
-    <job id="jobParticipantFRA" xmlns="http://www.springframework.org/schema/batch">
+    <job id="jobParticipantRep" xmlns="http://www.springframework.org/schema/batch">
         <step id="csvArchiveFlatFileReaderStep" next="suppressionParticipantErreur">
             <tasklet>
                 <chunk
@@ -141,7 +141,7 @@
         </property>
     </bean>
 
-    <bean id="processorPriamParticipantCsv" class="fr.sacem.priam.batch.participants.rep.processor.ParticipantFraProcessor"/>
+    <bean id="processorPriamParticipantCsv" class="fr.sacem.priam.batch.participants.rep.processor.ParticipantFraProcessor" scope="step"/>
 
 
     <bean id="jobCompletionParticipantListener" class="fr.sacem.priam.batch.participants.rep.listener.JobCompletionParticipantListener"></bean>

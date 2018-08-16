@@ -60,7 +60,7 @@ done
 echo ${LOCALCLASSPATH}
 echo ${SACEM_CONFIG}
 
-$JAVACMD -jar -Dspring.profiles.active=production /usr1/priam/BatchParticipantsREQ/bin/priam-batch-participants-req.jar
+$JAVACMD -jar -Dspring.profiles.active=production /usr1/priam/BatchParticipantsREQ/bin/priam-batch-participants-req.jar FR
 # Memoriser le numero de processus du programme java
 CHILD_PID=$
 
