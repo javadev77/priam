@@ -3,6 +3,7 @@ package fr.sacem.priam.batch.participants.req;
 import fr.sacem.priam.batch.common.domain.Admap;
 import fr.sacem.priam.batch.participants.req.config.ConfigurationPriamLocal;
 import fr.sacem.priam.batch.participants.req.config.ConfigurationPriamProd;
+import fr.sacem.priam.common.util.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
@@ -26,7 +27,7 @@ public class App {
 
     public static void main(String[] args) {
 
-        if(args.length > 0){
+        if(args.length > 0 && args[0].equals(FileUtils.CATALOGUE_TYPE_CMS_FR) || args[0].equals(FileUtils.CATALOGUE_TYPE_CMS_ANF)){
             ApplicationContext context = new AnnotationConfigApplicationContext(ConfigurationPriamLocal.class, ConfigurationPriamProd.class);
             JobLauncher jobLauncher = (JobLauncher) context.getBean("jobLauncher");
             Job job = (Job) context.getBean("jobCsvREQ");

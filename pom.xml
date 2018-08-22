@@ -36,7 +36,7 @@
         <module>priam-batch-import-cms-ant</module>
         <module>priam-catalogue-cms</module>
         <module>priam-batch-import-catcms-rdo</module>
-        <module>priam-batch-enrichissement-cat-fra</module>
+        <module>priam-batch-enrichissement-cat</module>
         <module>priam-batch-participants-rep</module>
         <module>priam-batch-participants-req</module>
         <module>priam-batch-filiation-npu</module>
