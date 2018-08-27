@@ -49,7 +49,7 @@
     </bean>
 
     <bean id="qpReaderPriamPurgeCatalogueFr" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
-        <property name="selectClause" value="SELECT ID"/>
+        <property name="selectClause" value="SELECT ID, IDE12"/>
         <property name="fromClause" value="FROM PRIAM_CATCMS_CATALOGUE"/>
         <property name="whereClause" value="CURRENT_DATE() > DATEADD('YEAR', #{jobParameters['param.annee.fr']}, DATE_SORTIE)
                                             AND TYPE_CMS = 'FR'"/>
@@ -67,7 +67,7 @@
     </bean>
 
     <bean id="qpReaderPriamPurgeCatalogueAnf" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
-        <property name="selectClause" value="SELECT ID"/>
+        <property name="selectClause" value="SELECT ID, IDE12"/>
         <property name="fromClause" value="FROM PRIAM_CATCMS_CATALOGUE"/>
         <property name="whereClause" value="CURRENT_DATE() > DATEADD('YEAR', #{jobParameters['param.annee.anf']}, DATE_SORTIE)
                                             AND TYPE_CMS = 'ANF'"/>

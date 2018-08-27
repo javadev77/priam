@@ -18,7 +18,7 @@
             <tasklet>
                 <chunk
                         reader="readerPriamFiliationNpuCsv"
-                        writer="writerPriamFiliationNpuCsv"
+                        writer="compositeWriterPriamFiliationNPU"
                         commit-interval="${commit-interval}">
                 </chunk>
             </tasklet>
@@ -61,6 +61,16 @@
         </property>
     </bean>
 
+    <bean id="compositeWriterPriamFiliationNPU" class="org.springframework.batch.item.support.CompositeItemWriter">
+        <property name="delegates">
+            <list>
+                <ref bean="writerPriamFiliationNpuCsv" />
+                <ref bean="writerJournalCatcmsSortieNPU" />
+                <ref bean="writerJournalCatcmsCreationNPU" />
+            </list>
+        </property>
+    </bean>
+
     <bean id="writerPriamFiliationNpuCsv" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
     <property name="dataSource" ref="dataSource"/>
     <property name="assertUpdates" value="false"/>
@@ -69,13 +79,65 @@
             <![CDATA[
                     UPDATE PRIAM_CATCMS_CATALOGUE
                     SET IDE12 = :ide12Rep, TITRE = :titreOriginal
-                    WHERE IDE12  = :ide12;
+                    WHERE IDE12  = :ide12 AND DATE_SORTIE IS NULL;
                 ]]>
         </value>
     </property>
     <property name="itemSqlParameterSourceProvider">
         <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
     </property>
+    </bean>
+
+    <bean id="writerJournalCatcmsSortieNPU" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                   INSERT INTO PRIAM_CATCMS_JOURNAL (
+                    EVENEMENT,
+                    IDE12,
+                    DATE,
+                    UTILISATEUR
+                   )
+                   VALUES (
+                    'Sortie NPU',
+                    :ide12,
+                    CURRENT_TIMESTAMP(),
+                    'Batch NPU'
+                   )
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
+
+    <bean id="writerJournalCatcmsCreationNPU" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                   INSERT INTO PRIAM_CATCMS_JOURNAL (
+                    EVENEMENT,
+                    IDE12,
+                    DATE,
+                    UTILISATEUR
+                   )
+                   VALUES (
+                    'Création NPU',
+                    :ide12Rep,
+                    CURRENT_TIMESTAMP(),
+                    'Batch NPU'
+                   )
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
     </bean>
 
     <bean id="jobCompletionFiliationNpuListener" class="fr.sacem.priam.batch.filiation.npu.listener.JobCompletionFiliationNpuListener"></bean>
@@ -101,6 +163,19 @@
 
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <bean id="utilFile" class="fr.sacem.priam.batch.common.util.UtilFile" scope="prototype">
+        <property name="fichierBatchService" ref="fichierBatchService"/>
+    </bean>
+
+    <bean id="fichierBatchService" class="fr.sacem.priam.batch.common.service.importPenef.FichierBatchServiceImpl">
+        <constructor-arg ref="fichierRepository"/>
+    </bean>
+
+    <bean id="fichierRepository" class="fr.sacem.priam.batch.common.dao.FichierCatcmsRepositoryImpl">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="nomTableFichier" value="${nom.table.fichier}"/>
     </bean>
 
 </beans>

@@ -81,6 +81,7 @@
             <list>
                 <ref bean="writerPriamSortieCatalogue" />
                 <ref bean="writerDeleteParticipantFr" />
+                <ref bean="writerJournalCatcms" />
             </list>
         </property>
     </bean>
@@ -90,6 +91,7 @@
             <list>
                 <ref bean="writerPriamSortieCatalogue" />
                 <ref bean="writerDeleteParticipantAnf" />
+                <ref bean="writerJournalCatcms" />
             </list>
         </property>
     </bean>
@@ -139,6 +141,32 @@
                 <![CDATA[
                     DELETE FROM PRIAM_CATCMS_PARTICIPANTS
                     WHERE IDE12  = :ide12 AND TYPE_CMS = 'ANF';
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
+
+    <bean id="writerJournalCatcms" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                   INSERT INTO PRIAM_CATCMS_JOURNAL (
+                    EVENEMENT,
+                    IDE12,
+                    DATE,
+                    UTILISATEUR
+                   )
+                   VALUES (
+                    'Sortie du catalogue',
+                    :ide12,
+                    CURRENT_TIMESTAMP(),
+                    'Batch Sortie'
+                   )
                 ]]>
             </value>
         </property>
