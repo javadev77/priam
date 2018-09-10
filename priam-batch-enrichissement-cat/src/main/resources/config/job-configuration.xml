@@ -291,13 +291,15 @@
                     EVENEMENT,
                     IDE12,
                     DATE,
-                    UTILISATEUR
+                    UTILISATEUR,
+                    TYPE_CMS
                    )
                    VALUES (
-                    'Mouvement de répartition - Entrée oeuvre',
+                    'MOUVEMENT_REPARTITION_ENTREE_OEUVRE',
                     :ide12,
                     CURRENT_TIMESTAMP(),
-                    'Batch Enrichissement'
+                    'Batch Enrichissement',
+                    :typeCMS
                    )
                 ]]>
             </value>
@@ -317,13 +319,15 @@
                     EVENEMENT,
                     IDE12,
                     DATE,
-                    UTILISATEUR
+                    UTILISATEUR,
+                    TYPE_CMS
                    )
                    VALUES (
-                    'Mouvement de répartition - Renouvellement oeuvre',
+                    'MOUVEMENT_REPARTITION_RENOUVELLEMENT_OEUVRE',
                     :ide12,
                     CURRENT_TIMESTAMP(),
-                    'Batch Enrichissement'
+                    'Batch Enrichissement',
+                    :typeCMS
                    )
                 ]]>
             </value>

@@ -45,7 +45,7 @@
     </bean>
 
     <bean id="qpReaderPriamSortieCatalogueFr" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
-        <property name="selectClause" value="SELECT ID, IDE12"/>
+        <property name="selectClause" value="SELECT ID, IDE12, TYPE_CMS"/>
         <property name="fromClause" value="FROM PRIAM_CATCMS_CATALOGUE"/>
         <property name="whereClause" value="(DATE_SORTIE IS NULL AND DATE_RENOUVELLEMENT IS NULL AND CURRENT_DATE() > DATE_ADD(DATE_ENTREE, INTERVAL #{jobParameters['param.annee.fr']} YEAR))
                                             OR (DATE_SORTIE IS NULL AND DATE_RENOUVELLEMENT IS NOT NULL AND CURRENT_DATE() > DATE_ADD(DATE_RENOUVELLEMENT, INTERVAL 10 YEAR))
@@ -159,13 +159,15 @@
                     EVENEMENT,
                     IDE12,
                     DATE,
-                    UTILISATEUR
+                    UTILISATEUR,
+                    TYPE_CMS
                    )
                    VALUES (
-                    'Sortie du catalogue',
+                    'SORTIE_CATALOGUE',
                     :ide12,
                     CURRENT_TIMESTAMP(),
-                    'Batch Sortie'
+                    'Batch Sortie',
+                    :typeCMS
                    )
                 ]]>
             </value>

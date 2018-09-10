@@ -53,10 +53,10 @@ public class LoggingAspect {
         CatalogueCms catalogueCms = null;
 
         if(annotationValue.equals(TypeLog.AJOUT_OEUVRE)){
-            journalCatcms.setEvenement(TypeLog.AJOUT_OEUVRE.getEvenement());
+            journalCatcms.setEvenement("AJOUT_MANUEL_OEUVRE");
             catalogueCms = (CatalogueCms) joinPoint.getArgs()[0];
         } else if(annotationValue.equals(TypeLog.RENOUVELLEMENT_OEUVRE)){
-            journalCatcms.setEvenement(TypeLog.RENOUVELLEMENT_OEUVRE.getEvenement());
+            journalCatcms.setEvenement("RENOUVELLEMENT_MANUEL_OEUVRE");
             Long idCatalogueCms = (Long) joinPoint.getArgs()[0];
             catalogueCms = getCatalogueCms(idCatalogueCms);
         }
@@ -67,6 +67,7 @@ public class LoggingAspect {
 
         journalCatcms.setUtilisateur(userDTO.getUserId());
         journalCatcms.setDate(new Date());
+        journalCatcms.setTypeCMS(catalogueCms.getTypeCMS());
         journalCatcmsDao.save(journalCatcms);
 
         return result;
@@ -81,9 +82,10 @@ public class LoggingAspect {
         CatalogueCms catalogueCms = getCatalogueCms(idCatalogueCms);
 
         JournalCatcms journalCatcms = new JournalCatcms();
-        journalCatcms.setEvenement(TypeLog.SUPPRESSION_OEUVRE.getEvenement());
+        journalCatcms.setEvenement("SUPPRESSION_MANUELLE_OEUVRE");
         journalCatcms.setIde12(catalogueCms.getIde12());
         journalCatcms.setDate(new Date());
+        journalCatcms.setTypeCMS(catalogueCms.getTypeCMS());
 
         UserDTO userDTO = (UserDTO) joinPoint.getArgs()[2];
         journalCatcms.setUtilisateur(userDTO.getUserId());

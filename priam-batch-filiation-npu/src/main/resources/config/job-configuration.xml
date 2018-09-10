@@ -18,7 +18,8 @@
             <tasklet>
                 <chunk
                         reader="readerPriamFiliationNpuCsv"
-                        writer="compositeWriterPriamFiliationNPU"
+                        writer="writerPriamFiliationNpuCsv"
+                        processor="processorPriamFiliationNPU"
                         commit-interval="${commit-interval}">
                 </chunk>
             </tasklet>
@@ -61,7 +62,10 @@
         </property>
     </bean>
 
-    <bean id="compositeWriterPriamFiliationNPU" class="org.springframework.batch.item.support.CompositeItemWriter">
+    <bean id="processorPriamFiliationNPU" class="fr.sacem.priam.batch.filiation.npu.processor.OeuvreFiliationNPUProcessor">
+    </bean>
+
+    <!--<bean id="compositeWriterPriamFiliationNPU" class="org.springframework.batch.item.support.CompositeItemWriter">
         <property name="delegates">
             <list>
                 <ref bean="writerPriamFiliationNpuCsv" />
@@ -69,7 +73,7 @@
                 <ref bean="writerJournalCatcmsCreationNPU" />
             </list>
         </property>
-    </bean>
+    </bean>-->
 
     <bean id="writerPriamFiliationNpuCsv" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
     <property name="dataSource" ref="dataSource"/>
@@ -88,7 +92,7 @@
     </property>
     </bean>
 
-    <bean id="writerJournalCatcmsSortieNPU" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+    <!--<bean id="writerJournalCatcmsSortieNPU" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
         <property name="dataSource" ref="dataSource"/>
         <property name="assertUpdates" value="false"/>
         <property name="sql">
@@ -98,13 +102,15 @@
                     EVENEMENT,
                     IDE12,
                     DATE,
-                    UTILISATEUR
+                    UTILISATEUR,
+                    TYPE_CMS
                    )
                    VALUES (
                     'Sortie NPU',
                     :ide12,
                     CURRENT_TIMESTAMP(),
-                    'Batch NPU'
+                    'Batch NPU',
+                    :typeCMS
                    )
                 ]]>
             </value>
@@ -124,13 +130,15 @@
                     EVENEMENT,
                     IDE12,
                     DATE,
-                    UTILISATEUR
+                    UTILISATEUR,
+                    TYPE_CMS
                    )
                    VALUES (
                     'Création NPU',
                     :ide12Rep,
                     CURRENT_TIMESTAMP(),
-                    'Batch NPU'
+                    'Batch NPU',
+                    :typeCMS
                    )
                 ]]>
             </value>
@@ -138,7 +146,7 @@
         <property name="itemSqlParameterSourceProvider">
             <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
         </property>
-    </bean>
+    </bean>-->
 
     <bean id="jobCompletionFiliationNpuListener" class="fr.sacem.priam.batch.filiation.npu.listener.JobCompletionFiliationNpuListener"></bean>
 
@@ -177,5 +185,11 @@
         <property name="dataSource" ref="dataSource"/>
         <property name="nomTableFichier" value="${nom.table.fichier}"/>
     </bean>
+
+    <bean id="journalCatcmsRepository" class="fr.sacem.priam.batch.filiation.npu.dao.JournalCatcmsRepository">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+
 
 </beans>

@@ -22,6 +22,7 @@ public class CataloguePenefFraRowMapper implements RowMapper<CataloguePenefFra> 
         cataloguePenefFra.setRoleParticipant1(rs.getString("ROLE_PARTICIPANT1"));
         cataloguePenefFra.setNomParticipant1(rs.getString("NOM_PARTICIPANT1"));
         cataloguePenefFra.setTitreOeuvre(rs.getString("TITRE_OEUVRE"));
+        cataloguePenefFra.setTypeCMS(rs.getString("TYPE_CMS"));
 
         return cataloguePenefFra;
 

@@ -69,7 +69,6 @@ public class CatalogueResource {
                     catalogueCritereRecherche.getPeriodeSortieDateFin(),
                     catalogueCritereRecherche.getTypeInscription(),
                     catalogueCritereRecherche.getTypeUtilisation(), pageable);
-
         } else {
             if(catalogueCritereRecherche.getPeriodeEntreeDateFin()== null ||
                     catalogueCritereRecherche.getPeriodeSortieDateFin() == null){
@@ -286,6 +285,12 @@ public class CatalogueResource {
 
         //Map<String, Map<String, Long>> result = new HashMap<>();
         Map<String, List<KeyValueDtoCatcms>> result = new HashMap<>();
+
+        /*if(!catalogueCritereRecherche.isDisplayOeuvreNonEligible() && catalogueCritereRecherche.getPeriodeEntreeDateFin()== null ||
+                catalogueCritereRecherche.getPeriodeSortieDateFin() == null) {
+            catalogueCritereRecherche.setPeriodeEntreeDateFin(new Date());
+            catalogueCritereRecherche.setPeriodeSortieDateFin(new Date());
+        }*/
 
         result.put(TYPE_INSCRIPTION, getMetricTypeInscription(catalogueCritereRecherche));
         result.put(TYPE_UTILISATION, getMetricTypeUtilisation(catalogueCritereRecherche));

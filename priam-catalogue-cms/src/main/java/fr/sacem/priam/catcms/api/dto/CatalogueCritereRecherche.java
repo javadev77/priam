@@ -7,7 +7,6 @@ import java.util.Date;
 
 public class CatalogueCritereRecherche {
     private String typeCMS;
-    /*private Long ide12;*/
     private String ide12;
     private String titre;
     private String participant;

@@ -30,6 +30,9 @@ public class JournalCatcms implements Serializable {
     @Column(name = "UTILISATEUR")
     private String utilisateur;
 
+    @Column(name = "TYPE_CMS")
+    private String typeCMS;
+
     public Long getId() {
         return id;
     }
@@ -70,13 +73,22 @@ public class JournalCatcms implements Serializable {
         this.utilisateur = utilisateur;
     }
 
+    public String getTypeCMS() {
+        return typeCMS;
+    }
+
+    public void setTypeCMS(String typeCMS) {
+        this.typeCMS = typeCMS;
+    }
+
     public JournalCatcms() {
     }
 
-    public JournalCatcms(String evenement, Long ide12, Date date, String utilisateur) {
+    public JournalCatcms(String evenement, Long ide12, Date date, String utilisateur, String typeCMS) {
         this.evenement = evenement;
         this.ide12 = ide12;
         this.date = date;
         this.utilisateur = utilisateur;
+        this.typeCMS = typeCMS;
     }
 }

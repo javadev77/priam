@@ -62,7 +62,7 @@ public class CatalogueCms implements Serializable {
     private String participants;
 
     @Column(name = "ELIGIBLE_CREATION")
-    private boolean eligibleCreation;
+    private Boolean eligibleCreation;
 
 
 
@@ -189,11 +189,11 @@ public class CatalogueCms implements Serializable {
         this.participants = participants;
     }
 
-    public boolean isEligibleCreation() {
+    public Boolean getEligibleCreation() {
         return eligibleCreation;
     }
 
-    public void setEligibleCreation(boolean eligibleCreation) {
+    public void setEligibleCreation(Boolean eligibleCreation) {
         this.eligibleCreation = eligibleCreation;
     }
 

@@ -13,6 +13,7 @@ public class CatalogueCMSRowMapper implements RowMapper<CatalogueCms> {
         CatalogueCms catalogueCms = new CatalogueCms();
         catalogueCms.setId(resultSet.getLong("ID"));
         catalogueCms.setIde12(resultSet.getLong("IDE12"));
+        catalogueCms.setTypeCMS(resultSet.getString("TYPE_CMS"));
         return catalogueCms;
     }
 }

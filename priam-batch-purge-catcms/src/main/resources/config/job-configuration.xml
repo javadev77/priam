@@ -45,7 +45,7 @@
     </bean>
 
     <bean id="qpReaderPriamPurgeCatalogueFr" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
-        <property name="selectClause" value="SELECT ID, IDE12"/>
+        <property name="selectClause" value="SELECT ID, IDE12, TYPE_CMS"/>
         <property name="fromClause" value="FROM PRIAM_CATCMS_CATALOGUE"/>
         <property name="whereClause" value="CURRENT_DATE() > DATE_ADD(DATE_SORTIE, INTERVAL #{jobParameters['param.annee.fr']} YEAR)
                                             AND TYPE_CMS = 'FR'"/>
@@ -63,7 +63,7 @@
     </bean>
 
     <bean id="qpReaderPriamPurgeCatalogueAnf" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
-        <property name="selectClause" value="SELECT ID, IDE12"/>
+        <property name="selectClause" value="SELECT ID, IDE12, TYPE_CMS"/>
         <property name="fromClause" value="FROM PRIAM_CATCMS_CATALOGUE"/>
         <property name="whereClause" value="CURRENT_DATE() > DATE_ADD(DATE_SORTIE, INTERVAL #{jobParameters['param.annee.anf']} YEAR)
                                             AND TYPE_CMS = 'ANF'"/>
@@ -109,13 +109,15 @@
                     EVENEMENT,
                     IDE12,
                     DATE,
-                    UTILISATEUR
+                    UTILISATEUR,
+                    TYPE_CMS
                    )
                    VALUES (
-                    'Purge du catalogue',
+                    'PURGE_CATALOGUE',
                     :ide12,
                     CURRENT_TIMESTAMP(),
-                    'Batch Purge'
+                    'Batch Purge',
+                    :typeCMS
                    )
                 ]]>
             </value>

@@ -85,7 +85,7 @@ public class AffectationCPResource {
             method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    //@LogFichier(event = TypeLog.AFFECTATION_DESAFFECTATION)
+//    @LogFichier(event = TypeLog.AFFECTATION_DESAFFECTATION)
     public ProgrammeDto affecterFichiers (@RequestBody AffectationDto affectationDto, UserDTO currentUser) {
         ProgrammeDto programmeDto = null;
         TransactionStatus ts = transactionManager.getTransaction(new DefaultTransactionDefinition());
