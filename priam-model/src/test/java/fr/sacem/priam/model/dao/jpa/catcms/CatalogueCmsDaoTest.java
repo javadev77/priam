@@ -32,7 +32,7 @@ public class CatalogueCmsDaoTest extends AbstractDaoTest {
         Page<CatalogueCms> result = catalogueRdoDao.findByCriteriaWithNonEligible("ANF",
                 null, null, null, null, null,
                 null, null, null,
-                null, new PageRequest(0, 5));
+                null, null, null, new PageRequest(0, 5));
 
         assertThat(result).isNotNull().isNotEmpty();
         assertThat(result.getTotalElements()).isEqualTo(11);
@@ -43,7 +43,7 @@ public class CatalogueCmsDaoTest extends AbstractDaoTest {
         Page<CatalogueCms> result = catalogueRdoDao.findByCriteriaWithoutNonEligible("ANF",
                 null, null, null, null, new Date(),
                 null, null,
-                new Date(), new PageRequest(0, 5));
+                new Date(), null, null, new PageRequest(0, 5));
 
         assertThat(result).isNotNull().isNotEmpty();
         assertThat(result.getTotalElements()).isEqualTo(9);
@@ -56,7 +56,7 @@ public class CatalogueCmsDaoTest extends AbstractDaoTest {
         Page<CatalogueCms> result = catalogueRdoDao.findByCriteriaWithoutNonEligible("FR",
                 null, null, null, null, new Date(),
                 null, null,
-                new Date(), new PageRequest(0, 5));
+                new Date(),null, null, new PageRequest(0, 5));
 
         assertThat(result).isNotNull().isNotEmpty();
         assertThat(result.getTotalElements()).isEqualTo(10);
@@ -74,7 +74,7 @@ public class CatalogueCmsDaoTest extends AbstractDaoTest {
         Page<CatalogueCms> result = catalogueRdoDao.findByCriteriaWithoutNonEligible("FR",
                 null, null, null, periodeEntreeDateDebut, periodeEntreeDateFin,
                 null, null,
-                new Date(), new PageRequest(0, 5));
+                new Date(),null,null, new PageRequest(0, 5));
 
         assertThat(result).isNotNull().isNotEmpty();
         assertThat(result.getTotalElements()).isEqualTo(2);
@@ -84,15 +84,15 @@ public class CatalogueCmsDaoTest extends AbstractDaoTest {
     public void findByPeriodeFin() throws Exception {
 
         Calendar calendar = Calendar.getInstance();
-        calendar.set(2018, Calendar.MAY, 1);
+        calendar.set(2018, Calendar.FEBRUARY, 1);
         Date periodeSoriteDateDebut = calendar.getTime();
-        calendar.set(2018, Calendar.MAY, 3);
+        calendar.set(2018, Calendar.FEBRUARY, 3);
         Date periodeSortieDateFin = calendar.getTime();
 
         Page<CatalogueCms> result = catalogueRdoDao.findByCriteriaWithNonEligible("FR",
                 null, null, null, null, null,
                 null, null,
-                periodeSoriteDateDebut, periodeSortieDateFin, new PageRequest(0, 5));
+                periodeSoriteDateDebut, periodeSortieDateFin, null, null, new PageRequest(0, 5));
 
         assertThat(result).isNotNull().isNotEmpty();
         assertThat(result.getTotalElements()).isEqualTo(1);
@@ -105,7 +105,7 @@ public class CatalogueCmsDaoTest extends AbstractDaoTest {
         Page<CatalogueCms> result = catalogueRdoDao.findByCriteriaWithNonEligible(TYPE_CMS_FR,
                 null, null, null, null, null,
                 null, null, null,
-                null, new PageRequest(0, 25, Sort.Direction.DESC, "dateEntree"));
+                null,null, null, new PageRequest(0, 25, Sort.Direction.DESC, "dateEntree"));
 
         assertThat(result).isNotNull().isNotEmpty();
         assertThat(result.getContent().get(10).getIde12()).isEqualTo(2007279511);

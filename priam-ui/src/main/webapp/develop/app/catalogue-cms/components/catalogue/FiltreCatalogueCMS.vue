@@ -104,11 +104,10 @@
                         <span class="second-icon fui-checkbox-checked"></span></span>
                     </label>
                   </div>
-
                 </div>
 
 
-          </div>
+            </div>
               <div class="text-center col-md-4">
                 <periode-filter
                   v-validate="'periodeRule:DD/MM/YYYY'"

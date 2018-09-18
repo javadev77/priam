@@ -12,54 +12,62 @@
         <property name="location" value="classpath:config/application-${spring.profiles.active}.properties"/>
     </bean>
 
-    <job id="jobGenerationCatalogue" xmlns="http://www.springframework.org/schema/batch">
-        <!--<step id="GenerationCatalogueFr" next="GenerationCatalogueAnf">-->
-        <step id="GenerationCatalogueFr">
+
+    <job id="jobGenerationCatalogue"  xmlns="http://www.springframework.org/schema/batch">
+        <step id="GenerationCatalogueFr" next="GenerationCatalogueAnf">
             <tasklet>
                 <chunk
-                        reader="readerPriamGenerationCatalogueFr"
+                        reader="readerPriamGenerationCatalogue"
                         writer="csvCatalogueFileWriter"
-                        commit-interval="1000">
+                        commit-interval="20">
+                        <listeners>
+                            <listener ref="generationCatalogueFraListener"></listener>
+                        </listeners>
                 </chunk>
             </tasklet>
-            <listeners>
-                <listener ref="listener"></listener>
-            </listeners>
         </step>
-        <!--<step id="GenerationCatalogueAnf">
+        <step id="GenerationCatalogueAnf">
             <tasklet>
                 <chunk
-                        reader="readerPriamGenerationCatalogueAnf"
-                        writer="writerPriamGenerationCatalogue"
-                        commit-interval="${commit-interval}">
+                        reader="readerPriamGenerationCatalogue"
+                        writer="csvCatalogueFileWriter"
+                        commit-interval="20">
+                    <listeners>
+                        <listener ref="generationCatalogueAnfListener"></listener>
+                    </listeners>
                 </chunk>
             </tasklet>
-        </step>-->
+        </step>
+        <listeners merge="true">
+            <listener ref="zipAndFlagListener"></listener>
+        </listeners>
     </job>
 
-    <bean id="readerPriamGenerationCatalogueFr"
+    <bean id="readerPriamGenerationCatalogue"
           class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
         <property name="dataSource" ref="dataSource"/>
-        <property name="queryProvider" ref="qpReaderPriamGenerationCatalogueFr"/>
+        <property name="queryProvider" ref="qpReaderPriamGenerationCatalogue"/>
         <property name="pageSize" value="1000"/>
         <property name="rowMapper" ref="catalogueRdoRowMapper"/>
     </bean>
 
-    <bean id="qpReaderPriamGenerationCatalogueFr" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
+    <bean id="qpReaderPriamGenerationCatalogue" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
         <property name="selectClause" value="SELECT CATALOGUE.TYPE_CMS, CATALOGUE.IDE12 AS IDE12, CATALOGUE.TITRE, PARTICIPANTS.PARTICIPANT, PARTICIPANTS.ROLE"/>
         <property name="fromClause" value="FROM PRIAM_CATCMS_CATALOGUE CATALOGUE INNER JOIN PRIAM_CATCMS_PARTICIPANTS PARTICIPANTS
                                             ON CATALOGUE.IDE12 = PARTICIPANTS.IDE12 AND CATALOGUE.TYPE_CMS = PARTICIPANTS.TYPE_CMS"/>
-        <property name="whereClause" value="WHERE CATALOGUE.TYPE_CMS = 'FR' AND CATALOGUE.DATE_SORTIE IS NULL"/>
+        <property name="whereClause" value="WHERE CATALOGUE.TYPE_CMS = '#{jobExecutionContext['TYPE_CMS']}' AND CATALOGUE.DATE_SORTIE IS NULL AND PARTICIPANTS.OEUVRE_SORTIE=0"/>
         <property name="databaseType" value="MySQL" />
         <property name="dataSource" ref="dataSource"/>
-        <property name="sortKey" value="IDE12"/>
+        <property name="sortKey" value="CATALOGUE.IDE12"/>
     </bean>
 
-    <bean id="catalogueRdoRowMapper" class="fr.sacem.priam.batch.generation.catalogue.mapper.CatalogueRowMapper"></bean>
+    <bean id="catalogueRdoRowMapper" class="fr.sacem.priam.batch.generation.catalogue.mapper.GenerationRowMapper"></bean>
 
-    <bean id="listener" class="fr.sacem.priam.batch.generation.catalogue.listener">
+    <bean id="generationCatalogueFraListener" class="fr.sacem.priam.batch.generation.catalogue.listener.StepBeginGenerationCatalogueFraListener"/>
 
-    </bean>
+    <bean id="generationCatalogueAnfListener" class="fr.sacem.priam.batch.generation.catalogue.listener.StepBeginGenerationCatalogueAnfListener"/>
+
+    <bean id="zipAndFlagListener" class="fr.sacem.priam.batch.generation.catalogue.listener.JobCompletionGenerationCatalogueListener"/>
 
     <bean id="jobOperator" class="org.springframework.batch.core.launch.support.SimpleJobOperator"
           p:jobLauncher-ref="jobLauncher" p:jobExplorer-ref="jobExplorer"

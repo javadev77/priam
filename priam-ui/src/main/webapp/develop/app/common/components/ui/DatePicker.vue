@@ -103,8 +103,9 @@
               if (typeof str === 'string' && str.length > 3 && str.length < 11) {
                   var parts = str.split("/");
                   var date = null;
+                  debugger
                   if(this.isZeroHour) {
-                      date = moment.utc([parts[2], parts[1] - 1, parts[0], 0, 0, 0, 0]).toDate();
+                      date = moment.utc([parts[2], parts[1] - 1, parts[0]]).toDate();
 
                   } else {
 

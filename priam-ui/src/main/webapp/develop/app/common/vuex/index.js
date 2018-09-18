@@ -16,6 +16,8 @@ const state = {
 
   mipsaConfig : {},
 
+  mipsaDetailConfig : {},
+
   libelleUtilisateur : [],
 
 

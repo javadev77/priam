@@ -2,11 +2,15 @@ package fr.sacem.priam.catcms.api;
 
 import fr.sacem.priam.catcms.api.dto.CatalogueCritereRecherche;
 import fr.sacem.priam.catcms.api.dto.KeyValueDtoCatcms;
+import fr.sacem.priam.catcms.journal.annotation.LogCatalogueAjout;
+import fr.sacem.priam.catcms.journal.annotation.LogCatalogueSuppression;
+import fr.sacem.priam.catcms.journal.annotation.TypeLog;
 import fr.sacem.priam.model.dao.jpa.catcms.CatalogueCmsDao;
 import fr.sacem.priam.model.dao.jpa.catcms.ParticipantsCatcmsDao;
 import fr.sacem.priam.model.domain.catcms.CatalogueCms;
 import fr.sacem.priam.model.domain.catcms.ParticipantsCatcms;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
+import fr.sacem.priam.security.model.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -22,8 +26,8 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.util.*;
 
-import static fr.sacem.priam.common.util.FileUtils.CATALOGUE_OCTAV_TYPE_CMS_ANF;
-import static fr.sacem.priam.common.util.FileUtils.CATALOGUE_OCTAV_TYPE_CMS_FR;
+import static fr.sacem.priam.common.util.FileUtils.CATALOGUE_TYPE_CMS_ANF;
+import static fr.sacem.priam.common.util.FileUtils.CATALOGUE_TYPE_CMS_FR;
 
 @RestController
 @RequestMapping("/app/rest/")
@@ -52,7 +56,7 @@ public class CatalogueResource {
     public Page<CatalogueCms> findByCriteria(@RequestBody CatalogueCritereRecherche catalogueCritereRecherche, Pageable pageable) {
 
         Page<CatalogueCms> datas = null;
-        /*if(catalogueCritereRecherche.isDisplayOeuvreNonEligible()) {
+        if(catalogueCritereRecherche.isDisplayOeuvreNonEligible()) {
             datas = catalogueRdoDao.findByCriteriaWithNonEligible(catalogueCritereRecherche.getTypeCMS(),
                     catalogueCritereRecherche.getIde12(),
                     catalogueCritereRecherche.getTitre(),
@@ -62,8 +66,9 @@ public class CatalogueResource {
                     catalogueCritereRecherche.getPeriodeRenouvellementDateDebut(),
                     catalogueCritereRecherche.getPeriodeRenouvellementDateFin(),
                     catalogueCritereRecherche.getPeriodeSortieDateDebut(),
-                    catalogueCritereRecherche.getPeriodeSortieDateFin(), pageable);
-
+                    catalogueCritereRecherche.getPeriodeSortieDateFin(),
+                    catalogueCritereRecherche.getTypeInscription(),
+                    catalogueCritereRecherche.getTypeUtilisation(), pageable);
         } else {
             if(catalogueCritereRecherche.getPeriodeEntreeDateFin()== null ||
                     catalogueCritereRecherche.getPeriodeSortieDateFin() == null){
@@ -79,29 +84,32 @@ public class CatalogueResource {
                     catalogueCritereRecherche.getPeriodeEntreeDateFin(),
                     catalogueCritereRecherche.getPeriodeRenouvellementDateDebut(),
                     catalogueCritereRecherche.getPeriodeRenouvellementDateFin(),
-                    catalogueCritereRecherche.getPeriodeSortieDateFin(), pageable);
+                    catalogueCritereRecherche.getPeriodeSortieDateFin(),
+                    catalogueCritereRecherche.getTypeInscription(),
+                    catalogueCritereRecherche.getTypeUtilisation(), pageable);
 
-        }*/
+        }
 
-        EntityManager em = emf.createEntityManager();
+        /*EntityManager em = emf.createEntityManager();
         CriteriaBuilder builder = em.getCriteriaBuilder();
+
         CriteriaQuery<CatalogueCms> query = builder.createQuery(CatalogueCms.class);
         Root<CatalogueCms> root = query.from(CatalogueCms.class);
 
 
         Predicate typeCMSPredicate = builder.equal(root.get("typeCMS"), catalogueCritereRecherche.getTypeCMS());
-        Predicate andPredicateAll = builder.and(typeCMSPredicate);
+        Predicate allCriteriaPredicate = builder.and(typeCMSPredicate);
 
         if(catalogueCritereRecherche.isDisplayOeuvreNonEligible()) {
 
             if(catalogueCritereRecherche.getPeriodeSortieDateDebut() != null) {
-                Predicate dateEntree = builder.greaterThanOrEqualTo(root.get("dateSortie"), catalogueCritereRecherche.getPeriodeSortieDateDebut());
-                andPredicateAll = builder.and(dateEntree, andPredicateAll);
+                Predicate periodeSortieDateDebutPredicate = builder.greaterThanOrEqualTo(root.get("dateSortie"), catalogueCritereRecherche.getPeriodeSortieDateDebut());
+                allCriteriaPredicate = builder.and(periodeSortieDateDebutPredicate, allCriteriaPredicate);
             }
 
             if(catalogueCritereRecherche.getPeriodeSortieDateFin() != null) {
-                Predicate dateEntree = builder.lessThanOrEqualTo(root.get("dateSortie"), catalogueCritereRecherche.getPeriodeSortieDateFin());
-                andPredicateAll = builder.and(dateEntree, andPredicateAll);
+                Predicate periodeSortieDateFinPredicate = builder.lessThanOrEqualTo(root.get("dateSortie"), catalogueCritereRecherche.getPeriodeSortieDateFin());
+                allCriteriaPredicate = builder.and(periodeSortieDateFinPredicate, allCriteriaPredicate);
             }
         } else {
             if(catalogueCritereRecherche.getPeriodeEntreeDateFin()== null ||
@@ -110,44 +118,64 @@ public class CatalogueResource {
                 catalogueCritereRecherche.setPeriodeSortieDateFin(new Date());
             }
 
-            andPredicateAll = builder.and(
-                    builder.or(
-                        builder.isNull(root.get("dateSortie")), builder.greaterThanOrEqualTo(root.get("dateSortie"), catalogueCritereRecherche.getPeriodeSortieDateFin())
-                    )
-                    ,
-                    andPredicateAll);
-
+            Predicate periodeSortieDateFinPredicate = builder.or(builder.isNull(root.get("dateSortie")),
+                    builder.greaterThanOrEqualTo(root.get("dateSortie"),
+                            catalogueCritereRecherche.getPeriodeSortieDateFin()));
+            allCriteriaPredicate = builder.and(periodeSortieDateFinPredicate, allCriteriaPredicate);
         }
 
 
 
-        Predicate titrePredicate = null;
-        if(catalogueCritereRecherche.getTitre() != null) {
-            titrePredicate = builder.like(root.get("titre"), "%"+catalogueCritereRecherche.getTitre() + "%");
-            andPredicateAll = builder.and(titrePredicate, andPredicateAll);
-        }
-
+        //Predicate titrePredicate = null;
 
         if(catalogueCritereRecherche.getIde12() != null) {
-            Predicate concatPredicate = builder.like(builder.function("CONCAT", String.class, root.get("ide12"), builder.literal("")),
+            Predicate ide12Predicate = builder.like(builder.function("CONCAT", String.class, root.get("ide12"), builder.literal("")),
                     "%" + catalogueCritereRecherche.getIde12() + "%");
-            andPredicateAll = builder.and(concatPredicate, andPredicateAll);
+            allCriteriaPredicate = builder.and(ide12Predicate, allCriteriaPredicate);
+        }
+
+        if(catalogueCritereRecherche.getTitre() != null) {
+            Predicate titrePredicate = builder.like(root.get("titre"), "%"+catalogueCritereRecherche.getTitre() + "%");
+            allCriteriaPredicate = builder.and(titrePredicate, allCriteriaPredicate);
+        }
+
+
+        if(catalogueCritereRecherche.getParticipant() != null){
+            Predicate participantPredicate = builder.like(root.get("participants"),"%" + catalogueCritereRecherche.getParticipant() + "%" );
+            allCriteriaPredicate = builder.and(participantPredicate, allCriteriaPredicate);
         }
 
         if(catalogueCritereRecherche.getPeriodeEntreeDateDebut() != null) {
-            Predicate dateEntree = builder.greaterThanOrEqualTo(root.get("dateEntree"), catalogueCritereRecherche.getPeriodeEntreeDateDebut());
-            andPredicateAll = builder.and(dateEntree, andPredicateAll);
+            Predicate periodeEntreeDateDebutPredicate = builder.greaterThanOrEqualTo(root.get("dateEntree"), catalogueCritereRecherche.getPeriodeEntreeDateDebut());
+            allCriteriaPredicate = builder.and(periodeEntreeDateDebutPredicate, allCriteriaPredicate);
         }
 
         if(catalogueCritereRecherche.getPeriodeEntreeDateFin() != null) {
-            Predicate dateEntree = builder.lessThanOrEqualTo(root.get("dateEntree"), catalogueCritereRecherche.getPeriodeEntreeDateFin());
-            andPredicateAll = builder.and(dateEntree, andPredicateAll);
+            Predicate periodeEntreeDateFinPredicate = builder.lessThanOrEqualTo(root.get("dateEntree"), catalogueCritereRecherche.getPeriodeEntreeDateFin());
+            allCriteriaPredicate = builder.and(periodeEntreeDateFinPredicate, allCriteriaPredicate);
         }
 
+        if(catalogueCritereRecherche.getPeriodeRenouvellementDateDebut() != null){
+            Predicate periodeRenouvellementDateDebutPredicate = builder.greaterThanOrEqualTo(root.get("dateRenouvellement"), catalogueCritereRecherche.getPeriodeRenouvellementDateDebut());
+            allCriteriaPredicate = builder.and(periodeRenouvellementDateDebutPredicate, allCriteriaPredicate);
+        }
 
+        if(catalogueCritereRecherche.getPeriodeRenouvellementDateFin() != null) {
+            Predicate periodeRenouvellementDateFinPredicate = builder.lessThanOrEqualTo(root.get("dateRenouvellement"), catalogueCritereRecherche.getPeriodeRenouvellementDateFin());
+            allCriteriaPredicate = builder.and(periodeRenouvellementDateFinPredicate, allCriteriaPredicate);
+        }
 
+        if(catalogueCritereRecherche.getTypeInscription() !=null){
+            Predicate typeInscriptionPredicate = builder.equal(root.get("typeInscription"), catalogueCritereRecherche.getTypeInscription());
+            allCriteriaPredicate = builder.and(typeInscriptionPredicate, allCriteriaPredicate);
+        }
 
-        query.where(andPredicateAll);
+        if(catalogueCritereRecherche.getTypeUtilisation() !=null){
+            Predicate typeUtilisationPredicate = builder.equal(root.get("typUtilGen"), catalogueCritereRecherche.getTypeUtilisation());
+            allCriteriaPredicate = builder.and(typeUtilisationPredicate, allCriteriaPredicate);
+        }
+
+        query.where(allCriteriaPredicate);
         TypedQuery<CatalogueCms> finalQuery = em.createQuery(query.select(root));
 
         finalQuery.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
@@ -157,8 +185,7 @@ public class CatalogueResource {
         List<CatalogueCms> resultList = finalQuery.getResultList();
         int totalRows = resultList.size();
 
-        datas = new PageImpl<>(resultList, pageable, totalRows);
-
+        datas = new PageImpl<>(resultList, pageable, totalRows);*/
 
         return datas;
     }
@@ -168,11 +195,12 @@ public class CatalogueResource {
             method = RequestMethod.DELETE,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public CatalogueCms deleteOeuvre(@PathVariable(name = "id") Long id, @RequestBody CatalogueCms catalogueRdo){
+    @LogCatalogueSuppression(event = TypeLog.SUPPRESSION_OEUVRE)
+    public CatalogueCms deleteOeuvre(@PathVariable(name = "id") Long id, @RequestBody CatalogueCms catalogueRdo, UserDTO userDTO){
         CatalogueCms deletedOeuvre = catalogueRdoDao.findOne(id);
         deletedOeuvre.setDateSortie(new Date());
         deletedOeuvre.setTypeSortie("Manuelle");
-        deletedOeuvre.  setRaisonSortie(catalogueRdo.getRaisonSortie());
+        deletedOeuvre.setRaisonSortie(catalogueRdo.getRaisonSortie());
 
         return catalogueRdoDao.saveAndFlush(deletedOeuvre);
     }
@@ -182,7 +210,8 @@ public class CatalogueResource {
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
-    public ResponseEntity ajouterOeuvreFromMipsa(@RequestBody CatalogueCms catalogueCms) {
+    @LogCatalogueAjout(event = TypeLog.AJOUT_OEUVRE)
+    public ResponseEntity ajouterOeuvreFromMipsa(@RequestBody CatalogueCms catalogueCms, UserDTO userDTO) {
         catalogueCms.setDateEntree(new Date());
         catalogueCms.setTypUtilGen("PHONOFR");
 
@@ -218,10 +247,10 @@ public class CatalogueResource {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public CatalogueCms findOeuvreExistanteCatalogue(@RequestBody CatalogueCms catalogueCms) {
         CatalogueCms catalogueCmsFound = new CatalogueCms();
-        if(CATALOGUE_OCTAV_TYPE_CMS_ANF.equals(catalogueCms.getTypeCMS())){
-            catalogueCmsFound = catalogueRdoDao.findOeuvreExistanteCatalogueByIde12AndTypeCMS(catalogueCms.getIde12(), CATALOGUE_OCTAV_TYPE_CMS_ANF);
+        if(CATALOGUE_TYPE_CMS_ANF.equals(catalogueCms.getTypeCMS())){
+            catalogueCmsFound = catalogueRdoDao.findOeuvreExistanteCatalogueByIde12AndTypeCMS(catalogueCms.getIde12(), CATALOGUE_TYPE_CMS_ANF);
         } else {
-            catalogueCmsFound = catalogueRdoDao.findOeuvreExistanteCatalogueByIde12AndTypeCMS(catalogueCms.getIde12(), CATALOGUE_OCTAV_TYPE_CMS_FR);
+            catalogueCmsFound = catalogueRdoDao.findOeuvreExistanteCatalogueByIde12AndTypeCMS(catalogueCms.getIde12(), CATALOGUE_TYPE_CMS_FR);
         }
         if (catalogueCmsFound == null){
             return new CatalogueCms();
@@ -233,7 +262,8 @@ public class CatalogueResource {
             value = "catalogue/oeuvre/{id}",
             method = RequestMethod.PUT,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public CatalogueCms renouvelerOeuvre(@PathVariable(name = "id") Long id){
+    @LogCatalogueAjout(event = TypeLog.RENOUVELLEMENT_OEUVRE)
+    public CatalogueCms renouvelerOeuvre(@PathVariable(name = "id") Long id, UserDTO userDTO){
         CatalogueCms oeuvreARenouvele = catalogueRdoDao.findOne(id);
         oeuvreARenouvele.setDateRenouvellement(new Date());
         return catalogueRdoDao.saveAndFlush(oeuvreARenouvele);
@@ -255,6 +285,12 @@ public class CatalogueResource {
 
         //Map<String, Map<String, Long>> result = new HashMap<>();
         Map<String, List<KeyValueDtoCatcms>> result = new HashMap<>();
+
+        /*if(!catalogueCritereRecherche.isDisplayOeuvreNonEligible() && catalogueCritereRecherche.getPeriodeEntreeDateFin()== null ||
+                catalogueCritereRecherche.getPeriodeSortieDateFin() == null) {
+            catalogueCritereRecherche.setPeriodeEntreeDateFin(new Date());
+            catalogueCritereRecherche.setPeriodeSortieDateFin(new Date());
+        }*/
 
         result.put(TYPE_INSCRIPTION, getMetricTypeInscription(catalogueCritereRecherche));
         result.put(TYPE_UTILISATION, getMetricTypeUtilisation(catalogueCritereRecherche));
@@ -279,6 +315,13 @@ public class CatalogueResource {
                     catalogueCritereRecherche.getPeriodeSortieDateDebut(),
                     catalogueCritereRecherche.getPeriodeSortieDateFin());
         } else {
+
+            if(!catalogueCritereRecherche.isDisplayOeuvreNonEligible() && catalogueCritereRecherche.getPeriodeEntreeDateFin()== null ||
+                    catalogueCritereRecherche.getPeriodeSortieDateFin() == null) {
+                catalogueCritereRecherche.setPeriodeEntreeDateFin(new Date());
+                catalogueCritereRecherche.setPeriodeSortieDateFin(new Date());
+            }
+
             nombreTypeInscription = catalogueRdoDao.compterNombreTypeInscriptionExclusNonEligible(catalogueCritereRecherche.getTypeCMS(),
                     catalogueCritereRecherche.getIde12(),
                     catalogueCritereRecherche.getTitre(),

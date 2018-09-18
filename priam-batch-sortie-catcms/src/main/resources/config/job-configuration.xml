@@ -15,11 +15,13 @@
     </bean>
 
     <job id="jobSortieCatalogue" xmlns="http://www.springframework.org/schema/batch">
+
+
         <step id="sortieCatalogueFr" next="sortieCatalogueAnf">
             <tasklet>
                 <chunk
                         reader="readerPriamSortieCatalogueFr"
-                        writer="writerPriamSortieCatalogue"
+                        writer="compositeWriterPriamSortieCatalogueFr"
                         commit-interval="${commit-interval}">
                 </chunk>
             </tasklet>
@@ -28,7 +30,7 @@
             <tasklet>
                 <chunk
                         reader="readerPriamSortieCatalogueAnf"
-                        writer="writerPriamSortieCatalogue"
+                        writer="compositeWriterPriamSortieCatalogueAnf"
                         commit-interval="${commit-interval}">
                 </chunk>
             </tasklet>
@@ -45,11 +47,11 @@
     </bean>
 
     <bean id="qpReaderPriamSortieCatalogueFr" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
-        <property name="selectClause" value="SELECT ID"/>
+        <property name="selectClause" value="SELECT ID, IDE12, TYPE_CMS"/>
         <property name="fromClause" value="FROM PRIAM_CATCMS_CATALOGUE"/>
-        <property name="whereClause" value="(DATE_SORTIE IS NULL AND DATE_RENOUVELLEMENT IS NULL AND CURRENT_DATE() > DATE_ADD(DATE_ENTREE, INTERVAL #{jobParameters['param.annee.fr']} YEAR))
-                                            OR (DATE_SORTIE IS NULL AND DATE_RENOUVELLEMENT IS NOT NULL AND CURRENT_DATE() > DATE_ADD(DATE_RENOUVELLEMENT, INTERVAL 10 YEAR))
-                                            AND TYPE_CMS = 'FR'"/>
+        <property name="whereClause" value="(DATE_SORTIE IS NULL AND DATE_RENOUVELLEMENT IS NULL AND CURRENT_DATE() > DATE_ADD(DATE_ENTREE, INTERVAL #{jobParameters['param.annee.fr']} YEAR) AND TYPE_CMS = 'FR')
+                                            OR (DATE_SORTIE IS NULL AND DATE_RENOUVELLEMENT IS NOT NULL AND CURRENT_DATE() > DATE_ADD(DATE_RENOUVELLEMENT, INTERVAL #{jobParameters['param.annee.fr']} YEAR)AND TYPE_CMS = 'FR')
+                                            "/>
         <property name="databaseType" value="MySQL" />
         <property name="dataSource" ref="dataSource"/>
         <property name="sortKey" value="ID"/>
@@ -64,17 +66,36 @@
     </bean>
 
     <bean id="qpReaderPriamSortieCatalogueAnf" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
-        <property name="selectClause" value="SELECT ID"/>
+        <property name="selectClause" value="SELECT ID, IDE12, TYPE_CMS"/>
         <property name="fromClause" value="FROM PRIAM_CATCMS_CATALOGUE"/>
-        <property name="whereClause" value="(DATE_SORTIE IS NULL AND DATE_RENOUVELLEMENT IS NULL AND CURRENT_DATE() > DATE_ADD(DATE_ENTREE, INTERVAL #{jobParameters['param.annee.anf']} YEAR))
-                                            OR (DATE_SORTIE IS NULL AND DATE_RENOUVELLEMENT IS NOT NULL AND CURRENT_DATE() > DATE_ADD(DATE_RENOUVELLEMENT, INTERVAL 10 YEAR))
-                                            AND TYPE_CMS = 'ANF'"/>
+        <property name="whereClause" value="(DATE_SORTIE IS NULL AND DATE_RENOUVELLEMENT IS NULL AND CURRENT_DATE() > DATE_ADD(DATE_ENTREE, INTERVAL #{jobParameters['param.annee.anf']} YEAR) AND TYPE_CMS = 'ANF')
+                                            OR (DATE_SORTIE IS NULL AND DATE_RENOUVELLEMENT IS NOT NULL AND CURRENT_DATE() > DATE_ADD(DATE_RENOUVELLEMENT, INTERVAL #{jobParameters['param.annee.anf']} YEAR) AND TYPE_CMS = 'ANF')
+                                            "/>
         <property name="databaseType" value="MySQL" />
         <property name="dataSource" ref="dataSource"/>
         <property name="sortKey" value="ID"/>
     </bean>
 
     <bean id="catalogueCMSRowMapper" class="fr.sacem.priam.batch.sortie.catcms.mapper.CatalogueCMSRowMapper"/>
+
+    <bean id="compositeWriterPriamSortieCatalogueFr" class="org.springframework.batch.item.support.CompositeItemWriter" scope="step">
+        <property name="delegates">
+            <list>
+                <ref bean="writerPriamSortieCatalogue" />
+                <ref bean="writerJournalCatcms" />
+            </list>
+        </property>
+    </bean>
+
+    <bean id="compositeWriterPriamSortieCatalogueAnf" class="org.springframework.batch.item.support.CompositeItemWriter">
+        <property name="delegates">
+            <list>
+                <ref bean="writerPriamSortieCatalogue" />
+                <!--<ref bean="writerUpdateFlagParticipantAnf" />-->
+                <ref bean="writerJournalCatcms" />
+            </list>
+        </property>
+    </bean>
 
     <bean id="writerPriamSortieCatalogue" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
         <property name="dataSource" ref="dataSource"/>
@@ -83,8 +104,37 @@
             <value>
                 <![CDATA[
                     UPDATE PRIAM_CATCMS_CATALOGUE
-                    SET DATE_SORTIE = CURRENT_DATE(), TYPE_SORTIE = 'Automatique'
-                    WHERE ID  = :id;
+                    SET DATE_SORTIE = CURRENT_TIMESTAMP(),
+                        TYPE_SORTIE = 'Automatique'
+                    WHERE ID  = :id
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
+
+    <bean id="writerJournalCatcms" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                   INSERT INTO PRIAM_CATCMS_JOURNAL (
+                    EVENEMENT,
+                    IDE12,
+                    DATE,
+                    UTILISATEUR,
+                    TYPE_CMS
+                   )
+                   VALUES (
+                    'SORTIE_CATALOGUE',
+                    :ide12,
+                    CURRENT_TIMESTAMP(),
+                    'Batch Sortie',
+                    :typeCMS
+                   )
                 ]]>
             </value>
         </property>

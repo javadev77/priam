@@ -21,6 +21,11 @@ export default {
     return state.mipsaConfig;
   },
 
+  mipsaDetailConfig : state => {
+
+    return state.mipsaConfig;
+  },
+
   libelleUtilisateur : state => {
 
     return state.libelleUtilisateur;

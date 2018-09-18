@@ -58,7 +58,7 @@
                 id : 'listeProg',
                 routeName : 'programme',
                 label : 'Liste programmes',
-                authorized : true
+                authorized : this.hasRight('MENUCMS')
               }
             ]
           },
@@ -73,7 +73,7 @@
                 id : 'fichiers',
                 routeName : 'chargement',
                 label : 'Fichiers',
-                authorized : true
+                authorized : this.hasRight('MENUCMS')
               }
             ]
           },

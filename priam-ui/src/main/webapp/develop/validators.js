@@ -17,7 +17,8 @@ Vue.use(VeeValidate, {
         'dateFinProgramme' : 'Date de fin',
         'periodeEntree' : 'période d\'entrée',
         'periodeRenouvellement' : 'période de renouvellement',
-        'periodeSortie' : 'période de sortie'
+        'periodeSortie' : 'période de sortie',
+        'periodeDebutEvenement' : 'Période début d\'évévenement'
       },
 
       messages: {

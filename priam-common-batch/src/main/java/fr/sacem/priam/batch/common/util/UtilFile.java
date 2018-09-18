@@ -13,6 +13,7 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -29,6 +30,7 @@ public class UtilFile {
     private static final String MON_FILTER = "TRACABILITE";
     private static final String EXTENTION_CSV = ".csv";
     private static final String EXTENTION_FLAG = ".flag";
+    private static final String EXTENTION_ZIP = ".zip";
     private static String FICHIER_ZIP_EN_COURS = "fichierZipEnCours";
     private static String NOM_ORIGINAL_FICHIER_ZIP = "nomFichierOriginal";
     private static String REPERTOIRE_DE_DESTINATION = "output.archives";
@@ -103,8 +105,45 @@ public class UtilFile {
             zos.write(bytes, 0, length);
         }
         zos.closeEntry();
+        zos.close();
         fis.close();
     }
+
+    public void addToZipFileAndFlag(String fileName, String outputFile) throws IOException {
+
+        try {
+            String fileNameExtensionZip = getFileNameWithoutExtension(fileName) + EXTENTION_ZIP;
+            Charset cs = Charset.forName("IBM437");
+            ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(outputFile + fileNameExtensionZip), cs);
+            addToZipFile(outputFile + fileName, zos);
+
+            addFlag(outputFile, fileNameExtensionZip);
+
+            File file = new File(outputFile + fileName);
+            file.deleteOnExit();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addFlag(String outputFile, String fileNameExtensionZip){
+
+        String fileNameExtensionFlag = getFileNameWithoutExtension(fileNameExtensionZip) + EXTENTION_FLAG;
+
+        try(OutputStream out = new FileOutputStream(new File(outputFile + File.separator + fileNameExtensionFlag)))
+        {
+            out.write((fileNameExtensionZip + "\n").getBytes());
+        } catch (IOException e) {
+            LOG.error("Erreur lors de la generation du fichier Flag !!! ", e);
+        }
+
+    }
+
+    public String getFileNameWithoutExtension(String fileName){
+        return fileName.substring(0, fileName.lastIndexOf('.'));
+    }
+
     public void deplacerFichier(JobParameter parameterFichierZipEnCours, JobParameter parameterNomFichierOriginal, JobParameter outputDirectory) {
         if (parameterNomFichierOriginal != null && parameterFichierZipEnCours != null && outputDirectory != null) {
             String nomFichierTraiementEnCours = (String) parameterFichierZipEnCours.getValue();

@@ -73,6 +73,7 @@
 
     <bean id="queryProvider" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
         <property name="selectClause" value="select
+                            id,
                             id_fichier,
                             cdeCisac,
                             cdeFamilTypUtil,

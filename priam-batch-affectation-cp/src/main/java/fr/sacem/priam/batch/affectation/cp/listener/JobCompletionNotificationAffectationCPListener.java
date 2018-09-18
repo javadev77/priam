@@ -1,16 +1,17 @@
 package fr.sacem.priam.batch.affectation.cp.listener;
 
-import fr.sacem.dao.LigneProgrammeBatchDao;
-import fr.sacem.dao.ProgrammeBatchDao;
-import fr.sacem.dao.TraitementCmsDao;
+
 import fr.sacem.priam.batch.affectation.cp.dao.JournalBatchDao;
+import fr.sacem.priam.batch.common.dao.ProgrammeBatchDao;
+import fr.sacem.priam.batch.common.service.importPenef.FichierBatchService;
+import fr.sacem.priam.batch.common.util.UtilFile;
 import fr.sacem.priam.common.TypeLog;
 import fr.sacem.priam.model.dao.jpa.FichierDao;
-import fr.sacem.priam.model.dao.jpa.JournalDao;
 import fr.sacem.priam.model.domain.*;
 import fr.sacem.priam.model.journal.JournalBuilder;
-import fr.sacem.service.importPenef.FichierBatchService;
-import fr.sacem.util.UtilFile;
+import fr.sacem.priam.services.FichierService;
+
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.BatchStatus;
@@ -52,22 +53,16 @@ public class JobCompletionNotificationAffectationCPListener extends JobExecution
     @Autowired
     ProgrammeBatchDao programmeBatchDao;
 
-    //@Autowired
-    //FichierDao fichierDao;
-
-    //@Autowired
-    //JournalDao journalDao;
-
     @Autowired
     JournalBatchDao journalBatchDao;
 
     @Autowired
-    TraitementCmsDao traitementCmsDao;
-
-    @Autowired
-    LigneProgrammeBatchDao ligneProgrammeBatchDao;
+    FichierService fichierService;
 
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+
+    @Autowired
+    private FichierDao fichierDao;
 
     @Autowired
     public JobCompletionNotificationAffectationCPListener() {
@@ -77,20 +72,20 @@ public class JobCompletionNotificationAffectationCPListener extends JobExecution
 
     @Override
     public void beforeJob(JobExecution jobExecution) {
-        //Creer un traitement CMS
-
         String numProg = jobExecution.getJobParameters().getString("numProg");
-        long traitementID = traitementCmsDao.createTraitement(numProg, 0L);
-
-        jobExecution.getExecutionContext().put("ID_TMT_CMS", traitementID);
+        /*String[] fichiersAffectes = jobExecution.getJobParameters().getString("fichiersAffectes").split(",");
+        List<Long> fichiersAffectesIds = Stream.of(fichiersAffectes).map(Long::parseLong).collect(Collectors.toList());
+        List<Fichier> listFichiersByIds = fichierService.findListFichiersByIds(fichiersAffectesIds);
+        fichierService.majFichiersAffectesAuProgramme(numProg, listFichiersByIds, "GUEST");*/
     }
 
     @Override
     public void afterJob(JobExecution jobExecution) {
 
+        String numProg = jobExecution.getJobParameters().getString("numProg");
         if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
 
-            String numProg = jobExecution.getJobParameters().getString("numProg");
+
             String userId = jobExecution.getJobParameters().getString("userId");
             String listNomFichier = jobExecution.getJobParameters().getString("listNomFichier");
 
@@ -98,9 +93,9 @@ public class JobCompletionNotificationAffectationCPListener extends JobExecution
             programmeBatchDao.majStattutEligibilite(numProg, "FIN_ELIGIBILITE");
             programmeBatchDao.majStattutProgramme(numProg, "AFFECTE");
 
-            Long idTraitementCMS = jobExecution.getExecutionContext().getLong("ID_TMT_CMS");
 
-/*
+
+
             List<SituationAvant> situationAvantList = new ArrayList<>();
             List<SituationApres> situationApresList = new ArrayList<>();
 
@@ -127,13 +122,10 @@ public class JobCompletionNotificationAffectationCPListener extends JobExecution
 
             Long idJournal = journalBatchDao.saveJournal(journal);
             journalBatchDao.saveSituationAvantJournal(journal.getListSituationAvant(), idJournal);
-            journalBatchDao.saveSituationApresJournal(journal.getListSituationApres(), idJournal);*/
+            journalBatchDao.saveSituationApresJournal(journal.getListSituationApres(), idJournal);
         } else {
 
-            String numProg = jobExecution.getJobParameters().getString("numProg");
             programmeBatchDao.majStattutEligibilite(numProg, ERREUR_ELIGIBILITE);
-            Long idTraitementCMS = jobExecution.getExecutionContext().getLong("ID_TMT_CMS");
-            traitementCmsDao.majTraitment(idTraitementCMS, 0L, 0L, 0.0d, ERREUR_ELIGIBILITE);
 
             fichierBatchService.clearSelectedFichiers(numProg, CHARGEMENT_OK);
 

@@ -291,7 +291,6 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
     
     
     @Modifying(clearAutomatically = true)
-    @Transactional
     @Query(nativeQuery = true, value="update " +
                                          "  PRIAM_LIGNE_PROGRAMME_CMS p " +
                                          "INNER JOIN " +

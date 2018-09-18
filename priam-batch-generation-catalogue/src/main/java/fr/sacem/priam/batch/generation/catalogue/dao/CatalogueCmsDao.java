@@ -25,10 +25,11 @@ public class CatalogueCmsDao {
 
     public Long countNbLignes(String typeCms) {
         String sql =  "SELECT " +
-                "count(l.ID) as NB_LIGNES " +
+                "COUNT(*) as NB_LIGNES " +
                 "FROM " +
-                "PRIAM_CATCMS_CATALOGUE l " +
-                "WHERE (l.DATE_SORTIE IS NULL OR l.DATE_SORTIE>= CURRENT_DATE) AND l.TYPE_CMS=?";
+                "PRIAM_CATCMS_CATALOGUE CATALOGUE INNER JOIN PRIAM_CATCMS_PARTICIPANTS PARTICIPANTS " +
+                "ON CATALOGUE.IDE12 = PARTICIPANTS.IDE12 AND CATALOGUE.TYPE_CMS = PARTICIPANTS.TYPE_CMS " +
+                "WHERE  CATALOGUE.TYPE_CMS=? AND CATALOGUE.DATE_SORTIE IS NULL AND PARTICIPANTS.OEUVRE_SORTIE=0";
         return jdbcTemplate.queryForObject(sql, (resultSet, i) -> resultSet.getLong("NB_LIGNES"), typeCms);
     }
 }

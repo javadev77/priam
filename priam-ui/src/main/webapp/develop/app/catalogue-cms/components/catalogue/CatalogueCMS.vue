@@ -5,7 +5,7 @@
     <app-filtre-catalogue
       :filter="filter"
       :retablir="retablirFiltre"
-      :rechercher="findCatalogueByCriteria"
+      :rechercher="onSearchCatalogue"
     >
     </app-filtre-catalogue>
     <div class="panel panel-default">
@@ -46,16 +46,39 @@
                 <div class="panel-body">
                   <img src="static/images/iconescontextes/ajxrep-search3.gif" alt="">
                   <span> Type d'inscription</span>
+
+
+
                   <ul style="list-style: none;">
-                    <li v-for="metric in typeInscription">
-                      {{metric.code}} : (<b>{{metric.value}}</b>)
+                    <div class="row">
+                      <div class="spinner" v-if="dataLoadingCompteur">
+                        <div class="rect1"></div>
+                        <div class="rect2"></div>
+                        <div class="rect3"></div>
+                        <div class="rect4"></div>
+                        <div class="rect5"></div>
+                      </div>
+                    </div>
+                    <li v-if="!dataLoadingCompteur" v-for="metric in typeInscription">
+                      <a href="#" @click.prevent="findCatalogueByExtraCriteria(metric.code,null)">{{metric.code}} : (<b>{{metric.value}}</b>)</a>
                     </li>
                   </ul>
+
                   <img src="static/images/iconescontextes/ajxrep-search3.gif" alt="">
                   <span> Type utilisation générateur</span>
                   <ul style="list-style: none;">
-                    <li v-for="metric in typeUtilisation">
-                      {{metric.code}} : (<b>{{metric.value}}</b>)
+
+                    <div class="row">
+                      <div class="spinner" v-if="dataLoadingCompteur">
+                        <div class="rect1"></div>
+                        <div class="rect2"></div>
+                        <div class="rect3"></div>
+                        <div class="rect4"></div>
+                        <div class="rect5"></div>
+                      </div>
+                    </div>
+                    <li v-if="!dataLoadingCompteur" v-for="metric in typeUtilisation">
+                      <a href="#" @click.prevent="findCatalogueByExtraCriteria(null, metric.code)">{{metric.code}} : (<b>{{metric.value}}</b>)</a>
                     </li>
                   </ul>
                 </div>
@@ -70,6 +93,7 @@
                 @delete-oeuvre="onDeleteOeuvre"
                 @on-sort="onSort"
                 @load-page="loadPage"
+                @show-detail="onShowDetail"
                 class="col-sm-20">
               </priam-grid>
           </div>
@@ -111,6 +135,11 @@
                       @ajoutOeuvre="onActionAjouterOeuvre"
                       @cancel="showEcranAjoutOeuvreMipsa = false"></ajouter-oeuvre>
     </ecran-modal>-->
+    <modal-detail-mipsa v-if="detailOpen" @close="detailOpen = false">
+      <template slot="body">
+        <app-mipsa-detail :configuration="mipsaDetailConfig" :request="request" ></app-mipsa-detail>
+      </template>
+    </modal-detail-mipsa>
   </div>
 </template>
 
@@ -122,6 +151,8 @@
   import FiltreCatalogue from './FiltreCatalogueCMS.vue';
 
   import EcranModal from '../../../common/components/ui/EcranModal.vue';
+  import ModalDetailMipsa from '../../../catalogue-cms/components/catalogue/mipsa/ModalDetailMipsa.vue';
+  import AppMipsaDetail from '../../../common/components/ui/mipsa/AppMipsaDetail.vue';
 
   export default {
 
@@ -129,8 +160,19 @@
 
     },
 
-
     data() {
+
+      var vm =  this;
+      var MISPA_CONFIG = this.$store.getters.mipsaConfig;
+      var MISPA_DETAIL_CONFIG = this.$store.getters.mipsaDetailConfig;
+      var sendToken =  false;//MISPA_CONFIG['priam.mipsa.wc.usessotoken'];
+      var ssoTokenMethods = sendToken ?
+        function(onTokenReceived) {
+          vm.$http.get('app/rest/general/ssotoken').then( function(response) {
+            onTokenReceived(response.data) ;
+          }) ;
+        }
+        : undefined;
 
       return {
 
@@ -138,8 +180,9 @@
 
         showPopupDeleteOeuvre : false,
 
-        oeuvreToDelete : {
-        },
+        oeuvreToDelete : {},
+
+        detailOpen : false,
 
         resource : {},
 
@@ -165,8 +208,8 @@
                 cellTemplate: function (cellValue) {
 
                   var template = [
-                    {event : 'oeuvre',
-                      template : '<img src="static/images/Musique.png" title="Mise en répartition" width="20px"/>'}];
+                    {event : 'show-detail',
+                      template : '<img src="static/images/Musique.png" width="20px"/>'}];
                   return template;
                 }
 
@@ -445,6 +488,25 @@
           searchQuery : ''
         },
 
+        mipsaDetailConfig : {
+          mipsaurl: MISPA_CONFIG['priam.mipsa.wc.baseurl'],
+          octavurl: MISPA_CONFIG['priam.mipsa.wc.octav.url'],
+          ssoTokenMethods: ssoTokenMethods,
+          viewBloc: {
+            assoc: 'hide',
+            octav: 'maximize'
+          }
+        },
+
+        request : {
+          cde: null,
+          typCde: 'COCV',
+          seqassocoeuv: '',
+          cdecombi: '',
+          encodedTitle: '',
+          encodedTiers: ''
+        },
+
         filter : {
           typeCMS : {id :'FR', value : 'CMS France'},
           ide12: null,
@@ -462,7 +524,9 @@
             dateDebut: null,
             dateFin: null
           },
-          displayOeuvreNonEligible: false
+          displayOeuvreNonEligible: false,
+          typeInscription: null,
+          typeUtilisation: null
         },
 
         currentFilter : {
@@ -476,7 +540,9 @@
           periodeRenouvellementDateFin: null,
           periodeSortieDateDebut: null,
           periodeSortieDateFin: null,
-          displayOeuvreNonEligible: false
+          displayOeuvreNonEligible: false,
+          typeInscription: null,
+          typeUtilisation: null
         },
 
         defaultPageable : {
@@ -500,9 +566,32 @@
         typeUtilisation : {
           code: '',
           value: ''
-        }
+        },
+        dataLoadingCompteur: false
       }
     },
+
+    mounted(){
+      var MISPA_CONFIG = this.$store.getters.mipsaConfig;
+      var headEl = $('head');
+      var url = MISPA_CONFIG['priam.mipsa.wc.detail.html.url'];
+      var importElem = headEl.find('link').get().find(function (elem) {
+        let link = $(elem);
+        return link.attr('href') == url && link.attr('rel') == 'import';
+      })
+      if(importElem == undefined || importElem == null) {
+        var importHtml = $('<link rel="import" >')
+          .attr('href', url)
+          .on('load', function () {
+            console.log('loaded ' + url);
+          })
+          .on('error', function () {
+            console.log('Error to load ' + url);
+          });
+        headEl.append(importHtml);
+      }
+
+     },
 
     created() {
 
@@ -526,6 +615,7 @@
       }
       this.resource= this.$resource('', {}, customActions);
       this.findCatalogueByCriteria();
+      this.calculerCompteurs();
     },
 
     methods : {
@@ -544,9 +634,14 @@
         this.currentFilter.periodeSortieDateDebut = this.filter.periodeSortieFilter.dateDebut;
         this.currentFilter.periodeSortieDateFin = this.filter.periodeSortieFilter.dateFin;
         this.currentFilter.displayOeuvreNonEligible = this.filter.displayOeuvreNonEligible;
+        this.currentFilter.typeInscription = this.filter.typeInscription;
+        this.currentFilter.typeUtilisation = this.filter.typeUtilisation;
+
+
 
         this.dataLoading = true;
         debugger;
+
         this.resource.searchCatalogueRdo({
           page : this.defaultPageable.page - 1,
           size : this.defaultPageable.size,
@@ -561,11 +656,22 @@
 
             this.catalogueGrid.gridData.number = data.number + 1;
             this.dataLoading = false;
-            this.calculerCompteurs();
           })
           .catch(error => {
             alert("Erreur lors de la recherche !!! ")
           });
+      },
+
+      findCatalogueByExtraCriteria(typeInscriptionCriteria, typeUtilisationCriteria){
+
+        this.filter.typeInscription = typeInscriptionCriteria;
+        this.filter.typeUtilisation = typeUtilisationCriteria;
+        this.findCatalogueByCriteria();
+      },
+
+      onSearchCatalogue(){
+        this.findCatalogueByExtraCriteria(null, null);
+        this.calculerCompteurs();
       },
 
 
@@ -587,6 +693,8 @@
             console.log('data = ' + data);
             this.oeuvreToDelete.typeSortie = data.typeSortie;
             this.oeuvreToDelete.dateSortie = data.dateSortie;
+            debugger;
+            this.calculerCompteurs();
           });
       },
 
@@ -614,10 +722,12 @@
             dateDebut: null,
             dateFin: null
           },
-          displayOeuvreNonEligible: false
+          displayOeuvreNonEligible: false,
+          typeInscription: null,
+          typeUtilisation: null
         }
-
         this.findCatalogueByCriteria();
+        this.calculerCompteurs();
       },
 
       onSort(currentPage, pageSize, sort) {
@@ -683,14 +793,27 @@
       },
 
       calculerCompteurs: function () {
+          this.dataLoadingCompteur = true;
         this.resource.compteurCatalogueRdo(this.currentFilter)
           .then(response => {
             return response.json();
           }).then(data => {
           this.typeInscription = data.TYPE_INSCRIPTION;
           this.typeUtilisation = data.TYPE_UTILISATION;
+          this.dataLoadingCompteur = false;
         })
         ;
+      },
+      onShowDetail: function(row) {
+          this.request = {
+            cde: row.ide12,
+            typCde: 'COCV',
+            seqassocoeuv: '',
+            cdecombi: '',
+            encodedTitle: row.titre,
+            encodedTiers: ''
+          }
+          this.detailOpen = true;
       }
     },
 
@@ -700,7 +823,9 @@
       'priam-navbar' : PriamNavbar,
       'modalWithTitle': ModalWithTitle,
       appFiltreCatalogue : FiltreCatalogue,
-      ecranModal : EcranModal
+      ecranModal : EcranModal,
+      modalDetailMipsa : ModalDetailMipsa,
+      'app-mipsa-detail' : AppMipsaDetail
     }
   }
 

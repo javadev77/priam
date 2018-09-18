@@ -24,6 +24,10 @@ export default {
     state.mipsaConfig = mipsaConfig;
   },
 
+  'SET_MIPSA_DETAIL_CONFIG' (state, mipsaDetailConfig) {
+    state.mipsaDetailConfig = mipsaDetailConfig;
+  },
+
   'SET_CURRENT_USER' (state, userDto) {
     state.currentUser = userDto;
   },

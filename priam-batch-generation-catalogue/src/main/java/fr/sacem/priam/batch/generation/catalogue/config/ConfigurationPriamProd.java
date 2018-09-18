@@ -21,7 +21,7 @@ import java.util.Properties;
 public class ConfigurationPriamProd {
 
     private Enum ConfigurationFromAdMap = EnvConstants.BATCH_CONFIG_PROPERTIES;
-    private String outputDirectory = String.valueOf(EnvConstants.PARTICIPANTS_REQ_OCTAV_CSV_DIR);
+    private String outputDirectory = String.valueOf(EnvConstants.GENERATION_CATALOGUE_OUTPUT);
 
     @Bean
     public DataSource dataSource() {

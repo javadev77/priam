@@ -6,6 +6,7 @@ public class OeuvreFiliationNPU {
     private Long ide12;
     private Long ide12Rep;
     private String titreOriginal;
+    private String typeCMS;
     private Integer lineNumber;
     private Exception exception;
 
@@ -46,6 +47,14 @@ public class OeuvreFiliationNPU {
 
     public void setTitreOriginal(String titreOriginal) {
         this.titreOriginal = titreOriginal;
+    }
+
+    public String getTypeCMS() {
+        return typeCMS;
+    }
+
+    public void setTypeCMS(String typeCMS) {
+        this.typeCMS = typeCMS;
     }
 
     public Integer getLineNumber() {

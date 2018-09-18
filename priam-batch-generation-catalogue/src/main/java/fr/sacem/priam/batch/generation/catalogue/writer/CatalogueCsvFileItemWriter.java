@@ -1,8 +1,13 @@
 package fr.sacem.priam.batch.generation.catalogue.writer;
 
 import fr.sacem.priam.batch.generation.catalogue.domain.CatalogueCmsGenerated;
+import org.aspectj.lang.annotation.Before;
+import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.JobParameter;
+import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.AfterStep;
+import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.core.io.Resource;
@@ -19,6 +24,7 @@ public class CatalogueCsvFileItemWriter extends FlatFileItemWriter<CatalogueCmsG
         this.resource = resource;
         super.setResource(resource);
     }
+
 
     @AfterStep
     public void afterStep(StepExecution stepExecution) {

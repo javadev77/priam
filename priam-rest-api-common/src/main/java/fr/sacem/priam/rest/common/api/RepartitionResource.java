@@ -13,6 +13,10 @@ import fr.sacem.priam.services.FelixDataServiceAbstract;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobParameter;
+import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
@@ -25,6 +29,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -52,6 +57,13 @@ public class RepartitionResource {
     @Autowired
     @Qualifier(value = "configAdmap")
     Map<String, String> configAdmap;
+
+    /*@Autowired
+    JobLauncher jobLauncher;
+
+    @Autowired
+    Job jobFelixRepart;*/
+
 
 
     @RequestMapping(value = "validateFelixData/{numProg}",
@@ -141,8 +153,34 @@ public class RepartitionResource {
 
         }
         getFelixDataService(numProg).asyncSendFichierFelix(programme, userDto);
+        //launchJobFelixRepart(numProg, userDto.getUserId());
+
 
     }
+
+   /* private void launchJobFelixRepart(String numProg, String userId) {
+        //lancer le job
+        logger.info("====== Lancement du job Generation Felix Repart ======");
+
+        try {
+
+            Map<String, JobParameter> jobParametersMap = new HashMap<>();
+            jobParametersMap.put("time", new JobParameter(System.currentTimeMillis()));
+            jobParametersMap.put("numProg", new JobParameter(numProg));
+            jobParametersMap.put("userId", new JobParameter(userId));
+
+            JobParameters jobParameters = new JobParameters(jobParametersMap);
+
+            jobLauncher.run(jobFelixRepart, jobParameters);
+
+
+        } catch (Exception e) {
+            logger.error("Error d'exécution du Batch ", e);
+        }
+
+        logger.info("====== Fin de Traitement ======");
+    }*/
+
     private FelixDataServiceAbstract getFelixDataService(String numProg) {
         if (felixDataCPService.getFamilleUtil(numProg).equals("UC")) {
             return felixDataCMSService;

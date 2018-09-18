@@ -10,7 +10,7 @@ public class LigneCatalogueOctavProcessor implements ItemProcessor<LigneCatalogu
     @Override
     public LigneCatalogueOctav process(LigneCatalogueOctav ligneCatalogueOctav) throws Exception {
 
-        if (ligneCatalogueOctav.getTypeCMS().equals(FileUtils.CATALOGUE_OCTAV_TYPE_CMS_ANF)) {
+        if (ligneCatalogueOctav.getTypeCMS().equals(FileUtils.CATALOGUE_TYPE_CMS_ANF)) {
             ligneCatalogueOctav.setTypeCMS(TypeUtilisationEnum.CMS_ANT.getCode());
         }
         return ligneCatalogueOctav;

@@ -3,6 +3,8 @@ package fr.sacem.priam.batch.participants.req.writer;
 import fr.sacem.priam.batch.common.domain.Admap;
 import fr.sacem.priam.batch.participants.req.dao.CatalogueCmsDao;
 import fr.sacem.priam.batch.participants.req.domain.CatalogueCms;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor;
@@ -10,8 +12,10 @@ import org.springframework.batch.item.file.transform.DelimitedLineAggregator;
 import org.springframework.batch.item.file.transform.FieldExtractor;
 import org.springframework.batch.item.file.transform.LineAggregator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.FileSystemResource;
 
@@ -26,17 +30,19 @@ import java.util.Locale;
 @Configuration
 public class FlatFileWriterConfig {
 
+    private static final Logger LOG = LoggerFactory.getLogger(FlatFileWriterConfig.class);
+
     @Autowired
     Admap admap;
 
     @Autowired
     CatalogueCmsDao catalogueCmsDao;
 
-    private String head() {
+    private String head(String typeCMS) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.FRANCE);
         return       "#-------------------------------------------------------------------------------------------------------------------;;\n" +
                      "# Fichier a destination de OCTAV;;\n"+
-                     "# en provenance de PRIAM pour reader PARTICIPANTS FRA;;\n"+
+                     "# en provenance de PRIAM pour reader PARTICIPANTS " + typeCMS +";;\n"+
                      "#-------------------------------------------------------------------------------------------------------------------;;\n"+
                      "# JJ/MM/AAAA HH:MM - Auteur - Objet;;\n"+
                      "#-------------------------------------------------------------------------------------------------------------------;;\n"+
@@ -54,15 +60,16 @@ public class FlatFileWriterConfig {
     }
 
     @Bean(name = "csvFileWriter")
-    ItemWriter<CatalogueCms> databaseCsvItemWriter(Environment environment) {
-        FlatFileItemWriter<CatalogueCms> csvFileWriter = new ParticipantsReqCsvFileItemWriter();
+    @Scope("step")
+        ParticipantsReqCsvFileItemWriter databaseCsvItemWriter(@Value("#{jobParameters['typeCMS']}") String typeCMS) {
 
+        ParticipantsReqCsvFileItemWriter csvFileWriter = new ParticipantsReqCsvFileItemWriter();
 
-        StringHeaderWriter headerWriter = new StringHeaderWriter(head());
+        StringHeaderWriter headerWriter = new StringHeaderWriter(head(typeCMS));
         csvFileWriter.setHeaderCallback(headerWriter);
-        csvFileWriter.setFooterCallback(writer -> writer.write(foot(catalogueCmsDao.countNbLignes("FR"))));
+        csvFileWriter.setFooterCallback(writer -> writer.write(foot(catalogueCmsDao.countNbLignes(typeCMS))));
 
-        String fileName = "FF_PRIAM_PARTICIPANTS_FRA_REQ_"
+        String fileName = "FF_PRIAM_PARTICIPANTS_"+ typeCMS +"_REQ_"
                 + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".csv";
         csvFileWriter.setResource(new FileSystemResource(admap.getOutputFile() + fileName));
 

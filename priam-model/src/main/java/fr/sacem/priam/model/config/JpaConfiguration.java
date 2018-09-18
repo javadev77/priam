@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.env.Environment;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -28,10 +29,12 @@ import java.util.Map;
 @EnableTransactionManagement
 @Profile({"dev", "re7", "prod"})
 public class JpaConfiguration {
-
     @Autowired
     DataSource dataSource;
-    
+
+    @Autowired
+    Environment env;
+
 
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
@@ -44,9 +47,8 @@ public class JpaConfiguration {
 
         return em;
     }
-    
 
-    
+
     @Bean
     public PlatformTransactionManager transactionManager(EntityManagerFactory emf){
         JpaTransactionManager transactionManager = new JpaTransactionManager();
@@ -68,9 +70,10 @@ public class JpaConfiguration {
     
     private  Map<String, Object> additionalProperties() {
         Map<String, Object> properties = new HashMap<>();
-        
-        properties.put("hibernate.show_sql", false);
-        properties.put("hibernate.format_sql", false);
+
+        boolean isDevProfile = env.acceptsProfiles("dev");
+        properties.put("hibernate.show_sql", isDevProfile);
+        properties.put("hibernate.format_sql", isDevProfile);
         properties.put("hibernate.dialect", MySQL5InnoDBDialect.class.getName());
         properties.put("hibernate.bytecode.use_reflection_optimizer", true);
         properties.put("hibernate.jdbc.batch_size", 50);

@@ -19,7 +19,6 @@ import javax.sql.DataSource;
 public class ConfigurationPriamLocal {
 
 
-
     @Value("${spring.datasource.url}")
     String urlDb;
     @Value("${spring.datasource.username}")

@@ -11,12 +11,14 @@ public class FileUtils {
     public static final String PREFIX_ANT = "FF_PENEF_EXTRANA_EXTUCSONANT";
     public static final String PREFIX_FRA = "FF_PENEF_EXTRANA_EXTUCSONFRA";
 
-    public static final String PREFIX_OCTAV_CATALOGUE_FR  = "FF_OCTAV_CATALOGUE_FR";
-    public static final String PREFIX_OCTAV_CATALOGUE_ANF  = "FF_OCTAV_CATALOGUE_ANF";
+    public static final String PREFIX_PRIAM_CATALOGUE_FR = "FF_PRIAM_CATALOGUE_FR";
+    public static final String PREFIX_PRIAM_CATALOGUE_ANF = "FF_PRIAM_CATALOGUE_ANF";
 
     public static final String PREFIX_MAINFRAME_CATALOGUE  = "FF_OCTAV_CATALOGUE";
-    public static final String PREFIX_PENEF_CATALOGUE_FR  = "FF_PENEF_EXTRANA_CATALOGUE_FR";
 
-    public static final String CATALOGUE_OCTAV_TYPE_CMS_FR = "FR";
-    public static final String CATALOGUE_OCTAV_TYPE_CMS_ANF = "ANF";
+    public static final String PREFIX_PENEF_CATALOGUE_FR  = "FF_PENEF_EXTRANA_CATALOGUE_FR";
+    public static final String PREFIX_PENEF_CATALOGUE_ANF  = "FF_PENEF_EXTRANA_CATALOGUE_ANF";
+
+    public static final String CATALOGUE_TYPE_CMS_FR = "FR";
+    public static final String CATALOGUE_TYPE_CMS_ANF = "ANF";
 }
