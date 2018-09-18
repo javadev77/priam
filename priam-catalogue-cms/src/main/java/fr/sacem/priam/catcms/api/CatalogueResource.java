@@ -315,6 +315,13 @@ public class CatalogueResource {
                     catalogueCritereRecherche.getPeriodeSortieDateDebut(),
                     catalogueCritereRecherche.getPeriodeSortieDateFin());
         } else {
+
+            if(!catalogueCritereRecherche.isDisplayOeuvreNonEligible() && catalogueCritereRecherche.getPeriodeEntreeDateFin()== null ||
+                    catalogueCritereRecherche.getPeriodeSortieDateFin() == null) {
+                catalogueCritereRecherche.setPeriodeEntreeDateFin(new Date());
+                catalogueCritereRecherche.setPeriodeSortieDateFin(new Date());
+            }
+
             nombreTypeInscription = catalogueRdoDao.compterNombreTypeInscriptionExclusNonEligible(catalogueCritereRecherche.getTypeCMS(),
                     catalogueCritereRecherche.getIde12(),
                     catalogueCritereRecherche.getTitre(),

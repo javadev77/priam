@@ -47,7 +47,7 @@ public class JournalCatcmsRepository {
             JournalCatcms journalCatcmsCreationNPU = new JournalCatcms();
 
             journalCatcmsSortieNPU.setEvenement("SORTIE_NPU");
-            journalCatcmsCreationNPU.setEvenement("Création NPU");
+            journalCatcmsCreationNPU.setEvenement("CREATION_NPU");
 
             journalCatcmsSortieNPU.setIde12(catalogueCms.getIde12());
             journalCatcmsCreationNPU.setIde12(ide12rep);
@@ -55,7 +55,7 @@ public class JournalCatcmsRepository {
             journalCatcmsSortieNPU.setDate(new Date());
             journalCatcmsCreationNPU.setDate(new Date());
 
-            journalCatcmsSortieNPU.setUtilisateur("CREATION_NPU");
+            journalCatcmsSortieNPU.setUtilisateur("Batch NPU");
             journalCatcmsCreationNPU.setUtilisateur("Batch NPU");
 
             journalCatcmsSortieNPU.setTypeCMS(catalogueCms.getTypeCMS());

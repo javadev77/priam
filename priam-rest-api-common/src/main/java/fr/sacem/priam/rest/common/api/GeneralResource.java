@@ -41,6 +41,9 @@ public class GeneralResource {
     public static final String LOCAL_MIPSA_HTML_URL = "http://localhost:32023/mipsa-webcomponents/webcomponents/mipsa-search.html";
     public static final String LOCAL_MIPSA_BASEURL = "http://localhost:32023/mipsa-webcomponents/proxy/mipsa/";
 
+    private static final String LOCAL_MIPSA_DETAIL_HTML_URL = "http://localhost:32023/mipsa-webcomponents/webcomponents/mipsa-detail-oeuvre.html";
+    private static final String LOCAL_MIPSA_OCTAV_BASEURL = "http://localhost:32023/mipsa-webcomponents/proxy/octav/";
+
     private static Logger logger = LoggerFactory.getLogger(GeneralResource.class);
 
     @Autowired
@@ -202,7 +205,11 @@ public class GeneralResource {
         Map<String, String> conf = Maps.newHashMap();
 
         conf.put(MIPSA_WEB_COMPONENT_HTML_URL.property(), !mipsaLocalMode ? String.valueOf(MIPSA_WEB_COMPONENT_HTML_URL) : LOCAL_MIPSA_HTML_URL) ;
+        conf.put(MIPSA_WEB_COMPONENT_DETAIL_HTML_URL.property(), !mipsaLocalMode ? String.valueOf(MIPSA_WEB_COMPONENT_HTML_URL) : LOCAL_MIPSA_DETAIL_HTML_URL) ;
+
         conf.put(MIPSA_WEB_COMPONENT_BASEURL.property(), !mipsaLocalMode ? String.valueOf(MIPSA_WEB_COMPONENT_BASEURL): LOCAL_MIPSA_BASEURL) ;
+        conf.put(MIPSA_WEB_COMPONENT_OCTAV_BASEURL.property(), !mipsaLocalMode ? String.valueOf(MIPSA_WEB_COMPONENT_BASEURL): LOCAL_MIPSA_OCTAV_BASEURL) ;
+
         conf.put(MIPSA_WEB_COMPONENT_CDEDECL.property(), String.valueOf(MIPSA_WEB_COMPONENT_CDEDECL)) ;
         conf.put(MIPSA_WEB_COMPONENT_CDETYPINTERLOC.property(), String.valueOf(MIPSA_WEB_COMPONENT_CDETYPINTERLOC)) ;
         conf.put(MIPSA_WEB_COMPONENT_USESSOTOKEN.property(), String.valueOf(MIPSA_WEB_COMPONENT_USESSOTOKEN)) ;

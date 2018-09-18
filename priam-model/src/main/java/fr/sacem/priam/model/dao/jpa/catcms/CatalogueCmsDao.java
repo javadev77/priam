@@ -61,7 +61,7 @@ public interface CatalogueCmsDao extends JpaRepository<CatalogueCms, Long> {
             "AND (cat.dateEntree <= :periodeEntreeDateFin or :periodeEntreeDateFin IS NULL) " +
             "AND (cat.dateRenouvellement >= :periodeRenouvellementDateDebut or :periodeRenouvellementDateDebut IS NULL) " +
             "AND (cat.dateRenouvellement <= :periodeRenouvellementDateFin or :periodeRenouvellementDateFin IS NULL) " +
-            "AND (cat.dateSortie IS NULL OR cat.dateSortie > :periodeSortieDateFin) " +
+            "AND (cat.dateSortie IS NULL OR cat.dateSortie >= :periodeSortieDateFin) " +
             "AND (cat.typeInscription = :typeInscription or :typeInscription IS NULL)" +
             "AND (cat.typUtilGen = :typUtilGen OR :typUtilGen IS NULL) " )
             //"GROUP BY cat.ide12, cat.typeCMS ")

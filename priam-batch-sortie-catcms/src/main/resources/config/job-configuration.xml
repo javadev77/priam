@@ -15,6 +15,8 @@
     </bean>
 
     <job id="jobSortieCatalogue" xmlns="http://www.springframework.org/schema/batch">
+
+
         <step id="sortieCatalogueFr" next="sortieCatalogueAnf">
             <tasklet>
                 <chunk
@@ -47,9 +49,9 @@
     <bean id="qpReaderPriamSortieCatalogueFr" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
         <property name="selectClause" value="SELECT ID, IDE12, TYPE_CMS"/>
         <property name="fromClause" value="FROM PRIAM_CATCMS_CATALOGUE"/>
-        <property name="whereClause" value="(DATE_SORTIE IS NULL AND DATE_RENOUVELLEMENT IS NULL AND CURRENT_DATE() > DATE_ADD(DATE_ENTREE, INTERVAL #{jobParameters['param.annee.fr']} YEAR))
-                                            OR (DATE_SORTIE IS NULL AND DATE_RENOUVELLEMENT IS NOT NULL AND CURRENT_DATE() > DATE_ADD(DATE_RENOUVELLEMENT, INTERVAL 10 YEAR))
-                                            AND TYPE_CMS = 'FR'"/>
+        <property name="whereClause" value="(DATE_SORTIE IS NULL AND DATE_RENOUVELLEMENT IS NULL AND CURRENT_DATE() > DATE_ADD(DATE_ENTREE, INTERVAL #{jobParameters['param.annee.fr']} YEAR) AND TYPE_CMS = 'FR')
+                                            OR (DATE_SORTIE IS NULL AND DATE_RENOUVELLEMENT IS NOT NULL AND CURRENT_DATE() > DATE_ADD(DATE_RENOUVELLEMENT, INTERVAL #{jobParameters['param.annee.fr']} YEAR)AND TYPE_CMS = 'FR')
+                                            "/>
         <property name="databaseType" value="MySQL" />
         <property name="dataSource" ref="dataSource"/>
         <property name="sortKey" value="ID"/>
@@ -64,11 +66,11 @@
     </bean>
 
     <bean id="qpReaderPriamSortieCatalogueAnf" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
-        <property name="selectClause" value="SELECT ID, IDE12"/>
+        <property name="selectClause" value="SELECT ID, IDE12, TYPE_CMS"/>
         <property name="fromClause" value="FROM PRIAM_CATCMS_CATALOGUE"/>
-        <property name="whereClause" value="(DATE_SORTIE IS NULL AND DATE_RENOUVELLEMENT IS NULL AND CURRENT_DATE() > DATE_ADD(DATE_ENTREE, INTERVAL #{jobParameters['param.annee.anf']} YEAR))
-                                            OR (DATE_SORTIE IS NULL AND DATE_RENOUVELLEMENT IS NOT NULL AND CURRENT_DATE() > DATE_ADD(DATE_RENOUVELLEMENT, INTERVAL 10 YEAR))
-                                            AND TYPE_CMS = 'ANF'"/>
+        <property name="whereClause" value="(DATE_SORTIE IS NULL AND DATE_RENOUVELLEMENT IS NULL AND CURRENT_DATE() > DATE_ADD(DATE_ENTREE, INTERVAL #{jobParameters['param.annee.anf']} YEAR) AND TYPE_CMS = 'ANF')
+                                            OR (DATE_SORTIE IS NULL AND DATE_RENOUVELLEMENT IS NOT NULL AND CURRENT_DATE() > DATE_ADD(DATE_RENOUVELLEMENT, INTERVAL #{jobParameters['param.annee.anf']} YEAR) AND TYPE_CMS = 'ANF')
+                                            "/>
         <property name="databaseType" value="MySQL" />
         <property name="dataSource" ref="dataSource"/>
         <property name="sortKey" value="ID"/>
@@ -76,11 +78,10 @@
 
     <bean id="catalogueCMSRowMapper" class="fr.sacem.priam.batch.sortie.catcms.mapper.CatalogueCMSRowMapper"/>
 
-    <bean id="compositeWriterPriamSortieCatalogueFr" class="org.springframework.batch.item.support.CompositeItemWriter">
+    <bean id="compositeWriterPriamSortieCatalogueFr" class="org.springframework.batch.item.support.CompositeItemWriter" scope="step">
         <property name="delegates">
             <list>
                 <ref bean="writerPriamSortieCatalogue" />
-                <ref bean="writerDeleteParticipantFr" />
                 <ref bean="writerJournalCatcms" />
             </list>
         </property>
@@ -90,7 +91,7 @@
         <property name="delegates">
             <list>
                 <ref bean="writerPriamSortieCatalogue" />
-                <ref bean="writerDeleteParticipantAnf" />
+                <!--<ref bean="writerUpdateFlagParticipantAnf" />-->
                 <ref bean="writerJournalCatcms" />
             </list>
         </property>
@@ -104,43 +105,8 @@
                 <![CDATA[
                     UPDATE PRIAM_CATCMS_CATALOGUE
                     SET DATE_SORTIE = CURRENT_TIMESTAMP(),
-                        TYPE_SORTIE = 'Automatique',
-                        PARTICIPANTS = NULL,
-                        ROLES = NULL,
-                        ELIGIBLE_CREATION = 1
-                    WHERE ID  = :id;
-                ]]>
-            </value>
-        </property>
-        <property name="itemSqlParameterSourceProvider">
-            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
-        </property>
-    </bean>
-
-    <bean id="writerDeleteParticipantFr" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
-        <property name="dataSource" ref="dataSource"/>
-        <property name="assertUpdates" value="false"/>
-        <property name="sql">
-            <value>
-                <![CDATA[
-                    DELETE FROM PRIAM_CATCMS_PARTICIPANTS
-                    WHERE IDE12  = :ide12 AND TYPE_CMS = 'FR';
-                ]]>
-            </value>
-        </property>
-        <property name="itemSqlParameterSourceProvider">
-            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
-        </property>
-    </bean>
-
-    <bean id="writerDeleteParticipantAnf" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
-        <property name="dataSource" ref="dataSource"/>
-        <property name="assertUpdates" value="false"/>
-        <property name="sql">
-            <value>
-                <![CDATA[
-                    DELETE FROM PRIAM_CATCMS_PARTICIPANTS
-                    WHERE IDE12  = :ide12 AND TYPE_CMS = 'ANF';
+                        TYPE_SORTIE = 'Automatique'
+                    WHERE ID  = :id
                 ]]>
             </value>
         </property>

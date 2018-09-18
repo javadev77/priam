@@ -2,6 +2,7 @@ package fr.sacem.priam.batch.participants.rep.processor;
 
 import fr.sacem.priam.batch.participants.rep.domain.Participant;
 import fr.sacem.priam.batch.participants.rep.domain.StatutRoleParticipant;
+import fr.sacem.priam.common.util.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepExecution;
@@ -28,7 +29,12 @@ public class ParticipantFraProcessor implements ItemProcessor<Participant, Parti
     @Override
     public Participant process(Participant participant) throws Exception {
 //        participant.setTypeCMS("FR");
-        participant.setTypeCMS(typeCMS);
+
+        if(typeCMS.equals(FileUtils.CATALOGUE_TYPE_CMS_ANF)){
+            participant.setTypeCMS(typeCMS);
+        } else {
+            participant.setTypeCMS(FileUtils.CATALOGUE_TYPE_CMS_FR);
+        }
 
         if(participant.getRolPart().equals(StatutRoleParticipant.getValue("ROLE_A").getCodeStatutRole())
                 || participant.getRolPart().equals(StatutRoleParticipant.getValue("ROLE_AR").getCodeStatutRole())

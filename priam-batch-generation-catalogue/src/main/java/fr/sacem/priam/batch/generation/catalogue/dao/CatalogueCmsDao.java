@@ -27,9 +27,9 @@ public class CatalogueCmsDao {
         String sql =  "SELECT " +
                 "COUNT(*) as NB_LIGNES " +
                 "FROM " +
-                "PRIAM_CATCMS_CATALOGUE CATALOGUE LEFT JOIN PRIAM_CATCMS_PARTICIPANTS PARTICIPANTS " +
+                "PRIAM_CATCMS_CATALOGUE CATALOGUE INNER JOIN PRIAM_CATCMS_PARTICIPANTS PARTICIPANTS " +
                 "ON CATALOGUE.IDE12 = PARTICIPANTS.IDE12 AND CATALOGUE.TYPE_CMS = PARTICIPANTS.TYPE_CMS " +
-                "WHERE  CATALOGUE.TYPE_CMS=? AND CATALOGUE.DATE_SORTIE IS NULL";
+                "WHERE  CATALOGUE.TYPE_CMS=? AND CATALOGUE.DATE_SORTIE IS NULL AND PARTICIPANTS.OEUVRE_SORTIE=0";
         return jdbcTemplate.queryForObject(sql, (resultSet, i) -> resultSet.getLong("NB_LIGNES"), typeCms);
     }
 }

@@ -32,7 +32,6 @@ public class App {
         if(args.length == 1 && args[0].equals("FR") || args[0].equals("ANF")) {
 
             String typeCMS = args[0];
-
             JobLauncher jobLauncher = (JobLauncher) context.getBean("jobLauncher");
             Job job = (Job) context.getBean("jobEnrichissement");
             Admap admap = (Admap) context.getBean("admap");

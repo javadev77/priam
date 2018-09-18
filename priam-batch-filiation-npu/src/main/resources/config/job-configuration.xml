@@ -14,11 +14,22 @@
     </bean>
 
     <job id="jobFiliationNPU" xmlns="http://www.springframework.org/schema/batch">
+
+        <step id="majFlagCatalogueEtParticipant" next="csvArchiveFlatFileReaderStep">
+            <tasklet>
+                <chunk
+                        reader="readerMajFlagCatalogueEtParticipant"
+                        writer="compositeWriterMajFlagCatalogueEtParticipant"
+                        commit-interval="${commit-interval}">
+                </chunk>
+            </tasklet>
+        </step>
+
         <step id="csvArchiveFlatFileReaderStep">
             <tasklet>
                 <chunk
                         reader="readerPriamFiliationNpuCsv"
-                        writer="writerPriamFiliationNpuCsv"
+                        writer="compositeWriterPriamFiliationNPU"
                         processor="processorPriamFiliationNPU"
                         commit-interval="${commit-interval}">
                 </chunk>
@@ -65,15 +76,14 @@
     <bean id="processorPriamFiliationNPU" class="fr.sacem.priam.batch.filiation.npu.processor.OeuvreFiliationNPUProcessor">
     </bean>
 
-    <!--<bean id="compositeWriterPriamFiliationNPU" class="org.springframework.batch.item.support.CompositeItemWriter">
+    <bean id="compositeWriterPriamFiliationNPU" class="org.springframework.batch.item.support.CompositeItemWriter">
         <property name="delegates">
             <list>
                 <ref bean="writerPriamFiliationNpuCsv" />
-                <ref bean="writerJournalCatcmsSortieNPU" />
-                <ref bean="writerJournalCatcmsCreationNPU" />
+                <ref bean="writerPriamFiliationNpuParticipantsCsv" />
             </list>
         </property>
-    </bean>-->
+    </bean>
 
     <bean id="writerPriamFiliationNpuCsv" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
     <property name="dataSource" ref="dataSource"/>
@@ -90,6 +100,86 @@
     <property name="itemSqlParameterSourceProvider">
         <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
     </property>
+    </bean>
+
+    <bean id="writerPriamFiliationNpuParticipantsCsv" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    UPDATE PRIAM_CATCMS_PARTICIPANTS
+                    SET IDE12 = :ide12Rep
+                    WHERE IDE12 =:ide12 AND OEUVRE_SORTIE = 0;
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
+
+    <bean id="readerMajFlagCatalogueEtParticipant"
+          class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="queryProvider" ref="qpReaderMajFlagCatalogueEtParticipant"/>
+        <property name="pageSize" value="${commit-interval}"/>
+        <property name="rowMapper" ref="catalogueCMSRowMapper"/>
+    </bean>
+
+    <bean id="qpReaderMajFlagCatalogueEtParticipant" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
+        <property name="selectClause" value="SELECT ID, IDE12, TYPE_CMS"/>
+        <property name="fromClause" value="FROM PRIAM_CATCMS_CATALOGUE"/>
+        <property name="whereClause" value="WHERE DATE_SORTIE = date_add(current_date,INTERVAL -1 DAY)"/>
+        <property name="databaseType" value="MySQL" />
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sortKey" value="ID"/>
+    </bean>
+
+    <bean id="catalogueCMSRowMapper" class="fr.sacem.priam.batch.filiation.npu.mapper.CatalogueCMSRowMapper"/>
+
+    <bean id="compositeWriterMajFlagCatalogueEtParticipant" class="org.springframework.batch.item.support.CompositeItemWriter">
+        <property name="delegates">
+            <list>
+                <ref bean="writerMajFlagCatalogue" />
+                <ref bean="writerMajFlagParticipant" />
+            </list>
+        </property>
+    </bean>
+
+    <bean id="writerMajFlagCatalogue" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    UPDATE PRIAM_CATCMS_CATALOGUE
+                    SET ELIGIBLE_CREATION = 1
+                    WHERE ID  = :id
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
+
+    <bean id="writerMajFlagParticipant" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    UPDATE PRIAM_CATCMS_PARTICIPANTS SET OEUVRE_SORTIE = 1
+                    WHERE IDE12  = :ide12
+                    AND TYPE_CMS =:typeCMS
+                    AND OEUVRE_SORTIE = 0;
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
     </bean>
 
     <!--<bean id="writerJournalCatcmsSortieNPU" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">

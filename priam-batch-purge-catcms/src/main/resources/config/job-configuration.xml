@@ -78,6 +78,7 @@
         <property name="delegates">
             <list>
                 <ref bean="writerPriamPurgeCatalogue" />
+                <ref bean="writerPriamPurgeParticipants" />
                 <ref bean="writerJournalCatcms" />
             </list>
         </property>
@@ -91,6 +92,24 @@
                 <![CDATA[
                     DELETE FROM PRIAM_CATCMS_CATALOGUE
                     WHERE ID  = :id;
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
+
+    <bean id="writerPriamPurgeParticipants" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    DELETE FROM PRIAM_CATCMS_PARTICIPANTS
+                    WHERE IDE12  = :ide12
+                    AND TYPE_CMS =:typeCMS
+                    AND OEUVRE_SORTIE = 1;
                 ]]>
             </value>
         </property>

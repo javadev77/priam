@@ -93,6 +93,7 @@
                 @delete-oeuvre="onDeleteOeuvre"
                 @on-sort="onSort"
                 @load-page="loadPage"
+                @show-detail="onShowDetail"
                 class="col-sm-20">
               </priam-grid>
           </div>
@@ -134,6 +135,11 @@
                       @ajoutOeuvre="onActionAjouterOeuvre"
                       @cancel="showEcranAjoutOeuvreMipsa = false"></ajouter-oeuvre>
     </ecran-modal>-->
+    <modal-detail-mipsa v-if="detailOpen" @close="detailOpen = false">
+      <template slot="body">
+        <app-mipsa-detail :configuration="mipsaDetailConfig" :request="request" ></app-mipsa-detail>
+      </template>
+    </modal-detail-mipsa>
   </div>
 </template>
 
@@ -145,6 +151,8 @@
   import FiltreCatalogue from './FiltreCatalogueCMS.vue';
 
   import EcranModal from '../../../common/components/ui/EcranModal.vue';
+  import ModalDetailMipsa from '../../../catalogue-cms/components/catalogue/mipsa/ModalDetailMipsa.vue';
+  import AppMipsaDetail from '../../../common/components/ui/mipsa/AppMipsaDetail.vue';
 
   export default {
 
@@ -152,8 +160,19 @@
 
     },
 
-
     data() {
+
+      var vm =  this;
+      var MISPA_CONFIG = this.$store.getters.mipsaConfig;
+      var MISPA_DETAIL_CONFIG = this.$store.getters.mipsaDetailConfig;
+      var sendToken =  false;//MISPA_CONFIG['priam.mipsa.wc.usessotoken'];
+      var ssoTokenMethods = sendToken ?
+        function(onTokenReceived) {
+          vm.$http.get('app/rest/general/ssotoken').then( function(response) {
+            onTokenReceived(response.data) ;
+          }) ;
+        }
+        : undefined;
 
       return {
 
@@ -161,8 +180,9 @@
 
         showPopupDeleteOeuvre : false,
 
-        oeuvreToDelete : {
-        },
+        oeuvreToDelete : {},
+
+        detailOpen : false,
 
         resource : {},
 
@@ -188,8 +208,8 @@
                 cellTemplate: function (cellValue) {
 
                   var template = [
-                    {event : 'oeuvre',
-                      template : '<img src="static/images/Musique.png" title="Mise en répartition" width="20px"/>'}];
+                    {event : 'show-detail',
+                      template : '<img src="static/images/Musique.png" width="20px"/>'}];
                   return template;
                 }
 
@@ -468,6 +488,25 @@
           searchQuery : ''
         },
 
+        mipsaDetailConfig : {
+          mipsaurl: MISPA_CONFIG['priam.mipsa.wc.baseurl'],
+          octavurl: MISPA_CONFIG['priam.mipsa.wc.octav.url'],
+          ssoTokenMethods: ssoTokenMethods,
+          viewBloc: {
+            assoc: 'hide',
+            octav: 'maximize'
+          }
+        },
+
+        request : {
+          cde: null,
+          typCde: 'COCV',
+          seqassocoeuv: '',
+          cdecombi: '',
+          encodedTitle: '',
+          encodedTiers: ''
+        },
+
         filter : {
           typeCMS : {id :'FR', value : 'CMS France'},
           ide12: null,
@@ -531,6 +570,28 @@
         dataLoadingCompteur: false
       }
     },
+
+    mounted(){
+      var MISPA_CONFIG = this.$store.getters.mipsaConfig;
+      var headEl = $('head');
+      var url = MISPA_CONFIG['priam.mipsa.wc.detail.html.url'];
+      var importElem = headEl.find('link').get().find(function (elem) {
+        let link = $(elem);
+        return link.attr('href') == url && link.attr('rel') == 'import';
+      })
+      if(importElem == undefined || importElem == null) {
+        var importHtml = $('<link rel="import" >')
+          .attr('href', url)
+          .on('load', function () {
+            console.log('loaded ' + url);
+          })
+          .on('error', function () {
+            console.log('Error to load ' + url);
+          });
+        headEl.append(importHtml);
+      }
+
+     },
 
     created() {
 
@@ -632,6 +693,8 @@
             console.log('data = ' + data);
             this.oeuvreToDelete.typeSortie = data.typeSortie;
             this.oeuvreToDelete.dateSortie = data.dateSortie;
+            debugger;
+            this.calculerCompteurs();
           });
       },
 
@@ -740,6 +803,17 @@
           this.dataLoadingCompteur = false;
         })
         ;
+      },
+      onShowDetail: function(row) {
+          this.request = {
+            cde: row.ide12,
+            typCde: 'COCV',
+            seqassocoeuv: '',
+            cdecombi: '',
+            encodedTitle: row.titre,
+            encodedTiers: ''
+          }
+          this.detailOpen = true;
       }
     },
 
@@ -749,7 +823,9 @@
       'priam-navbar' : PriamNavbar,
       'modalWithTitle': ModalWithTitle,
       appFiltreCatalogue : FiltreCatalogue,
-      ecranModal : EcranModal
+      ecranModal : EcranModal,
+      modalDetailMipsa : ModalDetailMipsa,
+      'app-mipsa-detail' : AppMipsaDetail
     }
   }
 

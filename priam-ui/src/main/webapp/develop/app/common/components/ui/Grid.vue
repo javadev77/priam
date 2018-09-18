@@ -227,6 +227,12 @@
                           {{entryColumn.cell.toText(entry[entryColumn.id])}}
                         </td>
                       </template>
+                      <template v-else-if="entryColumn.type === 'code-value-left'">
+                        <td class="columnLeft" :style="styleValue(entryColumn, entry)">
+                          {{entryColumn.cell.toText(entry[entryColumn.id])}}
+                        </td>
+                      </template>
+
                       <template v-else-if="entryColumn.type === 'code-value-hightlight'">
                         <td :style="styleValue(entryColumn, entry)">
                           <div v-html="entryColumn.cell.cellTemplate(entry)"></div>

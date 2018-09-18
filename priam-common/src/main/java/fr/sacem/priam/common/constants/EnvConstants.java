@@ -37,6 +37,14 @@ public enum EnvConstants implements ConfigurableProperty {
 
     },
 
+    MIPSA_WEB_COMPONENT_DETAIL_HTML_URL {
+        @Override
+        public String property() {
+            return "priam.mipsa.wc.detail.html.url";
+        }
+
+    },
+
     MIPSA_WEB_COMPONENT_HTML_URL {
         @Override
         public String property() {
@@ -57,6 +65,14 @@ public enum EnvConstants implements ConfigurableProperty {
         @Override
         public String property() {
             return "priam.mipsa.wc.baseurl";
+        }
+
+    },
+
+    MIPSA_WEB_COMPONENT_OCTAV_BASEURL {
+        @Override
+        public String property() {
+            return "priam.mipsa.wc.octav.url";
         }
 
     },

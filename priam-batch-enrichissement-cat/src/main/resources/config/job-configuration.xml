@@ -94,12 +94,14 @@
 
     <bean id="qpReaderStepIDE12ExistEtDateSortieVide" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
         <property name="selectClause" value="SELECT CAT_PENEF.*"/>
-        <property name="fromClause" value="FROM PRIAM_CATCMS_PENEF CAT_PENEF"/>
-        <property name="whereClause" value="WHERE CAT_PENEF.ID_FICHIER=:idFichier AND CAT_PENEF.IDE12 IN (
-                                              SELECT IDE12
-                                              FROM PRIAM_CATCMS_CATALOGUE
-                                              WHERE DATE_SORTIE IS NULL
-                                            )"/>
+        <property name="fromClause" value="FROM PRIAM_CATCMS_PENEF CAT_PENEF
+                                           INNER JOIN PRIAM_CATCMS_CATALOGUE CATALOGUE
+                                           ON CAT_PENEF.IDE12 = CATALOGUE.IDE12 AND CAT_PENEF.TYPE_CMS = CATALOGUE.TYPE_CMS"/>
+        <property name="whereClause" value="WHERE CAT_PENEF.ID_FICHIER=:idFichier
+                                            AND (CATALOGUE.DATE_SORTIE IS NULL
+                                                    AND CATALOGUE.TYPE_CMS = '#{jobParameters[typeCMS]}')
+                                            OR (CATALOGUE.DATE_SORTIE = CURRENT_DATE()
+                                                    AND CATALOGUE.TYPE_CMS = '#{jobParameters[typeCMS]}')"/>
         <property name="databaseType" value="MySQL" />
         <property name="dataSource" ref="dataSource"/>
         <property name="sortKey" value="IDE12"/>
@@ -122,13 +124,13 @@
 
     <bean id="queryProvider" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
         <property name="selectClause" value="SELECT CAT_PENEF.*"/>
-        <property name="fromClause" value="FROM PRIAM_CATCMS_PENEF CAT_PENEF"/>
-        <property name="whereClause" value="WHERE CAT_PENEF.ID_FICHIER=:idFichier AND CAT_PENEF.IDE12 IN (
-                                              SELECT IDE12
-                                              FROM PRIAM_CATCMS_CATALOGUE
-                                              WHERE DATE_SORTIE IS NOT NULL
-                                              AND ELIGIBLE_CREATION = 1
-                                            )"/>
+        <property name="fromClause" value="FROM PRIAM_CATCMS_PENEF CAT_PENEF
+                                            INNER JOIN PRIAM_CATCMS_CATALOGUE CATALOGUE
+                                            ON CAT_PENEF.IDE12 = CATALOGUE.IDE12 AND CAT_PENEF.TYPE_CMS = CATALOGUE.TYPE_CMS"/>
+        <property name="whereClause" value="WHERE CAT_PENEF.ID_FICHIER=:idFichier
+                                                AND CATALOGUE.DATE_SORTIE &lt; CURRENT_DATE()
+                                                AND CATALOGUE.ELIGIBLE_CREATION = 1
+                                                AND CATALOGUE.TYPE_CMS = '#{jobParameters[typeCMS]}'"/>
         <property name="databaseType" value="MySQL" />
         <property name="dataSource" ref="dataSource"/>
         <property name="sortKey" value="IDE12"/>
@@ -150,11 +152,14 @@
 
     <bean id="qpRreaderStepIDE12NotExist" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
         <property name="selectClause" value="SELECT CAT_PENEF.*"/>
-        <property name="fromClause" value="FROM PRIAM_CATCMS_PENEF CAT_PENEF"/>
-        <property name="whereClause" value="WHERE CAT_PENEF.ID_FICHIER=:idFichier AND CAT_PENEF.IDE12 NOT IN (
-                                              SELECT IDE12
-                                              FROM PRIAM_CATCMS_CATALOGUE
-                                            )"/>
+        <property name="fromClause" value="FROM PRIAM_CATCMS_PENEF CAT_PENEF
+                                               LEFT JOIN PRIAM_CATCMS_CATALOGUE CATALOGUE
+                                               ON CAT_PENEF.IDE12 = CATALOGUE.IDE12
+                                               AND CAT_PENEF.TYPE_CMS = CATALOGUE.TYPE_CMS"/>
+        <property name="whereClause" value="WHERE CAT_PENEF.ID_FICHIER=:idFichier
+                                                AND CATALOGUE.IDE12 IS NULL
+                                                AND CATALOGUE.TYPE_CMS IS NULL
+                                                AND CAT_PENEF.TYPE_CMS = '#{jobParameters[typeCMS]}'"/>
         <property name="databaseType" value="MySQL" />
         <property name="dataSource" ref="dataSource"/>
         <property name="sortKey" value="IDE12"/>
@@ -247,13 +252,17 @@
                             :typeSortie,
                             (SELECT GROUP_CONCAT(PART.ROLE SEPARATOR ',' )
                              FROM PRIAM_CATCMS_PARTICIPANTS PART
-                              WHERE PART.IDE12 = :ide12 AND PART.TYPE_CMS=:typeCMS
-                               GROUP BY PART.TYPE_CMS, PART.IDE12),
+                              WHERE PART.IDE12 = :ide12
+                              AND PART.TYPE_CMS=:typeCMS
+                              AND PART.OEUVRE_SORTIE=0
+                               GROUP BY PART.TYPE_CMS, PART.IDE12, PART.OEUVRE_SORTIE),
 
                              (SELECT GROUP_CONCAT(PART.PARTICIPANT SEPARATOR ',' )
                              FROM PRIAM_CATCMS_PARTICIPANTS PART
-                              WHERE PART.IDE12=:ide12 AND PART.TYPE_CMS=:typeCMS
-                               GROUP BY PART.TYPE_CMS, PART.IDE12)
+                              WHERE PART.IDE12=:ide12
+                              AND PART.TYPE_CMS=:typeCMS
+                              AND PART.OEUVRE_SORTIE=0
+                               GROUP BY PART.TYPE_CMS, PART.IDE12, PART.OEUVRE_SORTIE)
                         )
                 ]]>
             </value>
@@ -271,8 +280,9 @@
             <value>
                 <![CDATA[
                    UPDATE PRIAM_CATCMS_CATALOGUE SET DATE_RENOUVELLEMENT=:dateRenouvellement
-                      WHERE IDE12 = :ide12 AND TYPE_CMS='#{jobParameters[typeCMS]}'
-                      AND DATE_SORTIE IS NULL
+                      WHERE IDE12 = :ide12
+                      AND (DATE_SORTIE IS NULL AND TYPE_CMS='#{jobParameters[typeCMS]}')
+                      OR (DATE_SORTIE = CURRENT_DATE() AND TYPE_CMS='#{jobParameters[typeCMS]}')
                 ]]>
             </value>
         </property>
@@ -376,13 +386,15 @@
                             TYPE_CMS,
                             IDE12,
                             ROLE,
-                            PARTICIPANT
+                            PARTICIPANT,
+                            OEUVRE_SORTIE
                         )
                         VALUES (
                             :typeCMS,
                             :ide12,
                             :role,
-                            :participant
+                            :participant,
+                            0
                         )
                 ]]>
             </value>
@@ -409,16 +421,6 @@
                 <ref bean="writerFlagEligibleCreation" />
                 <ref bean="writerStep2" />
                 <ref bean="writerJournalCatcmsIDE12NotExistOrDateSortieNonVide" />
-            </list>
-        </property>
-    </bean>
-
-
-    <bean id="compositeWriter" class="org.springframework.batch.item.support.CompositeItemWriter">
-        <property name="delegates">
-            <list>
-                <ref bean="writerToTableParticipants" />
-                <ref bean="writerStep2" />
             </list>
         </property>
     </bean>
