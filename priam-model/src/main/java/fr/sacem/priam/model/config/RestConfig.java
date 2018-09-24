@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
+import fr.sacem.priam.common.interceptor.LoggingRequestInterceptor;
+import fr.sacem.priam.common.interceptor.WeSsoAuthCookieInterceptor;
+import fr.sacem.priam.common.util.SsoUtils;
 import fr.sacem.priam.model.util.StdDateFormatExt;
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.beanutils.ConvertUtilsBean;
@@ -102,11 +105,11 @@ public class RestConfig {
     RestTemplate restTemplate ;
     if ( RESTLOGGER.isDebugEnabled() ) {
       restTemplate = new RestTemplate(new BufferingClientHttpRequestFactory(requestFactory));
-      //restTemplate.getInterceptors().add(new WeSsoAuthCookieInterceptor());
-      //restTemplate.getInterceptors().add(new LoggingRequestInterceptor(RESTLOGGER));
+      restTemplate.getInterceptors().add(new WeSsoAuthCookieInterceptor());
+      restTemplate.getInterceptors().add(new LoggingRequestInterceptor(RESTLOGGER));
     } else {
       restTemplate = new RestTemplate(requestFactory);
-      //restTemplate.getInterceptors().add(new WeSsoAuthCookieInterceptor());
+      restTemplate.getInterceptors().add(new WeSsoAuthCookieInterceptor());
     }
     configureMessageConverter(jsonMapper, restTemplate);
     return restTemplate;
@@ -131,10 +134,10 @@ public class RestConfig {
       @Override
       protected AsyncClientHttpRequest createAsyncRequest(URI url, HttpMethod method) throws IOException {
         AsyncClientHttpRequest asyncRequest = super.createAsyncRequest(url, method);
-        //SsoUtils.addSsoHeaders(LOGGER, asyncRequest);
-        /*if(LOGGER.isDebugEnabled()){
+        SsoUtils.addSsoHeaders(LOGGER, asyncRequest);
+        if(LOGGER.isDebugEnabled()){
           LOGGER.debug("async webservice call created with [{} {}, Headers={}]", asyncRequest.getMethod(), asyncRequest.getURI(), asyncRequest.getHeaders());
-        }*/
+        }
         return asyncRequest;
       }
   }

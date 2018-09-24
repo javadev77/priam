@@ -3,3 +3,12 @@ spring:
     active: @spring.active.profiles@
   jmx:
     enabled: false
+
+endpoints:
+  health:
+    sensitive: false
+
+management:
+  security:
+    enabled: false
+

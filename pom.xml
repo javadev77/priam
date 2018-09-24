@@ -82,7 +82,7 @@
 
         <priam.project.version>${project.version}</priam.project.version>
         <priam.project.security.name.ui>PRIAMInt2.0.X</priam.project.security.name.ui>
-        <spring.active.profiles>re7</spring.active.profiles>
+        <spring.active.profiles>dev</spring.active.profiles>
     </properties>
 
 
@@ -197,9 +197,9 @@
             <resource>
                 <filtering>true</filtering>
                 <directory>src/main/resources</directory>
-                <excludes>
-                    <exclude>dev/**</exclude>
-                </excludes>
+                <!--<excludes>-->
+                    <!--<exclude>dev/**</exclude>-->
+                <!--</excludes>-->
             </resource>
         </resources>
 

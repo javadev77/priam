@@ -3,3 +3,11 @@ spring:
     active: @spring.active.profiles@ # a faire @webapp.mode@
   jmx:
     enabled: false
+
+endpoints:
+  health:
+    sensitive: false
+
+management:
+  security:
+    enabled: false

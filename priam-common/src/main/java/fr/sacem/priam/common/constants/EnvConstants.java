@@ -277,8 +277,14 @@ public enum EnvConstants implements ConfigurableProperty {
         public String property() {
             return "priam.generation.catalogue.output";
         }
-    }
-    ;
+    },
+
+    PRIAM_APP_SERVICE_URL {
+        @Override
+        public String property() {
+            return "priam.ui.rest.service.url";
+        }
+    };
 
     @Override
     public String toString() {

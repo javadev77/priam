@@ -696,9 +696,10 @@
               .then(data => {
                 this.affectationEncours = false;
 
-                this.$router.push({name: 'ListePrg'});
+                this.$router.push({name: 'programme'});
               })
               .catch(response => {
+                  debugger;
                 alert("Erreur technique lors de l'affectation des fichiers au programme !! ");
               });
 
@@ -738,7 +739,7 @@
                     console.log("Déaffactation ok");
                     this.showModalDesactiver = false;
 
-                    this.$router.push({name: 'ListePrg'});
+                    this.$router.push({name: 'programme'});
 
 
                   })

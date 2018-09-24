@@ -1,7 +1,10 @@
 package fr.sacem.priam.rest.common.config;
 
+import fr.sacem.priam.common.config.HealthConfig;
 import fr.sacem.priam.common.config.PropertiesWithJavaConfig;
+import fr.sacem.priam.common.config.SacemConfiguration;
 import fr.sacem.priam.model.config.JpaConfiguration;
+import fr.sacem.priam.model.config.RestConfig;
 import fr.sacem.priam.security.config.RestMvcConfig;
 import fr.sacem.priam.security.config.SecurityRestConfiguration;
 import fr.sacem.priam.services.utils.SpringAsyncConfig;
@@ -14,7 +17,7 @@ import org.springframework.context.annotation.Import;
 /**
  * Created by benmerzoukah on 15/11/2017.
  */
-@Import(value = {PropertiesWithJavaConfig.class, RestMvcConfig.class, JpaConfiguration.class, SecurityRestConfiguration.class, SpringAsyncConfig.class})
+@Import(value = {PropertiesWithJavaConfig.class, RestMvcConfig.class, JpaConfiguration.class, SecurityRestConfiguration.class, SpringAsyncConfig.class, HealthConfig.class, SacemConfiguration.class, RestConfig.class})
 @SpringBootApplication(scanBasePackages = {"fr.sacem.priam.rest.common", "fr.sacem.priam.common", "fr.sacem.priam.services", "fr.sacem.priam.model"})
 @EnableCaching
 public class PriamRestApiCommonWebApp extends SpringBootServletInitializer {
