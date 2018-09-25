@@ -279,10 +279,24 @@ public enum EnvConstants implements ConfigurableProperty {
         }
     },
 
-    PRIAM_APP_SERVICE_URL {
+    PRIAM_COMMON_SERVICE_URL {
         @Override
         public String property() {
-            return "priam.ui.rest.service.url";
+            return "priam.service.common.url";
+        }
+    },
+
+    PRIAM_CP_SERVICE_URL {
+        @Override
+        public String property() {
+            return "priam.service.common.url";
+        }
+    },
+
+    PRIAM_CMS_SERVICE_URL {
+        @Override
+        public String property() {
+            return "priam.service.common.url";
         }
     };
 
