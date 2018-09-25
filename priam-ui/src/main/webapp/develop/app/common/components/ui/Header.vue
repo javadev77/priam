@@ -52,7 +52,7 @@
             routeName : 'programme',
             label : 'Programme',
             routes : ['programme', 'selection', 'selection-cms','affectation', 'affectation-cms', 'listeProg'],
-            authorized : !this.hasRight('MENUCATAL'),
+            authorized : this.hasRight('MENUCATAL'),
             items : [
               {
                 id : 'listeProg',
@@ -66,7 +66,7 @@
             id : 'chargement',
             routeName : 'chargement',
             label : 'Chargement',
-            authorized : !this.hasRight('MENUCATAL'),
+            authorized : this.hasRight('MENUCATAL'),
             routes : ['chargement', 'fichiers'],
             items : [
               {
@@ -114,7 +114,7 @@
             routeName : 'parametrage',
             label : 'Paramétrage',
             routes : ['parametrage'],
-            authorized : !this.hasRight('MENUCATAL')
+            authorized : this.hasRight('MENUCATAL')
           }
 
 

@@ -82,7 +82,7 @@
 
         <priam.project.version>${project.version}</priam.project.version>
         <priam.project.security.name.ui>PRIAMInt2.0.X</priam.project.security.name.ui>
-        <spring.active.profiles>re7</spring.active.profiles>
+        <spring.active.profiles>dev</spring.active.profiles>
     </properties>
 
 
@@ -197,11 +197,9 @@
             <resource>
                 <filtering>true</filtering>
                 <directory>src/main/resources</directory>
-                <excludes>
-                    <exclude>dev/**</exclude>
-                </excludes>
             </resource>
         </resources>
+
 
         <pluginManagement>
 
@@ -351,10 +349,32 @@
 
 
     <profiles>
+
+        <profile>
+            <id>local</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <spring.active.profiles>dev</spring.active.profiles>
+            </properties>
+
+            <build>
+                <resources>
+                    <resource>
+                        <filtering>true</filtering>
+                        <directory>src/main/resources</directory>
+                        <!--<excludes>-->
+                        <!--<exclude>dev/**</exclude>-->
+                        <!--</excludes>-->
+                    </resource>
+                </resources>
+            </build>
+        </profile>
         <profile>
             <id>dev</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <activeByDefault>false</activeByDefault>
             </activation>
             <properties>
                 <spring.active.profiles>dev</spring.active.profiles>

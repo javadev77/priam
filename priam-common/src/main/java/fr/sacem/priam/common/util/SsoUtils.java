@@ -1,6 +1,7 @@
 package fr.sacem.priam.common.util;
 
 import fr.sacem.frmwk.security.cmd.BusinessSecurityManager;
+import fr.sacem.frmwk.security.dto.BasicApplicationProfile;
 import fr.sacem.frmwk.security.plugins.exception.SecurityPluginException;
 import fr.sacem.frmwk.security.plugins.guest.GuestUserProfileBuilder;
 import fr.sacem.fwk.config.Environment;
@@ -91,6 +92,7 @@ public class SsoUtils {
         boolean hasSso = FrmwkEnv.TRUE.equalsIgnoreCase(
             Environment.getParameter(FrmwkEnv.APP_SSO_CONTROL, FrmwkEnv.APP_SSO_CONTROL_DEFAULT));
         ApplicationProfile profile = CurrentApplicationProfile.getProfile();
+        BasicApplicationProfile basicApplicationProfile = new BasicApplicationProfile();
         if(hasSso && profile instanceof TokenApplicationProfile){
             String rawToken = ((TokenApplicationProfile) profile).getRawToken();
             request.getHeaders().set("Set-cookie", SsoUtils.WESSO_AUTHCOOKIE + "=" + rawToken);

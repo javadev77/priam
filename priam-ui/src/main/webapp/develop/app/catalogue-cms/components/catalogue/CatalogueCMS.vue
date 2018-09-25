@@ -286,7 +286,7 @@
                   let participants = entry.participants;
                   return participants !== null &&
                          participants !== undefined &&
-                         participants.split(",");
+                         participants.split(",").slice(0,4);
                 }
 
 
@@ -313,7 +313,7 @@
                   let roles = entry.roles;
                   return roles !== null &&
                     roles !== undefined &&
-                    roles.split(",");
+                    roles.split(",").slice(0,4);
                 }
 
 
