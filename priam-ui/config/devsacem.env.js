@@ -17,4 +17,3 @@ module.exports = {
   CONTEXT_ROOT_PRIAM_CAT_RDO : '"http://dev.sacem.fr/priam-catcms-benmerzoukah/"'
 }
 
-
