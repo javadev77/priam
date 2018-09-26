@@ -208,7 +208,7 @@ public class GeneralResource {
         conf.put(MIPSA_WEB_COMPONENT_DETAIL_HTML_URL.property(), !mipsaLocalMode ? String.valueOf(MIPSA_WEB_COMPONENT_DETAIL_HTML_URL) : LOCAL_MIPSA_DETAIL_HTML_URL) ;
 
         conf.put(MIPSA_WEB_COMPONENT_BASEURL.property(), !mipsaLocalMode ? String.valueOf(MIPSA_WEB_COMPONENT_BASEURL): LOCAL_MIPSA_BASEURL) ;
-        conf.put(MIPSA_WEB_COMPONENT_OCTAV_BASEURL.property(), !mipsaLocalMode ? String.valueOf(MIPSA_WEB_COMPONENT_BASEURL): LOCAL_MIPSA_OCTAV_BASEURL) ;
+        conf.put(MIPSA_WEB_COMPONENT_OCTAV_BASEURL.property(), !mipsaLocalMode ? String.valueOf(MIPSA_WEB_COMPONENT_OCTAV_BASEURL): LOCAL_MIPSA_OCTAV_BASEURL) ;
 
         conf.put(MIPSA_WEB_COMPONENT_CDEDECL.property(), String.valueOf(MIPSA_WEB_COMPONENT_CDEDECL)) ;
         conf.put(MIPSA_WEB_COMPONENT_CDETYPINTERLOC.property(), String.valueOf(MIPSA_WEB_COMPONENT_CDETYPINTERLOC)) ;

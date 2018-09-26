@@ -7,12 +7,10 @@ import org.springframework.stereotype.Component;
  * Created by benmerzoukah on 19/09/2018.
  */
 @Component
-public class PriamAppHealthIndicator extends RemoteHealthIndicator {
+public class PriamCopiePriveeHealthIndicator extends RemoteHealthIndicator {
 
   @Override
     protected String healthServiceContext() {
-      return EnvConstants.PRIAM_APP_SERVICE_URL.toString();
-    //return "http://dev.sacem.fr/priam-common";
-
+      return EnvConstants.PRIAM_CP_SERVICE_URL.toString();
     }
 }
