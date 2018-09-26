@@ -30,23 +30,6 @@ import org.springframework.context.annotation.Import;
 
 @SpringBootApplication(scanBasePackages = {"fr.sacem.priam.rest.copieprivee", "fr.sacem.priam.common", "fr.sacem.priam.services", "fr.sacem.priam.model"})
 @EnableCaching
-@EnableAutoConfiguration(exclude = {
-        ElasticsearchAutoConfiguration.class,
-        ElasticsearchDataAutoConfiguration.class,
-        DataSourceAutoConfiguration.class,
-        HibernateJpaAutoConfiguration.class,
-        AuditAutoConfiguration.class,
-        EndpointAutoConfiguration.class,
-        EndpointMBeanExportAutoConfiguration.class,
-        HealthIndicatorAutoConfiguration.class,
-        MetricFilterAutoConfiguration.class,
-        MetricRepositoryAutoConfiguration.class,
-        PublicMetricsAutoConfiguration.class,
-        TraceRepositoryAutoConfiguration.class,
-        TraceWebFilterAutoConfiguration.class,
-        WebMvcAutoConfiguration.class,
-        JacksonAutoConfiguration.class
-})
 public class PriamRestApiCopiepriveeWebApp extends SpringBootServletInitializer {
 
     @Override
