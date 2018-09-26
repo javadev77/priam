@@ -53,9 +53,9 @@
 
     <bean id="qpReaderPriamGenerationCatalogue" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
         <property name="selectClause" value="SELECT CATALOGUE.TYPE_CMS, CATALOGUE.IDE12 AS IDE12, CATALOGUE.TITRE, PARTICIPANTS.PARTICIPANT, PARTICIPANTS.ROLE"/>
-        <property name="fromClause" value="FROM PRIAM_CATCMS_CATALOGUE CATALOGUE INNER JOIN PRIAM_CATCMS_PARTICIPANTS PARTICIPANTS
-                                            ON CATALOGUE.IDE12 = PARTICIPANTS.IDE12 AND CATALOGUE.TYPE_CMS = PARTICIPANTS.TYPE_CMS"/>
-        <property name="whereClause" value="WHERE CATALOGUE.TYPE_CMS = '#{jobExecutionContext['TYPE_CMS']}' AND CATALOGUE.DATE_SORTIE IS NULL AND PARTICIPANTS.OEUVRE_SORTIE=0"/>
+        <property name="fromClause" value="PRIAM_CATCMS_CATALOGUE CATALOGUE INNER JOIN PRIAM_CATCMS_PARTICIPANTS PARTICIPANTS
+                                            ON CATALOGUE.ID = PARTICIPANTS.ID_CATALOGUE"/>
+        <property name="whereClause" value="WHERE CATALOGUE.TYPE_CMS = '#{jobExecutionContext['TYPE_CMS']}' AND CATALOGUE.DATE_SORTIE IS NULL"/>
         <property name="databaseType" value="MySQL" />
         <property name="dataSource" ref="dataSource"/>
         <property name="sortKey" value="CATALOGUE.IDE12"/>

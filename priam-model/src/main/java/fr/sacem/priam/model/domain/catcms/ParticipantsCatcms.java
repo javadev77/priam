@@ -28,6 +28,10 @@ public class ParticipantsCatcms implements Serializable {
     @Column(name = "PARTICIPANT")
     private String nomParticpant;
 
+    /*@ManyToOne
+    @JoinColumn(name = "ID_CATALOGUE")
+    private CatalogueCms catalogueCms;*/
+
     public Long getId() {
         return id;
     }
@@ -67,6 +71,14 @@ public class ParticipantsCatcms implements Serializable {
     public void setIde12(Long ide12) {
         this.ide12 = ide12;
     }
+
+    /*public CatalogueCms getCatalogueCms() {
+        return catalogueCms;
+    }
+
+    public void setCatalogueCms(CatalogueCms catalogueCms) {
+        this.catalogueCms = catalogueCms;
+    }*/
 
     public ParticipantsCatcms() {
 

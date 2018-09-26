@@ -98,10 +98,8 @@
                                            INNER JOIN PRIAM_CATCMS_CATALOGUE CATALOGUE
                                            ON CAT_PENEF.IDE12 = CATALOGUE.IDE12 AND CAT_PENEF.TYPE_CMS = CATALOGUE.TYPE_CMS"/>
         <property name="whereClause" value="WHERE CAT_PENEF.ID_FICHIER=:idFichier
-                                            AND (CATALOGUE.DATE_SORTIE IS NULL
-                                                    AND CATALOGUE.TYPE_CMS = '#{jobParameters[typeCMS]}')
-                                            OR (CATALOGUE.DATE_SORTIE = CURRENT_DATE()
-                                                    AND CATALOGUE.TYPE_CMS = '#{jobParameters[typeCMS]}')"/>
+                                            AND CATALOGUE.TYPE_CMS = '#{jobParameters[typeCMS]}'
+                                            AND (CATALOGUE.DATE_SORTIE IS NULL OR CATALOGUE.DATE_SORTIE = CURRENT_DATE())"/>
         <property name="databaseType" value="MySQL" />
         <property name="dataSource" ref="dataSource"/>
         <property name="sortKey" value="IDE12"/>
@@ -223,7 +221,7 @@
         </property>
     </bean>
 
-    <bean id="writerStep2" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+    <!--<bean id="writerStep2" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
         <property name="dataSource" ref="dataSource"/>
         <property name="assertUpdates" value="false"/>
         <property name="sql">
@@ -239,7 +237,8 @@
                             DATE_SORTIE,
                             TYPE_SORTIE,
                             ROLES,
-                            PARTICIPANTS
+                            PARTICIPANTS,
+                            ELIGIBLE_CREATION
                         )
                         VALUES (
                             :typeCMS,
@@ -262,7 +261,44 @@
                               WHERE PART.IDE12=:ide12
                               AND PART.TYPE_CMS=:typeCMS
                               AND PART.OEUVRE_SORTIE=0
-                               GROUP BY PART.TYPE_CMS, PART.IDE12, PART.OEUVRE_SORTIE)
+                               GROUP BY PART.TYPE_CMS, PART.IDE12, PART.OEUVRE_SORTIE),
+                               0
+                        )
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>-->
+
+    <bean id="writerStep2" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                   INSERT INTO PRIAM_CATCMS_CATALOGUE (
+                            TYPE_CMS,
+                            IDE12,
+                            TITRE,
+                            TYP_UTIL_GEN,
+                            DATE_ENTREE,
+                            TYPE_INSCRIPTION,
+                            DATE_SORTIE,
+                            TYPE_SORTIE,
+                            ELIGIBLE_CREATION
+                        )
+                        VALUES (
+                            :typeCMS,
+                            :ide12,
+                            :titre,
+                            :typUtilGen,
+                            :dateEntree,
+                            'Automatique',
+                            :dateSortie,
+                            :typeSortie,
+                            0
                         )
                 ]]>
             </value>
@@ -281,8 +317,8 @@
                 <![CDATA[
                    UPDATE PRIAM_CATCMS_CATALOGUE SET DATE_RENOUVELLEMENT=:dateRenouvellement
                       WHERE IDE12 = :ide12
-                      AND (DATE_SORTIE IS NULL AND TYPE_CMS='#{jobParameters[typeCMS]}')
-                      OR (DATE_SORTIE = CURRENT_DATE() AND TYPE_CMS='#{jobParameters[typeCMS]}')
+                      AND TYPE_CMS='#{jobParameters[typeCMS]}'
+                      AND (DATE_SORTIE IS NULL OR DATE_SORTIE = CURRENT_DATE())
                 ]]>
             </value>
         </property>
@@ -376,7 +412,7 @@
         </property>
     </bean>
 
-    <bean id="writerToTableParticipants" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+    <!--<bean id="writerToTableParticipants" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
         <property name="dataSource" ref="dataSource"/>
         <property name="assertUpdates" value="false"/>
         <property name="sql">
@@ -386,15 +422,47 @@
                             TYPE_CMS,
                             IDE12,
                             ROLE,
-                            PARTICIPANT,
-                            OEUVRE_SORTIE
+                            PARTICIPANT
                         )
                         VALUES (
                             :typeCMS,
                             :ide12,
                             :role,
-                            :participant,
-                            0
+                            :participant
+                        )
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>-->
+
+    <bean id="writerToTableParticipants" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    INSERT INTO PRIAM_CATCMS_PARTICIPANTS (
+                            ID_CATALOGUE,
+                            TYPE_CMS,
+                            IDE12,
+                            ROLE,
+                            PARTICIPANT
+                        )
+                        VALUES (
+                            (SELECT ID
+                                FROM PRIAM_CATCMS_CATALOGUE
+                                WHERE IDE12=:ide12
+                                AND TYPE_CMS = '#{jobParameters[typeCMS]}'
+                                AND ELIGIBLE_CREATION=0
+                                AND DATE_ENTREE = CURRENT_DATE()
+                                AND DATE_SORTIE IS NULL),
+                            :typeCMS,
+                            :ide12,
+                            :role,
+                            :participant
                         )
                 ]]>
             </value>
@@ -404,6 +472,27 @@
         </property>
     </bean>
 
+    <bean id="writerUpdateParticipantsToTableCatalogue" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    UPDATE PRIAM_CATCMS_CATALOGUE
+                    SET PARTICIPANTS = (SELECT GROUP_CONCAT(P.PARTICIPANT SEPARATOR ',' )
+                                              FROM (PRIAM_CATCMS_PARTICIPANTS P INNER JOIN (SELECT * from PRIAM_CATCMS_CATALOGUE) AS C ON P.ID_CATALOGUE = C.ID)
+                                              WHERE P.IDE12 =:ide12 AND P.TYPE_CMS = '#{jobParameters[typeCMS]}' AND (C.DATE_SORTIE IS NULL OR DATE_SORTIE =CURRENT_DATE)),
+                          ROLES = (SELECT GROUP_CONCAT(P.ROLE SEPARATOR ',' )
+                                FROM (PRIAM_CATCMS_PARTICIPANTS P INNER JOIN (SELECT * from PRIAM_CATCMS_CATALOGUE) AS C ON P.ID_CATALOGUE = C.ID)
+                                WHERE P.IDE12 = :ide12 AND P.TYPE_CMS = '#{jobParameters[typeCMS]}' AND (C.DATE_SORTIE IS NULL OR DATE_SORTIE =CURRENT_DATE))
+                     WHERE IDE12= :ide12 AND TYPE_CMS = '#{jobParameters[typeCMS]}'
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
 
     <bean id="compositeWriterIDE12Exist" class="org.springframework.batch.item.support.CompositeItemWriter">
         <property name="delegates">
@@ -417,9 +506,16 @@
     <bean id="compositeWriterIDE12NotExistOrDateSortieNonVide" class="org.springframework.batch.item.support.CompositeItemWriter">
         <property name="delegates">
             <list>
-                <ref bean="writerToTableParticipants" />
+
                 <ref bean="writerFlagEligibleCreation" />
                 <ref bean="writerStep2" />
+                <ref bean="writerToTableParticipants" />
+                <ref bean="writerUpdateParticipantsToTableCatalogue" />
+
+                <!--<ref bean="writerToTableParticipants" />
+                <ref bean="writerFlagEligibleCreation" />
+                <ref bean="writerStep2" />-->
+
                 <ref bean="writerJournalCatcmsIDE12NotExistOrDateSortieNonVide" />
             </list>
         </property>

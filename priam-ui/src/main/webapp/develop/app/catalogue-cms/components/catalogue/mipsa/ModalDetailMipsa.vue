@@ -1,14 +1,14 @@
 <template>
   <transition name="modal">
-    <div class="modal-mask" id="HomerPrompt">
-      <div class="container-fluid"  style="margin: 10% auto;" @click="$emit('close')">
-        <!--<div class="modal-wrapper" @click="$emit('close')">-->
-        <div class="modal-container" @click.stop>
+    <div class="modal-mask" @click="$emit('close')">
+      <div class="container-fluid"  style="width: 75%; margin-top: 50px;">
+
+        <div class="modal-container" style="height: 850px; overflow-y: scroll; padding: 20px 24px;"  @click.stop>
           <slot name="body">
           </slot>
         </div>
+
       </div>
-      <!--</div>-->
     </div>
   </transition>
 </template>
@@ -56,11 +56,20 @@
     transition: all .3s ease;
     font-family: Helvetica, Arial, sans-serif;*/
 
-    width: auto;
+   /* width: auto;
     margin: 0px auto;
     background: #fff;
     border: none;
-    border-radius: 4px;
+    border-radius: 7px;*/
+
+    background-color: #f9fafb;
+    border: 2px solid #ebedef;
+    border-radius: 7px;
+    -webkit-background-clip: border-box;
+    -moz-background-clip: border-box;
+    background-clip: border-box;
+    -webkit-box-shadow: none;
+    box-shadow: none;
   }
 
   .modal-header h3 {
