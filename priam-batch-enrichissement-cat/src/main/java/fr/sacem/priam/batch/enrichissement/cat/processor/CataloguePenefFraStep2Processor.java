@@ -5,6 +5,7 @@ import fr.sacem.priam.batch.enrichissement.cat.domain.CataloguePenefFra;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepExecution;
+import org.springframework.batch.core.annotation.AfterStep;
 import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemProcessor;
@@ -27,6 +28,7 @@ public class CataloguePenefFraStep2Processor implements ItemProcessor<CatalogueP
 
     @Value("#{jobParameters['typeCMS']}")
     private String typeCMS;
+    private int nbOeuvresRenouvelles = 0;
 
 
     @Override
@@ -47,6 +49,10 @@ public class CataloguePenefFraStep2Processor implements ItemProcessor<CatalogueP
 
         log.info("---- Current Line ---- " + catalogueFra);
 
+        this.nbOeuvresRenouvelles++;
+
+        log.info("---- nbOeuvresRenouvelles ---- " + nbOeuvresRenouvelles);
+
         return catalogueFra;
     }
 
@@ -55,4 +61,12 @@ public class CataloguePenefFraStep2Processor implements ItemProcessor<CatalogueP
 
         this.executionContext = stepExecution.getExecutionContext();
     }
+
+
+    @AfterStep
+    public void afterStep(StepExecution stepExecution) {
+        log.info("---- Nombre d'oeuvres renouvelles ---- " + this.nbOeuvresRenouvelles);
+        //
+    }
+
 }

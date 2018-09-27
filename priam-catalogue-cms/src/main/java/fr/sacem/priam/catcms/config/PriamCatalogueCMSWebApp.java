@@ -19,23 +19,6 @@ import org.springframework.context.annotation.Import;
 
 @Import(value = {RestMvcConfig.class, SecurityRestConfiguration.class, JpaConfiguration.class, HealthConfig.class})
 @SpringBootApplication(scanBasePackages = {"fr.sacem.priam.common", "fr.sacem.priam.catcms"})
-@EnableAutoConfiguration(exclude = {
-        ElasticsearchAutoConfiguration.class,
-        ElasticsearchDataAutoConfiguration.class,
-        DataSourceAutoConfiguration.class,
-        HibernateJpaAutoConfiguration.class,
-        AuditAutoConfiguration.class,
-        EndpointAutoConfiguration.class,
-        EndpointMBeanExportAutoConfiguration.class,
-        HealthIndicatorAutoConfiguration.class,
-        MetricFilterAutoConfiguration.class,
-        MetricRepositoryAutoConfiguration.class,
-        PublicMetricsAutoConfiguration.class,
-        TraceRepositoryAutoConfiguration.class,
-        TraceWebFilterAutoConfiguration.class,
-        WebMvcAutoConfiguration.class,
-        JacksonAutoConfiguration.class
-})
 public class PriamCatalogueCMSWebApp extends SpringBootServletInitializer {
 
     @Override

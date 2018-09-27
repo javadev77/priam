@@ -27,23 +27,6 @@ import org.springframework.context.annotation.Import;
         JpaConfiguration.class, SecurityRestConfiguration.class, BatchConfigLocal.class, BatchConfigProd.class})
 @SpringBootApplication(scanBasePackages = {"fr.sacem.priam.rest.cms", "fr.sacem.priam.common", "fr.sacem.priam.services", "fr.sacem.priam.model"})
 @EnableCaching
-@EnableAutoConfiguration(exclude = {
-        ElasticsearchAutoConfiguration.class,
-        ElasticsearchDataAutoConfiguration.class,
-        DataSourceAutoConfiguration.class,
-        HibernateJpaAutoConfiguration.class,
-        AuditAutoConfiguration.class,
-        EndpointAutoConfiguration.class,
-        EndpointMBeanExportAutoConfiguration.class,
-        HealthIndicatorAutoConfiguration.class,
-        MetricFilterAutoConfiguration.class,
-        MetricRepositoryAutoConfiguration.class,
-        PublicMetricsAutoConfiguration.class,
-        TraceRepositoryAutoConfiguration.class,
-        TraceWebFilterAutoConfiguration.class,
-        WebMvcAutoConfiguration.class,
-        JacksonAutoConfiguration.class
-})
 public class PriamRestApiCMSWebApp extends SpringBootServletInitializer {
 
     @Override

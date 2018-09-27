@@ -25,26 +25,9 @@ import org.springframework.context.annotation.Import;
 /**
  * Created by benmerzoukah on 15/11/2017.
  */
-@Import(value = {PropertiesWithJavaConfig.class, RestMvcConfig.class, JpaConfiguration.class, SecurityRestConfiguration.class, SpringAsyncConfig.class, HealthConfig.class, SacemConfiguration.class, RestConfig.class})
+@Import(value = {PropertiesWithJavaConfig.class, RestMvcConfig.class, JpaConfiguration.class, SecurityRestConfiguration.class, SpringAsyncConfig.class, HealthConfig.class, RestConfig.class})
 @SpringBootApplication(scanBasePackages = {"fr.sacem.priam.rest.common", "fr.sacem.priam.common", "fr.sacem.priam.services", "fr.sacem.priam.model"})
-@EnableCaching@EnableAutoConfiguration(exclude = {
-        ElasticsearchAutoConfiguration.class,
-        ElasticsearchDataAutoConfiguration.class,
-        DataSourceAutoConfiguration.class,
-        HibernateJpaAutoConfiguration.class,
-        AuditAutoConfiguration.class,
-        EndpointAutoConfiguration.class,
-        EndpointMBeanExportAutoConfiguration.class,
-        HealthIndicatorAutoConfiguration.class,
-        MetricFilterAutoConfiguration.class,
-        MetricRepositoryAutoConfiguration.class,
-        PublicMetricsAutoConfiguration.class,
-        TraceRepositoryAutoConfiguration.class,
-        TraceWebFilterAutoConfiguration.class,
-        WebMvcAutoConfiguration.class,
-        JacksonAutoConfiguration.class
-})
-
+@EnableCaching
 public class PriamRestApiCommonWebApp extends SpringBootServletInitializer {
 
     @Override
