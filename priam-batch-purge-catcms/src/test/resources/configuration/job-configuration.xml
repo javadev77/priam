@@ -49,7 +49,7 @@
     </bean>
 
     <bean id="qpReaderPriamPurgeCatalogueFr" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
-        <property name="selectClause" value="SELECT ID, IDE12"/>
+        <property name="selectClause" value="SELECT ID, IDE12, TYPE_CMS"/>
         <property name="fromClause" value="FROM PRIAM_CATCMS_CATALOGUE"/>
         <property name="whereClause" value="CURRENT_DATE() > DATEADD('YEAR', #{jobParameters['param.annee.fr']}, DATE_SORTIE)
                                             AND TYPE_CMS = 'FR'"/>
@@ -67,7 +67,7 @@
     </bean>
 
     <bean id="qpReaderPriamPurgeCatalogueAnf" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
-        <property name="selectClause" value="SELECT ID, IDE12"/>
+        <property name="selectClause" value="SELECT ID, IDE12, TYPE_CMS"/>
         <property name="fromClause" value="FROM PRIAM_CATCMS_CATALOGUE"/>
         <property name="whereClause" value="CURRENT_DATE() > DATEADD('YEAR', #{jobParameters['param.annee.anf']}, DATE_SORTIE)
                                             AND TYPE_CMS = 'ANF'"/>
@@ -77,6 +77,32 @@
     </bean>
 
     <bean id="catalogueCMSRowMapper" class="fr.sacem.priam.batch.purge.catcms.mapper.CatalogueCMSRowMapper"/>
+
+    <bean id="compositeWriterPriamPurgeCatalogue" class="org.springframework.batch.item.support.CompositeItemWriter">
+        <property name="delegates">
+            <list>
+
+                <ref bean="writerPriamPurgeParticipantsBis" />
+                <ref bean="writerPriamPurgeCatalogue" />
+            </list>
+        </property>
+    </bean>
+
+    <bean id="writerPriamPurgeParticipantsBis" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    DELETE FROM PRIAM_CATCMS_PARTICIPANTS
+                    WHERE ID_CATALOGUE  = :id;
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
 
     <bean id="writerPriamPurgeCatalogue" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
         <property name="dataSource" ref="dataSource"/>
