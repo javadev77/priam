@@ -22,11 +22,11 @@
     </bean>
 
     <job id="jobImportCatalogueCMSRDO" xmlns="http://www.springframework.org/schema/batch">
-        <step id="csvArchiveFlatFileReaderStep" next="copyDataToCatCmsCatalogueStep">
+        <!--<step id="csvArchiveFlatFileReaderStep" next="copyDataToCatCmsCatalogueStep">
             <tasklet>
                 <chunk
                         reader="readerPriamCatCmsCsv"
-                        writer="writerPriamCatRdo"
+                        writer="compositeWriterPriamCatalogueCMSRDO"
                         commit-interval="2000">
                 </chunk>
             </tasklet>
@@ -41,26 +41,26 @@
                         commit-interval="2000">
                 </chunk>
             </tasklet>
-        </step>
-        <!--<step id="csvArchiveFlatFileReaderStep" next="copyDataToCatCmsCatalogueTestStep">
+        </step>-->
+        <step id="csvArchiveFlatFileReaderStep" next="copyDataToCatCmsCatalogueStep">
             <tasklet>
                 <chunk
                         reader="readerPriamCatCmsCsv"
-                        writer="writerPriamCatRdo"
+                        writer="compositeWriterPriamCatalogueCMSRDO"
                         commit-interval="2000">
                 </chunk>
             </tasklet>
         </step>
-        <step id="copyDataToCatCmsCatalogueTestStep">
+        <step id="copyDataToCatCmsCatalogueStep">
             <tasklet>
                 <chunk
                         reader="readerFromTableRdo"
                         processor="priamCatCmsProcessor"
-                        writer="compositeWriterTest"
+                        writer="compositeWriter"
                         commit-interval="2000">
                 </chunk>
             </tasklet>
-        </step>-->
+        </step>
 
         <listeners merge="true">
             <listener ref="listenerCompletition"/>
@@ -121,6 +121,15 @@
         </property>
     </bean>
 
+    <bean id="compositeWriterPriamCatalogueCMSRDO" class="org.springframework.batch.item.support.CompositeItemWriter" scope="step">
+        <property name="delegates">
+            <list>
+                <ref bean="writerPriamCatRdo" />
+                <ref bean="writerJournalCatcms" />
+            </list>
+        </property>
+    </bean>
+
     <bean id="writerPriamCatRdo" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
         <property name="dataSource" ref="dataSource"/>
         <property name="assertUpdates" value="false"/>
@@ -157,7 +166,7 @@
 
 
 
-    <bean id="writerToTableCatalogueCms" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+    <!--<bean id="writerToTableCatalogueCms" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
         <property name="dataSource" ref="dataSource"/>
         <property name="assertUpdates" value="false"/>
         <property name="sql">
@@ -200,7 +209,7 @@
         <property name="itemSqlParameterSourceProvider">
             <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
         </property>
-    </bean>
+    </bean>-->
 
     <bean id="priamCatCmsProcessor" class="fr.sacem.priam.batch.catcms.rdo.processor.CatalogueRdoProcessor"/>
 
@@ -209,7 +218,7 @@
     </bean>
 
 
-    <bean id="writerToTableParticipants" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+    <!--<bean id="writerToTableParticipants" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
         <property name="dataSource" ref="dataSource"/>
         <property name="assertUpdates" value="false"/>
         <property name="sql">
@@ -235,27 +244,27 @@
         <property name="itemSqlParameterSourceProvider">
             <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
         </property>
-    </bean>
-    <bean id="compositeWriter" class="org.springframework.batch.item.support.CompositeItemWriter">
+    </bean>-->
+    <!--<bean id="compositeWriter" class="org.springframework.batch.item.support.CompositeItemWriter">
         <property name="delegates">
             <list>
                 <ref bean="writerToTableParticipants" />
                 <ref bean="writerToTableCatalogueCms" />
             </list>
         </property>
-    </bean>
-
-    <!--<bean id="compositeWriterTest" class="org.springframework.batch.item.support.CompositeItemWriter">
-        <property name="delegates">
-            <list>
-                <ref bean="writerToTableCatalogueCmsTest" />
-                <ref bean="writerToTableParticipantsTest" />
-                <ref bean="writerParticipantsToTableCatalogueCmsTest" />
-            </list>
-        </property>
     </bean>-->
 
-    <!--<bean id="writerToTableCatalogueCmsTest" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+    <bean id="compositeWriter" class="org.springframework.batch.item.support.CompositeItemWriter">
+        <property name="delegates">
+            <list>
+                <ref bean="writerToTableCatalogueCms" />
+                <ref bean="writerToTableParticipants" />
+                <ref bean="writerParticipantsToTableCatalogueCms" />
+            </list>
+        </property>
+    </bean>
+
+    <bean id="writerToTableCatalogueCms" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
         <property name="dataSource" ref="dataSource"/>
         <property name="assertUpdates" value="false"/>
         <property name="sql">
@@ -269,7 +278,8 @@
                             DATE_ENTREE,
                             TYPE_INSCRIPTION,
                             DATE_SORTIE,
-                            TYPE_SORTIE
+                            TYPE_SORTIE,
+                            ELIGIBLE_CREATION
                         )
                         VALUES (
                             :typeCMS,
@@ -279,7 +289,8 @@
                             :dateEntree,
                             :typeInscription,
                             :dateSortie,
-                            :typeSortie)
+                            :typeSortie,
+                            0)
                 ]]>
             </value>
         </property>
@@ -288,27 +299,25 @@
         </property>
     </bean>
 
-    <bean id="writerToTableParticipantsTest" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+    <bean id="writerToTableParticipants" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
         <property name="dataSource" ref="dataSource"/>
         <property name="assertUpdates" value="false"/>
         <property name="sql">
             <value>
                 <![CDATA[
                     INSERT INTO PRIAM_CATCMS_PARTICIPANTS (
-                            ID,
+                            ID_CATALOGUE,
                             TYPE_CMS,
                             IDE12,
                             ROLE,
-                            PARTICIPANT,
-                            OEUVRE_SORTIE
+                            PARTICIPANT
                         )
                         VALUES (
-                            (select id from PRIAM_CATCMS_CATALOGUE where ide12 = :ide12),
+                            (SELECT ID FROM PRIAM_CATCMS_CATALOGUE WHERE IDE12 =:ide12 AND TYPE_CMS =:typeCMS),
                             :typeCMS,
                             :ide12,
                             :role,
-                            :participant,
-                            0
+                            :participant
                         )
                 ]]>
             </value>
@@ -318,7 +327,7 @@
         </property>
     </bean>
 
-    <bean id="writerParticipantsToTableCatalogueCmsTest" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+    <bean id="writerParticipantsToTableCatalogueCms" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
         <property name="dataSource" ref="dataSource"/>
         <property name="assertUpdates" value="false"/>
         <property name="sql">
@@ -340,7 +349,35 @@
         <property name="itemSqlParameterSourceProvider">
             <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
         </property>
-    </bean>-->
+    </bean>
+
+    <bean id="writerJournalCatcms" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                   INSERT INTO PRIAM_CATCMS_JOURNAL (
+                    EVENEMENT,
+                    IDE12,
+                    DATE,
+                    UTILISATEUR,
+                    TYPE_CMS
+                   )
+                   VALUES (
+                    'MIGRATION_RDO',
+                    :ide12,
+                    CURRENT_TIMESTAMP(),
+                    'Batch RDO',
+                    :typeCMS
+                   )
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
 
     <bean id="jobOperator" class="org.springframework.batch.core.launch.support.SimpleJobOperator"
           p:jobLauncher-ref="jobLauncher" p:jobExplorer-ref="jobExplorer"

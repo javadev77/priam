@@ -61,10 +61,12 @@ public class CatalogueCms implements Serializable {
     @Column(name = "PARTICIPANTS")
     private String participants;
 
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "ID_CATALOGUE")
+    private List<ParticipantsCatcms> participantsCatcms = new ArrayList<>();
+
     @Column(name = "ELIGIBLE_CREATION")
     private Boolean eligibleCreation;
-
-
 
 
     /*@OneToMany(fetch = FetchType.LAZY)
@@ -204,6 +206,14 @@ public class CatalogueCms implements Serializable {
     public void setParticipantsCatcms(List<ParticipantsCatcms> participantsCatcms) {
         this.participantsCatcms = participantsCatcms;
     }*/
+
+    public List<ParticipantsCatcms> getParticipantsCatcms() {
+        return participantsCatcms;
+    }
+
+    public void setParticipantsCatcms(List<ParticipantsCatcms> participantsCatcms) {
+        this.participantsCatcms = participantsCatcms;
+    }
 
     public CatalogueCms() {}
 }

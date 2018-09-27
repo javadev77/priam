@@ -32,7 +32,7 @@ public class App {
 
     public static void main(String[] args) {
 
-        if(args.length == 0 && args[0].equals(PATTERN_TYPE_CMS_FR) || args[0].equals(FileUtils.CATALOGUE_TYPE_CMS_ANF)) {
+        if(args.length == 1 && args[0].equals(PATTERN_TYPE_CMS_FR) || args[0].equals(FileUtils.CATALOGUE_TYPE_CMS_ANF)) {
 
             String typeCMS = args[0];
             ApplicationContext context = new AnnotationConfigApplicationContext(ConfigurationPriamLocal.class, ConfigurationPriamProd.class);

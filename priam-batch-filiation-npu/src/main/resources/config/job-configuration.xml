@@ -79,8 +79,11 @@
     <bean id="compositeWriterPriamFiliationNPU" class="org.springframework.batch.item.support.CompositeItemWriter">
         <property name="delegates">
             <list>
+                <!--<ref bean="writerPriamFiliationNpuCsv" />
+                <ref bean="writerPriamFiliationNpuParticipantsCsv" />-->
                 <ref bean="writerPriamFiliationNpuCsv" />
                 <ref bean="writerPriamFiliationNpuParticipantsCsv" />
+
             </list>
         </property>
     </bean>
@@ -93,7 +96,7 @@
             <![CDATA[
                     UPDATE PRIAM_CATCMS_CATALOGUE
                     SET IDE12 = :ide12Rep, TITRE = :titreOriginal
-                    WHERE IDE12  = :ide12 AND DATE_SORTIE IS NULL;
+                    WHERE IDE12  = :ide12 AND (DATE_SORTIE IS NULL OR DATE_SORTIE = CURRENT_DATE);
                 ]]>
         </value>
     </property>
@@ -101,6 +104,23 @@
         <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
     </property>
     </bean>
+
+    <!--<bean id="writerPriamFiliationNpuParticipantsCsv" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    UPDATE PRIAM_CATCMS_PARTICIPANTS
+                    SET IDE12 = :ide12Rep
+                    WHERE IDE12 =:ide12 AND OEUVRE_SORTIE = 0;
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>-->
 
     <bean id="writerPriamFiliationNpuParticipantsCsv" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
         <property name="dataSource" ref="dataSource"/>
@@ -110,7 +130,9 @@
                 <![CDATA[
                     UPDATE PRIAM_CATCMS_PARTICIPANTS
                     SET IDE12 = :ide12Rep
-                    WHERE IDE12 =:ide12 AND OEUVRE_SORTIE = 0;
+                    WHERE ID_CATALOGUE IN (SELECT P.ID_CATALOGUE
+                                FROM (SELECT * FROM PRIAM_CATCMS_PARTICIPANTS) P INNER JOIN PRIAM_CATCMS_CATALOGUE C ON P.ID_CATALOGUE = C.ID
+                                WHERE P.IDE12 =:ide12 AND (C.DATE_SORTIE IS NULL OR C.DATE_SORTIE = CURRENT_DATE()));
                 ]]>
             </value>
         </property>
@@ -142,7 +164,7 @@
         <property name="delegates">
             <list>
                 <ref bean="writerMajFlagCatalogue" />
-                <ref bean="writerMajFlagParticipant" />
+                <!--<ref bean="writerMajFlagParticipant" />-->
             </list>
         </property>
     </bean>

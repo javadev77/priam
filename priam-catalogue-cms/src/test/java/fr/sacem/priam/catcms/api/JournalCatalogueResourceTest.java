@@ -27,7 +27,7 @@ public class JournalCatalogueResourceTest extends RestResourceTest {
         mockMvc.perform(
                 get(APP_REST_JOURNAL_CATCMS_SEARCH).contentType(contentType))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.numberOfElements", is(10)));
+                .andExpect(jsonPath("$.numberOfElements", is(13)));
     }
 
     @Test

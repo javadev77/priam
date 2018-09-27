@@ -81,6 +81,7 @@ public class JobParticipantsREPTest {
         jobParametersMap.put("input.archives", new JobParameter(inputDirectory));
         jobParametersMap.put("output.archives", new JobParameter(outputDirectory));
         jobParametersMap.put("pattern.file.name", new JobParameter(PATTERN_FILE_NAME));
+        jobParametersMap.put("typeCMS", new JobParameter("FRA"));
 
         JobParameters jobParameters = new JobParameters(jobParametersMap);
 
@@ -94,7 +95,7 @@ public class JobParticipantsREPTest {
 
         // cas nominal
         long nbParticipants = participantRepository.getNbParticipants(10000111L);
-        Assert.assertEquals(2L, nbParticipants);
+        Assert.assertEquals(3L, nbParticipants);
 
         // cas erreur
         nbParticipants = participantRepository.getNbParticipants(2000002411L);
@@ -102,7 +103,7 @@ public class JobParticipantsREPTest {
 
         // cas warning
         nbParticipants = participantRepository.getNbParticipants(2000012511L);
-        Assert.assertEquals(5L, nbParticipants);
+        Assert.assertEquals(6L, nbParticipants);
 
     }
 

@@ -14,9 +14,17 @@
 
     <job id="jobCsvREQ" xmlns="http://www.springframework.org/schema/batch">
         <step id="stepGenerateCsvREQ">
-            <tasklet>
+            <!--<tasklet>
                 <chunk
                         reader="readFromTableCatalogueCMSFRA"
+                        writer="csvFileWriter"
+                        commit-interval="100">
+                </chunk>
+            </tasklet>-->
+
+            <tasklet>
+                <chunk
+                        reader="readFromTableCatalogueCMS"
                         writer="csvFileWriter"
                         commit-interval="100">
                 </chunk>
@@ -41,7 +49,7 @@
     <bean id="stepListener" class="fr.sacem.priam.batch.participants.req.listener.FlagDemiInterfaceStepListener"/>
     <!--<bean id="generateFlagFileTasklet" class="fr.sacem.priam.batch.participants.tasklet.GenerateFlagFileTasklet"></bean>-->
 
-    <bean id="readFromTableCatalogueCMSFRA"
+    <!--<bean id="readFromTableCatalogueCMSFRA"
           class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
         <property name="dataSource" ref="dataSource"/>
         <property name="queryProvider" ref="queryProvider"/>
@@ -55,6 +63,25 @@
         <property name="selectClause" value="SELECT ID,IDE12"/>
         <property name="fromClause" value="FROM PRIAM_CATCMS_CATALOGUE"/>
         <property name="whereClause" value="WHERE DATE_SORTIE IS NULL AND TYPE_CMS='FR'"/>
+        <property name="databaseType" value="MySQL" />
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sortKey" value="ID"/>
+    </bean>-->
+
+    <bean id="readFromTableCatalogueCMS"
+          class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="queryProvider" ref="queryProvider"/>
+        <property name="pageSize" value="${commit-interval}"/>
+        <property name="rowMapper" ref="catalogueCmsRowMapper"/>
+    </bean>
+
+    <bean id="catalogueCmsRowMapper" class="fr.sacem.priam.batch.participants.req.mapper.CatalogueCmsMapper"/>
+
+    <bean id="queryProvider" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
+        <property name="selectClause" value="SELECT ID,IDE12"/>
+        <property name="fromClause" value="FROM PRIAM_CATCMS_CATALOGUE"/>
+        <property name="whereClause" value="WHERE (DATE_SORTIE IS NULL OR DATE_SORTIE>= CURRENT_DATE) AND TYPE_CMS='#{jobParameters['typeCMS']}'"/>
         <property name="databaseType" value="MySQL" />
         <property name="dataSource" ref="dataSource"/>
         <property name="sortKey" value="ID"/>
