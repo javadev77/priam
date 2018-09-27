@@ -23,6 +23,7 @@ import java.util.Map;
 })
 @Configuration
 @ComponentScan("fr.sacem.priam.common.health")
+@Profile({"dev", "prod", "re7"})
 public class HealthConfig {
 
     @Autowired(required = false)

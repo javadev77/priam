@@ -12,7 +12,7 @@ import javax.sql.DataSource;
  */
 @Configuration
 @ComponentScan(basePackages = {"fr.sacem.priam.batch.affectation.*", "fr.sacem.priam.model.dao.*"})
-@Profile({"local"})
+@Profile({"local", "test"})
 @PropertySource("classpath:config/application-local.properties")
 @ImportResource(value = "classpath:config/job-configuration.xml")
 public class BatchConfigLocal {
