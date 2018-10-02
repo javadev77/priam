@@ -30,6 +30,11 @@
                       </span>
                     </th>
                   </template>
+                  <template v-else-if="entry.type === 'column-empty'">
+                    <th style="border: 0px !important; background-color: white !important;">
+
+                    </th>
+                  </template>
                   <template v-else>
                     <th v-if="entry.sortable">
                       <a v-if="!isLocalSort" @click="serverSortBy(entry)">

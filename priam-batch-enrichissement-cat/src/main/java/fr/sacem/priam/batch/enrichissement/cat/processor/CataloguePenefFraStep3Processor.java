@@ -17,16 +17,16 @@ import java.util.Date;
  * Created by benmerzoukah on 17/05/2018.
  */
 
-public class CataloguePenefFraStep2Processor implements ItemProcessor<CataloguePenefFra, CatalogueFra> {
+public class CataloguePenefFraStep3Processor implements ItemProcessor<CataloguePenefFra, CatalogueFra> {
 
-    private static final Logger log = LoggerFactory.getLogger(CataloguePenefFraStep2Processor.class);
+    private static final Logger log = LoggerFactory.getLogger(CataloguePenefFraStep3Processor.class);
 
     public static final String MESSAGE_FORMAT = "Ligne '%s': Le champ \"%s\" avec la valeur \"%s\" n'a pas le bon format attendu";
     public static final String LIGNE_PROGRAMME_ERRORS = "ligne-programme-errors";
 
     private ExecutionContext executionContext;
 
-    private static int nbCreation = 0;
+    private static int nbRenouvellement = 0;
 
     @Value("#{jobParameters['typeCMS']}")
     private String typeCMS;
@@ -48,9 +48,9 @@ public class CataloguePenefFraStep2Processor implements ItemProcessor<CatalogueP
         catalogueFra.setDateRenouvellement(new Date());
         catalogueFra.setTitre(cataloguePenefFra.getTitreOeuvre());
 
-        log.info("---- Current Line ---- " + catalogueFra);
+        nbRenouvellement++;
 
-        nbCreation++;
+        log.info("---- Current Line ---- " + catalogueFra);
 
         return catalogueFra;
     }
@@ -63,7 +63,7 @@ public class CataloguePenefFraStep2Processor implements ItemProcessor<CatalogueP
 
     @AfterStep
     public void afterStep(StepExecution stepExecution) {
-        log.info("nbCreation : " + nbCreation);
-        stepExecution.getJobExecution().getExecutionContext().put("nbCreation", String.valueOf(nbCreation));
+        log.info("nbRenouvellement : " + nbRenouvellement);
+        stepExecution.getJobExecution().getExecutionContext().put("nbRenouvellement", String.valueOf(nbRenouvellement));
     }
 }

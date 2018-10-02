@@ -1,6 +1,8 @@
 package fr.sacem.priam.batch.enrichissement.cat.mapper;
 
-import fr.sacem.priam.batch.enrichissement.cat.domain.CataloguePenefFra;
+//import fr.sacem.priam.batch.enrichissement.cat.domain.CataloguePenefFra;
+
+import fr.sacem.priam.batch.common.domain.CataloguePenefFra;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
