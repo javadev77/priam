@@ -27,7 +27,6 @@ public class StatistiquesResource {
     @RequestMapping(
             value = "/search",
             method = RequestMethod.GET,
-            consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<StatistiqueCatcms> findAll( Pageable pageable) {
         return statistiquesCatcmsDao.findAll(pageable);
