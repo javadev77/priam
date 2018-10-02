@@ -391,7 +391,7 @@
         <property name="fichierBatchService" ref="fichierBatchService"/>
     </bean>
 
-    <bean id="processorPriamCatCmsCsv" class="fr.sacem.priam.batch.enrichissement.cat.processor.CataloguePenefFraProcessor"/>
+    <bean id="processorPriamCatCmsCsv" class="fr.sacem.priam.batch.enrichissement.cat.processor.ProcessorCataloguePenef"/>
 
     <bean id="processorStepIDE12ExistEtDateSortieNonVide" class="fr.sacem.priam.batch.enrichissement.cat.processor.ProcessorStepIDE12ExistEtDateSortieNonVide" scope="step"/>
 

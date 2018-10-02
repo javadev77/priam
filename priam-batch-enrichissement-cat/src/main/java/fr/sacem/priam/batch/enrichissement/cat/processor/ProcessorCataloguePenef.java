@@ -12,9 +12,9 @@ import org.springframework.batch.item.ItemProcessor;
  * Created by benmerzoukah on 17/05/2018.
  */
 
-public class CataloguePenefFraProcessor implements ItemProcessor<CataloguePenefFra, CataloguePenefFra> {
+public class ProcessorCataloguePenef implements ItemProcessor<CataloguePenefFra, CataloguePenefFra> {
 
-    private static final Logger log = LoggerFactory.getLogger(CataloguePenefFraProcessor.class);
+    private static final Logger log = LoggerFactory.getLogger(ProcessorCataloguePenef.class);
 
     public static final String MESSAGE_FORMAT = "Ligne '%s': Le champ \"%s\" avec la valeur \"%s\" n'a pas le bon format attendu";
     public static final String LIGNE_PROGRAMME_ERRORS = "ligne-programme-errors";
