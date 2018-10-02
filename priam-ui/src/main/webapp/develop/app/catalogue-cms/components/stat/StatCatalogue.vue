@@ -37,6 +37,7 @@
   import Grid from './../../../common/components/ui/Grid.vue';
   export default {
     data() {
+      var getters = this.$store.getters;
       return {
         dataLoading : true,
         defaultPageable : {
@@ -55,7 +56,7 @@
               id: 'typeCMS',
               name: "Type Cat.",
               sortable: true,
-              type: 'text',
+              type: 'code-value-left',
               cell : {
 
                 css : function (entry) {
@@ -66,12 +67,11 @@
                   }
                 },
 
-                toText : function(entry) {
-                  var result = entry;
-                  if(result !== undefined)
-                    return result ;
-                  else
-                    return "";
+                toText : function(cellValue) {
+                  var result = getters.libelleTypeCatalogueForStat.find(function (element) {
+                    return element.id === cellValue;
+                  });
+                  return result !== undefined && result.value;
                 }
               }
             },
@@ -288,6 +288,11 @@
     components : {
       'priam-navbar' : PriamNavbar,
       priamGrid : Grid
+    },
+    computed : {
+      typeStatistiquesOptions() {
+        return this.$store.getters.libelleTypeCatalogueForStat;
+      }
     }
   }
 
