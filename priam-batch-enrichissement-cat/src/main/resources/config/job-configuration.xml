@@ -34,6 +34,7 @@
             </listeners>
         </step>
 
+        <!-- Renouvellement des Oeuvres -->
         <step id="stepIDE12ExistEtDateSortieVide" next="stepIDE12ExistEtDateSortieNonVide">
             <tasklet>
                 <chunk
@@ -45,6 +46,8 @@
             </tasklet>
         </step>
 
+
+        <!-- Creation des Oeuvres -->
         <step id="stepIDE12ExistEtDateSortieNonVide" next="stepIDE12NotExist">
             <tasklet>
                 <chunk
@@ -55,7 +58,6 @@
                 </chunk>
             </tasklet>
         </step>
-
 
         <step id="stepIDE12NotExist">
             <tasklet>

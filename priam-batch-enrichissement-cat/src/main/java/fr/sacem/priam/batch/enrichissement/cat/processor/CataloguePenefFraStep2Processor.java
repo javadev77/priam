@@ -30,6 +30,7 @@ public class CataloguePenefFraStep2Processor implements ItemProcessor<CatalogueP
 
     @Value("#{jobParameters['typeCMS']}")
     private String typeCMS;
+    private int nbOeuvresRenouvelles = 0;
 
 
     @Override
@@ -49,7 +50,7 @@ public class CataloguePenefFraStep2Processor implements ItemProcessor<CatalogueP
         catalogueFra.setTitre(cataloguePenefFra.getTitreOeuvre());
 
         log.info("---- Current Line ---- " + catalogueFra);
-
+        
         nbCreation++;
 
         return catalogueFra;
