@@ -3,12 +3,12 @@ package fr.sacem.priam.batch.enrichissement.cat.listener;
 import fr.sacem.priam.batch.common.service.importPenef.FichierBatchServiceImpl;
 import fr.sacem.priam.batch.common.util.UtilFile;
 import fr.sacem.priam.batch.enrichissement.cat.dao.CatalogueCmsPenefRepository;
+import fr.sacem.priam.batch.enrichissement.cat.dao.CatalogueCmsRepository;
+import fr.sacem.priam.batch.enrichissement.cat.dao.StatistiquesCatcmsRepository;
+import fr.sacem.priam.model.domain.catcms.StatistiqueCatcms;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.BatchStatus;
-import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobParameter;
-import org.springframework.batch.core.StepExecution;
+import org.springframework.batch.core.*;
 import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +31,26 @@ public class JobCompletionNotificationCatPenefFraListener extends JobExecutionLi
     CatalogueCmsPenefRepository catalogueCmsPenefRepository;
 
     @Autowired
+    CatalogueCmsRepository catalogueCmsRepository;
+
+    @Autowired
+    StatistiquesCatcmsRepository statistiquesCatcmsRepository;
+
+    /*@Value("#{jobExecutionContext['nomFichier']}")
+    public String nomFichier;*/
+
+    @Autowired
     public JobCompletionNotificationCatPenefFraListener(UtilFile utilFile) {
         this.utilFile = utilFile;
+    }
+
+
+
+    @Override
+    public void beforeJob(JobExecution jobExecution) {
+        String typeCMS = jobExecution.getJobParameters().getString("typeCMS");
+        String nbOeuvresAvantEnrichissement = String.valueOf(catalogueCmsRepository.nbTotalOeuvresCatalogueByTypeCMS(typeCMS));
+        jobExecution.getExecutionContext().put("nbOeuvresAvantEnrichissement",nbOeuvresAvantEnrichissement);
     }
 
     @Override
@@ -75,6 +93,38 @@ public class JobCompletionNotificationCatPenefFraListener extends JobExecutionLi
         utilFile.deplacerFichierEtSuppressionFlag(jobExecution);
         catalogueCmsPenefRepository.supprimerDonneesCatPenefParIdFichier(fileID);
 
+        if(jobExecution.getExecutionContext().containsKey("ID_FICHIER")) {
+            StatistiqueCatcms statistiqueCatcms = getStatistiquesCatcms(jobExecution);
+            statistiquesCatcmsRepository.saveStatistique(statistiqueCatcms);
+        }
+    }
+
+    private StatistiqueCatcms getStatistiquesCatcms(JobExecution jobExecution) {
+        StatistiqueCatcms statistiqueCatcms = new StatistiqueCatcms();
+
+        String typeCMS = jobExecution.getJobParameters().getString("typeCMS");
+        statistiqueCatcms.setTypeCMS(typeCMS);
+
+        String nomFichier = jobExecution.getExecutionContext().getString("nomFichier");
+        statistiqueCatcms.setNomFichier(nomFichier);
+
+        long idFichier= jobExecution.getExecutionContext().getLong("ID_FICHIER");
+        Long nbOeuvres = catalogueCmsPenefRepository.nbLignesByIdFichier(idFichier);
+        statistiqueCatcms.setNbOeuvres(nbOeuvres);
+
+        Long nbRenouvellement = Long.valueOf(jobExecution.getExecutionContext().getString("nbRenouvellement"));
+        statistiqueCatcms.setNbRenouvellement(nbRenouvellement);
+
+        Long nbCreation = Long.valueOf(jobExecution.getExecutionContext().getString("nbCreationStepIDE12NotExist"));
+        nbCreation = nbCreation + Long.valueOf(jobExecution.getExecutionContext().getString("nbCreationStepIDE12ExistEtDateSortieNonVide"));
+        statistiqueCatcms.setNbCreation(nbCreation);
+
+
+        Long nbOeuvresAvantEnrichissement = Long.valueOf(jobExecution.getExecutionContext().getString("nbOeuvresAvantEnrichissement"));
+        statistiqueCatcms.setNbTotalOeuvres(nbOeuvresAvantEnrichissement + nbCreation);
+
+
+        return statistiqueCatcms;
     }
 
     public FichierBatchServiceImpl getFichierBatchService() {

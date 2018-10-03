@@ -30,4 +30,13 @@ public class CatalogueCmsPenefRepository {
             jdbcTemplate.update(sql, stmt -> stmt.setLong(1, idFichier));
         }
     }
+
+    public long nbLignesByIdFichier(Long idFichier){
+        long result = 0;
+        if(idFichier != null) {
+            String sql = "SELECT NB_LIGNES FROM PRIAM_CATCMS_FICHIER WHERE ID=?";
+            result = jdbcTemplate.queryForObject(sql, long.class, idFichier);
+        }
+        return result;
+    }
 }

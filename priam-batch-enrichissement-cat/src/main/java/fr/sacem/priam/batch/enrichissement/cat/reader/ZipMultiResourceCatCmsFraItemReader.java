@@ -113,10 +113,10 @@ public class ZipMultiResourceCatCmsFraItemReader<T> extends MultiResourceItemRea
                                 String nomFichier = fichier.getNom();
                                 JobParameter jobParameterNomDuFichier = new JobParameter(nomFichier);
                                 this.stepExecution.getExecutionContext().put("nomFichier", jobParameterNomDuFichier);
+                                this.stepExecution.getJobExecution().getExecutionContext().put("nomFichier", nomFichier);
                                 JobParameter jobParameterIdFichier = new JobParameter(fichier.getId());
                                 this.stepExecution.getExecutionContext().put("idFichier", idFichier);
                                 this.stepExecution.getJobExecution().getExecutionContext().put("ID_FICHIER", idFichier);
-
                             } else {
 
                             }

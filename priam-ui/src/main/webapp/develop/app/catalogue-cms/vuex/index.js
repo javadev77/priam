@@ -13,6 +13,17 @@ const state = {
     }
   ],
 
+  libelleTypeCatalogueForStat : [
+    {
+      "id" : 'FR',
+      "value" : 'France'
+    },
+    {
+      "id" : 'ANF',
+      "value" : 'Antilles'
+    }
+  ],
+
   libelleTypeEvenement : [
     {
       "id" : 'ALL',

@@ -18,7 +18,9 @@ Vue.use(VeeValidate, {
         'periodeEntree' : 'période d\'entrée',
         'periodeRenouvellement' : 'période de renouvellement',
         'periodeSortie' : 'période de sortie',
-        'periodeDebutEvenement' : 'Période début d\'évévenement'
+        'periodeEvenement' : 'période d\'évévenement'
+
+
       },
 
       messages: {
@@ -49,3 +51,4 @@ Validator.extend('periodeRule', {
     return dateDebut.isBefore(dateFin) || (dateDebut.isSame(dateFin));
   }
 });
+

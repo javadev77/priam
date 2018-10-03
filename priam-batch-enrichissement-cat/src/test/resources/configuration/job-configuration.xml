@@ -17,7 +17,7 @@
 
     <job id="jobEnrichissement" xmlns="http://www.springframework.org/schema/batch">
         <step id="archiveFlatFileReaderStep">
-            <tasklet>
+            <tasklet >
                 <chunk
                         reader="readerPriamCatCmsCsv"
                         processor="processorPriamCatCmsCsv"
@@ -26,7 +26,7 @@
                 </chunk>
             </tasklet>
 
-            <end on="NOOP"/>
+            <end on="NOOP" />
             <fail on="FAILED"/>
             <next on="*" to="stepIDE12ExistEtDateSortieVide"/>
 
@@ -35,23 +35,26 @@
             </listeners>
         </step>
 
+        <!-- Renouvellement des Oeuvres -->
         <step id="stepIDE12ExistEtDateSortieVide" next="stepIDE12ExistEtDateSortieNonVide">
             <tasklet>
                 <chunk
                         reader="readerStepIDE12ExistEtDateSortieVide"
-                        processor="processorStep2"
-                        writer="writerStepIDE12ExistEtDateSortieVide"
+                        processor="processorStepIDE12ExistEtDateSortieVide"
+                        writer="compositeWriterIDE12Exist"
                         commit-interval="100">
                 </chunk>
             </tasklet>
         </step>
 
+
+        <!-- Creation des Oeuvres -->
         <step id="stepIDE12ExistEtDateSortieNonVide" next="stepIDE12NotExist">
             <tasklet>
                 <chunk
                         reader="readerStepIDE12ExistEtDateSortieNonVide"
-                        processor="processorStep2"
-                        writer="writerStep2"
+                        processor="processorStepIDE12ExistEtDateSortieNonVide"
+                        writer="compositeWriterIDE12NotExistOrDateSortieNonVide"
                         commit-interval="2000">
                 </chunk>
             </tasklet>
@@ -61,8 +64,8 @@
             <tasklet>
                 <chunk
                         reader="readerStepIDE12NotExist"
-                        processor="processorStep2"
-                        writer="writerStep2"
+                        processor="processorStepIDE12NotExist"
+                        writer="compositeWriterIDE12NotExistOrDateSortieNonVide"
                         commit-interval="2000">
                 </chunk>
             </tasklet>
@@ -75,6 +78,7 @@
         </listeners>
 
     </job>
+
 
     <bean id="cataloguePenefFraReaderStepListner" class="fr.sacem.priam.batch.enrichissement.cat.listener.CataloguePenefFraReaderStepListner"></bean>
 
@@ -94,12 +98,12 @@
 
     <bean id="qpReaderStepIDE12ExistEtDateSortieVide" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
         <property name="selectClause" value="SELECT CAT_PENEF.*"/>
-        <property name="fromClause" value="FROM PRIAM_CATCMS_PENEF CAT_PENEF"/>
-        <property name="whereClause" value="WHERE CAT_PENEF.ID_FICHIER=:idFichier AND CAT_PENEF.IDE12 IN (
-                                              SELECT IDE12
-                                              FROM PRIAM_CATCMS_CATALOGUE
-                                              WHERE DATE_SORTIE IS NULL
-                                            )"/>
+        <property name="fromClause" value="FROM PRIAM_CATCMS_PENEF CAT_PENEF
+                                           INNER JOIN PRIAM_CATCMS_CATALOGUE CATALOGUE
+                                           ON CAT_PENEF.IDE12 = CATALOGUE.IDE12 AND CAT_PENEF.TYPE_CMS = CATALOGUE.TYPE_CMS"/>
+        <property name="whereClause" value="WHERE CAT_PENEF.ID_FICHIER=:idFichier
+                                            AND CATALOGUE.TYPE_CMS = '#{jobParameters[typeCMS]}'
+                                            AND (CATALOGUE.DATE_SORTIE IS NULL OR CATALOGUE.DATE_SORTIE = CURRENT_DATE())"/>
         <property name="databaseType" value="MySQL" />
         <property name="dataSource" ref="dataSource"/>
         <property name="sortKey" value="IDE12"/>
@@ -122,13 +126,13 @@
 
     <bean id="queryProvider" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
         <property name="selectClause" value="SELECT CAT_PENEF.*"/>
-        <property name="fromClause" value="FROM PRIAM_CATCMS_PENEF CAT_PENEF"/>
-        <property name="whereClause" value="WHERE CAT_PENEF.ID_FICHIER=:idFichier AND CAT_PENEF.IDE12 IN (
-                                              SELECT IDE12
-                                              FROM PRIAM_CATCMS_CATALOGUE
-                                              WHERE DATE_SORTIE IS NOT NULL
-                                              AND ELIGIBLE_CREATION = 1
-                                            )"/>
+        <property name="fromClause" value="FROM PRIAM_CATCMS_PENEF CAT_PENEF
+                                            INNER JOIN PRIAM_CATCMS_CATALOGUE CATALOGUE
+                                            ON CAT_PENEF.IDE12 = CATALOGUE.IDE12 AND CAT_PENEF.TYPE_CMS = CATALOGUE.TYPE_CMS"/>
+        <property name="whereClause" value="WHERE CAT_PENEF.ID_FICHIER=:idFichier
+                                                AND CATALOGUE.DATE_SORTIE &lt; CURRENT_DATE()
+                                                AND CATALOGUE.ELIGIBLE_CREATION = 1
+                                                AND CATALOGUE.TYPE_CMS = '#{jobParameters[typeCMS]}'"/>
         <property name="databaseType" value="MySQL" />
         <property name="dataSource" ref="dataSource"/>
         <property name="sortKey" value="IDE12"/>
@@ -150,11 +154,14 @@
 
     <bean id="qpRreaderStepIDE12NotExist" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
         <property name="selectClause" value="SELECT CAT_PENEF.*"/>
-        <property name="fromClause" value="FROM PRIAM_CATCMS_PENEF CAT_PENEF"/>
-        <property name="whereClause" value="WHERE CAT_PENEF.ID_FICHIER=:idFichier AND CAT_PENEF.IDE12 NOT IN (
-                                              SELECT IDE12
-                                              FROM PRIAM_CATCMS_CATALOGUE
-                                            )"/>
+        <property name="fromClause" value="FROM PRIAM_CATCMS_PENEF CAT_PENEF
+                                               LEFT JOIN PRIAM_CATCMS_CATALOGUE CATALOGUE
+                                               ON CAT_PENEF.IDE12 = CATALOGUE.IDE12
+                                               AND CAT_PENEF.TYPE_CMS = CATALOGUE.TYPE_CMS"/>
+        <property name="whereClause" value="WHERE CAT_PENEF.ID_FICHIER=:idFichier
+                                                AND CATALOGUE.IDE12 IS NULL
+                                                AND CATALOGUE.TYPE_CMS IS NULL
+                                                AND CAT_PENEF.TYPE_CMS = '#{jobParameters[typeCMS]}'"/>
         <property name="databaseType" value="MySQL" />
         <property name="dataSource" ref="dataSource"/>
         <property name="sortKey" value="IDE12"/>
@@ -210,6 +217,7 @@
                    UPDATE PRIAM_CATCMS_CATALOGUE
                     SET ELIGIBLE_CREATION = 0
                     WHERE IDE12 = :ide12
+                    AND TYPE_CMS = '#{jobParameters[typeCMS]}'
                 ]]>
             </value>
         </property>
@@ -217,6 +225,57 @@
             <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
         </property>
     </bean>
+
+    <!--<bean id="writerStep2" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                   INSERT INTO PRIAM_CATCMS_CATALOGUE (
+                            TYPE_CMS,
+                            IDE12,
+                            TITRE,
+                            TYP_UTIL_GEN,
+                            DATE_ENTREE,
+                            TYPE_INSCRIPTION,
+                            DATE_SORTIE,
+                            TYPE_SORTIE,
+                            ROLES,
+                            PARTICIPANTS,
+                            ELIGIBLE_CREATION
+                        )
+                        VALUES (
+                            :typeCMS,
+                            :ide12,
+                            :titre,
+                            :typUtilGen,
+                            :dateEntree,
+                            'Automatique',
+                            :dateSortie,
+                            :typeSortie,
+                            (SELECT GROUP_CONCAT(PART.ROLE SEPARATOR ',' )
+                             FROM PRIAM_CATCMS_PARTICIPANTS PART
+                              WHERE PART.IDE12 = :ide12
+                              AND PART.TYPE_CMS=:typeCMS
+                              AND PART.OEUVRE_SORTIE=0
+                               GROUP BY PART.TYPE_CMS, PART.IDE12, PART.OEUVRE_SORTIE),
+
+                             (SELECT GROUP_CONCAT(PART.PARTICIPANT SEPARATOR ',' )
+                             FROM PRIAM_CATCMS_PARTICIPANTS PART
+                              WHERE PART.IDE12=:ide12
+                              AND PART.TYPE_CMS=:typeCMS
+                              AND PART.OEUVRE_SORTIE=0
+                               GROUP BY PART.TYPE_CMS, PART.IDE12, PART.OEUVRE_SORTIE),
+                               0
+                        )
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>-->
 
     <bean id="writerStep2" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
         <property name="dataSource" ref="dataSource"/>
@@ -233,11 +292,10 @@
                             TYPE_INSCRIPTION,
                             DATE_SORTIE,
                             TYPE_SORTIE,
-                            ROLES,
-                            PARTICIPANTS
+                            ELIGIBLE_CREATION
                         )
                         VALUES (
-                            'FR',
+                            :typeCMS,
                             :ide12,
                             :titre,
                             :typUtilGen,
@@ -245,15 +303,7 @@
                             'Automatique',
                             :dateSortie,
                             :typeSortie,
-                            (SELECT GROUP_CONCAT(PART.ROLE SEPARATOR ',' )
-                             FROM PRIAM_CATCMS_PARTICIPANTS PART
-                              WHERE PART.IDE12 = :ide12 AND PART.TYPE_CMS=:typeCMS
-                               GROUP BY PART.TYPE_CMS, PART.IDE12),
-
-                             (SELECT GROUP_CONCAT(PART.PARTICIPANT SEPARATOR ',' )
-                             FROM PRIAM_CATCMS_PARTICIPANTS PART
-                              WHERE PART.IDE12=:ide12 AND PART.TYPE_CMS=:typeCMS
-                               GROUP BY PART.TYPE_CMS, PART.IDE12)
+                            0
                         )
                 ]]>
             </value>
@@ -271,8 +321,65 @@
             <value>
                 <![CDATA[
                    UPDATE PRIAM_CATCMS_CATALOGUE SET DATE_RENOUVELLEMENT=:dateRenouvellement
-                      WHERE IDE12 = :ide12 AND TYPE_CMS='#{jobParameters[typeCMS]}'
-                      AND DATE_SORTIE IS NULL
+                      WHERE IDE12 = :ide12
+                      AND TYPE_CMS='#{jobParameters[typeCMS]}'
+                      AND (DATE_SORTIE IS NULL OR DATE_SORTIE = CURRENT_DATE())
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
+
+    <bean id="writerJournalCatcmsIDE12NotExistOrDateSortieNonVide" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                   INSERT INTO PRIAM_CATCMS_JOURNAL (
+                    EVENEMENT,
+                    IDE12,
+                    DATE,
+                    UTILISATEUR,
+                    TYPE_CMS
+                   )
+                   VALUES (
+                    'MOUVEMENT_REPARTITION_ENTREE_OEUVRE',
+                    :ide12,
+                    CURRENT_TIMESTAMP(),
+                    'Batch Enrichissement',
+                    :typeCMS
+                   )
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
+
+    <bean id="writerJournalCatcmsIDE12Exist" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                   INSERT INTO PRIAM_CATCMS_JOURNAL (
+                    EVENEMENT,
+                    IDE12,
+                    DATE,
+                    UTILISATEUR,
+                    TYPE_CMS
+                   )
+                   VALUES (
+                    'MOUVEMENT_REPARTITION_RENOUVELLEMENT_OEUVRE',
+                    :ide12,
+                    CURRENT_TIMESTAMP(),
+                    'Batch Enrichissement',
+                    :typeCMS
+                   )
                 ]]>
             </value>
         </property>
@@ -285,9 +392,13 @@
         <property name="fichierBatchService" ref="fichierBatchService"/>
     </bean>
 
-    <bean id="processorPriamCatCmsCsv" class="fr.sacem.priam.batch.enrichissement.cat.processor.CataloguePenefFraProcessor"/>
+    <bean id="processorPriamCatCmsCsv" class="fr.sacem.priam.batch.enrichissement.cat.processor.ProcessorCataloguePenef"/>
 
-    <bean id="processorStep2" class="fr.sacem.priam.batch.enrichissement.cat.processor.CataloguePenefFraStep2Processor" scope="step"/>
+    <bean id="processorStepIDE12ExistEtDateSortieNonVide" class="fr.sacem.priam.batch.enrichissement.cat.processor.ProcessorStepIDE12ExistEtDateSortieNonVide" scope="step"/>
+
+    <bean id="processorStepIDE12NotExist" class="fr.sacem.priam.batch.enrichissement.cat.processor.ProcessorStepIDE12NotExist" scope="step"/>
+
+    <bean id="processorStepIDE12ExistEtDateSortieVide" class="fr.sacem.priam.batch.enrichissement.cat.processor.ProcessorStepIDE12ExistEtDateSortieVide" scope="step"/>
 
     <bean id="cataloguePenefFraRowMapper" class="fr.sacem.priam.batch.enrichissement.cat.mapper.CataloguePenefFraRowMapper"/>
 
@@ -307,6 +418,115 @@
                     </bean>
                 </property>
             </bean>
+        </property>
+    </bean>
+
+    <!--<bean id="writerToTableParticipants" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    INSERT INTO PRIAM_CATCMS_PARTICIPANTS (
+                            TYPE_CMS,
+                            IDE12,
+                            ROLE,
+                            PARTICIPANT
+                        )
+                        VALUES (
+                            :typeCMS,
+                            :ide12,
+                            :role,
+                            :participant
+                        )
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>-->
+
+    <bean id="writerToTableParticipants" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    INSERT INTO PRIAM_CATCMS_PARTICIPANTS (
+                            ID_CATALOGUE,
+                            TYPE_CMS,
+                            IDE12,
+                            ROLE,
+                            PARTICIPANT
+                        )
+                        VALUES (
+                            (SELECT ID
+                                FROM PRIAM_CATCMS_CATALOGUE
+                                WHERE IDE12=:ide12
+                                AND TYPE_CMS = '#{jobParameters[typeCMS]}'
+                                AND ELIGIBLE_CREATION=0
+                                AND DATE_ENTREE = CURRENT_DATE()
+                                AND DATE_SORTIE IS NULL),
+                            :typeCMS,
+                            :ide12,
+                            :role,
+                            :participant
+                        )
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
+
+    <bean id="writerUpdateParticipantsToTableCatalogue" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    UPDATE PRIAM_CATCMS_CATALOGUE
+                    SET PARTICIPANTS = (SELECT GROUP_CONCAT(P.PARTICIPANT SEPARATOR ',' )
+                                              FROM (PRIAM_CATCMS_PARTICIPANTS P INNER JOIN (SELECT * from PRIAM_CATCMS_CATALOGUE) AS C ON P.ID_CATALOGUE = C.ID)
+                                              WHERE P.IDE12 =:ide12 AND P.TYPE_CMS = '#{jobParameters[typeCMS]}' AND (C.DATE_SORTIE IS NULL OR DATE_SORTIE =CURRENT_DATE)),
+                          ROLES = (SELECT GROUP_CONCAT(P.ROLE SEPARATOR ',' )
+                                FROM (PRIAM_CATCMS_PARTICIPANTS P INNER JOIN (SELECT * from PRIAM_CATCMS_CATALOGUE) AS C ON P.ID_CATALOGUE = C.ID)
+                                WHERE P.IDE12 = :ide12 AND P.TYPE_CMS = '#{jobParameters[typeCMS]}' AND (C.DATE_SORTIE IS NULL OR DATE_SORTIE =CURRENT_DATE))
+                     WHERE IDE12= :ide12 AND TYPE_CMS = '#{jobParameters[typeCMS]}'
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
+
+    <bean id="compositeWriterIDE12Exist" class="org.springframework.batch.item.support.CompositeItemWriter">
+        <property name="delegates">
+            <list>
+                <ref bean="writerStepIDE12ExistEtDateSortieVide" />
+                <ref bean="writerJournalCatcmsIDE12Exist" />
+            </list>
+        </property>
+    </bean>
+
+    <bean id="compositeWriterIDE12NotExistOrDateSortieNonVide" class="org.springframework.batch.item.support.CompositeItemWriter">
+        <property name="delegates">
+            <list>
+
+                <ref bean="writerFlagEligibleCreation" />
+                <ref bean="writerStep2" />
+                <ref bean="writerToTableParticipants" />
+                <ref bean="writerUpdateParticipantsToTableCatalogue" />
+
+                <!--<ref bean="writerToTableParticipants" />
+                <ref bean="writerFlagEligibleCreation" />
+                <ref bean="writerStep2" />-->
+
+                <ref bean="writerJournalCatcmsIDE12NotExistOrDateSortieNonVide" />
+            </list>
         </property>
     </bean>
 

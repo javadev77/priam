@@ -23,15 +23,15 @@
             <div class="row" v-if="errors.count()!=0">
               <ul style="list-style: none">
 
-                <li v-if="errors.has('periodeDebutEvenement')">
-                  <i v-show="errors.has('periodeDebutEvenement')" class="fa fa-warning"></i>
-                  <label v-show="errors.has('periodeDebutEvenement')" :class="{'has-error': errors.has('periodeDebutEvenement') }">{{ errors.first('periodeDebutEvenement') }}</label>
+                <li v-if="errors.has('periodeEvenement')">
+                  <i v-show="errors.has('periodeEvenement')" class="fa fa-warning"></i>
+                  <label v-show="errors.has('periodeEvenement')" :class="{'has-error': errors.has('periodeEvenement') }">{{ errors.first('periodeEvenement') }}</label>
                 </li>
 
-                <li v-if="errors.has('periodeFinEvenement')">
+                <!--<li v-if="errors.has('periodeFinEvenement')">
                   <i v-show="errors.has('periodeFinEvenement')" class="fa fa-warning"></i>
                   <label v-show="errors.has('periodeFinEvenement')" :class="{'has-error': errors.has('periodeFinEvenement') }">{{ errors.first('periodeFinEvenement') }}</label>
-                </li>
+                </li>-->
 
               </ul>
             </div>
@@ -65,15 +65,27 @@
                 </div>
               </div>
             </div>
+
             <div class="row" style="margin-top: 10px">
+              <periode-filter
+                v-validate="'periodeRule:DD/MM/YYYY'"
+                data-vv-value-path="periodeEvenementValue"
+                data-vv-name="periodeEvenement"
+                v-model="filter.periodeFilter"
+                :titre="titrePeriodeEvenement"
+              ></periode-filter>
+            </div>
+
+            <!--<div class="row" style="margin-top: 10px">
 
               <div class="col-sm-3">
                 <label class="control-label pull-right">Période début d'événement</label>
               </div>
               <div class="col-sm-2">
                 <date-picker v-validate.disable="'date_format:DD/MM/YYYY|before:periodeFinEvenement'"
-                             data-vv-value-path="periodeDebutEvenementValue"
+                             data-vv-value-path="innerPeriodeDebutEvenementValue"
                              data-vv-name="periodeDebutEvenement"
+                             name="periodeDebutEvenement"
                              :class="{'has-error': errors.has('periodeDebutEvenement') }"
                              v-model="filter.periodeDebutEvenement"
                              date-format="dd/mm/yy"
@@ -88,8 +100,9 @@
               </div>
               <div class="col-sm-2">
                 <date-picker v-validate.disable="'date_format:DD/MM/YYYY'"
-                             data-vv-value-path="periodeFinEvenementValue"
+                             data-vv-value-path="innerPeriodeFinEvenementValue"
                              data-vv-name="periodeFinEvenement"
+                             name="periodeFinEvenement"
                              :class="{'has-error': errors.has('periodeFinEvenement') }"
                              v-model="filter.periodeFinEvenement"
                              date-format="dd/mm/yy"
@@ -99,7 +112,7 @@
                 </date-picker>
               </div>
 
-            </div>
+            </div>-->
 
           </form>
         </div>
@@ -131,6 +144,7 @@
   import vSelect from '../../../common/components/ui/Select';
   import DatePicker from '../../../common/components/ui/DatePicker.vue';
   import PriamGrid from './../../../common/components/ui/Grid.vue';
+  import periodeFilter from './JournalPeriodeFilter.vue';
 
   export default {
     name: "journal-catalogue",
@@ -145,12 +159,18 @@
           size : this.$store.getters.userPageSize
         },
         isCollapsed : false,
+        titrePeriodeEvenement: 'Période d\'événement',
         filter : {
           typeCMS : {id :'FR', value : 'CMS France'},
           typeEvenement: {id:'ALL', value : 'Tous'},
           ide12: null,
+
+          periodeFilter: {
+            dateDebut:null,
+            dateFin:null
+          }/*,
           periodeDebutEvenement:null,
-          periodeFinEvenement:null
+          periodeFinEvenement:null*/
           },
 
         currentFilter : {
@@ -339,8 +359,8 @@
           this.currentFilter.typeEvenement = this.filter.typeEvenement.id;
         }
         this.currentFilter.ide12 = this.filter.ide12;
-        this.currentFilter.periodeDebutEvenement = this.filter.periodeDebutEvenement;
-        this.currentFilter.periodeFinEvenement = this.filter.periodeFinEvenement;
+        this.currentFilter.periodeDebutEvenement = this.filter.periodeFilter.dateDebut;
+        this.currentFilter.periodeFinEvenement = this.filter.periodeFilter.dateFin;
 
 
         this.resource.searchJournalCatalogue({page : pageNum - 1, size : pageSize,
@@ -361,8 +381,10 @@
           typeCMS : {id :'FR', value : 'CMS France'},
           typeEvenement: {id:'ALL', value : 'Tous'},
           ide12: null,
-            periodeDebutEvenement:null,
-            periodeFinEvenement:null
+          periodeFilter: {
+            dateDebut: null,
+            dateFin: null
+          }
         }
         this.rechercherEvenements();
       }
@@ -372,7 +394,8 @@
       'priam-navbar' : PriamNavbar,
       vSelect : vSelect,
       datePicker : DatePicker,
-      'priam-grid' : PriamGrid
+      'priam-grid' : PriamGrid,
+      'periode-filter' : periodeFilter
     }
   }
 

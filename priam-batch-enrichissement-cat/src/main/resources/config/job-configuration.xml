@@ -39,7 +39,7 @@
             <tasklet>
                 <chunk
                         reader="readerStepIDE12ExistEtDateSortieVide"
-                        processor="processorStep2"
+                        processor="processorStepIDE12ExistEtDateSortieVide"
                         writer="compositeWriterIDE12Exist"
                         commit-interval="100">
                 </chunk>
@@ -52,19 +52,18 @@
             <tasklet>
                 <chunk
                         reader="readerStepIDE12ExistEtDateSortieNonVide"
-                        processor="processorStep2"
+                        processor="processorStepIDE12ExistEtDateSortieNonVide"
                         writer="compositeWriterIDE12NotExistOrDateSortieNonVide"
                         commit-interval="2000">
                 </chunk>
             </tasklet>
         </step>
 
-        <!-- Creation des Oeuvres -->
         <step id="stepIDE12NotExist">
             <tasklet>
                 <chunk
                         reader="readerStepIDE12NotExist"
-                        processor="processorStep2"
+                        processor="processorStepIDE12NotExist"
                         writer="compositeWriterIDE12NotExistOrDateSortieNonVide"
                         commit-interval="2000">
                 </chunk>
@@ -217,6 +216,7 @@
                    UPDATE PRIAM_CATCMS_CATALOGUE
                     SET ELIGIBLE_CREATION = 0
                     WHERE IDE12 = :ide12
+                    AND TYPE_CMS = '#{jobParameters[typeCMS]}'
                 ]]>
             </value>
         </property>
@@ -391,9 +391,13 @@
         <property name="fichierBatchService" ref="fichierBatchService"/>
     </bean>
 
-    <bean id="processorPriamCatCmsCsv" class="fr.sacem.priam.batch.enrichissement.cat.processor.CataloguePenefFraProcessor"/>
+    <bean id="processorPriamCatCmsCsv" class="fr.sacem.priam.batch.enrichissement.cat.processor.ProcessorCataloguePenef"/>
 
-    <bean id="processorStep2" class="fr.sacem.priam.batch.enrichissement.cat.processor.CataloguePenefFraStep2Processor" scope="step"/>
+    <bean id="processorStepIDE12ExistEtDateSortieNonVide" class="fr.sacem.priam.batch.enrichissement.cat.processor.ProcessorStepIDE12ExistEtDateSortieNonVide" scope="step"/>
+
+    <bean id="processorStepIDE12NotExist" class="fr.sacem.priam.batch.enrichissement.cat.processor.ProcessorStepIDE12NotExist" scope="step"/>
+
+    <bean id="processorStepIDE12ExistEtDateSortieVide" class="fr.sacem.priam.batch.enrichissement.cat.processor.ProcessorStepIDE12ExistEtDateSortieVide" scope="step"/>
 
     <bean id="cataloguePenefFraRowMapper" class="fr.sacem.priam.batch.enrichissement.cat.mapper.CataloguePenefFraRowMapper"/>
 
