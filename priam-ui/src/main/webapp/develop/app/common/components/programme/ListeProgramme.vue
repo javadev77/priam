@@ -954,7 +954,7 @@
 
               } else if(column.id !== undefined && column.id === 'repartition') {
                  var statutFichierFelix = row.statutFichierFelix !== null && row.statutFichierFelix !== undefined ? row.statutFichierFelix : undefined;
-                 if(statutFichierFelix !== undefined && statutFichierFelix == 'EN_ERREUR') {
+                 if(statutFichierFelix !== undefined && statutFichierFelix === 'EN_ERREUR') {
                    this.resource.checkIfDone({numProg: row.numProg})
                      .then(response => {
                        return response.json();
@@ -1052,15 +1052,15 @@
                       .then(data => {
                           var fichierFelix = data;
 
-                          if(fichierFelix !== undefined && fichierFelix.statut == 'GENERE') {
+                          if(fichierFelix !== undefined && fichierFelix.statut === 'GENERE') {
                             let number = self.programmesEnCoursTraitement.indexOf(numProg);
                             self.programmesEnCoursTraitement.splice(number, 1);
 
-                            if(self.modeRepartition == 'REPART_BLANC') {
+                            if(self.modeRepartition === 'REPART_BLANC') {
                               clearInterval(self.intervalIDs[numProg]);
                               self.downloadCsvFile(process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/repartition/downloadFichierFelix', {numProg: numProg}, fichierFelix.nomFichier);
 
-                            } else if(self.modeRepartition == 'MISE_EN_REPART') {
+                            } else if(self.modeRepartition === 'MISE_EN_REPART') {
                               self.programmesEnCoursTraitement.push(numProg);
                               self.resource.generateFelixData({numProg : numProg})
                                 .then(response => {
@@ -1075,7 +1075,7 @@
                                 });
 
                             }
-                          } else if(fichierFelix.statut == 'EN_ERREUR' ) {
+                          } else if(fichierFelix.statut === 'EN_ERREUR' ) {
                               clearInterval(self.intervalIDs[numProg]);
                               self.programmesEnErreur.push(numProg);
 
@@ -1085,7 +1085,7 @@
                                   {numProg: numProg, tmpFilename : fichierFelix.nomFichier, filename : fichierFelix.nomFichier},
                                   fichierFelix.nomFichier);
                               }
-                          } else if(fichierFelix.statut == 'ENVOYE' ) {
+                          } else if(fichierFelix.statut === 'ENVOYE' ) {
                               let number = self.programmesEnCoursTraitement.indexOf(numProg);
                               self.programmesEnCoursTraitement.splice(number, 1);
                               clearInterval(self.intervalIDs[numProg]);
