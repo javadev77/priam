@@ -190,8 +190,8 @@
                 css : function (entry) {
                   return {
                     style : {
-                      'background-color' : 'transparent',
-                      'border' : '0px !important'
+                      'background-color' :  'white',
+                      'border' : '1px !important'
                     }
                   }
                 }
