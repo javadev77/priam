@@ -11,6 +11,8 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
@@ -25,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
         SareftrRionDaoTest.class})
 @Transactional
 public class SareftrRionDaoTest extends AbstractDaoTest {
-    
+
     @Autowired
     private SareftrRionDao sareftrRionDao;
 
@@ -53,26 +55,33 @@ public class SareftrRionDaoTest extends AbstractDaoTest {
     @Test
     public void should_return_all_rions() {
         List<SareftrRion> all = sareftrRionDao.findAll();
-    
+
         assertThat(all).isNotNull().isNotEmpty();
         assertThat(all).extracting("rion").contains(619, 600, 629, 630, 639);
     }
-    
+
     @Test
     public void should_return_rions_after_639() {
         List<SareftrRion> all = sareftrRionDao.findAfterRion(639);
-    
+
         assertThat(all).isNotNull().isNotEmpty();
         assertThat(all).extracting("rion").doesNotContain(637, 638);
     }
-    
+
     @Test
     public void should_return_all_rions_after_current_date() {
         List<SareftrRion> all = sareftrRionDao.findAllByDateRglmtAfterCurrentDate();
+
         Date currentDate = new Date();
+
+        LocalDate localDateCurrent = currentDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
         assertThat(all).isNotNull().isNotEmpty();
-        all.forEach(s -> assertThat(s.getDatrglmt()).isAfterOrEqualsTo(currentDate));
+        all.forEach(s -> {Date datrglmt = s.getDatrglmt();
+        LocalDate datrglmtLD = datrglmt.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        assertThat(datrglmtLD.isEqual(localDateCurrent) || datrglmtLD.isAfter(localDateCurrent)).isTrue();
+        });
     }
-    
-    
+
+
 }
