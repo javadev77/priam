@@ -33,10 +33,9 @@ import static fr.sacem.priam.common.util.FileUtils.CATALOGUE_TYPE_CMS_FR;
 @RequestMapping("/app/rest/")
 public class CatalogueResource {
 
-    public static final String MANUEL = "Manuel";
-    public static final String AUTOMATIQUE = "Automatique";
     public static final String TYPE_INSCRIPTION = "TYPE_INSCRIPTION";
     public static final String TYPE_UTILISATION = "TYPE_UTILISATION";
+    public static final String PHONOFR = "PHONOFR";
 
     @Autowired
     CatalogueCmsDao catalogueRdoDao;
@@ -55,7 +54,7 @@ public class CatalogueResource {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<CatalogueCms> findByCriteria(@RequestBody CatalogueCritereRecherche catalogueCritereRecherche, Pageable pageable) {
 
-        Page<CatalogueCms> datas = null;
+        Page<CatalogueCms> datas;
         if(catalogueCritereRecherche.isDisplayOeuvreNonEligible()) {
             datas = catalogueRdoDao.findByCriteriaWithNonEligible(catalogueCritereRecherche.getTypeCMS(),
                     catalogueCritereRecherche.getIde12(),
@@ -213,7 +212,7 @@ public class CatalogueResource {
     @LogCatalogueAjout(event = TypeLog.AJOUT_OEUVRE)
     public ResponseEntity ajouterOeuvreFromMipsa(@RequestBody CatalogueCms catalogueCms, UserDTO userDTO) {
         catalogueCms.setDateEntree(new Date());
-        catalogueCms.setTypUtilGen("PHONOFR");
+        catalogueCms.setTypUtilGen(PHONOFR);
 
         catalogueRdoDao.save(catalogueCms);
         List<ParticipantsCatcms> participants = participantsFromCatalogueCms(catalogueCms);
@@ -246,7 +245,7 @@ public class CatalogueResource {
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public CatalogueCms findOeuvreExistanteCatalogue(@RequestBody CatalogueCms catalogueCms) {
-        CatalogueCms catalogueCmsFound = new CatalogueCms();
+        CatalogueCms catalogueCmsFound;
         if(CATALOGUE_TYPE_CMS_ANF.equals(catalogueCms.getTypeCMS())){
             catalogueCmsFound = catalogueRdoDao.findOeuvreExistanteCatalogueByIde12AndTypeCMS(catalogueCms.getIde12(), CATALOGUE_TYPE_CMS_ANF);
         } else {
@@ -266,6 +265,7 @@ public class CatalogueResource {
     public CatalogueCms renouvelerOeuvre(@PathVariable(name = "id") Long id, UserDTO userDTO){
         CatalogueCms oeuvreARenouvele = catalogueRdoDao.findOne(id);
         oeuvreARenouvele.setDateRenouvellement(new Date());
+
         return catalogueRdoDao.saveAndFlush(oeuvreARenouvele);
     }
 
@@ -282,15 +282,8 @@ public class CatalogueResource {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, List<KeyValueDtoCatcms>> compteurByCriteria(@RequestBody CatalogueCritereRecherche catalogueCritereRecherche) {
-
-        //Map<String, Map<String, Long>> result = new HashMap<>();
         Map<String, List<KeyValueDtoCatcms>> result = new HashMap<>();
 
-        /*if(!catalogueCritereRecherche.isDisplayOeuvreNonEligible() && catalogueCritereRecherche.getPeriodeEntreeDateFin()== null ||
-                catalogueCritereRecherche.getPeriodeSortieDateFin() == null) {
-            catalogueCritereRecherche.setPeriodeEntreeDateFin(new Date());
-            catalogueCritereRecherche.setPeriodeSortieDateFin(new Date());
-        }*/
 
         result.put(TYPE_INSCRIPTION, getMetricTypeInscription(catalogueCritereRecherche));
         result.put(TYPE_UTILISATION, getMetricTypeUtilisation(catalogueCritereRecherche));
@@ -301,7 +294,7 @@ public class CatalogueResource {
     private List<KeyValueDtoCatcms> getMetricTypeInscription(CatalogueCritereRecherche catalogueCritereRecherche){
         List<KeyValueDtoCatcms> resultTypeInscription = new ArrayList<>();
 
-        List<Object> nombreTypeInscription = new ArrayList<>();
+        List<Object> nombreTypeInscription;
 
         if(catalogueCritereRecherche.isDisplayOeuvreNonEligible()){
             nombreTypeInscription = catalogueRdoDao.compterNombreTypeInscriptionInclusNonEligible(catalogueCritereRecherche.getTypeCMS(),
@@ -346,7 +339,7 @@ public class CatalogueResource {
 
         List<KeyValueDtoCatcms> resultTypeUtilisation = new ArrayList<>();
 
-        List<Object> nombreTypeInscription = new ArrayList<>();
+        List<Object> nombreTypeInscription;
         if(catalogueCritereRecherche.isDisplayOeuvreNonEligible()){
             nombreTypeInscription = catalogueRdoDao.compterNombreTypeUtilisationInclusNonEligible(catalogueCritereRecherche.getTypeCMS(),
                     catalogueCritereRecherche.getIde12(),

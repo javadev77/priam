@@ -55,7 +55,7 @@
             {
               id: 'typeCMS',
               name: "Type Cat.",
-              sortable: true,
+              sortable: false,
               type: 'code-value-left',
               cell : {
 
@@ -103,7 +103,7 @@
             {
               id : 'nomFichier',
               name :'Nom Fichier',
-              sortable : true,
+              sortable : false,
               type : 'text-centre',
               cell: {
                 css : function (entry) {
@@ -127,7 +127,7 @@
             {
               id :  'nbOeuvres',
               name :   "Nb oeuvres",
-              sortable : true,
+              sortable : false,
               type : 'numeric',
               cell : {
                 css : function (entry) {
@@ -146,7 +146,7 @@
             {
               id :  'nbCreation',
               name :   "Nb création",
-              sortable : true,
+              sortable : false,
               type : 'numeric',
               cell : {
                 css : function (entry) {
@@ -164,7 +164,7 @@
             {
               id :  'nbRenouvellement',
               name :   "Nb renouvellement",
-              sortable : true,
+              sortable : false,
               type : 'numeric',
               cell : {
                 css : function (entry) {
@@ -184,7 +184,7 @@
             {
               id :  '',
               name :   "",
-              sortable : true,
+              sortable : false,
               type : 'column-empty',
               cell : {
                 css : function (entry) {
@@ -201,7 +201,7 @@
             {
               id :  'nbTotalOeuvres',
               name :   "Nb total oeuvres",
-              sortable : true,
+              sortable : false,
               type : 'numeric',
               cell : {
                 css : function (entry) {

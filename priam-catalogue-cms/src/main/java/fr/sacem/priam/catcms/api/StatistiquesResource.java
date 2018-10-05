@@ -19,8 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/app/rest/statistiques")
 public class StatistiquesResource {
 
-    private static Logger logger = LoggerFactory.getLogger(JournalCatalogueResource.class);
-
     @Autowired
     StatistiquesCatcmsDao statistiquesCatcmsDao;
 
