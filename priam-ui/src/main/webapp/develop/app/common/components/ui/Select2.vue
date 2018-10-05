@@ -67,6 +67,7 @@
         // update value
         console.log("value changed")
         $(this.$el).val(value).trigger('change');
+        this.$emit('change', value);
       },
 
       options: function (options) {
