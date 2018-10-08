@@ -82,6 +82,7 @@
         <property name="delegates">
             <list>
                 <ref bean="writerPriamSortieCatalogue" />
+                <!--<ref bean="writerUpdateFlagParticipantFr" />-->
                 <ref bean="writerJournalCatcms" />
             </list>
         </property>
@@ -114,6 +115,48 @@
             <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
         </property>
     </bean>
+
+    <!--<bean id="writerUpdateFlagParticipantFr" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    UPDATE PRIAM_CATCMS_PARTICIPANTS
+                    SET OEUVRE_SORTIE = 1
+                    WHERE IDE12 =:ide12
+                    AND TYPE_CMS = 'FR'
+                    AND OEUVRE_SORTIE = 0
+
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>-->
+
+    <!--<bean id="writerUpdateFlagParticipantAnf" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    UPDATE PRIAM_CATCMS_PARTICIPANTS
+                    SET OEUVRE_SORTIE = 1
+                    WHERE IDE12 =:ide12
+                    AND TYPE_CMS = 'ANF'
+                    AND OEUVRE_SORTIE = 0
+
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>-->
+
+
 
     <bean id="writerJournalCatcms" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
         <property name="dataSource" ref="dataSource"/>

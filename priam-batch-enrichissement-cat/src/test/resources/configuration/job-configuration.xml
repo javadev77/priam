@@ -106,7 +106,7 @@
                                             AND (CATALOGUE.DATE_SORTIE IS NULL OR CATALOGUE.DATE_SORTIE = CURRENT_DATE())"/>
         <property name="databaseType" value="MySQL" />
         <property name="dataSource" ref="dataSource"/>
-        <property name="sortKey" value="IDE12"/>
+        <property name="sortKey" value="CAT_PENEF.IDE12"/>
     </bean>
 
 
@@ -135,7 +135,7 @@
                                                 AND CATALOGUE.TYPE_CMS = '#{jobParameters[typeCMS]}'"/>
         <property name="databaseType" value="MySQL" />
         <property name="dataSource" ref="dataSource"/>
-        <property name="sortKey" value="IDE12"/>
+        <property name="sortKey" value="CAT_PENEF.IDE12"/>
     </bean>
 
 
@@ -164,7 +164,7 @@
                                                 AND CAT_PENEF.TYPE_CMS = '#{jobParameters[typeCMS]}'"/>
         <property name="databaseType" value="MySQL" />
         <property name="dataSource" ref="dataSource"/>
-        <property name="sortKey" value="IDE12"/>
+        <property name="sortKey" value="CAT_PENEF.IDE12"/>
     </bean>
 
     <bean id="readerPriamCatCmsCsv"
@@ -226,7 +226,7 @@
         </property>
     </bean>
 
-    <!--<bean id="writerStep2" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+    <bean id="writerStep2" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
         <property name="dataSource" ref="dataSource"/>
         <property name="assertUpdates" value="false"/>
         <property name="sql">
@@ -275,9 +275,9 @@
         <property name="itemSqlParameterSourceProvider">
             <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
         </property>
-    </bean>-->
+    </bean>
 
-    <bean id="writerStep2" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+    <!--<bean id="writerStep2" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
         <property name="dataSource" ref="dataSource"/>
         <property name="assertUpdates" value="false"/>
         <property name="sql">
@@ -311,7 +311,7 @@
         <property name="itemSqlParameterSourceProvider">
             <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
         </property>
-    </bean>
+    </bean>-->
 
 
     <bean id="writerStepIDE12ExistEtDateSortieVide" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
@@ -421,7 +421,7 @@
         </property>
     </bean>
 
-    <!--<bean id="writerToTableParticipants" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+    <bean id="writerToTableParticipants" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
         <property name="dataSource" ref="dataSource"/>
         <property name="assertUpdates" value="false"/>
         <property name="sql">
@@ -431,13 +431,15 @@
                             TYPE_CMS,
                             IDE12,
                             ROLE,
-                            PARTICIPANT
+                            PARTICIPANT,
+                            OEUVRE_SORTIE
                         )
                         VALUES (
                             :typeCMS,
                             :ide12,
                             :role,
-                            :participant
+                            :participant,
+                            0
                         )
                 ]]>
             </value>
@@ -445,9 +447,9 @@
         <property name="itemSqlParameterSourceProvider">
             <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
         </property>
-    </bean>-->
+    </bean>
 
-    <bean id="writerToTableParticipants" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+    <!--<bean id="writerToTableParticipants" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
         <property name="dataSource" ref="dataSource"/>
         <property name="assertUpdates" value="false"/>
         <property name="sql">
@@ -479,7 +481,7 @@
         <property name="itemSqlParameterSourceProvider">
             <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
         </property>
-    </bean>
+    </bean>-->
 
     <bean id="writerUpdateParticipantsToTableCatalogue" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
         <property name="dataSource" ref="dataSource"/>
@@ -516,14 +518,14 @@
         <property name="delegates">
             <list>
 
-                <ref bean="writerFlagEligibleCreation" />
+                <!--<ref bean="writerFlagEligibleCreation" />
                 <ref bean="writerStep2" />
                 <ref bean="writerToTableParticipants" />
-                <ref bean="writerUpdateParticipantsToTableCatalogue" />
+                <ref bean="writerUpdateParticipantsToTableCatalogue" />-->
 
-                <!--<ref bean="writerToTableParticipants" />
+                <ref bean="writerToTableParticipants" />
                 <ref bean="writerFlagEligibleCreation" />
-                <ref bean="writerStep2" />-->
+                <ref bean="writerStep2" />
 
                 <ref bean="writerJournalCatcmsIDE12NotExistOrDateSortieNonVide" />
             </list>

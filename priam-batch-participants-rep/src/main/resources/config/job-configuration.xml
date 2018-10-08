@@ -204,8 +204,20 @@
         <property name="sortKey" value="ID"/>
     </bean>
 
+    <!--<bean id="qpReaderStepMajParticipant" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
+        <property name="selectClause" value="SELECT P_T.*"/>
+        <property name="fromClause" value="FROM PRIAM_CATCMS_PARTICIPANTS_TRTMT P_T INNER JOIN
+        (SELECT P.IDE12 FROM PRIAM_CATCMS_PARTICIPANTS P
+        INNER JOIN PRIAM_CATCMS_CATALOGUE C ON P.ID_CATALOGUE = C.ID
+        WHERE P.TYPE_CMS='ANF' AND (C.DATE_SORTIE IS NULL OR DATE_SORTIE = CURRENT_DATE)) AS P ON P_T.IDE12 = P.IDE12"/>
+        <property name="groupClause" value="GROUP BY P_T.IDE12"/>
+        <property name="databaseType" value="MySQL" />
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sortKey" value="ID"/>
+    </bean>-->
 
-    <!--<bean id="writerStepMajParticipant" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+
+    <bean id="writerStepMajParticipant" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
         <property name="dataSource" ref="dataSource"/>
         <property name="assertUpdates" value="false"/>
         <property name="sql">
@@ -221,25 +233,42 @@
         <property name="itemSqlParameterSourceProvider">
             <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
         </property>
-    </bean>-->
+    </bean>
 
-    <bean id="writerStepMajParticipant" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+    <!--<bean id="writerStepMajParticipant" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
         <property name="dataSource" ref="dataSource"/>
         <property name="assertUpdates" value="false"/>
         <property name="sql">
             <value>
                 <![CDATA[
                    DELETE FROM PRIAM_CATCMS_PARTICIPANTS
-                    WHERE ID_CATALOGUE IN (SELECT P.ID_CATALOGUE
+                    WHERE ID_CATALOGUE = (SELECT P.ID_CATALOGUE
                         FROM (SELECT * FROM PRIAM_CATCMS_PARTICIPANTS) P INNER JOIN PRIAM_CATCMS_CATALOGUE C ON P.ID_CATALOGUE = C.ID
-                        WHERE P.IDE12 =:ide12 AND P.TYPE_CMS =:typeCMS AND (C.DATE_SORTIE IS NULL OR C.DATE_SORTIE = CURRENT_DATE))
+                        WHERE P.IDE12 =:ide12 AND P.TYPE_CMS =:typeCMS AND (C.DATE_SORTIE IS NULL OR C.DATE_SORTIE = CURRENT_DATE)
+                        GROUP BY P.ID_CATALOGUE)
                 ]]>
             </value>
         </property>
         <property name="itemSqlParameterSourceProvider">
             <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
         </property>
-    </bean>
+    </bean>-->
+
+    <!--<bean id="writerStepMajParticipant" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                   DELETE FROM PRIAM_CATCMS_PARTICIPANTS
+                    WHERE ID_CATALOGUE = (SELECT ID FROM PRIAM_CATCMS_CATALOGUE WHERE ID =: idCatalogue)
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>-->
 
 
     <bean id="readerStepInsertParticipant"
@@ -258,7 +287,7 @@
         <property name="sortKey" value="ID"/>
     </bean>
 
-    <!--<bean id="writerInsertToTableParticipants" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+    <bean id="writerInsertToTableParticipants" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
         <property name="dataSource" ref="dataSource"/>
         <property name="assertUpdates" value="false"/>
         <property name="sql">
@@ -284,9 +313,9 @@
         <property name="itemSqlParameterSourceProvider">
             <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
         </property>
-    </bean>-->
+    </bean>
 
-    <bean id="writerInsertToTableParticipants" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+    <!--<bean id="writerInsertToTableParticipants" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
         <property name="dataSource" ref="dataSource"/>
         <property name="assertUpdates" value="false"/>
         <property name="sql">
@@ -316,9 +345,9 @@
         <property name="itemSqlParameterSourceProvider">
             <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
         </property>
-    </bean>
+    </bean>-->
 
-    <!--<bean id="updateParticipants" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+    <bean id="updateParticipantsToTableCatalogue" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
         <property name="dataSource" ref="dataSource"/>
         <property name="assertUpdates" value="false"/>
         <property name="sql">
@@ -347,11 +376,11 @@
         <property name="itemSqlParameterSourceProvider">
             <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
         </property>
-    </bean>-->
+    </bean>
 
 
 
-    <bean id="updateParticipantsToTableCatalogue" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+    <!--<bean id="updateParticipantsToTableCatalogue" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
         <property name="dataSource" ref="dataSource"/>
         <property name="assertUpdates" value="false"/>
         <property name="sql">
@@ -378,7 +407,7 @@
         <property name="itemSqlParameterSourceProvider">
             <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
         </property>
-    </bean>
+    </bean>-->
 
     <bean id="processorStep3" class="fr.sacem.priam.batch.participants.rep.processor.ParticipantFraStep3Processor"/>
 

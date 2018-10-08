@@ -299,7 +299,7 @@
         </property>
     </bean>
 
-    <bean id="writerToTableParticipants" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+    <!--<bean id="writerToTableParticipants" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
         <property name="dataSource" ref="dataSource"/>
         <property name="assertUpdates" value="false"/>
         <property name="sql">
@@ -325,7 +325,66 @@
         <property name="itemSqlParameterSourceProvider">
             <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
         </property>
+    </bean>-->
+
+    <!--<bean id="writerToTableParticipants" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    INSERT INTO PRIAM_CATCMS_PARTICIPANTS (
+                        ID_CATALOGUE,
+                        TYPE_CMS,
+                        IDE12,
+                        ROLE,
+                        PARTICIPANT,
+                        OEUVRE_SORTIE
+                        )
+                        VALUES (
+                        (SELECT ID FROM PRIAM_CATCMS_CATALOGUE WHERE IDE12 =:ide12 AND TYPE_CMS =:typeCMS),
+                        :typeCMS,
+                        :ide12,
+                        :role,
+                        :participant,
+                        0
+                        )
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>-->
+
+    <bean id="writerToTableParticipants" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    INSERT INTO PRIAM_CATCMS_PARTICIPANTS (
+                        TYPE_CMS,
+                        IDE12,
+                        ROLE,
+                        PARTICIPANT,
+                        OEUVRE_SORTIE
+                        )
+                        VALUES (
+                        :typeCMS,
+                        :ide12,
+                        :role,
+                        :participant,
+                        0
+                        )
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
     </bean>
+
 
     <bean id="writerParticipantsToTableCatalogueCms" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
         <property name="dataSource" ref="dataSource"/>

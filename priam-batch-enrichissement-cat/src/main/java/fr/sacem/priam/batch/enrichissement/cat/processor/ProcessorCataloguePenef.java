@@ -28,8 +28,8 @@ public class ProcessorCataloguePenef implements ItemProcessor<CataloguePenefFra,
         Long idFichier = executionContext.getLong("idFichier");
         cataloguePenefFra.setIdFichier(idFichier);
 
-        log.info("---- IDE12 ---- " + cataloguePenefFra.getIde12());
-        log.info("---- Current Line ---- " + cataloguePenefFra);
+        log.debug("---- IDE12 ---- " + cataloguePenefFra.getIde12());
+        log.debug("---- Current Line ---- " + cataloguePenefFra);
 
         return cataloguePenefFra;
     }

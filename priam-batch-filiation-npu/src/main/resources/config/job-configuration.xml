@@ -105,7 +105,7 @@
     </property>
     </bean>
 
-    <!--<bean id="writerPriamFiliationNpuParticipantsCsv" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+    <bean id="writerPriamFiliationNpuParticipantsCsv" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
         <property name="dataSource" ref="dataSource"/>
         <property name="assertUpdates" value="false"/>
         <property name="sql">
@@ -120,9 +120,9 @@
         <property name="itemSqlParameterSourceProvider">
             <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
         </property>
-    </bean>-->
+    </bean>
 
-    <bean id="writerPriamFiliationNpuParticipantsCsv" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+    <!--<bean id="writerPriamFiliationNpuParticipantsCsv" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
         <property name="dataSource" ref="dataSource"/>
         <property name="assertUpdates" value="false"/>
         <property name="sql">
@@ -139,7 +139,7 @@
         <property name="itemSqlParameterSourceProvider">
             <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
         </property>
-    </bean>
+    </bean>-->
 
     <bean id="readerMajFlagCatalogueEtParticipant"
           class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
@@ -149,13 +149,44 @@
         <property name="rowMapper" ref="catalogueCMSRowMapper"/>
     </bean>
 
-    <bean id="qpReaderMajFlagCatalogueEtParticipant" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
+    <!--<bean id="qpReaderMajFlagCatalogueEtParticipant" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
         <property name="selectClause" value="SELECT ID, IDE12, TYPE_CMS"/>
         <property name="fromClause" value="FROM PRIAM_CATCMS_CATALOGUE"/>
-        <property name="whereClause" value="WHERE DATE_SORTIE = date_add(current_date,INTERVAL -1 DAY)"/>
+        <property name="whereClause" value="WHERE DATE_SORTIE &lt;= date_add(current_date,INTERVAL -1 DAY) AND ELIGIBLE_CREATION = 0"/>
         <property name="databaseType" value="MySQL" />
         <property name="dataSource" ref="dataSource"/>
         <property name="sortKey" value="ID"/>
+    </bean>-->
+
+    <!--<bean id="qpReaderMajFlagCatalogueEtParticipant" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
+        <property name="selectClause" value="SELECT MAX(ID) AS ID, TYPE_CMS, IDE12, MAX(DATE_SORTIE) AS DATE_SORTIE"/>
+        <property name="fromClause" value="FROM PRIAM_CATCMS_CATALOGUE"/>
+        <property name="whereClause" value="WHERE (TYPE_CMS, IDE12) NOT IN (SELECT TYPE_CMS, IDE12 FROM PRIAM_CATCMS_CATALOGUE WHERE DATE_SORTIE IS NULL)
+                                            AND DATE_SORTIE &lt;= date_add(current_date,INTERVAL -1 DAY) and ELIGIBLE_CREATION = 0"/>
+        <property name="groupClause" value="GROUP BY TYPE_CMS"/>
+        <property name="databaseType" value="MySQL" />
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sortKeys">
+            <map>
+                <entry key="ID" value="ASCENDING"/>
+                <entry key="DATE_SORTIE" value="DESCENDING"/>
+            </map>
+        </property>
+    </bean>-->
+
+    <bean id="qpReaderMajFlagCatalogueEtParticipant" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
+        <property name="selectClause" value="SELECT CATALOGUE.ID, CATALOGUE.TYPE_CMS, CATALOGUE.IDE12, CATALOGUE.DATE_SORTIE"/>
+        <property name="fromClause" value="FROM PRIAM_CATCMS_CATALOGUE CATALOGUE INNER JOIN
+                                    (SELECT ID, TYPE_CMS, IDE12, MAX(DATE_SORTIE) AS DATE_SORTIE
+                                    FROM PRIAM_CATCMS_CATALOGUE
+                                    WHERE (TYPE_CMS, IDE12) NOT IN (SELECT TYPE_CMS, IDE12 FROM PRIAM_CATCMS_CATALOGUE WHERE DATE_SORTIE IS NULL)
+                                         AND DATE_SORTIE &lt;= date_add(current_date,INTERVAL -1 DAY) AND ELIGIBLE_CREATION = 0 GROUP BY TYPE_CMS) REQUETE
+                                    ON REQUETE.TYPE_CMS = CATALOGUE.TYPE_CMS AND REQUETE.IDE12 = CATALOGUE.IDE12 AND REQUETE.DATE_SORTIE = CATALOGUE.DATE_SORTIE"/>
+        <property name="databaseType" value="MySQL" />
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sortKey" value="CATALOGUE.ID"/>
+
+
     </bean>
 
     <bean id="catalogueCMSRowMapper" class="fr.sacem.priam.batch.filiation.npu.mapper.CatalogueCMSRowMapper"/>
@@ -164,7 +195,7 @@
         <property name="delegates">
             <list>
                 <ref bean="writerMajFlagCatalogue" />
-                <!--<ref bean="writerMajFlagParticipant" />-->
+                <ref bean="writerMajFlagParticipant" />
             </list>
         </property>
     </bean>

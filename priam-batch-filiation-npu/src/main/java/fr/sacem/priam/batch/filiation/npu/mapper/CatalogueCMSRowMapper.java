@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.ZoneId;
 
 public class CatalogueCMSRowMapper implements RowMapper<CatalogueCms> {
     @Override
@@ -13,6 +14,7 @@ public class CatalogueCMSRowMapper implements RowMapper<CatalogueCms> {
         catalogueCms.setId(resultSet.getLong("ID"));
         catalogueCms.setIde12(resultSet.getLong("IDE12"));
         catalogueCms.setTypeCMS(resultSet.getString("TYPE_CMS"));
+//        catalogueCms.setDateSortie(resultSet.getDate("DATE_SORTIE").toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
         return catalogueCms;
     }
 }

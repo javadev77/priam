@@ -11,6 +11,7 @@ public class Participant {
     private String rolPart;
     private String nomPart;
     private Integer statut;
+    private Long idCatalogue;
     private Integer lineNumber;
     private Exception exception;
 
@@ -81,6 +82,14 @@ public class Participant {
         this.statut = statut;
     }
 
+    public Long getIdCatalogue() {
+        return idCatalogue;
+    }
+
+    public void setIdCatalogue(Long idCatalogue) {
+        this.idCatalogue = idCatalogue;
+    }
+
     public Exception getException() {
         return exception;
     }
@@ -100,4 +109,6 @@ public class Participant {
     public Participant(Exception exception) {
         this.exception = exception;
     }
+
+
 }

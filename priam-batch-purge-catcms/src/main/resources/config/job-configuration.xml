@@ -78,9 +78,9 @@
         <property name="delegates">
             <list>
 
-                <ref bean="writerPriamPurgeParticipantsBis" />
+                <!--<ref bean="writerPriamPurgeParticipantsBis" />-->
                 <ref bean="writerPriamPurgeCatalogue" />
-                <!--<ref bean="writerPriamPurgeParticipants" />-->
+                <ref bean="writerPriamPurgeParticipants" />
                 <ref bean="writerJournalCatcms" />
             </list>
         </property>

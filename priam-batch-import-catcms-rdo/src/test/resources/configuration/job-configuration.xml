@@ -16,12 +16,41 @@
                      location="classpath:configuration/application-test.properties"/>
 
     <job id="jobImportCatalogueCMSRDO" xmlns="http://www.springframework.org/schema/batch">
-        <step id="csvArchiveFlatFileReaderStep">
+        <!--<step id="csvArchiveFlatFileReaderStep" next="copyDataToCatCmsCatalogueStep">
             <tasklet>
                 <chunk
                         reader="readerPriamCatCmsCsv"
-                        writer="writerPriamCatCmsCsv"
+                        writer="compositeWriterPriamCatalogueCMSRDO"
+                        commit-interval="2000">
+                </chunk>
+            </tasklet>
+        </step>
+
+        <step id="copyDataToCatCmsCatalogueStep">
+            <tasklet>
+                <chunk
+                        reader="readerFromTableRdo"
                         processor="priamCatCmsProcessor"
+                        writer="compositeWriter"
+                        commit-interval="2000">
+                </chunk>
+            </tasklet>
+        </step>-->
+        <step id="csvArchiveFlatFileReaderStep" next="copyDataToCatCmsCatalogueStep">
+            <tasklet>
+                <chunk
+                        reader="readerPriamCatCmsCsv"
+                        writer="compositeWriterPriamCatalogueCMSRDO"
+                        commit-interval="2000">
+                </chunk>
+            </tasklet>
+        </step>
+        <step id="copyDataToCatCmsCatalogueStep">
+            <tasklet>
+                <chunk
+                        reader="readerFromTableRdo"
+                        processor="priamCatCmsProcessor"
+                        writer="compositeWriter"
                         commit-interval="2000">
                 </chunk>
             </tasklet>
@@ -38,6 +67,26 @@
         <property name="strict" value="false"/>
         <property name="utilFile" ref="utilFile"/>
     </bean>
+
+
+    <bean id="readerFromTableRdo"
+          class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="queryProvider" ref="queryProvider"/>
+        <property name="pageSize" value="${commit-interval}"/>
+        <property name="rowMapper" ref="catalogueRdoRowMapper"/>
+    </bean>
+
+
+    <bean id="queryProvider" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
+        <property name="selectClause" value="SELECT IDE12,TYPE_CMS,TITRE,TYP_UTIL_GEN,DATE_CATAL,ROLE,PARTICIPANT,POURCENTAGE_DP"/>
+        <property name="fromClause" value="FROM PRIAM_CATCMS_RDO"/>
+        <property name="databaseType" value="MySQL" />
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sortKey" value="IDE12"/>
+    </bean>
+
+    <bean id="catalogueRdoRowMapper" class="fr.sacem.priam.batch.catcms.rdo.mapper.CatalogueRdoRowMapper"></bean>
 
     <bean id="flatFileItemReader"
           class="fr.sacem.priam.batch.catcms.rdo.util.mapper.CsvPriamFileItemReader">
@@ -66,7 +115,16 @@
         </property>
     </bean>
 
-    <bean id="writerPriamCatCmsCsv" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+    <bean id="compositeWriterPriamCatalogueCMSRDO" class="org.springframework.batch.item.support.CompositeItemWriter" scope="step">
+        <property name="delegates">
+            <list>
+                <ref bean="writerPriamCatRdo" />
+                <ref bean="writerJournalCatcms" />
+            </list>
+        </property>
+    </bean>
+
+    <bean id="writerPriamCatRdo" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
         <property name="dataSource" ref="dataSource"/>
         <property name="assertUpdates" value="false"/>
         <property name="sql">
@@ -77,13 +135,10 @@
                             IDE12,
                             TITRE,
                             TYP_UTIL_GEN,
-                            DATE_ENTREE,
-                            TYPE_INSCRIPTION,
-                            POURCENTAGE_DP,
-                            DATE_SORTIE,
-                            TYPE_SORTIE,
+                            DATE_CATAL,
                             ROLE,
-                            PARTICIPANT
+                            PARTICIPANT,
+                            POURCENTAGE_DP
                         )
                         VALUES (
                             :typeCMS,
@@ -91,12 +146,9 @@
                             :titre,
                             :typUtilGen,
                             :dateCatal,
-                            'Automatique',
-                            :pourcentageDP,
-                            :dateSortie,
-                            :typeSortie,
                             :role,
-                            :participant
+                            :participant,
+                            :pourcentageDP
                         )
                 ]]>
             </value>
@@ -106,10 +158,278 @@
         </property>
     </bean>
 
+
+
+    <!--<bean id="writerToTableCatalogueCms" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    INSERT INTO PRIAM_CATCMS_CATALOGUE (
+                            TYPE_CMS,
+                            IDE12,
+                            TITRE,
+                            TYP_UTIL_GEN,
+                            DATE_ENTREE,
+                            TYPE_INSCRIPTION,
+                            DATE_SORTIE,
+                            TYPE_SORTIE,
+                            ROLES,
+                            PARTICIPANTS
+                        )
+                        VALUES (
+                            :typeCMS,
+                            :ide12,
+                            :titre,
+                            :typUtilGen,
+                            :dateEntree,
+                            :typeInscription,
+                            :dateSortie,
+                            :typeSortie,
+                            (SELECT GROUP_CONCAT(PART.ROLE SEPARATOR ',' )
+                             FROM PRIAM_CATCMS_PARTICIPANTS PART
+                              WHERE PART.IDE12 = :ide12 AND PART.TYPE_CMS=:typeCMS
+                               GROUP BY PART.TYPE_CMS, PART.IDE12),
+
+                             (SELECT GROUP_CONCAT(PART.PARTICIPANT SEPARATOR ',' )
+                             FROM PRIAM_CATCMS_PARTICIPANTS PART
+                              WHERE PART.IDE12=:ide12 AND PART.TYPE_CMS=:typeCMS
+                               GROUP BY PART.TYPE_CMS, PART.IDE12)
+                        )
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>-->
+
     <bean id="priamCatCmsProcessor" class="fr.sacem.priam.batch.catcms.rdo.processor.CatalogueRdoProcessor"/>
 
     <bean id="listenerCompletition" class="fr.sacem.priam.batch.catcms.rdo.listener.JobCompletionNotificationCatcmsRdoListener">
         <property name="fichierBatchService" ref="fichierBatchService"/>
+    </bean>
+
+
+    <!--<bean id="writerToTableParticipants" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    INSERT INTO PRIAM_CATCMS_PARTICIPANTS (
+                            TYPE_CMS,
+                            IDE12,
+                            ROLE,
+                            PARTICIPANT,
+                            OEUVRE_SORTIE
+                        )
+                        VALUES (
+                            :typeCMS,
+                            :ide12,
+                            :role,
+                            :participant,
+                            0
+                        )
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>-->
+    <!--<bean id="compositeWriter" class="org.springframework.batch.item.support.CompositeItemWriter">
+        <property name="delegates">
+            <list>
+                <ref bean="writerToTableParticipants" />
+                <ref bean="writerToTableCatalogueCms" />
+            </list>
+        </property>
+    </bean>-->
+
+    <bean id="compositeWriter" class="org.springframework.batch.item.support.CompositeItemWriter">
+        <property name="delegates">
+            <list>
+                <ref bean="writerToTableCatalogueCms" />
+                <ref bean="writerToTableParticipants" />
+                <ref bean="writerParticipantsToTableCatalogueCms" />
+            </list>
+        </property>
+    </bean>
+
+    <bean id="writerToTableCatalogueCms" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    INSERT INTO PRIAM_CATCMS_CATALOGUE (
+                            TYPE_CMS,
+                            IDE12,
+                            TITRE,
+                            TYP_UTIL_GEN,
+                            DATE_ENTREE,
+                            TYPE_INSCRIPTION,
+                            DATE_SORTIE,
+                            TYPE_SORTIE,
+                            ELIGIBLE_CREATION
+                        )
+                        VALUES (
+                            :typeCMS,
+                            :ide12,
+                            :titre,
+                            :typUtilGen,
+                            :dateEntree,
+                            :typeInscription,
+                            :dateSortie,
+                            :typeSortie,
+                            0)
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
+
+    <!--<bean id="writerToTableParticipants" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    INSERT INTO PRIAM_CATCMS_PARTICIPANTS (
+                            ID_CATALOGUE,
+                            TYPE_CMS,
+                            IDE12,
+                            ROLE,
+                            PARTICIPANT
+                        )
+                        VALUES (
+                            (SELECT ID FROM PRIAM_CATCMS_CATALOGUE WHERE IDE12 =:ide12 AND TYPE_CMS =:typeCMS),
+                            :typeCMS,
+                            :ide12,
+                            :role,
+                            :participant
+                        )
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>-->
+
+    <!--<bean id="writerToTableParticipants" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    INSERT INTO PRIAM_CATCMS_PARTICIPANTS (
+                        ID_CATALOGUE,
+                        TYPE_CMS,
+                        IDE12,
+                        ROLE,
+                        PARTICIPANT,
+                        OEUVRE_SORTIE
+                        )
+                        VALUES (
+                        (SELECT ID FROM PRIAM_CATCMS_CATALOGUE WHERE IDE12 =:ide12 AND TYPE_CMS =:typeCMS),
+                        :typeCMS,
+                        :ide12,
+                        :role,
+                        :participant,
+                        0
+                        )
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>-->
+
+    <bean id="writerToTableParticipants" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    INSERT INTO PRIAM_CATCMS_PARTICIPANTS (
+                        TYPE_CMS,
+                        IDE12,
+                        ROLE,
+                        PARTICIPANT,
+                        OEUVRE_SORTIE
+                        )
+                        VALUES (
+                        :typeCMS,
+                        :ide12,
+                        :role,
+                        :participant,
+                        0
+                        )
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
+
+
+    <bean id="writerParticipantsToTableCatalogueCms" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    UPDATE PRIAM_CATCMS_CATALOGUE SET
+                            ROLES = (SELECT GROUP_CONCAT(PART.ROLE SEPARATOR ',' )
+                             FROM PRIAM_CATCMS_PARTICIPANTS PART
+                              WHERE PART.IDE12 = :ide12 AND PART.TYPE_CMS=:typeCMS
+                               GROUP BY PART.TYPE_CMS, PART.IDE12),
+                            PARTICIPANTS = (SELECT GROUP_CONCAT(PART.PARTICIPANT SEPARATOR ',' )
+                             FROM PRIAM_CATCMS_PARTICIPANTS PART
+                              WHERE PART.IDE12=:ide12 AND PART.TYPE_CMS=:typeCMS
+                               GROUP BY PART.TYPE_CMS, PART.IDE12)
+                    WHERE IDE12=:ide12 AND TYPE_CMS=:typeCMS
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
+
+    <bean id="writerJournalCatcms" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                   INSERT INTO PRIAM_CATCMS_JOURNAL (
+                    EVENEMENT,
+                    IDE12,
+                    DATE,
+                    UTILISATEUR,
+                    TYPE_CMS
+                   )
+                   VALUES (
+                    'MIGRATION_RDO',
+                    :ide12,
+                    CURRENT_TIMESTAMP(),
+                    'Batch RDO',
+                    :typeCMS
+                   )
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
     </bean>
 
     <bean id="jobOperator" class="org.springframework.batch.core.launch.support.SimpleJobOperator"
