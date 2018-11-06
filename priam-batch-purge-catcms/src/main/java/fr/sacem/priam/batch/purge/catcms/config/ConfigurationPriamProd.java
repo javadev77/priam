@@ -15,7 +15,7 @@ import java.util.Properties;
 @Configuration
 @ComponentScan(basePackages = {"fr.sacem.priam.batch.purge.catcms", "fr.sacem.priam.batch.common"})
 @Profile("production")
-@PropertySource("classpath:config/application-local.properties")
+@PropertySource("classpath:config/application-production.properties")
 @ImportResource(value = "classpath:config/job-configuration.xml")
 public class ConfigurationPriamProd {
 
