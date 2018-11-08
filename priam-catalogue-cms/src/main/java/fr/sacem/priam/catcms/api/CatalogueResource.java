@@ -69,10 +69,11 @@ public class CatalogueResource {
                     catalogueCritereRecherche.getTypeInscription(),
                     catalogueCritereRecherche.getTypeUtilisation(), pageable);
         } else {
-            if(catalogueCritereRecherche.getPeriodeEntreeDateFin()== null ||
-                    catalogueCritereRecherche.getPeriodeSortieDateFin() == null){
-                catalogueCritereRecherche.setPeriodeEntreeDateFin(new Date());
+
+
+            if(catalogueCritereRecherche.getPeriodeEntreeDateFin()== null){
                 catalogueCritereRecherche.setPeriodeSortieDateFin(new Date());
+                catalogueCritereRecherche.setPeriodeEntreeDateFin(new Date());
             }
 
             datas = catalogueRdoDao.findByCriteriaWithoutNonEligible(catalogueCritereRecherche.getTypeCMS(),
