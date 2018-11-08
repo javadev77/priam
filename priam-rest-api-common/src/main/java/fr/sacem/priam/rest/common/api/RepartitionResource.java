@@ -58,11 +58,11 @@ public class RepartitionResource {
     @Qualifier(value = "configAdmap")
     Map<String, String> configAdmap;
 
-    /*@Autowired
+    @Autowired
     JobLauncher jobLauncher;
 
     @Autowired
-    Job jobFelixRepart;*/
+    Job jobFelixRepart;
 
 
 
@@ -152,13 +152,13 @@ public class RepartitionResource {
             fichierFelixDao.flush();
 
         }
-        getFelixDataService(numProg).asyncSendFichierFelix(programme, userDto);
-        //launchJobFelixRepart(numProg, userDto.getUserId());
+        //getFelixDataService(numProg).asyncSendFichierFelix(programme, userDto);
+        launchJobFelixRepart(numProg, userDto.getUserId());
 
 
     }
 
-   /* private void launchJobFelixRepart(String numProg, String userId) {
+    private void launchJobFelixRepart(String numProg, String userId) {
         //lancer le job
         logger.info("====== Lancement du job Generation Felix Repart ======");
 
@@ -179,7 +179,7 @@ public class RepartitionResource {
         }
 
         logger.info("====== Fin de Traitement ======");
-    }*/
+    }
 
     private FelixDataServiceAbstract getFelixDataService(String numProg) {
         if (felixDataCPService.getFamilleUtil(numProg).equals("UC")) {

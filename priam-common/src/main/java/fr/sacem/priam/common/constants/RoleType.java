@@ -8,5 +8,6 @@ public enum RoleType {
     GST, // Gestionnaire
     INV, // Invité
     Gest_CP, //Gestionnaire CP
-    Gest_CMS //Gestionnaire CMS
+    Gest_CMS, //Gestionnaire CMS
+    Gest_Catal
 }
