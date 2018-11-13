@@ -310,8 +310,7 @@ public class CatalogueResource {
                     catalogueCritereRecherche.getPeriodeSortieDateFin());
         } else {
 
-            if(!catalogueCritereRecherche.isDisplayOeuvreNonEligible() && catalogueCritereRecherche.getPeriodeEntreeDateFin()== null ||
-                    catalogueCritereRecherche.getPeriodeSortieDateFin() == null) {
+            if(!catalogueCritereRecherche.isDisplayOeuvreNonEligible() && catalogueCritereRecherche.getPeriodeEntreeDateFin()== null) {
                 catalogueCritereRecherche.setPeriodeEntreeDateFin(new Date());
                 catalogueCritereRecherche.setPeriodeSortieDateFin(new Date());
             }
