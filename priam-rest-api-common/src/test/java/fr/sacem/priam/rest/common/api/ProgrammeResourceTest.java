@@ -21,6 +21,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Created by benmerzoukah on 14/06/2017.
  */
+
+@Ignore
 public class ProgrammeResourceTest extends RestResourceTest {
     public static final String APP_REST_PROGRAMME_SEARCH = "/app/rest/programme/search";
 

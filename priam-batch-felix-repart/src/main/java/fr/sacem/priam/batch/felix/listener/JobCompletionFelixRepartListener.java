@@ -90,19 +90,20 @@ public class JobCompletionFelixRepartListener extends JobExecutionListenerSuppor
 
             // Envoi du fichier via FTP
             File tempFile = new File(getPreprepDir() + File.separator + felixRepartFilename);
-            LOGGER.debug("==> Debut Envoi du fichier à FELIX = " + felixRepartFilename);
+            LOGGER.info("==> Debut Envoi du fichier à FELIX = " + felixRepartFilename);
 
             try {
                 SftpUtil.uploadFile(FELIX, tempFile, felixRepartFilename);
+                LOGGER.info("<=== Fin Envoi du fichier à FELIX = " + felixRepartFilename);
             } catch (JSchException e) {
-                //processErrorSendFile(numProg, e);
+                processErrorSendFile(numProg, e);
             } catch (SftpException e) {
-                //processErrorSendFile(numProg, e);
+                processErrorSendFile(numProg, e);
             } catch (IOException e) {
-                //processErrorSendFile(numProg, e);
+                processErrorSendFile(numProg, e);
             }
 
-            LOGGER.debug("<=== Fin Envoi du fichier à FELIX = " + felixRepartFilename);
+
             ProgrammeDto programmeDto = new ProgrammeDto();
             programmeDto.setNumProg(numProg);
             programmeDto.setStatut(StatutProgramme.MIS_EN_REPART);
