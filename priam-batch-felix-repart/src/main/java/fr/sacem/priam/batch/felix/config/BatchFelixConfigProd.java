@@ -15,32 +15,9 @@ import java.util.Map;
 @Configuration
 @ComponentScan(basePackages = {"fr.sacem.priam.batch.felix", "fr.sacem.priam.model"})
 @ImportResource(value = "classpath:config/job-configuration.xml")
-@Profile({"local", "test"})
+@Profile({"re7", "prod", "dev"})
 @PropertySource("classpath:config/application-dev.properties")
-public class BatchFelixConfigLocal {
-
-    @Value("${spring.datasource.url}")
-    String urlDb;
-
-    @Value("${spring.datasource.username}")
-    String usernameDb;
-
-    @Value("${spring.datasource.driver-class-name}")
-    String driverDb;
-
-    @Value("${spring.datasource.password}")
-    String passwordDb;
-
-    @Bean(name = "dataSource")
-    public DataSource dataSource() {
-        return DataSourceBuilder
-                .create()
-                .username(usernameDb)
-                .password(passwordDb)
-                .url(urlDb)
-                .driverClassName(driverDb)
-                .build();
-    }
+public class BatchFelixConfigProd {
 
     @Bean
     public Map<String, String> configAdmap(){

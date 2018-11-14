@@ -1,6 +1,5 @@
 package fr.sacem.priam.batch.felix.mapper;
 
-import fr.sacem.priam.batch.felix.domain.FelixData;
 import fr.sacem.priam.model.domain.LignePreprep;
 import org.springframework.jdbc.core.RowMapper;
 

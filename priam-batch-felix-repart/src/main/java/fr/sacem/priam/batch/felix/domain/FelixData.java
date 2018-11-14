@@ -2,7 +2,6 @@ package fr.sacem.priam.batch.felix.domain;
 
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * Created by benmerzoukah on 29/05/2017.
