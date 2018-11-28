@@ -20,15 +20,9 @@
 
     <modules>
         <module>priam-common</module>
-		<module>priam-common-batch</module>
         <module>priam-model</module>
         <module>priam-security</module>
         <module>priam-services</module>
-
-
-        <module>priam-batch-affectation-cp</module>
-        <module>priam-batch-affectation-cms</module>
-
         <module>priam-ui</module>
         <module>priam-rest-api-common</module>
         <module>priam-rest-api-copieprivee</module>
@@ -36,20 +30,7 @@
         <module>priam-catalogue-cms</module>
         <module>priam-rest-api-valorisation</module>
 
-        <module>priam-batch-import-cp</module>
-        <module>priam-batch-repartition</module>
-        <module>priam-batch-import-cms-fra</module>
-        <module>priam-batch-import-cms-ant</module>
-
-        <module>priam-batch-import-catcms-rdo</module>
-        <module>priam-batch-enrichissement-cat</module>
-        <module>priam-batch-participants-rep</module>
-        <module>priam-batch-participants-req</module>
-        <module>priam-batch-filiation-npu</module>
-        <module>priam-batch-sortie-catcms</module>
-        <module>priam-batch-purge-catcms</module>
-        <module>priam-batch-generation-catalogue</module>
-
+        <module>priam-batchs</module>
     </modules>
 
     <organization>
@@ -202,9 +183,9 @@
             <resource>
                 <filtering>true</filtering>
                 <directory>src/main/resources</directory>
-                <excludes>
+                <!--<excludes>
                     <exclude>dev/**</exclude>
-                </excludes>
+                </excludes>-->
             </resource>
         </resources>
 

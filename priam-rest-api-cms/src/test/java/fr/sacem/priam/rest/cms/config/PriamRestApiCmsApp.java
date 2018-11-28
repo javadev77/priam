@@ -1,7 +1,6 @@
 package fr.sacem.priam.rest.cms.config;
 
 
-import fr.sacem.priam.batch.affectation.config.BatchConfigLocal;
 import fr.sacem.priam.model.dao.JpaConfigurationTest;
 import fr.sacem.priam.security.config.RestMvcConfig;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;

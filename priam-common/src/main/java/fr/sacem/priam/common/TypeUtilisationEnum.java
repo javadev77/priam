@@ -14,7 +14,9 @@ public enum TypeUtilisationEnum {
     COPIE_PRIVEE_SONORE_PHONO("CPRIVSONPH", "COPIEPRIV"),
     COPIE_PRIVEE_SONORE_RADIO("CPRIVSONRD", "COPIEPRIV"),
     CMS_FRA("SONOFRA","UC"),
-    CMS_ANT("SONOANT","UC");
+    CMS_ANT("SONOANT","UC"),
+    FV_FONDS_06("FD06","FDSVAL"),
+    FV_FONDS_09("FD09","FDSVAL");
 
 
     private final String code;
