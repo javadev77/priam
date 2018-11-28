@@ -11,6 +11,9 @@ public class FileUtils {
     public static final String PREFIX_ANT = "FF_PENEF_EXTRANA_EXTUCSONANT";
     public static final String PREFIX_FRA = "FF_PENEF_EXTRANA_EXTUCSONFRA";
 
+    public static final String PREFIX_PENEF_FV_FONDS06 = "FF_PENEF_EXTRANA_PAF_FONDS06";
+    public static final String PREFIX_PENEF_FV_FONDS09 = "FF_PENEF_EXTRANA_PAF_FONDS09";
+
     public static final String PREFIX_PRIAM_CATALOGUE_FR = "FF_PRIAM_CATALOGUE_FR";
     public static final String PREFIX_PRIAM_CATALOGUE_ANF = "FF_PRIAM_CATALOGUE_ANF";
 

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>priam-batchs</artifactId>
+        <groupId>fr.sacem.priam</groupId>
+        <version>2.4.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>priam-batchs-catcms</artifactId>
+    <version>2.4.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>priam-batchs-catcms</name>
+
+    <modules>
+        <module>priam-batch-import-catcms-rdo</module>
+        <module>priam-batch-enrichissement-cat</module>
+        <module>priam-batch-participants-rep</module>
+        <module>priam-batch-participants-req</module>
+        <module>priam-batch-filiation-npu</module>
+        <module>priam-batch-sortie-catcms</module>
+        <module>priam-batch-purge-catcms</module>
+        <module>priam-batch-generation-catalogue</module>
+    </modules>
+
+</project>
