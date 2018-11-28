@@ -60,3 +60,8 @@ dist/
 /.idea/inspectionProfiles/
 /.idea/workspace.xml
 /.idea/encodings.xml
+
+
+.mvn/
+mvnw
+mvnw.cmd

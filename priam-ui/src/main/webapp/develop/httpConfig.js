@@ -13,15 +13,10 @@ if(process.env.DEBUG_MODE) {
   Vue.http.headers.common['Access-Control-Allow-Origin'] = '*';
   Vue.http.headers.common['Access-Control-Request-Method'] = '*';
 
-  Vue.http.interceptors.push((request, next) => {
-
-    request.credentials = true;
-    next();
-  });
-
-} else {
-  Vue.http.interceptors.push((request, next) => {
-    request.credentials = true;
-    next();
-  });
 }
+
+Vue.http.interceptors.push((request, next) => {
+
+  request.credentials = true;
+  next();
+});
