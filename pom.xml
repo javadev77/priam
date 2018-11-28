@@ -18,19 +18,19 @@
 
     <name>PRIAM</name>
 
-    <!--<modules>-->
-        <!--<module>priam-common</module>-->
-        <!--<module>priam-model</module>-->
-        <!--<module>priam-security</module>-->
-        <!--<module>priam-services</module>-->
-        <!--<module>priam-ui</module>-->
-        <!--<module>priam-rest-api-common</module>-->
-        <!--<module>priam-rest-api-copieprivee</module>-->
-        <!--<module>priam-rest-api-cms</module>-->
-        <!--<module>priam-catalogue-cms</module>-->
-        <!--<module>priam-rest-api-valorisation</module>-->
-        <!--<module>priam-batchs</module>-->
-    <!--</modules>-->
+    <modules>
+        <module>priam-common</module>
+        <module>priam-model</module>
+        <module>priam-security</module>
+        <module>priam-services</module>
+        <module>priam-ui</module>
+        <module>priam-rest-api-common</module>
+        <module>priam-rest-api-copieprivee</module>
+        <module>priam-rest-api-cms</module>
+        <module>priam-catalogue-cms</module>
+        <module>priam-rest-api-valorisation</module>
+        <module>priam-batchs</module>
+    </modules>
 
     <organization>
         <name>Sacem</name>
