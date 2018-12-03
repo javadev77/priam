@@ -39,6 +39,8 @@ public class Programme implements Serializable {
 	
 	private Date dateRepartition;
 	private StatutEligibilite statutEligibilite;
+
+	private TypeDroit typeDroit;
 	
 	public Programme() {
 	}
@@ -151,6 +153,16 @@ public class Programme implements Serializable {
 	@Enumerated(EnumType.STRING)
 	public StatutEligibilite getStatutEligibilite() {
 		return statutEligibilite;
+	}
+
+	@Column(name = "TYPE_DROIT")
+	@Enumerated(EnumType.STRING)
+	public TypeDroit getTypeDroit() {
+		return typeDroit;
+	}
+
+	public void setTypeDroit(final TypeDroit typeDroit) {
+		this.typeDroit = typeDroit;
 	}
 
 	public void setUsercre(String usercre) {

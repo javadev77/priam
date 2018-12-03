@@ -3,5 +3,6 @@
  */
 export const FAMILLES_PRIAM = {
   'COPIE_PRIVEE' : 'COPIEPRIV',
-  'UC' : 'UC'
+  'UC' : 'UC',
+  'VALORISATION' : 'FDSVAL'
 };

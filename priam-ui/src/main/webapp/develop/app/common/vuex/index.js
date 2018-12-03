@@ -111,6 +111,11 @@ const state = {
     {
       id : 'AYANT_DROIT',
       value : 'Ayant droit'
+    },
+
+    {
+      id : 'OEUVRE_AD',
+      value : 'Oeuvre/Ayant droit'
     }
 
   ],
