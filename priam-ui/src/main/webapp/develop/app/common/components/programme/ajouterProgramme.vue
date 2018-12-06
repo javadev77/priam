@@ -114,9 +114,9 @@
                 </div>
               </div>
 
-              <div class="form-group col-md-10" :class="{'has-error': errors.has('territoire') }">
-                <label class="col-md-4 control-label">Territoire <span class="mandatory">*</span></label>
-                <div class="col-md-10">
+              <div class="form-group col-md-5" :class="{'has-error': errors.has('territoire') }">
+                <label class="col-md-8 control-label">Territoire <span class="mandatory">*</span></label>
+                <div class="col-md-16">
                     <select2 class="form-control"
                              name="territoire"
                              v-validate.disable="'required'"
@@ -128,35 +128,58 @@
                 </div>
               </div>
 
+              <div v-if="familleSelected.id === 'FDSVAL'" class="form-group col-md-7" >
+                <label class="col-md-6 control-label">Type de droit <span>&nbsp;</span></label>
+                <div class="col-md-16">
+                    <input v-model="typeDroit" :value="typeDroitValue" disabled/>
+                </div>
+              </div>
+
             </div>
 
             <!-- Mode de répartition -->
             <div class="row  espacement">
-              <div class="form-group col-md-7">
-                <label class="col-md-9 control-label">Mode de répartition</label>
+              <div class="form-group col-md-8">
+                <label class="col-md-7 control-label">Mode de répartition</label>
                 <div class="col-md-15">
-                  <label class="radio radio-inline checked disabled" for="TypeRepartitionOeuvre">
+                  <label class="radio radio-inline" :class="{'checked' : typeRepart === 'OEUVRE', 'disabled' : isFamilleNotValorisation}" for="TypeRepartitionOeuvre">
                     <input
                       type="radio"
                       id="TypeRepartitionOeuvre"
                       value="OEUVRE"
                       v-model="typeRepart"
-                      disabled> Oeuvre
-                    <span class="icons"><span class="first-icon fui-radio-unchecked"></span><span class="second-icon fui-radio-checked"></span></span>
-                  </label>
-
-                  <label class="radio radio-inline disabled">
-                    <input
-                      type="radio"
-                      id="TypeRepartitionOeuvreAyantDroit"
-                      value="Ayant droit"
-                      v-model="typeRepart"
-                      disabled> Ayant droit
+                      :disabled="isFamilleNotValorisation"> Oeuvre
                     <span class="icons"><span class="first-icon fui-radio-unchecked"></span><span class="second-icon fui-radio-checked"></span></span>
                   </label>
                 </div>
               </div>
+
+              <div class="form-group col-md-6">
+                <label class="radio radio-inline" :class="{'checked' : typeRepart === 'AYANT_DROIT', 'disabled' : isFamilleNotValorisation}">
+                  <input
+                    type="radio"
+                    id="TypeRepartitionOeuvreAyantDroit"
+                    value="AYANT_DROIT"
+                    v-model="typeRepart"
+                    :disabled="isFamilleNotValorisation"> Ayant droit
+                      <span class="icons"><span class="first-icon fui-radio-unchecked"></span><span class="second-icon fui-radio-checked"></span></span>
+                </label>
+              </div>
+
+              <div class="form-group col-md-5">
+                <label class="radio radio-inline" :class="{'checked' : typeRepart === 'OEUVRE_AD', 'disabled' : isFamilleNotValorisation}">
+                  <input
+                    type="radio"
+                    id="TypeRepartitionOeuvreEtAyantDroit"
+                    value="OEUVRE_AD"
+                    v-model="typeRepart"
+                    :disabled="isFamilleNotValorisation"> Oeuvre/Ayant droit
+                      <span class="icons"><span class="first-icon fui-radio-unchecked"></span><span class="second-icon fui-radio-checked"></span></span>
+                </label>
+              </div>
             </div>
+
+
           </form>
         </div>
 
@@ -202,6 +225,7 @@
   export default {
     data(){
       return {
+
         showModalMemeRion: false,
         showModalMemeNom : false,
         programmeExist : false,
@@ -211,7 +235,7 @@
         rionTheoriqueSelected : null,
         familleSelected: this.$store.getters.userFamille.id === 'ALL' ? this.$store.getters.familleOptionsVide[0]: this.$store.getters.userFamille,
         typeUtilisationSelected: null,
-        typeRepart:'OEUVRE',
+        typeRepart: 'OEUVRE',
         programmeData: {
           nom: '',
           numProg : '',
@@ -219,6 +243,7 @@
           typeRepart: 'OEUVRE',
           typeUtilisation : '',
           rionTheorique :'',
+          typeDroit : ''
         },
         formSubmitted: false,
 
@@ -226,8 +251,26 @@
 
         dateDebutProgramme : null,
         dateFinProgramme : null,
-        territoireSelected : null
+        territoireSelected : null,
 
+        typeDroitMap : new Map([
+          ["FD01,OEUVRE_AD", "DE"],
+          ["FD02,OEUVRE_AD", "PH"],
+          ["FD03,AD", "DR"],
+          ["FD04,AD", "DE"],
+          ["FD05,OEUVRE_AD", "DE"],
+          ["FD06,OEUVRE", "PH"],
+          ["FD07,OEUVRE_AD", "PH"],
+          ["FD09,AD", "DE"],
+          ["FD10,AD", "PH"],
+          ["FD11,AD", "DE"],
+          ["FD12,OEUVRE", "DE/DR"],
+          ["FD13,AD", "DE"],
+          ["FD14,OEUVRE", ""],
+
+        ]),
+
+        typeDroit : ""
       }
     },
     computed: {
@@ -248,14 +291,50 @@
       },
       territoireOptions() {
         return this.$store.getters.territoire;
+      },
+
+      typeDroitValue() {
+        let typeDroit = "";
+        if(this.familleSelected.id === "FDSVAL" && this.typeUtilisationSelected !== null) {
+          debugger;
+          var typeUil = this.typeUtilisationSelected.id;
+          let key = typeUil + ","  + this.typeRepart;
+
+          typeDroit = this.typeDroitMap.get(key);
+          console.log("typeDroit="+typeDroit)
+        }
+
+        this.typeDroit = typeDroit;
+        return typeDroit;
+
+      },
+
+
+      isFamilleNotValorisation() {
+        return this.familleSelected !== null && this.familleSelected.id !== 'FDSVAL';
       }
 
+
     },
+
+    watch : {
+
+
+      familleSelected : function (newVal) {
+
+        if(newVal.id !== "FDSVAL") {
+          this.typeRepart = 'OEUVRE';
+        }
+      }
+    },
+
     methods: {
       loadTypeUtilisation(val) {
         this.familleSelected = val;
         this.$store.dispatch('loadTypeUtilisationVide', val);
         this.typeUtilisationSelected =  this.$store.getters.typeUtilisationOptionsVide[0];
+
+
       },
 
       validateBeforeSubmit() {
@@ -263,8 +342,6 @@
 
         var validator = this.$validator;
         validator.validateAll().then(() => {
-
-            // eslint-disable-next-line
           this.verifierEtAjouterLeProgramme();
         }).catch(() => {
           // eslint-disable-next-line
@@ -300,6 +377,7 @@
           this.programmeData.dateDbtPrg=this.dateDebutProgramme;
           this.programmeData.dateFinPrg=this.dateFinProgramme;
           this.programmeData.cdeTer=this.territoireSelected;
+          this.programmeData.typeDroit=this.typeDroit === '' ? null : this.typeDroit.trim();
 
           this.resource.addProgramme(this.programmeData).then(response => {
             console.log("ajout ok");
@@ -401,6 +479,8 @@
       datePicker : DatePicker,
       select2 : Select2
     },
+
+
     created(){
       const customActions = {
         searchProgramme : {method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/programme/nom/{nom}'},

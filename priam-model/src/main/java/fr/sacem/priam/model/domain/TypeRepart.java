@@ -5,5 +5,6 @@ package fr.sacem.priam.model.domain;
  */
 public enum TypeRepart {
     OEUVRE,
-    AYANT_DROIT
+    AYANT_DROIT,
+    OEUVRE_AD
 }

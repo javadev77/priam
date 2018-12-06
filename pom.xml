@@ -28,8 +28,8 @@
         <module>priam-rest-api-copieprivee</module>
         <module>priam-rest-api-cms</module>
         <module>priam-catalogue-cms</module>
+        <module>priam-rest-api-valorisation</module>
         <module>priam-batchs</module>
-
     </modules>
 
     <organization>

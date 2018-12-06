@@ -59,6 +59,7 @@ export default {
   'SET_LIBELLE_TYPE_UTILSATION' (state, typeUtilisation) {
     state.typeUtilisation = typeUtilisation.slice();
     state.typeUtilisationOptions_vide = typeUtilisation.slice();
+    debugger;
     state.typeUtilisationOptions = [{'id' :'ALL', "value" : "Tous"}];
   },
 
@@ -79,6 +80,7 @@ export default {
   },
 
   'CHANGE_TYPE_UTILSATION_LIST_VIDE' (state, familleCode) {
+    debugger
     if(familleCode != null) {
       state.typeUtilisationOptions_vide = state.familleTypeUtilMap[familleCode.id].slice();
 

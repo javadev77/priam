@@ -1,13 +1,20 @@
 package fr.sacem.priam.security.model;
 
 import com.google.common.collect.Lists;
-
-import java.io.Serializable;
-import java.util.*;
-
 import static fr.sacem.priam.model.util.FamillePriam.CMS;
 import static fr.sacem.priam.model.util.FamillePriam.COPIE_PRIVEE;
-import static fr.sacem.priam.model.util.TypeUtilisationPriam.*;
+import static fr.sacem.priam.model.util.FamillePriam.VALORISATION;
+import static fr.sacem.priam.model.util.TypeUtilisationPriam.COPIE_PRIVEE_SONORE_PHONO;
+import static fr.sacem.priam.model.util.TypeUtilisationPriam.COPIE_PRIVEE_SONORE_RADIO;
+import static fr.sacem.priam.model.util.TypeUtilisationPriam.SONOANT;
+import static fr.sacem.priam.model.util.TypeUtilisationPriam.SONOFRA;
+import static fr.sacem.priam.model.util.TypeUtilisationPriam.getCodesValorisation;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by embouazzar on 23/08/2017.
@@ -47,6 +54,7 @@ public class UserDTO implements Serializable{
     public static final String ROLE_GEST_CP = "Gest_CP";
     public static final String ROLE_GEST_CMS = "Gest_CMS";
     public static final String ROLE_ADM = "ADM";
+    private static final String ROLE_GEST_FV = "Gest_FV";
 
     private String userId;
 
@@ -103,9 +111,14 @@ public class UserDTO implements Serializable{
               codes.add(COPIE_PRIVEE_SONORE_PHONO.getCode());
               codes.add(COPIE_PRIVEE_SONORE_RADIO.getCode());
           }
+
           if(ROLE_GEST_CMS.equals(role) || ROLE_ADM.equals(role)) {
               codes.add(SONOFRA.getCode());
               codes.add(SONOANT.getCode());
+          }
+
+          if(ROLE_GEST_FV.equals(role) || ROLE_ADM.equals(role)) {
+              codes.addAll(getCodesValorisation());
           }
         }
       }
@@ -115,6 +128,7 @@ public class UserDTO implements Serializable{
           codes.add(COPIE_PRIVEE_SONORE_RADIO.getCode());
           codes.add(SONOFRA.getCode());
           codes.add(SONOANT.getCode());
+          codes.addAll(getCodesValorisation());
       }
 
 
@@ -129,14 +143,20 @@ public class UserDTO implements Serializable{
           if(ROLE_GEST_CP.equals(role) || ROLE_ADM.equals(role)) {
               codes.add(COPIE_PRIVEE.getCode());
           }
-          if(ROLE_GEST_CMS.equals(role) || ROLE_ADM.equals(role))
+          if(ROLE_GEST_CMS.equals(role) || ROLE_ADM.equals(role)) {
               codes.add(CMS.getCode());
+          }
+
+          if(ROLE_GEST_FV.equals(role) || ROLE_ADM.equals(role)) {
+              codes.add(VALORISATION.getCode());
+          }
       }
     }
 
     if(codes.isEmpty()) {
         codes.add(COPIE_PRIVEE.getCode());
         codes.add(CMS.getCode());
+        codes.add(VALORISATION.getCode());
     }
 
     return codes;

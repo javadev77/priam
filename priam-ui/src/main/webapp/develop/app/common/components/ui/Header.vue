@@ -52,13 +52,13 @@
             routeName : 'programme',
             label : 'Programme',
             routes : ['programme', 'selection', 'selection-cms','affectation', 'affectation-cms', 'listeProg'],
-            authorized : this.hasRight('MENUCMS'),
+            authorized : this.hasRight('MENU_PRINCIPAL'),
             items : [
               {
                 id : 'listeProg',
                 routeName : 'programme',
                 label : 'Liste programmes',
-                authorized : this.hasRight('MENUCMS')
+                authorized : this.hasRight('MENU_PRINCIPAL')
               }
             ]
           },
@@ -66,14 +66,14 @@
             id : 'chargement',
             routeName : 'chargement',
             label : 'Chargement',
-            authorized : this.hasRight('MENUCMS'),
+            authorized : this.hasRight('MENU_PRINCIPAL'),
             routes : ['chargement', 'fichiers'],
             items : [
               {
                 id : 'fichiers',
                 routeName : 'chargement',
                 label : 'Fichiers',
-                authorized : this.hasRight('MENUCMS')
+                authorized : this.hasRight('MENU_PRINCIPAL')
               }
             ]
           },
@@ -114,7 +114,7 @@
             routeName : 'parametrage',
             label : 'Paramétrage',
             routes : ['parametrage'],
-            authorized : this.hasRight('MENUCMS')
+            authorized : this.hasRight('MENU_PRINCIPAL')
           }
 
 

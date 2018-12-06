@@ -10,7 +10,9 @@ public enum  FamillePriam {
     
     COPIE_PRIVEE("COPIEPRIV"),
 
-    CMS("UC");
+    CMS("UC"),
+
+    VALORISATION("FDSVAL");
     
     private final String code;
     

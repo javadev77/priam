@@ -256,9 +256,9 @@
               <!-- ========================================================================= -->
 
               <template v-if="!isNonModifiable">
-                <div class="form-group col-md-10" :class="{'has-error': errors.has('territoire') }">
-                  <label class="col-md-4 control-label">Territoire <span class="mandatory">*</span></label>
-                  <div class="col-md-10">
+                <div class="form-group col-md-5" :class="{'has-error': errors.has('territoire') }">
+                  <label class="col-md-8 control-label">Territoire <span class="mandatory">*</span></label>
+                  <div class="col-md-16">
                     <select2 class="form-control"
                              name="territoire"
                              v-validate.disable="'required'"
@@ -271,9 +271,9 @@
                 </div>
               </template>
               <template v-else>
-                <div class="form-group col-md-10">
-                  <label class="col-md-4 control-label">Territoire</label>
-                  <div class="col-md-10">
+                <div class="form-group col-md-5">
+                  <label class="col-md-8 control-label">Territoire</label>
+                  <div class="col-md-16">
                     <select2 class="form-control"
                              :searchable="true"
                              v-model="territoireSelected"
@@ -285,33 +285,59 @@
                 </div>
               </template>
 
+
+              <!-- ========================================================================= -->
+              <!-- =============================== type de droit =========================== -->
+              <!-- ========================================================================= -->
+
+              <div v-if="familleSelected !== null && familleSelected.id === 'FDSVAL'" class="form-group col-md-7">
+                <label class="col-md-6 control-label">Type de droit <span>&nbsp;</span></label>
+                <div class="col-md-16">
+                  <input v-model="typeDroit" :value="typeDroitValue" disabled/>
+                </div>
+              </div>
+
             </div>
 
             <!-- Mode de répartition -->
-            <div class="row espacement">
-              <div class="form-group col-md-7">
-                <label class="col-md-9 control-label">Mode de répartition</label>
+            <div class="row  espacement">
+              <div class="form-group col-md-8">
+                <label class="col-md-7 control-label">Mode de répartition</label>
                 <div class="col-md-15">
-                  <label class="radio radio-inline checked disabled" for="TypeRepartitionOeuvre">
+                  <label class="radio radio-inline" :class="{'checked' : typeRepart === 'OEUVRE', 'disabled' :(familleSelected !== null && familleSelected.id !== 'FDSVAL') || isNonModifiable}" for="TypeRepartitionOeuvre">
                     <input
                       type="radio"
                       id="TypeRepartitionOeuvre"
                       value="OEUVRE"
                       v-model="typeRepart"
-                      disabled> Oeuvre
-                    <span class="icons"><span class="first-icon fui-radio-unchecked"></span><span class="second-icon fui-radio-checked"></span></span>
-                  </label>
-
-                  <label class="radio radio-inline disabled">
-                    <input
-                      type="radio"
-                      id="TypeRepartitionOeuvreAyantDroit"
-                      value="Ayant droit"
-                      v-model="typeRepart"
-                      disabled> Ayant droit
+                      :disabled="(familleSelected !== null && familleSelected.id !== 'FDSVAL') || isNonModifiable"> Oeuvre
                     <span class="icons"><span class="first-icon fui-radio-unchecked"></span><span class="second-icon fui-radio-checked"></span></span>
                   </label>
                 </div>
+              </div>
+
+              <div class="form-group col-md-6">
+                <label class="radio radio-inline" :class="{'checked' : typeRepart === 'AYANT_DROIT', 'disabled' : (familleSelected !== null && familleSelected.id !== 'FDSVAL') || isNonModifiable}">
+                  <input
+                    type="radio"
+                    id="TypeRepartitionOeuvreAyantDroit"
+                    value="AYANT_DROIT"
+                    v-model="typeRepart"
+                    :disabled="(familleSelected !== null && familleSelected.id !== 'FDSVAL') || isNonModifiable"> Ayant droit
+                      <span class="icons"><span class="first-icon fui-radio-unchecked"></span><span class="second-icon fui-radio-checked"></span></span>
+                </label>
+              </div>
+
+              <div class="form-group col-md-5">
+                <label class="radio radio-inline" :class="{'checked' : typeRepart === 'OEUVRE_AD', 'disabled' : (familleSelected !== null && familleSelected.id !== 'FDSVAL') || isNonModifiable}">
+                  <input
+                    type="radio"
+                    id="TypeRepartitionOeuvreEtAyantDroit"
+                    value="OEUVRE_AD"
+                    v-model="typeRepart"
+                    :disabled="(familleSelected !== null && familleSelected.id !== 'FDSVAL') || isNonModifiable"> Oeuvre/Ayant droit
+                      <span class="icons"><span class="first-icon fui-radio-unchecked"></span><span class="second-icon fui-radio-checked"></span></span>
+                </label>
               </div>
             </div>
 
@@ -355,7 +381,6 @@
   import moment from 'moment';
   import Select2 from '../ui/Select2.vue';
 
-
   export default {
 
     props : {
@@ -379,13 +404,13 @@
         rionTheoriqueSelected : null,
         familleSelected:  null,
         typeUtilisationSelected:  null,
-        typeRepart: 'OEUVRE',
+        typeRepart: '',
 
         programmeData: {
           nom: '',
           numProg : '',
           famille : '',
-          typeRepart: 'OEUVRE',
+          typeRepart: '',
           typeUtilisation : '',
           rionTheorique :'',
         },
@@ -396,7 +421,26 @@
 
         dateDebutProgramme : null,
         dateFinProgramme : null,
-        territoireSelected : null
+        territoireSelected : null,
+
+        typeDroitMap : new Map([
+          ["FD01,OEUVRE_AD", "DE"],
+          ["FD02,OEUVRE_AD", "PH"],
+          ["FD03,AD", "DR"],
+          ["FD04,AD", "DE"],
+          ["FD05,OEUVRE_AD", "DE"],
+          ["FD06,OEUVRE", "PH"],
+          ["FD07,OEUVRE_AD", "PH"],
+          ["FD09,AD", "DE"],
+          ["FD10,AD", "PH"],
+          ["FD11,AD", "DE"],
+          ["FD12,OEUVRE", "DE/DR"],
+          ["FD13,AD", "DE"],
+          ["FD14,OEUVRE", ""],
+
+        ]),
+
+        typeDroit : ""
 
       }
     },
@@ -419,6 +463,22 @@
       },
       territoireOptions() {
         return this.$store.getters.territoire;
+      },
+
+      typeDroitValue() {
+        let typeDroit = "";
+        if(this.familleSelected.id === "FDSVAL" && this.typeUtilisationSelected !== null) {
+          debugger;
+          var typeUil = this.typeUtilisationSelected.id;
+          let key = typeUil + ","  + this.typeRepart;
+
+          typeDroit = this.typeDroitMap.get(key);
+          console.log("typeDroit="+typeDroit)
+        }
+
+        this.typeDroit = typeDroit;
+        return typeDroit;
+
       }
     },
 
@@ -595,6 +655,7 @@
             this.nom = this.programmeToModify.nom;
 
             var familleCode = this.programmeToModify.famille;
+            debugger;
             this.familleSelected = this.$store.getters.famille.find(function (element) {
               return element.id === familleCode;
             });
@@ -620,6 +681,8 @@
             });
 
             this.territoireSelected = cdeTerElem.id;
+
+            this.typeRepart = this.programmeToModify.typeRepart;
 
           }
 
