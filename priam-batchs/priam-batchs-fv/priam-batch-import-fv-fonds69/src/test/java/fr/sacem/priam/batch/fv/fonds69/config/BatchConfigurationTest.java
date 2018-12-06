@@ -1,5 +1,6 @@
 package fr.sacem.priam.batch.fv.fonds69.config;
 
+
 import fr.sacem.priam.batch.common.dao.FichierRepositoryImpl;
 import fr.sacem.priam.batch.common.domain.LigneProgrammeFV;
 import fr.sacem.priam.batch.common.listener.importPenef.JobCompletionNotificationLigneProgrammeFVImportPenefListener;
@@ -11,42 +12,43 @@ import fr.sacem.priam.batch.common.util.UtilFile;
 import fr.sacem.priam.batch.common.util.mapper.importPenef.PriamFileFVItemReader;
 import fr.sacem.priam.batch.common.util.mapper.importPenef.PriamLigneProgrammeFVSQLMapper;
 import fr.sacem.priam.batch.common.util.mapper.importPenef.PriamLineFVMapper;
+import fr.sacem.priam.batch.fv.fonds69.dao.LigneProgrammeFVDaoTest;
+import fr.sacem.priam.batch.fv.fonds69.service.importPenef.LigneProgrammeFVProcessorTest;
+import org.omg.CORBA.PUBLIC_MEMBER;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
-
-import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
-
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
-import org.springframework.batch.item.support.CompositeItemWriter;
+import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.Resource;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
+import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.beans.PropertyEditor;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
+import static org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType.H2;
 
 /**
- * Created by embouazzar on 22/11/2018.
+ * Created by embouazzar on 29/11/2018.
  */
 @Configuration
 @EnableBatchProcessing
-@EnableCaching
-public class BatchConfiguration {
+//@Profile("test")
+public class BatchConfigurationTest {
 
     @Autowired
     private JobBuilderFactory jobBuilderFactory;
@@ -61,7 +63,6 @@ public class BatchConfiguration {
 
     @Autowired
     private CopyFVItemReader readerStep2;
-
 
     @Bean
     @StepScope
@@ -135,83 +136,83 @@ public class BatchConfiguration {
         writer.setItemSqlParameterSourceProvider(
                 new BeanPropertyItemSqlParameterSourceProvider<>());
         writer.setSql("INSERT INTO PRIAM_LIGNE_PROGRAMME_TRAITEMENT_BATCH ( id_fichier, " +
-                                                              "cdeCisac, " +
-                                                              "cdeFamilTypUtil, " +
-                                                              "numProg, " +
-                                                              "cdeUtil, " +
-                                                              "cdeTypUtil, " +
-                                                              "cdeGreDif, " +
-                                                              "cdeModDif, " +
-                                                              "cdeTypIde12, " +
-                                                              "ide12, " +
-                                                              "durDif, " +
-                                                              "nbrDif, " +
-                                                              "mt, " +
-                                                              "ctna, " +
-                                                              "paramCoefHor, " +
-                                                              "durDifCtna, " +
-                                                              "cdeLng, " +
-                                                              "indDoubSsTit, " +
-                                                              "tax, " +
-                                                              "typMt, " +
-                                                              "cdeGreIde12Cmplx, " +
-                                                              "cdeGreIde12, " +
-                                                              "titreOriCmplx," +
-                                                              "titreAltPppalCmplx, " +
-                                                              "titreOriOeuvPereCmplx, " +
-                                                              "titreAltOeuvPereCmplx, " +
-                                                              "titreOeuvre, " +
-                                                              "cdePaysOriIso4NCmplx, " +
-                                                              "realisateurCmplx, " +
-                                                              "roleParticipant1, " +
-                                                              "nomParticipant1, " +
-                                                              "cdeTypUtilOri, " +
-                                                              "cdeFamilTypUtilOri, " +
-                                                              "libelleUtilisateur," +
-                                                              "ajout) "+
-                                                        " VALUES (" +
-                                                              ":idFichier, " +
-                                                              ":cdeCisac, " +
-                                                              ":cdeFamilTypUtil, " +
-                                                              ":numProg, " +
-                                                              ":cdeUtil, " +
-                                                              ":cdeTypUtil, " +
-                                                              ":cdeGreDif, " +
-                                                              ":cdeModDif, " +
-                                                              ":cdeTypIde12, " +
-                                                              ":ide12, " +
-                                                              ":durDif, " +
-                                                              ":nbrDif, " +
-                                                              ":mt, " +
-                                                              ":ctna, " +
-                                                              ":paramCoefHor, " +
-                                                              ":durDifCtna, " +
-                                                              ":cdeLng, " +
-                                                              ":indDoubSsTit, " +
-                                                              ":tax, " +
-                                                              ":typMt, " +
-                                                              ":cdeGreIde12Cmplx, " +
-                                                              ":cdeGreIde12, " +
-                                                              ":titreOriCmplx, " +
-                                                              ":titreAltPppalCmplx, " +
-                                                              ":titreOriOeuvPereCmplx, " +
-                                                              ":titreAltOeuvPereCmplx, " +
-                                                              ":titreOeuvre, " +
-                                                              ":cdePaysOriIso4NCmplx, " +
-                                                              ":realisateurCmplx, " +
-                                                              ":roleParticipant1, " +
-                                                              ":nomParticipant1, " +
-                                                              ":cdeTypUtilOri, " +
-                                                              ":cdeFamilTypUtilOri, " +
-                                                              ":cdeUtil, " +
-                                                              "'AUTOMATIQUE' )");
+                "cdeCisac, " +
+                "cdeFamilTypUtil, " +
+                "numProg, " +
+                "cdeUtil, " +
+                "cdeTypUtil, " +
+                "cdeGreDif, " +
+                "cdeModDif, " +
+                "cdeTypIde12, " +
+                "ide12, " +
+                "durDif, " +
+                "nbrDif, " +
+                "mt, " +
+                "ctna, " +
+                "paramCoefHor, " +
+                "durDifCtna, " +
+                "cdeLng, " +
+                "indDoubSsTit, " +
+                "tax, " +
+                "typMt, " +
+                "cdeGreIde12Cmplx, " +
+                "cdeGreIde12, " +
+                "titreOriCmplx," +
+                "titreAltPppalCmplx, " +
+                "titreOriOeuvPereCmplx, " +
+                "titreAltOeuvPereCmplx, " +
+                "titreOeuvre, " +
+                "cdePaysOriIso4NCmplx, " +
+                "realisateurCmplx, " +
+                "roleParticipant1, " +
+                "nomParticipant1, " +
+                "cdeTypUtilOri, " +
+                "cdeFamilTypUtilOri, " +
+                "libelleUtilisateur," +
+                "ajout) "+
+                " VALUES (" +
+                ":idFichier, " +
+                ":cdeCisac, " +
+                ":cdeFamilTypUtil, " +
+                ":numProg, " +
+                ":cdeUtil, " +
+                ":cdeTypUtil, " +
+                ":cdeGreDif, " +
+                ":cdeModDif, " +
+                ":cdeTypIde12, " +
+                ":ide12, " +
+                ":durDif, " +
+                ":nbrDif, " +
+                ":mt, " +
+                ":ctna, " +
+                ":paramCoefHor, " +
+                ":durDifCtna, " +
+                ":cdeLng, " +
+                ":indDoubSsTit, " +
+                ":tax, " +
+                ":typMt, " +
+                ":cdeGreIde12Cmplx, " +
+                ":cdeGreIde12, " +
+                ":titreOriCmplx, " +
+                ":titreAltPppalCmplx, " +
+                ":titreOriOeuvPereCmplx, " +
+                ":titreAltOeuvPereCmplx, " +
+                ":titreOeuvre, " +
+                ":cdePaysOriIso4NCmplx, " +
+                ":realisateurCmplx, " +
+                ":roleParticipant1, " +
+                ":nomParticipant1, " +
+                ":cdeTypUtilOri, " +
+                ":cdeFamilTypUtilOri, " +
+                ":cdeUtil, " +
+                "'AUTOMATIQUE' )");
 
         writer.setDataSource(dataSource);
         return writer;
     }
 
     @Bean
-    public LigneProgrammeFVProcessor processor() {return new LigneProgrammeFVProcessor(); }
+    public LigneProgrammeFVProcessorTest processor() {return new LigneProgrammeFVProcessorTest(); }
 
     @Bean
     public Job archiveFlatFileReaderJob(JobCompletionNotificationLigneProgrammeFVImportPenefListener listener) {
@@ -226,11 +227,6 @@ public class BatchConfiguration {
                 .next(copyFlatFileReaderStep())
                 .end()
                 .build();
-                /*.on("COMPLETED").to(compositeItemWriter())
-                .from(archiveFlatFileReaderStep(archiveFlatFileListener()))
-                .next(compositeItemWriter())
-                .end()
-                .build();*/
     }
 
     @Bean
@@ -243,19 +239,11 @@ public class BatchConfiguration {
                 .build();
     }
 
-    /*@Bean
-    public Step copyFlatFileReaderStep() {
-        return stepBuilderFactory.get("copyFlatFileReaderStep").<LigneProgrammeFV, LigneProgrammeFV>chunk(2000)
-                .reader(readerStep2)
-                .writer(writerStep2())
-                .build();
-    }*/
-
     @Bean
     public Step copyFlatFileReaderStep() {
         return stepBuilderFactory.get("copyFlatFileReaderStep").<LigneProgrammeFV, LigneProgrammeFV>chunk(2000)
                 .reader(readerStep2)
-                .writer(compositeItemWriter())
+                .writer(writerStep2())
                 .build();
     }
 
@@ -270,7 +258,6 @@ public class BatchConfiguration {
     }
 
     @Bean
-    @StepScope
     public JdbcBatchItemWriter<LigneProgrammeFV> writerStep2() {
         JdbcBatchItemWriter<LigneProgrammeFV> writer = new JdbcBatchItemWriter<>();
         writer.setItemSqlParameterSourceProvider(
@@ -350,97 +337,7 @@ public class BatchConfiguration {
         return writer;
     }
 
-    @Bean
-    @StepScope
-    public JdbcBatchItemWriter<LigneProgrammeFV> writerStep2Copy() {
-        JdbcBatchItemWriter<LigneProgrammeFV> writer = new JdbcBatchItemWriter<>();
-        writer.setItemSqlParameterSourceProvider(
-                new BeanPropertyItemSqlParameterSourceProvider<>());
-        writer.setSql("INSERT INTO PRIAM_LIGNE_PROGRAMME_FV_COPY ( id_fichier, " +
-                "cdeCisac, " +
-                "cdeFamilTypUtil, " +
-                "numProg, " +
-                "cdeUtil, " +
-                "cdeTypUtil, " +
-                "cdeGreDif, " +
-                "cdeModDif, " +
-                "cdeTypIde12, " +
-                "ide12, " +
-                "durDif, " +
-                "nbrDif, " +
-                "mt, " +
-                "ctna, " +
-                "paramCoefHor, " +
-                "durDifCtna, " +
-                "cdeLng, " +
-                "indDoubSsTit, " +
-                "tax, " +
-                "typMt, " +
-                "cdeGreIde12Cmplx, " +
-                "cdeGreIde12, " +
-                "titreOriCmplx," +
-                "titreAltPppalCmplx, " +
-                "titreOriOeuvPereCmplx, " +
-                "titreAltOeuvPereCmplx, " +
-                "titreOeuvre, " +
-                "cdePaysOriIso4NCmplx, " +
-                "realisateurCmplx, " +
-                "roleParticipant1, " +
-                "nomParticipant1, " +
-                "cdeTypUtilOri, " +
-                "cdeFamilTypUtilOri, " +
-                "libelleUtilisateur," +
-                "ajout) "+
-                " VALUES (" +
-                ":idFichier, " +
-                ":cdeCisac, " +
-                ":cdeFamilTypUtil, " +
-                ":numProg, " +
-                ":cdeUtil, " +
-                ":cdeTypUtil, " +
-                ":cdeGreDif, " +
-                ":cdeModDif, " +
-                ":cdeTypIde12, " +
-                ":ide12, " +
-                ":durDif, " +
-                ":nbrDif, " +
-                ":mt, " +
-                ":ctna, " +
-                ":paramCoefHor, " +
-                ":durDifCtna, " +
-                ":cdeLng, " +
-                ":indDoubSsTit, " +
-                ":tax, " +
-                ":typMt, " +
-                ":cdeGreIde12Cmplx, " +
-                ":cdeGreIde12, " +
-                ":titreOriCmplx, " +
-                ":titreAltPppalCmplx, " +
-                ":titreOriOeuvPereCmplx, " +
-                ":titreAltOeuvPereCmplx, " +
-                ":titreOeuvre, " +
-                ":cdePaysOriIso4NCmplx, " +
-                ":realisateurCmplx, " +
-                ":roleParticipant1, " +
-                ":nomParticipant1, " +
-                ":cdeTypUtilOri, " +
-                ":cdeFamilTypUtilOri, " +
-                ":cdeUtil, " +
-                "'AUTOMATIQUE' )");
-        writer.setDataSource(dataSource);
-        return writer;
-    }
 
-    @Bean
-    @StepScope
-    public CompositeItemWriter<LigneProgrammeFV> compositeItemWriter(){
-        List<ItemWriter> writers = new ArrayList<>(2);
-        writers.add(writerStep2());
-        writers.add(writerStep2Copy());
-        CompositeItemWriter itemWriter  = new CompositeItemWriter();
-        itemWriter.setDelegates(writers);
-        return itemWriter ;
-    }
 
     @Bean
     FichierBatchService fichierBatchService(){
@@ -455,6 +352,7 @@ public class BatchConfiguration {
         fichierRepository.setNomTableLigneProgramme(env.getProperty("nom.table.ligneprogramme"));
         fichierRepository.setNomTableLigneProgrammeLog(env.getProperty("nom.table.fichierlog"));
         fichierRepository.setTypeFichier(env.getProperty("type.fichier"));
+        //fichierRepository.setDataSource(dataSource);
         return fichierRepository;
     }
 
@@ -463,5 +361,18 @@ public class BatchConfiguration {
         UtilFile utilFile = new UtilFile(fichierBatchService());
         return utilFile;
     }
+
+    @Bean
+    public JobLauncherTestUtils jobLauncherTestUtils() {
+        return new JobLauncherTestUtils();
+    }
+
+    @Bean
+    public LigneProgrammeFVDaoTest ligneProgrammeFVDaoTest() {
+        LigneProgrammeFVDaoTest ligneProgrammeFVDaoTest = new LigneProgrammeFVDaoTest();
+        ligneProgrammeFVDaoTest.setDataSource(dataSource);
+        return ligneProgrammeFVDaoTest;
+    }
+
 
 }

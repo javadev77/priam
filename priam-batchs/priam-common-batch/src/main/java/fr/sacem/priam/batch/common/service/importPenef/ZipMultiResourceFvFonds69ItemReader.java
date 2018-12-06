@@ -7,6 +7,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.JobParameter;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.StepExecution;
@@ -141,6 +142,8 @@ public class ZipMultiResourceFvFonds69ItemReader <T> extends MultiResourceItemRe
                                 this.stepExecution.getExecutionContext().put("nomFichier", jobParameterNomDuFichier);
                                 JobParameter jobParameterIdFichier = new JobParameter(fichier.getId());
                                 this.stepExecution.getExecutionContext().put("idFichier", jobParameterIdFichier);
+
+                                this.stepExecution.getJobExecution().getExecutionContext().put("ID_FICHIER_GLOBAL", idFichier);
                                 // utilisation de offset a 1 est pour cause la creation des fichier dans les zip avec un / sous linux, c'est un hack pour les fichiers creer sous linux
 
                             }
@@ -166,6 +169,7 @@ public class ZipMultiResourceFvFonds69ItemReader <T> extends MultiResourceItemRe
     public void saveStepExecution(StepExecution stepExecution) {
         this.stepExecution = stepExecution;
     }
+
 
     public void setUtilFile(UtilFile utilFile) {
         this.utilFile = utilFile;
