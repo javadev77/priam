@@ -9,5 +9,6 @@ public enum RoleType {
     INV, // Invité
     Gest_CP, //Gestionnaire CP
     Gest_CMS, //Gestionnaire CMS
-    Gest_Catal //Gestionnaire Catalogue CMS
+    Gest_Catal,//Gestionnaire Catalogue CMS
+    Gest_FV
 }
