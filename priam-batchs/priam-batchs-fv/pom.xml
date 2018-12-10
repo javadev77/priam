@@ -5,6 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <modules>
         <module>priam-batch-import-fv-fonds69</module>
+        <module>priam-batch-affectation-fv</module>
     </modules>
 
     <parent>

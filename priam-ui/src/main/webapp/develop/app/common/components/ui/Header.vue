@@ -134,8 +134,6 @@
     mixins : [ProgrammeMixin],
 
     created()  {
-
-        debugger;
         let currentRoute = this.$route.matched;
         this.setCurrentActiveMenu(currentRoute[0].name);
 
@@ -144,7 +142,6 @@
 
     computed : {
       displayName() {
-          debugger;
         let currentUser = this.$store.getters.getCurrentUser;
         return currentUser.displayName;
       },

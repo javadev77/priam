@@ -15,6 +15,6 @@ public class PingResource {
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity ping() {
-        return ResponseEntity.ok("Ping OK !!");
+        return ResponseEntity.ok("Hello Fonds de Valo !!");
     }
 }
