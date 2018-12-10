@@ -2,7 +2,7 @@
 
   <div class="container-fluid">
 
-    <navbar titre1="Programme" titre2="Liste programmes" titre3="Affectation CMS" backButton="true"></navbar>
+    <navbar titre1="Programme" titre2="Liste programmes" titre3="Affectation FV" backButton="true"></navbar>
 
 
     <div class="container-fluid sacem-formula">
@@ -343,11 +343,11 @@
         },
         affectationProgramme: {
           method: 'PUT',
-          url: process.env.CONTEXT_ROOT_PRIAM_CMS + 'app/rest/programme/affectation'
+          url: process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/programme/affectation'
         },
         toutDeaffecterProg: {
           method: 'PUT',
-          url: process.env.CONTEXT_ROOT_PRIAM_CMS + 'app/rest/programme/toutDesaffecter'
+          url: process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/programme/toutDesaffecter'
         },
         findAllFichiers: {
           method: 'POST',
@@ -355,7 +355,7 @@
         },
         findFichiersAffecte: {
           method: 'GET',
-          url: process.env.CONTEXT_ROOT_PRIAM_CMS + 'app/rest/allFichiersAffectesByNumprog/{numProg}'
+          url: process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/allFichiersAffectesByNumprog/{numProg}'
         }
       }
       this.resource = this.$resource('', {}, customActions);
@@ -694,6 +694,7 @@
       },
 
       affecterFichiersAuProgramme(){
+          debugger;
         this.fichiersToProgramme.numProg = this.programmeInfo.numProg;
         this.fichiersToProgramme.fichiers = [];
 
@@ -828,84 +829,84 @@
     }
 
 
-}
+  }
 </script>
 <style>
 
-.blueText {
-  color: #799BC4;
-}
+  .blueText {
+    color: #799BC4;
+  }
 
-.spinner {
-  float:  left;
-  width: 50px;
-  height: 40px;
-  text-align: center;
-  font-size: 10px;
-}
+  .spinner {
+    float:  left;
+    width: 50px;
+    height: 40px;
+    text-align: center;
+    font-size: 10px;
+  }
 
-.spinner > div {
-  background-color: #333;
-  height: 100%;
-  width: 6px;
-  display: inline-block;
+  .spinner > div {
+    background-color: #333;
+    height: 100%;
+    width: 6px;
+    display: inline-block;
 
-  -webkit-animation: sk-stretchdelay 1.2s infinite ease-in-out;
-  animation: sk-stretchdelay 1.2s infinite ease-in-out;
-}
+    -webkit-animation: sk-stretchdelay 1.2s infinite ease-in-out;
+    animation: sk-stretchdelay 1.2s infinite ease-in-out;
+  }
 
-.spinner .rect2 {
-  -webkit-animation-delay: -1.1s;
-  animation-delay: -1.1s;
-}
+  .spinner .rect2 {
+    -webkit-animation-delay: -1.1s;
+    animation-delay: -1.1s;
+  }
 
-.spinner .rect3 {
-  -webkit-animation-delay: -1.0s;
-  animation-delay: -1.0s;
-}
+  .spinner .rect3 {
+    -webkit-animation-delay: -1.0s;
+    animation-delay: -1.0s;
+  }
 
-.spinner .rect4 {
-  -webkit-animation-delay: -0.9s;
-  animation-delay: -0.9s;
-}
+  .spinner .rect4 {
+    -webkit-animation-delay: -0.9s;
+    animation-delay: -0.9s;
+  }
 
-.spinner .rect5 {
-  -webkit-animation-delay: -0.8s;
-  animation-delay: -0.8s;
-}
+  .spinner .rect5 {
+    -webkit-animation-delay: -0.8s;
+    animation-delay: -0.8s;
+  }
 
-@-webkit-keyframes sk-stretchdelay {
-  0%, 40%, 100% { -webkit-transform: scaleY(0.4) }
-  20% { -webkit-transform: scaleY(1.0) }
-}
+  @-webkit-keyframes sk-stretchdelay {
+    0%, 40%, 100% { -webkit-transform: scaleY(0.4) }
+    20% { -webkit-transform: scaleY(1.0) }
+  }
 
-@keyframes sk-stretchdelay {
-  0%, 40%, 100% {
-    transform: scaleY(0.4);
-    -webkit-transform: scaleY(0.4);
-  }  20% {
-       transform: scaleY(1.0);
-       -webkit-transform: scaleY(1.0);
-     }
-}
+  @keyframes sk-stretchdelay {
+    0%, 40%, 100% {
+      transform: scaleY(0.4);
+      -webkit-transform: scaleY(0.4);
+    }  20% {
+         transform: scaleY(1.0);
+         -webkit-transform: scaleY(1.0);
+       }
+  }
 
-.mask {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 1050;
-  outline: 0;
-  background-color: black;
-  opacity: 0.5;
-}
+  .mask {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1050;
+    outline: 0;
+    background-color: black;
+    opacity: 0.5;
+  }
 
-.mask .center-div {
-  width: 0%;
-  margin: 0 auto;
-  margin-top: 50vh; /* poussé de la moitié de hauteur de viewport */
-  transform: translateY(-50%);
-}
+  .mask .center-div {
+    width: 0%;
+    margin: 0 auto;
+    margin-top: 50vh; /* poussé de la moitié de hauteur de viewport */
+    transform: translateY(-50%);
+  }
 
 </style>

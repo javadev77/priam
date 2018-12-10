@@ -1,7 +1,7 @@
-package fr.sacem.priam.batch.common.service.importPenef;
+package fr.sacem.priam.batch.fv.fonds69.service.importPenef;
 
 import fr.sacem.priam.batch.common.domain.LigneProgrammeFV;
-import fr.sacem.priam.batch.common.util.valdiator.importPenef.LigneProgrammeFVSpringValidator;
+import fr.sacem.priam.batch.fv.fonds69.util.LigneProgrammeFVSpringValidatorTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.JobParameter;
@@ -17,11 +17,11 @@ import org.springframework.validation.FieldError;
 import java.util.Set;
 
 /**
- * Created by embouazzar on 23/11/2018.
+ * Created by embouazzar on 06/12/2018.
  */
-public class LigneProgrammeFVProcessor implements ItemProcessor<LigneProgrammeFV, LigneProgrammeFV> {
+public class LigneProgrammeFVProcessorTest implements ItemProcessor<LigneProgrammeFV, LigneProgrammeFV> {
 
-    private static final Logger log = LoggerFactory.getLogger(LigneProgrammeFVProcessor.class);
+    private static final Logger log = LoggerFactory.getLogger(LigneProgrammeFVProcessorTest.class);
 
     public static final String MESSAGE_FORMAT = "Ligne '%s': Le champ \"%s\" avec la valeur \"%s\" n'a pas le bon format attendu";
     public static final String MESSAGE_CHAMPS_OBLIGATOIRE = "Ligne '%s': Le champ %s est obligatoire et non renseigné";
@@ -31,7 +31,7 @@ public class LigneProgrammeFVProcessor implements ItemProcessor<LigneProgrammeFV
     private ExecutionContext executionContext;
 
     @Autowired
-    private LigneProgrammeFVSpringValidator validator;
+    private LigneProgrammeFVSpringValidatorTest validator;
 
     @BeforeStep
     public void beforeStep(StepExecution stepExecution) {
@@ -70,4 +70,5 @@ public class LigneProgrammeFVProcessor implements ItemProcessor<LigneProgrammeFV
 
         return ligneProgrammeFV;
     }
+
 }

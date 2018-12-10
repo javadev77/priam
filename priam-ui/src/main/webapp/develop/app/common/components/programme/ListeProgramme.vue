@@ -944,6 +944,8 @@
                     this.$router.push({ name: 'affectation-cms', params: { numProg: row.numProg }});
                 } else if (row.famille === FAMILLES_PRIAM['COPIE_PRIVEE']) { //CP
                     this.$router.push({ name: 'affectation', params: { numProg: row.numProg }});
+                } else if (row.famille === FAMILLES_PRIAM['VALORISATION']){ //FV
+                    this.$router.push({ name: 'affectation-fv' , params: {numProg: row.numProg}});
                 }
               } else if(column.id !== undefined && column.id === 'numProg') {
                 if (row.famille === FAMILLES_PRIAM['UC']) { //CMS

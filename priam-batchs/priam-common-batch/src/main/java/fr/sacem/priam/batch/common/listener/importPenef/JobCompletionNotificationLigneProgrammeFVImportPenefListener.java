@@ -79,6 +79,7 @@ public class JobCompletionNotificationLigneProgrammeFVImportPenefListener extend
                     } else {
                         idFichier =(JobParameter) executionContext.get("idFichier");
                         fichierBatchService.rejeterFichier((Long)idFichier.getValue(), errors);
+
                     }
                 } else {
                     LOG.debug("Pas de excution context pour le step en cours : " + myStepExecution.getStepName());
