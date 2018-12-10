@@ -20,5 +20,6 @@ public class FileUtils {
     public static final String PREFIX_PENEF_CATALOGUE_ANF  = "FF_PENEF_EXTRANA_CATALOGUE_ANF";
 
     public static final String CATALOGUE_TYPE_CMS_FR = "FR";
+    public static final String CATALOGUE_TYPE_CMS_FRA = "FRA";
     public static final String CATALOGUE_TYPE_CMS_ANF = "ANF";
 }

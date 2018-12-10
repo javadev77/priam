@@ -1,6 +1,7 @@
 package fr.sacem.priam.batch.participants.req;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,10 +32,8 @@ import static org.junit.Assert.assertTrue;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles("test")
 public class JobParticipantsREQTest {
-//    public static final String PREFIX_FRA_PART_REQ = "FF_PRIAM_PARTICIPANTS_FRA_REQ";
-//    public static final String PREFIX_FLAG = "Flag_FF_PRIAM_PARTICIPANTS_FRA_REQ_";
-    public static final String PREFIX_PART_REQ = "FF_PRIAM_PARTICIPANTS_FR_REQ";
-    public static final String PREFIX_FLAG = "Flag_FF_PRIAM_PARTICIPANTS_FR_REQ_";
+    public static final String PATTERN_PART_REQ = "FF_PRIAM_\\d{14}_PARTICIPANTS_FRA_REQ.csv";
+    public static final String PATTERN_FLAG = "Flag_FF_PRIAM_\\d{14}_PARTICIPANTS_FRA_REQ.csv";
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
     private JobLauncherTestUtils jobLauncherTestUtils;
@@ -75,8 +74,11 @@ public class JobParticipantsREQTest {
         //Check the file is generated
         File[] files = new File(outputDirectory).listFiles();
         for(File file : files) {
+            /*assertTrue(file.exists()
+                    && (file.getName().startsWith(PREFIX_PART_REQ) || file.getName().startsWith(PREFIX_FLAG)));*/
             assertTrue(file.exists()
-                    && (file.getName().startsWith(PREFIX_PART_REQ) || file.getName().startsWith(PREFIX_FLAG)));
+                    && (FilenameUtils.getName(file.getName()).matches(PATTERN_PART_REQ)
+                    || FilenameUtils.getName(file.getName()).matches(PATTERN_FLAG)));
         }
 
     }

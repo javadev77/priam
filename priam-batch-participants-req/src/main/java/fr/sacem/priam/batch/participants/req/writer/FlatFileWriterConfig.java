@@ -3,6 +3,7 @@ package fr.sacem.priam.batch.participants.req.writer;
 import fr.sacem.priam.batch.common.domain.Admap;
 import fr.sacem.priam.batch.participants.req.dao.CatalogueCmsDao;
 import fr.sacem.priam.batch.participants.req.domain.CatalogueCms;
+import fr.sacem.priam.common.util.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemWriter;
@@ -69,8 +70,9 @@ public class FlatFileWriterConfig {
         csvFileWriter.setHeaderCallback(headerWriter);
         csvFileWriter.setFooterCallback(writer -> writer.write(foot(catalogueCmsDao.countNbLignes(typeCMS))));
 
-        String fileName = "FF_PRIAM_PARTICIPANTS_"+ typeCMS +"_REQ_"
-                + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".csv";
+        String fileName = "FF_PRIAM_" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + "_PARTICIPANTS_"
+                + (FileUtils.CATALOGUE_TYPE_CMS_FR.equals(typeCMS) ? FileUtils.CATALOGUE_TYPE_CMS_FRA : typeCMS)
+                +"_REQ.csv";
         csvFileWriter.setResource(new FileSystemResource(admap.getOutputFile() + fileName));
 
         LineAggregator<CatalogueCms> lineAggregator = createCatalogueCmsLineAggregator();

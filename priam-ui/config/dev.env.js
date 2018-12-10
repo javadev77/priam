@@ -8,7 +8,8 @@ module.exports = merge(prodEnv, {
   CONTEXT_ROOT_PRIAM_COMMON : '"http://localhost:8080/priam-common/"',
   CONTEXT_ROOT_PRIAM_CP : '"http://localhost:8080/priam-cp/"',
   CONTEXT_ROOT_PRIAM_CMS : '"http://localhost:8080/priam-cms/"',
-  CONTEXT_ROOT_PRIAM_CAT_RDO : '"http://localhost:8080/priam-catcms/"'
+  CONTEXT_ROOT_PRIAM_CAT_RDO : '"http://localhost:8080/priam-catcms/"',
+  CONTEXT_ROOT_PRIAM_FV : '"http://localhost:8080/priam-fv/"'
 })
 
 
