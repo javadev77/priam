@@ -1,7 +1,7 @@
-package fr.sacem.priam.batch.common.listener.importPenef;
+package fr.sacem.priam.batch.fv.listener;
 
 import fr.sacem.priam.batch.common.dao.FichierRepository;
-import fr.sacem.priam.batch.common.service.importPenef.FichierBatchService;
+import fr.sacem.priam.batch.common.listener.importPenef.JobCompletionNotificationLigneProgrammeImportPenefListener;
 import fr.sacem.priam.batch.common.service.importPenef.FichierBatchServiceImpl;
 import fr.sacem.priam.batch.common.util.UtilFile;
 import fr.sacem.priam.batch.common.util.exception.PriamValidationException;
@@ -14,6 +14,7 @@ import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -22,32 +23,31 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 
-import static fr.sacem.priam.batch.common.util.exception.PriamValidationException.ErrorType;
-
-
+/**
+ * Created by embouazzar on 26/11/2018.
+ */
 @Component
-public class JobCompletionNotificationLigneProgrammeImportPenefListener extends JobExecutionListenerSupport {
+public class JobCompletionNotificationLigneProgrammeFVImportPenefListener extends JobExecutionListenerSupport {
     public static final String LIGNE_PROGRAMME_ERRORS = "ligne-programme-errors";
     public static final String MESSAGE_ERREUR_TECHNIQUE = "Le chargement a été interrompu à cause d'un problème technique";
     public static final String MESSAGE_FICHIER_CHARGE = " - Le fichier \"%s\" a bien été chargé";
     public static final String FORMAT_DATE = "dd/MM/yyyy HH:mm";
     public static final String MESSAGE_FORMAT_FICHIER = "Le fichier ne peut être chargé car il n'a pas le bon format";
     private static String NOM_FICHIER_CSV_EN_COURS = "nomFichier";
-    private static String FILE_ERREUR = "erreur" ;
     private ExecutionContext executionContext;
-    private FichierBatchService fichierBatchService;
-    private UtilFile utilFile;
+    private FichierBatchServiceImpl fichierBatchService;
+    @Autowired
+    UtilFile utilFile;
     private static final Logger LOG = LoggerFactory.getLogger(JobCompletionNotificationLigneProgrammeImportPenefListener.class);
 
-    @Autowired
+    //@Autowired
+    @Qualifier("fichierRepositoryImpl")
     FichierRepository fichierRepository;
 
     String typeFichier;
 
     @Autowired
-    public JobCompletionNotificationLigneProgrammeImportPenefListener() {
-
-        utilFile = new UtilFile();
+    public JobCompletionNotificationLigneProgrammeFVImportPenefListener() {
     }
 
     @Override
@@ -73,7 +73,7 @@ public class JobCompletionNotificationLigneProgrammeImportPenefListener extends 
 
                             StringBuilder log = new StringBuilder();
                             log.append(LocalDateTime.now().format(DateTimeFormatter.ofPattern(FORMAT_DATE))).
-                            append(String.format(MESSAGE_FICHIER_CHARGE, parameterNomFichierCSV));
+                                    append(String.format(MESSAGE_FICHIER_CHARGE, parameterNomFichierCSV));
                             fichierBatchService.creerlog((Long)idFichier.getValue(), log.toString());
                         } else {
                             LOG.debug("Pas de ficiher CSV traité ");
@@ -81,14 +81,16 @@ public class JobCompletionNotificationLigneProgrammeImportPenefListener extends 
                     } else {
                         idFichier =(JobParameter) executionContext.get("idFichier");
                         fichierBatchService.rejeterFichier((Long)idFichier.getValue(), errors);
+
                     }
                 } else {
                     LOG.debug("Pas de excution context pour le step en cours : " + myStepExecution.getStepName());
                 }
 
-                if(idFichier != null && ("CMS".equalsIgnoreCase(typeFichier) || "CP".equalsIgnoreCase(typeFichier)) || "FV".equalsIgnoreCase(typeFichier)) {
+                if(idFichier != null && ("FV".equalsIgnoreCase(typeFichier))) {
                     fichierRepository.supprimerLigneProgrammeParIdFichier((Long)idFichier.getValue());
                 }
+
             }
 
         } else {
@@ -111,12 +113,12 @@ public class JobCompletionNotificationLigneProgrammeImportPenefListener extends 
                     System.out.println("--------------------------------");
                     Throwable exception = myStepExecution.getFailureExceptions().iterator().next();
                     if(exception instanceof PriamValidationException) {
-                        ErrorType errorType = ((PriamValidationException) exception).getErrorType();
+                        PriamValidationException.ErrorType errorType = ((PriamValidationException) exception).getErrorType();
 
-                        if(ErrorType.FORMAT_FICHIER.equals(errorType)) {
+                        if(PriamValidationException.ErrorType.FORMAT_FICHIER.equals(errorType)) {
                             errors.add(MESSAGE_FORMAT_FICHIER);
                         }
-                        else if(ErrorType.FORMAT_ATTRIBUT.equals(errorType)) {
+                        else if(PriamValidationException.ErrorType.FORMAT_ATTRIBUT.equals(errorType)) {
                             errors.add(exception.getMessage());
                         }
 
@@ -139,7 +141,7 @@ public class JobCompletionNotificationLigneProgrammeImportPenefListener extends 
             }
 
 
-            if(idFichier != null && ("CMS".equalsIgnoreCase(typeFichier) || "CP".equalsIgnoreCase(typeFichier) || "FV".equalsIgnoreCase(typeFichier))) {
+            if(idFichier != null && ("CMS".equalsIgnoreCase(typeFichier) || "CP".equalsIgnoreCase(typeFichier))) {
                 fichierRepository.supprimerLigneProgrammeParIdFichier(idFile);
             }
         }
@@ -151,8 +153,17 @@ public class JobCompletionNotificationLigneProgrammeImportPenefListener extends 
 
     }
 
-    public void setFichierBatchService(FichierBatchService fichierBatchService) {
+    @Autowired
+    public void setFichierBatchService(FichierBatchServiceImpl fichierBatchService) {
         this.fichierBatchService = fichierBatchService;
+    }
+
+    public UtilFile getUtilFile() {
+        return utilFile;
+    }
+
+    public void setUtilFile(UtilFile utilFile) {
+        this.utilFile = utilFile;
     }
 
     public String getTypeFichier() {

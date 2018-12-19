@@ -12,13 +12,13 @@ public class LigneProgrammeFV extends LigneProgramme {
 
     public LigneProgrammeFV(PriamValidationException e) {
     }
-    private String rioneffet;
+    private String rionEffet;
 
-    public String getRioneffet() {
-        return rioneffet;
+    public String getRionEffet() {
+        return rionEffet;
     }
 
-    public void setRioneffet(String rioneffet) {
-        this.rioneffet = rioneffet;
+    public void setRionEffet(String rionEffet) {
+        this.rionEffet = rionEffet;
     }
 }

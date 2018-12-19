@@ -12,6 +12,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,8 +28,7 @@ import java.util.Set;
 /**
  * Created by fandis on 17/05/2017.
  */
-@Repository
-@Primary
+@Component("fichierRepositoryImpl")
 public class FichierRepositoryImpl implements FichierRepository {
 
 
@@ -174,10 +174,30 @@ public class FichierRepositoryImpl implements FichierRepository {
             result.append(TypeUtilisationEnum.CMS_ANT.getCode());
         else if(nom.startsWith(FileUtils.PREFIX_ANT_RION4))
             result.append(TypeUtilisationEnum.CMS_ANT.getCode());
+        else if(nom.startsWith(FileUtils.PREFIX_PENEF_FV_FONDS01))
+            result.append(TypeUtilisationEnum.FV_FONDS_01.getCode());
+        else if(nom.startsWith(FileUtils.PREFIX_PENEF_FV_FONDS02))
+            result.append(TypeUtilisationEnum.FV_FONDS_02.getCode());
+        else if(nom.startsWith(FileUtils.PREFIX_PENEF_FV_FONDS03))
+            result.append(TypeUtilisationEnum.FV_FONDS_03.getCode());
+        else if(nom.startsWith(FileUtils.PREFIX_PENEF_FV_FONDS04))
+            result.append(TypeUtilisationEnum.FV_FONDS_04.getCode());
+        else if(nom.startsWith(FileUtils.PREFIX_PENEF_FV_FONDS05))
+            result.append(TypeUtilisationEnum.FV_FONDS_05.getCode());
         else if(nom.startsWith(FileUtils.PREFIX_PENEF_FV_FONDS06))
             result.append(TypeUtilisationEnum.FV_FONDS_06.getCode());
+        else if(nom.startsWith(FileUtils.PREFIX_PENEF_FV_FONDS07))
+            result.append(TypeUtilisationEnum.FV_FONDS_07.getCode());
         else if(nom.startsWith(FileUtils.PREFIX_PENEF_FV_FONDS09))
             result.append(TypeUtilisationEnum.FV_FONDS_09.getCode());
+        else if(nom.startsWith(FileUtils.PREFIX_PENEF_FV_FONDS10))
+            result.append(TypeUtilisationEnum.FV_FONDS_10.getCode());
+        else if(nom.startsWith(FileUtils.PREFIX_PENEF_FV_FONDS11))
+            result.append(TypeUtilisationEnum.FV_FONDS_11.getCode());
+        else if(nom.startsWith(FileUtils.PREFIX_PENEF_FV_FONDS12))
+            result.append(TypeUtilisationEnum.FV_FONDS_12.getCode());
+        else if(nom.startsWith(FileUtils.PREFIX_PENEF_FV_FONDS13))
+            result.append(TypeUtilisationEnum.FV_FONDS_13.getCode());
         if(result.toString().isEmpty())
         {
             return null;

@@ -50,10 +50,10 @@ public class App {
 
                 StringBuilder pattern = new StringBuilder(admap.getPatternFileName());
                 JobParameter patternFile;
-                if(typeCMS.equals(PATTERN_TYPE_CMS_FR)){
-                    patternFile = new JobParameter(pattern.insert(23, PATTERN_TYPE_CMS_FR).toString());
+                if(typeCMS.equals(FileUtils.CATALOGUE_TYPE_CMS_FRA)){
+                    patternFile = new JobParameter(pattern.insert(30, FileUtils.CATALOGUE_TYPE_CMS_FRA).toString());
                 } else {
-                    patternFile = new JobParameter(pattern.insert(23, FileUtils.CATALOGUE_TYPE_CMS_ANF).toString());
+                    patternFile = new JobParameter(pattern.insert(30, FileUtils.CATALOGUE_TYPE_CMS_ANF).toString());
                 }
 
                 jobParametersMap.put("pattern.file.name", patternFile);

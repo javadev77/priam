@@ -4,6 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
+    <modules>
+        <module>priam-batch-import-fv</module>
+        <module>priam-batch-affectation-fv</module>
+        <module>priam-batch-fv-service-otav-ctnu-req</module>
+    </modules>
+
     <parent>
         <artifactId>priam-batchs</artifactId>
         <groupId>fr.sacem.priam</groupId>
@@ -15,11 +21,5 @@
     <packaging>pom</packaging>
 
     <name>priam-batchs-fv</name>
-
-    <modules>
-        <module>priam-batch-import-fv-fonds69</module>
-        <module>priam-batch-affectation-fv</module>
-        <module>priam-batch-fv-service-otav-ctnu-req</module>
-    </modules>
 
 </project>
