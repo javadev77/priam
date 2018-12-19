@@ -1,26 +1,27 @@
 package fr.sacem.priam.rest.common.api;
 
-
 import com.google.common.collect.Lists;
 import fr.sacem.priam.model.dao.jpa.FichierDao;
-import fr.sacem.priam.model.domain.Fichier;
 import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.dto.FileDto;
 import fr.sacem.priam.rest.common.api.dto.AffectationCriteria;
 import fr.sacem.priam.rest.common.api.dto.InputChgtCriteria;
 import fr.sacem.priam.security.model.UserDTO;
 import fr.sacem.priam.services.FichierService;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Created by benmerzoukah on 27/04/2017.
