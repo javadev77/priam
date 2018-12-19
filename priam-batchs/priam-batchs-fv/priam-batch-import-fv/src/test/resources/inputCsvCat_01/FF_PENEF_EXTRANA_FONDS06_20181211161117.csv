@@ -1,0 +1,16 @@
+#-------------------------------------------------------------------------------------------------------------------;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+# Fichier a destination de ???;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+# en provenance de PenefInt1.0.0X;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#-------------------------------------------------------------------------------------------------------------------;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+# JJ/MM/AAAA HH:MM - Auteur - Objet;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#-------------------------------------------------------------------------------------------------------------------;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+# 20181211 16:11:23 - PenefInt1.0.0X - Creation;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#DEBUT;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#cdeCisac;cdeFamilTypUtil;numProg;cdeUtil;cdeTypUtil;cdeGreDif;cdeModDif;cdeTypIde12;ide12;durDif;nbrDif;mt;ctna;paramCoefHor;durDifCtna;cdeLng;indDoubSsTit;tax;typMt;cdeGreIde12Cmplx;cdeGreIde12;titreOriCmplx;titreAltPppalCmplx;titreOriOeuvPereCmplx;titreAltOeuvPereCmplx;titreOeuvre;cdePaysOriIso4NCmplx;realisateurCmplx;roleParticipant1;nomParticipant1;cdeTypUtilOri;cdeFamilTypUtilOri;rionEffet
+58;FDSVAL;;C0405;FD06;;;COCV;9238417411;;1;86,03;;;;FR;;1;MB;;IJ;;;;;IMPRO JAZZ;;;C;QUERAUD MICHEL;CONCERT;DTSGEN;
+58;FDSVAL;;C0405;FD06;;;COCV;9933744001;;1;53,77;;;;FR;;1;MB;;IJ;;;;;IMPRO JAZZ;;;C;JULIEN LAFERRIERE MARC;CONCERT;DTSGEN;
+#FIN;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+# 20181211 16:11:46 - Duree : 0j 0:0:23,485;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+# Nbr lignes de donnees       = 2;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+# Nbr lignes en erreur metier = 1;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+# Nbr d'erreurs techniques    = 2;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

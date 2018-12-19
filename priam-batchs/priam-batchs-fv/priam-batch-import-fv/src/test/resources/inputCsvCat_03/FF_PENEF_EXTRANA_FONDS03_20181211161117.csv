@@ -1,0 +1,17 @@
+#-------------------------------------------------------------------------------------------------------------------;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+# Fichier a destination de ???;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+# en provenance de PenefInt1.0.0X;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#-------------------------------------------------------------------------------------------------------------------;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+# JJ/MM/AAAA HH:MM - Auteur - Objet;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#-------------------------------------------------------------------------------------------------------------------;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+# 20181211 16:11:23 - PenefInt1.0.0X - Creation;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#DEBUT;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#cdeCisac;cdeFamilTypUtil;numProg;cdeUtil;cdeTypUtil;cdeGreDif;cdeModDif;cdeTypIde12;ide12;durDif;nbrDif;mt;ctna;paramCoefHor;durDifCtna;cdeLng;indDoubSsTit;tax;typMt;cdeGreIde12Cmplx;cdeGreIde12;titreOriCmplx;titreAltPppalCmplx;titreOriOeuvPereCmplx;titreAltOeuvPereCmplx;titreOeuvre;cdePaysOriIso4NCmplx;realisateurCmplx;roleParticipant1;nomParticipant1;cdeTypUtilOri;cdeFamilTypUtilOri;rionEffet
+58;FDSVAL;;C0405;FD03;;;COCV;9238417411;10;1;10;;;;FR;;;MB;;ME;;;;;FD03 TITRE 1;;;;;FD03;FDSVAL;645
+58;FDSVAL;;C0405;FD03;;;COPT;9933744001;;1;10;;;;FR;;1;MB;;MS;FD03 TITRE 3;;;;;;;;;FD03;FDSVAL;645
+58;FDSVAL;;C0405;FD03;;;COCV;9833744001;10;1;10;;;;FR;;1;MB;;MO;;;;;FD03 TITRE 3;;;;;FD03;FDSVAL;645
+#FIN;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+# 20181211 16:11:46 - Duree : 0j 0:0:23,485;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+# Nbr lignes de donnees       = 2;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+# Nbr lignes en erreur metier = 1;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+# Nbr d'erreurs techniques    = 2;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
