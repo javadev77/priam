@@ -30,7 +30,6 @@
         <module>priam-catalogue-cms</module>
         <module>priam-rest-api-valorisation</module>
         <module>priam-batchs</module>
-        <module>priam-orchestrator</module>
     </modules>
 
     <organization>

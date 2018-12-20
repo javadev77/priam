@@ -1,6 +1,6 @@
-package fr.sacem.priam.batch.fv.octav.listener;
+package fr.sacem.priam.batch.fv.octav.rep.listener;
 
-import fr.sacem.priam.batch.fv.octav.dao.FichierJdbcDao;
+import fr.sacem.priam.batch.fv.octav.rep.dao.FichierJdbcDao;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.listener.JobExecutionListenerSupport;

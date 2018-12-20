@@ -6,7 +6,7 @@
         <version>2.4.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>priam-batch-fv-service-otav-ctnu-req</artifactId>
+    <artifactId>priam-batch-fv-service-otav-ctnu-rep</artifactId>
     <packaging>jar</packaging>
 
 
