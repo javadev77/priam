@@ -33,8 +33,8 @@ import static org.junit.Assert.assertTrue;
 public class JobParticipantsREQTest {
 //    public static final String PREFIX_FRA_PART_REQ = "FF_PRIAM_PARTICIPANTS_FRA_REQ";
 //    public static final String PREFIX_FLAG = "Flag_FF_PRIAM_PARTICIPANTS_FRA_REQ_";
-    public static final String PREFIX_PART_REQ = "FF_PRIAM_PARTICIPANTS_FR_REQ";
-    public static final String PREFIX_FLAG = "Flag_FF_PRIAM_PARTICIPANTS_FR_REQ_";
+    public static final String PREFIX_PART_REQ = "^FF_PRIAM_\\d{14}_PARTICIPANTS_(FRA|ANF)_REQ.csv$";
+    public static final String PREFIX_FLAG = "^Flag_FF_PRIAM_\\d{14}_PARTICIPANTS_(FRA|ANF)_REQ.csv$";
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
     private JobLauncherTestUtils jobLauncherTestUtils;
@@ -76,7 +76,7 @@ public class JobParticipantsREQTest {
         File[] files = new File(outputDirectory).listFiles();
         for(File file : files) {
             assertTrue(file.exists()
-                    && (file.getName().startsWith(PREFIX_PART_REQ) || file.getName().startsWith(PREFIX_FLAG)));
+                    && (file.getName().matches(PREFIX_PART_REQ) || file.getName().matches(PREFIX_FLAG)));
         }
 
     }
