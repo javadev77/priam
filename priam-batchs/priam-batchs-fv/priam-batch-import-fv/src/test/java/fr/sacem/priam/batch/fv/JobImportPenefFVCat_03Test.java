@@ -1,7 +1,9 @@
 package fr.sacem.priam.batch.fv;
 
+import fr.sacem.priam.batch.common.domain.Fichier;
 import fr.sacem.priam.batch.fv.config.BatchConfigurationTest;
 import fr.sacem.priam.batch.fv.config.ConfigurationPriamLocalTest;
+import fr.sacem.priam.batch.fv.dao.FichierDao;
 import fr.sacem.priam.batch.fv.dao.LigneProgrammeFVDaoTest;
 import fr.sacem.priam.batch.utils.TestUtils;
 import org.apache.commons.io.FileUtils;
@@ -41,7 +43,7 @@ public class JobImportPenefFVCat_03Test {
     private JobLauncherTestUtils jobLauncherTestUtils;
 
     @Autowired
-    private LigneProgrammeFVDaoTest ligneProgrammeFVDaoTest;
+    private FichierDao fichierDao;
 
     private String inputDirectory = "target/inputDirectoryCat_03/";
     private String outputDirectory = "target/outputDirectory/";
@@ -91,8 +93,8 @@ public class JobImportPenefFVCat_03Test {
         // assert job run status
         assertEquals(BatchStatus.COMPLETED, jobExecution.getStatus());
 
-        long nbLignes = ligneProgrammeFVDaoTest.countNbLignesByIdFichier(16L);
-        Assert.assertEquals(3L, nbLignes);
+        Fichier fichier = fichierDao.findByName(CSV_FILE_NAME_3);
+        Assert.assertEquals(new Long(3), fichier.getNbLignes());
 
     }
 
