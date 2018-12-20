@@ -1,4 +1,4 @@
-package fr.sacem.priam.batch.fv.octav.writer;
+package fr.sacem.priam.batch.fv.octav.rep.writer;
 
 import fr.sacem.priam.batch.common.domain.Admap;
 import fr.sacem.priam.batch.common.domain.LigneProgrammeFV;

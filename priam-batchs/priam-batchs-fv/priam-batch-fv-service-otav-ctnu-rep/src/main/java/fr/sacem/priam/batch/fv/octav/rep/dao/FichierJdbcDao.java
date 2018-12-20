@@ -1,4 +1,4 @@
-package fr.sacem.priam.batch.fv.octav.dao;
+package fr.sacem.priam.batch.fv.octav.rep.dao;
 
 import fr.sacem.priam.batch.common.domain.Fichier;
 import java.util.List;

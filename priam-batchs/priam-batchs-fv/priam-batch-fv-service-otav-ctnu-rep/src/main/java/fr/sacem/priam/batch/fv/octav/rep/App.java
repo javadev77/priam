@@ -1,9 +1,9 @@
-package fr.sacem.priam.batch.fv.octav;
+package fr.sacem.priam.batch.fv.octav.rep;
 
 import fr.sacem.priam.batch.common.domain.Admap;
 import fr.sacem.priam.batch.common.domain.Fichier;
-import fr.sacem.priam.batch.fv.octav.config.ConfigurationPriamLocal;
-import fr.sacem.priam.batch.fv.octav.dao.FichierJdbcDao;
+import fr.sacem.priam.batch.fv.octav.rep.config.ConfigurationPriamLocal;
+import fr.sacem.priam.batch.fv.octav.rep.dao.FichierJdbcDao;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package fr.sacem.priam.batch.fv.octav.config;
+package fr.sacem.priam.batch.fv.octav.rep.config;
 
 import fr.sacem.priam.batch.common.domain.Admap;
 import javax.sql.DataSource;
@@ -15,7 +15,7 @@ import org.springframework.context.annotation.PropertySource;
  * Created by fandis on 09/10/2017.
  */
 @Configuration
-@ComponentScan(basePackages = {"fr.sacem.priam.batch.fv.octav"})
+@ComponentScan(basePackages = {"fr.sacem.priam.batch.fv.octav.rep"})
 @ImportResource(value = "classpath:config/job-configuration.xml")
 @Profile({"dev","local"})
 @PropertySource("classpath:config/application-local.properties")
