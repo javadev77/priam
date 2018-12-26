@@ -2,6 +2,8 @@ package fr.sacem.priam.batch.common.fv.writer;
 
 import fr.sacem.priam.batch.common.dao.LigneProgrammeFVDao;
 import fr.sacem.priam.batch.common.domain.Admap;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.file.transform.DelimitedLineAggregator;
 import org.springframework.batch.item.file.transform.FieldExtractor;
@@ -11,16 +13,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.FileSystemResource;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 public abstract class AbstractConfig<T> {
 
     public abstract String head();
 
     public abstract  FieldExtractor<T> createExtractor();
 
-    public abstract String foot(Long idFichier);
+    public abstract String foot(Long lignes);
 
     public abstract String suffixNomFicher();
 

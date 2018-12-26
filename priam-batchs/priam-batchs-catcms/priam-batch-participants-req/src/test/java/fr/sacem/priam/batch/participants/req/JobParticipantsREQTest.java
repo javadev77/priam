@@ -31,8 +31,6 @@ import static org.junit.Assert.assertTrue;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles("test")
 public class JobParticipantsREQTest {
-//    public static final String PREFIX_FRA_PART_REQ = "FF_PRIAM_PARTICIPANTS_FRA_REQ";
-//    public static final String PREFIX_FLAG = "Flag_FF_PRIAM_PARTICIPANTS_FRA_REQ_";
     public static final String PREFIX_PART_REQ = "^FF_PRIAM_\\d{14}_PARTICIPANTS_(FRA|ANF)_REQ.csv$";
     public static final String PREFIX_FLAG = "^Flag_FF_PRIAM_\\d{14}_PARTICIPANTS_(FRA|ANF)_REQ.csv$";
     private final Logger LOG = LoggerFactory.getLogger(getClass());

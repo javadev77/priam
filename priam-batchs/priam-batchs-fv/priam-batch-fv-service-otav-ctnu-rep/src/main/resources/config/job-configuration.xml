@@ -14,7 +14,7 @@
     </bean>
 
 
-    <job id="jobGenerationREQ" xmlns="http://www.springframework.org/schema/batch">
+    <job id="jobOctavCtnuREP" xmlns="http://www.springframework.org/schema/batch">
         <step id="prepareAndGenerateREQ">
             <tasklet>
                 <chunk
@@ -23,10 +23,6 @@
                         commit-interval="100">
                 </chunk>
             </tasklet>
-
-            <listeners merge="true">
-                <listener ref="stepListener"/>
-            </listeners>
         </step>
 
         <listeners>
@@ -38,8 +34,6 @@
 
 
     <bean id="jobCompletion" class="JobListener"/>
-
-    <bean id="stepListener" class="FlagDemiInterfaceStepListener"/>
 
     <bean id="readFromTableLigneProgrammeFV"
           class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">

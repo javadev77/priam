@@ -1,4 +1,4 @@
-package fr.sacem.priam.fv.octav.info.oeuvre.req.reader;
+package fr.sacem.priam.batch.common.fv.reader;
 
 import fr.sacem.priam.batch.common.domain.LigneProgrammeFV;
 import fr.sacem.priam.batch.common.util.mapper.importPenef.PriamLigneProgrammeFVSQLMapper;

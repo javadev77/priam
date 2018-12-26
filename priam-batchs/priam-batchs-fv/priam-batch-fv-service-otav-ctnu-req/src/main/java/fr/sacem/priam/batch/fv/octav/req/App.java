@@ -1,9 +1,10 @@
-package fr.sacem.priam.batch.fv.octav.rep;
+package fr.sacem.priam.batch.fv.octav.req;
 
+import com.google.common.collect.Lists;
+import fr.sacem.priam.batch.common.dao.FichierJdbcDao;
 import fr.sacem.priam.batch.common.domain.Admap;
 import fr.sacem.priam.batch.common.domain.Fichier;
-import fr.sacem.priam.batch.fv.octav.rep.config.ConfigurationPriamLocal;
-import fr.sacem.priam.batch.fv.octav.rep.dao.FichierJdbcDao;
+import fr.sacem.priam.batch.fv.octav.req.config.ConfigurationPriamLocal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +27,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 public class App {
 
     private static  final Logger LOGGER = LoggerFactory.getLogger(App.class);
-    public static final String TO_SRV_OCTAV_CTNU = "TO_SRV_OCTAV_CTNU";
+    public static final String CHARGEMENT_OK = "CHARGEMENT_OK";
 
     public static void main(String[] args) {
 
@@ -36,7 +37,8 @@ public class App {
         Admap admap = (Admap) context.getBean("admap");
         FichierJdbcDao fichierJdbcDao = (FichierJdbcDao)context.getBean("fichierJdbcDao");
 
-        List<Fichier> fichiers = fichierJdbcDao.getFichiersFvByStatutEnrichissement(TO_SRV_OCTAV_CTNU);
+        List<Fichier> fichiers = fichierJdbcDao.getFichiersFvEligibleOctavCtnu(CHARGEMENT_OK,
+                                                                               Lists.newArrayList("FD03", "FD04", "FD09", "FD10", "FD11"));
         fichiers.forEach(f -> {
             try {
                 Map<String, JobParameter> jobParametersMap = new HashMap<>();
