@@ -1,17 +1,12 @@
-package fr.sacem.priam.batch.common.fv.listener;
+package fr.sacem.priam.fv.octav.info.oeuvre.req.listener;
 
 import fr.sacem.priam.batch.common.dao.FichierJdbcDao;
+import fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementEnum;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 
-/**
- * Created with IntelliJ IDEA.
- * @author Yegor Bugayenko (yegor@tpc2.com)
- * @version $Id$
- * @since 1.0
- */
 public class JobListener extends JobExecutionListenerSupport {
 
     @Autowired
@@ -22,14 +17,14 @@ public class JobListener extends JobExecutionListenerSupport {
     @Override
     public void beforeJob(final JobExecution jobExecution) {
         Long idFichier = jobExecution.getJobParameters().getLong("idFichier");
-        fichierJdbcDao.majStatutEnrichissement(idFichier, "TO_SRV_" + etapeEnrichissement);
+        fichierJdbcDao.majStatutEnrichissement(idFichier, EtapeEnrichissementEnum.TO_SRV_INFO_OEUVRE.getCode());
     }
 
     @Override
     public void afterJob(JobExecution jobExecution) {
         Long idFichier = jobExecution.getJobParameters().getLong("idFichier");
         if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
-            fichierJdbcDao.majStatutEnrichissement(idFichier, "IN_SRV_" + etapeEnrichissement);
+            fichierJdbcDao.majStatutEnrichissement(idFichier, EtapeEnrichissementEnum.IN_SRV_INFO_OEUVRE.getCode());
         }
     }
 

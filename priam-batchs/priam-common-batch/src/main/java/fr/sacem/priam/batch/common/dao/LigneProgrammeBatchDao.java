@@ -188,5 +188,7 @@ public class LigneProgrammeBatchDao {
         String sql = "DELETE FROM PRIAM_LIGNE_PROGRAMME_CP WHERE ID_FICHIER=?";
         jdbcTemplate.update(sql, idFichier);
     }
+
+
 }
 

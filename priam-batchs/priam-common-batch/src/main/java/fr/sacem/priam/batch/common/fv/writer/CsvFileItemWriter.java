@@ -9,7 +9,7 @@ import org.springframework.core.io.Resource;
 /**
  * Created by embouazzar on 19/12/2018.
  */
-public class OctavReqCsvFileItemWriter<T> extends FlatFileItemWriter<T> {
+public class CsvFileItemWriter<T> extends FlatFileItemWriter<T> {
     private Resource resource;
 
     @Override
