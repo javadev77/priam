@@ -1,6 +1,5 @@
-package fr.sacem.priam.batch.fv.octav.rep.writer;
+package fr.sacem.priam.batch.common.fv.writer;
 
-import fr.sacem.priam.batch.common.domain.LigneProgrammeFV;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.AfterStep;
 import org.springframework.batch.item.ExecutionContext;
@@ -8,11 +7,9 @@ import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.core.io.Resource;
 
 /**
- * Created by benmerzoukah on 14/06/2018.
+ * Created by embouazzar on 19/12/2018.
  */
-
-public class OctavCtnuReqCsvFileItemWriter extends FlatFileItemWriter<LigneProgrammeFV> {
-
+public class CsvFileItemWriter<T> extends FlatFileItemWriter<T> {
     private Resource resource;
 
     @Override

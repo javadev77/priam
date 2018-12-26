@@ -1,7 +1,9 @@
 package fr.sacem.priam.batch.fv;
 
+import fr.sacem.priam.batch.common.domain.Fichier;
 import fr.sacem.priam.batch.fv.config.BatchConfigurationTest;
 import fr.sacem.priam.batch.fv.config.ConfigurationPriamLocalTest;
+import fr.sacem.priam.batch.fv.dao.FichierDao;
 import fr.sacem.priam.batch.fv.dao.LigneProgrammeFVDaoTest;
 import fr.sacem.priam.batch.utils.TestUtils;
 import org.apache.commons.io.FileUtils;
@@ -24,7 +26,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 
@@ -42,6 +46,9 @@ public class JobImportPenefFVCat_04Test {
 
     @Autowired
     private LigneProgrammeFVDaoTest ligneProgrammeFVDaoTest;
+
+    @Autowired
+    private FichierDao fichierDao;
 
     private String inputDirectory = "target/inputDirectoryCat_04/";
     private String outputDirectory = "target/outputDirectory/";
@@ -91,8 +98,8 @@ public class JobImportPenefFVCat_04Test {
         // assert job run status
         assertEquals(BatchStatus.COMPLETED, jobExecution.getStatus());
 
-        long nbLignes = ligneProgrammeFVDaoTest.countNbLignesByIdFichier(17L);
-        Assert.assertEquals(3L, nbLignes);
+        Fichier fichier = fichierDao.findByName(CSV_FILE_NAME);
+        Assert.assertEquals(new Long(3), fichier.getNbLignes());
 
     }
 
