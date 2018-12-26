@@ -1,4 +1,4 @@
-package fr.sacem.priam.batch.fv.octav.rep.writer;
+package fr.sacem.priam.batch.fv.octav.req.writer;
 
 import java.io.IOException;
 import java.io.Writer;

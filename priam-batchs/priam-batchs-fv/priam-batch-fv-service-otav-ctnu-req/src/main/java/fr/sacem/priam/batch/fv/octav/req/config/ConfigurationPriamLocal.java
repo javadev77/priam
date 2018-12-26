@@ -1,4 +1,4 @@
-package fr.sacem.priam.batch.fv.octav.rep.config;
+package fr.sacem.priam.batch.fv.octav.req.config;
 
 import fr.sacem.priam.batch.common.domain.Admap;
 import javax.sql.DataSource;

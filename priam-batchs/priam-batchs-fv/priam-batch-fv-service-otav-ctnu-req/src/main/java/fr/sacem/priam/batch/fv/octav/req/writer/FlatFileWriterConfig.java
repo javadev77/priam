@@ -1,7 +1,8 @@
-package fr.sacem.priam.batch.fv.octav.rep.writer;
+package fr.sacem.priam.batch.fv.octav.req.writer;
 
 import fr.sacem.priam.batch.common.domain.Admap;
 import fr.sacem.priam.batch.common.domain.LigneProgrammeFV;
+import fr.sacem.priam.batch.fv.octav.req.dao.FichierJdbcDao;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -29,6 +30,9 @@ public class FlatFileWriterConfig {
 
     @Autowired
     Admap admap;
+
+    @Autowired
+    FichierJdbcDao fichierJdbcDao;
 
     private String head() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.FRANCE);
@@ -60,7 +64,7 @@ public class FlatFileWriterConfig {
 
         StringHeaderWriter headerWriter = new StringHeaderWriter(head());
         csvFileWriter.setHeaderCallback(headerWriter);
-        csvFileWriter.setFooterCallback(writer -> writer.write(foot(0L)));
+        csvFileWriter.setFooterCallback(writer -> writer.write(foot(fichierJdbcDao.countNbLignesFvById(idFichier))));
 
 
         String fileName = "FF_PRIAM_"  + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date())

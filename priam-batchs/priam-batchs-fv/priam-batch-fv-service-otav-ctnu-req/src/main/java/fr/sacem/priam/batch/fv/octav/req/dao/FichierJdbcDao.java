@@ -1,5 +1,6 @@
-package fr.sacem.priam.batch.fv.octav.rep.dao;
+package fr.sacem.priam.batch.fv.octav.req.dao;
 
+import com.google.common.base.Joiner;
 import fr.sacem.priam.batch.common.domain.Fichier;
 import java.util.List;
 import javax.sql.DataSource;
@@ -26,6 +27,20 @@ public class FichierJdbcDao {
     }
 
 
+    public List<Fichier> getFichiersFvEligibleOctavCtnu(String statut, List<String> fonds) {
+        String inClause = "'" + Joiner.on("','").join(fonds) + "'";
+        return jdbcTemplate.query("SELECT * FROM PRIAM_FICHIER WHERE CDEFAMILTYPUTIL='FDSVAL' " +
+            "AND CDETYPUTIL IN (" + inClause + ") "+
+            "AND STATUT_CODE= '" + statut + "'", (rs, i) -> {
+
+            Fichier fichier = new Fichier();
+            Long id = rs.getLong("ID");
+            fichier.setId(id);
+
+            return fichier;
+        });
+    }
+
     public List<Fichier> getFichiersFvByStatutEnrichissement(String statut) {
         return jdbcTemplate.query("SELECT * FROM PRIAM_FICHIER WHERE CDEFAMILTYPUTIL='FDSVAL' AND STATUT_ENRICHISSEEMNT = '" + statut + "'", (rs, i) -> {
             Fichier fichier = new Fichier();
@@ -44,5 +59,15 @@ public class FichierJdbcDao {
             stmt.setLong(2, idFichier);
 
         });
+    }
+
+    public Long countNbLignesFvById(final String idFichier) {
+
+        String sql =  "SELECT " +
+            "count(l.ID) as NB_LIGNES " +
+            "FROM " +
+            "PRIAM_LIGNE_PROGRAMME_FV l " +
+            "WHERE l.ID_FICHIER =?";
+        return jdbcTemplate.queryForObject(sql, (resultSet, i) -> resultSet.getLong("NB_LIGNES"), idFichier);
     }
 }

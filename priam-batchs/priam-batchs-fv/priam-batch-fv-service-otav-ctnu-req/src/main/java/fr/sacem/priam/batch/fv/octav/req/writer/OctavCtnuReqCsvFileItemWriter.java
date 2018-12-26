@@ -1,4 +1,4 @@
-package fr.sacem.priam.batch.fv.octav.rep.writer;
+package fr.sacem.priam.batch.fv.octav.req.writer;
 
 import fr.sacem.priam.batch.common.domain.LigneProgrammeFV;
 import org.springframework.batch.core.StepExecution;
