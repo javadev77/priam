@@ -22,13 +22,13 @@ public class TableLigneProgrammeFVReader extends JdbcPagingItemReader<LigneProgr
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TableLigneProgrammeFVReader.class);
 
-    public TableLigneProgrammeFVReader(@Value("#{jobExecutionContext['ID_FICHIER_GLOBAL']}") Long idFichier, @Autowired DataSource dataSource) {
+    public TableLigneProgrammeFVReader(@Value("#{jobParameters['idFichier']}") Long idFichier, @Autowired DataSource dataSource) {
         final SqlPagingQueryProviderFactoryBean sqlPagingQueryProviderFactoryBean = new SqlPagingQueryProviderFactoryBean();
         sqlPagingQueryProviderFactoryBean.setDataSource(dataSource);
         sqlPagingQueryProviderFactoryBean.setSelectClause("SELECT l.*");
         sqlPagingQueryProviderFactoryBean.setFromClause("FROM PRIAM_LIGNE_PROGRAMME_FV l " +
                 "INNER JOIN PRIAM_FICHIER f ON l.ID_FICHIER=f.ID");
-        sqlPagingQueryProviderFactoryBean.setWhereClause("WHERE f.ID = " + 677);
+        sqlPagingQueryProviderFactoryBean.setWhereClause("WHERE f.ID = " + idFichier);
         sqlPagingQueryProviderFactoryBean.setSortKey("id");
 
         try {
