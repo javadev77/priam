@@ -19,7 +19,7 @@
             <tasklet>
                 <chunk
                         reader="readFromTableLigneProgrammeFV"
-                        writer="writeReqFile"
+                        writer="databaseCsvItemWriter"
                         commit-interval="100">
                 </chunk>
             </tasklet>
@@ -39,7 +39,7 @@
 
     <bean id="jobCompletion" class="fr.sacem.priam.batch.fv.octav.req.listener.JobListener"/>
 
-    <bean id="stepListener" class="fr.sacem.priam.batch.fv.octav.req.listener.FlagDemiInterfaceStepListener"/>
+    <bean id="stepListener" class="fr.sacem.priam.batch.common.fv.listener.FlagDemiInterfaceStepListener"/>
 
     <bean id="readFromTableLigneProgrammeFV"
           class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">

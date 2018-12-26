@@ -1,10 +1,10 @@
 package fr.sacem.priam.batch.fv.octav.req;
 
 import com.google.common.collect.Lists;
+import fr.sacem.priam.batch.common.dao.FichierJdbcDao;
 import fr.sacem.priam.batch.common.domain.Admap;
 import fr.sacem.priam.batch.common.domain.Fichier;
 import fr.sacem.priam.batch.fv.octav.req.config.ConfigurationPriamLocal;
-import fr.sacem.priam.batch.fv.octav.req.dao.FichierJdbcDao;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +27,6 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 public class App {
 
     private static  final Logger LOGGER = LoggerFactory.getLogger(App.class);
-    public static final String TO_SRV_OCTAV_CTNU = "TO_SRV_OCTAV_CTNU";
     public static final String CHARGEMENT_OK = "CHARGEMENT_OK";
 
     public static void main(String[] args) {

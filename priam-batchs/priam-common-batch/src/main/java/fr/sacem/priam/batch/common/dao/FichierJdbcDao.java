@@ -1,13 +1,13 @@
 package fr.sacem.priam.batch.common.dao;
 
+import com.google.common.base.Joiner;
 import fr.sacem.priam.batch.common.domain.Fichier;
+import java.util.List;
+import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.sql.DataSource;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -45,6 +45,20 @@ public class FichierJdbcDao {
             stmt.setString(1, statut);
             stmt.setLong(2, idFichier);
 
+        });
+    }
+
+    public List<Fichier> getFichiersFvEligibleOctavCtnu(String statut, List<String> fonds) {
+        String inClause = "'" + Joiner.on("','").join(fonds) + "'";
+        return jdbcTemplate.query("SELECT * FROM PRIAM_FICHIER WHERE CDEFAMILTYPUTIL='FDSVAL' " +
+            "AND CDETYPUTIL IN (" + inClause + ") "+
+            "AND STATUT_CODE= '" + statut + "'", (rs, i) -> {
+
+            Fichier fichier = new Fichier();
+            Long id = rs.getLong("ID");
+            fichier.setId(id);
+
+            return fichier;
         });
     }
 }
