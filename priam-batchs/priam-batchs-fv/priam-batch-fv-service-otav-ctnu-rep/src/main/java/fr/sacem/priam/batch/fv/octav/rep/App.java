@@ -1,11 +1,8 @@
 package fr.sacem.priam.batch.fv.octav.rep;
 
 import fr.sacem.priam.batch.common.domain.Admap;
-import fr.sacem.priam.batch.common.domain.Fichier;
 import fr.sacem.priam.batch.fv.octav.rep.config.ConfigurationPriamLocal;
-import fr.sacem.priam.batch.fv.octav.rep.dao.FichierJdbcDao;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,33 +23,30 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 public class App {
 
     private static  final Logger LOGGER = LoggerFactory.getLogger(App.class);
-    public static final String TO_SRV_OCTAV_CTNU = "TO_SRV_OCTAV_CTNU";
+
 
     public static void main(String[] args) {
 
         ApplicationContext context = new AnnotationConfigApplicationContext(ConfigurationPriamLocal.class);
         JobLauncher jobLauncher = (JobLauncher) context.getBean("jobLauncher");
-        Job job = (Job) context.getBean("jobGenerationREQ");
+        Job job = (Job) context.getBean("jobOctavCtnuRep");
         Admap admap = (Admap) context.getBean("admap");
-        FichierJdbcDao fichierJdbcDao = (FichierJdbcDao)context.getBean("fichierJdbcDao");
-
-        List<Fichier> fichiers = fichierJdbcDao.getFichiersFvByStatutEnrichissement(TO_SRV_OCTAV_CTNU);
-        fichiers.forEach(f -> {
-            try {
-                Map<String, JobParameter> jobParametersMap = new HashMap<>();
-                jobParametersMap.put("time", new JobParameter(System.currentTimeMillis()));
-                jobParametersMap.put("outputCsvFile", new JobParameter(admap.getOutputFile()));
-                jobParametersMap.put("idFichier", new JobParameter(f.getId()));
-                JobParameters jobParameters = new JobParameters(jobParametersMap);
-
-                jobLauncher.run(job, jobParameters);
-
-            } catch (Exception e) {
-                LOGGER.error("Error execution", e);
-            }
 
 
-        });
+        try {
+            Map<String, JobParameter> jobParametersMap = new HashMap<>();
+
+            jobParametersMap.put("time", new JobParameter(System.currentTimeMillis()));
+            jobParametersMap.put("input.archives", new JobParameter(admap.getInputFile()));
+            jobParametersMap.put("output.archives", new JobParameter(admap.getOutputFile()));
+            jobParametersMap.put("pattern.file.name", new JobParameter(admap.getPatternFileName()));
+
+            JobParameters jobParameters = new JobParameters(jobParametersMap);
+
+            jobLauncher.run(job, jobParameters);
+        } catch (Exception e) {
+            LOGGER.error(String.format("Exception %s", e));
+        }
 
         LOGGER.info("Done");
 

@@ -7,14 +7,14 @@
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <charset>utf-8</charset>
-            <Pattern>[@project.name@] %d{yyyy/MM/dd HH:mm:ss.SSS} [%thread] %-5level %logger: %msg%n</Pattern>
+            <Pattern>[BatchSrvOctavCtnuREQ] %d{yyyy/MM/dd HH:mm:ss.SSS} [%thread] %-5level %logger: %msg%n</Pattern>
         </encoder>
     </appender>
 
     <appender name="priam-file" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${priam.log.default.directory}/priam-batch-import-fv-fonds69.log</file>
+        <file>${priam.log.default.directory}/priam-batch-fv-service-otav-ctnu-req.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <fileNamePattern>${priam.log.default.directory}/priam-batch-import-fv-fonds69.%i.log</fileNamePattern>
+            <fileNamePattern>${priam.log.default.directory}/priam-batch-fv-service-otav-ctnu-req.%i.log</fileNamePattern>
             <maxIndex>10</maxIndex>
         </rollingPolicy>
         <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">

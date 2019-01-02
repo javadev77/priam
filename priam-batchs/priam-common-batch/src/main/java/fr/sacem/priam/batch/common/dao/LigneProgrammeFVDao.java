@@ -1,12 +1,14 @@
 package fr.sacem.priam.batch.common.dao;
 
+import fr.sacem.priam.batch.common.domain.LigneProgrammeFV;
+import fr.sacem.priam.batch.common.util.mapper.importPenef.PriamLigneProgrammeFVSQLMapper;
+import java.util.List;
+import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-
-import javax.sql.DataSource;
 
 /**
  * Created by embouazzar on 22/12/2018.
@@ -23,12 +25,6 @@ public class LigneProgrammeFVDao {
 
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
-//
-//    @PostConstruct
-//    public void init() {
-//
-//        this.jdbcTemplate = new JdbcTemplate(this.dataSource);
-//    }
 
     public Long countNbLignesByIdFichier(Long idFichier){
         String sql = "SELECT " +
@@ -38,4 +34,14 @@ public class LigneProgrammeFVDao {
                 "WHERE l.ID_FICHIER=?";
         return jdbcTemplate.queryForObject(sql, (resultSet, i) -> resultSet.getLong("NB_LIGNES"), idFichier);
     }
+
+    public LigneProgrammeFV findOeuvreByIde12(Long ide12, Long idFichier) {
+
+        List<LigneProgrammeFV> result = jdbcTemplate.query("SELECT l.* FROM PRIAM_LIGNE_PROGRAMME_FV l WHERE l.ide12=? AND l.ID_FICHIER=?",
+            new PriamLigneProgrammeFVSQLMapper(), ide12, idFichier);
+
+        return result != null && result.size() == 1 ? result.get(0) : null;
+    }
+
+
 }

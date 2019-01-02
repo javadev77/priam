@@ -9,6 +9,7 @@
     <artifactId>priam-batch-fv-service-otav-ctnu-rep</artifactId>
     <packaging>jar</packaging>
 
+    <name>BatchSrvOctavCtnuREP</name>
 
     <dependencies>
         <dependency>
@@ -65,7 +66,7 @@
     </dependencies>
 
     <build>
-        <finalName>priam-batch-import-fv-fond69</finalName>
+
 
         <plugins>
 

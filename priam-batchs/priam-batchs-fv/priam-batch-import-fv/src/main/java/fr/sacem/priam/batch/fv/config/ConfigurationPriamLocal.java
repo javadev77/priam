@@ -12,7 +12,7 @@ import javax.sql.DataSource;
  * Created by fandis on 09/10/2017.
  */
 @Configuration
-@ComponentScan(basePackages = {"fr.sacem.priam.batch.fv", "fr.sacem.priam.batch.common"})
+@ComponentScan(basePackages = {"fr.sacem.priam.batch.fv", "fr.sacem.priam.batch.common.dao", "fr.sacem.priam.batch.common.fv", "fr.sacem.priam.batch.common.domain"})
 @Profile("local")
 @PropertySource("classpath:config/application-${spring.profiles.active}.properties")
 public class ConfigurationPriamLocal {
