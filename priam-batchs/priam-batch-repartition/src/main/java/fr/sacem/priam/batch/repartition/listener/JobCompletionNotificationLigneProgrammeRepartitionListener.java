@@ -1,7 +1,7 @@
-package fr.sacem.priam.batch.fv.octav.info.oeuvre.rep.repartition.listener;
+package fr.sacem.priam.batch.repartition.listener;
 
-import fr.sacem.priam.batch.fv.octav.info.oeuvre.rep.common.util.UtilFile;
-import fr.sacem.priam.batch.fv.octav.info.oeuvre.rep.common.util.exception.PriamValidationException;
+import fr.sacem.priam.batch.common.util.UtilFile;
+import fr.sacem.priam.batch.common.util.exception.PriamValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.BatchStatus;
@@ -19,7 +19,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 
-import static fr.sacem.priam.batch.fv.octav.info.oeuvre.rep.common.util.exception.PriamValidationException.ErrorType;
+import static fr.sacem.priam.batch.common.util.exception.PriamValidationException.ErrorType;
 
 
 @Component

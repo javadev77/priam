@@ -2,9 +2,11 @@ package fr.sacem.priam.batch.fv.octav.info.oeuvre.req.config;
 
 import fr.sacem.priam.batch.common.domain.LigneProgrammeFV;
 import fr.sacem.priam.batch.common.fv.listener.FlagDemiInterfaceStepListener;
+
 import fr.sacem.priam.batch.fv.octav.info.oeuvre.req.listener.JobListener;
 
 import fr.sacem.priam.batch.common.fv.writer.CsvFileItemWriter;
+
 import fr.sacem.priam.batch.common.fv.reader.TableLigneProgrammeFVReader;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -12,9 +14,7 @@ import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
-
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

@@ -13,7 +13,11 @@ import fr.sacem.priam.model.domain.criteria.ProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.security.model.UserDTO;
 import fr.sacem.priam.services.api.LigneProgrammeService;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,11 +30,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Created by benmerzoukah on 28/06/2017.
@@ -90,13 +89,14 @@ public class ProgrammeServiceTest {
 		programmeDto.setNom("Test-PR01");
 		programmeDto.setRionTheorique(619);
 		programmeDto.setFamille("COPIEPRIV");
-		
-		String lastElement = programmeSequnceDao.getLastElement("17");
+
+		String year = String.valueOf(LocalDate.now().getYear()).substring(2,4);
+		String lastElement = programmeSequnceDao.getLastElement(year);
 		Integer lastSeq = StringUtils.isNotEmpty(lastElement) ?  Integer.valueOf(lastElement) : 0;
 		
 		Programme programme = programmeService.addProgramme(programmeDto, userDTO);
 		
-		assertThat(programme.getNumProg()).isEqualTo("18" + StringUtils.leftPad(String.valueOf(lastSeq + 1), 4, "0"));
+		assertThat(programme.getNumProg()).isEqualTo(year  + StringUtils.leftPad(String.valueOf(lastSeq + 1), 4, "0"));
 		assertThat(programme.getNom()).isEqualTo("Test-PR01");
 		assertThat(programme.getRionTheorique().getRion()).isEqualTo(619);
 		assertThat(programme.getFamille().getCode()).isEqualTo("COPIEPRIV");

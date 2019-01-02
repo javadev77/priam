@@ -36,7 +36,7 @@ import static org.junit.Assert.assertTrue;
 public class JobGenerationREQTest {
 
     public static final String PATTERN_FILE_CSV_REQ = "^FF_PRIAM_\\d{14}_\\d+_INFOS_OEUVRES_REQ.csv$";
-    public static final String PATTERN_FLAG_CSV_REQ = "^Flag_FF_PRIAM_\\d{14}_\\d+_INFOS_OEUVRES_REQ.csv$";
+    public static final String PATTERN_FLAG_CSV_REQ = "^Flag_FF_PRIAM_\\d{14}_\\d+_INFOS_OEUVRES_REQ$";
 
     @Autowired
     private JobLauncherTestUtils jobLauncherTestUtils;

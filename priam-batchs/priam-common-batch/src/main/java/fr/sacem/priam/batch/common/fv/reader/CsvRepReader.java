@@ -1,6 +1,14 @@
 package fr.sacem.priam.batch.common.fv.reader;
 
 import fr.sacem.priam.batch.common.util.UtilFile;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,12 +22,7 @@ import org.springframework.batch.item.file.MultiResourceItemReader;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
-import java.io.File;
-import java.util.*;
 
-/**
- * Created by embouazzar on 28/12/2018.
- */
 public class CsvRepReader<T> extends MultiResourceItemReader<T> {
 
     private static final Logger LOG = LoggerFactory.getLogger(CsvRepReader.class);
@@ -87,7 +90,8 @@ public class CsvRepReader<T> extends MultiResourceItemReader<T> {
                                     File fichierEnCoursDeTraitement = new File(rep + file.getName() + FILE_CSV_EN_COURS_DE_TRAITEMENT);
                                     JobParameter jobParameterFichierCSVEnCours = new JobParameter(fichierEnCoursDeTraitement.getAbsolutePath());
                                     JobParameter jobParameterNomFichierOriginal = new JobParameter(file.getName());
-                                    utilFile.suppressionFlagDemiInterface(new File(rep + "Flag_" + file.getName()));
+
+                                    utilFile.suppressionFlagDemiInterface(new File(rep +  "Flag_" + file.getName()));
                                     LOG.debug("=== renomer le fichier en : "+fichierEnCoursDeTraitement.getName()+" ===");
 
 

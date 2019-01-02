@@ -1,7 +1,8 @@
-package fr.sacem.priam.batch.repartition.mapper;
+package fr.sacem.priam.batch.fv.octav.rep.mapper;
 
-import fr.sacem.priam.batch.common.domain.Repartition;
 import fr.sacem.priam.batch.common.util.exception.PriamValidationException;
+import static fr.sacem.priam.batch.common.util.exception.PriamValidationException.ErrorType.FORMAT_ATTRIBUT;
+import fr.sacem.priam.batch.fv.octav.rep.reader.OeuvreCtnuRep;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.mapping.FieldSetMapper;
 import org.springframework.batch.item.file.transform.IncorrectTokenCountException;
@@ -9,28 +10,25 @@ import org.springframework.batch.item.file.transform.LineTokenizer;
 import org.springframework.util.Assert;
 import org.springframework.validation.BindException;
 
-/**
- * Created by belwidanej on 29/08/2017.
- */
-public class CsvPriamLineMapper extends DefaultLineMapper<Repartition> {
+public class OeuvreCtnuRepLineMapper extends DefaultLineMapper<OeuvreCtnuRep> {
 
     private LineTokenizer tokenizer;
 
-    private FieldSetMapper<Repartition> fieldSetMapper;
+    private FieldSetMapper<OeuvreCtnuRep> fieldSetMapper;
 
     @Override
-    public Repartition mapLine(String line, int lineNumber) throws Exception {
+    public OeuvreCtnuRep mapLine(String line, int lineNumber) throws Exception {
 
         try{
 
-            Repartition repartition = fieldSetMapper.mapFieldSet(tokenizer.tokenize(line));
-            repartition.setLineNumber(lineNumber);
-            return repartition;
+            OeuvreCtnuRep participant = fieldSetMapper.mapFieldSet(tokenizer.tokenize(line));
+            participant.setLineNumber(lineNumber);
+            return participant;
 
         } catch ( IncorrectTokenCountException e ) {
             throw e;
         } catch ( BindException | RuntimeException ex) {
-            return new Repartition(new PriamValidationException(lineNumber, ex, PriamValidationException.ErrorType.FORMAT_ATTRIBUT, null));
+            return new OeuvreCtnuRep(new PriamValidationException(lineNumber, ex, FORMAT_ATTRIBUT, null));
         }
 
 
@@ -40,7 +38,7 @@ public class CsvPriamLineMapper extends DefaultLineMapper<Repartition> {
         this.tokenizer = tokenizer;
     }
 
-    public void setFieldSetMapper(FieldSetMapper<Repartition> fieldSetMapper) {
+    public void setFieldSetMapper(FieldSetMapper<OeuvreCtnuRep> fieldSetMapper) {
         this.fieldSetMapper = fieldSetMapper;
     }
 
@@ -49,7 +47,4 @@ public class CsvPriamLineMapper extends DefaultLineMapper<Repartition> {
         Assert.notNull(tokenizer, "The LineTokenizer must be set");
         Assert.notNull(fieldSetMapper, "The FieldSetMapper must be set");
     }
-
-
-
 }

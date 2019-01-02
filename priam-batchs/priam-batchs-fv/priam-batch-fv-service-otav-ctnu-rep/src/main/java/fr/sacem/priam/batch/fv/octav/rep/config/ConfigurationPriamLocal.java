@@ -7,7 +7,6 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 
@@ -15,8 +14,7 @@ import org.springframework.context.annotation.PropertySource;
  * Created by fandis on 09/10/2017.
  */
 @Configuration
-@ComponentScan(basePackages = {"fr.sacem.priam.batch.fv.octav.rep"})
-@ImportResource(value = "classpath:config/job-configuration.xml")
+@ComponentScan(basePackages = {"fr.sacem.priam.batch.fv.octav.rep", "fr.sacem.priam.batch.common.dao", "fr.sacem.priam.batch.common.fv", "fr.sacem.priam.batch.common.domain"})
 @Profile({"dev","local"})
 @PropertySource("classpath:config/application-local.properties")
 public class ConfigurationPriamLocal {
@@ -32,8 +30,14 @@ public class ConfigurationPriamLocal {
     @Value("${spring.datasource.password}")
     String passwordDb;
 
-    @Value("${csvFile}")
-    String ouputCsvFile;
+    @Value("${input.archives}")
+    String inputDirectory;
+
+    @Value("${output.archives}")
+    String outputDirectory;
+
+    @Value("${pattern.file.name}")
+    String patternFileName;
 
 
     @Bean
@@ -53,7 +57,9 @@ public class ConfigurationPriamLocal {
     public Admap admap(){
         Admap admap = new Admap();
 
-        admap.setOutputFile(ouputCsvFile);
+        admap.setOutputFile(outputDirectory);
+        admap.setInputFile(inputDirectory);
+        admap.setPatternFileName(patternFileName);
 
         return admap;
     }

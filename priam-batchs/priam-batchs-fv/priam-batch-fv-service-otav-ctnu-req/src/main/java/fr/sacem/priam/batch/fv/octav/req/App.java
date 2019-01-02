@@ -30,7 +30,7 @@ public class App {
     public static final String CHARGEMENT_OK = "CHARGEMENT_OK";
 
     public static void main(String[] args) {
-
+        LOGGER.info(">>>> [BEGIN] - Batch Generation des fichiers REQ OCTAV-CTNU");
         ApplicationContext context = new AnnotationConfigApplicationContext(ConfigurationPriamLocal.class);
         JobLauncher jobLauncher = (JobLauncher) context.getBean("jobLauncher");
         Job job = (Job) context.getBean("jobGenerationREQ");
@@ -39,6 +39,11 @@ public class App {
 
         List<Fichier> fichiers = fichierJdbcDao.getFichiersFvEligibleOctavCtnu(CHARGEMENT_OK,
                                                                                Lists.newArrayList("FD03", "FD04", "FD09", "FD10", "FD11"));
+
+        if(fichiers == null || fichiers.isEmpty()) {
+            LOGGER.info("Aucun fichier eligible à l'étape OCTAV CTNU");
+            System.exit(0);
+        }
         fichiers.forEach(f -> {
             try {
                 Map<String, JobParameter> jobParametersMap = new HashMap<>();
@@ -56,7 +61,7 @@ public class App {
 
         });
 
-        LOGGER.info("Done");
+        LOGGER.info("<<<<< [END] - Batch Generation des fichiers REQ OCTAV-CTNU");
 
 
 

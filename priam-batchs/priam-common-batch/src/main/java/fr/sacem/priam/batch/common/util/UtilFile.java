@@ -163,7 +163,6 @@ public class UtilFile {
     public void suppressionFlag(File fichierEnCoursDeTraitement){
         if(fichierEnCoursDeTraitement != null){
             String nomFichierFlag = FilenameUtils.removeExtension(fichierEnCoursDeTraitement.getAbsolutePath()) + EXTENTION_FLAG;
-//            String nomFichierFlag = FilenameUtils.removeExtension(parameterFichierZipEnCours) + EXTENTION_FLAG;
             File fichierFlag = new File(nomFichierFlag);
             if(fichierFlag.exists()){
                 fichierFlag.delete();
@@ -184,6 +183,7 @@ public class UtilFile {
             }
         }
     }
+
 
     public void deplacerFichierEtSuppressionFlag(JobExecution jobExecution){
         Collection<StepExecution> stepExecutions = jobExecution.getStepExecutions();
