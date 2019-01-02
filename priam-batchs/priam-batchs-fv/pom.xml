@@ -10,6 +10,7 @@
         <module>priam-batch-fv-service-otav-ctnu-req</module>
         <module>priam-batch-fv-service-octav-info-oeuvre-req</module>
         <module>priam-batch-fv-service-otav-ctnu-rep</module>
+        <module>priam-batch-fv-service-octav-info-oeuvre-rep</module>
     </modules>
 
     <parent>

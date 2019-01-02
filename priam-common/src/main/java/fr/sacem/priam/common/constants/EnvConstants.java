@@ -238,6 +238,31 @@ public enum EnvConstants implements ConfigurableProperty {
         }
 
     },
+
+    OCTAV_INFOS_OEUVRES_REQ_CSV_DIR {
+        @Override
+        public String property() {
+            return "priam.fv.octav.infosoeuvres.req.dir";
+        }
+
+    },
+
+    OCTAV_INFOS_OEUVRES_REP_CSV_INPUT {
+        @Override
+        public String property() {
+            return "priam.fv.octav.infosoeuvres.rep.input";
+        }
+
+    },
+
+    OCTAV_INFOS_OEUVRES_REP_CSV_ARCHIVES {
+        @Override
+        public String property() {
+            return "priam.fv.octav.infosoeuvres.rep.archives";
+        }
+
+    },
+
     CATCMS_FILIATION_NPU_INPUT {
         @Override
         public String property() {

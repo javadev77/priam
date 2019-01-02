@@ -1,7 +1,7 @@
-package fr.sacem.priam.batch.repartition.mapper;
+package fr.sacem.priam.batch.fv.octav.info.oeuvre.rep.repartition.mapper;
 
-import fr.sacem.priam.batch.common.domain.Repartition;
-import fr.sacem.priam.batch.common.util.exception.PriamValidationException;
+import fr.sacem.priam.batch.fv.octav.info.oeuvre.rep.common.domain.Repartition;
+import fr.sacem.priam.batch.fv.octav.info.oeuvre.rep.common.util.exception.PriamValidationException;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.mapping.FieldSetMapper;
 import org.springframework.batch.item.file.transform.IncorrectTokenCountException;
