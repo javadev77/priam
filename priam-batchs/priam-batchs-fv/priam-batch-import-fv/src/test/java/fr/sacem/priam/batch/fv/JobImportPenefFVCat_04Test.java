@@ -4,7 +4,6 @@ import fr.sacem.priam.batch.common.domain.Fichier;
 import fr.sacem.priam.batch.fv.config.BatchConfigurationTest;
 import fr.sacem.priam.batch.fv.config.ConfigurationPriamLocalTest;
 import fr.sacem.priam.batch.fv.dao.FichierDao;
-import fr.sacem.priam.batch.fv.dao.LigneProgrammeFVDaoTest;
 import fr.sacem.priam.batch.utils.TestUtils;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
@@ -43,9 +42,6 @@ public class JobImportPenefFVCat_04Test {
 
     @Autowired
     private JobLauncherTestUtils jobLauncherTestUtils;
-
-    @Autowired
-    private LigneProgrammeFVDaoTest ligneProgrammeFVDaoTest;
 
     @Autowired
     private FichierDao fichierDao;

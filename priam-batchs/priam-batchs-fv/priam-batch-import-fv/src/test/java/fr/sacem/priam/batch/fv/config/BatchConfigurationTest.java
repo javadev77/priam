@@ -14,7 +14,7 @@ import fr.sacem.priam.batch.common.util.mapper.importPenef.PriamFileFVItemReader
 import fr.sacem.priam.batch.common.util.mapper.importPenef.PriamLigneProgrammeFVSQLMapper;
 import fr.sacem.priam.batch.common.util.mapper.importPenef.PriamLineFVMapper;
 import fr.sacem.priam.batch.fv.dao.FichierDao;
-import fr.sacem.priam.batch.fv.dao.LigneProgrammeFVDaoTest;
+
 import fr.sacem.priam.batch.fv.reader.CopyFVItemReader;
 import fr.sacem.priam.batch.fv.reader.ZipMultiResourceFvFondsItemReader;
 import fr.sacem.priam.batch.fv.service.importPenef.LigneProgrammeFVProcessorTest;
@@ -472,13 +472,6 @@ public class BatchConfigurationTest {
     @Bean
     public JobLauncherTestUtils jobLauncherTestUtils() {
         return new JobLauncherTestUtils();
-    }
-
-    @Bean
-    public LigneProgrammeFVDaoTest ligneProgrammeFVDaoTest() {
-        LigneProgrammeFVDaoTest ligneProgrammeFVDaoTest = new LigneProgrammeFVDaoTest();
-        ligneProgrammeFVDaoTest.setDataSource(dataSource);
-        return ligneProgrammeFVDaoTest;
     }
 
     @Bean

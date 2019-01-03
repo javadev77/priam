@@ -47,16 +47,7 @@ public class App {
                 jobParametersMap.put("input.archives", new JobParameter(admap.getInputFile()));
                 jobParametersMap.put("output.archives", new JobParameter(admap.getOutputFile()));
                 jobParametersMap.put("typeCMS", new JobParameter(typeCMS));
-
-                StringBuilder pattern = new StringBuilder(admap.getPatternFileName());
-                JobParameter patternFile;
-                if(typeCMS.equals(FileUtils.CATALOGUE_TYPE_CMS_FRA)){
-                    patternFile = new JobParameter(pattern.insert(30, FileUtils.CATALOGUE_TYPE_CMS_FRA).toString());
-                } else {
-                    patternFile = new JobParameter(pattern.insert(30, FileUtils.CATALOGUE_TYPE_CMS_ANF).toString());
-                }
-
-                jobParametersMap.put("pattern.file.name", patternFile);
+                jobParametersMap.put("pattern.file.name", new JobParameter(admap.getPatternFileName()));
 
                 JobParameters jobParameters = new JobParameters(jobParametersMap);
                 JobExecution execution = jobLauncher.run(job, jobParameters);

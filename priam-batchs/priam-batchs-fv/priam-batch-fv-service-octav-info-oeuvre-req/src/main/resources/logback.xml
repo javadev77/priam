@@ -12,9 +12,9 @@
     </appender>
 
     <appender name="priam-file" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${priam.log.default.directory}/@artifactId@.log</file>
+        <file>${priam.log.default.directory}/priam-batch-fv-service-octav-info-oeuvre-req.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <fileNamePattern>${priam.log.default.directory}/@artifactId@.%i.log</fileNamePattern>
+            <fileNamePattern>${priam.log.default.directory}/priam-batch-fv-service-octav-info-oeuvre-req.%i.log</fileNamePattern>
             <maxIndex>10</maxIndex>
         </rollingPolicy>
         <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">

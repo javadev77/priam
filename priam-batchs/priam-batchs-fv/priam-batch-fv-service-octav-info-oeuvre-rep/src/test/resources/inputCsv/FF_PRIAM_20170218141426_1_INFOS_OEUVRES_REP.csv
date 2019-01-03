@@ -1,0 +1,15 @@
+#-------------------------------------------------------------------------------------------------------------------
+# Fichier a destination de ???
+# en provenance de OCTAVInt1.0X
+#-------------------------------------------------------------------------------------------------------------------
+# JJ/MM/AAAA HH:MM - Auteur - Objet
+#-------------------------------------------------------------------------------------------------------------------
+# 20181127 17:35:53 - OCTAVInt1.0X - Creation
+#DEBUT
+#ide12;CdeTypIde12;TitreOeuvre;LabelValo;DureeDeposee;TaxOri;IndicRepart;GenreOeuvre;PaysOri;statut
+2379416911;COCV;LA CORSE INFOS OEUVRES;;;;;AI;250;0
+#FIN
+# 20181127 17:36:03 - Duree : 0j 0:0:10,41
+# Nbr lignes de donnees       = 1
+# Nbr lignes en erreur metier = 0
+# Nbr d'erreurs techniques    = 0
