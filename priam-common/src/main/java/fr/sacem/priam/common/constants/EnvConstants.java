@@ -305,6 +305,30 @@ public enum EnvConstants implements ConfigurableProperty {
         public String property() {
             return "priam.service.catcms.url";
         }
+    },
+
+    OCATV_CTNU_REQ_DIR {
+        @Override
+        public String property() {
+            return "priam.fv.octav.ctnu.req.dir";
+        }
+
+    },
+
+    OCATV_CTNU_REP_IN_DIR {
+        @Override
+        public String property() {
+            return "priam.fv.octav.ctnu.rep.in.dir";
+        }
+
+    },
+
+    OCATV_CTNU_REP_ARCHIVES_DIR {
+        @Override
+        public String property() {
+            return "priam.fv.octav.ctnu.rep.archives.dir";
+        }
+
     };
 
     @Override
