@@ -19,6 +19,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,11 +33,12 @@ public class jobFiliationNPUTest {
     private JobLauncherTestUtils jobLauncherTestUtils;
     private ApplicationContext context;
 
-    private static final String PATH_FILE_CSV = "src/test/resources/inputCsv/FF_OCTAV_PRIAM_EXTRACTION_NPU.csv";
-    private static final String CSV_FILE_NAME = "FF_OCTAV_PRIAM_EXTRACTION_NPU.csv";
+    private static final String PATH_FILE_CSV = "src/test/resources/inputCsv/FF_OCTAV_PRIAM_20190104_EXTRACTION_NPU_REP.csv";
+    private static final String CSV_FILE_NAME = "FF_OCTAV_PRIAM_20190104_EXTRACTION_NPU_REP.csv";
 
     private static final String inputDirectory = "target/inputDirectory/";
     private static final String outputDirectory = "target/outputDirectory/";
+    private static final String patternFileName = "^FF_OCTAV_PRIAM_\\d{8}_EXTRACTION_NPU_REP$";
 
     private OeuvreFiliationNPURepositoryForTest oeuvreFiliationNPURepository;
 
@@ -69,6 +72,7 @@ public class jobFiliationNPUTest {
         Map<String, JobParameter> jobParametersMap = new HashMap<>();
         jobParametersMap.put("input.archives", new JobParameter(inputDirectory));
         jobParametersMap.put("output.archives", new JobParameter(outputDirectory));
+        jobParametersMap.put("pattern.file.name", new JobParameter(patternFileName));
         JobParameters jobParameters = new JobParameters(jobParametersMap);
 
         // launch the job

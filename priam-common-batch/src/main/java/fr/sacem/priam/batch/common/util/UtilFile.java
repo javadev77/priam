@@ -163,13 +163,22 @@ public class UtilFile {
     public void suppressionFlag(File fichierEnCoursDeTraitement){
         if(fichierEnCoursDeTraitement != null){
             String nomFichierFlag = FilenameUtils.removeExtension(fichierEnCoursDeTraitement.getAbsolutePath()) + EXTENTION_FLAG;
-//            String nomFichierFlag = FilenameUtils.removeExtension(parameterFichierZipEnCours) + EXTENTION_FLAG;
-            File fichierFlag = new File(nomFichierFlag);
-            if(fichierFlag.exists()){
-                fichierFlag.delete();
-            } else {
-                LOG.error("Suppresion flag KO ");
-            }
+            deleteFile(nomFichierFlag);
+        }
+    }
+
+    private void deleteFile(String nomFichierFlag) {
+        File fichierFlag = new File(nomFichierFlag);
+        if (fichierFlag.exists()) {
+            fichierFlag.delete();
+        } else {
+            LOG.error("Le fichier Flag n'existe pas");
+        }
+    }
+
+    public void suppressionFlagDemiInterface(String flagFilename){
+        if(flagFilename != null){
+            deleteFile(flagFilename);
         }
     }
 

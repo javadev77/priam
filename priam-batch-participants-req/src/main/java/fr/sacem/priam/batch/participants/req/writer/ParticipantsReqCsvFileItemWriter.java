@@ -1,6 +1,8 @@
 package fr.sacem.priam.batch.participants.req.writer;
 
 import fr.sacem.priam.batch.participants.req.domain.CatalogueCms;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.velocity.texen.util.FileUtil;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.AfterStep;
 import org.springframework.batch.item.ExecutionContext;
@@ -23,6 +25,6 @@ public class ParticipantsReqCsvFileItemWriter extends FlatFileItemWriter<Catalog
     @AfterStep
     public void afterStep(StepExecution stepExecution) {
         ExecutionContext stepContext = stepExecution.getExecutionContext();
-        stepContext.put("PARTICIPATNS_FILE_REQ", this.resource.getFilename());
+        stepContext.put("PARTICIPATNS_FILE_REQ", FilenameUtils.removeExtension(this.resource.getFilename()));
     }
 }

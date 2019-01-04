@@ -32,8 +32,8 @@ import static org.junit.Assert.assertTrue;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles("test")
 public class JobParticipantsREQTest {
-    public static final String PATTERN_PART_REQ = "FF_PRIAM_\\d{14}_PARTICIPANTS_FRA_REQ.csv";
-    public static final String PATTERN_FLAG = "Flag_FF_PRIAM_\\d{14}_PARTICIPANTS_FRA_REQ.csv";
+    public static final String PATTERN_PART_REQ = "FF_PRIAM_\\d{14}_PARTICIPANTS_(ANF|FRA)_REQ.csv";
+    public static final String PATTERN_FLAG = "Flag_FF_PRIAM_\\d{14}_PARTICIPANTS_(ANF|FRA)_REQ";
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
     private JobLauncherTestUtils jobLauncherTestUtils;

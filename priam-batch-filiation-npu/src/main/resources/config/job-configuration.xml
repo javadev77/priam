@@ -41,7 +41,7 @@
     </job>
 
     <bean id="readerPriamFiliationNpuCsv"
-          class="fr.sacem.priam.batch.common.reader.CsvMultiResourceItemReader" scope="step">
+          class="fr.sacem.priam.batch.filiation.npu.reader.CsvMultiResourceItemReader" scope="step">
         <property name="delegate" ref="flatFileItemReader"/>
         <property name="strict" value="false"/>
     </bean>

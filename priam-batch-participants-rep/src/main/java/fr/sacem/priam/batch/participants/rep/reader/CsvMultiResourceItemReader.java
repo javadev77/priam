@@ -85,12 +85,13 @@ public class CsvMultiResourceItemReader<T> extends MultiResourceItemReader<T> {
                                 File file = fichiersDansLeRepertoire.get(j);
                                 //on traite qu'un seul fichier csv par lancement de batch
                                 String filenameCsv = FilenameUtils.getBaseName(file.getName());
-                                if (filenameCsv.matches(patternFileName) && file.getName().matches(EXTENTION_CSV) && nbrDeFichierCSVATraiter < 1) {
+                                if (file.getName().matches(EXTENTION_CSV) && filenameCsv.matches(patternFileName) && nbrDeFichierCSVATraiter < 1) {
 
                                     File fichierEnCoursDeTraitement = new File(rep + file.getName() + FILE_CSV_EN_COURS_DE_TRAITEMENT);
                                     JobParameter jobParameterFichierCSVEnCours = new JobParameter(fichierEnCoursDeTraitement.getAbsolutePath());
                                     JobParameter jobParameterNomFichierOriginal = new JobParameter(file.getName());
-                                    utilFile.suppressionFlag(fichierEnCoursDeTraitement);
+
+                                    utilFile.suppressionFlagDemiInterface(rep + "Flag_" + FilenameUtils.removeExtension(file.getName()));
                                     LOG.debug("=== renomer le fichier en : "+fichierEnCoursDeTraitement.getName()+" ===");
 
 

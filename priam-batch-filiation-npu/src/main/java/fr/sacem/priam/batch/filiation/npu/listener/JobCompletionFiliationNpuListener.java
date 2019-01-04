@@ -32,55 +32,21 @@ public class JobCompletionFiliationNpuListener extends JobExecutionListenerSuppo
 
     @Override
     public void afterJob(JobExecution jobExecution) {
-        if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
+        executionContext = jobExecution.getExecutionContext();
+        if (jobExecution.getStatus() != BatchStatus.COMPLETED) {
+            Set<String> errors = (Set<String>) executionContext.get("npu-errors");
+            if(errors != null) {
+                 LOG.info(String.valueOf(errors));
+             }
+        }
 
-            Collection<StepExecution> stepExecutions = jobExecution.getStepExecutions();
-            Iterator it = stepExecutions.iterator();
-            while (it.hasNext()) {
-                StepExecution myStepExecution = (StepExecution) it.next();
-                executionContext = myStepExecution.getExecutionContext();
-                if (executionContext != null) {
-                    JobParameter parameterFichierCSVEnCours = (JobParameter) executionContext.get(FICHIER_CSV_EN_COURS);
-                    JobParameter parameterNomFichierOriginal = (JobParameter) executionContext.get(NOM_ORIGINAL_FICHIER_CSV);
-                    JobParameter outputDirectory = jobExecution.getJobParameters().getParameters().get(REPERTOIRE_DE_DESTINATION);
+        if (executionContext != null) {
+            JobParameter parameterFichierCSVEnCours = (JobParameter) executionContext.get(FICHIER_CSV_EN_COURS);
+            JobParameter parameterNomFichierOriginal = (JobParameter) executionContext.get(NOM_ORIGINAL_FICHIER_CSV);
+            JobParameter outputDirectory = jobExecution.getJobParameters().getParameters().get(REPERTOIRE_DE_DESTINATION);
 
-                    utilFile.deplacerFichier(parameterFichierCSVEnCours, parameterNomFichierOriginal, outputDirectory);
+            utilFile.deplacerFichier(parameterFichierCSVEnCours, parameterNomFichierOriginal, outputDirectory);
 
-                }
-            }
-
-        } else {
-            Collection<StepExecution> stepExecutions = jobExecution.getStepExecutions();
-            Iterator it = stepExecutions.iterator();
-            while (it.hasNext()) {
-                StepExecution myStepExecution = (StepExecution) it.next();
-                executionContext = myStepExecution.getExecutionContext();
-
-                JobParameter parameterFichierCSVEnCours = (JobParameter) executionContext.get(FICHIER_CSV_EN_COURS);
-                JobParameter parameterNomFichierOriginal = (JobParameter) executionContext.get(NOM_ORIGINAL_FICHIER_CSV);
-                JobParameter outputDirectory = jobExecution.getJobParameters().getParameters().get(REPERTOIRE_DE_DESTINATION);
-
-                Set<String> errors = (Set<String>) executionContext.get("repartition-errors");
-                if(myStepExecution.getStatus() == BatchStatus.STOPPED || "FAILED".equals(myStepExecution.getExitStatus().getExitCode())){
-                    Throwable exception = myStepExecution.getFailureExceptions().iterator().next();
-                    if(exception instanceof PriamValidationException) {
-                        PriamValidationException.ErrorType errorType = ((PriamValidationException) exception).getErrorType();
-
-                        if(PriamValidationException.ErrorType.FORMAT_FICHIER.equals(errorType)) {
-                            errors.add(MESSAGE_FORMAT_FICHIER);
-                        }
-                        else if(PriamValidationException.ErrorType.FORMAT_ATTRIBUT.equals(errorType)) {
-                            errors.add(exception.getMessage());
-                        }
-
-                    } else if(errors.isEmpty()) {
-                        errors.add(MESSAGE_ERREUR_TECHNIQUE);
-                    }
-                }
-                LOG.info(errors.toString());
-                utilFile.deplacerFichier(parameterFichierCSVEnCours, parameterNomFichierOriginal, outputDirectory);
-
-            }
         }
 
     }
