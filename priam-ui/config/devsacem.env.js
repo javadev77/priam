@@ -5,7 +5,8 @@ module.exports = {
   CONTEXT_ROOT_PRIAM_COMMON : '"https://dev.sacem.fr/priam-common/"',
   CONTEXT_ROOT_PRIAM_CP : '"https://dev.sacem.fr/priam-cp/"',
   CONTEXT_ROOT_PRIAM_CMS : '"https://dev.sacem.fr/priam-cms/"',
-  CONTEXT_ROOT_PRIAM_CAT_RDO : '"https://dev.sacem.fr/priam-catcms/"'
+  CONTEXT_ROOT_PRIAM_CAT_RDO : '"https://dev.sacem.fr/priam-catcms/"',
+  CONTEXT_ROOT_PRIAM_FV : '"https://dev.sacem.fr/priam-fv/"'
 }
 
 /*module.exports = {

@@ -5,6 +5,7 @@ import fr.sacem.priam.batch.common.dao.FichierJdbcDao;
 import fr.sacem.priam.batch.common.domain.Admap;
 import fr.sacem.priam.batch.common.domain.Fichier;
 import fr.sacem.priam.batch.fv.octav.req.config.ConfigurationPriamLocal;
+import fr.sacem.priam.batch.fv.octav.req.config.ConfigurationPriamProd;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +32,7 @@ public class App {
 
     public static void main(String[] args) {
         LOGGER.info(">>>> [BEGIN] - Batch Generation des fichiers REQ OCTAV-CTNU");
-        ApplicationContext context = new AnnotationConfigApplicationContext(ConfigurationPriamLocal.class);
+        ApplicationContext context = new AnnotationConfigApplicationContext(ConfigurationPriamLocal.class, ConfigurationPriamProd.class);
         JobLauncher jobLauncher = (JobLauncher) context.getBean("jobLauncher");
         Job job = (Job) context.getBean("jobGenerationREQ");
         Admap admap = (Admap) context.getBean("admap");

@@ -2,9 +2,8 @@
 
   <div class="container-fluid">
 
-    <navbar titre1="Programme" titre2="Liste programmes" titre3="Affectation FV" backButton="true"></navbar>
-
-
+    <navbar titre1="Programme" titre2="Liste programmes" titre3="Affectation" backButton="true"></navbar>
+    
     <div class="container-fluid sacem-formula">
 
       <!--En tete Panel-->
@@ -181,6 +180,7 @@
           fichiers: [],
           fichersAvantAffectation : []
         },
+
         fichersAvantDesaffectation : [],
         fichiersDesaffectes: {
           numProg: '',
@@ -334,8 +334,8 @@
     },
 
 
-    created() {
-      console.log("router params numProg = " + this.$route.params.numProg)
+    created() {    
+
       const customActions = {
         findByNumProg: {
           method: 'GET',

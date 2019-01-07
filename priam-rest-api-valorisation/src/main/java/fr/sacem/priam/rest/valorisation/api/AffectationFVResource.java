@@ -44,7 +44,9 @@ public class AffectationFVResource {
     public ProgrammeDto affecterFichiers (@RequestBody AffectationDto affectationDto, UserDTO currentUser) {
 
         String numProg = affectationDto.getNumProg();
+
         ProgrammeDto programmeDto =  programmeViewDao.findByNumProg(numProg);
+
         return programmeDto;
     }
 

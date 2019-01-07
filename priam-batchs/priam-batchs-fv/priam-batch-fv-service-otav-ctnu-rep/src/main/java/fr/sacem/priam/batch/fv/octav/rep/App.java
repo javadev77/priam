@@ -2,6 +2,7 @@ package fr.sacem.priam.batch.fv.octav.rep;
 
 import fr.sacem.priam.batch.common.domain.Admap;
 import fr.sacem.priam.batch.fv.octav.rep.config.ConfigurationPriamLocal;
+import fr.sacem.priam.batch.fv.octav.rep.config.ConfigurationPriamProd;
 import java.util.HashMap;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -27,7 +28,7 @@ public class App {
 
     public static void main(String[] args) {
 
-        ApplicationContext context = new AnnotationConfigApplicationContext(ConfigurationPriamLocal.class);
+        ApplicationContext context = new AnnotationConfigApplicationContext(ConfigurationPriamLocal.class, ConfigurationPriamProd.class);
         JobLauncher jobLauncher = (JobLauncher) context.getBean("jobLauncher");
         Job job = (Job) context.getBean("jobOctavCtnuRep");
         Admap admap = (Admap) context.getBean("admap");

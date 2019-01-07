@@ -62,10 +62,10 @@ public class BatchConfig {
 
     @Bean
     public Step stepRep() {
-        return stepBuilderFactory.get("stepRep").<LigneProgrammeFV, LigneProgrammeFV>chunk(1)
+        return stepBuilderFactory.get("stepRep").<LigneProgrammeFV, LigneProgrammeFV>chunk(100)
                 .reader(reader())
                 .processor(processor())
-                .writer(compositeItemWriter())
+                .writer(createOeuvreContenu())
                 .build();
     }
 
