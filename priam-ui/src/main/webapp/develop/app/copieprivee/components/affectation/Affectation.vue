@@ -694,7 +694,6 @@
                 return response.json();
               })
               .then(data => {
-                this.affectationEncours = false;
 
                 this.$router.push({name: 'programme'});
               })

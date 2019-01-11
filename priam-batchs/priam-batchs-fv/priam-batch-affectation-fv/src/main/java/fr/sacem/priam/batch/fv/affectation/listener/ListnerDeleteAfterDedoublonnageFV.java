@@ -1,22 +1,20 @@
-package fr.sacem.priam.batch.affectation.cp.listener;
-
+package fr.sacem.priam.batch.fv.affectation.listener;
 
 import fr.sacem.priam.batch.common.dao.LigneProgrammeBatchDao;
 import fr.sacem.priam.model.domain.Fichier;
 import fr.sacem.priam.services.FichierService;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.listener.StepExecutionListenerSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 /**
  * Created by fandis on 15/12/2017.
  */
-public class ListnerDeleteAfterDedoublonnageCP extends StepExecutionListenerSupport {
+public class ListnerDeleteAfterDedoublonnageFV extends StepExecutionListenerSupport {
 
     @Autowired
     LigneProgrammeBatchDao ligneProgrammeBatchDao;
@@ -39,7 +37,7 @@ public class ListnerDeleteAfterDedoublonnageCP extends StepExecutionListenerSupp
     public ExitStatus afterStep(StepExecution stepExecution) {
 
         String numProg = stepExecution.getJobParameters().getString("numProg");
-        this.ligneProgrammeBatchDao.deleteDedoublonnageCP(numProg);
+        this.ligneProgrammeBatchDao.deleteDedoublonnageFV(numProg);
 
         return stepExecution.getExitStatus();
     }

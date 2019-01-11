@@ -15,4 +15,14 @@ public enum TypeDroit {
     TypeDroit(final String value) {
         this.value = value;
     }
+
+    public static TypeDroit getEnumValue(String code) {
+        for( TypeDroit typeDroit : values()) {
+            if(code.equals(typeDroit.value)) {
+                return typeDroit;
+            }
+        }
+        return null;
+    }
+
 }

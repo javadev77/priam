@@ -2,8 +2,8 @@
 
   <div class="container-fluid">
 
-    <navbar titre1="Programme" titre2="Liste programmes" titre3="Affectation" backButton="true"></navbar>
-    
+    <navbar titre1="Programme" titre2="Liste programmes" titre3="Affectation" :backButton="true"></navbar>
+
     <div class="container-fluid sacem-formula">
 
       <!--En tete Panel-->
@@ -91,7 +91,7 @@
           </h5>
         </div>
         <div class="panel-collapse">
-          <div class="result-panel-body panel-body" style="height:600px; overflow-y:scroll;">
+          <div class="result-panel-body panel-body" style="height:500px; overflow-y:scroll;">
 
             <priam-grid
               :isPaginable="false"
@@ -178,6 +178,7 @@
         fichiersToProgramme: {
           numProg: '',
           fichiers: [],
+          fichiersUnChecked : [],
           fichersAvantAffectation : []
         },
 
@@ -212,6 +213,7 @@
         showButtonAnnuler: false,
 
         fichiersChecked: [],
+        fichiersUnChecked : [],
 
         fichiersAvantDesaffectation: [],
 
@@ -334,7 +336,7 @@
     },
 
 
-    created() {    
+    created() {
 
       const customActions = {
         findByNumProg: {
@@ -388,6 +390,16 @@
           this.rechercher();
 
         }
+      },
+
+      lengthOfTabLigneProgramme : function (newValue) {
+        console.log("The length of tab has changed  "+  newValue);
+        this.$store.dispatch('toutDesactiver', newValue && newValue === this.countNbSelected);
+      },
+
+      countNbSelected : function (newValue) {
+        console.log("Le nombre de selection a cahnge "+  newValue);
+        this.$store.dispatch('toutDesactiver', newValue && newValue === this.lengthOfTabLigneProgramme);
       }
 
     },
@@ -422,6 +434,18 @@
 
       isRightEDTAFC() {
         return this.hasRight('EDTAFC');
+      },
+
+      countNbSelected() {
+        let nbOfChecked = this.fichiersChecked !== undefined ? this.fichiersChecked.length : 0;
+        return nbOfChecked;
+      },
+
+      lengthOfTabLigneProgramme() {
+        let nbOfChecked = this.fichiersChecked !== undefined ? this.fichiersChecked.length : 0;
+        let nbOfUnChecked = this.fichiersUnChecked !== undefined ? this.fichiersUnChecked.length : 0;
+        console.log("Length =" + (nbOfChecked + nbOfUnChecked))
+        return nbOfChecked + nbOfUnChecked;
       }
 
     },
@@ -614,14 +638,13 @@
             }];
 
             this.fichiersChecked = [];
+            this.fichiersUnChecked = [];
             var tab = this.priamGrid.gridData.content;
             for (var i in tab) {
               if (tab[i] && tab[i].statut == 'AFFECTE') {
                 this.fichiersChecked.push(tab[i].id);
               }
             }
-
-            console.log("length this.fichiersChecked=" + this.fichiersChecked.length);
 
             this.$store.dispatch('toutDesactiver', this.fichiersChecked.length === this.priamGrid.gridData.content.length)
 
@@ -656,121 +679,101 @@
 
       },
 
+
       onEntryChecked(isChecked, entryChecked) {
-        console.log('entryId=' + entryChecked.id);
-        console.log('isChecked=' + isChecked);
+        console.log('entryId='+entryChecked.id);
+        console.log('isChecked='+isChecked);
 
-        if (isChecked) {
-          var found = this.fichiersChecked.find(elem => {
-            return elem === entryChecked.id;
+        debugger
+        if(isChecked) {
+          var found = this.fichiersChecked.find( elem => {
+            return  elem === entryChecked.id;
           });
-          if (found !== undefined && found) {
-
+          if(found !== undefined && found) {
+            let number = this.fichiersUnChecked.indexOf(entryChecked.id);
+            this.fichiersUnChecked.splice(number, 1);
           } else {
+            let number = this.fichiersUnChecked.indexOf(entryChecked.id);
+            this.fichiersUnChecked.splice(number, 1);
+
             this.fichiersChecked.push(entryChecked.id);
           }
 
         } else {
-          console.log('this.fichiersChecked=' + this.fichiersChecked);
           let number = this.fichiersChecked.indexOf(entryChecked.id);
-          console.log('indexOf=' + number);
           this.fichiersChecked.splice(number, 1);
+
+          this.fichiersUnChecked.push(entryChecked.id);
+
         }
-        console.log('onEntryChecked() ==> this.fichiersChecked=' + this.fichiersChecked.length);
+
+
       },
 
       onAllChecked(allChecked, entries) {
-        console.log("entries checked=" + entries);
+        console.log("entries checked=" +  entries);
         this.fichiersChecked = [];
-        if (allChecked) {
+        if(allChecked) {
           this.fichiersChecked = entries.slice();
-
+          this.fichiersUnChecked = [];
         } else {
+          this.fichiersUnChecked = entries.slice();
           this.fichiersChecked = [];
         }
 
-        this.$store.dispatch('toutDesactiver', true);
-        console.log('onAllChecked() ==> this.fichiersChecked=' + this.fichiersChecked.length);
+        this.$store.dispatch('toutDesactiver', allChecked);
       },
 
       affecterFichiersAuProgramme(){
-          debugger;
-        this.fichiersToProgramme.numProg = this.programmeInfo.numProg;
-        this.fichiersToProgramme.fichiers = [];
+        let numProg = this.programmeInfo.numProg;
+        this.fichiersToProgramme.numProg = numProg;
+        this.fichiersToProgramme.fichiers=[];
 
         this.fichiersToProgramme.fichiers = this.fichiersChecked.map(function (idFichier) {
-          return {id: idFichier}
+          return {id : idFichier}
         });
 
-        console.log("fichiers envoyes" + this.fichiersToProgramme.fichiers.length);
+        this.fichiersToProgramme.fichiersUnChecked = this.fichiersUnChecked.map(function (idFichier) {
+          return {id : idFichier}
+        });
 
-        var numProg = this.fichiersToProgramme.numProg
 
-        this.resource.findFichiersAffecte({numProg: numProg})
+        let inputChgtCriteria=  {
+          numProg  : numProg,
+          statutCode : ['AFFECTE']
+
+        };
+
+        this.deaffectationEncours=true;
+        this.resource.findAllFichiers(inputChgtCriteria)
+
           .then(response => {
             return response.json();
           })
           .then(data => {
-            console.log(data);
-            debugger;
-            const result = [];
-            for(let key in data){
-              this.fichiersAvantDesaffectation.push(data[key].id);
+            for (let key in data) {
+              this.fichiersDesaffectes.fichersAvantDesaffectation.push(data[key].id);
+              this.fichiersToProgramme.fichersAvantAffectation.push(data[key].id)
             }
 
-            //Desaffectation
-            this.fichiersDesaffectes.numProg = this.fichiersToProgramme.numProg;
+            this.fichiersDesaffectes.numProg = numProg;
+            this.fichiersDesaffectes.allDesaffecte = false;
 
-            /*this.resource.toutDeaffecterProg(numProg)*/
-            this.resource.toutDeaffecterProg(this.fichiersDesaffectes)
+
+            this.resource.affectationProgramme(this.fichiersToProgramme)
               .then(response => {
                 return response.json();
               })
               .then(data => {
-                console.log("Déaffactation ok");
-
-                this.deaffectationEncours = true;
-                var self = this;
-                var timer = setInterval(function () {
-
-                  self.resource.findByNumProg({numProg: numProg})
-                    .then(response => {
-                      return response.json();
-                    })
-                    .then(programme => {
-                      if (programme.statutEligibilite === 'FIN_DESAFFECTATION') {
-                        clearInterval(timer);
-
-                        self.fichiersToProgramme.fichersAvantAffectation = self.fichiersAvantDesaffectation;
-                        debugger;
-                        self.resource.affectationProgramme(self.fichiersToProgramme)
-                          .then(response => {
-                            return response.json();
-                          })
-                          .then(data => {
-                            self.deaffectationEncours = false;
-                            console.log("affacration ok");
-                            //this.programmeInfo = data;
-                            //this.initData();
-                            //this.rechercher();
-
-                            self.$router.push({name: 'programme'});
-                          })
-                          .catch(response => {
-                            alert("Erreur technique lors de l'affectation des fichiers au programme !! ");
-                          });
-                      }
-                    });
-
-
-                }, 1000);
-
+                this.deaffectationEncours=false;
+                this.$router.push({name: 'programme'});
               })
               .catch(response => {
-                alert("Erreur technique lors de désaffectation des fichiers du programme !! ");
+                debugger;
+                alert("Erreur technique lors de l'affectation des fichiers au programme !! ");
               });
-          });
 
+          });
 
 
 
@@ -812,6 +815,7 @@
 
                 })
                 .catch(response => {
+                  console.error(response);
                   alert("Erreur technique lors de désaffectation des fichiers du programme !! ");
                 });
             });
