@@ -52,11 +52,13 @@
             routeName : 'programme',
             label : 'Programme',
             routes : ['programme', 'selection', 'selection-cms','affectation', 'affectation-cms', 'listeProg', 'selection-valorisation'],
+
             authorized : this.hasRight('MENU_PRINCIPAL'),
             items : [
               {
                 id : 'listeProg',
                 routeName : 'programme',
+                routes : ['programme', 'selection', 'selection-cms', 'affectation', 'affectation-cms', 'affectation-fv', 'listeProg'],
                 label : 'Liste programmes',
                 authorized : this.hasRight('MENU_PRINCIPAL')
               }
@@ -73,6 +75,7 @@
                 id : 'fichiers',
                 routeName : 'chargement',
                 label : 'Fichiers',
+                routes : ['chargement', 'fichiers'],
                 authorized : this.hasRight('MENU_PRINCIPAL')
               }
             ]
@@ -89,6 +92,7 @@
               {
                 id : 'catalogue',
                 routeName : 'catalogue-cms',
+                routes : ['catalogue-cms'],
                 label : 'Catalogue',
                 authorized : this.hasRight('MENUCATAL'),
               },
@@ -96,6 +100,7 @@
               {
                 id : 'journal',
                 routeName : 'journal',
+                routes : ['journal'],
                 label : 'Journal',
                 authorized : this.hasRight('MENUCATAL'),
               },
@@ -103,6 +108,7 @@
               {
                 id : 'stat',
                 routeName : 'stat',
+                routes : ['stat'],
                 label : 'Statistiques',
                 authorized : this.hasRight('MENUCATAL')
               }
@@ -167,7 +173,7 @@
             this.currentActiveMenu.id = foundMenu.id;
 
             let subMenu = foundMenu.items.find(elem => {
-              return elem && elem.routeName.indexOf(currentRouteViewName) > -1;
+              return elem && elem.routes.indexOf(currentRouteViewName) > -1;
             });
 
             if(subMenu !== undefined && subMenu !== null) {

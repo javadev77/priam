@@ -94,8 +94,6 @@ public class JobCompletionNotificationAffectationCPListener extends JobExecution
             programmeBatchDao.majStattutProgramme(numProg, "AFFECTE");
 
 
-
-
             List<SituationAvant> situationAvantList = new ArrayList<>();
             List<SituationApres> situationApresList = new ArrayList<>();
 
@@ -126,10 +124,7 @@ public class JobCompletionNotificationAffectationCPListener extends JobExecution
         } else {
 
             programmeBatchDao.majStattutEligibilite(numProg, ERREUR_ELIGIBILITE);
-
             fichierBatchService.clearSelectedFichiers(numProg, CHARGEMENT_OK);
-
-
         }
     }
 

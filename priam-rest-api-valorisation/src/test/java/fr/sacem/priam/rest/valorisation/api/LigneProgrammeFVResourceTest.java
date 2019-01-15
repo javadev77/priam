@@ -12,10 +12,12 @@ import fr.sacem.priam.services.dto.ValdierSelectionProgrammeInput;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.*;
+
 
 import static fr.sacem.priam.model.util.EtatOeuvreEnum.AUTOMATIQUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -34,7 +36,8 @@ public class LigneProgrammeFVResourceTest extends RestResourceTest {
 
         ObjectMapper mapper = new ObjectMapper();
 
-        ResultActions resultActions = mockMvc.perform(
+        ResultActions resultActions =
+                mockMvc.perform(
                 get("/app/rest/ligneProgramme/selection/compteurs?numProg=190001&statut=AFFECTE")
                         .contentType(contentType))
                 .andExpect(status().isOk());

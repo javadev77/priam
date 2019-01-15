@@ -1,38 +1,33 @@
-package fr.sacem.priam.batch.affectation.cp.listener;
+package fr.sacem.priam.batch.fv.affectation.listener;
 
-import fr.sacem.priam.batch.affectation.cp.dao.JournalBatchDao;
 import fr.sacem.priam.batch.common.dao.LigneProgrammeBatchDao;
 import fr.sacem.priam.batch.common.dao.ProgrammeBatchDao;
 import fr.sacem.priam.batch.common.service.importPenef.FichierBatchService;
-import fr.sacem.priam.common.TypeLog;
 import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.domain.Fichier;
-import fr.sacem.priam.model.domain.Journal;
-import fr.sacem.priam.model.domain.SituationAvant;
 import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.dto.FileDto;
-import fr.sacem.priam.model.journal.JournalBuilder;
-
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import org.springframework.stereotype.Component;
 
 /**
  * Created by benmerzoukah on 02/01/2018.
  */
-public class JobDesaffectationListener extends JobExecutionListenerSupport {
+@Component
+public class JobDesaffectationFvListener extends JobExecutionListenerSupport {
 
 
-    private static final Logger LOG = LoggerFactory.getLogger(JobDesaffectationListener.class);
+    private static final Logger LOG = LoggerFactory.getLogger(JobDesaffectationFvListener.class);
 
     @Autowired
     ProgrammeBatchDao programmeBatchDao;
@@ -42,9 +37,6 @@ public class JobDesaffectationListener extends JobExecutionListenerSupport {
 
     @Autowired
     private FichierDao fichierDao;
-
-    @Autowired
-    JournalBatchDao journalBatchDao;
 
     @Autowired
     LigneProgrammeBatchDao ligneProgrammeBatchDao;
@@ -58,7 +50,7 @@ public class JobDesaffectationListener extends JobExecutionListenerSupport {
         programmeBatchDao.majStattutEligibilite(numProg, "EN_COURS_DESAFFECTATION");
 
         List<FileDto> files = fichierDao.findFichiersAffecteByIdProgramme(numProg, Status.AFFECTE);
-        files.forEach(f -> ligneProgrammeBatchDao.deleteDonneesLigneCP(f.getId()));
+        files.forEach(f -> ligneProgrammeBatchDao.deleteDonneesLigneFV(f.getId()));
 
     }
 
@@ -66,7 +58,7 @@ public class JobDesaffectationListener extends JobExecutionListenerSupport {
     public void afterJob(JobExecution jobExecution) {
         String numProg = jobExecution.getJobParameters().getString("numProg");
         boolean isAllDesaffecte = Boolean.parseBoolean(jobExecution.getJobParameters().getString("isAllDesaffecte"));
-
+        boolean isFichiersAffectesVide = Boolean.parseBoolean(jobExecution.getJobParameters().getString("isFichiersAffectesVide"));
 
         if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
 
@@ -74,30 +66,33 @@ public class JobDesaffectationListener extends JobExecutionListenerSupport {
 
           //  fichierRepository.deleteFichierLinkForAntille(numProg);
             fichierBatchService.clearSelectedFichiers(numProg, "CHARGEMENT_OK");
-
+            String user = jobExecution.getJobParameters().getString("username");
+            if(!isAllDesaffecte && isFichiersAffectesVide) {
+                programmeBatchDao.updateProgramme(numProg, user);
+            }
 
             if(isAllDesaffecte) {
 
-                String user = jobExecution.getJobParameters().getString("username");
+
                 programmeBatchDao.updateProgramme(numProg, user);
 
-                String userId = jobExecution.getJobParameters().getString("userId");
-                JournalBuilder journalBuilder = new JournalBuilder(numProg,null,userId);
-                Journal journal = journalBuilder.addEvenement(TypeLog.ALL_DESAFFECTATION.getEvenement()).build();
-
-                List<SituationAvant> situationAvantList = new ArrayList<>();
-
-                List<Fichier> listfichierAllDesaffecte = getListFichiersById(jobExecution.getJobParameters().getString("listIdFichiersAllDesaffectes"));
-
-
-                listfichierAllDesaffecte.forEach(fichier -> {
-                    SituationAvant situationAvant = new SituationAvant();
-                    situationAvant.setSituation(fichier.getNomFichier()+ " " + simpleDateFormat.format(fichier.getDateFinChargt()));
-                    situationAvantList.add(situationAvant);
-                });
-                journal.setListSituationAvant(situationAvantList);
-                Long idJournal = journalBatchDao.saveJournal(journal);
-                journalBatchDao.saveSituationAvantJournal(journal.getListSituationAvant(), idJournal);
+//                String userId = jobExecution.getJobParameters().getString("userId");
+//                JournalBuilder journalBuilder = new JournalBuilder(numProg,null,userId);
+//                Journal journal = journalBuilder.addEvenement(TypeLog.ALL_DESAFFECTATION.getEvenement()).build();
+//
+//                List<SituationAvant> situationAvantList = new ArrayList<>();
+//
+//                List<Fichier> listfichierAllDesaffecte = getListFichiersById(jobExecution.getJobParameters().getString("listIdFichiersAllDesaffectes"));
+//
+//
+//                listfichierAllDesaffecte.forEach(fichier -> {
+//                    SituationAvant situationAvant = new SituationAvant();
+//                    situationAvant.setSituation(fichier.getNomFichier()+ " " + simpleDateFormat.format(fichier.getDateFinChargt()));
+//                    situationAvantList.add(situationAvant);
+//                });
+//                journal.setListSituationAvant(situationAvantList);
+//                Long idJournal = journalBatchDao.saveJournal(journal);
+//                journalBatchDao.saveSituationAvantJournal(journal.getListSituationAvant(), idJournal);
             }
 
 

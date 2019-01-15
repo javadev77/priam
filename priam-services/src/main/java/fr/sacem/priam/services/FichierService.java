@@ -73,6 +73,7 @@ public class FichierService {
         }
 
         Programme programme = programmeDao.findOne(numProg);
+        programme.setStatutEligibilite(StatutEligibilite.EN_ATTENTE_ELIGIBILITE);
 
         if(programme.getFamille().getCode().equals(FamillePriam.CMS.getCode())) {
             //Mettre par defaut les oeuvre à  selectionne
@@ -80,10 +81,9 @@ public class FichierService {
                 ligneProgrammeCMSDao.updateSelectionTemporaireByNumProgramme(numProg, true);
                 ligneProgrammeCMSDao.deselectAllByNumProgramme(numProg, true);
             }
-            programme.setStatutEligibilite(StatutEligibilite.EN_ATTENTE_ELIGIBILITE);
         } else if(programme.getFamille().getCode().equals(FamillePriam.COPIE_PRIVEE.getCode())) {
             //Mettre par defaut les oeuvre à  selectionne
-            programme.setStatutEligibilite(StatutEligibilite.EN_ATTENTE_ELIGIBILITE);
+
             ligneProgrammeCPDao.updateSelectionTemporaireByNumProgramme(numProg, true);
             ligneProgrammeCPDao.deselectAllByNumProgramme(numProg, true);
 

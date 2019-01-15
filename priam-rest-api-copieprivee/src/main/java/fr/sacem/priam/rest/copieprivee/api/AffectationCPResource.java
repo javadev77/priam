@@ -11,12 +11,15 @@ import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.StatutEligibilite;
 import fr.sacem.priam.model.domain.dto.AffectationDto;
 import fr.sacem.priam.model.domain.dto.DesaffectationDto;
-import fr.sacem.priam.model.domain.dto.FileDto;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.model.util.JournalAffectationBuilder;
 import fr.sacem.priam.security.model.UserDTO;
-import fr.sacem.priam.services.FichierService;
+import fr.sacem.priam.services.api.AffectationResource;
 import fr.sacem.priam.services.utils.AffectationUtil;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,24 +37,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 
 /**
  * Created by benmerzoukah on 16/11/2017.
  */
 @RestController
 @RequestMapping("/app/rest/")
-public class AffectationCPResource {
+public class AffectationCPResource extends AffectationResource {
     private static Logger LOGGER = LoggerFactory.getLogger(AffectationCPResource.class);
-
-    @Autowired
-    private FichierService fichierService;
 
     @Autowired
     private ProgrammeViewDao programmeViewDao;
@@ -85,11 +78,11 @@ public class AffectationCPResource {
             method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-//    @LogFichier(event = TypeLog.AFFECTATION_DESAFFECTATION)
     public ProgrammeDto affecterFichiers (@RequestBody AffectationDto affectationDto, UserDTO currentUser) {
         ProgrammeDto programmeDto = null;
         TransactionStatus ts = transactionManager.getTransaction(new DefaultTransactionDefinition());
         try {
+
 
             String numProg = affectationDto.getNumProg();
 
@@ -219,20 +212,6 @@ public class AffectationCPResource {
     }
 
 
-    private String getListNomFichier(List<Fichier> fichiers){
-        List<FileDto> list = new ArrayList<>();
-        fichiers.forEach(fichier -> {
-            list.add(fichierDao.findById(fichier.getId()));
-        });
-        return list.stream().map(e -> e.getNomFichier() + " " + new SimpleDateFormat("dd/MM/yyyy HH:mm").format(e.getDateFinChargt())).collect(Collectors.joining(","));
-    }
-
-    private List<Fichier> getListFichierByIdFichier(List<Long> listIdFichier){
-        List<Fichier> result = new ArrayList<>();
-        listIdFichier.forEach(id -> result.add(fichierDao.findOne(id)));
-
-        return result;
-    }
 
 
 }
