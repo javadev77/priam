@@ -506,6 +506,7 @@
           then(data => {
 
               this.programmeInfo = data;
+              debugger;
 
              this.$store.dispatch('setCurrentProgrammeEnSelection', this.programmeInfo);
 

@@ -46,7 +46,7 @@ public interface ProgrammeViewDao extends JpaRepository<ProgrammeView, String> {
     
     @Transactional(readOnly = true)
     @Query(value = "SELECT new fr.sacem.priam.model.domain.dto.ProgrammeDto(pr.numProg, pr.nom, pr.famille, pr.typeUtilisation, " +
-                                                    "pr.rionTheorique, pr.dateCreation, pr.typeRepart, pr.statut, pr.rionPaiement, pr.fichiers, " +
+                                                    "pr.rionTheorique, pr.dateCreation, pr.typeRepart, pr.typeDroit, pr.statut, pr.rionPaiement, pr.fichiers, " +
                                                     "pr.usercre, pr.datmaj, pr.usermaj, pr.dataffect, pr.useraffect, " +
                                                     "pr.dateDbtPrg, pr.dateFinPrg, pr.cdeTer, pr.userValidation, pr.dateValidation, pr.statutFichierFelix, pr.dateRepartition, pr.statutEligibilite) " +
                    "FROM ProgrammeView AS pr " +

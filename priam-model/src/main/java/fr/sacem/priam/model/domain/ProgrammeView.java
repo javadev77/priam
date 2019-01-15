@@ -15,6 +15,7 @@ public class ProgrammeView {
     private String famille;
     private String typeUtilisation;
     private TypeRepart typeRepart;
+    private TypeDroit typeDroit;
     private Date dateCreation;
     private StatutProgramme statut;
     private Integer rionPaiement;
@@ -73,7 +74,17 @@ public class ProgrammeView {
     public TypeRepart getTypeRepart() {
         return typeRepart;
     }
-    
+
+    @Column(name = "TYPE_DROIT")
+    @Enumerated(EnumType.STRING)
+    public TypeDroit getTypeDroit() {
+        return typeDroit;
+    }
+
+    public void setTypeDroit(TypeDroit typeDroit) {
+        this.typeDroit = typeDroit;
+    }
+
     @Column(name = "DATE_CREATION")
     @Temporal(TemporalType.TIMESTAMP)
     public Date getDateCreation() {

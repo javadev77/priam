@@ -96,21 +96,35 @@
           {{ getTerritoireByCode(programmeInfo.cdeTer) !== undefined ? getTerritoireByCode(programmeInfo.cdeTer).value : '' }}
         </div>
       </div>
-
       <div class="form-group col-md-4">
         <label class="col-md-9 control-label blueText text-right">Date création</label>
         <div class="col-md-15 control-label">
           {{ programmeInfo.dateCreation }}
         </div>
       </div>
+      <div v-if="programmeInfo.famille === 'UC' || programmeInfo.famille === 'COPIEPRIV'">
 
-      <div class="form-group col-md-6">
-        <label class="col-md-9 control-label blueText text-right">Créé par</label>
-        <div class="col-md-15 control-label">
-          {{ programmeInfo.usercre }}
+        <div class="form-group col-md-6">
+          <label class="col-md-9 control-label blueText text-right">Créé par</label>
+          <div class="col-md-15 control-label">
+            {{ programmeInfo.usercre }}
+          </div>
         </div>
       </div>
-
+      <div v-else>
+        <div class="form-group col-md-6">
+          <label class="col-md-9 control-label blueText text-right">Type de droit</label>
+          <div class="col-md-15 control-label">
+            {{ programmeInfo.typeDroit }}
+          </div>
+        </div>
+        <div class="form-group col-md-6">
+          <label class="col-md-8 control-label blueText text-right">Créé par</label>
+          <div class="col-md-15 control-label">
+            {{ programmeInfo.usercre }}
+          </div>
+        </div>
+      </div>
 
       <slot name="extra-info"></slot>
 

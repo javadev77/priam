@@ -22,6 +22,8 @@ public class TypeDroitDeserializer extends JsonDeserializer {
         if ( stringValue == null ) return null ;
 
         TypeDroit typeDroit = TypeDroit.valueOf(stringValue);
-        return typeDroit;
+        return TypeDroit.getEnumValue(stringValue);
     }
+
+
 }

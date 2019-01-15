@@ -952,6 +952,8 @@
                   this.$router.push({ name: 'selection-cms', params: { numProg: row.numProg }});
                 } else if (row.famille === FAMILLES_PRIAM['COPIE_PRIVEE']) { //CP
                   this.$router.push({ name: 'selection', params: { numProg: row.numProg }});
+                } else if (row.famille === FAMILLES_PRIAM['VALORISATION']) {
+                  this.$router.push({ name: 'selection-fv-oeuvre', params: { numProg: row.numProg }});
                 }
 
               } else if(column.id !== undefined && column.id === 'repartition') {

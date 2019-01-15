@@ -168,7 +168,7 @@
   import ProgrammeInfo from '../../../common/components/programme/ProgrammeInfo.vue';
 
 
-  import QuantiteEditor from './cellEditors/QuantiteEditor.vue';
+  import QuantiteEditor from '../../../common/components/selection/cellEditors/QuantiteEditor.vue';
   import DureeEditor from './cellEditors/DureeEditor.vue';
 
   export default {
