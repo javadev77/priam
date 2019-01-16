@@ -46,7 +46,7 @@ public class UserDTO implements Serializable{
 
       @Override
       public List<String> getRoleList() {
-        return Lists.newArrayList(ROLE_GEST_CP, ROLE_GEST_CMS);
+        return Lists.newArrayList(ROLE_GEST_CP, ROLE_GEST_CMS, ROLE_GEST_FV);
       }
     };
 

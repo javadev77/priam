@@ -9,6 +9,7 @@ import fr.sacem.priam.model.domain.saref.SareftrRion;
 import fr.sacem.priam.model.util.GlobalConstants;
 import fr.sacem.priam.rest.common.config.RestResourceTest;
 import fr.sacem.priam.security.model.UserDTO;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.TestingAuthenticationToken;
