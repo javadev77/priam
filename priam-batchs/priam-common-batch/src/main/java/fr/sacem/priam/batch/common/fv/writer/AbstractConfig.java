@@ -15,6 +15,8 @@ import org.springframework.core.io.FileSystemResource;
 
 public abstract class AbstractConfig<T> {
 
+    private LigneProgrammeFVDao ligneProgrammeFVDao;
+
     public abstract String head();
 
     public abstract  FieldExtractor<T> createExtractor();
@@ -23,19 +25,24 @@ public abstract class AbstractConfig<T> {
 
     public abstract String suffixNomFicher();
 
+    public Long countNbLignes(Long idFichier) {
+        Long lignes = ligneProgrammeFVDao.countNbLignesByIdFichier(idFichier);
+        return lignes;
+    }
+
 
     @Bean
     @StepScope
     public CsvFileItemWriter databaseCsvItemWriter(@Value("#{jobParameters['idFichier']}")  Long idFichier, @Autowired
-            Admap admap, @Autowired
-            LigneProgrammeFVDao ligneProgrammeFVDao) {
+            Admap admap, @Autowired LigneProgrammeFVDao ligneProgrammeFVDao) {
+
+        this.ligneProgrammeFVDao = ligneProgrammeFVDao;
 
         CsvFileItemWriter csvFileWriter = new CsvFileItemWriter();
 
         StringHeaderWriter headerWriter = new StringHeaderWriter(head());
         csvFileWriter.setHeaderCallback(headerWriter);
-        Long lignes = ligneProgrammeFVDao.countNbLignesByIdFichier(idFichier);
-        csvFileWriter.setFooterCallback(writer -> writer.write(foot(lignes)));
+        csvFileWriter.setFooterCallback(writer -> writer.write(foot(countNbLignes(idFichier))));
 
         String fileName = "FF_PRIAM_" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date())
                 + "_" + idFichier + suffixNomFicher();
