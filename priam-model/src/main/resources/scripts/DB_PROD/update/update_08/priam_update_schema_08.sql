@@ -3,8 +3,6 @@ USE priam_app;
 ALTER TABLE PRIAM_LIGNE_PROGRAMME_TRAITEMENT_BATCH
   ADD rionEffet INT(11);
 
-ALTER TABLE PRIAM_LIGNE_PROGRAMME_FV
-  ADD rionEffet INT(11);
 
 CREATE TABLE `PRIAM_LIGNE_PROGRAMME_FV_COPY` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -61,6 +59,10 @@ ALTER TABLE PRIAM_PROGRAMME ADD TYPE_DROIT VARCHAR (5);
 ALTER TABLE PRIAM_FICHIER ADD STATUT_ENRICHISSEEMNT VARCHAR(255) NOT NULL COMMENT 'STATUT ENRICHISSEMENT';
 
 ALTER TABLE PRIAM_LIGNE_PROGRAMME_FV
+  ADD ID_OEUVRE_CTNU INT(11) DEFAULT NULL COMMENT 'ID OEUVRE CONTENU',
+  ADD rionEffet INT(11),
+  ADD mtEdit double DEFAULT NULL COMMENT  'Colonne qui sert pour le tableau editable dans ecran selection',
+  ADD nbrDifEdit int(11) DEFAULT NULL COMMENT  'Colonne qui sert pour le tableau editable dans ecran selection',
   ADD labelValo varchar(250) DEFAULT NULL,
   ADD dureeDeposee int(11) DEFAULT NULL,
   ADD taxOri double DEFAULT NULL,
@@ -69,6 +71,36 @@ ALTER TABLE PRIAM_LIGNE_PROGRAMME_FV
   ADD paysOri int(4) DEFAULT NULL,
   ADD statut varchar(250) DEFAULT NULL;
 
-ALTER TABLE PRIAM_LIGNE_PROGRAMME_FV ADD ID_OEUVRE_CTNU INT(11) DEFAULT NULL COMMENT 'ID OEUVRE COTENU';
+  alter view PRIAM_PROG_VIEW as
+SELECT DISTINCT
+  pr.NUMPROG                                                         AS NUMPROG,
+  pr.NOM                                                             AS NOM,
+  pr.RION_THEORIQUE                                                  AS RION_THEORIQUE,
+  pr.CDEFAMILTYPUTIL                                                 AS CDEFAMILTYPUTIL,
+  pr.CDETYPUTIL                                                      AS CDETYPUTIL,
+  pr.TYPE_REPART                                                     AS TYPE_REPART,
+  pr.TYPE_DROIT                                                      AS TYPE_DROIT,
+  pr.DATE_CREATION                                                   AS DATE_CREATION,
+  pr.STATUT_PROG_CODE                                                AS STATUT_PROG_CODE,
+  pr.RION_PAIEMENT                                                   AS RION_PAIEMENT,
+  pr.USERCRE                                                         AS USERCRE,
+  pr.DATMAJ                                                          AS DATMAJ,
+  pr.USERMAJ                                                         AS USERMAJ,
+  pr.DATAFFECT                                                       AS DATAFFECT,
+  pr.USERAFFECT                                                      AS USERAFFECT,
+  (SELECT count(f.NUMPROG)
+   FROM PRIAM_FICHIER f
+   WHERE ((pr.NUMPROG = f.NUMPROG) AND (f.SOURCE_AUTO = 1))) AS fichiers,
+  pr.DATE_DBT_PRG                                                    AS DATEDBTPRG,
+  pr.DATE_FIN_PRG                                                    AS DATEFINPRG,
+  pr.CDE_TER                                                         AS CDETER,
+  pr.USER_VALIDATION                                                 AS USERVALIDATION,
+  pr.DATE_VALIDATION                                                 AS DATEVALIDATION,
+  ff.STATUT                                                          AS STATUT_FICHIER_FELIX,
+  pr.DATE_REPARTITION                                                AS DATE_REPARTITION,
+  pr.STATUT_ELIGIBILITE                                              AS STATUT_ELIGIBILITE
+FROM (PRIAM_PROGRAMME pr LEFT JOIN PRIAM_FICHIER_FELIX ff
+                                   ON ((ff.NUMPROG = pr.NUMPROG)))
+GROUP BY pr.NUMPROG;
 
 COMMIT;

@@ -23,4 +23,6 @@ public class TypeDroitDeserializer extends JsonDeserializer {
 
         return TypeDroit.getEnumValue(stringValue);
     }
+
+
 }

@@ -1,19 +1,14 @@
 package fr.sacem.priam.model.domain.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import fr.sacem.priam.model.domain.StatutEligibilite;
-import fr.sacem.priam.model.domain.StatutFichierFelix;
-import fr.sacem.priam.model.domain.StatutProgramme;
-import fr.sacem.priam.model.domain.TypeDroit;
-import fr.sacem.priam.model.domain.TypeRepart;
+import fr.sacem.priam.model.domain.*;
 import fr.sacem.priam.model.domain.saref.SareftrFamiltyputil;
 import fr.sacem.priam.model.domain.saref.SareftrRion;
 import fr.sacem.priam.model.domain.saref.SareftrTyputil;
 import fr.sacem.priam.model.util.DateRepartitionSerializer;
 import fr.sacem.priam.model.util.SimpleDateSerializer;
+import fr.sacem.priam.model.util.TypeDroitSerializer;
 
-import fr.sacem.priam.model.util.TypeDroitDeserializer;
 import java.util.Date;
 
 /**
@@ -31,6 +26,8 @@ public class ProgrammeDto {
 	private Date dateCreation;
 	
 	private TypeRepart typeRepart;
+	@JsonSerialize(using = TypeDroitSerializer.class)
+	private TypeDroit typeDroit;
 	private StatutProgramme statut;
 	private Integer rionPaiement;
 	private Long fichiers;
@@ -60,9 +57,6 @@ public class ProgrammeDto {
     private Date dateRepartition;
 
 	private StatutEligibilite statutEligibilite;
-
-	@JsonDeserialize(using = TypeDroitDeserializer.class)
-	private TypeDroit typeDroit;
     	
 	
 	public ProgrammeDto(String numProg, String nom, SareftrFamiltyputil famille, SareftrTyputil typeUtilisation, SareftrRion rionTheorique,
@@ -109,6 +103,7 @@ public class ProgrammeDto {
 	    this.dateRepartition = dateRepartition;
 	}
 
+
 	public ProgrammeDto(String numProg, String nom, String famille, String typeUtilisation, Integer rionTheorique, Date dateCreation, TypeRepart typeRepart,
 						StatutProgramme statut, Integer rionPaiement, Long fichiers, String usercre, Date datmaj, String usermaj,
 						Date dataffecte, String useraffecte, Date dateDbtPrg,
@@ -120,6 +115,20 @@ public class ProgrammeDto {
 				dateValidation, statutFichierFelix, dateRepartition);
 
 		this.statutEligibilite  = statutEligibilite;
+	}
+
+	public ProgrammeDto(String numProg, String nom, String famille, String typeUtilisation, Integer rionTheorique, Date dateCreation, TypeRepart typeRepart, TypeDroit typeDroit,
+						StatutProgramme statut, Integer rionPaiement, Long fichiers, String usercre, Date datmaj, String usermaj,
+						Date dataffecte, String useraffecte, Date dateDbtPrg,
+						Date dateFinPrg, Integer cdeTer, String userValidation, Date dateValidation, StatutFichierFelix statutFichierFelix, Date dateRepartition, StatutEligibilite statutEligibilite) {
+
+		this(numProg, nom, famille, typeUtilisation, rionTheorique, dateCreation, typeRepart,
+				statut, rionPaiement, fichiers, usercre, datmaj, usermaj,
+				dataffecte, useraffecte, dateDbtPrg, dateFinPrg, cdeTer, userValidation,
+				dateValidation, statutFichierFelix, dateRepartition);
+
+		this.statutEligibilite  = statutEligibilite;
+		this.typeDroit = typeDroit;
 	}
 
 	public ProgrammeDto(String numProg, String nom, String famille, String typeUtilisation, Integer rionTheorique, Date dateCreation, TypeRepart typeRepart,
@@ -206,7 +215,15 @@ public class ProgrammeDto {
 	public void setTypeRepart(TypeRepart typeRepart) {
 		this.typeRepart = typeRepart;
 	}
-	
+
+	public TypeDroit getTypeDroit() {
+		return typeDroit;
+	}
+
+	public void setTypeDroit(TypeDroit typeDroit) {
+		this.typeDroit = typeDroit;
+	}
+
 	public StatutProgramme getStatut() {
 		return statut;
 	}
@@ -321,14 +338,6 @@ public class ProgrammeDto {
 
 	public void setStatutEligibilite(StatutEligibilite statutEligibilite) {
 		this.statutEligibilite = statutEligibilite;
-	}
-
-	public TypeDroit getTypeDroit() {
-		return typeDroit;
-	}
-
-	public void setTypeDroit(final TypeDroit typeDroit) {
-		this.typeDroit = typeDroit;
 	}
 
 	public ProgrammeDto() {}

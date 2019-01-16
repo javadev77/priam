@@ -88,9 +88,7 @@ public class BatchConfig {
     }
 
     @Bean
-//    public LineMapper<LigneProgrammeFV> lineMapper(){
     public PriamLineFVMapper lineMapper(){
-//        DefaultLineMapper<LigneProgrammeFV> lineMapper = new DefaultLineMapper<LigneProgrammeFV>();
         PriamLineFVMapper lineMapper = new PriamLineFVMapper();
         DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer();
         lineTokenizer.setNames(new String[]{"ide12", "cdeTypIde12", "titreOeuvre", "labelValo", "dureeDeposee", "taxOri", "indicRepart", "genreOeuvre", "paysOri", "statut"});

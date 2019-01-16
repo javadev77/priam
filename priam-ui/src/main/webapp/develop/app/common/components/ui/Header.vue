@@ -51,7 +51,8 @@
             id : 'programme',
             routeName : 'programme',
             label : 'Programme',
-            routes : ['programme', 'selection', 'selection-cms', 'affectation', 'affectation-cms', 'affectation-fv', 'listeProg'],
+            routes : ['programme', 'selection', 'selection-cms','affectation', 'affectation-cms', 'listeProg', 'selection-valorisation'],
+
             authorized : this.hasRight('MENU_PRINCIPAL'),
             items : [
               {

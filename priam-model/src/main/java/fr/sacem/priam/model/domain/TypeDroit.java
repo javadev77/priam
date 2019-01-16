@@ -17,7 +17,8 @@ public enum TypeDroit {
     }
 
     public static TypeDroit getEnumValue(String code) {
-        for( TypeDroit typeDroit : values()) {
+
+        for (TypeDroit typeDroit: values()) {
             if(code.equals(typeDroit.value)) {
                 return typeDroit;
             }
@@ -25,4 +26,12 @@ public enum TypeDroit {
         return null;
     }
 
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
 }
+
