@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Created by benmerzoukah on 14/06/2017.
+ * Created by benmerzoukah on 14/06/2017.us
  */
 
 public class ProgrammeResourceTest extends RestResourceTest {
