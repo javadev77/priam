@@ -38,7 +38,7 @@ public class App {
         Admap admap = (Admap) context.getBean("admap");
         FichierJdbcDao fichierJdbcDao = (FichierJdbcDao)context.getBean("fichierJdbcDao");
 
-        List<Fichier> fichiers = fichierJdbcDao.getFichiersFvEligibleOctavCtnu(CHARGEMENT_OK,
+        List<Fichier> fichiers = fichierJdbcDao.getFichiersByStatutAndCdeTypUtil(CHARGEMENT_OK,
                                                                                Lists.newArrayList("FD03", "FD04", "FD09", "FD10", "FD11"));
 
         if(fichiers == null || fichiers.isEmpty()) {

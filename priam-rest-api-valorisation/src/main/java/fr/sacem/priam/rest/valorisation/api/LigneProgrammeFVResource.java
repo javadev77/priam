@@ -1,5 +1,7 @@
 package fr.sacem.priam.rest.valorisation.api;
 
+import fr.sacem.priam.model.domain.dto.SelectionDto;
+import fr.sacem.priam.model.domain.fv.LigneProgrammeFV;
 import fr.sacem.priam.security.model.UserDTO;
 import fr.sacem.priam.services.api.LigneProgrammeResource;
 import fr.sacem.priam.services.api.LigneProgrammeService;
@@ -54,5 +56,17 @@ public class LigneProgrammeFVResource extends LigneProgrammeResource {
         }
 
         return new ArrayList<>();
+    }
+
+    @RequestMapping(value = "ligneProgramme/selection/ajoutOeuvre",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public SelectionDto ajouterOeuvreManuel(@RequestBody LigneProgrammeFV input, UserDTO userDTO) {
+        input.setUtilisateur(userDTO.getUserId());
+
+        ligneProgrammeFVService.ajouterOeuvreManuel(input, userDTO);
+
+        return new SelectionDto();
     }
 }

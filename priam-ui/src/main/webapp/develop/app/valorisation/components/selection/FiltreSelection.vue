@@ -94,7 +94,7 @@
   import Autocomplete from '../../../common/components/ui/vue-autocomplete.vue';
   import Select2 from '../../../common/components/ui/Select2.vue';
   import EcranModal from '../../../common/components/ui/EcranModal.vue';
-  //import AjouterOeuvre from './oeuvre/AjouterOeuvre.vue';
+  import AjouterOeuvre from './oeuvre/AjouterOeuvre.vue';
 
   export default {
 
@@ -141,8 +141,8 @@
         vSelect,
         Autocomplete,
         select2 :Select2,
-        ecranModal : EcranModal
-        //ajouterOeuvre : AjouterOeuvre
+        ecranModal : EcranModal,
+        ajouterOeuvre : AjouterOeuvre
     },
 
     methods : {
@@ -160,10 +160,10 @@
         this.retablir();
       },
 
-      /*ajouterOeuvre() {
+      ajouterOeuvre() {
         debugger;
         this.showMipsa = true;
-      },*/
+      },
 
       onValidateAjoutOeuvre(oeuvreToAdd) {
           var programme = this.$store.getters.programmeEnSelection;
@@ -210,7 +210,7 @@
 
     created() {
       const customActions = {
-        ajouterOeuvreManuel : {method : 'POST', url : process.env.CONTEXT_ROOT_PRIAM_CMS + 'app/rest/ligneProgramme/selection/ajoutOeuvre'}
+        ajouterOeuvreManuel : {method : 'POST', url : process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/ligneProgramme/selection/ajoutOeuvre'}
       }
 
       this.resource= this.$resource('', {}, customActions);

@@ -518,21 +518,6 @@
 
         this.resource = this.$resource('', {}, customActions);
 
-        /*this.resource.getLastFinished({numProg: this.$route.params.numProg})
-          .then(response => {
-            return response.json();
-          })
-          .then(data => {
-            this.infoTraitementCMS.dateFinTmt = data.dateFinTmt;
-            this.infoTraitementCMS.dateDebutTmt = data.dateDebutTmt;
-
-            this.infoTraitementCMS.nbOeuvresCatalogue = data.nbOeuvresCatalogue;
-            this.infoTraitementCMS.nbOeuvresExtraction = data.nbOeuvresExtraction;
-            this.infoTraitementCMS.nbOeuvresRetenues = data.nbOeuvresRetenues;
-            this.infoTraitementCMS.sommePoints = data.sommePoints;
-
-          });*/
-
         this.resource.findByNumProg({numProg: this.$route.params.numProg})
           .then(response => {
             return response.json();
