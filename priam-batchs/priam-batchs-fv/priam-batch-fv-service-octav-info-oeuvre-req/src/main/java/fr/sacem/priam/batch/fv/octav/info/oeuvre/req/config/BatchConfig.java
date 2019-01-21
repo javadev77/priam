@@ -1,6 +1,7 @@
 package fr.sacem.priam.batch.fv.octav.info.oeuvre.req.config;
 
 import fr.sacem.priam.batch.common.domain.LigneProgrammeFV;
+import fr.sacem.priam.batch.common.fv.config.CommonBatchConfig;
 import fr.sacem.priam.batch.common.fv.listener.FlagDemiInterfaceStepListener;
 
 import fr.sacem.priam.batch.fv.octav.info.oeuvre.req.listener.JobListener;
@@ -24,7 +25,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @EnableBatchProcessing
-public class BatchConfig {
+public class BatchConfig extends CommonBatchConfig {
 
     @Autowired
     StepBuilderFactory stepBuilderFactory;

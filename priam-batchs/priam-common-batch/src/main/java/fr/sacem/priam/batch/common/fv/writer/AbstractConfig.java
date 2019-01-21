@@ -25,18 +25,15 @@ public abstract class AbstractConfig<T> {
 
     public abstract String suffixNomFicher();
 
-    public Long countNbLignes(Long idFichier) {
-        Long lignes = ligneProgrammeFVDao.countNbLignesByIdFichier(idFichier);
-        return lignes;
-    }
+    public abstract Long countNbLignes(Long idFichier);
 
 
     @Bean
     @StepScope
     public CsvFileItemWriter databaseCsvItemWriter(@Value("#{jobParameters['idFichier']}")  Long idFichier, @Autowired
-            Admap admap, @Autowired LigneProgrammeFVDao ligneProgrammeFVDao) {
+            Admap admap) {
 
-        this.ligneProgrammeFVDao = ligneProgrammeFVDao;
+
 
         CsvFileItemWriter csvFileWriter = new CsvFileItemWriter();
 

@@ -5,12 +5,22 @@ package fr.sacem.priam.batch.common.fv.util;
  */
 public enum EtapeEnrichissementEnum {
 
+    //Service OCTAV CTNU
     TO_SRV_OCTAV_CTNU("TO_SRV_OCTAV_CTNU"),
     IN_SRV_OCTAV_CTNU("IN_SRV_OCTAV_CTNU"),
     DONE_SRV_OCTAV_CTNU("DONE_SRV_OCTAV_CTNU"),
+
+    //Service INFO OEUVRE OCTAV
     TO_SRV_INFO_OEUVRE("TO_SRV_INFO_OEUVRE"),
     IN_SRV_INFO_OEUVRE("IN_SRV_INFO_OEUVRE"),
-    DONE_SRV_INFO_OEUVRE("DONE_SRV_INFO_OEUVRE");
+    DONE_SRV_INFO_OEUVRE("DONE_SRV_INFO_OEUVRE"),
+
+
+    //Service Ayant Droit Clés Pers OCTAV
+    TO_SRV_AD_CLES_PERS("TO_SRV_AD_CLES_PERS"),
+    IN_SRV_AD_CLES_PERS("IN_SRV_AD_CLES_PERS"),
+    DONE_SRV_AD_CLES_PERS("DONE_SRV_AD_CLES_PERS");
+
 
     private final String code;
 

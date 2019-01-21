@@ -5,22 +5,23 @@ import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.rest.common.api.dto.ProgrammeCritereRecherche;
 import fr.sacem.priam.rest.common.config.RestResourceTest;
+import java.util.Date;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Date;
-
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by benmerzoukah on 14/06/2017.
  */
+
 public class ProgrammeResourceTest extends RestResourceTest {
     public static final String APP_REST_PROGRAMME_SEARCH = "/app/rest/programme/search";
 

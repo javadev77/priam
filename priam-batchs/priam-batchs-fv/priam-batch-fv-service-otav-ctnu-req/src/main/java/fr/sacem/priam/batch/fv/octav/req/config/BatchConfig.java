@@ -32,8 +32,8 @@ public class BatchConfig {
 
 
     @Bean
-    public Job jobGenerationREQ(Step stepPrepareAndGenerateREQ) {
-        return jobBuilderFactory.get("jobGenerationREQ")
+    public Job jobGenerationCtnuREQ(Step stepPrepareAndGenerateREQ) {
+        return jobBuilderFactory.get("jobGenerationCtnuREQ")
                 .listener(listener())
                 .start(stepPrepareAndGenerateREQ)
                 .build();
