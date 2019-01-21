@@ -43,5 +43,14 @@ public class LigneProgrammeFVDao {
         return result != null && result.size() == 1 ? result.get(0) : null;
     }
 
+    public Long countNbLignesInfoOeuvreReqByIdFichier(final Long idFichier) {
 
+        String sql = "SELECT " +
+            "count(l.ID) as NB_LIGNES " +
+            "FROM " +
+            "PRIAM_LIGNE_PROGRAMME_FV l " +
+            "WHERE l.ID_FICHIER=? AND l.isOeuvreComplex=0";
+        return jdbcTemplate.queryForObject(sql, (resultSet, i) -> resultSet.getLong("NB_LIGNES"), idFichier);
+
+    }
 }

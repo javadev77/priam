@@ -7,10 +7,15 @@
     <modules>
         <module>priam-batch-import-fv</module>
         <module>priam-batch-affectation-fv</module>
+
         <module>priam-batch-fv-service-otav-ctnu-req</module>
-        <module>priam-batch-fv-service-octav-info-oeuvre-req</module>
         <module>priam-batch-fv-service-otav-ctnu-rep</module>
+
+        <module>priam-batch-fv-service-octav-info-oeuvre-req</module>
         <module>priam-batch-fv-service-octav-info-oeuvre-rep</module>
+
+        <module>priam-batch-fv-service-ad-cles-protection-req</module>
+        <module>priam-batch-fv-service-ad-cles-protection-rep</module>
     </modules>
 
     <parent>

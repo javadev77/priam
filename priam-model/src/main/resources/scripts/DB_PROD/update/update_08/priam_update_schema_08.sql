@@ -69,7 +69,8 @@ ALTER TABLE PRIAM_LIGNE_PROGRAMME_FV
   ADD indicRepart tinyint(1) DEFAULT NULL,
   ADD genreOeuvre varchar(250) DEFAULT NULL,
   ADD paysOri int(4) DEFAULT NULL,
-  ADD statut varchar(250) DEFAULT NULL;
+  ADD statut varchar(250) DEFAULT NULL,
+  ADD isOeuvreComplex tinyint(4) DEFAULT '0' COMMENT 'Flag qui indique si l''oeuvre est complexe';
 
   alter view PRIAM_PROG_VIEW as
 SELECT DISTINCT

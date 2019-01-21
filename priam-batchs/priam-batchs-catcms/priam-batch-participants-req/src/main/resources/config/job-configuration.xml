@@ -37,7 +37,7 @@
         <!--</listeners>-->
     </job>
 
-    <!--<bean id="listenerCompletition" clafr.sacem.priam.batch.participants.req.listenerener."></bean>-->
+    <!--<bean id="listenerCompletition" clafr.sacem.priam.batch.participaconfig.req.listenerener."></bean>-->
 
     <bean id="stepListener" class="fr.sacem.priam.batch.participants.req.listener.FlagDemiInterfaceStepListener"/>
     <!--<bean id="generateFlagFileTasklet" class="fr.sacem.priam.batch.participants.tasklet.GenerateFlagFileTasklet"></bean>-->

@@ -82,7 +82,7 @@ public class JobListener extends JobExecutionListenerSupport {
                         else if(PriamValidationException.ErrorType.FORMAT_ATTRIBUT.equals(errorType)) {
                             errors.add(exception.getMessage());
                         }
-                    } else if(errors.isEmpty()) {
+                    } else if(errors == null || errors.isEmpty()) {
                         errors.add(MESSAGE_ERREUR_TECHNIQUE);
                     }
                 }

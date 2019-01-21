@@ -34,7 +34,7 @@ public class App {
         LOGGER.info(">>>> [BEGIN] - Batch Generation des fichiers REQ OCTAV-CTNU");
         ApplicationContext context = new AnnotationConfigApplicationContext(ConfigurationPriamLocal.class, ConfigurationPriamProd.class);
         JobLauncher jobLauncher = (JobLauncher) context.getBean("jobLauncher");
-        Job job = (Job) context.getBean("jobGenerationREQ");
+        Job job = (Job) context.getBean("jobGenerationCtnuREQ");
         Admap admap = (Admap) context.getBean("admap");
         FichierJdbcDao fichierJdbcDao = (FichierJdbcDao)context.getBean("fichierJdbcDao");
 

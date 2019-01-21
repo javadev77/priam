@@ -1,5 +1,6 @@
 package fr.sacem.priam.batch.fv.octav.req.config;
 
+import fr.sacem.priam.batch.common.dao.LigneProgrammeFVDao;
 import fr.sacem.priam.batch.common.domain.LigneProgrammeFV;
 import fr.sacem.priam.batch.common.fv.writer.AbstractConfig;
 import java.text.SimpleDateFormat;
@@ -9,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor;
 import org.springframework.batch.item.file.transform.FieldExtractor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -19,7 +21,11 @@ import org.springframework.context.annotation.Configuration;
 public class FlatFileWriterConfig extends AbstractConfig<LigneProgrammeFV> {
 
     private static final Logger LOG = LoggerFactory.getLogger(FlatFileWriterConfig.class);
+    private LigneProgrammeFVDao ligneProgrammeFVDao;
 
+    public FlatFileWriterConfig(@Autowired LigneProgrammeFVDao ligneProgrammeFVDao) {
+        this.ligneProgrammeFVDao = ligneProgrammeFVDao;
+    }
 
     @Override
     public String head() {
@@ -50,6 +56,10 @@ public class FlatFileWriterConfig extends AbstractConfig<LigneProgrammeFV> {
         return  "_OeuvreCTNU_REQ.csv";
     }
 
+    @Override
+    public Long countNbLignes(final Long idFichier) {
+       return ligneProgrammeFVDao.countNbLignesByIdFichier(idFichier);
+    }
 
     @Override
     public FieldExtractor<LigneProgrammeFV> createExtractor() {

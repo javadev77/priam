@@ -4,6 +4,7 @@ package fr.sacem.priam.batch.fv.config;
 import fr.sacem.priam.batch.common.dao.FichierRepository;
 import fr.sacem.priam.batch.common.dao.FichierRepositoryImpl;
 import fr.sacem.priam.batch.common.domain.LigneProgrammeFV;
+import fr.sacem.priam.batch.common.fv.config.CommonBatchConfig;
 import fr.sacem.priam.batch.common.listener.importPenef.JobCompletionNotificationLigneProgrammeImportPenefListener;
 import fr.sacem.priam.batch.common.listener.importPenef.StepArchiveFlatFileListener;
 import fr.sacem.priam.batch.common.service.importPenef.*;
@@ -55,8 +56,8 @@ import java.util.List;
 @Configuration
 @EnableBatchProcessing
 @Profile("test")
-/*@ComponentScan(basePackages = {"fr.sacem.priam.batch.fv"})*/
-public class BatchConfigurationTest {
+@ComponentScan(basePackages = {"fr.sacem.priam.batch.fv"})
+public class BatchConfigurationTest extends CommonBatchConfig{
 
     @Autowired
     private JobBuilderFactory jobBuilderFactory;
@@ -71,25 +72,6 @@ public class BatchConfigurationTest {
 
     @Autowired
     private CopyFVItemReader readerStep2;
-
-    /*@Bean
-    public ResourcelessTransactionManager transactionManager() {
-        return new ResourcelessTransactionManager();
-    }
-
-    @Bean
-    public JobRepository jobRepository(ResourcelessTransactionManager transactionManager) throws Exception {
-        MapJobRepositoryFactoryBean mapJobRepositoryFactoryBean = new MapJobRepositoryFactoryBean(transactionManager);
-        mapJobRepositoryFactoryBean.setTransactionManager(transactionManager);
-        return mapJobRepositoryFactoryBean.getObject();
-    }
-
-    @Bean
-    public SimpleJobLauncher jobLauncher(JobRepository jobRepository) {
-        SimpleJobLauncher simpleJobLauncher = new SimpleJobLauncher();
-        simpleJobLauncher.setJobRepository(jobRepository);
-        return simpleJobLauncher;
-    }*/
 
     @Bean
     public Job archiveFlatFileReaderJob() {

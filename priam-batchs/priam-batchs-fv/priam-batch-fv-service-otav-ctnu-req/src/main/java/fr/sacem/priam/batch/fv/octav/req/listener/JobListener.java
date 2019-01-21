@@ -28,6 +28,8 @@ public class JobListener extends JobExecutionListenerSupport {
         Long idFichier = jobExecution.getJobParameters().getLong("idFichier");
         if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
             fichierJdbcDao.majStatutEnrichissement(idFichier, "IN_SRV_OCTAV_CTNU");
+        } else if (jobExecution.getStatus() == BatchStatus.FAILED) {
+            fichierJdbcDao.majStatutEnrichissement(idFichier, null);
         }
     }
 }

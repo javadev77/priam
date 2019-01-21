@@ -3,6 +3,7 @@ package fr.sacem.priam.batch.fv.config;
 import fr.sacem.priam.batch.common.dao.FichierRepository;
 import fr.sacem.priam.batch.common.dao.FichierRepositoryImpl;
 import fr.sacem.priam.batch.common.domain.LigneProgrammeFV;
+import fr.sacem.priam.batch.common.fv.config.CommonBatchConfig;
 import fr.sacem.priam.batch.common.listener.importPenef.JobCompletionNotificationLigneProgrammeImportPenefListener;
 import fr.sacem.priam.batch.common.listener.importPenef.StepArchiveFlatFileListener;
 import fr.sacem.priam.batch.common.service.importPenef.FichierBatchService;
@@ -39,6 +40,7 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 
 import javax.sql.DataSource;
@@ -54,7 +56,8 @@ import java.util.List;
 @Configuration
 @EnableBatchProcessing
 @EnableCaching
-public class BatchConfiguration {
+@Profile("production")
+public class BatchConfiguration extends CommonBatchConfig {
 
     @Autowired
     private JobBuilderFactory jobBuilderFactory;
@@ -70,24 +73,6 @@ public class BatchConfiguration {
     @Autowired
     private CopyFVItemReader readerStep2;
 
-    @Bean
-    public ResourcelessTransactionManager transactionManager() {
-        return new ResourcelessTransactionManager();
-    }
-
-    @Bean
-    public JobRepository jobRepository(ResourcelessTransactionManager transactionManager) throws Exception {
-        MapJobRepositoryFactoryBean mapJobRepositoryFactoryBean = new MapJobRepositoryFactoryBean(transactionManager);
-        mapJobRepositoryFactoryBean.setTransactionManager(transactionManager);
-        return mapJobRepositoryFactoryBean.getObject();
-    }
-
-    @Bean
-    public SimpleJobLauncher jobLauncher(JobRepository jobRepository) {
-        SimpleJobLauncher simpleJobLauncher = new SimpleJobLauncher();
-        simpleJobLauncher.setJobRepository(jobRepository);
-        return simpleJobLauncher;
-    }
 
     @Bean
     public Job archiveFlatFileReaderJob() {

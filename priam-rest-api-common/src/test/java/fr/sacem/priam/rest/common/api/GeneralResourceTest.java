@@ -1,5 +1,6 @@
 package fr.sacem.priam.rest.common.api;
 
+import static fr.sacem.priam.common.constants.EnvConstants.MIPSA_WEB_COMPONENT_HTML_URL;
 import fr.sacem.priam.model.dao.jpa.SareftjLibterDao;
 import fr.sacem.priam.model.dao.jpa.SareftjLibutilDao;
 import fr.sacem.priam.model.dao.jpa.SareftrRionDao;
@@ -9,23 +10,19 @@ import fr.sacem.priam.model.domain.saref.SareftrRion;
 import fr.sacem.priam.model.util.GlobalConstants;
 import fr.sacem.priam.rest.common.config.RestResourceTest;
 import fr.sacem.priam.security.model.UserDTO;
-import org.junit.Ignore;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import static org.hamcrest.Matchers.is;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static fr.sacem.priam.common.constants.EnvConstants.MIPSA_WEB_COMPONENT_HTML_URL;
-import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by benmerzoukah on 13/11/2017.
@@ -42,6 +39,7 @@ public class GeneralResourceTest extends RestResourceTest {
   private SareftjLibutilDao sareftjLibutilDao;
 
   @Test
+  @Transactional
   public void getAllLibelleFamille() throws Exception {
     TestingAuthenticationToken principal = new TestingAuthenticationToken(new UserDTO("benmerzoukah"), null);
     SecurityContextHolder.getContext().setAuthentication(principal);
@@ -58,6 +56,7 @@ public class GeneralResourceTest extends RestResourceTest {
   }
 
   @Test
+  @Transactional
   public void getAllLibelleTypeUtilisation() throws Exception {
       mockMvc.perform(
         get("/app/rest/general/libelletypeutil")
@@ -70,6 +69,7 @@ public class GeneralResourceTest extends RestResourceTest {
   }
 
   @Test
+  @Transactional
   public void getFamilleByTypeUtilisation() throws Exception {
     mockMvc.perform(
       get("/app/rest/general/familleByTypeUil")
@@ -81,6 +81,7 @@ public class GeneralResourceTest extends RestResourceTest {
   }
 
   @Test
+  @Transactional
   public void getRions() throws Exception {
 
     mockMvc.perform(
@@ -92,6 +93,7 @@ public class GeneralResourceTest extends RestResourceTest {
   }
 
   @Test
+  @Transactional
   public void getRionsCreation() throws Exception {
     List<SareftrRion> sareftrRions = sareftrRionDao.findAllByDateRglmtAfterCurrentDate();
     mockMvc.perform(
@@ -103,6 +105,7 @@ public class GeneralResourceTest extends RestResourceTest {
   }
 
   @Test
+  @Transactional
   public void getAllTerritoire() throws Exception {
     List<SareftjLibter> sareftjLibters = sareftjLibterDao.findByLang(GlobalConstants.FR_LANG);
     mockMvc.perform(
@@ -115,6 +118,7 @@ public class GeneralResourceTest extends RestResourceTest {
   }
 
   @Test
+  @Transactional
   public void getMipsaConfig() throws Exception {
 
     mockMvc.perform(
@@ -125,6 +129,7 @@ public class GeneralResourceTest extends RestResourceTest {
   }
 
   @Test
+  @Transactional
   public void getLibelleCdeUtilisateur() throws Exception {
     List<SareftjLibutil> labels = sareftjLibutilDao.findByLang(GlobalConstants.FR_LANG);
     mockMvc.perform(
@@ -136,6 +141,7 @@ public class GeneralResourceTest extends RestResourceTest {
   }
 
   @Test
+  @Transactional
   public void getCurrentUser() throws Exception {
 
     mockMvc.perform(
@@ -147,6 +153,7 @@ public class GeneralResourceTest extends RestResourceTest {
   }
 
   @Test
+  @Transactional
   public void getParametrageByUser() throws Exception {
     TestingAuthenticationToken principal = new TestingAuthenticationToken(new UserDTO("benmerzoukah"), null);
     SecurityContextHolder.getContext().setAuthentication(principal);
@@ -160,6 +167,7 @@ public class GeneralResourceTest extends RestResourceTest {
   }
 
   @Test
+  @Transactional
   public void getParametrageByUserInexistant() throws Exception {
 
     TestingAuthenticationToken testingAuthenticationToken  = new TestingAuthenticationToken(new UserDTO("idrissi"), null);
@@ -188,6 +196,7 @@ public class GeneralResourceTest extends RestResourceTest {
   }
 
   @Test
+  @Transactional
   public void appInfoContext() throws Exception {
     mockMvc.perform(
       get("/app/rest/general/appinfo")

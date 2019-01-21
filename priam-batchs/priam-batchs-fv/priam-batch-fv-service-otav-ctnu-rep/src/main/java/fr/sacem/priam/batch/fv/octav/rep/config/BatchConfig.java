@@ -1,6 +1,7 @@
 package fr.sacem.priam.batch.fv.octav.rep.config;
 
 import fr.sacem.priam.batch.common.domain.LigneProgrammeFV;
+import fr.sacem.priam.batch.common.fv.config.CommonBatchConfig;
 import fr.sacem.priam.batch.common.fv.reader.CsvRepReader;
 import fr.sacem.priam.batch.common.util.UtilFile;
 import fr.sacem.priam.batch.fv.octav.rep.listener.JobListener;
@@ -33,7 +34,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @EnableBatchProcessing
-public class BatchConfig {
+public class BatchConfig extends CommonBatchConfig{
 
     public static final String NAMES = "ide12cmplx;cdetypide12cmplx;ide12;cdetypide12;cdegenreide12cmplx;cdegenreide12;titreoriginalcmplx;titrealternatifprinpalcmplx;titreoriginaloeuvreperecmplx;titrealternatifoeuvreperecmplx;duree;cdepaysorigineiso4n;anneeproduction;realisateur;acteur;producteur;numepisode;seqcuesheet;dureecontenu;statut";
     @Autowired
@@ -65,7 +66,7 @@ public class BatchConfig {
         return stepBuilderFactory.get("stepRep").<LigneProgrammeFV, LigneProgrammeFV>chunk(100)
                 .reader(reader())
                 .processor(processor())
-                .writer(createOeuvreContenu())
+                .writer(compositeItemWriter())
                 .build();
     }
 
@@ -112,6 +113,7 @@ public class BatchConfig {
     public CompositeItemWriter<LigneProgrammeFV> compositeItemWriter(){
         List<ItemWriter> writers = new ArrayList<>(2);
         writers.add(createOeuvreContenu());
+        writers.add(updateOeuvreContenu());
         CompositeItemWriter itemWriter  = new CompositeItemWriter();
         itemWriter.setDelegates(writers);
 
@@ -210,7 +212,7 @@ public class BatchConfig {
         JdbcBatchItemWriter<LigneProgrammeFV> writer = new JdbcBatchItemWriter<>();
         writer.setItemSqlParameterSourceProvider(
             new BeanPropertyItemSqlParameterSourceProvider<>());
-        writer.setSql("UPDATE PRIAM_LIGNE_PROGRAMME_FV SET ID_OEUVRE_CTNU=:idOeuvreCtnu WHERE id=:id");
+        writer.setSql("UPDATE PRIAM_LIGNE_PROGRAMME_FV SET isOeuvreComplex=1 WHERE id=:id");
 
         writer.setDataSource(dataSource);
 

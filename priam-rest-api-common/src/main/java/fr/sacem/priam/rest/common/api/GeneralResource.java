@@ -214,7 +214,7 @@ public class GeneralResource {
         conf.put(MIPSA_WEB_COMPONENT_CDETYPINTERLOC.property(), String.valueOf(MIPSA_WEB_COMPONENT_CDETYPINTERLOC)) ;
         conf.put(MIPSA_WEB_COMPONENT_USESSOTOKEN.property(), String.valueOf(MIPSA_WEB_COMPONENT_USESSOTOKEN)) ;
 
-        logger.info("MIPSA CONFIG = " + conf);
+        logger.info("MIPSA config = " + conf);
 
         return conf;
     }

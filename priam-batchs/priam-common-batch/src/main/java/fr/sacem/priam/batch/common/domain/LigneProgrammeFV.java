@@ -1,6 +1,7 @@
 package fr.sacem.priam.batch.common.domain;
 
 import fr.sacem.priam.batch.common.util.exception.PriamValidationException;
+import java.time.LocalDate;
 
 /**
  * Created by embouazzar on 22/11/2018.
@@ -11,6 +12,14 @@ public class LigneProgrammeFV extends LigneProgramme {
     private String cdetypide12cmplx;
     private Boolean insertIde12Complx;
     private Long idOeuvreCtnu;
+    private String cdeTypDrtSacem;
+    private LocalDate datConsult = LocalDate.now();
+    private LocalDate datSitu = LocalDate.now();
+    private String rionStatut;
+    private String rionCalc;
+    private String idRevend;
+    private String cdeTer;
+
 
     public LigneProgrammeFV() {
     }
@@ -128,5 +137,65 @@ public class LigneProgrammeFV extends LigneProgramme {
     public void setIdOeuvreCtnu(final Long idOeuvreCtnu) {
         this.idOeuvreCtnu = idOeuvreCtnu;
 
+    }
+
+    public Boolean getInsertIde12Complx() {
+        return insertIde12Complx;
+    }
+
+    public String getCdeTypDrtSacem() {
+        return cdeTypDrtSacem;
+    }
+
+    public void setCdeTypDrtSacem(final String cdeTypDrtSacem) {
+        this.cdeTypDrtSacem = cdeTypDrtSacem;
+    }
+
+    public LocalDate getDatConsult() {
+        return datConsult;
+    }
+
+    public void setDatConsult(final LocalDate datConsult) {
+        this.datConsult = datConsult;
+    }
+
+    public LocalDate getDatSitu() {
+        return datSitu;
+    }
+
+    public void setDatSitu(final LocalDate datSitu) {
+        this.datSitu = datSitu;
+    }
+
+    public String getRionStatut() {
+        return rionStatut;
+    }
+
+    public void setRionStatut(final String rionStatut) {
+        this.rionStatut = rionStatut;
+    }
+
+    public String getRionCalc() {
+        return rionCalc;
+    }
+
+    public void setRionCalc(final String rionCalc) {
+        this.rionCalc = rionCalc;
+    }
+
+    public String getIdRevend() {
+        return idRevend;
+    }
+
+    public void setIdRevend(final String idRevend) {
+        this.idRevend = idRevend;
+    }
+
+    public String getCdeTer() {
+        return cdeTer;
+    }
+
+    public void setCdeTer(final String cdeTer) {
+        this.cdeTer = cdeTer;
     }
 }
