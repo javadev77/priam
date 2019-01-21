@@ -27,6 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigInteger;
 import java.util.*;
 
+import static fr.sacem.priam.common.TypeUtilisationEnum.FV_FONDS_06;
+import static fr.sacem.priam.common.TypeUtilisationEnum.FV_FONDS_12;
 import static fr.sacem.priam.services.LigneProgrammeCMSServiceImpl.AJOUT;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
@@ -96,7 +98,7 @@ public class LigneProgrammeFVServiceImpl implements LigneProgrammeService, Ligne
                 "mt".equals(sortProp)){
             String typeUtilCode = programme.getTypeUtilisation().getCode();
             Sort.Direction direction = sortBy.getDirection();
-            if (TypeUtilisationEnum.FV_FONDS_06.getCode().equals(typeUtilCode)) {
+            if (FV_FONDS_06.getCode().equals(typeUtilCode)) {
                 sort = JpaSort.unsafe(direction, "mtEdit");
             }
 
@@ -241,7 +243,8 @@ public class LigneProgrammeFVServiceImpl implements LigneProgrammeService, Ligne
 
                 } else {
                     input.setAjout(MANUEL);
-                    input.setMtEdit(input.getMtEdit());
+
+                    input.setMtEdit(input.getMt());
                     input.setNbrDifEdit(input.getNbrDif());
                     createOeuvreManuel(input, programme);
 
@@ -305,10 +308,10 @@ public class LigneProgrammeFVServiceImpl implements LigneProgrammeService, Ligne
         input.setCdeFamilTypUtil(programme.getFamille().getCode());
         input.setCdeUtil(CDE_UTIL);
         input.setCdeTypUtil(programme.getTypeUtilisation().getCode());
-        if(programme.getTypeUtilisation().getCode().equals(TypeUtilisationPriam.FD12.toString())) {
+        if(programme.getTypeUtilisation().getCode().equals(TypeUtilisationPriam.FD06.toString())) {
             input.setNbrDif(NBRDIF_FD12);
         }
-        if(programme.getTypeUtilisation().getCode().equals(TypeUtilisationPriam.FD06.toString())) {
+        if(programme.getTypeUtilisation().getCode().equals(TypeUtilisationPriam.FD12.toString())) {
             input.setMt(MT_FD06);
         }
 
@@ -324,7 +327,7 @@ public class LigneProgrammeFVServiceImpl implements LigneProgrammeService, Ligne
 
     private boolean isBackToEtatAuto(Programme programme, LigneProgrammeFV ligneProgrammeFV, List<LigneProgrammeFV> oeuvresAutoLink){
         boolean result = false;
-        if(programme.getTypeUtilisation().getCode().equals(TypeUtilisationEnum.FV_FONDS_06.getCode())){
+        if(programme.getTypeUtilisation().getCode().equals(FV_FONDS_06.getCode())){
             if(ligneProgrammeFV.getMt()!=null){
                 if(ligneProgrammeFV.getMt().equals(sumOfMt(oeuvresAutoLink))){
                     result = true;
@@ -429,7 +432,7 @@ public class LigneProgrammeFVServiceImpl implements LigneProgrammeService, Ligne
 
         List<LigneProgrammeFV> oeuvresAutoLinkCorrige = ligneProgrammeFVDao.findOeuvresAutoLinkCorrigeByIde12AndCdeUtil(numProg, inputLigneFV.getIde12());
         LigneProgrammeFV currentOeuvreCorrige = ligneProgrammeFVDao.findOeuvreCorrigeByIde12(numProg, inputLigneFV.getIde12());
-        if(programme.getTypeUtilisation().getCode().equals(TypeUtilisationEnum.FV_FONDS_06.getCode())){
+        if(programme.getTypeUtilisation().getCode().equals(FV_FONDS_06.getCode())){
             if(!oeuvresAutoLinkCorrige.isEmpty()) {
                 Double sumTotal = sumOfMt(oeuvresAutoLinkCorrige);
                 if(!inputLigneFV.getMtEdit().equals(currentOeuvreCorrige.getMtEdit())) {

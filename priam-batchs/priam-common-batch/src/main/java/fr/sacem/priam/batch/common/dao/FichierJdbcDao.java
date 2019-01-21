@@ -48,7 +48,7 @@ public class FichierJdbcDao {
         });
     }
 
-    public List<Fichier> getFichiersFvEligibleOctavCtnu(String statut, List<String> fonds) {
+    public List<Fichier> getFichiersByStatutAndCdeTypUtil(String statut, List<String> fonds) {
         String inClause = "'" + Joiner.on("','").join(fonds) + "'";
         return jdbcTemplate.query("SELECT * FROM PRIAM_FICHIER WHERE CDEFAMILTYPUTIL='FDSVAL' " +
             "AND CDETYPUTIL IN (" + inClause + ") "+

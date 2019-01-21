@@ -9,6 +9,7 @@
     <artifactId>priam-batch-import-fv</artifactId>
     <packaging>jar</packaging>
 
+    <name>BatchImportFV</name>
 
     <dependencies>
         <dependency>

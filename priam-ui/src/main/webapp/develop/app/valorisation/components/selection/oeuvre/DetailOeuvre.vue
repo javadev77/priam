@@ -23,14 +23,14 @@
                 <label v-show="errors.has('ide12')" class="control-label" :class="{'has-error': errors.has('ide12') }">{{ errors.first('ide12') }}</label>
               </li>
 
-              <template  v-if="programme.typeUtilisation == 'SONOANT'">
+              <template  v-if="programme.typeUtilisation == 'FD06'">
                 <li v-if="errors.has('points')">
                   <i v-show="errors.has('points')" class="fa fa-warning"></i>
                   <label v-show="errors.has('points')" :class="{'has-error': errors.has('points') }">{{ errors.first('points') }}</label>
                 </li>
               </template>
 
-              <template  v-if="programme.typeUtilisation == 'SONOFRA'">
+              <template  v-if="programme.typeUtilisation == 'FD12'">
                 <li v-if="errors.has('points')">
                   <i v-show="errors.has('points')" class="fa fa-warning"></i>
                   <label v-show="errors.has('points')" :class="{'has-error': errors.has('points') }">{{ errors.first('points') }}</label>
@@ -73,33 +73,42 @@
           </div>
 
 
-            <div class="form-group col-md-5" :class="{'has-error': errors.has('points') }" v-if="programme.typeUtilisation == 'SONOANT'">
+          <!--<div class="form-group col-md-7" :class="{'has-error': errors.has('Utilisateur') }">
+            <label class="col-md-6 control-label blueText text-right">Utilisateur <span class="mandatory">*</span></label>
+            <div class="col-md-18">
+              <select2 v-if="oeuvreManuelToCreate.utilisateur"
+                       class="form-control"
+                       data-vv-name="Utilisateur"
+                       data-vv-value-path="innerUtilisateur"
+                       v-validate.disable="'required'"
+                       name="Utilisateur"
+                       :options="utilisateurOptions"
+                       v-model="oeuvreManuelToCreate.utilisateur"
+                       :searchable="true"
+                       :class="{'has-error': errors.has('Utilisateur') }">
+              </select2>
+            </div>
+          </div>-->
+
+
+            <div class="form-group col-md-5" :class="{'has-error': errors.has('points') }" v-if="programme.typeUtilisation == 'FD06'">
               <label class="col-md-6 control-label blueText text-right">Points <span class="mandatory">*</span></label>
               <div class="col-md-18">
-                <select v-validate.disable="'required'"
-                        name="points"
-                        type="number"
-                        v-model="oeuvreManuelToCreate.quantite">
-                  <option>6</option>
-                  <option>12</option>
-                  <option>18</option>
-                  <option>24</option>
-                  <option>30</option>
-                </select>
+                <decimal-input label="" v-model="oeuvreManuelToCreate.points">Points</decimal-input>
               </div>
             </div>
-            <div class="form-group col-md-5" :class="{'has-error': errors.has('points') }" v-if="programme.typeUtilisation == 'SONOFRA'">
+            <div class="form-group col-md-5" :class="{'has-error': errors.has('points') }" v-if="programme.typeUtilisation == 'FD12'">
               <label class="col-md-6 control-label blueText text-right">Points <span class="mandatory">*</span></label>
-              <!--<div class="col-md-18">
-                <input v-validate.disable="'required|regex:^[0-9]+'"
-                       :class="{'has-error': errors.has('points') }"
-                       name="points"
-                       class="form-control"
-                       type="number"
-                       v-model="oeuvreManuelToCreate.points"
-                       v-on:keypress="isNumber(event, oeuvreManuelToCreate.points)">
-              </div>-->
-              <decimal-input label="" v-model="oeuvreManuelToCreate.points">Points</decimal-input>
+              <div class="col-md-18">
+                <input
+                    v-validate.disable="'required|numeric'"
+                    :class="{'has-error': errors.has('points') }" n
+                    name="points"
+                    class="form-control"
+                    type="text"
+                    v-model="oeuvreManuelToCreate.quantite"
+                    @keypress="onlyNumber">
+              </div>
             </div>
           </div>
         </form>
@@ -154,7 +163,8 @@
               },
               utilisateursOptions : [],
               programme : {},
-              event: null
+              event: null,
+              mutableValue : null
           }
      },
 
@@ -173,28 +183,7 @@
     },
 
     mounted() {
-        //this.oeuvre = this.$store.getters.selectedOeuvre;
         this.programme = this.$store.getters.programmeEnSelection;
-        /*const customActions = {
-          getUtilisateursByProgramme : {method : 'GET', url :'app/rest/ligneProgramme/utilisateurs?programme='+this.programme.numProg}
-        }
-        this.resource = this.$resource('', {}, customActions);
-
-        this.resource.getUtilisateursByProgramme()
-            .then(response => {
-              return response.json();
-            })
-            .then(data => {
-              this.utilisateursOptions = data;
-
-              console.log('data[0] = ' + this.oeuvreManuelToCreate.utilisateur);
-              //debugger;
-            });*/
-
-        //this.oeuvreManuelToCreate.utilisateur = this.$store.getters.libelleUtilisateur[0].id;
-
-      //his.oeuvre.titre ='ISOTOPE';
-      //this.oeuvre.ide12='2869871701'
     },
 
     methods : {
@@ -221,6 +210,7 @@
         validator.validateAll().then(() => {
           console.log('All things are OK !!');
         }).catch(() => {
+          debugger;
           console.log('Correct them errors!');
         });
       },
@@ -241,6 +231,14 @@
               ;
             }
           }
+        }
+      },
+
+      onlyNumber ($event) {
+        //console.log($event.keyCode); //keyCodes value
+        let keyCode = ($event.keyCode ? $event.keyCode : $event.which);
+        if ((keyCode < 48 || keyCode > 57)) {
+          $event.preventDefault();
         }
       }
 

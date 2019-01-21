@@ -4,6 +4,8 @@ import fr.sacem.priam.batch.common.domain.Admap;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.*;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
 
@@ -37,6 +39,13 @@ public class ConfigurationPriamLocal {
 
     @Value("${pattern.file.name}")
     String patternFileName;
+
+    /*@Bean
+    public PlatformTransactionManager transactionManager(){
+        DataSourceTransactionManager dataSourceTransactionManager = new DataSourceTransactionManager();
+        dataSourceTransactionManager.setDataSource(dataSource());
+        return dataSourceTransactionManager;
+    }*/
 
     @Bean
     public DataSource dataSource() {

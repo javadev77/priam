@@ -15,10 +15,10 @@ VALUES ( 190003 ,'FDSVAL', 'FD06', 2240093411, 48.75, 0, 'FR', null, 10, 'MB', (
 INSERT INTO PRIAM_LIGNE_PROGRAMME_FV(numProg, cdeFamilTypUtil, cdeTypUtil, ide12, mt,  durDifCtna, cdeLng, indDoubSsTit, tax, typMt, ID_FICHIER, cdeGreIde12Cmplx, cdeGreIde12, titreAltOeuvPereCmplx, titreAltPppalCmplx, titreOriOeuvPereCmplx, titreOriCmplx, titreOeuvre, cdePaysOriIso4NCmplx, realisateurCmplx, roleParticipant1, nomParticipant1, cdeTypUtilOri, cdeFamilTypUtilOri, utilisateur, date_insertion, ajout, selection, idOeuvreManuel, SEL_EN_COURS, rionEffet, ID_OEUVRE_CTNU, labelValo, dureeDeposee, taxOri, indicRepart, genreOeuvre, paysOri, statut, mtEdit)
 VALUES ( 190003 ,'FDSVAL', 'FD06', 2739083111, 51.25, 0, 'FR', null, 10, 'MB', (SELECT ID FROM PRIAM_FICHIER WHERE NOM ='FF_PENEF_EXTRANA_FONDS06_20190115103841.csv'), null, 'IJ', null, null, null, null, 'LA CORSE', null, null, 'C', 'MURCIA SARAH', 'CONCERT', 'DTSGEN', 'Batch Extraction', '2019-01-08 14:21:07', 'AUTOMATIQUE', 0, null, 1, null,null,null,null,null,null,null,null,null,51.25);
 
-INSERT INTO PRIAM_LIGNE_PROGRAMME_CMS (numProg, cdeFamilTypUtil, cdeTypUtil, ide12, mt, ID_FICHIER, titreOeuvre, roleParticipant1, nomParticipant1, ajout)
-VALUES (190003, 'FDSVAL', 'FD06', 2018300111, 30.68, (SELECT ID FROM PRIAM_FICHIER WHERE NOM ='FF_PENEF_EXTRANA_FONDS06_20190115103841.csv'), 'Titre7', 'CA', 'Participant7', 'CORRIGE');
+INSERT INTO PRIAM_LIGNE_PROGRAMME_FV (numProg, cdeFamilTypUtil, cdeTypUtil, ide12, mt, ID_FICHIER, titreOeuvre, roleParticipant1, nomParticipant1, ajout, SEL_EN_COURS, mtEdit)
+VALUES (190003, 'FDSVAL', 'FD06', 2018300111, 30.68, (SELECT ID FROM PRIAM_FICHIER WHERE NOM ='FF_PENEF_EXTRANA_FONDS06_20190115103841.csv'), 'Titre7', 'CA', 'Participant7', 'CORRIGE', 1, 30.68);
 
-INSERT INTO PRIAM_LIGNE_PROGRAMME_CMS (numProg, cdeFamilTypUtil, cdeTypUtil, ide12, mt, ID_FICHIER, titreOeuvre, roleParticipant1, nomParticipant1, ajout)
-VALUES (190003, 'FDSVAL', 'FD06', 2018290111, 20.12, (SELECT ID FROM PRIAM_FICHIER WHERE NOM ='FF_PENEF_EXTRANA_FONDS06_20190115103841.csv'), 'Titre8', 'CA', 'Participant8', 'MANUEL');
+INSERT INTO PRIAM_LIGNE_PROGRAMME_FV (numProg, cdeFamilTypUtil, cdeTypUtil, ide12, mt, ID_FICHIER, titreOeuvre, roleParticipant1, nomParticipant1, ajout, SEL_EN_COURS, mtEdit)
+VALUES (190003, 'FDSVAL', 'FD06', 2018290111, 20.12, (SELECT ID FROM PRIAM_FICHIER WHERE NOM ='FF_PENEF_EXTRANA_FONDS06_20190115103841.csv'), 'Titre8', 'CA', 'Participant8', 'MANUEL', 1, 20.12);
 
 COMMIT;

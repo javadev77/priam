@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 //
-@Transactional(readOnly = true)
+
 public interface LigneProgrammeFVDao extends JpaRepository<LigneProgrammeFV, Long> {
 
     @Transactional(readOnly = true)
@@ -45,7 +45,7 @@ public interface LigneProgrammeFVDao extends JpaRepository<LigneProgrammeFV, Lon
                     "ORDER BY l.titreOeuvre")
     List<KeyValueDto> findTitresByProgramme(@Param("titre") String titre, @Param("programme") String programme);
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Query(value="SELECT new fr.sacem.priam.model.domain.dto.SelectionCMSDto("+
             "ligneProgramme.ide12, " +
             "ligneProgramme.titreOeuvre, " +
@@ -121,6 +121,7 @@ public interface LigneProgrammeFVDao extends JpaRepository<LigneProgrammeFV, Lon
                                                  @Param("select") int select);
 
     @Modifying(clearAutomatically = true)
+    @Transactional
     @Query(nativeQuery = true, value = "update " +
             "PRIAM_LIGNE_PROGRAMME_FV p " +
             "INNER JOIN " +
@@ -212,6 +213,7 @@ public interface LigneProgrammeFVDao extends JpaRepository<LigneProgrammeFV, Lon
     void updatePointsMtTemporaireByNumProgramme(String numProg, Long ide12, Double mtEdit);
 
     @Modifying(clearAutomatically = true)
+    @Transactional
     @Query(nativeQuery = true, value="update " +
             "  PRIAM_LIGNE_PROGRAMME_FV p " +
             "INNER JOIN " +

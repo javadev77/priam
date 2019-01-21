@@ -23,18 +23,24 @@ import org.springframework.batch.core.configuration.annotation.EnableBatchProces
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.core.launch.support.SimpleJobLauncher;
+import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.repository.support.JobRepositoryFactoryBean;
+import org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.batch.item.support.CompositeItemWriter;
+import org.springframework.batch.support.transaction.ResourcelessTransactionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
 import java.beans.PropertyEditor;
@@ -64,6 +70,25 @@ public class BatchConfiguration {
 
     @Autowired
     private CopyFVItemReader readerStep2;
+
+    @Bean
+    public ResourcelessTransactionManager transactionManager() {
+        return new ResourcelessTransactionManager();
+    }
+
+    @Bean
+    public JobRepository jobRepository(ResourcelessTransactionManager transactionManager) throws Exception {
+        MapJobRepositoryFactoryBean mapJobRepositoryFactoryBean = new MapJobRepositoryFactoryBean(transactionManager);
+        mapJobRepositoryFactoryBean.setTransactionManager(transactionManager);
+        return mapJobRepositoryFactoryBean.getObject();
+    }
+
+    @Bean
+    public SimpleJobLauncher jobLauncher(JobRepository jobRepository) {
+        SimpleJobLauncher simpleJobLauncher = new SimpleJobLauncher();
+        simpleJobLauncher.setJobRepository(jobRepository);
+        return simpleJobLauncher;
+    }
 
     @Bean
     public Job archiveFlatFileReaderJob() {
@@ -246,7 +271,7 @@ public class BatchConfiguration {
 
     @Bean
     public Step archiveFlatFileReaderStep(StepArchiveFlatFileListener listener) {
-        return stepBuilderFactory.get("archiveFlatFileReaderStep").<LigneProgrammeFV, LigneProgrammeFV>chunk(2000)
+        return stepBuilderFactory.get("archiveFlatFileReaderStep").<LigneProgrammeFV, LigneProgrammeFV>chunk(100)
                 .reader(multiResourceItemReader())
                 .processor(processor())
                 .writer(writer())
@@ -256,7 +281,7 @@ public class BatchConfiguration {
 
     @Bean
     public Step copyFlatFileReaderStep() {
-        return stepBuilderFactory.get("copyFlatFileReaderStep").<LigneProgrammeFV, LigneProgrammeFV>chunk(2000)
+        return stepBuilderFactory.get("copyFlatFileReaderStep").<LigneProgrammeFV, LigneProgrammeFV>chunk(100)
                 .reader(readerStep2)
                 .writer(compositeItemWriter())
                 .build();

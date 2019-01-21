@@ -9,6 +9,8 @@
     <artifactId>priam-batch-fv-service-octav-info-oeuvre-req</artifactId>
     <packaging>jar</packaging>
 
+    <name>BatchSrvOctavInfosOeuvresREQ</name>
+
     <dependencies>
         <dependency>
             <groupId>fr.sacem.priam</groupId>

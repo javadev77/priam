@@ -9,6 +9,8 @@
     <artifactId>priam-batch-fv-service-octav-info-oeuvre-rep</artifactId>
     <packaging>jar</packaging>
 
+    <name>BatchSrvOctavInfosOeuvresREP</name>
+
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>

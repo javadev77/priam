@@ -4,6 +4,8 @@ import ch.vorburger.mariadb4j.springframework.MariaDB4jSpringService;
 import fr.sacem.priam.model.dao.AbstractDaoTest;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.SelectionCMSDto;
+import fr.sacem.priam.model.domain.fv.LigneProgrammeFV;
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,6 +18,9 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Transactional
 public class LigneProgrammeFVDaoTest extends AbstractDaoTest {
 
-    private static final String NUM_PROG = "190001";
+    private static final String NUM_PROG = "190003";
 
     private static final Long IDE12 = 2240093411L;
 
@@ -107,5 +112,45 @@ public class LigneProgrammeFVDaoTest extends AbstractDaoTest {
     public void compterOuvres(){
         List<Object> objects = ligneProgrammeFVDao.compterOuvres(NUM_PROG, 1);
         assertThat(objects).isNotNull();
+    }
+
+    @Test
+    public void calculerPointsMontantOeuvres() {
+        Double pointsMontantOeuvres = ligneProgrammeFVDao.calculerPointsMontantOeuvres(NUM_PROG, 1);
+        assertThat(pointsMontantOeuvres).isNotNull();
+        Assert.assertEquals(pointsMontantOeuvres, new Double("150.80"));
+    }
+
+    @Test
+    public void updateSelectionTemporaireByNumProgramme(){
+        ligneProgrammeFVDao.updateSelectionTemporaireByNumProgramme(NUM_PROG, 2739083111L, 0);
+        List<LigneProgrammeFV> ligneFVUnselectedList = getLigneProgrammeFV().stream().filter(l -> l.getIde12().equals(2739083111L))
+                .filter(l -> l.isSelectionEnCours() == false).collect(Collectors.toList());
+        Assert.assertEquals(ligneFVUnselectedList.get(0).isSelectionEnCours(),false);
+
+        ligneProgrammeFVDao.updateSelectionTemporaireByNumProgramme(NUM_PROG, 2739083111L, 1);
+        List<LigneProgrammeFV> ligneFVSelectedList = getLigneProgrammeFV().stream().filter(l -> l.getIde12().equals(2739083111L)).collect(Collectors.toList());
+        Assert.assertEquals(ligneFVSelectedList.get(0).isSelectionEnCours(),true);
+    }
+
+    @Test
+    public void updateSelection(){
+        ligneProgrammeFVDao.updateSelection(NUM_PROG, false);
+        List<LigneProgrammeFV> ligneProgrammeList = getLigneProgrammeFV().stream()
+                .filter(l -> l.isSelection()==false)
+                .collect(Collectors.toList());
+        Assert.assertEquals(ligneProgrammeList.size(), 4);
+
+        ligneProgrammeFVDao.updateSelection(NUM_PROG, true);
+        ligneProgrammeList = ligneProgrammeList = getLigneProgrammeFV().stream()
+                .filter(l -> l.isSelection()==true)
+                .collect(Collectors.toList());
+        Assert.assertEquals(ligneProgrammeList.size(), 4);
+
+    }
+
+    private List<LigneProgrammeFV> getLigneProgrammeFV(){
+        return ligneProgrammeFVDao.findAll().stream()
+                .filter(l -> l.getNumProg().equals(NUM_PROG)).collect(Collectors.toList());
     }
 }

@@ -2,7 +2,6 @@ package fr.sacem.priam.batch.common.listener.importPenef;
 
 import fr.sacem.priam.batch.common.dao.FichierRepository;
 import fr.sacem.priam.batch.common.service.importPenef.FichierBatchService;
-import fr.sacem.priam.batch.common.service.importPenef.FichierBatchServiceImpl;
 import fr.sacem.priam.batch.common.util.UtilFile;
 import fr.sacem.priam.batch.common.util.exception.PriamValidationException;
 import org.slf4j.Logger;

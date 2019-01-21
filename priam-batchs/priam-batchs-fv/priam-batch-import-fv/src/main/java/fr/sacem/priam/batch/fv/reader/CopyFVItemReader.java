@@ -19,7 +19,6 @@ import javax.sql.DataSource;
 @StepScope
 public class CopyFVItemReader extends JdbcPagingItemReader<LigneProgrammeFV> {
 
-
     private Long idFichier;
 
     public CopyFVItemReader(@Value("#{jobExecutionContext['ID_FICHIER_GLOBAL']}") Long idFichier, @Autowired DataSource dataSource) {
@@ -29,13 +28,13 @@ public class CopyFVItemReader extends JdbcPagingItemReader<LigneProgrammeFV> {
         sqlPagingQueryProviderFactoryBean.setDataSource(dataSource);
         sqlPagingQueryProviderFactoryBean.setSelectClause("SELECT *");
         sqlPagingQueryProviderFactoryBean.setFromClause("FROM PRIAM_LIGNE_PROGRAMME_TRAITEMENT_BATCH");
-        sqlPagingQueryProviderFactoryBean.setWhereClause("WHERE PRIAM_LIGNE_PROGRAMME_TRAITEMENT_BATCH.ID_FICHIER = " + idFichier);
+        sqlPagingQueryProviderFactoryBean.setWhereClause("WHERE ID_FICHIER = " + idFichier);
         sqlPagingQueryProviderFactoryBean.setSortKey("id");
 
         try {
             this.setQueryProvider(sqlPagingQueryProviderFactoryBean.getObject());
             this.setDataSource(dataSource);
-            this.setPageSize(2000);
+            this.setPageSize(100);
             this.setRowMapper(new PriamLigneProgrammeFVSQLMapper());
         } catch (Exception e) {
             e.printStackTrace();

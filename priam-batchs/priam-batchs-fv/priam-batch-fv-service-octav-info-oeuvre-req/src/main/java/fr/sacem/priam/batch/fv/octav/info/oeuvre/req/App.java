@@ -1,5 +1,6 @@
 package fr.sacem.priam.batch.fv.octav.info.oeuvre.req;
 
+import com.google.common.collect.Lists;
 import fr.sacem.priam.batch.common.dao.FichierJdbcDao;
 import fr.sacem.priam.batch.common.domain.Admap;
 import fr.sacem.priam.batch.common.domain.Fichier;
@@ -37,7 +38,8 @@ public class App {
 
         FichierJdbcDao fichierJdbcDao = (FichierJdbcDao) context.getBean("fichierJdbcDao");
         List<Fichier> fichiers =
-                fichierJdbcDao.getFichiersFvByStatutEnrichissement(EtapeEnrichissementEnum.DONE_SRV_OCTAV_CTNU.getCode());
+                fichierJdbcDao.getFichiersByStatutAndCdeTypUtil(EtapeEnrichissementEnum.DONE_SRV_OCTAV_CTNU.getCode(),
+                        Lists.newArrayList("FD01","FD02","FD03", "FD04","FD05", "FD07", "FD09", "FD10", "FD11", "FD13"));
         if(CollectionUtils.isEmpty(fichiers)){
             LOGGER.info("Il n'y a pas de fichier à traiter");
         }

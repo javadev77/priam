@@ -5,7 +5,7 @@ spring:
     enabled: false
 
 mipsa:
-  local: false
+  local: true
 
 endpoints:
   health:
