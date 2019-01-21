@@ -25,7 +25,7 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.SimpleJobLauncher;
 import org.springframework.batch.core.repository.JobRepository;
-import org.springframework.batch.core.repository.support.JobRepositoryFactoryBean;
+
 import org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
@@ -40,7 +40,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
-import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
 import java.beans.PropertyEditor;
