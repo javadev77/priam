@@ -1,12 +1,13 @@
 package fr.sacem.priam.batch.fv.config;
 
-
 import fr.sacem.priam.batch.common.dao.FichierRepository;
 import fr.sacem.priam.batch.common.dao.FichierRepositoryImpl;
 import fr.sacem.priam.batch.common.domain.LigneProgrammeFV;
+import fr.sacem.priam.batch.common.fv.config.CommonBatchConfig;
 import fr.sacem.priam.batch.common.listener.importPenef.JobCompletionNotificationLigneProgrammeImportPenefListener;
 import fr.sacem.priam.batch.common.listener.importPenef.StepArchiveFlatFileListener;
-import fr.sacem.priam.batch.common.service.importPenef.*;
+import fr.sacem.priam.batch.common.service.importPenef.FichierBatchService;
+import fr.sacem.priam.batch.common.service.importPenef.FichierBatchServiceImpl;
 import fr.sacem.priam.batch.common.util.DoublePropertyEditor;
 import fr.sacem.priam.batch.common.util.LocalDatePropertyEditor;
 import fr.sacem.priam.batch.common.util.UtilFile;
@@ -14,10 +15,14 @@ import fr.sacem.priam.batch.common.util.mapper.importPenef.PriamFileFVItemReader
 import fr.sacem.priam.batch.common.util.mapper.importPenef.PriamLigneProgrammeFVSQLMapper;
 import fr.sacem.priam.batch.common.util.mapper.importPenef.PriamLineFVMapper;
 import fr.sacem.priam.batch.fv.dao.FichierDao;
-
 import fr.sacem.priam.batch.fv.reader.CopyFVItemReader;
 import fr.sacem.priam.batch.fv.reader.ZipMultiResourceFvFondsItemReader;
 import fr.sacem.priam.batch.fv.service.importPenef.LigneProgrammeFVProcessorTest;
+import java.beans.PropertyEditor;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import javax.sql.DataSource;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;
@@ -34,15 +39,10 @@ import org.springframework.batch.item.support.CompositeItemWriter;
 import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
-
-import javax.sql.DataSource;
-import java.beans.PropertyEditor;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by embouazzar on 29/11/2018.
@@ -54,6 +54,7 @@ public class BatchConfigurationTest {
 
     @Autowired
     private JobBuilderFactory jobBuilderFactory;
+
     @Autowired
     private StepBuilderFactory stepBuilderFactory;
 
