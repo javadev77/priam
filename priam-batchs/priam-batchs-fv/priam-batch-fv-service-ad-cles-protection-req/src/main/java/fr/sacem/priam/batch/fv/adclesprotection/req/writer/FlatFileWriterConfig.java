@@ -1,7 +1,7 @@
 package fr.sacem.priam.batch.fv.adclesprotection.req.writer;
 
 import fr.sacem.priam.batch.common.fv.writer.AbstractConfig;
-import fr.sacem.priam.batch.fv.adclesprotection.req.model.OctavDTO;
+import fr.sacem.priam.batch.common.fv.util.OctavDTO;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;

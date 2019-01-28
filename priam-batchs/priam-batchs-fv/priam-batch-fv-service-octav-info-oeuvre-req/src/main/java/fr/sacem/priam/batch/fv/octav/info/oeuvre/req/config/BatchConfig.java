@@ -19,14 +19,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-
-
 /**
  * Created by embouazzar on 20/12/2018.
  */
 @Configuration
 @EnableBatchProcessing
-@Profile("production")
+@Profile({"production", "local"})
 public class BatchConfig extends CommonBatchConfig {
 
     @Autowired

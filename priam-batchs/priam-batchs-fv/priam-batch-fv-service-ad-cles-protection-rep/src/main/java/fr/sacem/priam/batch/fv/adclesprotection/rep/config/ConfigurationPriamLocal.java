@@ -23,21 +23,23 @@ import org.springframework.context.annotation.PropertySource;
 @Profile("local")
 @PropertySource("classpath:config/application-${spring.profiles.active}.properties")
 public class ConfigurationPriamLocal {
-
     @Value("${spring.datasource.url}")
     String urlDb;
-
     @Value("${spring.datasource.username}")
     String usernameDb;
-
     @Value("${spring.datasource.driver-class-name}")
     String driverDb;
-
     @Value("${spring.datasource.password}")
     String passwordDb;
 
-    @Value("${csvFile}")
-    String ouputCsvFile;
+    @Value("${input.archives}")
+    String inputDirectory;
+
+    @Value("${output.archives}")
+    String outputDirectory;
+
+    @Value("${pattern.file.name}")
+    String patternFileName;
 
     @Bean
     public DataSource dataSource() {
@@ -53,7 +55,11 @@ public class ConfigurationPriamLocal {
     @Bean
     public Admap admap(){
         Admap admap = new Admap();
-        admap.setOutputFile(ouputCsvFile);
+
+        admap.setOutputFile(outputDirectory);
+        admap.setInputFile(inputDirectory);
+        admap.setPatternFileName(patternFileName);
+
         return admap;
     }
 

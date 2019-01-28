@@ -38,7 +38,7 @@ public class FichierJdbcDao {
         });
     }
 
-    @Transactional
+    @Transactional()
     public void majStatutEnrichissement(Long idFichier, String statut) {
         String sql = "UPDATE PRIAM_FICHIER SET STATUT_ENRICHISSEEMNT=? WHERE ID=?";
         jdbcTemplate.update(sql, stmt -> {
