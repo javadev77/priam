@@ -49,7 +49,7 @@ import org.springframework.core.env.Environment;
 @Configuration
 @EnableBatchProcessing
 @EnableCaching
-@Profile({"production", "local"})
+@Profile({"local","production"})
 public class BatchConfiguration extends CommonBatchConfig {
 
     @Autowired

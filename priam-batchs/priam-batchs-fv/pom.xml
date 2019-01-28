@@ -16,6 +16,9 @@
 
         <module>priam-batch-fv-service-ad-cles-protection-req</module>
         <module>priam-batch-fv-service-ad-cles-protection-rep</module>
+
+        <module>priam-batch-fv-service-ad-info-req</module>
+        <module>priam-batch-fv-service-ad-info-rep</module>
     </modules>
 
     <parent>
