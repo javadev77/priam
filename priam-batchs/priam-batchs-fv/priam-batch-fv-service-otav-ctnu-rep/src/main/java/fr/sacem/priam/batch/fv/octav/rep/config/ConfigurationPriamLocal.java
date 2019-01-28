@@ -14,12 +14,14 @@ import org.springframework.context.annotation.PropertySource;
  * Created by fandis on 09/10/2017.
  */
 @Configuration
-@ComponentScan(basePackages = {"fr.sacem.priam.batch.fv.octav.rep", "fr.sacem.priam.batch.common.dao", "fr.sacem.priam.batch.common.fv", "fr.sacem.priam.batch.common.domain"})
+@ComponentScan(basePackages = {
+    "fr.sacem.priam.batch.fv.octav.rep",
+    "fr.sacem.priam.batch.common.dao",
+    "fr.sacem.priam.batch.common.fv",
+    "fr.sacem.priam.batch.common.domain"})
 @Profile({"dev","local"})
 @PropertySource("classpath:config/application-local.properties")
 public class ConfigurationPriamLocal {
-
-
 
     @Value("${spring.datasource.url}")
     String urlDb;
@@ -63,7 +65,8 @@ public class ConfigurationPriamLocal {
 
         return admap;
     }
-    ConfigurationPriamLocal(){
+
+    public ConfigurationPriamLocal(){
 
     }
 }

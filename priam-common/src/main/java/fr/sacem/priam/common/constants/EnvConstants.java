@@ -361,6 +361,21 @@ public enum EnvConstants implements ConfigurableProperty {
         public String property() {
             return "priam.fv.octav.adclesprotection.req.out.dir";
         }
+    },
+
+    OCATV_CLES_PROTECTION_REP_IN_DIR {
+        @Override
+        public String property() {
+            return "priam.fv.octav.adclesprotection.rep.in.dir";
+        }
+    },
+
+    OCATV_CLES_PROTECTION_ARCHIVES_DIR {
+
+        @Override
+        public String property() {
+            return "priam.fv.octav.adclesprotection.rep.archives.dir";
+        }
     };
 
     @Override

@@ -27,34 +27,41 @@ import org.springframework.context.annotation.PropertySource;
 public class ConfigurationPriamProd {
 
     private Enum configurationFromAdMap = EnvConstants.BATCH_CONFIG_PROPERTIES;
-    private String outputDirectory = String.valueOf(EnvConstants.OCTAV_INFOS_OEUVRES_REQ_CSV_DIR);
+    private String inputDirectory = String.valueOf(EnvConstants.OCATV_CLES_PROTECTION_REP_IN_DIR);
+    private String outputDirectory = String.valueOf(EnvConstants.OCATV_CLES_PROTECTION_ARCHIVES_DIR);
+    private String patternFilename = String.valueOf(EnvConstants.PATTERN_FILE_NAME);
 
     @Bean
     public DataSource dataSource() {
-            Properties defaultProps = new Properties();
-            try {
-                FileInputStream in = new FileInputStream(configurationFromAdMap.toString());
-                defaultProps.load(in);
-                in.close();
-            }catch (IOException e){
-
-            }
+        Properties defaultProps = new Properties();
+        try {
+            FileInputStream in = new FileInputStream(configurationFromAdMap.toString());
+            defaultProps.load(in);
+            in.close();
+        }catch (IOException e){
+            throw new RuntimeException(String.format("le fichier properties %s n'as pas pu etre chargé !!! ",  configurationFromAdMap.toString()), e);
+        }
         return DataSourceBuilder
-                .create()
-                .username(defaultProps.getProperty("spring.datasource.username"))
-                .password(defaultProps.getProperty("spring.datasource.password"))
-                .url(defaultProps.getProperty("spring.datasource.url"))
-                .driverClassName(defaultProps.getProperty("spring.datasource.driver-class-name"))
-                .build();
+            .create()
+            .username(defaultProps.getProperty("spring.datasource.username"))
+            .password(defaultProps.getProperty("spring.datasource.password"))
+            .url(defaultProps.getProperty("spring.datasource.url"))
+            .driverClassName(defaultProps.getProperty("spring.datasource.driver-class-name"))
+            .build();
     }
 
 
     @Bean
     public Admap admap(){
         Admap admap = new Admap();
+
+        admap.setInputFile(inputDirectory);
         admap.setOutputFile(outputDirectory);
+        admap.setPatternFileName(patternFilename);
+
         return admap;
     }
+
 
     ConfigurationPriamProd(){
 

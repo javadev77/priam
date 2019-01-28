@@ -1,5 +1,7 @@
-package fr.sacem.priam.batch.fv.adclesprotection.req.model;
+package fr.sacem.priam.batch.common.fv.util;
 
+import fr.sacem.priam.batch.common.util.exception.PriamValidationException;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import org.apache.commons.lang.StringUtils;
@@ -7,7 +9,7 @@ import org.apache.commons.lang.StringUtils;
 /**
  * Created by Guillaume on 13/05/2015.
  */
-public class OctavDTO {
+public class OctavDTO implements Serializable {
 
     // in :
     private String cdeCisac ;
@@ -35,10 +37,26 @@ public class OctavDTO {
     private String roladori ;
     private String coadori ;
     private String idSteOri ;
-    private String statut ;
+    private Integer statut ;
+    private String numPers;
+    private String numCatal;
 
     //other
     private Boolean isPayed = null;
+    private int lineNumber;
+    private PriamValidationException execption;
+    private Long idOeuvreFv;
+    private Boolean numpersExist;
+
+
+    public OctavDTO() {
+
+    }
+
+    public OctavDTO(final PriamValidationException execption) {
+
+        this.execption = execption;
+    }
 
     public String getCdeCisac() {
         return cdeCisac;
@@ -225,11 +243,11 @@ public class OctavDTO {
         this.idSteOri = idSteOri;
     }
 
-    public String getStatut() {
+    public Integer getStatut() {
         return statut;
     }
 
-    public void setStatut(String statut) {
+    public void setStatut(Integer statut) {
         this.statut = statut;
     }
 
@@ -238,6 +256,38 @@ public class OctavDTO {
     }
 
     public void setPayed(Boolean isPayed) {this.isPayed = isPayed;}
+
+    public void setLineNumber(final int lineNumber) {
+        this.lineNumber = lineNumber;
+    }
+
+    public int getLineNumber() {
+        return lineNumber;
+    }
+
+    public String getNumPers() {
+        return numPers;
+    }
+
+    public void setNumPers(final String numPers) {
+        this.numPers = numPers;
+    }
+
+    public String getNumCatal() {
+        return numCatal;
+    }
+
+    public void setNumCatal(final String numCatal) {
+        this.numCatal = numCatal;
+    }
+
+    public boolean isNumpersExist() {
+        return numpersExist;
+    }
+
+    public void setNumpersExist(final Boolean numpersExist) {
+        this.numpersExist = numpersExist;
+    }
 
     public static enum FondsCategory {
         FD01("FD01"), FD02("FD02"), FD03("FD03");
@@ -263,4 +313,15 @@ public class OctavDTO {
 
     }
 
+    public Long getIdOeuvreFv() {
+        return idOeuvreFv;
+    }
+
+    public void setIdOeuvreFv(final Long idOeuvreFv) {
+        this.idOeuvreFv = idOeuvreFv;
+    }
+
+    public void setClead(final BigDecimal clead) {
+        this.clead = clead;
+    }
 }
