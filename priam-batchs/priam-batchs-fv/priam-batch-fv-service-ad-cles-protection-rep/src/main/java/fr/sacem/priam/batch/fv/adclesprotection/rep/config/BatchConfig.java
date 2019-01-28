@@ -72,7 +72,7 @@ public class BatchConfig extends CommonBatchConfig {
 
     @Bean
     public Step stepRep() {
-        return stepBuilderFactory.get("stepRep").<OctavDTO, OctavDTO>chunk(100)
+        return stepBuilderFactory.get("stepRep").<OctavDTO, OctavDTO>chunk(1)
             .reader(reader())
             .processor(processor())
             .writer(classifierCompositeItemWriter())

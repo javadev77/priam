@@ -242,7 +242,7 @@ public enum EnvConstants implements ConfigurableProperty {
     OCTAV_INFOS_OEUVRES_REQ_CSV_DIR {
         @Override
         public String property() {
-            return "priam.fv.octav.infosoeuvres.config.dir";
+            return "priam.fv.octav.infosoeuvres.req.dir";
         }
 
     },
@@ -266,7 +266,7 @@ public enum EnvConstants implements ConfigurableProperty {
     OSCAR_AD_INFOS_REQ_CSV_DIR {
         @Override
         public String property() {
-            return "priam.fv.oscar.ad.infos.config.dir";
+            return "priam.fv.oscar.ad.infos.req.dir";
         }
 
     },

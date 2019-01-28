@@ -73,7 +73,8 @@ public class FichierJdbcDao {
         String inClause = "'" + Joiner.on("','").join(fonds) + "'";
         return jdbcTemplate.query("SELECT * FROM PRIAM_FICHIER WHERE CDEFAMILTYPUTIL='FDSVAL' " +
             "AND (STATUT_CODE= 'CHARGEMENT_OK' AND CDETYPUTIL IN (" + inClause + ") ) " +
-            "OR (STATUT_ENRICHISSEEMNT='" + EtapeEnrichissementEnum.DONE_SRV_OCTAV_CTNU.getCode() + "')", (rs, i) -> {
+            "OR (STATUT_ENRICHISSEEMNT='" + EtapeEnrichissementEnum.DONE_SRV_OCTAV_CTNU.getCode() + "') " +
+            "OR (STATUT_ENRICHISSEEMNT='" + EtapeEnrichissementEnum.TO_SRV_INFO_OEUVRE.getCode() + "') ", (rs, i) -> {
 
             Fichier fichier = new Fichier();
             Long id = rs.getLong("ID");

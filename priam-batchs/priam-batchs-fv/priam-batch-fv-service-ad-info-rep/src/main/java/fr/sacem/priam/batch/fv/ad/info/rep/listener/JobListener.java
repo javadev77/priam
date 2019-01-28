@@ -1,9 +1,14 @@
 package fr.sacem.priam.batch.fv.ad.info.rep.listener;
 
 import fr.sacem.priam.batch.common.dao.FichierJdbcDao;
-import fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementEnum;
+import static fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementEnum.DONE_SRV_AD_CLES_PROTECTION;
+import static fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementEnum.DONE_SRV_AD_INFO;
 import fr.sacem.priam.batch.common.util.UtilFile;
 import fr.sacem.priam.batch.common.util.exception.PriamValidationException;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.BatchStatus;
@@ -13,13 +18,6 @@ import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
-import static fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementEnum.*;
 
 /**
  * Created by embouazzar on 27/12/2018.
@@ -92,7 +90,7 @@ public class JobListener extends JobExecutionListenerSupport {
                 }
                 LOGGER.info(errors.toString());
                 utilFile.deplacerFichier(parameterFichierCSVEnCours, parameterNomFichierOriginal, outputDirectory);
-                fichierJdbcDao.majStatutEnrichissement(idFichier, DONE_SRV_AD_CLES_PERS.getCode());
+                fichierJdbcDao.majStatutEnrichissement(idFichier, DONE_SRV_AD_CLES_PROTECTION.getCode());
 
             }
         }
