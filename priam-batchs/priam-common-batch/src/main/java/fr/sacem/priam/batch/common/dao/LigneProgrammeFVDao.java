@@ -53,4 +53,13 @@ public class LigneProgrammeFVDao {
         return jdbcTemplate.queryForObject(sql, (resultSet, i) -> resultSet.getLong("NB_LIGNES"), idFichier);
 
     }
+
+    public Long countNbLignesInfosADByIdFichier(Long idFichier){
+        String sql = "SELECT COUNT(AD.NUMPERS) AS NB_LIGNES " +
+                "FROM PRIAM_AYANT_DROIT AD " +
+                "INNER JOIN PRIAM_LIGNE_PROGRAMME_FV l ON l.ID = AD.ID_FV " +
+                "INNER JOIN PRIAM_FICHIER f ON l.ID_FICHIER = f.ID " +
+                "WHERE f.ID = ?";
+        return jdbcTemplate.queryForObject(sql, (resultSet, i) -> resultSet.getLong("NB_LIGNES"), idFichier);
+    }
 }

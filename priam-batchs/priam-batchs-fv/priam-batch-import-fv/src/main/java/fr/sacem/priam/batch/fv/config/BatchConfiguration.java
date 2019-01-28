@@ -56,7 +56,7 @@ import java.util.List;
 @Configuration
 @EnableBatchProcessing
 @EnableCaching
-@Profile("production")
+@Profile({"local","production"})
 public class BatchConfiguration extends CommonBatchConfig {
 
     @Autowired

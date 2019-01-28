@@ -21,7 +21,7 @@ import java.util.*;
 public class CsvMultiResourceItemReader<T> extends MultiResourceItemReader<T> {
 
     private static final Logger LOG = LoggerFactory.getLogger(CsvMultiResourceItemReader.class);
-    private static final String EXTENTION_CSV = "^(.*\\.((csv|CSV)$))?[^.]*$";
+    private static final String EXTENTION_CSV = "^.*\\.(csv|CSV)$";
     public static final String INPUT_OUTPUT_EMPTY_ERROR ="Les parametres output.archives et input.archives ne doit pas être nulls";
     public static final String MESSAGE_NOM_FICHIER_INCORRECTE ="Le nom du fichier reponse en cours de traitement n'est pas correcte. Le nom doit être FF_PRIAM_PARTICIPANTS_FRA_REP";
     private Resource[] fichiersCSV;

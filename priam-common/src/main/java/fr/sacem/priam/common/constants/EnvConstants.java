@@ -263,6 +263,30 @@ public enum EnvConstants implements ConfigurableProperty {
 
     },
 
+    OSCAR_AD_INFOS_REQ_CSV_DIR {
+        @Override
+        public String property() {
+            return "priam.fv.oscar.ad.infos.config.dir";
+        }
+
+    },
+
+    OSCAR_AD_INFOS_REP_CSV_INPUT {
+        @Override
+        public String property() {
+            return "priam.fv.oscar.ad.infos.rep.input";
+        }
+
+    },
+
+    OSCAR_AD_INFOS_REP_CSV_ARCHIVES {
+        @Override
+        public String property() {
+            return "priam.fv.oscar.ad.infos.rep.archives";
+        }
+
+    },
+
     CATCMS_FILIATION_NPU_INPUT {
         @Override
         public String property() {
