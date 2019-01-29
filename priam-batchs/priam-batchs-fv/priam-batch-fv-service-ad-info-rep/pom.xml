@@ -7,6 +7,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>priam-batch-fv-service-ad-info-rep</artifactId>
+    <name>BatchSrvAdInfoREP</name>
     <packaging>jar</packaging>
 
     <properties>

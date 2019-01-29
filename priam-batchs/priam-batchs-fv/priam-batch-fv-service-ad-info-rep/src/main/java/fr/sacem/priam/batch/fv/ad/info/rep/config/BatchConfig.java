@@ -4,7 +4,7 @@ import fr.sacem.priam.batch.common.dao.FichierRepository;
 import fr.sacem.priam.batch.common.dao.FichierRepositoryImpl;
 import fr.sacem.priam.batch.common.fv.config.CommonBatchConfig;
 import fr.sacem.priam.batch.common.fv.reader.CsvRepReader;
-import fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementEnum;
+
 import fr.sacem.priam.batch.common.service.importPenef.FichierBatchService;
 import fr.sacem.priam.batch.common.service.importPenef.FichierBatchServiceImpl;
 import fr.sacem.priam.batch.common.util.UtilFile;
@@ -12,6 +12,7 @@ import fr.sacem.priam.batch.fv.ad.info.rep.domain.AyantDroitPers;
 import fr.sacem.priam.batch.fv.ad.info.rep.listener.JobListener;
 import fr.sacem.priam.batch.fv.ad.info.rep.mapper.PriamFileADInfoItemReader;
 import fr.sacem.priam.batch.fv.ad.info.rep.mapper.PriamFileADInfoMapper;
+import fr.sacem.priam.batch.fv.ad.info.rep.processor.AdInfoProcessor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -59,6 +60,7 @@ public class BatchConfig extends CommonBatchConfig {
     public Step stepOscarADInfoREP() {
         return stepBuilderFactory.get("stepOscarADInfoREP").<AyantDroitPers, AyantDroitPers>chunk(2000)
                 .reader(multiResourceItemReader())
+                .processor(processor())
                 .writer(writer(0L))
                 .build();
     }
@@ -66,6 +68,11 @@ public class BatchConfig extends CommonBatchConfig {
     @Bean
     public JobListener listener(){
         return new JobListener(new UtilFile());
+    }
+
+    @Bean
+    public AdInfoProcessor processor() {
+        return new AdInfoProcessor();
     }
 
     @Bean
@@ -107,16 +114,16 @@ public class BatchConfig extends CommonBatchConfig {
         writer.setSql("UPDATE PRIAM_AYANT_DROIT_PERS AYP " +
                 "INNER JOIN PRIAM_AYANT_DROIT AD on AYP.NUMPERS = AD.NUMPERS " +
                 "INNER JOIN PRIAM_LIGNE_PROGRAMME_FV LPF on AD.ID_FV = LPF.id " +
-                "INNER JOIN PRIAM_FICHIER F on LPF.ID_FICHIER = F.ID" +
+                "INNER JOIN PRIAM_FICHIER F on LPF.ID_FICHIER = F.ID " +
                 "SET PRENOM =:prenom, " +
-                "NOM =:nom, " +
+                "AYP.NOM =:nom, " +
                 "ANNEE_NAISSANCE =:anneeNaissance, " +
                 "ANNEE_DECES = :anneeDeces, " +
                 "INDICSACEM =:indicSacem, " +
                 "SOUS_ROLE =:sousRole " +
                 "WHERE AYP.NUMPERS =:numPers " +
-                "AND LPF.ID_FICHIER =" + idFichier +
-                "AND F.STATUT_ENRICHISSEEMNT = " + IN_SRV_AD_INFO.getCode());
+                "AND LPF.ID_FICHIER =" + idFichier + " " +
+                "AND F.STATUT_ENRICHISSEEMNT = '" + IN_SRV_AD_INFO.getCode() +"'");
         writer.setDataSource(dataSource);
         return writer;
     }

@@ -26,7 +26,7 @@ public class JobListener extends JobExecutionListenerSupport {
         if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
             fichierJdbcDao.majStatutEnrichissement(idFichier, IN_SRV_AD_INFO.getCode());
         } else if (jobExecution.getStatus() == BatchStatus.FAILED) {
-            fichierJdbcDao.majStatutEnrichissement(idFichier, DONE_SRV_AD_CLES_PERS.getCode());
+            fichierJdbcDao.majStatutEnrichissement(idFichier, DONE_SRV_AD_CLES_PROTECTION.getCode());
         }
     }
 

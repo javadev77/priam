@@ -92,7 +92,7 @@ public class JobListener extends JobExecutionListenerSupport {
                 }
                 LOGGER.info(errors.toString());
                 utilFile.deplacerFichier(parameterFichierCSVEnCours, parameterNomFichierOriginal, outputDirectory);
-                fichierJdbcDao.majStatutEnrichissement(idFichier, DONE_SRV_AD_CLES_PERS.getCode());
+                fichierJdbcDao.majStatutEnrichissement(idFichier, DONE_SRV_AD_CLES_PROTECTION.getCode());
 
             }
         }

@@ -41,7 +41,7 @@ public class App {
 
         FichierJdbcDao fichierJdbcDao = (FichierJdbcDao) context.getBean("fichierJdbcDao");
         List<Fichier> fichiers =
-                fichierJdbcDao.getFichiersFvByStatutEnrichissement(EtapeEnrichissementEnum.DONE_SRV_AD_CLES_PERS.getCode());
+                fichierJdbcDao.getFichiersFvByStatutEnrichissement(EtapeEnrichissementEnum.DONE_SRV_AD_CLES_PROTECTION.getCode());
         if(CollectionUtils.isEmpty(fichiers)){
             LOGGER.info("Il n'y a pas de fichier à traiter");
         }

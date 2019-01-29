@@ -24,8 +24,8 @@ import java.util.Properties;
 public class ConfigurationPriamProd {
 
     private Enum configurationFromAdMap = EnvConstants.BATCH_CONFIG_PROPERTIES;
-    private String inputDirectory = String.valueOf(EnvConstants.OCTAV_INFOS_OEUVRES_REP_CSV_INPUT);
-    private String outputDirectory = String.valueOf(EnvConstants.OCTAV_INFOS_OEUVRES_REP_CSV_ARCHIVES);
+    private String inputDirectory = String.valueOf(EnvConstants.OSCAR_AD_INFOS_REP_CSV_INPUT);
+    private String outputDirectory = String.valueOf(EnvConstants.OSCAR_AD_INFOS_REP_CSV_ARCHIVES);
     private String patternFileName = String.valueOf(EnvConstants.PATTERN_FILE_NAME);
 
     @Bean

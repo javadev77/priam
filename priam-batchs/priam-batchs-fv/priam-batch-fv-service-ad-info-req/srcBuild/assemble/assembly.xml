@@ -33,6 +33,7 @@
 				<include>*.sh</include>
 			</includes>
 			<fileMode>0755</fileMode>
+			<filtered>true</filtered>
 		</fileSet>
 	</fileSets>
 </assembly>
