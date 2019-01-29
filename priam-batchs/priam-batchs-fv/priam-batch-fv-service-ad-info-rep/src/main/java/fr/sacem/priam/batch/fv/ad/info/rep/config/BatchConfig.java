@@ -1,10 +1,12 @@
 package fr.sacem.priam.batch.fv.ad.info.rep.config;
 
+import fr.sacem.priam.batch.common.dao.FichierJdbcDao;
 import fr.sacem.priam.batch.common.dao.FichierRepository;
 import fr.sacem.priam.batch.common.dao.FichierRepositoryImpl;
 import fr.sacem.priam.batch.common.fv.config.CommonBatchConfig;
 import fr.sacem.priam.batch.common.fv.reader.CsvRepReader;
 
+import fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementEnum;
 import fr.sacem.priam.batch.common.service.importPenef.FichierBatchService;
 import fr.sacem.priam.batch.common.service.importPenef.FichierBatchServiceImpl;
 import fr.sacem.priam.batch.common.util.UtilFile;
@@ -48,6 +50,9 @@ public class BatchConfig extends CommonBatchConfig {
     @Autowired
     private DataSource dataSource;
 
+    @Autowired
+    FichierJdbcDao fichierJdbcDao;
+
     @Bean
     public Job jobADInfoREP(Step stepOscarADInfoREP) {
         return jobBuilderFactory.get("jobADInfoREP")
@@ -78,6 +83,8 @@ public class BatchConfig extends CommonBatchConfig {
     @Bean
     public CsvRepReader<AyantDroitPers> multiResourceItemReader(){
         CsvRepReader<AyantDroitPers> resourceItemReader = new CsvRepReader<>();
+        resourceItemReader.setFichierJdbcDao(fichierJdbcDao);
+        resourceItemReader.setEtapeEnrichissement(IN_SRV_AD_INFO);
         resourceItemReader.setUtilFile(utilFile());
         resourceItemReader.setDelegate(flatFileItemReader());
         resourceItemReader.setStrict(false);

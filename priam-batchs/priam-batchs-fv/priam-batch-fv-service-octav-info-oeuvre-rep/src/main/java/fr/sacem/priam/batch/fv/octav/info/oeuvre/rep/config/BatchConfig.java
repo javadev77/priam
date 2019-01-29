@@ -1,9 +1,11 @@
 package fr.sacem.priam.batch.fv.octav.info.oeuvre.rep.config;
 
+import fr.sacem.priam.batch.common.dao.FichierJdbcDao;
 import fr.sacem.priam.batch.common.dao.FichierRepository;
 import fr.sacem.priam.batch.common.dao.FichierRepositoryImpl;
 import fr.sacem.priam.batch.common.domain.LigneProgrammeFV;
 import fr.sacem.priam.batch.common.fv.reader.CsvRepReader;
+import fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementEnum;
 import fr.sacem.priam.batch.common.service.importPenef.FichierBatchService;
 import fr.sacem.priam.batch.common.service.importPenef.FichierBatchServiceImpl;
 import fr.sacem.priam.batch.common.util.DoublePropertyEditor;
@@ -11,7 +13,7 @@ import fr.sacem.priam.batch.common.util.UtilFile;
 import fr.sacem.priam.batch.common.util.mapper.importPenef.PriamFileFVItemReader;
 import fr.sacem.priam.batch.common.util.mapper.importPenef.PriamLineFVMapper;
 import fr.sacem.priam.batch.fv.octav.info.oeuvre.rep.listener.JobListener;
-import fr.sacem.priam.batch.fv.octav.info.oeuvre.rep.reader.CsvMultiResourceItemReader;
+
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -19,9 +21,9 @@ import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
-import org.springframework.batch.item.file.LineMapper;
+
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
-import org.springframework.batch.item.file.mapping.DefaultLineMapper;
+
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -31,6 +33,8 @@ import org.springframework.context.annotation.Primary;
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
+
+import static fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementEnum.IN_SRV_INFO_OEUVRE;
 
 /**
  * Created by embouazzar on 27/12/2018.
@@ -47,6 +51,9 @@ public class BatchConfig {
 
     @Autowired
     private DataSource dataSource;
+
+    @Autowired
+    FichierJdbcDao fichierJdbcDao;
 
     @Bean
     public Job jobInfoOeuvreREP(Step stepOctavInfosOeuvresREP) {
@@ -73,6 +80,8 @@ public class BatchConfig {
     @Bean
     public CsvRepReader<LigneProgrammeFV> multiResourceItemReader(){
         CsvRepReader<LigneProgrammeFV> resourceItemReader = new CsvRepReader<>();
+        resourceItemReader.setEtapeEnrichissement(IN_SRV_INFO_OEUVRE);
+        resourceItemReader.setFichierJdbcDao(fichierJdbcDao);
         resourceItemReader.setUtilFile(utilFile());
         resourceItemReader.setDelegate(flatFileItemReader());
         resourceItemReader.setStrict(false);

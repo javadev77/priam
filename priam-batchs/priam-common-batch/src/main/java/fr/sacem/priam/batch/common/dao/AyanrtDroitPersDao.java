@@ -41,7 +41,7 @@ public class AyanrtDroitPersDao {
             Long numpers = jdbcTemplate.queryForObject("SELECT NUMPERS FROM PRIAM_AYANT_DROIT " +
                             "INNER JOIN PRIAM_LIGNE_PROGRAMME_FV PLPF on PRIAM_AYANT_DROIT.ID_FV = PLPF.id " +
                             "INNER JOIN PRIAM_FICHIER PF on PLPF.ID_FICHIER = PF.ID " +
-                            "WHERE PRIAM_AYANT_DROIT.NUMPERS =? AND PF.ID =? ",
+                            "WHERE PRIAM_AYANT_DROIT.NUMPERS =? AND PF.ID =? GROUP BY PRIAM_AYANT_DROIT.NUMPERS ",
                     (resultSet, i) -> resultSet.getLong("NUMPERS"), numPers, idFichier);
 
             return numpers != null;

@@ -1,8 +1,10 @@
 package fr.sacem.priam.batch.fv.octav.rep.config;
 
+import fr.sacem.priam.batch.common.dao.FichierJdbcDao;
 import fr.sacem.priam.batch.common.domain.LigneProgrammeFV;
 import fr.sacem.priam.batch.common.fv.config.CommonBatchConfig;
 import fr.sacem.priam.batch.common.fv.reader.CsvRepReader;
+import fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementEnum;
 import fr.sacem.priam.batch.common.util.UtilFile;
 import fr.sacem.priam.batch.fv.octav.rep.listener.JobListener;
 import fr.sacem.priam.batch.fv.octav.rep.mapper.OeuvreCtnuRepLineMapper;
@@ -29,6 +31,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import static fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementEnum.IN_SRV_OCTAV_CTNU;
+
 /**
  * Created by embouazzar on 20/12/2018.
  */
@@ -45,6 +49,9 @@ public class BatchConfig extends CommonBatchConfig{
 
     @Autowired
     DataSource dataSource;
+
+    @Autowired
+    FichierJdbcDao fichierJdbcDao;
 
     @Bean
     public Job jobOctavCtnuRep(Step stepRep) {
@@ -73,6 +80,8 @@ public class BatchConfig extends CommonBatchConfig{
     @Bean
     public CsvRepReader reader() {
         CsvRepReader<OeuvreCtnuRep> lp = new CsvRepReader<>();
+        lp.setEtapeEnrichissement(IN_SRV_OCTAV_CTNU);
+        lp.setFichierJdbcDao(fichierJdbcDao);
         OctavRepFlatItemReader delegate = new OctavRepFlatItemReader();
         OeuvreCtnuRepLineMapper lineMapper = new OeuvreCtnuRepLineMapper();
         lineMapper.setLineTokenizer(delimitedLineTokenizer());
