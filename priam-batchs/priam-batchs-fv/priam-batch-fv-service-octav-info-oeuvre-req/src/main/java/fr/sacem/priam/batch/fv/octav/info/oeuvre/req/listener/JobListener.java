@@ -25,6 +25,8 @@ public class JobListener extends JobExecutionListenerSupport {
         Long idFichier = jobExecution.getJobParameters().getLong("idFichier");
         if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
             fichierJdbcDao.majStatutEnrichissement(idFichier, EtapeEnrichissementEnum.IN_SRV_INFO_OEUVRE.getCode());
+        } else {
+            fichierJdbcDao.majStatutEnrichissement(idFichier, EtapeEnrichissementEnum.TO_SRV_INFO_OEUVRE.getCode());
         }
     }
 

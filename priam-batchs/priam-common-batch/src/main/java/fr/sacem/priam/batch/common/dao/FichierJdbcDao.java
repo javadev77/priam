@@ -1,7 +1,10 @@
 package fr.sacem.priam.batch.common.dao;
 
 import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
 import fr.sacem.priam.batch.common.domain.Fichier;
+import fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementEnum;
+import java.util.ArrayList;
 import java.util.List;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +30,21 @@ public class FichierJdbcDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
+    @Transactional(readOnly = true)
+    public Fichier findById(Long idFichier) {
+        String sql = "SELECT f.ID, f.STATUT_ENRICHISSEEMNT FROM PRIAM_FICHIER f WHERE f.ID=?";
+        List<Fichier> result = jdbcTemplate.query(sql, (rs, i) -> {
+            Fichier fichier = new Fichier();
+            fichier.setStatutEnrichissement(rs.getString("STATUT_ENRICHISSEEMNT"));
+            fichier.setId(rs.getLong("ID"));
+            return fichier;
+        }, String.valueOf(idFichier));
 
+        return result != null && !result.isEmpty() ? result.get(0) : null;
+    }
+
+
+    @Transactional(readOnly = true)
     public List<Fichier> getFichiersFvByStatutEnrichissement(String statut) {
         return jdbcTemplate.query("SELECT * FROM PRIAM_FICHIER WHERE CDEFAMILTYPUTIL='FDSVAL' AND STATUT_ENRICHISSEEMNT = '" + statut + "'", (rs, i) -> {
             Fichier fichier = new Fichier();
@@ -38,7 +55,7 @@ public class FichierJdbcDao {
         });
     }
 
-    @Transactional()
+    @Transactional
     public void majStatutEnrichissement(Long idFichier, String statut) {
         String sql = "UPDATE PRIAM_FICHIER SET STATUT_ENRICHISSEEMNT=? WHERE ID=?";
         jdbcTemplate.update(sql, stmt -> {
@@ -48,11 +65,29 @@ public class FichierJdbcDao {
         });
     }
 
+    @Transactional(readOnly = true)
     public List<Fichier> getFichiersByStatutAndCdeTypUtil(String statut, List<String> fonds) {
         String inClause = "'" + Joiner.on("','").join(fonds) + "'";
         return jdbcTemplate.query("SELECT * FROM PRIAM_FICHIER WHERE CDEFAMILTYPUTIL='FDSVAL' " +
             "AND CDETYPUTIL IN (" + inClause + ") "+
             "AND STATUT_CODE= '" + statut + "'", (rs, i) -> {
+
+            Fichier fichier = new Fichier();
+            Long id = rs.getLong("ID");
+            fichier.setId(id);
+
+            return fichier;
+        });
+    }
+
+    @Transactional(readOnly = true)
+    public List<Fichier> getFichiersInfoOeuvreEligible() {
+        ArrayList<String> fonds = Lists.newArrayList("FD01", "FD02", "FD03", "FD07", "FD13");
+        String inClause = "'" + Joiner.on("','").join(fonds) + "'";
+        return jdbcTemplate.query("SELECT * FROM PRIAM_FICHIER WHERE CDEFAMILTYPUTIL='FDSVAL' " +
+            "AND (STATUT_CODE= 'CHARGEMENT_OK' AND CDETYPUTIL IN (" + inClause + ") ) " +
+            "OR (STATUT_ENRICHISSEEMNT='" + EtapeEnrichissementEnum.DONE_SRV_OCTAV_CTNU.getCode() + "') " +
+            "OR (STATUT_ENRICHISSEEMNT='" + EtapeEnrichissementEnum.TO_SRV_INFO_OEUVRE.getCode() + "') ", (rs, i) -> {
 
             Fichier fichier = new Fichier();
             Long id = rs.getLong("ID");

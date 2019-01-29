@@ -1,29 +1,24 @@
 package fr.sacem.priam.batch.fv.octav.info.oeuvre.req;
 
-import com.google.common.collect.Lists;
 import fr.sacem.priam.batch.common.dao.FichierJdbcDao;
 import fr.sacem.priam.batch.common.domain.Admap;
 import fr.sacem.priam.batch.common.domain.Fichier;
-import fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementEnum;
 import fr.sacem.priam.batch.fv.octav.info.oeuvre.req.config.ConfigurationPriamLocal;
 import fr.sacem.priam.batch.fv.octav.info.oeuvre.req.config.ConfigurationPriamProd;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameter;
 import org.springframework.batch.core.JobParameters;
-
 import org.springframework.batch.core.launch.JobLauncher;
-
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.util.CollectionUtils;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @SpringBootApplication
 public class App {
@@ -38,8 +33,7 @@ public class App {
 
         FichierJdbcDao fichierJdbcDao = (FichierJdbcDao) context.getBean("fichierJdbcDao");
         List<Fichier> fichiers =
-                fichierJdbcDao.getFichiersByStatutAndCdeTypUtil(EtapeEnrichissementEnum.DONE_SRV_OCTAV_CTNU.getCode(),
-                        Lists.newArrayList("FD01","FD02","FD03", "FD04","FD05", "FD07", "FD09", "FD10", "FD11", "FD13"));
+                fichierJdbcDao.getFichiersInfoOeuvreEligible();
         if(CollectionUtils.isEmpty(fichiers)){
             LOGGER.info("Il n'y a pas de fichier à traiter");
         }

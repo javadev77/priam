@@ -1,7 +1,9 @@
 package fr.sacem.priam.batch.common.fv.reader;
 
+import fr.sacem.priam.batch.common.dao.FichierJdbcDao;
+import fr.sacem.priam.batch.common.domain.Fichier;
+import fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementEnum;
 import fr.sacem.priam.batch.common.util.UtilFile;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,6 +43,12 @@ public class CsvRepReader<T> extends MultiResourceItemReader<T> {
     private static String FILE_CSV_EN_COURS_DE_TRAITEMENT = "_en_cours_de_traitement";
 
     private UtilFile utilFile;
+    private FichierJdbcDao fichierJdbcDao;
+    private EtapeEnrichissementEnum etapeEnrichissement;
+
+
+    public CsvRepReader() {
+    }
 
 
     @Override
@@ -120,9 +128,16 @@ public class CsvRepReader<T> extends MultiResourceItemReader<T> {
                                     this.stepExecution.getJobExecution().stop();
                                 } else {
                                     Long idFichier = Long.valueOf(file.getName().split("_")[3]);
-                                    this.stepExecution.getJobExecution().getExecutionContext().put("idFichier", idFichier);
-                                    FileSystemResource fichierResource = new FileSystemResource(file);
-                                    this.setResources(new Resource[]{fichierResource});
+                                    Fichier fichier = fichierJdbcDao.findById(idFichier);
+                                    if(!fichier.getStatutEnrichissement().equals(this.etapeEnrichissement.getCode())) {
+
+                                        LOG.info(String.format("Le fichier %s a déjà ete traité", filenameCsv));
+                                        this.setResources(new Resource[]{});
+                                    } else {
+                                        this.stepExecution.getJobExecution().getExecutionContext().put("idFichier", idFichier);
+                                        FileSystemResource fichierResource = new FileSystemResource(file);
+                                        this.setResources(new Resource[]{fichierResource});
+                                    }
                                 }
 
                             }
@@ -178,5 +193,13 @@ public class CsvRepReader<T> extends MultiResourceItemReader<T> {
 
     public UtilFile getUtilFile() {
         return utilFile;
+    }
+
+    public void setFichierJdbcDao(final FichierJdbcDao fichierJdbcDao) {
+        this.fichierJdbcDao = fichierJdbcDao;
+    }
+
+    public void setEtapeEnrichissement(final EtapeEnrichissementEnum etapeEnrichissement) {
+        this.etapeEnrichissement = etapeEnrichissement;
     }
 }

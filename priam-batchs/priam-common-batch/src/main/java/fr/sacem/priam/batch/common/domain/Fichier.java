@@ -26,6 +26,8 @@ public class Fichier {
 
 
     private String statut;
+    private String statutEnrichissement;
+
 
     public Fichier() {
 
@@ -94,6 +96,14 @@ public class Fichier {
 
     public void setStatut(String statut) {
         this.statut = statut;
+    }
+
+    public String getStatutEnrichissement() {
+        return statutEnrichissement;
+    }
+
+    public void setStatutEnrichissement(final String statutEnrichissement) {
+        this.statutEnrichissement = statutEnrichissement;
     }
 
     public Fichier(String nom, String famille, String typeUtilisation, Timestamp dateDebutChargt, Timestamp dateFinChargt, Long nbLignes, String statut) {

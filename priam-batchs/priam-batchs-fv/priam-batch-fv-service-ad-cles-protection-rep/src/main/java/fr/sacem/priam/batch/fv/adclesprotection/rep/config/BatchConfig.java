@@ -1,8 +1,10 @@
 
 package fr.sacem.priam.batch.fv.adclesprotection.rep.config;
 
+import fr.sacem.priam.batch.common.dao.FichierJdbcDao;
 import fr.sacem.priam.batch.common.fv.config.CommonBatchConfig;
 import fr.sacem.priam.batch.common.fv.reader.CsvRepReader;
+import fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementEnum;
 import fr.sacem.priam.batch.common.fv.util.OctavDTO;
 import fr.sacem.priam.batch.common.util.UtilFile;
 import fr.sacem.priam.batch.fv.adclesprotection.rep.listener.JobListener;
@@ -53,6 +55,10 @@ public class BatchConfig extends CommonBatchConfig {
     @Autowired
     DataSource dataSource;
 
+    @Autowired
+    FichierJdbcDao fichierJdbcDao;
+
+
     @Bean
     public Job jobADClesProtectionREP(Step stepRep) {
         return jobBuilderFactory.get("jobADClesProtectionREP")
@@ -72,7 +78,7 @@ public class BatchConfig extends CommonBatchConfig {
 
     @Bean
     public Step stepRep() {
-        return stepBuilderFactory.get("stepRep").<OctavDTO, OctavDTO>chunk(100)
+        return stepBuilderFactory.get("stepRep").<OctavDTO, OctavDTO>chunk(1)
             .reader(reader())
             .processor(processor())
             .writer(classifierCompositeItemWriter())
@@ -87,6 +93,8 @@ public class BatchConfig extends CommonBatchConfig {
     @Bean
     public CsvRepReader reader() {
         CsvRepReader<OctavDTO> lp = new CsvRepReader<>();
+        lp.setEtapeEnrichissement(EtapeEnrichissementEnum.IN_SRV_AD_CLES_PROTECTION);
+        lp.setFichierJdbcDao(fichierJdbcDao);
         AdclesProtectionRepFlatItemReader delegate = new AdclesProtectionRepFlatItemReader();
         AdclesProtectionRepLineMapper lineMapper = new AdclesProtectionRepLineMapper();
         lineMapper.setLineTokenizer(delimitedLineTokenizer());
