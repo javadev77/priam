@@ -30,6 +30,19 @@ public class FichierJdbcDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
+    @Transactional(readOnly = true)
+    public Fichier findById(Long idFichier) {
+        String sql = "SELECT f.ID, f.STATUT_ENRICHISSEEMNT FROM PRIAM_FICHIER f WHERE f.ID=?";
+        List<Fichier> result = jdbcTemplate.query(sql, (rs, i) -> {
+            Fichier fichier = new Fichier();
+            fichier.setStatutEnrichissement(rs.getString("STATUT_ENRICHISSEEMNT"));
+            fichier.setId(rs.getLong("ID"));
+            return fichier;
+        }, String.valueOf(idFichier));
+
+        return result != null && !result.isEmpty() ? result.get(0) : null;
+    }
+
 
     @Transactional(readOnly = true)
     public List<Fichier> getFichiersFvByStatutEnrichissement(String statut) {

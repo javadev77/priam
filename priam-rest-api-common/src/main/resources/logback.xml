@@ -30,7 +30,9 @@
     <resetJUL>true</resetJUL>
   </contextListener>
 
-  <root level="INFO">
+  <logger name="org.springframework.jdbc.core.JdbcTemplate" level="DEBUG"/>
+
+  <root level="DEBUG">
     <appender-ref ref="CONSOLE"/>
     <appender-ref ref="priam-file" />
   </root>
