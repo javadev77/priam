@@ -1,5 +1,6 @@
 package fr.sacem.priam.batch.fv.service.octav.info.oeuvre.rep.config;
 
+import fr.sacem.priam.batch.common.dao.FichierJdbcDao;
 import fr.sacem.priam.batch.common.dao.FichierRepository;
 import fr.sacem.priam.batch.common.dao.FichierRepositoryImpl;
 import fr.sacem.priam.batch.common.domain.LigneProgrammeFV;
@@ -32,6 +33,8 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 
+import static fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementEnum.IN_SRV_INFO_OEUVRE;
+
 /**
  * Created by embouazzar on 27/12/2018.
  */
@@ -48,6 +51,9 @@ public class BatchConfigTest {
 
     @Autowired
     private DataSource dataSource;
+
+    @Autowired
+    FichierJdbcDao fichierJdbcDao;
 
     @Bean
     public Job jobInfoOeuvreREP(Step stepOctavInfosOeuvresREP) {
@@ -74,6 +80,8 @@ public class BatchConfigTest {
     @Bean
     public CsvRepReader<LigneProgrammeFV> multiResourceItemReader(){
         CsvRepReader<LigneProgrammeFV> resourceItemReader = new CsvRepReader<>();
+        resourceItemReader.setEtapeEnrichissement(IN_SRV_INFO_OEUVRE);
+        resourceItemReader.setFichierJdbcDao(fichierJdbcDao);
         resourceItemReader.setUtilFile(utilFile());
         resourceItemReader.setDelegate(flatFileItemReader());
         resourceItemReader.setStrict(false);
