@@ -2,15 +2,25 @@ package fr.sacem.priam.model.domain.fv;
 
 import com.google.common.base.Objects;
 import fr.sacem.priam.model.domain.Fichier;
-
-import java.util.List;
-import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
+/**
+ * Created by benmerzoukah on 29/05/2017.
+ */
 @Entity
-@Table(name = "PRIAM_LIGNE_PROGRAMME_FV")
-public class LigneProgrammeFV implements Serializable {
+@Table(name = "PRIAM_LIGNE_PROGRAMME_FV_COPY")
+public class LigneProgrammeCopyFV implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -139,55 +149,34 @@ public class LigneProgrammeFV implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "idOeuvreManuel")
-    private LigneProgrammeFV oeuvreManuel;
+    private LigneProgrammeCopyFV oeuvreManuel;
 
-    private Long nbrDifEdit;
-    private Double mtEdit;
-
-    @Column(name = "rionEffet")
-    private Long rionEffet;
-
-    @Column(name = "labelValo")
-    private String labelValo;
-
-    @Column(name = "dureeDeposee")
-    private Long dureeDeposee;
-
-    @Column(name = "taxOri")
-    private Double taxOri;
-
-    @Column(name = "indicRepart")
-    private Integer indicRepart;
-
-    @Column(name = "genreOeuvre")
-    private String genreOeuvre;
-
-    @Column(name = "paysOri")
-    private Integer paysOri;
-
-    @Column(name = "statut")
-    private String statut;
-
-    @ManyToOne
-    @JoinColumn(name = "ID_OEUVRE_CTNU")
-    private LigneProgrammeFV oeuvreCTNU;
-
-
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = "ID_FV")
-    private List<AyantDroit> ayantsDroit;
-
-
-
-    public LigneProgrammeFV() {
+    public String getUtilisateur() {
+        return utilisateur;
     }
 
-    public Long getId() {
-        return id;
+    public void setUtilisateur(String utilisateur) {
+        this.utilisateur = utilisateur;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setDateInsertion(Date dateInsertion) {
+        this.dateInsertion = dateInsertion;
+    }
+
+    public String getAjout() {
+        return ajout;
+    }
+
+    public void setAjout(String ajout) {
+        this.ajout = ajout;
+    }
+
+    public boolean getSelection() {
+        return selection;
+    }
+
+    public void setSelection(boolean selection) {
+        this.selection = selection;
     }
 
     public Fichier getFichier() {
@@ -196,6 +185,18 @@ public class LigneProgrammeFV implements Serializable {
 
     public void setFichier(Fichier fichier) {
         this.fichier = fichier;
+    }
+
+    public LigneProgrammeCopyFV() {
+    
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getCdeCisac() {
@@ -453,172 +454,52 @@ public class LigneProgrammeFV implements Serializable {
     public void setCdeFamilTypUtilOri(String cdeFamilTypUtilOri) {
         this.cdeFamilTypUtilOri = cdeFamilTypUtilOri;
     }
-
-    public String getUtilisateur() {
-        return utilisateur;
+    
+    public LigneProgrammeCopyFV getOeuvreManuel() {
+        return oeuvreManuel;
     }
-
-    public void setUtilisateur(String utilisateur) {
-        this.utilisateur = utilisateur;
+    
+    public void setOeuvreManuel(LigneProgrammeCopyFV oeuvreManuel) {
+        this.oeuvreManuel = oeuvreManuel;
     }
-
+    
     public Date getDateInsertion() {
         return dateInsertion;
     }
-
-    public void setDateInsertion(Date dateInsertion) {
-        this.dateInsertion = dateInsertion;
-    }
-
-    public String getAjout() {
-        return ajout;
-    }
-
-    public void setAjout(String ajout) {
-        this.ajout = ajout;
-    }
-
+    
     public boolean isSelection() {
         return selection;
     }
-
-    public void setSelection(boolean selection) {
-        this.selection = selection;
-    }
-
+    
     public boolean isSelectionEnCours() {
         return selectionEnCours;
     }
-
+    
     public void setSelectionEnCours(boolean selectionEnCours) {
         this.selectionEnCours = selectionEnCours;
     }
-
+    
     public String getLibelleUtilisateur() {
         return libelleUtilisateur;
     }
-
+    
     public void setLibelleUtilisateur(String libelleUtilisateur) {
         this.libelleUtilisateur = libelleUtilisateur;
     }
-
-    public LigneProgrammeFV getOeuvreManuel() {
-        return oeuvreManuel;
-    }
-
-    public void setOeuvreManuel(LigneProgrammeFV oeuvreManuel) {
-        this.oeuvreManuel = oeuvreManuel;
-    }
-
-    public Long getNbrDifEdit() {
-        return nbrDifEdit;
-    }
-
-    public void setNbrDifEdit(Long nbrDifEdit) {
-        this.nbrDifEdit = nbrDifEdit;
-    }
-
-    public Double getMtEdit() {
-        return mtEdit;
-    }
-
-    public void setMtEdit(Double mtEdit) {
-        this.mtEdit = mtEdit;
-    }
-
-    public Long getRionEffet() {
-        return rionEffet;
-    }
-
-    public void setRionEffet(Long rionEffet) {
-        this.rionEffet = rionEffet;
-    }
-
-    public String getLabelValo() {
-        return labelValo;
-    }
-
-    public void setLabelValo(String labelValo) {
-        this.labelValo = labelValo;
-    }
-
-    public Long getDureeDeposee() {
-        return dureeDeposee;
-    }
-
-    public void setDureeDeposee(Long dureeDeposee) {
-        this.dureeDeposee = dureeDeposee;
-    }
-
-    public Double getTaxOri() {
-        return taxOri;
-    }
-
-    public void setTaxOri(Double taxOri) {
-        this.taxOri = taxOri;
-    }
-
-    public Integer getIndicRepart() {
-        return indicRepart;
-    }
-
-    public void setIndicRepart(Integer indicRepart) {
-        this.indicRepart = indicRepart;
-    }
-
-    public String getGenreOeuvre() {
-        return genreOeuvre;
-    }
-
-    public void setGenreOeuvre(String genreOeuvre) {
-        this.genreOeuvre = genreOeuvre;
-    }
-
-    public Integer getPaysOri() {
-        return paysOri;
-    }
-
-    public void setPaysOri(Integer paysOri) {
-        this.paysOri = paysOri;
-    }
-
-    public String getStatut() {
-        return statut;
-    }
-
-    public void setStatut(String statut) {
-        this.statut = statut;
-    }
-
-    public LigneProgrammeFV getOeuvreCTNU() {
-        return oeuvreCTNU;
-    }
-
-    public void setOeuvreCTNU(LigneProgrammeFV oeuvreCTNU) {
-        this.oeuvreCTNU = oeuvreCTNU;
-    }
-
-    public List<AyantDroit> getAyantsDroit() {
-        return ayantsDroit;
-    }
-
-    public void setAyantsDroit(final List<AyantDroit> ayantsDroit) {
-        this.ayantsDroit = ayantsDroit;
-    }
-
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
-        LigneProgrammeFV that = (LigneProgrammeFV) o;
-
+    
+        LigneProgrammeCopyFV that = (LigneProgrammeCopyFV) o;
+    
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
-
-
+        
+    
         return true;
     }
-
+    
     @Override
     public int hashCode() {
         return Objects.hashCode(id);

@@ -73,11 +73,11 @@
 
             <div v-if = "!dataLoading">
               <priam-grid
-                v-if="priamGrid_SONOCMS.gridData_SONOCMS.content"
-                :data="priamGrid_SONOCMS.gridData_SONOCMS"
-                :columns="priamGrid_SONOCMS.gridColumns"
+                v-if="priamGridFondsOeuvre.gridData.content"
+                :data="priamGridFondsOeuvre.gridData"
+                :columns="priamGridFondsOeuvre.gridColumns"
                 noResultText="Aucun résultat."
-                :filter-key="priamGrid_SONOCMS.searchQuery"
+                :filter-key="priamGridFondsOeuvre.searchQuery"
                 @load-page="loadPage"
                 @on-sort="onSort"
                 @all-checked="onAllChecked"
@@ -219,7 +219,7 @@
 
         currentGridState: {},
 
-        priamGrid_SONOCMS: {
+        priamGridFondsOeuvre: {
           gridColumns: [
             {
               id: 'ide12',
@@ -375,7 +375,7 @@
             }
 
           ],
-          gridData_SONOCMS: {},
+          gridData: {},
           searchQuery: ''
         },
 
@@ -541,7 +541,7 @@
 
             this.defaultPageable.sort = 'pointsMontant';
 
-            var pointsColumn = this.priamGrid_SONOCMS.gridColumns.find(function (elem) {
+            var pointsColumn = this.priamGridFondsOeuvre.gridColumns.find(function (elem) {
               return elem.id === 'pointsMontant';
             });
             debugger;
@@ -606,9 +606,9 @@
 
             this.dataLoading = false;
 
-            this.priamGrid_SONOCMS.gridData_SONOCMS = data;
-            this.priamGrid_SONOCMS.gridData_SONOCMS.number = data.number + 1;
-            this.ligneProgramme = this.priamGrid_SONOCMS.gridData_SONOCMS.content;
+            this.priamGridFondsOeuvre.gridData = data;
+            this.priamGridFondsOeuvre.gridData.number = data.number + 1;
+            this.ligneProgramme = this.priamGridFondsOeuvre.gridData.content;
 
           });
       },
@@ -703,9 +703,9 @@
 
             var tab = [];
 
-            this.priamGrid_SONOCMS.gridData_SONOCMS = data;
-            this.priamGrid_SONOCMS.gridData_SONOCMS.number = data.number + 1;
-            tab = this.priamGrid_SONOCMS.gridData_SONOCMS.content;
+            this.priamGridFondsOeuvre.gridData = data;
+            this.priamGridFondsOeuvre.gridData.number = data.number + 1;
+            tab = this.priamGridFondsOeuvre.gridData.content;
 
 
             this.ligneProgramme = tab;
@@ -1154,7 +1154,6 @@
       countPointsSelection: function (newValue) {
         console.log("Points sélection a cahnge " + newValue);
         this.dureeSelection.duree = newValue;
-        this.calculerCompteurs();
       }
 
     },

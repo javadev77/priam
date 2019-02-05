@@ -1,16 +1,14 @@
 package fr.sacem.priam.batch.common.dao;
 
-import fr.sacem.priam.common.util.FileUtils;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
+import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.sql.DataSource;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
 
 /**
  * Created by benmerzoukah on 18/12/2017.
@@ -66,16 +64,9 @@ public class TraitementCmsDao {
 
 
     @Transactional
-    public void viderCatalogueOctav(String type_cms) {
+    public void viderCatalogueOctav(String typeCms) {
         LOG.info("=== Suppression du contenu de la table PRIAM_CATALOGUE_OCTAV ====");
-        //TODO HABIB : Ajouter DELETE FROM WHERE TYPE_CMS=FR
-        /*String sql =  "TRUNCATE PRIAM_CATALOGUE_OCTAV";*/
-        String sql = "";
-        if(type_cms.equals(FileUtils.CATALOGUE_TYPE_CMS_FR)){
-            sql = "DELETE FROM PRIAM_CATALOGUE_OCTAV WHERE TYPE_CMS="+ "'" + type_cms + "'";
-        } else {
-            sql = "DELETE FROM PRIAM_CATALOGUE_OCTAV WHERE TYPE_CMS=" + "'" + type_cms + "'";
-        }
+        String sql = "DELETE FROM PRIAM_CATALOGUE_OCTAV WHERE TYPE_CMS='" + typeCms + "'";
         jdbcTemplate.update(sql);
     }
 

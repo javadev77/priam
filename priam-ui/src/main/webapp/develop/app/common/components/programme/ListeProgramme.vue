@@ -157,6 +157,8 @@
               @update-programme="onUpdateProgramme"
               @abondon-programme="onAbondonProgramme"
               @mise-en-repart="onMiseEnRepartition"
+              @exporter-programme="onExporterProgramme"
+              @import-programme="onImporterProgramme"
               @load-page="loadPage"
               @on-sort="onSort">
             </priam-grid>
@@ -505,6 +507,81 @@
                     }
                   }
                 },
+
+                {
+                  id :  'export',
+                  name :   "Export",
+                  sortable : false,
+                  type : 'clickable-icons',
+                  cell : {
+
+                    css: function (entry) {
+                      if ( entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
+                        || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'
+                        || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION') {
+                        return {style: {'background-color': 'grey'}}
+                      }
+
+                      return {style: null}
+                    },
+
+                    cellTemplate: function (cellValue) {
+                      var tempalteExport = '<span class="glyphicon glyphicon-export" aria-hidden="true" style="padding-left: 0px;" title="Export"></span>';
+                      var statusCode = cellValue.statut;
+
+                      var template = [{}];
+
+                      if(cellValue.statutEligibilite === 'FIN_ELIGIBILITE' || cellValue.statutEligibilite === 'FIN_DESAFFECTATION' || cellValue.statutEligibilite === null) {
+                        if(statusCode !== undefined && 'AFFECTE' === statusCode) {
+                          template[0] = {event : 'exporter-programme', template : tempalteExport};
+                        }
+
+                      }
+
+                      return template;
+                    }
+
+                  }
+                },
+
+
+                {
+                  id :  'import',
+                  name :   "Import",
+                  sortable : false,
+                  type : 'clickable-icons',
+                  cell : {
+
+                    css: function (entry) {
+                      if ( entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
+                        || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'
+                        || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION') {
+                        return {style: {'background-color': 'grey'}}
+                      }
+
+                      return {style: null}
+                    },
+
+                    cellTemplate: function (cellValue) {
+                      var tempalteExport = '<span class="glyphicon glyphicon-import" aria-hidden="true" style="padding-left: 0px;" title="Importer un fichier"></span>';
+                      var statusCode = cellValue.statut;
+
+                      var template = [{}];
+
+                      if(cellValue.statutEligibilite === 'FIN_ELIGIBILITE' || cellValue.statutEligibilite === 'FIN_DESAFFECTATION' || cellValue.statutEligibilite === null) {
+                        if(statusCode !== undefined && 'EN_COURS' === statusCode) {
+                          template[0] = {event : 'import-programme', template : tempalteExport};
+                        }
+
+                      }
+
+                      return template;
+                    }
+
+                  }
+                },
+
+
                 {
                   id :  'statut',
                   name :   "Statut",
@@ -1126,6 +1203,15 @@
 
           _open('POST', url, data, '_blank');
 
+        },
+
+
+        onExporterProgramme(row, column) {
+          console.log("Export du programme " + row.numProg)
+        },
+
+        onImporterProgramme(row, column) {
+          console.log("Import du programme " + row.numProg)
         }
 
 

@@ -290,4 +290,22 @@ public interface LigneProgrammeFVDao extends JpaRepository<LigneProgrammeFV, Lon
             "where " +
             "  f.NUMPROG = ?1")
     void updateSelectionTemporaireByNumProgramme(@Param("numProg") String numProg, @Param("selectionEnCours") boolean selectionEnCours);
+
+
+    @Modifying(clearAutomatically = true)
+    @Query(nativeQuery = true, value="update " +
+        "  PRIAM_LIGNE_PROGRAMME_FV p " +
+        "INNER JOIN " +
+        "  PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
+        "set " +
+        "  p.selection =?2 " +
+        "where " +
+        "  f.NUMPROG = ?1")
+    void deselectAllByNumProgramme(@Param("numProg") String numProg, @Param("selection") boolean selection);
+
+    @Transactional
+    @Modifying(clearAutomatically = true)
+    @Query("DELETE FROM LigneProgrammeFV lp WHERE lp.fichier.id = :fichierId")
+    void deleteAllByFichierId(@Param("fichierId") Long fileId);
+
 }

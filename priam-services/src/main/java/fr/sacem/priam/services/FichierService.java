@@ -7,17 +7,22 @@ import fr.sacem.priam.model.dao.jpa.cms.LigneProgrammeCopyCMSDao;
 import fr.sacem.priam.model.dao.jpa.cp.LigneProgrammeCPDao;
 import fr.sacem.priam.model.dao.jpa.cp.LigneProgrammeCopyCPDao;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
-import fr.sacem.priam.model.domain.*;
+import fr.sacem.priam.model.dao.jpa.fv.LigneProgrammeCopyFVDao;
+import fr.sacem.priam.model.dao.jpa.fv.LigneProgrammeFVDao;
+import fr.sacem.priam.model.domain.Fichier;
+import fr.sacem.priam.model.domain.Programme;
+import fr.sacem.priam.model.domain.Status;
+import fr.sacem.priam.model.domain.StatutEligibilite;
+import fr.sacem.priam.model.domain.StatutProgramme;
 import fr.sacem.priam.model.util.FamillePriam;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 ;
 
@@ -44,6 +49,13 @@ public class FichierService {
     @Autowired
     private LigneProgrammeCopyCPDao ligneProgrammeCopyCPDao;
 
+    @Autowired
+    private LigneProgrammeFVDao ligneProgrammeFVDao;
+
+    @Autowired
+    LigneProgrammeCopyFVDao ligneProgrammeCopyFVDao;
+
+
     @Transactional
     public void deleteDonneesFichiers(Long fileId) {
         Fichier fichier = fichierDao.findOne(fileId);
@@ -54,6 +66,11 @@ public class FichierService {
         } else if(FamillePriam.CMS.getCode().equals(fichier.getFamille().getCode())) {
             ligneProgrammeCMSDao.deleteAllByFichierId(fileId);
             ligneProgrammeCopyCMSDao.deleteAllCopyByFichierId(fileId);
+        }  else if(FamillePriam.VALORISATION.getCode().equals(fichier.getFamille().getCode())) {
+
+            //TODO : HABIB - Ajouter la suppression en cascade sur LIGNE_PROG_FV
+            ligneProgrammeFVDao.deleteAllByFichierId(fileId);
+            ligneProgrammeCopyFVDao.deleteAllCopyByFichierId(fileId);
         }
 
         fichierDao.updateFichierStatus(fileId, Status.ABANDONNE);
@@ -87,6 +104,10 @@ public class FichierService {
             ligneProgrammeCPDao.updateSelectionTemporaireByNumProgramme(numProg, true);
             ligneProgrammeCPDao.deselectAllByNumProgramme(numProg, true);
 
+        } else if(programme.getFamille().getCode().equals(FamillePriam.VALORISATION.getCode())) {
+
+            ligneProgrammeFVDao.updateSelectionTemporaireByNumProgramme(numProg, true);
+            ligneProgrammeFVDao.deselectAllByNumProgramme(numProg, true);
         }
 
         if(idsNouveauxFichiersAffectes.isEmpty()) {

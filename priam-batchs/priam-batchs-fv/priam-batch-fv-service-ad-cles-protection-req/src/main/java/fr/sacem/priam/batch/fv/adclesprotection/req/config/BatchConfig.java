@@ -34,11 +34,21 @@ public class BatchConfig extends CommonBatchConfig {
 
     @Autowired
     JobBuilderFactory jobBuilderFactory;
+    //FD03, FD10, FD02, FD07: 'PH' et FD04, FD11, FD13, FD09, FD01, FD05: 'DE'
+    private static Map<FondsCategory, String> rightCategoryMap;
 
-    private static Map<FondsCategory, String> rightCategoryMap = ImmutableMap.of(
-        FondsCategory.FD01, "DE",
-        FondsCategory.FD02, "PH",
-        FondsCategory.FD03, "PH") ;
+    static {
+        rightCategoryMap = ImmutableMap.<FondsCategory, String>builder()
+            .put(FondsCategory.FD03, "PH")
+            .put(FondsCategory.FD10, "PH")
+            .put(FondsCategory.FD02, "PH")
+            .put(FondsCategory.FD07, "PH")
+            .put(FondsCategory.FD04, "DE")
+            .put(FondsCategory.FD11, "DE")
+            .put(FondsCategory.FD13, "DE")
+            .put(FondsCategory.FD01, "DE")
+            .put(FondsCategory.FD05, "DE").build();
+    }
 
     @Bean
     public Job jobADClesPersGenerationREQ(Step stepPrepareAndGenerateREQ) {

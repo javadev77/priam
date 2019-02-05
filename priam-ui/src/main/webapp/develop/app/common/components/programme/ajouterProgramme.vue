@@ -270,6 +270,23 @@
 
         ]),
 
+        modeRepartitionMap : new Map([
+          ["FD01","OEUVRE_AD"],
+          ["FD02","OEUVRE_AD"],
+          ["FD03","AYANT_DROIT"],
+          ["FD04","AYANT_DROIT"],
+          ["FD05","OEUVRE_AD"],
+          ["FD06","OEUVRE"],
+          ["FD07","OEUVRE_AD"],
+          ["FD09","AYANT_DROIT"],
+          ["FD10","AYANT_DROIT"],
+          ["FD11","AYANT_DROIT"],
+          ["FD12","OEUVRE"],
+          ["FD13","AYANT_DROIT"],
+          ["FD14","OEUVRE"],
+
+        ]),
+
         typeDroit : ""
       }
     },
@@ -311,7 +328,7 @@
 
 
       isFamilleNotValorisation() {
-        return this.familleSelected !== null && this.familleSelected.id !== 'FDSVAL';
+        return true;//this.familleSelected !== null && this.familleSelected.id !== 'FDSVAL';
       }
 
 
@@ -325,6 +342,14 @@
         if(newVal.id !== "FDSVAL") {
           this.typeRepart = 'OEUVRE';
         }
+      },
+
+      typeUtilisationSelected : function (typeUtil) {
+
+        if(this.familleSelected.id === "FDSVAL" && typeUtil.id !== null) {
+          this.typeRepart = this.modeRepartitionMap.get(typeUtil.id);
+        }
+
       }
     },
 

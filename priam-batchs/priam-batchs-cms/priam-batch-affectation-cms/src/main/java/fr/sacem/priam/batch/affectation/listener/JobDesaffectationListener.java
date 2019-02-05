@@ -93,7 +93,6 @@ public class JobDesaffectationListener extends JobExecutionListenerSupport {
 
 
         } else if(jobExecution.getStatus() == BatchStatus.FAILED) {
-            // TODO : gerer le cas ou la desaffectation se passe mal Status FAILED
             programmeBatchDao.majStattutEligibilite(numProg, "ERREUR_DESAFFECTATION");
         }
     }

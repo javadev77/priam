@@ -85,7 +85,7 @@ public class JobCompletionNotificationLigneProgrammeImportPenefListener extends 
                     LOG.debug("Pas de excution context pour le step en cours : " + myStepExecution.getStepName());
                 }
 
-                if(idFichier != null && ("CMS".equalsIgnoreCase(typeFichier) || "CP".equalsIgnoreCase(typeFichier)) || "FV".equalsIgnoreCase(typeFichier)) {
+                if(idFichier != null && idFichier.getValue() != null && ("CMS".equalsIgnoreCase(typeFichier) || "CP".equalsIgnoreCase(typeFichier) || "FV".equalsIgnoreCase(typeFichier))) {
                     fichierRepository.supprimerLigneProgrammeParIdFichier((Long)idFichier.getValue());
                 }
             }

@@ -5,7 +5,7 @@ spring:
     enabled: false
 
 mipsa:
-  local: true
+  local: @mipsa.mode.local@
 
 endpoints:
   health:

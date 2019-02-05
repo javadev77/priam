@@ -1,14 +1,19 @@
 package fr.sacem.priam.model.domain.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import fr.sacem.priam.model.domain.*;
+import fr.sacem.priam.model.domain.StatutEligibilite;
+import fr.sacem.priam.model.domain.StatutFichierFelix;
+import fr.sacem.priam.model.domain.StatutProgramme;
+import fr.sacem.priam.model.domain.TypeDroit;
+import fr.sacem.priam.model.domain.TypeRepart;
 import fr.sacem.priam.model.domain.saref.SareftrFamiltyputil;
 import fr.sacem.priam.model.domain.saref.SareftrRion;
 import fr.sacem.priam.model.domain.saref.SareftrTyputil;
 import fr.sacem.priam.model.util.DateRepartitionSerializer;
 import fr.sacem.priam.model.util.SimpleDateSerializer;
+import fr.sacem.priam.model.util.TypeDroitDeserializer;
 import fr.sacem.priam.model.util.TypeDroitSerializer;
-
 import java.util.Date;
 
 /**
@@ -26,8 +31,11 @@ public class ProgrammeDto {
 	private Date dateCreation;
 	
 	private TypeRepart typeRepart;
+
 	@JsonSerialize(using = TypeDroitSerializer.class)
+	@JsonDeserialize(using = TypeDroitDeserializer.class)
 	private TypeDroit typeDroit;
+
 	private StatutProgramme statut;
 	private Integer rionPaiement;
 	private Long fichiers;

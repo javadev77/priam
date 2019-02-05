@@ -171,7 +171,7 @@
   import ProgrammeInfo from '../../../common/components/programme/ProgrammeInfo.vue';
   import Navbar from '../../../common/components/ui/priam-navbar.vue';
 
-  import PointsMontantEditor from './cellEditors/PointsMontantEditor.vue';
+  import PointsMontantEditor from './../../../common/components/selection/cellEditors/PointsMontantEditor.vue';
   import PointsEditor from './cellEditors/PointsEditor.vue';
 
   export default {
