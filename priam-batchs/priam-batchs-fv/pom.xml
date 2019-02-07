@@ -19,6 +19,8 @@
 
         <module>priam-batch-fv-service-ad-info-req</module>
         <module>priam-batch-fv-service-ad-info-rep</module>
+
+        <module>priam-batch-fv-service-import</module>
     </modules>
 
     <parent>

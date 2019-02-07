@@ -1,11 +1,10 @@
 package fr.sacem.priam.batch.fv.ad.info.rep;
 
-import fr.sacem.priam.batch.common.dao.FichierJdbcDao;
 import fr.sacem.priam.batch.common.domain.Admap;
-import fr.sacem.priam.batch.common.domain.Fichier;
-import fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementEnum;
 import fr.sacem.priam.batch.fv.ad.info.rep.config.ConfigurationPriamLocal;
 import fr.sacem.priam.batch.fv.ad.info.rep.config.ConfigurationPriamProd;
+import java.util.HashMap;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
@@ -16,11 +15,6 @@ import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.util.CollectionUtils;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by benmerzoukah on 16/05/2018.

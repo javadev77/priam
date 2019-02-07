@@ -16,7 +16,7 @@ import org.springframework.transaction.PlatformTransactionManager;
  * Created by benmerzoukah on 04/12/2017.
  */
 @Configuration
-@ComponentScan(basePackages = {"fr.sacem.priam.batch.fv"})
+@ComponentScan(basePackages = {"fr.sacem.priam.batch.fv.affectation","fr.sacem.priam.batch.common"})
 @Profile({"local", "test"})
 @PropertySource("classpath:config/application-local.properties")
 @ImportResource(value = "classpath:config/job-affectation-fv.xml")
