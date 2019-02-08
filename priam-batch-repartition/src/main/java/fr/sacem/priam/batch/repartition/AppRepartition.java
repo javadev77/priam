@@ -31,7 +31,7 @@ public class AppRepartition {
         Job job = (Job) context.getBean("csvArchiveFlatFileReaderJob");
         Admap admap =(Admap) context.getBean("admap");
         try {
-            Map<String, JobParameter> jobParametersMap = new HashMap<String, JobParameter>();
+            Map<String, JobParameter> jobParametersMap = new HashMap<>();
             jobParametersMap.put("time", new JobParameter(System.currentTimeMillis()));
             jobParametersMap.put("input.felix", new JobParameter(admap.getInputFile()));
             jobParametersMap.put("output.felix", new JobParameter(admap.getOutputFile()));
