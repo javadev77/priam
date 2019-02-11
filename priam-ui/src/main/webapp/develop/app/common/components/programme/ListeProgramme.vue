@@ -805,7 +805,8 @@
             checkIfDone : {method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/repartition/fichierfelix/{numProg}'},
             importProgramme : {
               method : 'POST', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/programme/import'
-            }
+            },
+            exportProgramme :{method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/programme/export/{numProg}'}
 
         }
         this.resource= this.$resource('', {}, customActions);
@@ -1218,6 +1219,14 @@
 
 
         onExporterProgramme(row, column) {
+          this.selectedProgramme = row;
+          console.log('--- exportedProgramme numProg = ' + this.selectedProgramme.numProg);
+          var self = this;
+          let numProg = this.selectedProgramme.numProg;
+          this.resource.exportProgramme({numProg:  numProg})
+            .then(response => {
+              return response.json();
+            });
         },
 
         onImporterProgramme(row, column) {

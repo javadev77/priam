@@ -62,4 +62,15 @@ public class LigneProgrammeFVDao {
                 "WHERE f.ID = ?";
         return jdbcTemplate.queryForObject(sql, (resultSet, i) -> resultSet.getLong("NB_LIGNES"), idFichier);
     }
+
+    public Long countNbLignesForExport(Long numProg){
+        String sql = "SELECT COUNT(*) AS NB_LIGNES " +
+                "FROM PRIAM_LIGNE_PROGRAMME_FV FV " +
+                "       INNER JOIN PRIAM_FICHIER PF on FV.ID_FICHIER = PF.ID " +
+                "       INNER JOIN PRIAM_PROGRAMME PP on PP.NUMPROG = PF.NUMPROG " +
+                "       INNER JOIN PRIAM_AYANT_DROIT PAD on FV.id = PAD.ID_FV " +
+                "       INNER JOIN PRIAM_AYANT_DROIT_PERS PERS on PAD.NUMPERS = PERS.NUMPERS " +
+                "WHERE PP.NUMPROG =? AND FV.isOeuvreComplex = 0 ";
+        return jdbcTemplate.queryForObject(sql, (resultSet, i) -> resultSet.getLong("NB_LIGNES"), numProg);
+    }
 }

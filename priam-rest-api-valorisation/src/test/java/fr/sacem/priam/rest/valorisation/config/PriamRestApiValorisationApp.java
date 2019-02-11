@@ -1,6 +1,5 @@
 package fr.sacem.priam.rest.valorisation.config;
 
-import fr.sacem.priam.batch.fv.affectation.config.BatchConfigLocal;
 import fr.sacem.priam.model.dao.JpaConfigurationTest;
 import fr.sacem.priam.security.config.RestMvcConfig;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;

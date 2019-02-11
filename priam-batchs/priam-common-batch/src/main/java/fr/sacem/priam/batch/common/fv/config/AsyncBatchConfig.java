@@ -17,21 +17,22 @@ import org.springframework.core.task.TaskExecutor;
 public class AsyncBatchConfig {
 
     @Bean
-    public ResourcelessTransactionManager transactionManager() {
+    public ResourcelessTransactionManager transactionManagerRss() {
         return new ResourcelessTransactionManager();
     }
 
     @Bean
-    public JobRepository jobRepository(ResourcelessTransactionManager transactionManager) throws Exception {
-        MapJobRepositoryFactoryBean mapJobRepositoryFactoryBean = new MapJobRepositoryFactoryBean(transactionManager);
-        mapJobRepositoryFactoryBean.setTransactionManager(transactionManager);
+    public JobRepository jobRepositoryAsync(ResourcelessTransactionManager transactionManagerRss) throws Exception {
+        MapJobRepositoryFactoryBean mapJobRepositoryFactoryBean = new MapJobRepositoryFactoryBean(transactionManagerRss);
+        mapJobRepositoryFactoryBean.setTransactionManager(transactionManagerRss);
         return mapJobRepositoryFactoryBean.getObject();
     }
 
     @Bean
-    public SimpleJobLauncher jobLauncher(JobRepository jobRepository) {
+    public SimpleJobLauncher jobLauncherAsync(JobRepository jobRepositoryAsync) {
         SimpleJobLauncher simpleJobLauncher = new SimpleJobLauncher();
-        simpleJobLauncher.setJobRepository(jobRepository);
+        simpleJobLauncher.setJobRepository(jobRepositoryAsync);
+        simpleJobLauncher.setTaskExecutor(createTaskExecutor());
         return simpleJobLauncher;
     }
 

@@ -308,4 +308,14 @@ public interface LigneProgrammeFVDao extends JpaRepository<LigneProgrammeFV, Lon
     @Query("DELETE FROM LigneProgrammeFV lp WHERE lp.fichier.id = :fichierId")
     void deleteAllByFichierId(@Param("fichierId") Long fileId);
 
+    @Transactional(readOnly = true)
+    @Query(nativeQuery = true, value = "SELECT COUNT(FV.ID) AS NB_LIGNES FROM PRIAM_LIGNE_PROGRAMME_FV FV " +
+            "INNER JOIN PRIAM_FICHIER PF on FV.ID_FICHIER = PF.ID " +
+            "INNER JOIN PRIAM_PROGRAMME PP on PP.NUMPROG = PF.NUMPROG " +
+            "INNER JOIN PRIAM_AYANT_DROIT AD on FV.id = AD.ID_FV " +
+            "INNER JOIN PRIAM_AYANT_DROIT_PERS PERS on AD.NUMPERS = PERS.NUMPERS " +
+            "WHERE PP.NUMPROG =:numProg AND FV.isOeuvreComplex = 0")
+    Long countNbLignesForExport(@Param("numProg") Long numProg);
+
 }
+

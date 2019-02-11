@@ -86,6 +86,7 @@ public class JobCompletionNotificationLigneProgrammeImportPenefListener extends 
                 }
 
                 if(idFichier != null && idFichier.getValue() != null && ("CMS".equalsIgnoreCase(typeFichier) || "CP".equalsIgnoreCase(typeFichier) || "FV".equalsIgnoreCase(typeFichier))) {
+
                     fichierRepository.supprimerLigneProgrammeParIdFichier((Long)idFichier.getValue());
                 }
             }
