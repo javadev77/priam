@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+    <!-- job de desaffectation -->
+
+    <job id="jobServiceImport" xmlns="http://www.springframework.org/schema/batch">
+
+        <step id="readFromCsvFile">
+            <tasklet>
+                <chunk
+                        reader="readFromCsv"
+                        writer="writer"
+                        commit-interval="100"
+                        retry-limit="10">
+                    <retryable-exception-classes>
+                        <include class="org.springframework.dao.DeadlockLoserDataAccessException"/>
+                        <include class="org.springframework.dao.CannotAcquireLockException"/>
+                    </retryable-exception-classes>
+                </chunk>
+            </tasklet>
+        </step>
+
+    </job>
+
+    <bean id="readFromCsv" class=""></bean>
+
+
+
+
+</beans>

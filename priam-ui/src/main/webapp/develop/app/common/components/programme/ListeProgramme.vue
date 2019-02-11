@@ -220,6 +220,12 @@
         <button class="btn btn-default btn-primary" @click="isToShowErrors = false">Fermer</button>
       </template>
     </modal>
+
+    <import-programme v-if="showEcranModalImportProgramme"
+                      @cancel="showEcranModalImportProgramme = false"
+                      @validate="onValidateImport">
+
+    </import-programme>
   </div>
 </template>
 
@@ -241,6 +247,7 @@
   import programmeMixin from '../../mixins/programmeMixin';
   import { FAMILLES_PRIAM } from '../../../../consts';
   import Navbar from '../../../common/components/ui/priam-navbar.vue';
+  import ImportProgramme from '../../../valorisation/components/programme/ImportProgramme.vue';
 
 
   export default {
@@ -261,6 +268,7 @@
             showPopupAbandon : false,
             ecranAjouterProgramme : false,
             showEcranModalMisEnRepart : false,
+            showEcranModalImportProgramme : false,
             resource : {},
 
             modeRepartition : '',
@@ -794,7 +802,10 @@
             getAllNomProgForAutocmplete : {method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/programme/nomprog/autocomplete'},
             validateFelixData : {method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/repartition/validateFelixData/{numProg}'},
             generateFelixData : {method : 'POST', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/repartition/generateFelixData'},
-            checkIfDone : {method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/repartition/fichierfelix/{numProg}'}
+            checkIfDone : {method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/repartition/fichierfelix/{numProg}'},
+            importProgramme : {
+              method : 'POST', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/programme/import'
+            }
 
         }
         this.resource= this.$resource('', {}, customActions);
@@ -1207,19 +1218,39 @@
 
 
         onExporterProgramme(row, column) {
-          console.log("Export du programme " + row.numProg)
         },
 
         onImporterProgramme(row, column) {
-          console.log("Import du programme " + row.numProg)
+          this.showEcranModalImportProgramme = true;
+
+        },
+
+        onValidateImport(fileToUpload) {
+            this.showEcranModalImportProgramme = false;
+            console.log("The file to upload is : " + fileToUpload);
+            let formData = new FormData();
+            formData.append('file', fileToUpload);
+
+            this.$http.post(process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/programme/import', formData, {
+                  emulateJSON: true,
+                  headers: {
+                    'Content-Type': 'multipart/form-data'
+                  }
+                })
+              .then(function () {
+                console.log('SUCCESS!!');
+              })
+              .catch(function () {
+                console.log('FAILURE!!');
+              })
         }
 
 
       },
 
       components : {
-        JournalProgramme,
-        priamGrid : Grid,
+          JournalProgramme,
+          priamGrid : Grid,
           ecranModal : EcranModal,
           modifierProgramme : ModifierProgramme,
           ajouterProgramme : AjouterProgramme,
@@ -1229,7 +1260,9 @@
           autocomplete : Autocomplete,
           select2 :Select2,
           miseEnRepartitionProgramme : MiseEnRepartitionProgramme,
-          navbar : Navbar
+          navbar : Navbar,
+          'import-programme' : ImportProgramme
+
       }
 
   }
