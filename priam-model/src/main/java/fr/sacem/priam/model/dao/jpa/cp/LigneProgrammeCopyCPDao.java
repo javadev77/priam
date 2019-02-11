@@ -1,6 +1,5 @@
 package fr.sacem.priam.model.dao.jpa.cp;
 
-import fr.sacem.priam.model.domain.cms.LigneProgrammeCopyCMS;
 import fr.sacem.priam.model.domain.cp.LigneProgrammeCopyCP;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

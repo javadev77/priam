@@ -157,6 +157,8 @@
               @update-programme="onUpdateProgramme"
               @abondon-programme="onAbondonProgramme"
               @mise-en-repart="onMiseEnRepartition"
+              @exporter-programme="onExporterProgramme"
+              @import-programme="onImporterProgramme"
               @load-page="loadPage"
               @on-sort="onSort">
             </priam-grid>
@@ -505,6 +507,81 @@
                     }
                   }
                 },
+
+                {
+                  id :  'export',
+                  name :   "Export",
+                  sortable : false,
+                  type : 'clickable-icons',
+                  cell : {
+
+                    css: function (entry) {
+                      if ( entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
+                        || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'
+                        || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION') {
+                        return {style: {'background-color': 'grey'}}
+                      }
+
+                      return {style: null}
+                    },
+
+                    cellTemplate: function (cellValue) {
+                      var tempalteExport = '<span class="glyphicon glyphicon-export" aria-hidden="true" style="padding-left: 0px;" title="Export"></span>';
+                      var statusCode = cellValue.statut;
+
+                      var template = [{}];
+
+                      if(cellValue.statutEligibilite === 'FIN_ELIGIBILITE' || cellValue.statutEligibilite === 'FIN_DESAFFECTATION' || cellValue.statutEligibilite === null) {
+                        if(statusCode !== undefined && 'AFFECTE' === statusCode) {
+                          template[0] = {event : 'exporter-programme', template : tempalteExport};
+                        }
+
+                      }
+
+                      return template;
+                    }
+
+                  }
+                },
+
+
+                {
+                  id :  'import',
+                  name :   "Import",
+                  sortable : false,
+                  type : 'clickable-icons',
+                  cell : {
+
+                    css: function (entry) {
+                      if ( entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
+                        || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'
+                        || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION') {
+                        return {style: {'background-color': 'grey'}}
+                      }
+
+                      return {style: null}
+                    },
+
+                    cellTemplate: function (cellValue) {
+                      var tempalteExport = '<span class="glyphicon glyphicon-import" aria-hidden="true" style="padding-left: 0px;" title="Importer un fichier"></span>';
+                      var statusCode = cellValue.statut;
+
+                      var template = [{}];
+
+                      if(cellValue.statutEligibilite === 'FIN_ELIGIBILITE' || cellValue.statutEligibilite === 'FIN_DESAFFECTATION' || cellValue.statutEligibilite === null) {
+                        if(statusCode !== undefined && 'EN_COURS' === statusCode) {
+                          template[0] = {event : 'import-programme', template : tempalteExport};
+                        }
+
+                      }
+
+                      return template;
+                    }
+
+                  }
+                },
+
+
                 {
                   id :  'statut',
                   name :   "Statut",
@@ -717,7 +794,8 @@
             getAllNomProgForAutocmplete : {method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/programme/nomprog/autocomplete'},
             validateFelixData : {method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/repartition/validateFelixData/{numProg}'},
             generateFelixData : {method : 'POST', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/repartition/generateFelixData'},
-            checkIfDone : {method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/repartition/fichierfelix/{numProg}'}
+            checkIfDone : {method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/repartition/fichierfelix/{numProg}'},
+            exportProgramme :{method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/programme/export/{numProg}'}
 
         }
         this.resource= this.$resource('', {}, customActions);
@@ -1126,6 +1204,22 @@
 
           _open('POST', url, data, '_blank');
 
+        },
+
+
+        onExporterProgramme(row, column) {
+          this.selectedProgramme = row;
+          console.log('--- exportedProgramme numProg = ' + this.selectedProgramme.numProg);
+          var self = this;
+          let numProg = this.selectedProgramme.numProg;
+          this.resource.exportProgramme({numProg:  numProg})
+            .then(response => {
+              return response.json();
+            });
+        },
+
+        onImporterProgramme(row, column) {
+          console.log("Import du programme " + row.numProg)
         }
 
 

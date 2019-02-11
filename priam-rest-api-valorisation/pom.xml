@@ -104,6 +104,11 @@
             <artifactId>priam-batch-affectation-fv</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!--<dependency>
+            <groupId>fr.sacem.priam</groupId>
+            <artifactId>priam-batch-fv-export</artifactId>
+            <version>${project.version}</version>
+        </dependency>-->
 
         <dependency>
             <groupId>fr.sacem.priam</groupId>

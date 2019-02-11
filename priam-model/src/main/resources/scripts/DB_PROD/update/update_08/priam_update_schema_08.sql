@@ -58,19 +58,19 @@ ALTER TABLE PRIAM_PROGRAMME ADD TYPE_DROIT VARCHAR (5);
 
 ALTER TABLE PRIAM_FICHIER ADD STATUT_ENRICHISSEEMNT VARCHAR(255) DEFAULT NULL COMMENT 'STATUT ENRICHISSEMENT';
 
-ALTER TABLE PRIAM_LIGNE_PROGRAMME_FV
-  ADD ID_OEUVRE_CTNU INT(11) DEFAULT NULL COMMENT 'ID OEUVRE CONTENU',
-  ADD rionEffet INT(11),
-  ADD mtEdit double DEFAULT NULL COMMENT  'Colonne qui sert pour le tableau editable dans ecran selection',
-  ADD nbrDifEdit int(11) DEFAULT NULL COMMENT  'Colonne qui sert pour le tableau editable dans ecran selection',
-  ADD labelValo varchar(250) DEFAULT NULL,
-  ADD dureeDeposee int(11) DEFAULT NULL,
-  ADD taxOri double DEFAULT NULL,
-  ADD indicRepart tinyint(1) DEFAULT NULL,
-  ADD genreOeuvre varchar(250) DEFAULT NULL,
-  ADD paysOri int(4) DEFAULT NULL,
-  ADD statut varchar(250) DEFAULT NULL,
-  ADD isOeuvreComplex tinyint(4) DEFAULT '0' COMMENT 'Flag qui indique si l''oeuvre est complexe';
+ALTER TABLE PRIAM_LIGNE_PROGRAMME_FV  ADD ID_OEUVRE_CTNU INT(11) DEFAULT NULL COMMENT 'ID OEUVRE CONTENU';
+ALTER TABLE PRIAM_LIGNE_PROGRAMME_FV  ADD rionEffet INT(11);
+ALTER TABLE PRIAM_LIGNE_PROGRAMME_FV  ADD mtEdit double DEFAULT NULL COMMENT  'Colonne qui sert pour le tableau editable dans ecran selection';
+ALTER TABLE PRIAM_LIGNE_PROGRAMME_FV  ADD nbrDifEdit int(11) DEFAULT NULL COMMENT  'Colonne qui sert pour le tableau editable dans ecran selection';
+ALTER TABLE PRIAM_LIGNE_PROGRAMME_FV  ADD labelValo varchar(250) DEFAULT NULL;
+ALTER TABLE PRIAM_LIGNE_PROGRAMME_FV  ADD dureeDeposee int(11) DEFAULT NULL;
+ALTER TABLE PRIAM_LIGNE_PROGRAMME_FV  ADD taxOri double DEFAULT NULL;
+ALTER TABLE PRIAM_LIGNE_PROGRAMME_FV  ADD indicRepart tinyint(1) DEFAULT NULL;
+ALTER TABLE PRIAM_LIGNE_PROGRAMME_FV   ADD genreOeuvre varchar(250) DEFAULT NULL;
+ALTER TABLE PRIAM_LIGNE_PROGRAMME_FV   ADD paysOri int(4) DEFAULT NULL;
+ALTER TABLE PRIAM_LIGNE_PROGRAMME_FV   ADD statut varchar(250) DEFAULT NULL;
+ALTER TABLE PRIAM_LIGNE_PROGRAMME_FV   ADD isOeuvreComplex tinyint(4) DEFAULT '0' COMMENT 'Flag qui indique si l''oeuvre est complexe';
+ALTER TABLE PRIAM_LIGNE_PROGRAMME_FV  ADD durDifEdit int(11) DEFAULT NULL;
 
   alter view PRIAM_PROG_VIEW as
 SELECT DISTINCT
@@ -99,9 +99,11 @@ SELECT DISTINCT
   pr.DATE_VALIDATION                                                 AS DATEVALIDATION,
   ff.STATUT                                                          AS STATUT_FICHIER_FELIX,
   pr.DATE_REPARTITION                                                AS DATE_REPARTITION,
-  pr.STATUT_ELIGIBILITE                                              AS STATUT_ELIGIBILITE
+  pr.STATUT_ELIGIBILITE                                              AS STATUT_ELIGIBILITE,
+  epf.STATUT                                                         AS STATUT_EXPORT
 FROM (PRIAM_PROGRAMME pr LEFT JOIN PRIAM_FICHIER_FELIX ff
-                                   ON ((ff.NUMPROG = pr.NUMPROG)))
+                                   ON ((ff.NUMPROG = pr.NUMPROG))
+  left join PRIAM_EXPORT_PROGRAMME_FV epf on pr.NUMPROG = epf.NUMPROG)
 GROUP BY pr.NUMPROG;
 
 

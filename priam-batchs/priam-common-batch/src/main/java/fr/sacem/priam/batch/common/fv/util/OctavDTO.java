@@ -290,7 +290,7 @@ public class OctavDTO implements Serializable {
     }
 
     public static enum FondsCategory {
-        FD01("FD01"), FD02("FD02"), FD03("FD03");
+        FD01("FD01"), FD02("FD02"), FD03("FD03"), FD10("FD10"), FD07("FD07"), FD04("FD04"), FD11("FD11"), FD13("FD13"), FD05("FD13");
 
         String value;
 

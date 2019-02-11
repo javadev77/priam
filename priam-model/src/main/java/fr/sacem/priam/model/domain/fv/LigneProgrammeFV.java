@@ -3,6 +3,7 @@ package fr.sacem.priam.model.domain.fv;
 import com.google.common.base.Objects;
 import fr.sacem.priam.model.domain.Fichier;
 
+import java.util.List;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -170,6 +171,13 @@ public class LigneProgrammeFV implements Serializable {
     @ManyToOne
     @JoinColumn(name = "ID_OEUVRE_CTNU")
     private LigneProgrammeFV oeuvreCTNU;
+
+
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = "ID_FV")
+    private List<AyantDroit> ayantsDroit;
+
+
 
     public LigneProgrammeFV() {
     }
@@ -588,6 +596,14 @@ public class LigneProgrammeFV implements Serializable {
 
     public void setOeuvreCTNU(LigneProgrammeFV oeuvreCTNU) {
         this.oeuvreCTNU = oeuvreCTNU;
+    }
+
+    public List<AyantDroit> getAyantsDroit() {
+        return ayantsDroit;
+    }
+
+    public void setAyantsDroit(final List<AyantDroit> ayantsDroit) {
+        this.ayantsDroit = ayantsDroit;
     }
 
     @Override

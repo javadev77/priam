@@ -25,7 +25,7 @@ import java.util.Map;
 public class ExportFVResource {
 
     @Autowired
-    Job jobExport;
+    Job jobExportFV;
 
     @Autowired
     JobLauncher jobLauncher;
@@ -59,14 +59,14 @@ public class ExportFVResource {
         try {
             Map<String, JobParameter> jobParametersMap = new HashMap<>();
             jobParametersMap.put("time", new JobParameter(System.currentTimeMillis()));
-            jobParametersMap.put("priam.export.programme.fv", new JobParameter(admap.getInputFile()));
+            jobParametersMap.put("priam.export.programme.fv", new JobParameter(admap.getOutputFile()));
 
             jobParametersMap.put("numProg", new JobParameter(numProg));
             jobParametersMap.put("userId", new JobParameter(userDTO.getUserId()));
 
             JobParameters jobParameters = new JobParameters(jobParametersMap);
 
-            jobLauncher.run(jobExport, jobParameters);
+            jobLauncher.run(jobExportFV, jobParameters);
 
         } catch (Exception e) {
             LOGGER.error("Error d'exécution du Batch Export", e);

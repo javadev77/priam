@@ -290,4 +290,32 @@ public interface LigneProgrammeFVDao extends JpaRepository<LigneProgrammeFV, Lon
             "where " +
             "  f.NUMPROG = ?1")
     void updateSelectionTemporaireByNumProgramme(@Param("numProg") String numProg, @Param("selectionEnCours") boolean selectionEnCours);
+
+
+    @Modifying(clearAutomatically = true)
+    @Query(nativeQuery = true, value="update " +
+        "  PRIAM_LIGNE_PROGRAMME_FV p " +
+        "INNER JOIN " +
+        "  PRIAM_FICHIER f ON p.ID_FICHIER = f.ID " +
+        "set " +
+        "  p.selection =?2 " +
+        "where " +
+        "  f.NUMPROG = ?1")
+    void deselectAllByNumProgramme(@Param("numProg") String numProg, @Param("selection") boolean selection);
+
+    @Transactional
+    @Modifying(clearAutomatically = true)
+    @Query("DELETE FROM LigneProgrammeFV lp WHERE lp.fichier.id = :fichierId")
+    void deleteAllByFichierId(@Param("fichierId") Long fileId);
+
+    @Transactional(readOnly = true)
+    @Query(nativeQuery = true, value = "SELECT COUNT(FV.ID) AS NB_LIGNES FROM PRIAM_LIGNE_PROGRAMME_FV FV " +
+            "INNER JOIN PRIAM_FICHIER PF on FV.ID_FICHIER = PF.ID " +
+            "INNER JOIN PRIAM_PROGRAMME PP on PP.NUMPROG = PF.NUMPROG " +
+            "INNER JOIN PRIAM_AYANT_DROIT AD on FV.id = AD.ID_FV " +
+            "INNER JOIN PRIAM_AYANT_DROIT_PERS PERS on AD.NUMPERS = PERS.NUMPERS " +
+            "WHERE PP.NUMPROG =:numProg AND FV.isOeuvreComplex = 0")
+    Long countNbLignesForExport(@Param("numProg") Long numProg);
+
 }
+

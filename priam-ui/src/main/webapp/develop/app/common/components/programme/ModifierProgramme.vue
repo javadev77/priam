@@ -304,38 +304,38 @@
               <div class="form-group col-md-8">
                 <label class="col-md-7 control-label">Mode de répartition</label>
                 <div class="col-md-15">
-                  <label class="radio radio-inline" :class="{'checked' : typeRepart === 'OEUVRE', 'disabled' :(familleSelected !== null && familleSelected.id !== 'FDSVAL') || isNonModifiable}" for="TypeRepartitionOeuvre">
+                  <label class="radio radio-inline" :class="{'checked' : typeRepart === 'OEUVRE', 'disabled' : true}" for="TypeRepartitionOeuvre">
                     <input
                       type="radio"
                       id="TypeRepartitionOeuvre"
                       value="OEUVRE"
                       v-model="typeRepart"
-                      :disabled="(familleSelected !== null && familleSelected.id !== 'FDSVAL') || isNonModifiable"> Oeuvre
+                      :disabled="true"> Oeuvre
                     <span class="icons"><span class="first-icon fui-radio-unchecked"></span><span class="second-icon fui-radio-checked"></span></span>
                   </label>
                 </div>
               </div>
 
               <div class="form-group col-md-6">
-                <label class="radio radio-inline" :class="{'checked' : typeRepart === 'AYANT_DROIT', 'disabled' : (familleSelected !== null && familleSelected.id !== 'FDSVAL') || isNonModifiable}">
+                <label class="radio radio-inline" :class="{'checked' : typeRepart === 'AYANT_DROIT', 'disabled' : true}">
                   <input
                     type="radio"
                     id="TypeRepartitionOeuvreAyantDroit"
                     value="AYANT_DROIT"
                     v-model="typeRepart"
-                    :disabled="(familleSelected !== null && familleSelected.id !== 'FDSVAL') || isNonModifiable"> Ayant droit
+                    :disabled="true"> Ayant droit
                       <span class="icons"><span class="first-icon fui-radio-unchecked"></span><span class="second-icon fui-radio-checked"></span></span>
                 </label>
               </div>
 
               <div class="form-group col-md-5">
-                <label class="radio radio-inline" :class="{'checked' : typeRepart === 'OEUVRE_AD', 'disabled' : (familleSelected !== null && familleSelected.id !== 'FDSVAL') || isNonModifiable}">
+                <label class="radio radio-inline" :class="{'checked' : typeRepart === 'OEUVRE_AD', 'disabled' : true}">
                   <input
                     type="radio"
                     id="TypeRepartitionOeuvreEtAyantDroit"
                     value="OEUVRE_AD"
                     v-model="typeRepart"
-                    :disabled="(familleSelected !== null && familleSelected.id !== 'FDSVAL') || isNonModifiable"> Oeuvre/Ayant droit
+                    :disabled="true"> Oeuvre/Ayant droit
                       <span class="icons"><span class="first-icon fui-radio-unchecked"></span><span class="second-icon fui-radio-checked"></span></span>
                 </label>
               </div>
@@ -440,10 +440,40 @@
 
         ]),
 
+        modeRepartitionMap : new Map([
+          ["FD01","OEUVRE_AD"],
+          ["FD02","OEUVRE_AD"],
+          ["FD03","AYANT_DROIT"],
+          ["FD04","AYANT_DROIT"],
+          ["FD05","OEUVRE_AD"],
+          ["FD06","OEUVRE"],
+          ["FD07","OEUVRE_AD"],
+          ["FD09","AYANT_DROIT"],
+          ["FD10","AYANT_DROIT"],
+          ["FD11","AYANT_DROIT"],
+          ["FD12","OEUVRE"],
+          ["FD13","AYANT_DROIT"],
+          ["FD14","OEUVRE"],
+
+        ]),
+
         typeDroit : ""
 
       }
     },
+
+    watch : {
+
+      typeUtilisationSelected : function (typeUtil) {
+
+        if(this.familleSelected.id === "FDSVAL" && typeUtil.id !== null) {
+          this.typeRepart = this.modeRepartitionMap.get(typeUtil.id);
+        }
+
+      }
+
+    },
+
     computed: {
       familleOptions() {
         return this.$store.getters.familleOptionsVide;

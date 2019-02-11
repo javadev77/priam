@@ -400,6 +400,13 @@ public enum EnvConstants implements ConfigurableProperty {
         public String property() {
             return "priam.fv.octav.adclesprotection.rep.archives.dir";
         }
+    },
+
+    PRIAM_EXPORT_PROGRAMME_FV {
+        @Override
+        public String property() {
+            return "priam.export.programme.fv";
+        }
     };
 
     @Override

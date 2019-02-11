@@ -190,6 +190,9 @@ public class LigneProgrammeBatchDao {
     @Transactional
     public void deleteDonneesLigneFV(Long idFichier) {
 
+        jdbcTemplate.update("DELETE FROM PRIAM_AYANT_DROIT WHERE ID_FV IN (" +
+            "SELECT id FROM PRIAM_LIGNE_PROGRAMME_FV WHERE ID_FICHIER=?) ", idFichier);
+
         String fromTableLignePrg = "PRIAM_LIGNE_PROGRAMME_FV";
         deleteDonneesLigneProg(idFichier, fromTableLignePrg);
     }

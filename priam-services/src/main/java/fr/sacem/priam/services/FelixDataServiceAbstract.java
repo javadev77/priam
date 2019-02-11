@@ -9,21 +9,45 @@ import com.google.common.collect.Lists;
 import fr.sacem.priam.common.constants.EnvConstants;
 import fr.sacem.priam.common.exception.TechnicalException;
 import fr.sacem.priam.common.util.SftpUtil;
-import fr.sacem.priam.common.util.csv.*;
+import static fr.sacem.priam.common.util.SftpUtil.SftpServer.FELIX;
+import fr.sacem.priam.common.util.csv.DateDeserializer;
+import fr.sacem.priam.common.util.csv.DateSerializer;
+import fr.sacem.priam.common.util.csv.DoubleDeserializer;
+import fr.sacem.priam.common.util.csv.NumberSerializer;
+import fr.sacem.priam.common.util.csv.RepartBigDecimalSerializer;
 import fr.sacem.priam.model.dao.jpa.FichierFelixDao;
 import fr.sacem.priam.model.dao.jpa.FichierFelixLogDao;
 import fr.sacem.priam.model.dao.jpa.LignePreprepDao;
 import fr.sacem.priam.model.dao.jpa.LignePreprepJdbcDao;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
-import fr.sacem.priam.model.domain.*;
+import fr.sacem.priam.model.domain.FichierFelix;
+import fr.sacem.priam.model.domain.FichierFelixLog;
+import fr.sacem.priam.model.domain.LignePreprep;
+import fr.sacem.priam.model.domain.Programme;
+import fr.sacem.priam.model.domain.StatutFichierFelix;
+import fr.sacem.priam.model.domain.StatutProgramme;
 import fr.sacem.priam.model.domain.dto.FelixData;
 import fr.sacem.priam.model.domain.dto.FichierFelixError;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.security.model.UserDTO;
 import fr.sacem.priam.services.utils.FelixDataSpringValidator;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.math.BigDecimal;
+import java.nio.charset.Charset;
+import java.text.SimpleDateFormat;
+import static java.util.Arrays.asList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import static org.apache.commons.io.IOUtils.LINE_SEPARATOR;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,20 +59,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.math.BigDecimal;
-import java.nio.charset.Charset;
-import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import static fr.sacem.priam.common.util.SftpUtil.SftpServer.FELIX;
-import static java.util.Arrays.asList;
-import static org.apache.commons.io.IOUtils.LINE_SEPARATOR;
 
 /**
  * Created by monfleurm on 09/01/2018.
@@ -151,8 +161,9 @@ public abstract class FelixDataServiceAbstract {
     private void writeLine(OutputStream out, String line, boolean withLineSeparator) throws IOException {
         if (line != null) {
             out.write(line.getBytes(CHARSET));
-            if (withLineSeparator)
+            if (withLineSeparator) {
                 out.write(LINE_SEPARATOR.getBytes(CHARSET));
+            }
         }
     }
     

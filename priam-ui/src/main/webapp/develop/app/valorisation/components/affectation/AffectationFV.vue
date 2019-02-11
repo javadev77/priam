@@ -91,7 +91,7 @@
           </h5>
         </div>
         <div class="panel-collapse">
-          <div class="result-panel-body panel-body" style="height:500px; overflow-y:scroll;">
+          <div class="result-panel-body panel-body" style="height:250px; overflow-y:scroll;">
 
             <priam-grid
               :isPaginable="false"
@@ -394,12 +394,16 @@
 
       lengthOfTabLigneProgramme : function (newValue) {
         console.log("The length of tab has changed  "+  newValue);
-        this.$store.dispatch('toutDesactiver', newValue && newValue === this.countNbSelected);
+        let nbOfUnChecked = this.fichiersUnChecked !== undefined ? this.fichiersUnChecked.length : 0;
+        debugger;
+        this.$store.dispatch('toutDesactiver', newValue && newValue === this.countNbSelected && nbOfUnChecked === 0);
       },
 
       countNbSelected : function (newValue) {
         console.log("Le nombre de selection a cahnge "+  newValue);
-        this.$store.dispatch('toutDesactiver', newValue && newValue === this.lengthOfTabLigneProgramme);
+        let nbOfUnChecked = this.fichiersUnChecked !== undefined ? this.fichiersUnChecked.length : 0;
+        debugger
+        this.$store.dispatch('toutDesactiver', newValue && newValue === this.lengthOfTabLigneProgramme && nbOfUnChecked === 0);
       }
 
     },
@@ -643,6 +647,8 @@
             for (var i in tab) {
               if (tab[i] && tab[i].statut == 'AFFECTE') {
                 this.fichiersChecked.push(tab[i].id);
+              } else if(tab[i] && tab[i].statut == 'CHARGEMENT_OK') {
+                this.fichiersUnChecked.push(tab[i].id);
               }
             }
 
@@ -765,8 +771,9 @@
                 return response.json();
               })
               .then(data => {
-                this.deaffectationEncours=false;
+                this.deaffectationEncours = false;
                 this.$router.push({name: 'programme'});
+
               })
               .catch(response => {
                 debugger;

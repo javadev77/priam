@@ -1,5 +1,6 @@
 package fr.sacem.priam.model.domain.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import fr.sacem.priam.model.domain.*;
 import fr.sacem.priam.model.domain.saref.SareftrFamiltyputil;
@@ -7,8 +8,8 @@ import fr.sacem.priam.model.domain.saref.SareftrRion;
 import fr.sacem.priam.model.domain.saref.SareftrTyputil;
 import fr.sacem.priam.model.util.DateRepartitionSerializer;
 import fr.sacem.priam.model.util.SimpleDateSerializer;
+import fr.sacem.priam.model.util.TypeDroitDeserializer;
 import fr.sacem.priam.model.util.TypeDroitSerializer;
-
 import java.util.Date;
 
 /**
@@ -21,13 +22,17 @@ public class ProgrammeDto {
 	private String famille;
 	private String typeUtilisation;
 	private Integer rionTheorique;
+
 	
 	@JsonSerialize(using = SimpleDateSerializer.class)
 	private Date dateCreation;
 	
 	private TypeRepart typeRepart;
+
 	@JsonSerialize(using = TypeDroitSerializer.class)
+	@JsonDeserialize(using = TypeDroitDeserializer.class)
 	private TypeDroit typeDroit;
+
 	private StatutProgramme statut;
 	private Integer rionPaiement;
 	private Long fichiers;
@@ -52,6 +57,7 @@ public class ProgrammeDto {
 	private Date dateValidation;
     	
 	private StatutFichierFelix statutFichierFelix;
+	private StatutExportProgramme statutExportProgramme;
     
     @JsonSerialize(using = DateRepartitionSerializer.class)
     private Date dateRepartition;
@@ -150,13 +156,14 @@ public class ProgrammeDto {
 
 	public ProgrammeDto(String numProg, String nom, String famille, String typeUtilisation, Integer rionTheorique, Date dateCreation, TypeRepart typeRepart,
 						StatutProgramme statut, Integer rionPaiement, Long fichiers, String usercre, Date datmaj, String usermaj,
-						Date dataffecte, String useraffecte, Date dateValidation, StatutFichierFelix statutFichierFelix, Date dateRepartition, StatutEligibilite statutEligibilite) {
+						Date dataffecte, String useraffecte, Date dateValidation, StatutFichierFelix statutFichierFelix, Date dateRepartition, StatutEligibilite statutEligibilite, StatutExportProgramme statutExportProgramme) {
 
 		this(numProg, nom, famille, typeUtilisation, rionTheorique, dateCreation, typeRepart,
 				statut, rionPaiement, fichiers, usercre, datmaj, usermaj,
 				dataffecte, useraffecte, dateValidation, statutFichierFelix, dateRepartition);
 
 		this.statutEligibilite = statutEligibilite;
+		this.statutExportProgramme = statutExportProgramme;
 
 	}
 
@@ -338,6 +345,14 @@ public class ProgrammeDto {
 
 	public void setStatutEligibilite(StatutEligibilite statutEligibilite) {
 		this.statutEligibilite = statutEligibilite;
+	}
+
+	public StatutExportProgramme getStatutExportProgramme() {
+		return statutExportProgramme;
+	}
+
+	public void setStatutExportProgramme(StatutExportProgramme statutExportProgramme) {
+		this.statutExportProgramme = statutExportProgramme;
 	}
 
 	public ProgrammeDto() {}

@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <modules>
         <module>priam-batch-import-fv</module>
-        <module>priam-batch-affectation-fv</module>
+
 
         <module>priam-batch-fv-service-otav-ctnu-req</module>
         <module>priam-batch-fv-service-otav-ctnu-rep</module>
@@ -19,7 +19,8 @@
 
         <module>priam-batch-fv-service-ad-info-req</module>
         <module>priam-batch-fv-service-ad-info-rep</module>
-        <module>priam-batch-fv-export</module>
+
+        <module>priam-batch-services-fv</module>
     </modules>
 
     <parent>
