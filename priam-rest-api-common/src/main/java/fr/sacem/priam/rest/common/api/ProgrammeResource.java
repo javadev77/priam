@@ -3,6 +3,8 @@ package fr.sacem.priam.rest.common.api;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
+import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
+import fr.sacem.priam.model.dao.jpa.fv.ImportProgrammeFVDao;
 import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.StatutProgramme;
 import fr.sacem.priam.model.domain.TypeRepart;
@@ -11,16 +13,19 @@ import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.rest.common.api.dto.ProgrammeCritereRecherche;
 import fr.sacem.priam.security.model.UserDTO;
 import fr.sacem.priam.services.ProgrammeService;
+import java.util.Arrays;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Arrays;
-import java.util.List;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Created by benmerzoukah on 06/06/2017.
@@ -35,6 +40,12 @@ public class ProgrammeResource {
 
     @Autowired
     private ProgrammeViewDao programmeViewDao;
+
+    @Autowired
+    private ImportProgrammeFVDao importProgrammeFVDao;
+
+    @Autowired
+    private ProgrammeDao programmeDao;
 
     @RequestMapping(value = "programme/search",
                     method = RequestMethod.POST,
@@ -147,4 +158,6 @@ public class ProgrammeResource {
     public List<String> getAllNomProgForAutocmplete() {
         return programmeService.findAllNomProgByCriteria();
     }
+
+
 }
