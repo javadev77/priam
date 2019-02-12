@@ -1231,6 +1231,7 @@
 
         onImporterProgramme(row, column) {
           this.showEcranModalImportProgramme = true;
+          this.showEcranModalImportProgramme = true;
 
         },
 
@@ -1239,6 +1240,7 @@
             console.log("The file to upload is : " + fileToUpload);
             let formData = new FormData();
             formData.append('file', fileToUpload);
+            formData.append('numProg', this.selectedProgramme.numProg);
 
             this.$http.post(process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/programme/import', formData, {
                   emulateJSON: true,

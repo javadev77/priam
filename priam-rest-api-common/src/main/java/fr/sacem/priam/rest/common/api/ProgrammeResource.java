@@ -3,17 +3,21 @@ package fr.sacem.priam.rest.common.api;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
+import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
+import fr.sacem.priam.model.dao.jpa.fv.ImportProgrammeFVDao;
 import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.StatutProgramme;
 import fr.sacem.priam.model.domain.TypeRepart;
 import fr.sacem.priam.model.domain.criteria.ProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
+import fr.sacem.priam.model.domain.fv.ImportProgrammeFV;
 import fr.sacem.priam.rest.common.api.dto.ProgrammeCritereRecherche;
 import fr.sacem.priam.security.model.UserDTO;
 import fr.sacem.priam.services.ProgrammeService;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +49,14 @@ public class ProgrammeResource {
 
     @Autowired
     private ProgrammeViewDao programmeViewDao;
+
+    @Autowired
+    private ProgrammeDao programmeDao;
+
+    @Autowired
+    private ImportProgrammeFVDao importProgrammeFVDao;
+
+
 
     @RequestMapping(value = "programme/search",
                     method = RequestMethod.POST,
@@ -161,7 +173,7 @@ public class ProgrammeResource {
 
 
     @PostMapping("programme/import")
-    public ResponseEntity<String> importProgramme(@RequestParam("file") MultipartFile file) throws IOException {
+    public ResponseEntity<String> importProgramme(@RequestParam("file") MultipartFile file, @RequestParam("numProg") String numProg) throws IOException {
 
         if (file == null) {
             throw new RuntimeException("You must select the a file for uploading");
@@ -181,7 +193,14 @@ public class ProgrammeResource {
 
         // Do processing with uploaded file data in Service layer
 
+        ImportProgrammeFV importProgrammeFV = new ImportProgrammeFV();
 
+        importProgrammeFV.setDateCreation(new Date());
+        importProgrammeFV.setFilename(file.getName());
+        importProgrammeFV.setContent(file.getBytes());
+        importProgrammeFV.setProgramme(programmeDao.findOne(numProg));
+
+        importProgrammeFVDao.save(importProgrammeFV);
 
 
         return new ResponseEntity<>(originalName, HttpStatus.OK);
