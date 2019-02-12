@@ -62,7 +62,7 @@ echo ${SACEM_CONFIG}
 
 $JAVACMD -jar -Dspring.profiles.active=production /usr1/priam/BatchPurge/bin/priam-batch-purge-catcms.jar
 # Memoriser le numero de processus du programme java
-CHILD_PID=$
+CHILD_PID=$!
 
 # Intercepter les demandes d'arret du batch
 # et les transmettre sous forme de SIGINT (Ctrl-C) au programme Java
