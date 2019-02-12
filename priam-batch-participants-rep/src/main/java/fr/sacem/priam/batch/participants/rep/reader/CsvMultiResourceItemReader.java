@@ -76,10 +76,11 @@ public class CsvMultiResourceItemReader<T> extends MultiResourceItemReader<T> {
                 try {
                     // controle le nombre de repertoires passé, pour refuser le traitement des sous repertoires
                     if (fichiersCSV.length >= 1) {
-                        if (fichiersCSV[0] != null) {
-                            Integer nbrDeFichierDansLeRepertoire = fichiersCSV[0].getFile().listFiles().length;
-                            List<File> fichiersDansLeRepertoire = Arrays.asList(fichiersCSV[0].getFile().listFiles());
-                            List<File> fichiersCSVDansLeRepertoire = new ArrayList<File>();
+                        if (fichiersCSV[0] != null && fichiersCSV[0].getFile().listFiles() != null) {
+                            File[] files = fichiersCSV[0].getFile().listFiles();
+                            Integer nbrDeFichierDansLeRepertoire = files.length;
+                            List<File> fichiersDansLeRepertoire = Arrays.asList(files);
+                            List<File> fichiersCSVDansLeRepertoire = new ArrayList<>();
                             Integer nbrDeFichierCSVATraiter=0;
                             for (int j = 0; j < nbrDeFichierDansLeRepertoire; j++) {
                                 File file = fichiersDansLeRepertoire.get(j);

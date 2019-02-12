@@ -10,6 +10,7 @@ import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameter;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.launch.support.SimpleJvmExitCodeMapper;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -43,10 +44,13 @@ public class App {
             JobParameters jobParameters = new JobParameters(jobParametersMap);
             JobExecution execution = jobLauncher.run(job, jobParameters);
 
-            LOGGER.info("Exit Status : " + execution.getStatus());
+            int status = new SimpleJvmExitCodeMapper().intValue(execution.getExitStatus().getExitCode());
+            LOGGER.info("Exit Status : " + execution.getExitStatus().getExitCode());
+            System.exit(status);
 
         } catch (Exception e) {
             LOGGER.error("Error execution", e);
+            System.exit(1);
         }
 
         LOGGER.info("Done");

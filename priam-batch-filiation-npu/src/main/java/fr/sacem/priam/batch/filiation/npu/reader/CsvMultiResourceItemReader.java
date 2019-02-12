@@ -1,6 +1,13 @@
 package fr.sacem.priam.batch.filiation.npu.reader;
 
 import fr.sacem.priam.batch.common.util.UtilFile;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,9 +21,6 @@ import org.springframework.batch.item.ItemStreamException;
 import org.springframework.batch.item.file.MultiResourceItemReader;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-
-import java.io.File;
-import java.util.*;
 
 public class CsvMultiResourceItemReader<T> extends MultiResourceItemReader<T> {
 
@@ -69,10 +73,12 @@ public class CsvMultiResourceItemReader<T> extends MultiResourceItemReader<T> {
                 try {
                     // controle le nombre de repertoires passé, pour refuser le traitement des sous repertoires
                     if (fichiersCSV.length >= 1) {
-                        if (fichiersCSV[0] != null) {
-                            Integer nbrDeFichierDansLeRepertoire = fichiersCSV[0].getFile().listFiles().length;
-                            List<File> fichiersDansLeRepertoire = Arrays.asList(fichiersCSV[0].getFile().listFiles());
-                            List<File> fichiersCSVDansLeRepertoire = new ArrayList<File>();
+
+                        if (fichiersCSV[0] != null && fichiersCSV[0].getFile().listFiles() != null) {
+                            File[] files = fichiersCSV[0].getFile().listFiles();
+                            Integer nbrDeFichierDansLeRepertoire = files.length;
+                            List<File> fichiersDansLeRepertoire = Arrays.asList(files);
+                            List<File> fichiersCSVDansLeRepertoire = new ArrayList<>();
                             Integer nbrDeFichierCSVATraiter=0;
                             JobExecution jobExecution = this.stepExecution.getJobExecution();
                             for (int j = 0; j < nbrDeFichierDansLeRepertoire; j++) {
