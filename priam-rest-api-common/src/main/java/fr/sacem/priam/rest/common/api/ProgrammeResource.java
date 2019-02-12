@@ -3,6 +3,8 @@ package fr.sacem.priam.rest.common.api;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
+import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
+import fr.sacem.priam.model.dao.jpa.fv.ImportProgrammeFVDao;
 import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.StatutProgramme;
 import fr.sacem.priam.model.domain.TypeRepart;
