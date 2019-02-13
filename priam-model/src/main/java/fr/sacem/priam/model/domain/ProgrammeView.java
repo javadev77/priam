@@ -175,7 +175,7 @@ public class ProgrammeView {
         return statutEligibilite;
     }
 
-    @Column(name = "STATUT_ELIGIBILITE")
+    @Column(name = "STATUT_EXPORT")
     @Enumerated(EnumType.STRING)
     public StatutExportProgramme getStatutExportProgramme() {
         return statutExportProgramme;

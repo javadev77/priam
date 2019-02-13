@@ -512,7 +512,7 @@
                   id :  'export',
                   name :   "Export",
                   sortable : false,
-                  type : 'clickable-icons',
+                  type : 'clickable-icons-or-text',
                   cell : {
 
                     css: function (entry) {
@@ -535,11 +535,29 @@
                         if(statusCode !== undefined && 'AFFECTE' === statusCode) {
                           template[0] = {event : 'exporter-programme', template : tempalteExport};
                         }
-
                       }
-
                       return template;
-                    }
+                    },
+
+                    isText : function (entry) {
+                      var statusCode = entry.statut;
+                      var statutExport = entry.statutExportProgramme !== null && entry.statutExportProgramme !== undefined ? entry.statutExportProgramme : undefined;
+                      if(statusCode !== undefined && 'AFFECTE' == statusCode && statutExport === 'GENERE') {
+                        return true;
+                      }
+                      return false;
+                    },
+
+                    toText : function (entry) {
+                      var statusCode = entry.statut;
+                      //var statutFichierFelix = entry.statutFichierFelix !== null && entry.statutFichierFelix !== undefined ? entry.statutFichierFelix : undefined;
+                      var statutExport = entry.statutExportProgramme;
+                      if(statusCode !== undefined && 'AFFECTE' == statusCode && statutExport =='GENERE') {
+                        return {value : 'Export', isLink : true };
+                      }
+                      return {};
+
+                    },
 
                   }
                 },
@@ -881,6 +899,7 @@
             return statutProgramme;
 
         }
+
       },
 
 

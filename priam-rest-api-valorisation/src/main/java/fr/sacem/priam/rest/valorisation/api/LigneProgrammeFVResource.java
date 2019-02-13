@@ -9,6 +9,7 @@ import fr.sacem.priam.services.dto.ValdierSelectionProgrammeInput;
 import fr.sacem.priam.services.fv.LigneProgrammeFVService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/app/rest/")
+@Profile({"dev", "prod","re7"})
 public class LigneProgrammeFVResource extends LigneProgrammeResource {
 
     private LigneProgrammeService ligneProgrammeService;
