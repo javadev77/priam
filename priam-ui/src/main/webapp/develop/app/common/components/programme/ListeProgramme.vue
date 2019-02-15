@@ -1228,8 +1228,8 @@
         },
 
         onImporterProgramme(row, column) {
-<<<<<<< HEAD
-          console.log("Import du programme " + row.numProg)
+          this.showEcranModalImportProgramme = true;
+          this.selectedProgramme = row;
         },
 
         telechargerExport(row, column){
@@ -1259,13 +1259,6 @@
           };
 
           _open('POST', url, data, '_blank');
-
-        },
-
-        majStatutProgramme(numProg) {
-=======
-          this.showEcranModalImportProgramme = true;
-          this.selectedProgramme = row;
 
         },
 
@@ -1304,7 +1297,6 @@
             .catch(error => {
               alert('Erreur lors de la récuperation des logs du fichier import');
             })
->>>>>>> 5669787acf1ea0d9050c6107c21c242330708847
 
         }
 
