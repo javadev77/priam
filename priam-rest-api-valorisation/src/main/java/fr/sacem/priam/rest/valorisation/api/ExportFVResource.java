@@ -1,6 +1,7 @@
 package fr.sacem.priam.rest.valorisation.api;
 
 import fr.sacem.priam.batch.common.domain.Admap;
+import fr.sacem.priam.batch.fv.export.dao.ExportProgrammeFVDao;
 import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.security.model.UserDTO;
@@ -11,17 +12,20 @@ import org.springframework.batch.core.JobParameter;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/app/rest/")
+@Profile({"dev", "prod","re7"})
 public class ExportFVResource {
 
     @Autowired
@@ -32,6 +36,9 @@ public class ExportFVResource {
 
     @Autowired
     private ProgrammeViewDao programmeViewDao;
+
+    @Autowired
+    private ExportProgrammeFVDao exportProgrammeFVDao;
 
     @Autowired
     Admap admap;
@@ -73,6 +80,15 @@ public class ExportFVResource {
         }
 
         LOGGER.info("====== Fin de l'export ======");
+    }
+
+    @RequestMapping(value = "programme/download/{numProg}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ProgrammeDto downloadExport(@PathVariable("numProg") String numProg, UserDTO userDTO){
+        //String path = exportProgrammeFVDao
+        File tmpFile = new File("");
+        return null;
     }
 
 }

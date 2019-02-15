@@ -2896,4 +2896,50 @@ VALUES ( 190002 ,'FDSVAL', 'FD06', 2739083111, 51.25, 0, 'FR', null, 10, 'MB', (
 
 # ALTER TABLE PRIAM_PROGRAMME ADD TYPE_DROIT VARCHAR (5);
 
+CREATE TABLE PRIAM_EXPORT_PROGRAMME_FV(
+                                        `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+                                        `NUMPROG` varchar(8) NOT NULL,
+                                        `FILENAME` varchar(255) DEFAULT NULL,
+                                        `DATE_CREATION` datetime DEFAULT NULL,
+                                        `STATUT` varchar(20) DEFAULT NULL,
+                                        PRIMARY KEY (`ID`),
+                                        KEY `EXPORT_NUMPROG_FK` (`NUMPROG`),
+                                        CONSTRAINT `EXPORT_NUMPROG_FK` FOREIGN KEY (`NUMPROG`) REFERENCES `PRIAM_PROGRAMME` (`NUMPROG`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+alter view PRIAM_PROG_VIEW as
+  SELECT DISTINCT
+    pr.NUMPROG                                                         AS NUMPROG,
+    pr.NOM                                                             AS NOM,
+    pr.RION_THEORIQUE                                                  AS RION_THEORIQUE,
+    pr.CDEFAMILTYPUTIL                                                 AS CDEFAMILTYPUTIL,
+    pr.CDETYPUTIL                                                      AS CDETYPUTIL,
+    pr.TYPE_REPART                                                     AS TYPE_REPART,
+    pr.TYPE_DROIT                                                      AS TYPE_DROIT,
+    pr.DATE_CREATION                                                   AS DATE_CREATION,
+    pr.STATUT_PROG_CODE                                                AS STATUT_PROG_CODE,
+    pr.RION_PAIEMENT                                                   AS RION_PAIEMENT,
+    pr.USERCRE                                                         AS USERCRE,
+    pr.DATMAJ                                                          AS DATMAJ,
+    pr.USERMAJ                                                         AS USERMAJ,
+    pr.DATAFFECT                                                       AS DATAFFECT,
+    pr.USERAFFECT                                                      AS USERAFFECT,
+    (SELECT count(f.NUMPROG)
+     FROM PRIAM_FICHIER f
+     WHERE ((pr.NUMPROG = f.NUMPROG) AND (f.SOURCE_AUTO = 1))) AS fichiers,
+    pr.DATE_DBT_PRG                                                    AS DATEDBTPRG,
+    pr.DATE_FIN_PRG                                                    AS DATEFINPRG,
+    pr.CDE_TER                                                         AS CDETER,
+    pr.USER_VALIDATION                                                 AS USERVALIDATION,
+    pr.DATE_VALIDATION                                                 AS DATEVALIDATION,
+    ff.STATUT                                                          AS STATUT_FICHIER_FELIX,
+    pr.DATE_REPARTITION                                                AS DATE_REPARTITION,
+    pr.STATUT_ELIGIBILITE                                              AS STATUT_ELIGIBILITE,
+    epf.STATUT                                                         AS STATUT_EXPORT
+  FROM (PRIAM_PROGRAMME pr LEFT JOIN PRIAM_FICHIER_FELIX ff
+                                     ON ((ff.NUMPROG = pr.NUMPROG))
+                           left join PRIAM_EXPORT_PROGRAMME_FV epf on pr.NUMPROG = epf.NUMPROG)
+  GROUP BY pr.NUMPROG;
+
+
 commit;
