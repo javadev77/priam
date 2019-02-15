@@ -1,9 +1,8 @@
 package fr.sacem.priam.batch.fv.export.listener;
 
-import fr.sacem.priam.batch.fv.export.dao.ExportProgrammeFVDao;
+import fr.sacem.priam.model.dao.jpa.fv.ExportProgrammeFVDao;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobParameter;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 import org.springframework.batch.item.ExecutionContext;
@@ -17,6 +16,7 @@ import java.util.Iterator;
 public class JobExportFVListener extends JobExecutionListenerSupport {
 
     public static final String ERREUR_EXPORT = "ERREUR_EXPORT";
+    public static final String EXPORT_EN_GENERATION = "EN_GENERATION";
     public static final String EXPORT_GENERE = "GENERE";
     private static String NOM_EXPORT_CSV = "REQ_FILE_NAME";
 
@@ -27,7 +27,9 @@ public class JobExportFVListener extends JobExecutionListenerSupport {
 
     @Override
     public void beforeJob(JobExecution jobExecution) {
-        super.beforeJob(jobExecution);
+        Collection<StepExecution> stepExecutions = jobExecution.getStepExecutions();
+        String numProg = jobExecution.getJobParameters().getString("numProg");
+        exportProgrammeFVDao.insertExportProgramme(numProg, EXPORT_EN_GENERATION);
     }
 
     @Override
@@ -43,7 +45,8 @@ public class JobExportFVListener extends JobExecutionListenerSupport {
                 if (executionContext != null) {
                     path = path + executionContext.getString(NOM_EXPORT_CSV);
                     if (path != null) {
-                        exportProgrammeFVDao.insertStatutExportProgramme(numProg, path, EXPORT_GENERE);
+                        //exportProgrammeFVDao.insertStatutExportProgramme(numProg, path, EXPORT_GENERE);
+                        exportProgrammeFVDao.updateStatutExportProgramme(numProg, path, EXPORT_GENERE);
                     }
                 }
             }

@@ -58,7 +58,7 @@ public class FlatFileWriterConfig extends AbstractConfig<LigneProgrammeFV> {
 
     @Override
     public Long countNbLignes(final Long idFichier) {
-       return ligneProgrammeFVDao.countNbLignesByIdFichier(idFichier);
+       return ligneProgrammeFVDao.countNbLignesOeuvreCtnuByIdFichier(idFichier);
     }
 
     @Override

@@ -44,8 +44,6 @@ public class ZipMultiResourceFvFondsItemReader<T> extends MultiResourceItemReade
     private String typeFichier;
 
     private String patternFileName = null;
-    private StringBuilder patternFileNameFonds6 = null;
-    private StringBuilder patternFileNameFonds9 = null;
 
     @Override
     public void open(ExecutionContext executionContext) throws ItemStreamException {

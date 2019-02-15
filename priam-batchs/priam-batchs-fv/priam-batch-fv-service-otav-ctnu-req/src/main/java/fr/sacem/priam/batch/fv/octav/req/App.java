@@ -38,8 +38,7 @@ public class App {
         Admap admap = (Admap) context.getBean("admap");
         FichierJdbcDao fichierJdbcDao = (FichierJdbcDao)context.getBean("fichierJdbcDao");
 
-        List<Fichier> fichiers = fichierJdbcDao.getFichiersByStatutAndCdeTypUtil(CHARGEMENT_OK,
-                                                                               Lists.newArrayList("FD03", "FD04", "FD09", "FD10", "FD11"));
+        List<Fichier> fichiers = fichierJdbcDao.getFichiersOctavCtnuEligible();
 
         if(fichiers == null || fichiers.isEmpty()) {
             LOGGER.info("Aucun fichier eligible à l'étape OCTAV CTNU");

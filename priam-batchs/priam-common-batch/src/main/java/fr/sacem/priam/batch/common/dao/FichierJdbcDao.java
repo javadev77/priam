@@ -66,11 +66,12 @@ public class FichierJdbcDao {
     }
 
     @Transactional(readOnly = true)
-    public List<Fichier> getFichiersByStatutAndCdeTypUtil(String statut, List<String> fonds) {
+    public List<Fichier> getFichiersOctavCtnuEligible() {
+        ArrayList<String> fonds = Lists.newArrayList("FD03", "FD04", "FD09", "FD10", "FD11");
         String inClause = "'" + Joiner.on("','").join(fonds) + "'";
         return jdbcTemplate.query("SELECT * FROM PRIAM_FICHIER WHERE CDEFAMILTYPUTIL='FDSVAL' " +
-            "AND CDETYPUTIL IN (" + inClause + ") "+
-            "AND STATUT_CODE= '" + statut + "'", (rs, i) -> {
+                "AND (STATUT_CODE= 'CHARGEMENT_OK' AND CDETYPUTIL IN (" + inClause + ") ) " +
+                "AND (STATUT_ENRICHISSEEMNT IS NULL)", (rs, i) -> {
 
             Fichier fichier = new Fichier();
             Long id = rs.getLong("ID");
@@ -84,6 +85,7 @@ public class FichierJdbcDao {
     public List<Fichier> getFichiersInfoOeuvreEligible() {
         ArrayList<String> fonds = Lists.newArrayList("FD01", "FD02", "FD03", "FD07", "FD13");
         String inClause = "'" + Joiner.on("','").join(fonds) + "'";
+
         return jdbcTemplate.query("SELECT * FROM PRIAM_FICHIER WHERE CDEFAMILTYPUTIL='FDSVAL' " +
             "AND (STATUT_CODE= 'CHARGEMENT_OK' AND CDETYPUTIL IN (" + inClause + ") ) " +
             "OR (STATUT_ENRICHISSEEMNT='" + EtapeEnrichissementEnum.DONE_SRV_OCTAV_CTNU.getCode() + "') " +

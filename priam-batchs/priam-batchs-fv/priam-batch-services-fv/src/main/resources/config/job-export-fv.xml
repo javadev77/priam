@@ -35,7 +35,7 @@
 
     <bean id="queryExportCsvReader" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
         <property name="databaseType" value="MySQL" />
-        <property name="selectClause" value="SELECT FV.cdeFamilTypUtil, FV.cdeTypUtil, FV.numProg, FV.rionEffet, FV.ide12, FV.cdeTypIde12, PAD.IDE12REPCOAD, PAD.CDETYPIDE12REPCOAD, PAD.COAD,
+        <property name="selectClause" value="SELECT FV.cdeFamilTypUtil, FV.cdeTypUtil, PP.NUMPROG, FV.rionEffet, FV.ide12, FV.cdeTypIde12, PAD.IDE12REPCOAD, PAD.CDETYPIDE12REPCOAD, PAD.COAD,
         PAD.NUMPERS, PAD.NUMCATAL, PAD.IDSTEAD, PAD.ROLAD, PAD.CLEAD, PAD.CDETYPPROTEC, PAD.COADORIEDTR, PAD.IDSTEORIEDTR, FV.tax, FV.durDif, FV.nbrDif,
         FV.typMt, FV.mt, FV.genreOeuvre, FV.titreOeuvre, FV.dureeDeposee, FV.taxOri, FV.paysOri, FV.indicRepart, PP.NOM, PERS.NOM, PERS.PRENOM, PERS.INDICSACEM,
         PERS.SOUS_ROLE, PERS.ANNEE_NAISSANCE, PERS.ANNEE_DECES, PERS.INDICDRTPERCUS "/>

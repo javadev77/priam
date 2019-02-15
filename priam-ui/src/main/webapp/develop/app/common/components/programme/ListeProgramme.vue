@@ -159,6 +159,7 @@
               @mise-en-repart="onMiseEnRepartition"
               @exporter-programme="onExporterProgramme"
               @import-programme="onImporterProgramme"
+              @download-export="telechargerExport"
               @load-page="loadPage"
               @on-sort="onSort">
             </priam-grid>
@@ -329,14 +330,7 @@
                     },
 
                     css: function (entry) {
-                      if ( entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
-                            || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'
-                            || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION') {
-
-                          return {style: {'background-color': 'grey'}}
-                      }
-
-                      return {style: null}
+                      return $this.griserLigne(entry);
                     }
                   }
                 },
@@ -348,13 +342,7 @@
                   cell : {
 
                     css: function (entry) {
-                      if ( entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
-                        || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'
-                        || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION') {
-                        return {style: {'background-color': 'grey'}}
-                      }
-
-                      return {style: null}
+                      return $this.griserLigne(entry);
                     }
 
                   }
@@ -370,15 +358,7 @@
                     },
 
                     css: function (entry) {
-                      debugger;
-                      if ( entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
-                        || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'
-                        || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION') {
-
-                        return {style: {'background-color': 'grey'}}
-                      }
-
-                      return {style: null}
+                      return $this.griserLigne(entry);
                     }
                   }
                 },
@@ -396,14 +376,7 @@
                     },
 
                     css: function (entry) {
-                      debugger;
-                      if ( entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
-                        || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'
-                        || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION') {
-                        return {style: {'background-color': 'grey'}}
-                      }
-
-                      return {style: null}
+                      return $this.griserLigne(entry);
                     }
                   }
                 },
@@ -421,13 +394,7 @@
                     },
 
                     css: function (entry) {
-                      if ( entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
-                        || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'
-                        || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION') {
-                        return {style: {'background-color': 'grey'}}
-                      }
-
-                      return {style: null}
+                      return $this.griserLigne(entry);
                     }
                   }
                 },
@@ -445,13 +412,7 @@
                     },
 
                     css: function (entry) {
-                      if ( entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
-                        || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'
-                        || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION') {
-                        return {style: {'background-color': 'grey'}}
-                      }
-
-                      return {style: null}
+                      return $this.griserLigne(entry);
                     }
                   }
                 },
@@ -463,14 +424,7 @@
                   cell : {
 
                     css: function (entry) {
-                        debugger;
-                      if ( entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
-                        || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'
-                        || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION') {
-                        return {style: {'background-color': 'grey'}}
-                      }
-
-                      return {style: null}
+                      return $this.griserLigne(entry);
                     }
 
                   }
@@ -487,7 +441,8 @@
                       });
                       if(result.code === 'ABANDONNE' ||  entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
                         || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'
-                        || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION') {
+                        || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION'
+                        || entry.statutExportProgramme === 'EN_GENERATION') {
                         return {value : entry.fichiers, isLink : false}
                       } else {
                         return {value : entry.fichiers, isLink : true}
@@ -497,33 +452,20 @@
 
 
                     css: function (entry) {
-                      if ( entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
-                        || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'
-                        || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION') {
-                        return {style: {'background-color': 'grey'}}
-                      }
-
-                      return {style: null}
+                      return $this.griserLigne(entry);
                     }
                   }
                 },
-
                 {
                   id :  'export',
                   name :   "Export",
                   sortable : false,
                   type : 'clickable-icons-or-text',
                   cell : {
-
-                    css: function (entry) {
-                      if ( entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
-                        || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'
-                        || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION') {
-                        return {style: {'background-color': 'grey'}}
-                      }
-
-                      return {style: null}
+                    css :  function(entry) {
+                      return $this.griserLigne(entry);
                     },
+
 
                     cellTemplate: function (cellValue) {
                       var tempalteExport = '<span class="glyphicon glyphicon-export" aria-hidden="true" style="padding-left: 0px;" title="Export"></span>';
@@ -533,7 +475,9 @@
 
                       if(cellValue.statutEligibilite === 'FIN_ELIGIBILITE' || cellValue.statutEligibilite === 'FIN_DESAFFECTATION' || cellValue.statutEligibilite === null) {
                         if(statusCode !== undefined && 'AFFECTE' === statusCode) {
-                          template[0] = {event : 'exporter-programme', template : tempalteExport};
+                          if(cellValue.statutExportProgramme === null){
+                            template[0] = {event : 'exporter-programme', template : tempalteExport};
+                          }
                         }
                       }
                       return template;
@@ -561,8 +505,6 @@
 
                   }
                 },
-
-
                 {
                   id :  'import',
                   name :   "Import",
@@ -571,13 +513,7 @@
                   cell : {
 
                     css: function (entry) {
-                      if ( entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
-                        || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'
-                        || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION') {
-                        return {style: {'background-color': 'grey'}}
-                      }
-
-                      return {style: null}
+                      return $this.griserLigne(entry);
                     },
 
                     cellTemplate: function (cellValue) {
@@ -598,8 +534,6 @@
 
                   }
                 },
-
-
                 {
                   id :  'statut',
                   name :   "Statut",
@@ -615,15 +549,7 @@
                     },
 
                     css: function (entry) {
-                        debugger;
-                      if ( entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
-                        || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'
-                        || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION') {
-
-                          return {style: {'background-color': 'grey'}}
-                      }
-
-                      return {style: null}
+                      return $this.griserLigne(entry);
                     }
                   }
                 },
@@ -687,14 +613,7 @@
                     },
 
                     css: function (entry) {
-                      debugger;
-                      if ( entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
-                        || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'
-                        || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION') {
-                        return {style: {'background-color': 'grey'}}
-                      }
-
-                      return {style: null}
+                      return $this.griserLigne(entry);
                     }
 
                   }
@@ -707,13 +626,7 @@
                   type : 'code-value',
                   cell : {
                     css : function (entry) {
-                      if ( entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
-                        || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'
-                        || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION') {
-                        return {style: {'background-color': 'grey'}}
-                      }
-
-                      return {style: null}
+                      return $this.griserLigne(entry);
                     },
 
                     toText : function(rionTheorique) {
@@ -729,13 +642,7 @@
                   cell : {
 
                     css : function (entry) {
-                      if ( entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
-                        || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'
-                        || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION') {
-                        return {style: {'background-color': 'grey'}}
-                      }
-
-                      return {style: null}
+                      return $this.griserLigne(entry);
                     },
 
                     cellTemplate: function (cellValue) {
@@ -748,11 +655,13 @@
 
 
 
-                      if(cellValue.statutEligibilite === 'FIN_ELIGIBILITE' || cellValue.statutEligibilite === 'FIN_DESAFFECTATION' || cellValue.statutEligibilite === null) {
+                      if(cellValue.statutEligibilite === 'FIN_ELIGIBILITE' || cellValue.statutEligibilite === 'FIN_DESAFFECTATION' || cellValue.statutEligibilite === null || cellValue.statutExportProgramme === null || cellValue.statutExportProgramme === 'GENERE') {
                         if(statusCode !== undefined && ('CREE' === statusCode || 'AFFECTE' === statusCode
                           || 'EN_COURS' === statusCode || 'VALIDE' === statusCode) ) {
-                          if($this.isRightMDYPRG){
-                            tempalte[0] = {event : 'update-programme', template : tempalteUpdate};
+                          if(cellValue.statutExportProgramme === null || cellValue.statutExportProgramme === 'GENERE'){
+                            if ($this.isRightMDYPRG) {
+                              tempalte[0] = {event: 'update-programme', template: tempalteUpdate};
+                            }
                           }
                         }
 
@@ -766,9 +675,6 @@
                           tempalte[2] = {event : 'log-programme', template : tempalteLog};
                         }
                       }
-
-
-
 
                       return tempalte;
                     }
@@ -813,8 +719,8 @@
             validateFelixData : {method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/repartition/validateFelixData/{numProg}'},
             generateFelixData : {method : 'POST', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/repartition/generateFelixData'},
             checkIfDone : {method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/repartition/fichierfelix/{numProg}'},
-            exportProgramme :{method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/programme/export/{numProg}'}
-
+            exportProgramme :{method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/programme/export/{numProg}'},
+            majStatutProgramme :{method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/programme/statut/{numProg}'}
         }
         this.resource= this.$resource('', {}, customActions);
 
@@ -909,11 +815,22 @@
 
           if(entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
             || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE' ||
-            entry.statutEligibilite === 'EN_COURS_DESAFFECTATION') {
+            entry.statutEligibilite === 'EN_COURS_DESAFFECTATION' ||
+            entry.statutExportProgramme === 'EN_GENERATION') {
 
             return "Le programme est en cours de traitement";
           }
           return '';
+        },
+
+        griserLigne(entry) {
+          if ( entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
+            || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'
+            || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION'
+            || entry.statutExportProgramme === 'EN_GENERATION') {
+            return {style: {'background-color': 'grey'}}
+          }
+          return {style: null}
         },
 
         getAllNumProgramme() {
@@ -1066,6 +983,37 @@
                      });
 
                  }
+              } else if(column.id !== undefined && column.id === 'export') {
+                var numProg = row.numProg;
+                //this.downloadExport(process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/programme/downloadExport',{numProg: numProg})
+                var formData = new FormData();
+                formData.append('numProg', numProg);
+
+                this.$http.post(process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/programme/downloadExport',
+                  formData,
+                  {
+                    headers : {
+                      'Content-type' : 'blob'
+                    }
+                  }
+                  //responseType: 'blob', // important
+                ).then((response) => {
+                  this.resource.majStatutProgramme({numProg:  numProg})
+                    .then(response => {
+                      return response.json();
+                    })
+                    .then(data => {
+                      var filename = data.nom;
+                      const url = window.URL.createObjectURL(new Blob([response.data]));
+                      const link = document.createElement('a');
+                      link.href = url;
+                      link.setAttribute('download', filename+'.csv'); //or any other extension
+                      document.body.appendChild(link);
+                      link.click();
+                      this.launchRequest(this.defaultPageable.page, this.defaultPageable.size,
+                        this.defaultPageable.sort, this.defaultPageable.dir);
+                    })
+                });
               }
           },
 
@@ -1231,6 +1179,7 @@
           console.log('--- exportedProgramme numProg = ' + this.selectedProgramme.numProg);
           var self = this;
           let numProg = this.selectedProgramme.numProg;
+          this.selectedProgramme.statutExportProgramme = 'EN_GENERATION'
           this.resource.exportProgramme({numProg:  numProg})
             .then(response => {
               return response.json();
@@ -1239,6 +1188,40 @@
 
         onImporterProgramme(row, column) {
           console.log("Import du programme " + row.numProg)
+        },
+
+        telechargerExport(row, column){
+          var self = this;
+          debugger;
+          let numProg = self.row.numProg;
+          this.downloadExport(process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/programme/downloadExport',{numProg: numProg})
+        },
+
+        downloadExport(url, data, filename) {
+          var _open = function(verb, url, data, target) {
+            var form = document.createElement('form');
+            form.action = url;
+            form.method = verb;
+            form.target = target || '_self';
+            if (data) {
+              for (var key in data) {
+                var input = document.createElement('textarea');
+                input.name = key;
+                input.value = typeof data[key] === 'object' ? JSON.stringify(data[key]) : data[key];
+                form.appendChild(input);
+              }
+            }
+            document.body.appendChild(form);
+            form.submit();
+            document.body.removeChild(form);
+          };
+
+          _open('POST', url, data, '_blank');
+
+        },
+
+        majStatutProgramme(numProg) {
+
         }
 
 

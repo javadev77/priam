@@ -17,8 +17,8 @@ import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
  */
 
 @Configuration
-@ComponentScan(basePackages = {"fr.sacem.priam.batch.fv", "fr.sacem.priam.batch.common"})
-@Profile({"dev","dev", "prod","re7"})
+@ComponentScan(basePackages = {"fr.sacem.priam.batch.fv", "fr.sacem.priam.batch.common", "fr.sacem.priam.model.dao.*"})
+@Profile({"dev", "prod","re7"})
 @PropertySource("classpath:config/application-batch.properties")
 @ImportResource(value = "classpath:config/job-affectation-fv.xml")
 public class BatchConfigProd {
