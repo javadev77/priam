@@ -7,6 +7,7 @@
 
     <import  resource="job-desaffectation-fv.xml"/>
     <import resource="job-export-fv.xml"/>
+    <import resource="job-service-import-fv.xml"/>
 
     <job id="jobAffectationFv" xmlns="http://www.springframework.org/schema/batch">
 

@@ -13,7 +13,8 @@
             <tasklet>
                 <chunk
                         reader="readFromCsv"
-                        writer="writer"
+                        processor="processor"
+                        writer="writerPriam"
                         commit-interval="100"
                         retry-limit="10">
                     <retryable-exception-classes>
@@ -24,11 +25,93 @@
             </tasklet>
         </step>
 
+        <listeners merge="true">
+            <listener ref="listenerCompletionImport"/>
+        </listeners>
+
     </job>
 
-    <bean id="readFromCsv" class=""></bean>
+
+    <bean id="processor" class="fr.sacem.priam.batch.fv.serviceimport.processor.ImportFvItemProcessor"/>
+
+    <bean id="readFromCsv" class="fr.sacem.priam.batch.fv.serviceimport.reader.ImportCsvFileItemReader" scope="step">
+        <property name="lineMapper">
+            <bean class="fr.sacem.priam.batch.fv.serviceimport.reader.ImportFVLineMapper">
+                <property name="lineTokenizer">
+                    <bean class="org.springframework.batch.item.file.transform.DelimitedLineTokenizer">
+                        <property name="names"
+                            value="cdeFamilTypUtil,cdeTypUtil,numProg,rionEffet,ide12,cdeTypIde12,ide12RepCoad,cdeTypIde12RepCoad,datsitu,datconslt,
+                                    coad,numPers,numCatal,idSteAd,rolAd,typeDroit,cleAd,cdeTypProtect,coadOriEdtr,idSteOriEdtr,
+                                    nomProgramme,tax,durDif,nbrDif,typMt,mt,genreOeuvre,titreOeuvre,dureeDeposee,taxOri,
+                                    labelValo,paysOri,indicRepart,nom,prenom,indicSacem,sousRole,anneeNaissance,anneeDeces,indicDrtPercus"/>
+
+                        <property name="delimiter" value=";"/>
+                    </bean>
+                </property>
+                <property name="fieldSetMapper">
+                    <bean class="org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper">
+                        <property name="targetType" value="fr.sacem.priam.batch.fv.export.domain.ExportCsvDto"/>
+                        <property name="customEditors">
+                            <map>
+                                <entry key="java.time.LocalDate">
+                                    <bean class="fr.sacem.priam.batch.common.util.LocalDatePropertyEditor">
+                                    </bean>
+                                </entry>
+
+                                <entry key="java.lang.Double">
+                                    <bean class="fr.sacem.priam.batch.common.util.DoublePropertyEditor">
+                                    </bean>
+                                </entry>
+                            </map>
+                        </property>
+                    </bean>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="writerPriam" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    INSERT INTO PRIAM_LIGNE_PROGRAMME_TRAITEMENT_BATCH (
+                            id_fichier,
+                            cdeFamilTypUtil,
+                            numProg,
+                            cdeTypUtil,
+                            cdeTypIde12,
+                            ide12,
+                            durDif,
+                            nbrDif,
+                            mt,
+                            tax,
+                            typMt
+
+                        )
+                        VALUES (
+                            :idFichier,
+                            :cdeFamilTypUtil,
+                            :numProg,
+                            :cdeTypUtil,
+                            :cdeTypIde12,
+                            :ide12,
+                            :durDif,
+                            :nbrDif,
+                            :mt,
+                            :tax,
+                            :typMt
+                        )
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
 
 
+    <bean id="listenerCompletionImport" class="fr.sacem.priam.batch.fv.serviceimport.listener.JobImportFVListener"/>
 
 
 </beans>

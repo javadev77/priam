@@ -1,5 +1,6 @@
 package fr.sacem.priam.batch.fv.util;
 
+import fr.sacem.priam.batch.common.fv.util.CategorieFondsEnum;
 import fr.sacem.priam.batch.fv.dao.SareftrFamilTypUtilDao;
 import fr.sacem.priam.batch.common.domain.LigneProgrammeFV;
 import fr.sacem.priam.batch.common.domain.SareftrTyputil;

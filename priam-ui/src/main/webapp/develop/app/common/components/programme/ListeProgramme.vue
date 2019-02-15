@@ -160,7 +160,8 @@
               @exporter-programme="onExporterProgramme"
               @import-programme="onImporterProgramme"
               @load-page="loadPage"
-              @on-sort="onSort">
+              @on-sort="onSort"
+              @show-log-import="onShowLogImport">
             </priam-grid>
           </div>
         </div>
@@ -226,6 +227,28 @@
                       @validate="onValidateImport">
 
     </import-programme>
+
+
+
+    <template v-if="showLogImport">
+      <modal>
+        <template slot="body">
+          <label>Le fichier ne peut être chargé à cause de(s) erreur(s) suivante(s) :</label>
+          <div style="height:300px; overflow-y:auto;">
+            <ul>
+              <li v-for="log in logsImport">
+                {{log}}
+              </li>
+            </ul>
+          </div>
+        </template>
+        <template slot="footer">
+          <div class="text-center">
+            <button class="btn btn-default btn-primary" @click="showLogImport = false">Fermer</button>
+          </div>
+        </template>
+      </modal>
+    </template>
   </div>
 </template>
 
@@ -269,6 +292,9 @@
             ecranAjouterProgramme : false,
             showEcranModalMisEnRepart : false,
             showEcranModalImportProgramme : false,
+            showLogImport : false,
+            logsImport  : [],
+
             resource : {},
 
             modeRepartition : '',
@@ -574,11 +600,14 @@
                       var tempalteExport = '<span class="glyphicon glyphicon-import" aria-hidden="true" style="padding-left: 0px;" title="Importer un fichier"></span>';
                       var statusCode = cellValue.statut;
 
-                      var template = [{}];
+                      var template = [{}, {}];
 
                       if(cellValue.statutEligibilite === 'FIN_ELIGIBILITE' || cellValue.statutEligibilite === 'FIN_DESAFFECTATION' || cellValue.statutEligibilite === null) {
                         if(statusCode !== undefined && 'EN_COURS' === statusCode) {
                           template[0] = {event : 'import-programme', template : tempalteExport};
+                          if(cellValue.statutImportProgramme === 'CHARGEMENT_KO') {
+                            template[1] = {event : 'show-log-import', template : '<span class="glyphicon glyphicon-list-alt" aria-hidden="true" title="Log"></span>'};
+                          }
                         }
 
                       }
@@ -806,7 +835,9 @@
             importProgramme : {
               method : 'POST', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/programme/import'
             },
-            exportProgramme :{method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/programme/export/{numProg}'}
+            exportProgramme : {method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/programme/export/{numProg}'},
+            getLogs : {method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/programme/import/{numProg}/log'}
+
 
         }
         this.resource= this.$resource('', {}, customActions);
@@ -1231,7 +1262,7 @@
 
         onImporterProgramme(row, column) {
           this.showEcranModalImportProgramme = true;
-          this.showEcranModalImportProgramme = true;
+          this.selectedProgramme = row;
 
         },
 
@@ -1242,7 +1273,7 @@
             formData.append('file', fileToUpload);
             formData.append('numProg', this.selectedProgramme.numProg);
 
-            this.$http.post(process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/programme/import', formData, {
+            this.$http.post(process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/programme/import', formData, {
                   emulateJSON: true,
                   headers: {
                     'Content-Type': 'multipart/form-data'
@@ -1254,6 +1285,23 @@
               .catch(function () {
                 console.log('FAILURE!!');
               })
+        },
+
+        onShowLogImport(row, column) {
+          this.selectedProgramme = row;
+          this.resource.getLogs({numProg : this.selectedProgramme.numProg})
+            .then(response => {
+              return response.json();
+            })
+            .then(data => {
+
+              this.logsImport = data;
+              this.showLogImport = true;
+            })
+            .catch(error => {
+              alert('Erreur lors de la récuperation des logs du fichier import');
+            })
+
         }
 
 

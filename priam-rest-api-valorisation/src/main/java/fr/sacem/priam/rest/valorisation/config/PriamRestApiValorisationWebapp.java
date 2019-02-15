@@ -1,6 +1,6 @@
 package fr.sacem.priam.rest.valorisation.config;
 
-import fr.sacem.priam.batch.fv.affectation.config.BatchConfigProd;
+import fr.sacem.priam.batch.fv.config.BatchConfigProd;
 import fr.sacem.priam.common.config.PropertiesWithJavaConfig;
 import fr.sacem.priam.model.config.JpaConfiguration;
 import fr.sacem.priam.security.config.RestMvcConfig;

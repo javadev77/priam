@@ -72,39 +72,6 @@ ALTER TABLE PRIAM_LIGNE_PROGRAMME_FV   ADD statut varchar(250) DEFAULT NULL;
 ALTER TABLE PRIAM_LIGNE_PROGRAMME_FV   ADD isOeuvreComplex tinyint(4) DEFAULT '0' COMMENT 'Flag qui indique si l''oeuvre est complexe';
 ALTER TABLE PRIAM_LIGNE_PROGRAMME_FV  ADD durDifEdit int(11) DEFAULT NULL;
 
-  alter view PRIAM_PROG_VIEW as
-SELECT DISTINCT
-  pr.NUMPROG                                                         AS NUMPROG,
-  pr.NOM                                                             AS NOM,
-  pr.RION_THEORIQUE                                                  AS RION_THEORIQUE,
-  pr.CDEFAMILTYPUTIL                                                 AS CDEFAMILTYPUTIL,
-  pr.CDETYPUTIL                                                      AS CDETYPUTIL,
-  pr.TYPE_REPART                                                     AS TYPE_REPART,
-  pr.TYPE_DROIT                                                      AS TYPE_DROIT,
-  pr.DATE_CREATION                                                   AS DATE_CREATION,
-  pr.STATUT_PROG_CODE                                                AS STATUT_PROG_CODE,
-  pr.RION_PAIEMENT                                                   AS RION_PAIEMENT,
-  pr.USERCRE                                                         AS USERCRE,
-  pr.DATMAJ                                                          AS DATMAJ,
-  pr.USERMAJ                                                         AS USERMAJ,
-  pr.DATAFFECT                                                       AS DATAFFECT,
-  pr.USERAFFECT                                                      AS USERAFFECT,
-  (SELECT count(f.NUMPROG)
-   FROM PRIAM_FICHIER f
-   WHERE ((pr.NUMPROG = f.NUMPROG) AND (f.SOURCE_AUTO = 1))) AS fichiers,
-  pr.DATE_DBT_PRG                                                    AS DATEDBTPRG,
-  pr.DATE_FIN_PRG                                                    AS DATEFINPRG,
-  pr.CDE_TER                                                         AS CDETER,
-  pr.USER_VALIDATION                                                 AS USERVALIDATION,
-  pr.DATE_VALIDATION                                                 AS DATEVALIDATION,
-  ff.STATUT                                                          AS STATUT_FICHIER_FELIX,
-  pr.DATE_REPARTITION                                                AS DATE_REPARTITION,
-  pr.STATUT_ELIGIBILITE                                              AS STATUT_ELIGIBILITE,
-  epf.STATUT                                                         AS STATUT_EXPORT
-FROM (PRIAM_PROGRAMME pr LEFT JOIN PRIAM_FICHIER_FELIX ff
-                                   ON ((ff.NUMPROG = pr.NUMPROG))
-  left join PRIAM_EXPORT_PROGRAMME_FV epf on pr.NUMPROG = epf.NUMPROG)
-GROUP BY pr.NUMPROG;
 
 
 CREATE TABLE PRIAM_AYANT_DROIT_PERS (
@@ -172,6 +139,86 @@ CREATE TABLE PRIAM_IMPORT_PROGRAMME_FV(
   CONSTRAINT `IMPORT_NUMPROG_FK` FOREIGN KEY (`NUMPROG`) REFERENCES `PRIAM_PROGRAMME` (`NUMPROG`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
+
+CREATE VIEW  EXPORT_FV_VIEW AS
+  SELECT FV.cdeFamilTypUtil, FV.cdeTypUtil, PP.NUMPROG as numProg, FV.rionEffet, FV_CTN.ide12,  FV_CTN.cdeTypIde12, PAD.IDE12REPCOAD, PAD.CDETYPIDE12REPCOAD, PAD.COAD,
+    PAD.NUMPERS, PAD.NUMCATAL, PAD.IDSTEAD, PAD.ROLAD, PAD.CLEAD, PAD.CDETYPPROTEC, PAD.COADORIEDTR, PAD.IDSTEORIEDTR, FV_CTN.tax, FV_CTN.durDif, FV_CTN.nbrDif,
+    FV_CTN.typMt, FV_CTN.mt,
+    FV.genreOeuvre, FV.titreOeuvre, FV.dureeDeposee, FV.taxOri, FV.paysOri, FV.indicRepart, PP.NOM AS NOM_PRG, PERS.NOM, PERS.PRENOM, PERS.INDICSACEM,
+    PERS.SOUS_ROLE, PERS.ANNEE_NAISSANCE, PERS.ANNEE_DECES, PERS.INDICDRTPERCUS
+  FROM PRIAM_LIGNE_PROGRAMME_FV FV
+    INNER JOIN PRIAM_FICHIER PF on FV.ID_FICHIER = PF.ID
+    INNER JOIN PRIAM_PROGRAMME PP on PP.NUMPROG = PF.NUMPROG
+    LEFT JOIN PRIAM_AYANT_DROIT PAD on FV.id = PAD.ID_FV
+    LEFT JOIN PRIAM_AYANT_DROIT_PERS PERS on PAD.NUMPERS = PERS.NUMPERS
+    INNER JOIN PRIAM_LIGNE_PROGRAMME_FV FV_CTN ON FV.ID_OEUVRE_CTNU=FV_CTN.id
+  WHERE FV.isOeuvreComplex = 0 AND FV.ID_OEUVRE_CTNU IS NOT NULL
+
+
+  UNION
+
+  SELECT FV.cdeFamilTypUtil, FV.cdeTypUtil, PP.NUMPROG as numProg, FV.rionEffet, FV.ide12,  FV.cdeTypIde12, PAD.IDE12REPCOAD, PAD.CDETYPIDE12REPCOAD, PAD.COAD,
+    PAD.NUMPERS, PAD.NUMCATAL, PAD.IDSTEAD, PAD.ROLAD, PAD.CLEAD, PAD.CDETYPPROTEC, PAD.COADORIEDTR, PAD.IDSTEORIEDTR, FV.tax, FV.durDif, FV.nbrDif,
+    FV.typMt, FV.mt,
+    FV.genreOeuvre, FV.titreOeuvre, FV.dureeDeposee, FV.taxOri, FV.paysOri, FV.indicRepart, PP.NOM AS NOM_PRG, PERS.NOM, PERS.PRENOM, PERS.INDICSACEM,
+    PERS.SOUS_ROLE, PERS.ANNEE_NAISSANCE, PERS.ANNEE_DECES, PERS.INDICDRTPERCUS
+  FROM PRIAM_LIGNE_PROGRAMME_FV FV
+    INNER JOIN PRIAM_FICHIER PF on FV.ID_FICHIER = PF.ID
+    INNER JOIN PRIAM_PROGRAMME PP on PP.NUMPROG = PF.NUMPROG
+    LEFT JOIN PRIAM_AYANT_DROIT PAD on FV.id = PAD.ID_FV
+    LEFT JOIN PRIAM_AYANT_DROIT_PERS PERS on PAD.NUMPERS = PERS.NUMPERS
+  WHERE FV.isOeuvreComplex = 0 AND FV.ID_OEUVRE_CTNU IS NULL;
+
+
+
+DROP TABLE IF EXISTS `PRIAM_IMPORT_PROGRAMME_FV_LOG`;
+CREATE TABLE `PRIAM_IMPORT_PROGRAMME_FV_LOG` (
+  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `ID_FICHIER` bigint(20) DEFAULT NULL,
+  `LOG` varchar(1024) DEFAULT NULL,
+  `DATE` datetime DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `ID_FICHIER_IMPORT_FK` (`ID_FICHIER`),
+  CONSTRAINT `ID_FICHIER_IMPORT_FK` FOREIGN KEY (`ID_FICHIER`) REFERENCES `PRIAM_IMPORT_PROGRAMME_FV` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+alter view PRIAM_PROG_VIEW as
+SELECT DISTINCT
+  pr.NUMPROG                                                         AS NUMPROG,
+  pr.NOM                                                             AS NOM,
+  pr.RION_THEORIQUE                                                  AS RION_THEORIQUE,
+  pr.CDEFAMILTYPUTIL                                                 AS CDEFAMILTYPUTIL,
+  pr.CDETYPUTIL                                                      AS CDETYPUTIL,
+  pr.TYPE_REPART                                                     AS TYPE_REPART,
+  pr.TYPE_DROIT                                                      AS TYPE_DROIT,
+  pr.DATE_CREATION                                                   AS DATE_CREATION,
+  pr.STATUT_PROG_CODE                                                AS STATUT_PROG_CODE,
+  pr.RION_PAIEMENT                                                   AS RION_PAIEMENT,
+  pr.USERCRE                                                         AS USERCRE,
+  pr.DATMAJ                                                          AS DATMAJ,
+  pr.USERMAJ                                                         AS USERMAJ,
+  pr.DATAFFECT                                                       AS DATAFFECT,
+  pr.USERAFFECT                                                      AS USERAFFECT,
+  (SELECT count(f.NUMPROG)
+   FROM PRIAM_FICHIER f
+   WHERE ((pr.NUMPROG = f.NUMPROG) AND (f.SOURCE_AUTO = 1))) AS fichiers,
+  pr.DATE_DBT_PRG                                                    AS DATEDBTPRG,
+  pr.DATE_FIN_PRG                                                    AS DATEFINPRG,
+  pr.CDE_TER                                                         AS CDETER,
+  pr.USER_VALIDATION                                                 AS USERVALIDATION,
+  pr.DATE_VALIDATION                                                 AS DATEVALIDATION,
+  ff.STATUT                                                          AS STATUT_FICHIER_FELIX,
+  pr.DATE_REPARTITION                                                AS DATE_REPARTITION,
+  pr.STATUT_ELIGIBILITE                                              AS STATUT_ELIGIBILITE,
+  epf.STATUT                                                         AS STATUT_EXPORT,
+  ipf.STATUT                                                         AS STATUT_IMPORT
+FROM PRIAM_PROGRAMME pr
+  LEFT JOIN PRIAM_FICHIER_FELIX ff ON ff.NUMPROG = pr.NUMPROG
+  left join PRIAM_EXPORT_PROGRAMME_FV epf ON pr.NUMPROG = epf.NUMPROG
+  left join PRIAM_IMPORT_PROGRAMME_FV ipf ON pr.NUMPROG = ipf.NUMPROG
+GROUP BY pr.NUMPROG;
 
 
 
