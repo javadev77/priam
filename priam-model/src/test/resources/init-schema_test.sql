@@ -2907,6 +2907,18 @@ CREATE TABLE PRIAM_EXPORT_PROGRAMME_FV(
                                         CONSTRAINT `EXPORT_NUMPROG_FK` FOREIGN KEY (`NUMPROG`) REFERENCES `PRIAM_PROGRAMME` (`NUMPROG`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE PRIAM_IMPORT_PROGRAMME_FV(
+                                        `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+                                        `NUMPROG` varchar(8) NOT NULL,
+                                        `FILENAME` varchar(255) DEFAULT NULL,
+                                        `DATE_CREATION` datetime DEFAULT NULL,
+                                        `STATUT` varchar(20) DEFAULT NULL,
+                                        CONTENT mediumblob null,
+                                        PRIMARY KEY (`ID`),
+                                        KEY `IMPORT_NUMPROG_FK` (`NUMPROG`),
+                                        CONSTRAINT `IMPORT_NUMPROG_FK` FOREIGN KEY (`NUMPROG`) REFERENCES `PRIAM_PROGRAMME` (`NUMPROG`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 alter view PRIAM_PROG_VIEW as
   SELECT DISTINCT
     pr.NUMPROG                                                         AS NUMPROG,
@@ -2935,10 +2947,12 @@ alter view PRIAM_PROG_VIEW as
     ff.STATUT                                                          AS STATUT_FICHIER_FELIX,
     pr.DATE_REPARTITION                                                AS DATE_REPARTITION,
     pr.STATUT_ELIGIBILITE                                              AS STATUT_ELIGIBILITE,
-    epf.STATUT                                                         AS STATUT_EXPORT
-  FROM (PRIAM_PROGRAMME pr LEFT JOIN PRIAM_FICHIER_FELIX ff
-                                     ON ((ff.NUMPROG = pr.NUMPROG))
-                           left join PRIAM_EXPORT_PROGRAMME_FV epf on pr.NUMPROG = epf.NUMPROG)
+    epf.STATUT                                                         AS STATUT_EXPORT,
+    ipf.STATUT                                                         AS STATUT_IMPORT
+  FROM PRIAM_PROGRAMME pr LEFT JOIN PRIAM_FICHIER_FELIX ff
+                                     ON ff.NUMPROG = pr.NUMPROG
+                           left join PRIAM_EXPORT_PROGRAMME_FV epf on pr.NUMPROG = epf.NUMPROG
+                          left join PRIAM_IMPORT_PROGRAMME_FV ipf ON pr.NUMPROG = ipf.NUMPROG
   GROUP BY pr.NUMPROG;
 
 
