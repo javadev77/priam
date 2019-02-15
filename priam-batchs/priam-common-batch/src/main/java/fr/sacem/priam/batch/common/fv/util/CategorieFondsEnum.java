@@ -1,4 +1,4 @@
-package fr.sacem.priam.batch.fv.util;
+package fr.sacem.priam.batch.common.fv.util;
 
 import java.util.Arrays;
 import java.util.List;

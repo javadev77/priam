@@ -1,11 +1,10 @@
 package fr.sacem.priam.batch.fv.export.domain;
 
+import fr.sacem.priam.batch.common.util.exception.PriamValidationException;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 
 public class ExportCsvDto implements Serializable {
-    private Long id;
-
     private String cdeFamilTypUtil;
     private String cdeTypUtil;
     private Long numProg;
@@ -14,8 +13,8 @@ public class ExportCsvDto implements Serializable {
     private String cdeTypIde12;
     private Long ide12RepCoad;
     private String cdeTypIde12RepCoad;
-    private Date datsitu;
-    private Date datconslt;
+    private LocalDate datsitu;
+    private LocalDate datconslt;
     private Long coad;
     private Long numPers;
     private Long numCatal;
@@ -26,6 +25,7 @@ public class ExportCsvDto implements Serializable {
     private String cdeTypProtect;
     private Integer coadOriEdtr;
     private String idSteOriEdtr;
+    private Double points;
 //    point
     private String nomProgramme;
     private String tax;
@@ -50,13 +50,15 @@ public class ExportCsvDto implements Serializable {
     private Integer indicDrtPercus;
 
     private Integer lineNumber;
+    private PriamValidationException exception;
+    private Long idFichier;
 
-    public Long getId() {
-        return id;
+    public ExportCsvDto() {
+
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public ExportCsvDto(final PriamValidationException e) {
+        exception = e;
     }
 
     public Long getIde12RepCoad() {
@@ -251,19 +253,19 @@ public class ExportCsvDto implements Serializable {
         this.cdeTypIde12 = cdeTypIde12;
     }
 
-    public Date getDatsitu() {
+    public LocalDate getDatsitu() {
         return datsitu;
     }
 
-    public void setDatsitu(Date datsitu) {
+    public void setDatsitu(LocalDate datsitu) {
         this.datsitu = datsitu;
     }
 
-    public Date getDatconslt() {
+    public LocalDate getDatconslt() {
         return datconslt;
     }
 
-    public void setDatconslt(Date datconslt) {
+    public void setDatconslt(LocalDate datconslt) {
         this.datconslt = datconslt;
     }
 
@@ -385,5 +387,21 @@ public class ExportCsvDto implements Serializable {
 
     public void setIndicDrtPercus(Integer indicDrtPercus) {
         this.indicDrtPercus = indicDrtPercus;
+    }
+
+    public Long getIdFichier() {
+        return idFichier;
+    }
+
+    public void setIdFichier(final Long idFichier) {
+        this.idFichier = idFichier;
+    }
+
+    public Double getPoints() {
+        return points;
+    }
+
+    public void setException(final PriamValidationException exception) {
+        this.exception = exception;
     }
 }

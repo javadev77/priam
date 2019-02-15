@@ -41,6 +41,8 @@ public class ProgrammeView {
 
     private StatutExportProgramme statutExportProgramme;
 
+    private StatutImportProgramme statutImportProgramme;
+
     
     public ProgrammeView() {
     }
@@ -181,6 +183,12 @@ public class ProgrammeView {
         return statutExportProgramme;
     }
 
+    @Column(name = "STATUT_IMPORT")
+    @Enumerated(EnumType.STRING)
+    public StatutImportProgramme getStatutImportProgramme() {
+        return statutImportProgramme;
+    }
+
     public void setNumProg(String numProg) {
         this.numProg = numProg;
     }
@@ -265,5 +273,9 @@ public class ProgrammeView {
 
     public void setStatutExportProgramme(StatutExportProgramme statutExportProgramme) {
         this.statutExportProgramme = statutExportProgramme;
+    }
+
+    public void setStatutImportProgramme(final StatutImportProgramme statutImportProgramme) {
+        this.statutImportProgramme = statutImportProgramme;
     }
 }

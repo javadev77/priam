@@ -14,8 +14,7 @@ import java.util.Iterator;
 
 @Component
 public class JobExportFVListener extends JobExecutionListenerSupport {
-
-    public static final String ERREUR_EXPORT = "ERREUR_EXPORT";
+    
     public static final String EXPORT_EN_GENERATION = "EN_GENERATION";
     public static final String EXPORT_GENERE = "GENERE";
     private static String NOM_EXPORT_CSV = "REQ_FILE_NAME";

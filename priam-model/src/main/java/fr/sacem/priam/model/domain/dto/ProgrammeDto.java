@@ -58,8 +58,9 @@ public class ProgrammeDto {
     	
 	private StatutFichierFelix statutFichierFelix;
 	private StatutExportProgramme statutExportProgramme;
-    
-    @JsonSerialize(using = DateRepartitionSerializer.class)
+	private StatutImportProgramme statutImportProgramme;
+
+	@JsonSerialize(using = DateRepartitionSerializer.class)
     private Date dateRepartition;
 
 	private StatutEligibilite statutEligibilite;
@@ -156,7 +157,8 @@ public class ProgrammeDto {
 
 	public ProgrammeDto(String numProg, String nom, String famille, String typeUtilisation, Integer rionTheorique, Date dateCreation, TypeRepart typeRepart,
 						StatutProgramme statut, Integer rionPaiement, Long fichiers, String usercre, Date datmaj, String usermaj,
-						Date dataffecte, String useraffecte, Date dateValidation, StatutFichierFelix statutFichierFelix, Date dateRepartition, StatutEligibilite statutEligibilite, StatutExportProgramme statutExportProgramme) {
+						Date dataffecte, String useraffecte, Date dateValidation, StatutFichierFelix statutFichierFelix, Date dateRepartition,
+						StatutEligibilite statutEligibilite, StatutExportProgramme statutExportProgramme, StatutImportProgramme statutImportProgramme) {
 
 		this(numProg, nom, famille, typeUtilisation, rionTheorique, dateCreation, typeRepart,
 				statut, rionPaiement, fichiers, usercre, datmaj, usermaj,
@@ -164,10 +166,10 @@ public class ProgrammeDto {
 
 		this.statutEligibilite = statutEligibilite;
 		this.statutExportProgramme = statutExportProgramme;
-
+		this.statutImportProgramme = statutImportProgramme;
 	}
 
-		public String getNumProg() {
+	public String getNumProg() {
 		return numProg;
 	}
 	
@@ -353,6 +355,14 @@ public class ProgrammeDto {
 
 	public void setStatutExportProgramme(StatutExportProgramme statutExportProgramme) {
 		this.statutExportProgramme = statutExportProgramme;
+	}
+
+	public StatutImportProgramme getStatutImportProgramme() {
+		return statutImportProgramme;
+	}
+
+	public void setStatutImportProgramme(final StatutImportProgramme statutImportProgramme) {
+		this.statutImportProgramme = statutImportProgramme;
 	}
 
 	public ProgrammeDto() {}

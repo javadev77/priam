@@ -122,6 +122,7 @@ public class FichierService {
         programmeDao.saveAndFlush(programme);
     }
 
+    @Transactional
     public Fichier getOrCreateFichierLink(String numProg) {
 
         Fichier fichierLink = fichierDao.findFichierLink(numProg);

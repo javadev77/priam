@@ -39,6 +39,7 @@ public class ProgrammeResource {
     @Autowired
     private ProgrammeViewDao programmeViewDao;
 
+
     @RequestMapping(value = "programme/search",
                     method = RequestMethod.POST,
                     consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -151,4 +152,9 @@ public class ProgrammeResource {
 
         return programmeService.findAllNomProgByCriteria();
     }
+
+
+
+
+
 }

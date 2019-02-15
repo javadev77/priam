@@ -1,7 +1,6 @@
 package fr.sacem.priam.batch.fv.processor;
 
 import fr.sacem.priam.batch.common.domain.LigneProgrammeFV;
-import fr.sacem.priam.batch.fv.util.CategorieFondsEnum;
 import fr.sacem.priam.batch.fv.util.validator.LigneProgrammeFVSpringValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

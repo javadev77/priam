@@ -161,7 +161,8 @@
               @import-programme="onImporterProgramme"
               @download-export="telechargerExport"
               @load-page="loadPage"
-              @on-sort="onSort">
+              @on-sort="onSort"
+              @show-log-import="onShowLogImport">
             </priam-grid>
           </div>
         </div>
@@ -221,6 +222,34 @@
         <button class="btn btn-default btn-primary" @click="isToShowErrors = false">Fermer</button>
       </template>
     </modal>
+
+    <import-programme v-if="showEcranModalImportProgramme"
+                      @cancel="showEcranModalImportProgramme = false"
+                      @validate="onValidateImport">
+
+    </import-programme>
+
+
+
+    <template v-if="showLogImport">
+      <modal>
+        <template slot="body">
+          <label>Le fichier ne peut être chargé à cause de(s) erreur(s) suivante(s) :</label>
+          <div style="height:300px; overflow-y:auto;">
+            <ul>
+              <li v-for="log in logsImport">
+                {{log}}
+              </li>
+            </ul>
+          </div>
+        </template>
+        <template slot="footer">
+          <div class="text-center">
+            <button class="btn btn-default btn-primary" @click="showLogImport = false">Fermer</button>
+          </div>
+        </template>
+      </modal>
+    </template>
   </div>
 </template>
 
@@ -242,6 +271,7 @@
   import programmeMixin from '../../mixins/programmeMixin';
   import { FAMILLES_PRIAM } from '../../../../consts';
   import Navbar from '../../../common/components/ui/priam-navbar.vue';
+  import ImportProgramme from '../../../valorisation/components/programme/ImportProgramme.vue';
 
 
   export default {
@@ -262,6 +292,10 @@
             showPopupAbandon : false,
             ecranAjouterProgramme : false,
             showEcranModalMisEnRepart : false,
+            showEcranModalImportProgramme : false,
+            showLogImport : false,
+            logsImport  : [],
+
             resource : {},
 
             modeRepartition : '',
@@ -520,11 +554,14 @@
                       var tempalteExport = '<span class="glyphicon glyphicon-import" aria-hidden="true" style="padding-left: 0px;" title="Importer un fichier"></span>';
                       var statusCode = cellValue.statut;
 
-                      var template = [{}];
+                      var template = [{}, {}];
 
                       if(cellValue.statutEligibilite === 'FIN_ELIGIBILITE' || cellValue.statutEligibilite === 'FIN_DESAFFECTATION' || cellValue.statutEligibilite === null) {
                         if(statusCode !== undefined && 'EN_COURS' === statusCode) {
                           template[0] = {event : 'import-programme', template : tempalteExport};
+                          if(cellValue.statutImportProgramme === 'CHARGEMENT_KO') {
+                            template[1] = {event : 'show-log-import', template : '<span class="glyphicon glyphicon-list-alt" aria-hidden="true" title="Log"></span>'};
+                          }
                         }
 
                       }
@@ -720,7 +757,11 @@
             generateFelixData : {method : 'POST', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/repartition/generateFelixData'},
             checkIfDone : {method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/repartition/fichierfelix/{numProg}'},
             exportProgramme :{method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/programme/export/{numProg}'},
-            majStatutProgramme :{method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/programme/statut/{numProg}'}
+            majStatutProgramme :{method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/programme/statut/{numProg}'},
+            importProgramme : {
+              method : 'POST', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/programme/import'
+            },
+            getLogs : {method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/programme/import/{numProg}/log'}
         }
         this.resource= this.$resource('', {}, customActions);
 
@@ -1187,6 +1228,7 @@
         },
 
         onImporterProgramme(row, column) {
+<<<<<<< HEAD
           console.log("Import du programme " + row.numProg)
         },
 
@@ -1221,6 +1263,48 @@
         },
 
         majStatutProgramme(numProg) {
+=======
+          this.showEcranModalImportProgramme = true;
+          this.selectedProgramme = row;
+
+        },
+
+        onValidateImport(fileToUpload) {
+            this.showEcranModalImportProgramme = false;
+            console.log("The file to upload is : " + fileToUpload);
+            let formData = new FormData();
+            formData.append('file', fileToUpload);
+            formData.append('numProg', this.selectedProgramme.numProg);
+
+            this.$http.post(process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/programme/import', formData, {
+                  emulateJSON: true,
+                  headers: {
+                    'Content-Type': 'multipart/form-data'
+                  }
+                })
+              .then(function () {
+                console.log('SUCCESS!!');
+              })
+              .catch(function () {
+                console.log('FAILURE!!');
+              })
+        },
+
+        onShowLogImport(row, column) {
+          this.selectedProgramme = row;
+          this.resource.getLogs({numProg : this.selectedProgramme.numProg})
+            .then(response => {
+              return response.json();
+            })
+            .then(data => {
+
+              this.logsImport = data;
+              this.showLogImport = true;
+            })
+            .catch(error => {
+              alert('Erreur lors de la récuperation des logs du fichier import');
+            })
+>>>>>>> 5669787acf1ea0d9050c6107c21c242330708847
 
         }
 
@@ -1228,8 +1312,8 @@
       },
 
       components : {
-        JournalProgramme,
-        priamGrid : Grid,
+          JournalProgramme,
+          priamGrid : Grid,
           ecranModal : EcranModal,
           modifierProgramme : ModifierProgramme,
           ajouterProgramme : AjouterProgramme,
@@ -1239,7 +1323,9 @@
           autocomplete : Autocomplete,
           select2 :Select2,
           miseEnRepartitionProgramme : MiseEnRepartitionProgramme,
-          navbar : Navbar
+          navbar : Navbar,
+          'import-programme' : ImportProgramme
+
       }
 
   }

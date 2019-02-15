@@ -1,15 +1,29 @@
 package fr.sacem.priam.model.domain.fv;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.Objects;
 import fr.sacem.priam.model.domain.Programme;
-import fr.sacem.priam.model.domain.StatutExportProgramme;
-
-import javax.persistence.*;
+import fr.sacem.priam.model.domain.StatutImportProgramme;
+import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
-@Table(name = "PRIAM_EXPORT_PROGRAMME_FV")
-public class ExportProgrammeFV {
+@Table(name = "PRIAM_IMPORT_PROGRAMME_FV")
+public class ImportProgrammeFV implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,9 +43,14 @@ public class ExportProgrammeFV {
 
     @Enumerated(EnumType.STRING)
     @Column(name="STATUT", nullable = true)
-    private StatutExportProgramme statutExportProgramme;
+    private StatutImportProgramme statutImportProgramme;
 
-    public ExportProgrammeFV() {
+
+    @Column(name = "CONTENT")
+    @Lob
+    @JsonIgnore
+    private byte[] content;
+    public ImportProgrammeFV() {
     }
 
     public Long getId() {
@@ -66,12 +85,20 @@ public class ExportProgrammeFV {
         this.dateCreation = dateCreation;
     }
 
-    public StatutExportProgramme getStatutExportProgramme() {
-        return statutExportProgramme;
+    public StatutImportProgramme getStatutImportProgramme() {
+        return statutImportProgramme;
     }
 
-    public void setStatutExportProgramme(StatutExportProgramme statutExportProgramme) {
-        this.statutExportProgramme = statutExportProgramme;
+    public void setStatutImportProgramme(final StatutImportProgramme statutImportProgramme) {
+        this.statutImportProgramme = statutImportProgramme;
+    }
+
+    public byte[] getContent() {
+        return content;
+    }
+
+    public void setContent(final byte[] content) {
+        this.content = content;
     }
 
     @Override
@@ -79,7 +106,7 @@ public class ExportProgrammeFV {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        ExportProgrammeFV that = (ExportProgrammeFV) o;
+        ImportProgrammeFV that = (ImportProgrammeFV) o;
 
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
 

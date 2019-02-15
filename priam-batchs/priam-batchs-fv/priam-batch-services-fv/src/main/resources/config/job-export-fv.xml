@@ -17,6 +17,7 @@
             </tasklet>
         </step>
 
+
         <listeners merge="true">
             <listener ref="listenerCompletion"/>
         </listeners>
@@ -35,20 +36,13 @@
 
     <bean id="queryExportCsvReader" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
         <property name="databaseType" value="MySQL" />
-        <property name="selectClause" value="SELECT FV.cdeFamilTypUtil, FV.cdeTypUtil, PP.NUMPROG, FV.rionEffet, FV.ide12, FV.cdeTypIde12, PAD.IDE12REPCOAD, PAD.CDETYPIDE12REPCOAD, PAD.COAD,
-        PAD.NUMPERS, PAD.NUMCATAL, PAD.IDSTEAD, PAD.ROLAD, PAD.CLEAD, PAD.CDETYPPROTEC, PAD.COADORIEDTR, PAD.IDSTEORIEDTR, FV.tax, FV.durDif, FV.nbrDif,
-        FV.typMt, FV.mt, FV.genreOeuvre, FV.titreOeuvre, FV.dureeDeposee, FV.taxOri, FV.paysOri, FV.indicRepart, PP.NOM, PERS.NOM, PERS.PRENOM, PERS.INDICSACEM,
-        PERS.SOUS_ROLE, PERS.ANNEE_NAISSANCE, PERS.ANNEE_DECES, PERS.INDICDRTPERCUS "/>
-        <property name="fromClause" value="PRIAM_LIGNE_PROGRAMME_FV FV
-        INNER JOIN PRIAM_FICHIER PF on FV.ID_FICHIER = PF.ID
-        INNER JOIN PRIAM_PROGRAMME PP on PP.NUMPROG = PF.NUMPROG
-        INNER JOIN PRIAM_AYANT_DROIT PAD on FV.id = PAD.ID_FV
-        INNER JOIN PRIAM_AYANT_DROIT_PERS PERS on PAD.NUMPERS = PERS.NUMPERS"/>
-        <property name="whereClause" value="WHERE PP.NUMPROG ='#{jobParameters[numProg]}' AND FV.isOeuvreComplex = 0"/>
-
+        <property name="selectClause" value="SELECT f.*"/>
+        <property name="fromClause" value="FROM EXPORT_FV_VIEW f "/>
+        <property name="whereClause" value="WHERE f.numProg='#{jobParameters[numProg]}' "/>
         <property name="dataSource" ref="dataSource"/>
-        <property name="sortKey" value="PAD.COAD"/>
+        <property name="sortKey" value="f.COAD"/>
     </bean>
+
 
     <bean id="exportCsvMapper" class="fr.sacem.priam.batch.fv.export.mapper.ExportCsvMapper"/>
 

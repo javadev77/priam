@@ -4,7 +4,7 @@ import fr.sacem.priam.batch.fv.dao.SareftrFamilTypUtilDao;
 import fr.sacem.priam.batch.common.domain.LigneProgrammeFV;
 import fr.sacem.priam.batch.common.domain.SareftrTyputil;
 import fr.sacem.priam.batch.common.util.valdiator.importPenef.CommonValidator;
-import fr.sacem.priam.batch.fv.util.CategorieFondsEnum;
+import fr.sacem.priam.batch.common.fv.util.CategorieFondsEnum;
 import fr.sacem.priam.common.TypeUtilisationEnum;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
