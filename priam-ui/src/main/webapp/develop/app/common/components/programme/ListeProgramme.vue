@@ -224,6 +224,7 @@
     </modal>
 
     <import-programme v-if="showEcranModalImportProgramme"
+                       :programme="selectedProgramme"
                       @cancel="showEcranModalImportProgramme = false"
                       @validate="onValidateImport">
 
@@ -351,10 +352,13 @@
                   type: 'numeric-link',
                   cell: {
                     toText: function (entry) {
+                      var statutImportProgramme = entry.statutImportProgramme;
+                      let famille = entry.famille;
                       if (entry.statut === 'CREE' || entry.statut === 'ABANDONNE'
                         || entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
                         || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'
-                        || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION') {
+                        || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION'
+                        || (famille === FAMILLES_PRIAM['VALORISATION'] && (statutImportProgramme === null || statutImportProgramme !== 'CHARGEMENT_OK' ))) {
 
                         return {value: entry.numProg, isLink: false
                         }
@@ -553,13 +557,14 @@
                     cellTemplate: function (cellValue) {
                       var tempalteExport = '<span class="glyphicon glyphicon-import" aria-hidden="true" style="padding-left: 0px;" title="Importer un fichier"></span>';
                       var statusCode = cellValue.statut;
+                      var statutImportProgramme = cellValue.statutImportProgramme;
 
                       var template = [{}, {}];
 
                       if(cellValue.statutEligibilite === 'FIN_ELIGIBILITE' || cellValue.statutEligibilite === 'FIN_DESAFFECTATION' || cellValue.statutEligibilite === null) {
-                        if(statusCode !== undefined && 'EN_COURS' === statusCode) {
+                        if(statusCode !== undefined && 'EN_COURS' === statusCode && statutImportProgramme !== 'CHARGEMENT_OK' && statutImportProgramme !== 'EN_COURS') {
                           template[0] = {event : 'import-programme', template : tempalteExport};
-                          if(cellValue.statutImportProgramme === 'CHARGEMENT_KO') {
+                          if(statutImportProgramme === 'CHARGEMENT_KO') {
                             template[1] = {event : 'show-log-import', template : '<span class="glyphicon glyphicon-list-alt" aria-hidden="true" title="Log"></span>'};
                           }
                         }

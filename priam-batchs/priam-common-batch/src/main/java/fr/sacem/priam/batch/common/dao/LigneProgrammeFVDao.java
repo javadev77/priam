@@ -1,7 +1,12 @@
 package fr.sacem.priam.batch.common.dao;
 
 import fr.sacem.priam.batch.common.domain.LigneProgrammeFV;
+import fr.sacem.priam.batch.common.fv.util.OctavDTO;
 import fr.sacem.priam.batch.common.util.mapper.importPenef.PriamLigneProgrammeFVSQLMapper;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import javax.sql.DataSource;
 import org.slf4j.Logger;
@@ -9,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by embouazzar on 22/12/2018.
@@ -71,4 +77,20 @@ public class LigneProgrammeFVDao {
         return jdbcTemplate.queryForObject(sql, (resultSet, i) -> resultSet.getLong("NB_LIGNES"), idFichier);
     }
 
+
+    @Transactional
+    public void majOeuvreWithInfoOctav(final OctavDTO octavDTO) {
+        String sql =  "UPDATE PRIAM_LIGNE_PROGRAMME_FV SET datconslt = ?, datsitu = ? WHERE ide12 = ?";
+        DateTimeFormatter yyyyMMdd = DateTimeFormatter.ofPattern("yyyyMMdd");
+        jdbcTemplate.update(sql, stmt -> {
+            LocalDate localDate = LocalDate.parse(octavDTO.getDatConsult(), yyyyMMdd);
+            Date from = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+            stmt.setDate(1, new java.sql.Date(from.getTime()));
+
+            localDate = LocalDate.parse(octavDTO.getDatSitu(), yyyyMMdd);
+            from = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+            stmt.setDate(2, new java.sql.Date(from.getTime()));
+            stmt.setString(3, octavDTO.getIde12());
+        });
+    }
 }

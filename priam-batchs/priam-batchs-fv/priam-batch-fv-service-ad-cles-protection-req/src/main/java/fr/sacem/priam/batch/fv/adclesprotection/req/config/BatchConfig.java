@@ -1,6 +1,7 @@
 package fr.sacem.priam.batch.fv.adclesprotection.req.config;
 
 import com.google.common.collect.ImmutableMap;
+import fr.sacem.priam.batch.common.dao.LigneProgrammeFVDao;
 import fr.sacem.priam.batch.common.domain.LigneProgrammeFV;
 import fr.sacem.priam.batch.common.fv.config.CommonBatchConfig;
 import fr.sacem.priam.batch.common.fv.listener.FlagDemiInterfaceStepListener;
@@ -65,7 +66,7 @@ public class BatchConfig extends CommonBatchConfig {
 
     @Bean
     public Step stepPrepareAndGenerateREQ(CsvFileItemWriter<OctavDTO> databaseCsvItemWriter,
-        AdClesPersReqFVReader adClesPersReqFVReader) {
+        AdClesPersReqFVReader adClesPersReqFVReader, LigneProgrammeFVDao ligneProgrammeFVDao) {
         return stepBuilderFactory.get("stepPrepareAndGenerateREQ").<LigneProgrammeFV, OctavDTO>chunk(100)
                 .reader(adClesPersReqFVReader)
                 .processor(ligneProgrammeFV -> {
@@ -82,6 +83,8 @@ public class BatchConfig extends CommonBatchConfig {
                     String dateJour = new SimpleDateFormat("yyyyMMdd").format(new Date());
                     octavDTO.setDatConsult(dateJour);
                     octavDTO.setDatSitu(dateJour);
+
+                    ligneProgrammeFVDao.majOeuvreWithInfoOctav(octavDTO);
 
                     return octavDTO;
                 })

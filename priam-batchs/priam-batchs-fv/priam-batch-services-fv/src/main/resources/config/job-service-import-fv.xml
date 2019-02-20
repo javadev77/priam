@@ -5,7 +5,7 @@
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 
-    <!-- job de desaffectation -->
+    <!-- job de service import Programme -->
 
     <job id="jobServiceImport" xmlns="http://www.springframework.org/schema/batch">
 
@@ -25,6 +25,12 @@
             </tasklet>
         </step>
 
+   <!--     <step id="insertData">
+
+
+
+        </step>-->
+
         <listeners merge="true">
             <listener ref="listenerCompletionImport"/>
         </listeners>
@@ -41,7 +47,7 @@
                     <bean class="org.springframework.batch.item.file.transform.DelimitedLineTokenizer">
                         <property name="names"
                             value="cdeFamilTypUtil,cdeTypUtil,numProg,rionEffet,ide12,cdeTypIde12,ide12RepCoad,cdeTypIde12RepCoad,datsitu,datconslt,
-                                    coad,numPers,numCatal,idSteAd,rolAd,typeDroit,cleAd,cdeTypProtect,coadOriEdtr,idSteOriEdtr,
+                                    coad,numPers,numCatal,idSteAd,rolAd,typeDroit,cleAd,cdeTypProtect,coadOriEdtr,idSteOriEdtr,points,
                                     nomProgramme,tax,durDif,nbrDif,typMt,mt,genreOeuvre,titreOeuvre,dureeDeposee,taxOri,
                                     labelValo,paysOri,indicRepart,nom,prenom,indicSacem,sousRole,anneeNaissance,anneeDeces,indicDrtPercus"/>
 
@@ -75,32 +81,57 @@
         <property name="sql">
             <value>
                 <![CDATA[
-                    INSERT INTO PRIAM_LIGNE_PROGRAMME_TRAITEMENT_BATCH (
-                            id_fichier,
-                            cdeFamilTypUtil,
-                            numProg,
-                            cdeTypUtil,
-                            cdeTypIde12,
-                            ide12,
-                            durDif,
-                            nbrDif,
-                            mt,
-                            tax,
-                            typMt
+                    INSERT INTO PRIAM_IMPORT_PROGRAMME_FV_DATA_BATCH (
+                            ID_FICHIER,
+                            cdeFamilTypUtil,cdeTypUtil,numProg,rionEffet,ide12,cdeTypIde12,ide12RepCoad,cdeTypIde12RepCoad,datsitu,datconslt,
+                            coad,numPers,numCatal,idSteAd,rolAd,typeDroit,cleAd,cdeTypProtect,coadOriEdtr,idSteOriEdtr,points,
+                            nomProgramme,tax,durDif,nbrDif,typMt,mt,genreOeuvre,titreOeuvre,dureeDeposee,taxOri,
+                            labelValo,paysOri,indicRepart,nom,prenom,indicSacem,sousRole,anneeNaissance,anneeDeces,indicDrtPercus
 
                         )
                         VALUES (
                             :idFichier,
                             :cdeFamilTypUtil,
-                            :numProg,
                             :cdeTypUtil,
-                            :cdeTypIde12,
+                            :numProg,
+                            :rionEffet,
                             :ide12,
+                            :cdeTypIde12,
+                            :ide12RepCoad,
+                            :cdeTypIde12RepCoad,
+                            :datsitu,
+                            :datconslt,
+                            :coad,
+                            :numPers,
+                            :numCatal,
+                            :idSteAd,
+                            :rolAd,
+                            :typeDroit,
+                            :cleAd,
+                            :cdeTypProtect,
+                            :coadOriEdtr,
+                            :idSteOriEdtr,
+                            :points,
+                            :nomProgramme,
+                            :tax,
                             :durDif,
                             :nbrDif,
+                            :typMt,
                             :mt,
-                            :tax,
-                            :typMt
+                            :genreOeuvre,
+                            :titreOeuvre,
+                            :dureeDeposee,
+                            :taxOri,
+                            :labelValo,
+                            :paysOri,
+                            :indicRepart,
+                            :nom,
+                            :prenom,
+                            :indicSacem,
+                            :sousRole,
+                            :anneeNaissance,
+                            :anneeDeces,
+                            :indicDrtPercus
                         )
                 ]]>
             </value>

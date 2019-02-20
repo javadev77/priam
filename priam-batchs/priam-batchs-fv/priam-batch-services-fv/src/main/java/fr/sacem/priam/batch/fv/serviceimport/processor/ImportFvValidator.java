@@ -52,23 +52,29 @@ public class ImportFvValidator extends CommonValidator implements Validator  {
             //Oeuvre Ctnu
             rejectIfEmptyOrWhitespace(errors, "ide12RepCoad", "error.ide12RepCoad");
             rejectIfEmptyOrWhitespace(errors, "cdeTypIde12RepCoad", "error.cdeTypIde12RepCoad");
-            rejectIfEmptyOrWhitespace(errors, "datsitu", "error.datsitu");
-            rejectIfEmptyOrWhitespace(errors, "datconslt", "error.datconslt");
 
             //Ayant Droit
-            rejectIfEmptyOrWhitespace(errors, "coad", "error.coad");
-            rejectIfEmptyOrWhitespace(errors, "numPers", "error.numPers");
-            rejectIfEmptyOrWhitespace(errors, "numCatal", "error.numCatal");
-            rejectIfEmptyOrWhitespace(errors, "idSteAd", "error.idSteAd");
-            rejectIfEmptyOrWhitespace(errors, "rolAd", "error.rolAd");
-            rejectIfEmptyOrWhitespace(errors, "typeDroit", "error.typeDroit");
             rejectIfEmptyOrWhitespace(errors, "cleAd", "error.cleAd");
             rejectIfEmptyOrWhitespace(errors, "cdeTypProtect", "error.cdeTypProtect");
-            rejectIfEmptyOrWhitespace(errors, "coadOriEdtr", "error.coadOriEdtr");
-            rejectIfEmptyOrWhitespace(errors, "idSteOriEdtr", "error.idSteOriEdtr");
-            rejectIfEmptyOrWhitespace(errors, "points", "error.points");
+
 
         }
+
+        rejectIfEmptyOrWhitespace(errors, "datsitu", "error.datsitu");
+        rejectIfEmptyOrWhitespace(errors, "datconslt", "error.datconslt");
+
+        //Ayant Droit
+        rejectIfEmptyOrWhitespace(errors, "coad", "error.coad");
+        rejectIfEmptyOrWhitespace(errors, "numPers", "error.numPers");
+        rejectIfEmptyOrWhitespace(errors, "numCatal", "error.numCatal");
+        rejectIfEmptyOrWhitespace(errors, "idSteAd", "error.idSteAd");
+        rejectIfEmptyOrWhitespace(errors, "rolAd", "error.rolAd");
+        rejectIfEmptyOrWhitespace(errors, "typeDroit", "error.typeDroit");
+        rejectIfEmptyOrWhitespace(errors, "coadOriEdtr", "error.coadOriEdtr");
+        rejectIfEmptyOrWhitespace(errors, "idSteOriEdtr", "error.idSteOriEdtr");
+        rejectIfEmptyOrWhitespace(errors, "points", "error.points");
+
+
 
 
 

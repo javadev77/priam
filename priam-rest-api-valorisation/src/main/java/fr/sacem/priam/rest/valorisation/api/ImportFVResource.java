@@ -67,6 +67,10 @@ public class ImportFVResource {
 
         // Do processing with uploaded file data in Service layer
 
+        // delete the previous file
+        importProgrammeFVDao.deleteLogsByNumProg(numProg);
+        importProgrammeFVDao.deleteByNumProg(numProg);
+
         ImportProgrammeFV importProgrammeFV = new ImportProgrammeFV();
 
         importProgrammeFV.setDateCreation(new Date());

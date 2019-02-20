@@ -62,6 +62,8 @@ public class ImportFvItemProcessor implements ItemProcessor<ExportCsvDto, Export
         validator.validate(exportCsvDto, errors);
 
         if (!errors.hasErrors()) {
+
+            jobExecution.getExecutionContext().put("IsError", "false");
             //Step 2 : Stocker les donnes
             String numProg = jobExecution.getJobParameters().getString("numProg");
             Fichier fichierLink = fichierService.getOrCreateFichierLink(numProg);
