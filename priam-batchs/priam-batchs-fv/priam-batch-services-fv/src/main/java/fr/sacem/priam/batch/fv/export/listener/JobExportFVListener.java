@@ -1,6 +1,7 @@
 package fr.sacem.priam.batch.fv.export.listener;
 
 import fr.sacem.priam.model.dao.jpa.fv.ExportProgrammeFVDao;
+import fr.sacem.priam.model.dao.jpa.fv.ImportProgrammeFVDao;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.StepExecution;
@@ -24,6 +25,9 @@ public class JobExportFVListener extends JobExecutionListenerSupport {
     @Autowired
     ExportProgrammeFVDao exportProgrammeFVDao;
 
+    @Autowired
+    ImportProgrammeFVDao importProgrammeFVDao;
+
     @Override
     public void beforeJob(JobExecution jobExecution) {
         Collection<StepExecution> stepExecutions = jobExecution.getStepExecutions();
@@ -46,6 +50,11 @@ public class JobExportFVListener extends JobExecutionListenerSupport {
                     if (path != null) {
                         //exportProgrammeFVDao.insertStatutExportProgramme(numProg, path, EXPORT_GENERE);
                         exportProgrammeFVDao.updateStatutExportProgramme(numProg, path, EXPORT_GENERE);
+
+                        // delete the previous file
+                        importProgrammeFVDao.deleteLogsByNumProg(numProg);
+                        importProgrammeFVDao.deleteByNumProg(numProg);
+
                     }
                 }
             }
