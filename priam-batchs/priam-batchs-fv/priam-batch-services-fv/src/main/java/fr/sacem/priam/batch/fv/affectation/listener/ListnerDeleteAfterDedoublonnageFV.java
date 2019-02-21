@@ -1,5 +1,6 @@
 package fr.sacem.priam.batch.fv.affectation.listener;
 
+import fr.sacem.priam.batch.common.dao.AyantDroitDao;
 import fr.sacem.priam.batch.common.dao.LigneProgrammeBatchDao;
 import fr.sacem.priam.model.domain.Fichier;
 import fr.sacem.priam.services.FichierService;
@@ -22,6 +23,9 @@ public class ListnerDeleteAfterDedoublonnageFV extends StepExecutionListenerSupp
     @Autowired
     FichierService fichierService;
 
+    @Autowired
+    AyantDroitDao ayantDroitDao;
+
 
     @Override
     public void beforeStep(StepExecution stepExecution) {
@@ -31,6 +35,9 @@ public class ListnerDeleteAfterDedoublonnageFV extends StepExecutionListenerSupp
         List<Fichier> listFichiersByIds = fichierService.findListFichiersByIds(fichiersAffectesIds);
         String userId = stepExecution.getJobParameters().getString("userId");
         fichierService.majFichiersAffectesAuProgramme(numProg, listFichiersByIds, userId);
+
+
+        ayantDroitDao.deleteDedoublonnageTableAD(numProg);
     }
 
     @Override

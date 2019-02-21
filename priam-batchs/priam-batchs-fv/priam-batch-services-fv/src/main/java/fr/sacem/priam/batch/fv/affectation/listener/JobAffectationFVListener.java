@@ -3,6 +3,8 @@ package fr.sacem.priam.batch.fv.affectation.listener;
 import fr.sacem.priam.batch.common.dao.ProgrammeBatchDao;
 import fr.sacem.priam.batch.common.service.importPenef.FichierBatchService;
 import fr.sacem.priam.batch.common.util.UtilFile;
+import fr.sacem.priam.model.domain.Fichier;
+import fr.sacem.priam.services.FichierService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.BatchStatus;
@@ -13,6 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 public class JobAffectationFVListener extends JobExecutionListenerSupport {
@@ -29,6 +34,8 @@ public class JobAffectationFVListener extends JobExecutionListenerSupport {
     @Autowired
     ProgrammeBatchDao programmeBatchDao;
 
+    @Autowired
+    FichierService fichierService;
 
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
@@ -40,11 +47,13 @@ public class JobAffectationFVListener extends JobExecutionListenerSupport {
 
     @Override
     public void beforeJob(JobExecution jobExecution) {
+
         String numProg = jobExecution.getJobParameters().getString("numProg");
-        /*String[] fichiersAffectes = jobExecution.getJobParameters().getString("fichiersAffectes").split(",");
+        String[] fichiersAffectes = jobExecution.getJobParameters().getString("fichiersAffectes").split(",");
         List<Long> fichiersAffectesIds = Stream.of(fichiersAffectes).map(Long::parseLong).collect(Collectors.toList());
         List<Fichier> listFichiersByIds = fichierService.findListFichiersByIds(fichiersAffectesIds);
-        fichierService.majFichiersAffectesAuProgramme(numProg, listFichiersByIds, "GUEST");*/
+        String userId = jobExecution.getJobParameters().getString("userId");
+        fichierService.majFichiersAffectesAuProgramme(numProg, listFichiersByIds, userId);
     }
 
     @Override

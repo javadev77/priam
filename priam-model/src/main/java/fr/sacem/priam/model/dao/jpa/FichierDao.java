@@ -4,6 +4,7 @@ package fr.sacem.priam.model.dao.jpa;
 import fr.sacem.priam.model.domain.Fichier;
 import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.dto.FileDto;
+import fr.sacem.priam.model.domain.saref.StatutEnrichissementFV;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -52,7 +53,7 @@ public interface FichierDao extends JpaRepository<Fichier, Long> {
     FileDto findById(@Param("id") Long fileId);
     
     @Transactional(readOnly = true)
-    @Query("SELECT DISTINCT new fr.sacem.priam.model.domain.dto.FileDto(f.id, f.nomFichier, fam.code, typu.code, f.dateDebutChargt, f.dateFinChargt, f.nbLignes, f.statut) " +
+    @Query("SELECT DISTINCT new fr.sacem.priam.model.domain.dto.FileDto(f.id, f.nomFichier, fam.code, typu.code, f.dateDebutChargt, f.dateFinChargt, f.nbLignes, f.statut, f.statutEnrichissementFV) " +
         "FROM Fichier AS f JOIN f.famille AS fam JOIN f.typeUtilisation AS typu " +
         "WHERE f.statut IN (:status) " +
         "AND (fam.code IN (:familleCode)) " +
@@ -62,6 +63,7 @@ public interface FichierDao extends JpaRepository<Fichier, Long> {
         "ORDER BY f.dateFinChargt DESC ")
     List<FileDto> findFichiersAffectes(@Param("familleCode") List<String> familleCode, @Param("typeUtilisationCode") List<String> typeUtilisationCode,
                                        @Param("status") List<Status> status, @Param("numProg") String numProg);
+
     @Transactional(readOnly =true)
     @Query("SELECT f " +
             "FROM Fichier AS f " +
@@ -78,6 +80,10 @@ public interface FichierDao extends JpaRepository<Fichier, Long> {
     
 
     @Modifying(clearAutomatically = true)
+    @Query("UPDATE Fichier f SET f.programme.numProg = NULL, f.statutEnrichissementFV = NULL WHERE f.programme.numProg = :numProg")
+    void updateStatutEnrichissementFichiersAffectes(@Param("numProg") String numProg);
+
+    @Modifying(clearAutomatically = true)
     @Query("UPDATE Fichier f SET f.programme.numProg = NULL, f.statut =:status WHERE f.programme.numProg = :numProg")
     void clearSelectedFichiers(@Param("numProg") String numProg,@Param("status") Status status);
 
@@ -85,7 +91,7 @@ public interface FichierDao extends JpaRepository<Fichier, Long> {
     @Modifying(clearAutomatically = true)
     @Query("UPDATE Fichier f SET f.programme.numProg = :numProg, f.statut =:status  WHERE f.id IN (:idFichiers) ")
     void updateStatusFichiersAffectes(@Param("numProg") String numProg,@Param("status") Status status,@Param("idFichiers") List<Long> idFichiers);
-    
+
     Fichier findByNomFichier(String s);
 
     @Transactional(readOnly =true)

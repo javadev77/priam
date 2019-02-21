@@ -2,6 +2,7 @@ package fr.sacem.priam.model.domain;
 
 import fr.sacem.priam.model.domain.saref.SareftrFamiltyputil;
 import fr.sacem.priam.model.domain.saref.SareftrTyputil;
+import fr.sacem.priam.model.domain.saref.StatutEnrichissementFV;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -44,6 +45,10 @@ public class Fichier implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name="STATUT_CODE", nullable = true)
     private Status statut;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name="STATUT_ENRICHISSEEMNT", nullable = true)
+    private StatutEnrichissementFV statutEnrichissementFV;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "NUMPROG")
@@ -119,7 +124,15 @@ public class Fichier implements Serializable {
     public void setStatut(Status statut) {
         this.statut = statut;
     }
-    
+
+    public StatutEnrichissementFV getStatutEnrichissementFV() {
+        return statutEnrichissementFV;
+    }
+
+    public void setStatutEnrichissementFV(StatutEnrichissementFV statutEnrichissementFV) {
+        this.statutEnrichissementFV = statutEnrichissementFV;
+    }
+
     public Programme getProgramme() {
         return programme;
     }

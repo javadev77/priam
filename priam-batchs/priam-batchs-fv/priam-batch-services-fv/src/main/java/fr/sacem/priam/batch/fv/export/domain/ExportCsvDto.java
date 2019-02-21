@@ -43,7 +43,7 @@ public class ExportCsvDto implements Serializable {
 //    particpant
     private String nom;
     private String prenom;
-    private Boolean indicSacem;
+    private Integer indicSacem;
     private String sousRole;
     private Integer anneeNaissance;
     private Integer anneeDeces;
@@ -189,11 +189,11 @@ public class ExportCsvDto implements Serializable {
         this.anneeDeces = anneeDeces;
     }
 
-    public Boolean getIndicSacem() {
+    public Integer getIndicSacem() {
         return indicSacem;
     }
 
-    public void setIndicSacem(Boolean indicSacem) {
+    public void setIndicSacem(Integer indicSacem) {
         this.indicSacem = indicSacem;
     }
 

@@ -2,6 +2,7 @@ package fr.sacem.priam.model.domain.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import fr.sacem.priam.model.domain.Status;
+import fr.sacem.priam.model.domain.saref.StatutEnrichissementFV;
 import fr.sacem.priam.model.util.CustomDateSerializer;
 
 import java.util.Date;
@@ -24,6 +25,7 @@ public class FileDto {
 	
 	private Long nbLignes;
 	private Status statut;
+	private StatutEnrichissementFV statutEnrichissementFV;
 	
 	public FileDto() {
 	}
@@ -37,6 +39,18 @@ public class FileDto {
 		this.dateFinChargt = dateFinChgt;
 		this.nbLignes = nbLignes;
 		this.statut = statut;
+	}
+
+	public FileDto(Long id, String nomFichier, String famille, String typeUtilisation, Date dateDebutChgt, Date dateFinChgt, Long nbLignes, Status statut, StatutEnrichissementFV statutEnrichissementFV) {
+		this.id = id;
+		this.nomFichier = nomFichier;
+		this.famille = famille;
+		this.typeUtilisation = typeUtilisation;
+		this.dateDebutChargt = dateDebutChgt;
+		this.dateFinChargt = dateFinChgt;
+		this.nbLignes = nbLignes;
+		this.statut = statut;
+		this.statutEnrichissementFV = statutEnrichissementFV;
 	}
 
 	public FileDto(Long id, String nomFichier, Date dateDebutChargt, Date dateFinChargt, Long nbLignes, Status statut) {
@@ -84,7 +98,15 @@ public class FileDto {
 	public void setStatut(Status statut) {
 		this.statut = statut;
 	}
-	
+
+	public StatutEnrichissementFV getStatutEnrichissementFV() {
+		return statutEnrichissementFV;
+	}
+
+	public void setStatutEnrichissementFV(StatutEnrichissementFV statutEnrichissementFV) {
+		this.statutEnrichissementFV = statutEnrichissementFV;
+	}
+
 	public String getNomFichier() {
 		
 		return nomFichier;

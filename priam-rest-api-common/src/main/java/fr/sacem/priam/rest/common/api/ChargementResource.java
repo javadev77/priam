@@ -1,27 +1,29 @@
 package fr.sacem.priam.rest.common.api;
 
 import com.google.common.collect.Lists;
+import fr.sacem.priam.common.TypeUtilisationEnum;
 import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.dto.FileDto;
+import fr.sacem.priam.model.domain.saref.StatutEnrichissementFV;
 import fr.sacem.priam.rest.common.api.dto.AffectationCriteria;
 import fr.sacem.priam.rest.common.api.dto.InputChgtCriteria;
 import fr.sacem.priam.security.model.UserDTO;
 import fr.sacem.priam.services.FichierService;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import org.apache.commons.collections.ListUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by benmerzoukah on 27/04/2017.
@@ -72,8 +74,26 @@ public class ChargementResource {
         List<String> codeTypeUtil = typeUtilisationCriterion(input, currentUser);
         String numProg = input.getNumProg();
 
-        return fichierDao.findFichiersAffectes(codeFamille, codeTypeUtil, status, numProg);
+        List<FileDto> fichiersAffectes = fichierDao.findFichiersAffectes(codeFamille, codeTypeUtil, status, numProg)
+                    .stream()
+                    .filter(f ->
+                                    ("FDSVAL".equals(f.getFamille())
+                            && StatutEnrichissementFV.DONE_SRV_AD_INFO == f.getStatutEnrichissementFV()
+                            && (!TypeUtilisationEnum.FV_FONDS_06.getCode().equals(f.getTypeUtilisation())
+                                ||!TypeUtilisationEnum.FV_FONDS_12.getCode().equals(f.getTypeUtilisation())))
+                            ||
+                                    ("FDSVAL".equals(f.getFamille())
+                            && f.getStatutEnrichissementFV() == null
+                            && (TypeUtilisationEnum.FV_FONDS_06.getCode().equals(f.getTypeUtilisation())
+                            ||TypeUtilisationEnum.FV_FONDS_12.getCode().equals(f.getTypeUtilisation())))
 
+                            ||
+                                    (!"FDSVAL".equals(f.getFamille())
+                            && f.getStatutEnrichissementFV() == null))
+                            .collect(Collectors.toList());
+
+
+        return fichiersAffectes;
     }
 
 

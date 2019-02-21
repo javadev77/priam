@@ -1,4 +1,4 @@
-package fr.sacem.priam.batch.fv.ad.info.req.domain;
+package fr.sacem.priam.batch.common.domain;
 
 import fr.sacem.priam.batch.common.util.exception.PriamValidationException;
 
@@ -17,6 +17,7 @@ public class AyantDroit implements Serializable {
     private Long coad;
     private Long numPers;
     private Long numCatal;
+    private Long idFv;
     private Integer lineNumber;
 
     public AyantDroit() {
@@ -119,6 +120,14 @@ public class AyantDroit implements Serializable {
 
     public void setCoad(Long coad) {
         this.coad = coad;
+    }
+
+    public Long getIdFv() {
+        return idFv;
+    }
+
+    public void setIdFv(Long idFv) {
+        this.idFv = idFv;
     }
 
     public Integer getLineNumber() {

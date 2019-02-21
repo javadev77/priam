@@ -731,6 +731,7 @@
       },
 
       affecterFichiersAuProgramme(){
+        debugger;
         let numProg = this.programmeInfo.numProg;
         this.fichiersToProgramme.numProg = numProg;
         this.fichiersToProgramme.fichiers=[];
