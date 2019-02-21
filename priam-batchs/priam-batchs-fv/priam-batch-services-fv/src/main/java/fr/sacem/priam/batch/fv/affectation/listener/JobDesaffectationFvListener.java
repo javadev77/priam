@@ -66,6 +66,7 @@ public class JobDesaffectationFvListener extends JobExecutionListenerSupport {
 
           //  fichierRepository.deleteFichierLinkForAntille(numProg);
             fichierBatchService.clearSelectedFichiers(numProg, "CHARGEMENT_OK");
+            fichierDao.updateStatutEnrichissementFichiersAffectes(numProg);
             String user = jobExecution.getJobParameters().getString("username");
             if(!isAllDesaffecte && isFichiersAffectesVide) {
                 programmeBatchDao.updateProgramme(numProg, user);

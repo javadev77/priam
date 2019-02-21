@@ -4,7 +4,7 @@ import fr.sacem.priam.batch.common.fv.config.CommonBatchConfig;
 import fr.sacem.priam.batch.common.fv.listener.FlagDemiInterfaceStepListener;
 import fr.sacem.priam.batch.common.fv.writer.CsvFileItemWriter;
 import fr.sacem.priam.batch.fv.ad.info.req.listener.JobListener;
-import fr.sacem.priam.batch.fv.ad.info.req.domain.AyantDroit;
+import fr.sacem.priam.batch.common.domain.AyantDroit;
 import fr.sacem.priam.batch.fv.ad.info.req.reader.TableAyantDroitReader;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;

@@ -6,16 +6,19 @@
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <import  resource="job-desaffectation-fv.xml"/>
-    <import resource="job-export-fv.xml"/>
+    <import resource="job-service-export-fv.xml"/>
     <import resource="job-service-import-fv.xml"/>
+    <import resource="job-affectation-fv-ad.xml"/>
 
     <job id="jobAffectationFv" xmlns="http://www.springframework.org/schema/batch">
+
 
         <step id="desaffecterFvStep" next="aggregationFvOeuvre">
 
             <job ref="jobDesaffectationFV" job-launcher="jobLauncher2"/>
 
         </step>
+
         <step id="aggregationFvOeuvre">
             <tasklet>
                 <chunk
@@ -100,7 +103,7 @@
         <property name="fromClause" value="FROM PRIAM_LIGNE_PROGRAMME_FV l
                                             INNER JOIN PRIAM_FICHIER f ON l.ID_FICHIER=f.ID
                                             INNER JOIN PRIAM_PROGRAMME p ON p.NUMPROG=f.NUMPROG"/>
-        <property name="whereClause" value="WHERE p.NUMPROG='#{jobParameters[numProg]}'
+        <property name="whereClause" value="WHERE p.NUMPROG='#{jobParameters[numProg]}' AND p.STATUT_ELIGIBILITE = 'EN_ATTENTE_ELIGIBILITE'
                                               GROUP BY l.ide12
                                                "/>
 
@@ -168,7 +171,6 @@
 
     <bean id="jobLauncher2" class="org.springframework.batch.core.launch.support.SimpleJobLauncher"
         p:jobRepository-ref="jobRepository" />
-
 
    <bean id="taskExecutor"
         class="org.springframework.core.task.SimpleAsyncTaskExecutor" >

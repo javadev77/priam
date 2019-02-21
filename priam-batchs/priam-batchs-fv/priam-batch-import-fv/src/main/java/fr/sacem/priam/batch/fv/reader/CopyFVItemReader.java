@@ -26,9 +26,47 @@ public class CopyFVItemReader extends JdbcPagingItemReader<LigneProgrammeFV> {
 
         final SqlPagingQueryProviderFactoryBean sqlPagingQueryProviderFactoryBean = new SqlPagingQueryProviderFactoryBean();
         sqlPagingQueryProviderFactoryBean.setDataSource(dataSource);
-        sqlPagingQueryProviderFactoryBean.setSelectClause("SELECT *");
+        sqlPagingQueryProviderFactoryBean.setSelectClause("SELECT id, id_fichier," +
+                "                cdeCisac," +
+                "                cdeFamilTypUtil," +
+                "                numProg," +
+                "                cdeUtil," +
+                "                cdeTypUtil," +
+                "                cdeGreDif," +
+                "                cdeModDif," +
+                "                cdeTypIde12," +
+                "                ide12," +
+                "                sum(durDif) durDif," +
+                "                sum(nbrDif) nbrDif," +
+                "                sum(mt) mt," +
+                "                ctna," +
+                "                paramCoefHor," +
+                "                durDifCtna," +
+                "                cdeLng," +
+                "                indDoubSsTit," +
+                "                tax," +
+                "                typMt," +
+                "                cdeGreIde12Cmplx," +
+                "                cdeGreIde12," +
+                "                titreOriCmplx," +
+                "                titreAltPppalCmplx," +
+                "                titreOriOeuvPereCmplx," +
+                "                titreAltOeuvPereCmplx," +
+                "                titreOeuvre," +
+                "                cdePaysOriIso4NCmplx," +
+                "                realisateurCmplx," +
+                "                roleParticipant1," +
+                "                nomParticipant1," +
+                "                cdeTypUtilOri," +
+                "                cdeFamilTypUtilOri," +
+                "                libelleUtilisateur," +
+                "                utilisateur," +
+                "                date_insertion," +
+                "                selection," +
+                "                ajout");
         sqlPagingQueryProviderFactoryBean.setFromClause("FROM PRIAM_LIGNE_PROGRAMME_TRAITEMENT_BATCH");
         sqlPagingQueryProviderFactoryBean.setWhereClause("WHERE ID_FICHIER = " + idFichier);
+        sqlPagingQueryProviderFactoryBean.setGroupClause("GROUP BY ide12");
         sqlPagingQueryProviderFactoryBean.setSortKey("id");
 
         try {

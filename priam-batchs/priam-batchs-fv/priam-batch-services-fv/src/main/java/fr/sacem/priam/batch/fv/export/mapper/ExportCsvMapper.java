@@ -52,7 +52,7 @@ public class ExportCsvMapper implements RowMapper<ExportCsvDto> {
         exportCsvDto.setNomProgramme(resultSet.getString("NOM_PRG"));
         exportCsvDto.setNom(resultSet.getString("NOM"));
         exportCsvDto.setPrenom(resultSet.getString("PRENOM"));
-        exportCsvDto.setIndicSacem(resultSet.getInt("INDICSACEM") != 0 );
+        exportCsvDto.setIndicSacem(resultSet.getInt("INDICSACEM"));
         exportCsvDto.setSousRole(resultSet.getString("SOUS_ROLE"));
         exportCsvDto.setAnneeNaissance(resultSet.getInt("ANNEE_NAISSANCE"));
         exportCsvDto.setAnneeDeces(resultSet.getInt("ANNEE_DECES"));

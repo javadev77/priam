@@ -1,7 +1,7 @@
 package fr.sacem.priam.batch.fv.ad.info.req.reader;
 
-import fr.sacem.priam.batch.fv.ad.info.req.mapper.AyantDroitMapper;
-import fr.sacem.priam.batch.fv.ad.info.req.domain.AyantDroit;
+import fr.sacem.priam.batch.common.fv.mapper.AyantDroitMapper;
+import fr.sacem.priam.batch.common.domain.AyantDroit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -28,6 +28,7 @@ public class TableAyantDroitReader extends JdbcPagingItemReader<AyantDroit> {
                 "INNER JOIN PRIAM_LIGNE_PROGRAMME_FV l ON AD.ID_FV = l.ID " +
                 "INNER JOIN PRIAM_FICHIER f ON l.ID_FICHIER=f.ID ");
         sqlPagingQueryProviderFactoryBean.setWhereClause("WHERE f.ID = " + idFichier);
+        sqlPagingQueryProviderFactoryBean.setGroupClause("GROUP BY AD.NUMPERS");
         sqlPagingQueryProviderFactoryBean.setSortKey("AD.ID");
 
         try {

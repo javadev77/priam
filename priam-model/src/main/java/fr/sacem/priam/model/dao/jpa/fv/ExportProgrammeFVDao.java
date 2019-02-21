@@ -24,4 +24,9 @@ public interface ExportProgrammeFVDao extends JpaRepository<ExportProgrammeFV, L
     @Query(nativeQuery = true, value="UPDATE PRIAM_EXPORT_PROGRAMME_FV SET FILENAME=?2, STATUT=?3, DATE_CREATION=NOW() WHERE NUMPROG =?1")
     void updateStatutExportProgramme(@Param("numProg") String numProg, @Param("fileName") String fileName, @Param("statut") String statut);
 
+    @Transactional
+    @Modifying
+    @Query(nativeQuery = true, value="DELETE FROM PRIAM_EXPORT_PROGRAMME_FV WHERE NUMPROG =?1")
+    void deleteByNumProg(@Param("numProg") String numProg);
+
 }

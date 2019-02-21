@@ -2,7 +2,7 @@ package fr.sacem.priam.batch.fv.ad.info.req.writer;
 
 import fr.sacem.priam.batch.common.dao.LigneProgrammeFVDao;
 import fr.sacem.priam.batch.common.fv.writer.AbstractConfig;
-import fr.sacem.priam.batch.fv.ad.info.req.domain.AyantDroit;
+import fr.sacem.priam.batch.common.domain.AyantDroit;
 import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor;
 import org.springframework.batch.item.file.transform.FieldExtractor;
 import org.springframework.beans.factory.annotation.Autowired;

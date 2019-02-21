@@ -4,10 +4,7 @@ import com.google.common.base.Strings;
 import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
-import fr.sacem.priam.model.domain.Fichier;
-import fr.sacem.priam.model.domain.Programme;
-import fr.sacem.priam.model.domain.Status;
-import fr.sacem.priam.model.domain.StatutEligibilite;
+import fr.sacem.priam.model.domain.*;
 import fr.sacem.priam.model.domain.dto.AffectationDto;
 import fr.sacem.priam.model.domain.dto.DesaffectationDto;
 import fr.sacem.priam.model.domain.dto.FileDto;
@@ -46,6 +43,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class AffectationFVResource extends AffectationResource {
     private static Logger LOGGER = LoggerFactory.getLogger(AffectationFVResource.class);
 
+    private static final String TYPE_REPART_OEUVRE = "OEUVRE";
+
     @Autowired
     private ProgrammeViewDao programmeViewDao;
 
@@ -66,6 +65,9 @@ public class AffectationFVResource extends AffectationResource {
 
     @Autowired
     Job jobAffectationFv;
+
+    @Autowired
+    Job jobAffectationFvAyantDroit;
 
     @Autowired
     Job jobDesaffectationFV;
@@ -93,10 +95,15 @@ public class AffectationFVResource extends AffectationResource {
             programmeDao.save(programme);
             transactionManager.commit(ts);
 
+
             if(fichiers == null || fichiers.isEmpty()) {
 
                 launchJobDesaffectation(numProg, currentUser.getDisplayName(),
                     false, currentUser.getUserId(), "", true);
+
+                if(!isTypeRepartOeuvre(numProg)){
+                    fichierDao.updateStatutEnrichissementFichiersAffectes(numProg);
+                }
                 return programmeDto;
             }
 
@@ -136,7 +143,13 @@ public class AffectationFVResource extends AffectationResource {
 
             JobParameters jobParameters = new JobParameters(jobParametersMap);
 
-            jobLauncher.run(jobAffectationFv, jobParameters);
+
+            if(isTypeRepartOeuvre(numProg)){
+                jobLauncher.run(jobAffectationFv, jobParameters);
+            } else {
+                jobLauncher.run(jobAffectationFvAyantDroit, jobParameters);
+            }
+
 
 
         } catch (Exception e) {
@@ -144,6 +157,12 @@ public class AffectationFVResource extends AffectationResource {
         }
 
         LOGGER.info("====== Fin de Traitement ======");
+    }
+
+
+    private boolean isTypeRepartOeuvre(String numProg) {
+        ProgrammeDto programmeDto = programmeViewDao.findByNumProg(numProg);
+        return TYPE_REPART_OEUVRE.equals(programmeDto.getTypeRepart().name());
     }
 
 

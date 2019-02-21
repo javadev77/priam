@@ -134,8 +134,8 @@ public class ExportFVResource {
         programme.setStatut(StatutProgramme.EN_COURS);
         programmeDao.save(programme);
         transactionManager.commit(ts);
+        exportProgrammeFVJpaDao.deleteByNumProg(numProg);
         programmeDto = programmeViewDao.findByNumProg(numProg);
-
         return programmeDto;
     }
 

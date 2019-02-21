@@ -212,12 +212,13 @@ public class LigneProgrammeBatchDao {
             "WHERE p.NUMPROG=? AND p.STATUT_ELIGIBILITE = 'EN_ATTENTE_ELIGIBILITE' "+
             "AND l2.id not IN (SELECT temp.id3 "+
             "from ( "+
-            "select min(l.id) as id3 "+
+            "select distinct l.id as id3 "+
             "from PRIAM_LIGNE_PROGRAMME_FV l "+
             "INNER JOIN PRIAM_FICHIER f ON l.ID_FICHIER=f.ID "+
-            "INNER JOIN PRIAM_PROGRAMME p ON p.NUMPROG=f.NUMPROG "+
+            "INNER JOIN PRIAM_PROGRAMME p ON p.NUMPROG=f.NUMPROG " +
+            "INNER JOIN PRIAM_AYANT_DROIT ad on l.id = ad.ID_FV "+
             "WHERE p.NUMPROG=? AND p.STATUT_ELIGIBILITE = 'EN_ATTENTE_ELIGIBILITE' "+
-            "group by l.ide12) as  temp) ";
+            ") as  temp) ";
 
 
 
