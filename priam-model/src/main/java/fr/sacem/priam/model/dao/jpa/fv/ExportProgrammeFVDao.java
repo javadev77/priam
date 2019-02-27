@@ -10,8 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 public interface ExportProgrammeFVDao extends JpaRepository<ExportProgrammeFV, Long> {
 
     @Transactional(readOnly = true)
-    @Query(value ="SELECT e.filename FROM ExportProgrammeFV e where e.programme.numProg =:numProg ")
-    String getFilepathByNumProg(@Param("numProg") String numProg);
+    @Query(value ="SELECT e FROM ExportProgrammeFV e where e.programme.numProg =:numProg ")
+    ExportProgrammeFV findByNumProg(@Param("numProg") String numProg);
 
     @Transactional
     @Modifying
@@ -28,5 +28,4 @@ public interface ExportProgrammeFVDao extends JpaRepository<ExportProgrammeFV, L
     @Modifying
     @Query(nativeQuery = true, value="DELETE FROM PRIAM_EXPORT_PROGRAMME_FV WHERE NUMPROG =?1")
     void deleteByNumProg(@Param("numProg") String numProg);
-
 }

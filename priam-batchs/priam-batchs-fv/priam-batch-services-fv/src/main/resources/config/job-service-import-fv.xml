@@ -30,8 +30,8 @@
                 <chunk
                     reader="readFromTableDataBatch"
                     processor="processData"
-                    writer="writerFinal"
-                    commit-interval="100"
+                    writer="classifierCompositeItemWriter"
+                    commit-interval="1"
                     retry-limit="10">
                     <retryable-exception-classes>
                         <include class="org.springframework.dao.DeadlockLoserDataAccessException"/>
@@ -39,6 +39,10 @@
                     </retryable-exception-classes>
                 </chunk>
             </tasklet>
+
+            <listeners merge="true">
+                <listener ref="listenerStepInsertDataImport"/>
+            </listeners>
         </step>
 
         <listeners merge="true">
@@ -46,6 +50,26 @@
         </listeners>
 
     </job>
+
+    <bean id="listenerStepInsertDataImport" class=""></bean>
+
+    <!-- This is to demo MultiWriters -->
+    <bean id="classifierCompositeItemWriter" class="org.springframework.batch.item.support.ClassifierCompositeItemWriter" scope="step">
+        <property name="classifier" ref="classifier" />
+    </bean>
+
+    <bean id="classifier"  class="fr.sacem.priam.batch.fv.serviceimport.writer.BackToBackPatternClassifier">
+        <property name="routerDelegate">
+            <bean class="fr.sacem.priam.batch.fv.serviceimport.writer.ExampleWriterRouteImpl" />
+        </property>
+        <property name="matcherMap">
+            <map>
+                <entry key="ayantDroit" value-ref="ayantDroitItemWriter" />
+                <entry key="compisteAll" value-ref="compositItemWriter" />
+            </map>
+        </property>
+    </bean>
+
 
     <bean id="readFromTableDataBatch" class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
         <property name="dataSource" ref="dataSource"/>
@@ -60,13 +84,11 @@
         <property name="selectClause" value="select l.*"/>
         <property name="fromClause" value="FROM PRIAM_IMPORT_PROGRAMME_FV_DATA_BATCH l
                                             INNER JOIN PRIAM_FICHIER f ON l.ID_FICHIER=f.ID
-                                            INNER JOIN PRIAM_PROGRAMME p ON p.NUMPROG=f.NUMPROG"/>
-        <property name="whereClause" value="WHERE p.NUMPROG='#{jobParameters[numProg]}'
-                                              GROUP BY l.id
-                                               "/>
+                                            INNER JOIN PRIAM_PROGRAMME p ON p.NUMPROG=f.NUMPROG "/>
+        <property name="whereClause" value="WHERE p.NUMPROG='#{jobParameters[numProg]}'                               "/>
 
         <property name="dataSource" ref="dataSource"/>
-        <property name="sortKey" value="l.ide12"/>
+        <property name="sortKey" value="l.id"/>
     </bean>
 
     <bean id="rowMapper" class="fr.sacem.priam.batch.fv.serviceimport.mapper.ImportDataRowMapper"/>
@@ -176,63 +198,13 @@
         </property>
     </bean>
 
-    <bean id="writerFinal" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+    <bean id="ayantDroitItemWriter" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
         <property name="dataSource" ref="dataSource"/>
         <property name="sql">
             <value>
                 <![CDATA[
-                    INSERT INTO PRIAM_IMPORT_PROGRAMME_FV_DATA_BATCH (
-                            ID_FICHIER,
-                            cdeFamilTypUtil,cdeTypUtil,numProg,rionEffet,ide12,cdeTypIde12,ide12RepCoad,cdeTypIde12RepCoad,datsitu,datconslt,
-                            coad,numPers,numCatal,idSteAd,rolAd,typeDroit,cleAd,cdeTypProtec,coadOriEdtr,idSteOriEdtr,points,
-                            NOM_PRG,tax,durDif,nbrDif,typMt,mt,genreOeuvre,titreOeuvre,dureeDeposee,taxOri,
-                            labelValo,paysOri,indicRepart,nom,prenom,indicSacem,SOUS_ROLE,ANNEE_NAISSANCE,ANNEE_DECES,indicDrtPercus
-
-                        )
-                        VALUES (
-                            :idFichier,
-                            :cdeFamilTypUtil,
-                            :cdeTypUtil,
-                            :numProg,
-                            :rionEffet,
-                            :ide12,
-                            :cdeTypIde12,
-                            :ide12RepCoad,
-                            :cdeTypIde12RepCoad,
-                            :datsitu,
-                            :datconslt,
-                            :coad,
-                            :numPers,
-                            :numCatal,
-                            :idSteAd,
-                            :rolAd,
-                            :typeDroit,
-                            :cleAd,
-                            :cdeTypProtect,
-                            :coadOriEdtr,
-                            :idSteOriEdtr,
-                            :points,
-                            :nomProgramme,
-                            :tax,
-                            :durDif,
-                            :nbrDif,
-                            :typMt,
-                            :mt,
-                            :genreOeuvre,
-                            :titreOeuvre,
-                            :dureeDeposee,
-                            :taxOri,
-                            :labelValo,
-                            :paysOri,
-                            :indicRepart,
-                            :nom,
-                            :prenom,
-                            :indicSacem,
-                            :sousRole,
-                            :anneeNaissance,
-                            :anneeDeces,
-                            :indicDrtPercus
-                        )
+                    INSERT INTO PRIAM_AYANT_DROIT (IDE12REPCOAD, CDETYPIDE12REPCOAD, ROLAD, COAD, IDSTEAD, CLEAD, CDETYPPROTEC, COADORIEDTR, IDSTEORIEDTR, NUMCATAL, NUMPERS)
+                                VALUES (:ide12RepCoad, :cdeTypIde12RepCoad, :rolAd, :coad, :idSteAd, :cleAd, :cdeTypProtect, :coadOriEdtr, :idSteOriEdtr, :numCatal, :numPers)
                 ]]>
             </value>
         </property>
@@ -242,7 +214,32 @@
     </bean>
 
 
-    <bean id="listenerCompletionImport" class="fr.sacem.priam.batch.fv.serviceimport.listener.JobImportFVListener"/>
+    <bean id="ayantDroitPersWriter" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    INSERT INTO PRIAM_AYANT_DROIT_PERS (NUMPERS) VALUES (:numPers)
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
+
+
+    <bean id="compositItemWriter" class="org.springframework.batch.item.support.CompositeItemWriter" scope="step">
+        <property name="delegates">
+            <list>
+                <ref bean="ayantDroitPersWriter" />
+                <ref bean="ayantDroitItemWriter" />
+            </list>
+        </property>
+    </bean>
+
+    <bean id="listenerCompletionImport"
+        class="fr.sacem.priam.batch.fv.serviceimport.listener.JobImportFVListener"/>
 
 
 </beans>

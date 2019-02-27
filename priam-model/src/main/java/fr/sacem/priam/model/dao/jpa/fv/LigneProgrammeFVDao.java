@@ -313,5 +313,7 @@ public interface LigneProgrammeFVDao extends JpaRepository<LigneProgrammeFV, Lon
             "WHERE FV.numProg=:numProg ")
     Long countNbLignesForExport(@Param("numProg") Long numProg);
 
+    @Query(value = "SELECT fv from LigneProgrammeFV fv where fv.ide12 =:ide12 and fv.fichier.id =:idFichier ")
+    LigneProgrammeFV findOeuvreByIde12(@Param("ide12") Long ide12, @Param("idFichier") Long idFichier);
 }
 

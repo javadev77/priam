@@ -5,11 +5,18 @@ import fr.sacem.priam.common.exception.TechnicalException;
 import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.priam.model.dao.jpa.fv.ExportProgrammeFVDao;
-import fr.sacem.priam.model.domain.Programme;
-import fr.sacem.priam.model.domain.StatutEligibilite;
-import fr.sacem.priam.model.domain.StatutProgramme;
+import fr.sacem.priam.model.domain.StatutExportProgramme;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
+import fr.sacem.priam.model.domain.fv.ExportProgrammeFV;
 import fr.sacem.priam.security.model.UserDTO;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -22,21 +29,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/app/rest/")
@@ -73,6 +69,7 @@ public class ExportFVResource {
         ProgrammeDto programmeDto = null;
         try {
             programmeDto = programmeViewDao.findByNumProg(numProg);
+            exportProgrammeFVJpaDao.deleteByNumProg(numProg);
             launchJobExport(numProg, userDTO);
         }catch (Exception ex) {
             LOGGER.error("Erreur lors de l'export ", ex);
@@ -108,7 +105,8 @@ public class ExportFVResource {
     public void downloadExport(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String numProg = request.getParameter("numProg");
 
-        String path = exportProgrammeFVJpaDao.getFilepathByNumProg(numProg);
+        ExportProgrammeFV exportProgrammeFV = exportProgrammeFVJpaDao.findByNumProg(numProg);
+        String path = exportProgrammeFV.getFilename();
         String nameExport = FilenameUtils.getName(path);
         File file = new File(path);
 
@@ -124,18 +122,18 @@ public class ExportFVResource {
         }
     }
 
-    @RequestMapping(value = "programme/statut/{numProg}",
+    @RequestMapping(value = "programme/deleteExport/{numProg}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ProgrammeDto majStatutProgramme(@PathVariable("numProg") String numProg){
         ProgrammeDto programmeDto = null;
-        TransactionStatus ts = transactionManager.getTransaction(new DefaultTransactionDefinition());
-        Programme programme = programmeDao.findByNumProg(numProg);
-        programme.setStatut(StatutProgramme.EN_COURS);
-        programmeDao.save(programme);
-        transactionManager.commit(ts);
-        exportProgrammeFVJpaDao.deleteByNumProg(numProg);
         programmeDto = programmeViewDao.findByNumProg(numProg);
+        ExportProgrammeFV exportProgrammeFV = exportProgrammeFVJpaDao.findByNumProg(numProg);
+        exportProgrammeFV.setStatutExportProgramme(StatutExportProgramme.TELECHARGE);
+
+
+        exportProgrammeFVJpaDao.saveAndFlush(exportProgrammeFV);
+
         return programmeDto;
     }
 

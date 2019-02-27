@@ -51,6 +51,8 @@ public class ExportCsvDto implements Serializable {
     private Integer lineNumber;
     private PriamValidationException exception;
     private Long idFichier;
+    private boolean numpersExist;
+    private boolean ayantDroitExist;
 
     public ExportCsvDto() {
 
@@ -58,6 +60,7 @@ public class ExportCsvDto implements Serializable {
 
     public ExportCsvDto(final PriamValidationException e) {
         exception = e;
+        lineNumber = e.getLineNumber();
     }
 
     public Long getIde12RepCoad() {
@@ -410,5 +413,21 @@ public class ExportCsvDto implements Serializable {
 
     public void setPoints(final Double points) {
         this.points = points;
+    }
+
+    public void setNumpersExist(final boolean numpersExist) {
+        this.numpersExist = numpersExist;
+    }
+
+    public boolean isNumpersExist() {
+        return numpersExist;
+    }
+
+    public void setAyantDroitExist(final boolean ayantDroitExist) {
+        this.ayantDroitExist = ayantDroitExist;
+    }
+
+    public boolean isAyantDroitExist() {
+        return ayantDroitExist;
     }
 }

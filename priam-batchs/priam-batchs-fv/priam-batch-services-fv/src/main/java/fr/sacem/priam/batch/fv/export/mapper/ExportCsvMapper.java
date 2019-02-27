@@ -26,9 +26,9 @@ public class ExportCsvMapper implements RowMapper<ExportCsvDto> {
         exportCsvDto.setIde12RepCoad(resultSet.getLong("IDE12REPCOAD"));
         exportCsvDto.setCdeTypIde12RepCoad(resultSet.getString("CDETYPIDE12REPCOAD"));
         Date datsitu = resultSet.getDate("datsitu");
-        exportCsvDto.setDatsitu(new SimpleDateFormat("yyyyMMdd").format(datsitu));
+        exportCsvDto.setDatsitu(datsitu != null ? new SimpleDateFormat("yyyyMMdd").format(datsitu) : "");
         Date datconslt = resultSet.getDate("datconslt");
-        exportCsvDto.setDatconslt(new SimpleDateFormat("yyyyMMdd").format(datconslt));
+        exportCsvDto.setDatconslt(datconslt != null ? new SimpleDateFormat("yyyyMMdd").format(datconslt) : "");
         exportCsvDto.setCoad(resultSet.getLong("COAD"));
         exportCsvDto.setNumPers(resultSet.getLong("NUMPERS"));
         exportCsvDto.setNumCatal(resultSet.getLong("NUMCATAL"));

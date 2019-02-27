@@ -76,7 +76,7 @@ ALTER TABLE PRIAM_LIGNE_PROGRAMME_FV  ADD datconslt DATE DEFAULT NULL;
 ALTER TABLE PRIAM_LIGNE_PROGRAMME_FV  ADD datsitu DATE DEFAULT NULL;
 
 
-
+DROP TABLE IF EXISTS PRIAM_AYANT_DROIT_PERS;
 CREATE TABLE PRIAM_AYANT_DROIT_PERS (
 
   NUMPERS  INT(9) DEFAULT NULL,
@@ -93,6 +93,7 @@ CREATE TABLE PRIAM_AYANT_DROIT_PERS (
 );
 
 
+DROP TABLE IF EXISTS PRIAM_AYANT_DROIT;
 CREATE TABLE PRIAM_AYANT_DROIT(
 
   ID int(11) NOT NULL AUTO_INCREMENT,
@@ -118,6 +119,7 @@ CREATE TABLE PRIAM_AYANT_DROIT(
 
 );
 
+DROP TABLE IF EXISTS PRIAM_EXPORT_PROGRAMME_FV;
 CREATE TABLE PRIAM_EXPORT_PROGRAMME_FV(
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `NUMPROG` varchar(8) NOT NULL,
@@ -130,6 +132,7 @@ CREATE TABLE PRIAM_EXPORT_PROGRAMME_FV(
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+DROP TABLE IF EXISTS PRIAM_IMPORT_PROGRAMME_FV;
 CREATE TABLE PRIAM_IMPORT_PROGRAMME_FV(
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `NUMPROG` varchar(8) NOT NULL,
@@ -225,61 +228,52 @@ FROM PRIAM_PROGRAMME pr
 GROUP BY pr.NUMPROG;
 
 DROP TABLE  IF EXISTS PRIAM_IMPORT_PROGRAMME_FV_DATA_BATCH;
-CREATE TABLE PRIAM_IMPORT_PROGRAMME_FV_DATA_BATCH (
-
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `cdeFamilTypUtil` varchar(45) DEFAULT NULL,
-  `cdeTypUtil` varchar(45) DEFAULT NULL,
-  `numProg` int(11) DEFAULT NULL,
-   rionEffet INT(11),
-  `ide12` bigint(20) DEFAULT NULL,
-  `cdeTypIde12` varchar(45) DEFAULT NULL,
-  ide12RepCoad bigint(20) DEFAULT NULL,
-  cdeTypIde12RepCoad varchar(45) DEFAULT NULL,
-  datsitu DATE DEFAULT NULL,
-  datconslt DATE DEFAULT NULL,
-
-  coad INT(10) DEFAULT NULL,
-  numPers INT(9) DEFAULT NULL,
-  numCatal INT(9) DEFAULT NULL,
-  idSteAd VARCHAR(10) DEFAULT NULL,
-  rolAd varchar(50) DEFAULT NULL,
-  typeDroit VARCHAR (5) DEFAULT NULL,
-  cleAd double DEFAULT NULL,
-  cdeTypProtect VARCHAR(5) DEFAULT NULL,
-  coadOriEdtr INT(8) DEFAULT NULL,
-  idSteOriEdtr VARCHAR(10) DEFAULT NULL,
-
-  points double DEFAULT NULL,
-
-  NOM_PRG VARCHAR(50) DEFAULT NULL,
-  `tax` double DEFAULT NULL,
-  `durDif` int(11) DEFAULT NULL,
-  `nbrDif` int(11) DEFAULT NULL,
-  `typMt` varchar(45) DEFAULT NULL,
-  `mt` double DEFAULT NULL,
-  genreOeuvre varchar(250) DEFAULT NULL,
-  `titreOeuvre` varchar(250) DEFAULT NULL,
-  dureeDeposee int(11) DEFAULT NULL,
-  taxOri double DEFAULT NULL,
-  labelValo varchar(250) DEFAULT NULL,
-  paysOri int(4) DEFAULT NULL,
-  indicRepart tinyint(1) DEFAULT NULL,
-
-  nom VARCHAR(90) DEFAULT NULL,
-  prenom VARCHAR(250) DEFAULT NULL,
-  indicSacem TINYINT(1) DEFAULT NULL,
-  sousRole VARCHAR(250) DEFAULT NULL,
-  anneeNaissance INT(4) DEFAULT NULL,
-  anneeDeces INT(4) DEFAULT NULL,
-
-  indicDrtPercus TINYINT(1) DEFAULT NULL,
-
-  `ID_FICHIER` bigint(20) DEFAULT NULL,
-
-  PRIMARY KEY (`id`)
-
-)ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
+create table PRIAM_IMPORT_PROGRAMME_FV_DATA_BATCH
+(
+	id int not null auto_increment
+		primary key,
+	cdeFamilTypUtil varchar(45) null,
+	cdeTypUtil varchar(45) null,
+	numProg int null,
+	rionEffet int null,
+	ide12 bigint null,
+	cdeTypIde12 varchar(45) null,
+	ide12RepCoad bigint null,
+	cdeTypIde12RepCoad varchar(45) null,
+	datsitu date null,
+	datconslt date null,
+	coad int(10) null,
+	numPers int(9) null,
+	numCatal int(9) null,
+	idSteAd varchar(10) null,
+	rolAd varchar(50) null,
+	typeDroit varchar(5) null,
+	cleAd double null,
+	coadOriEdtr int(8) null,
+	idSteOriEdtr varchar(10) null,
+	tax double null,
+	durDif int null,
+	nbrDif int null,
+	typMt varchar(45) null,
+	mt double null,
+	genreOeuvre varchar(250) null,
+	titreOeuvre varchar(250) null,
+	dureeDeposee int null,
+	taxOri double null,
+	labelValo varchar(250) null,
+	paysOri int(4) null,
+	indicRepart tinyint(1) null,
+	nom varchar(90) null,
+	prenom varchar(250) null,
+	indicSacem tinyint(1) null,
+	indicDrtPercus tinyint(1) null,
+	ID_FICHIER bigint null,
+	points double null,
+	NOM_PRG varchar(50) null,
+	cdeTypProtec varchar(5) null,
+	SOUS_ROLE varchar(250) null,
+	ANNEE_NAISSANCE int(4) null,
+	ANNEE_DECES int(4) null
+);
 
 COMMIT;

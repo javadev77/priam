@@ -57,7 +57,7 @@
         <property name="rowMapper" ref="catalogueCmsRowMapper"/>
     </bean>
 
-    <bean id="catalogueCmsRowMapper" class="fr.sacem.priam.batch.participaconfig.req.mapper.CatalogueCmsMapper"/>
+    <bean id="catalogueCmsRowMapper" class="fr.sacem.priam.batch.participaconfig.processorpper.CatalogueCmsMapper"/>
 
     <bean id="queryProvider" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
         <property name="selectClause" value="SELECT ID,IDE12"/>

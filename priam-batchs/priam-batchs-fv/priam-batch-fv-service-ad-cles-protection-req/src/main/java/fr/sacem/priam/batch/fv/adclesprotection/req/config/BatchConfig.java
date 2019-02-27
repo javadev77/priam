@@ -80,11 +80,6 @@ public class BatchConfig extends CommonBatchConfig {
                     octavDTO.setCdeTypDrtSacem(rightCategoryMap.get(FondsCategory.toEnum(ligneProgrammeFV.getCdeTypUtil())));
                     octavDTO.setIde12(ligneProgrammeFV.getIde12());
                     octavDTO.setCdeTypIde12(ligneProgrammeFV.getCdeTypIde12());
-                    String dateJour = new SimpleDateFormat("yyyyMMdd").format(new Date());
-                    octavDTO.setDatConsult(dateJour);
-                    octavDTO.setDatSitu(dateJour);
-
-                    ligneProgrammeFVDao.majOeuvreWithInfoOctav(octavDTO);
 
                     return octavDTO;
                 })

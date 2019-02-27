@@ -94,7 +94,7 @@ public class AdclesProtectionRepFlatItemReader extends AbstractItemCountingItemS
     }
 
     /**
-     * Setter for line mapper. This property is required to be set.
+     * Setter for line processor. This property is required to be set.
      * @param lineMapper maps line to item
      */
     public void setLineMapper(LineMapper<OctavDTO> lineMapper) {
