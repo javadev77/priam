@@ -1,13 +1,13 @@
 package fr.sacem.priam.batch.common.dao;
 
 import com.google.common.base.Joiner;
+import java.util.List;
+import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.sql.DataSource;
-import java.util.List;
 
 @Repository
 public class AyantDroitDao {
@@ -44,6 +44,18 @@ public class AyantDroitDao {
         if(ids != null && !ids.isEmpty()) {
             String sql =  "DELETE FROM PRIAM_AYANT_DROIT WHERE id IN (" + Joiner.on(",").join(ids).toString() + ") ";
             jdbcTemplate.update(sql);
+        }
+    }
+
+    @Transactional
+    public boolean isAyantDroitExist(Long coad) {
+        try {
+            List<Long> result = jdbcTemplate.query("SELECT COAD  FROM PRIAM_AYANT_DROIT WHERE COAD=?",
+                (resultSet, i) -> resultSet.getLong("COAD"), coad);
+
+            return result != null && !result.isEmpty();
+        }catch (EmptyResultDataAccessException ex) {
+            return false;
         }
     }
 }

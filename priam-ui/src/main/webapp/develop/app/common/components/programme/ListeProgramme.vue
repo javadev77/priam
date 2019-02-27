@@ -224,6 +224,7 @@
     </modal>
 
     <import-programme v-if="showEcranModalImportProgramme"
+                       :programme="selectedProgramme"
                       @cancel="showEcranModalImportProgramme = false"
                       @validate="onValidateImport">
 
@@ -351,10 +352,13 @@
                   type: 'numeric-link',
                   cell: {
                     toText: function (entry) {
+                      var statutImportProgramme = entry.statutImportProgramme;
+                      let famille = entry.famille;
                       if (entry.statut === 'CREE' || entry.statut === 'ABANDONNE'
                         || entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
                         || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'
-                        || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION') {
+                        || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION'
+                        || (famille === FAMILLES_PRIAM['VALORISATION'] && (statutImportProgramme === null || statutImportProgramme !== 'CHARGEMENT_OK' ))) {
 
                         return {value: entry.numProg, isLink: false
                         }
@@ -372,6 +376,7 @@
                   id :  'nom',
                   name :   'Nom',
                   sortable : true,
+                  hidden : true,
                   type : 'long-text',
                   cell : {
 
@@ -385,6 +390,7 @@
                   id :  'rionTheorique',
                   name :   'Rion cible',
                   sortable : true,
+                  hidden : false,
                   type : 'code-value',
                   cell : {
                     toText : function(rionTheorique) {
@@ -400,6 +406,7 @@
                   id :  'famille',
                   name :   'Famille',
                   sortable : true,
+                  hidden : false,
                   type : 'code-value',
                   cell : {
                     toText : function(cellValue) {
@@ -418,6 +425,7 @@
                   id :  'typeUtilisation',
                   name :   "Type d'utilisation",
                   sortable : true,
+                  hidden : false,
                   type : 'code-value',
                   cell : {
                     toText : function(cellValue) {
@@ -436,6 +444,7 @@
                   id :  'typeRepart',
                   name :   "Mode répartition",
                   sortable : true,
+                  hidden : false,
                   type : 'code-value',
                   cell : {
                     toText : function(cellValue) {
@@ -454,6 +463,7 @@
                   id :  'dateCreation',
                   name :   "Date création",
                   sortable : true,
+                  hidden : false,
                   type : 'date',
                   cell : {
 
@@ -467,16 +477,21 @@
                   id :  'fichiers',
                   name :   "Fichiers",
                   sortable : true,
+                  hidden : false,
                   type : 'numeric-link',
                   cell : {
                     toText : function(entry) {
                       var result  = getters.statutProgramme.find(function (element) {
                         return element.code === entry.statut;
                       });
+                      var statutImportProgramme = entry.statutImportProgramme;
+                      let famille = entry.famille;
                       if(result.code === 'ABANDONNE' ||  entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
                         || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'
                         || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION'
-                        || entry.statutExportProgramme === 'EN_GENERATION') {
+                        || (famille === FAMILLES_PRIAM['VALORISATION'] &&
+                        (statutImportProgramme === null || statutImportProgramme === 'EN_COURS'
+                        || entry.statutExportProgramme === null || entry.statutExportProgramme === 'EN_GENERATION'))) {
                         return {value : entry.fichiers, isLink : false}
                       } else {
                         return {value : entry.fichiers, isLink : true}
@@ -494,6 +509,7 @@
                   id :  'export',
                   name :   "Export",
                   sortable : false,
+                  hidden : false,
                   type : 'clickable-icons-or-text',
                   cell : {
                     css :  function(entry) {
@@ -507,9 +523,11 @@
 
                       var template = [{}];
 
-                      if(cellValue.statutEligibilite === 'FIN_ELIGIBILITE' || cellValue.statutEligibilite === 'FIN_DESAFFECTATION' || cellValue.statutEligibilite === null) {
+                      if(cellValue.statutEligibilite === 'FIN_ELIGIBILITE' ||
+                        cellValue.statutEligibilite === 'FIN_DESAFFECTATION' ||
+                        cellValue.statutEligibilite === null) {
                         if(statusCode !== undefined && 'AFFECTE' === statusCode) {
-                          if(cellValue.statutExportProgramme === null){
+                          if(cellValue.statutExportProgramme === null || cellValue.statutExportProgramme === 'TELECHARGE'){
                             template[0] = {event : 'exporter-programme', template : tempalteExport};
                           }
                         }
@@ -520,7 +538,7 @@
                     isText : function (entry) {
                       var statusCode = entry.statut;
                       var statutExport = entry.statutExportProgramme !== null && entry.statutExportProgramme !== undefined ? entry.statutExportProgramme : undefined;
-                      if(statusCode !== undefined && 'AFFECTE' == statusCode && statutExport === 'GENERE') {
+                      if(statusCode !== undefined && 'AFFECTE' === statusCode && statutExport === 'GENERE') {
                         return true;
                       }
                       return false;
@@ -543,6 +561,7 @@
                   id :  'import',
                   name :   "Import",
                   sortable : false,
+                  hidden : false,
                   type : 'clickable-icons',
                   cell : {
 
@@ -553,13 +572,17 @@
                     cellTemplate: function (cellValue) {
                       var tempalteExport = '<span class="glyphicon glyphicon-import" aria-hidden="true" style="padding-left: 0px;" title="Importer un fichier"></span>';
                       var statusCode = cellValue.statut;
+                      var statutImportProgramme = cellValue.statutImportProgramme;
+                      var statutExportProgramme = cellValue.statutExportProgramme;
 
                       var template = [{}, {}];
 
-                      if(cellValue.statutEligibilite === 'FIN_ELIGIBILITE' || cellValue.statutEligibilite === 'FIN_DESAFFECTATION' || cellValue.statutEligibilite === null) {
-                        if(statusCode !== undefined && 'EN_COURS' === statusCode) {
+                      if(cellValue.statutEligibilite === 'FIN_ELIGIBILITE' ||
+                        cellValue.statutEligibilite === 'FIN_DESAFFECTATION' ||
+                        cellValue.statutEligibilite === null) {
+                        if( (statusCode !== undefined && 'EN_COURS' === statusCode) || ('AFFECTE' === statusCode && statutExportProgramme === 'TELECHARGE')) {
                           template[0] = {event : 'import-programme', template : tempalteExport};
-                          if(cellValue.statutImportProgramme === 'CHARGEMENT_KO') {
+                          if(statutImportProgramme === 'CHARGEMENT_KO') {
                             template[1] = {event : 'show-log-import', template : '<span class="glyphicon glyphicon-list-alt" aria-hidden="true" title="Log"></span>'};
                           }
                         }
@@ -575,6 +598,7 @@
                   id :  'statut',
                   name :   "Statut",
                   sortable : true,
+                  hidden : false,
                   type : 'code-value',
                   cell : {
 
@@ -594,6 +618,7 @@
                   id :  'repartition',
                   name :   "Répartition",
                   sortable : false,
+                  hidden : false,
                   type : 'clickable-icons-or-text',
                   cell : {
                     cellTemplate: function (cellValue) {
@@ -660,6 +685,7 @@
                   id :  'rionPaiement',
                   name :   "Rion de paiement",
                   sortable : true,
+                  hidden : false,
                   type : 'code-value',
                   cell : {
                     css : function (entry) {
@@ -675,6 +701,7 @@
                   id: 'action',
                   name: "Actions",
                   sortable: false,
+                  hidden : false,
                   type : 'clickable-icons',
                   cell : {
 
@@ -692,10 +719,18 @@
 
 
 
-                      if(cellValue.statutEligibilite === 'FIN_ELIGIBILITE' || cellValue.statutEligibilite === 'FIN_DESAFFECTATION' || cellValue.statutEligibilite === null || cellValue.statutExportProgramme === null || cellValue.statutExportProgramme === 'GENERE') {
+                      if(cellValue.statutEligibilite === 'FIN_ELIGIBILITE' ||
+                        cellValue.statutEligibilite === 'FIN_DESAFFECTATION' ||
+                        cellValue.statutEligibilite === null ||
+                        cellValue.statutExportProgramme === null ||
+                        cellValue.statutExportProgramme === 'GENERE' ||
+                        cellValue.statutImportProgramme === null ||
+                        cellValue.statutImportProgramme === 'CHARGEMENT_OK' ) {
                         if(statusCode !== undefined && ('CREE' === statusCode || 'AFFECTE' === statusCode
                           || 'EN_COURS' === statusCode || 'VALIDE' === statusCode) ) {
-                          if(cellValue.statutExportProgramme === null || cellValue.statutExportProgramme === 'GENERE'){
+
+                          if((cellValue.statutExportProgramme === null || cellValue.statutExportProgramme === 'GENERE')
+                          && (cellValue.statutImportProgramme === null || cellValue.statutImportProgramme === 'CHARGEMENT_OK') ){
                             if ($this.isRightMDYPRG) {
                               tempalte[0] = {event: 'update-programme', template: tempalteUpdate};
                             }
@@ -757,7 +792,7 @@
             generateFelixData : {method : 'POST', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/repartition/generateFelixData'},
             checkIfDone : {method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/repartition/fichierfelix/{numProg}'},
             exportProgramme :{method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/programme/export/{numProg}'},
-            majStatutProgramme :{method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/programme/statut/{numProg}'},
+            deleteExport :{method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/programme/deleteExport/{numProg}'},
             importProgramme : {
               method : 'POST', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/programme/import'
             },
@@ -854,10 +889,11 @@
 
         afficherTootlip(entry) {
 
-          if(entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
-            || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE' ||
-            entry.statutEligibilite === 'EN_COURS_DESAFFECTATION' ||
-            entry.statutExportProgramme === 'EN_GENERATION') {
+          if(entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'  ||
+             entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'    ||
+             entry.statutEligibilite === 'EN_COURS_DESAFFECTATION' ||
+             entry.statutExportProgramme === 'EN_GENERATION'       ||
+             entry.statutImportProgramme === 'EN_COURS' ) {
 
             return "Le programme est en cours de traitement";
           }
@@ -868,7 +904,8 @@
           if ( entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
             || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'
             || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION'
-            || entry.statutExportProgramme === 'EN_GENERATION') {
+            || entry.statutExportProgramme === 'EN_GENERATION'
+            || entry.statutImportProgramme === 'EN_COURS' ) {
             return {style: {'background-color': 'grey'}}
           }
           return {style: null}
@@ -1043,7 +1080,7 @@
                   }
                   //responseType: 'blob', // important
                 ).then((response) => {
-                  this.resource.majStatutProgramme({numProg:  numProg})
+                  this.resource.deleteExport({numProg:  numProg})
                     .then(response => {
                       return response.json();
                     })
@@ -1268,6 +1305,7 @@
 
         onValidateImport(fileToUpload) {
             this.showEcranModalImportProgramme = false;
+            this.selectedProgramme.statutImportProgramme = 'EN_COURS'
             console.log("The file to upload is : " + fileToUpload);
             let formData = new FormData();
             formData.append('file', fileToUpload);

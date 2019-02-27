@@ -206,7 +206,7 @@ public class OctavDTO implements Serializable {
         return clead;
     }
 
-    //json mapper
+    //json processor
     public void setClead(Double clead) {
         this.clead = (clead == null || Double.isNaN(clead)) ? null : new BigDecimal(clead, MathContext.DECIMAL64);
     }

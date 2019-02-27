@@ -71,9 +71,12 @@ ALTER TABLE PRIAM_LIGNE_PROGRAMME_FV   ADD paysOri int(4) DEFAULT NULL;
 ALTER TABLE PRIAM_LIGNE_PROGRAMME_FV   ADD statut varchar(250) DEFAULT NULL;
 ALTER TABLE PRIAM_LIGNE_PROGRAMME_FV   ADD isOeuvreComplex tinyint(4) DEFAULT '0' COMMENT 'Flag qui indique si l''oeuvre est complexe';
 ALTER TABLE PRIAM_LIGNE_PROGRAMME_FV  ADD durDifEdit int(11) DEFAULT NULL;
+ALTER TABLE PRIAM_LIGNE_PROGRAMME_FV  ADD durDifEdit int(11) DEFAULT NULL;
+ALTER TABLE PRIAM_LIGNE_PROGRAMME_FV  ADD datconslt DATE DEFAULT NULL;
+ALTER TABLE PRIAM_LIGNE_PROGRAMME_FV  ADD datsitu DATE DEFAULT NULL;
 
 
-
+DROP TABLE IF EXISTS PRIAM_AYANT_DROIT_PERS;
 CREATE TABLE PRIAM_AYANT_DROIT_PERS (
 
   NUMPERS  INT(9) DEFAULT NULL,
@@ -90,6 +93,7 @@ CREATE TABLE PRIAM_AYANT_DROIT_PERS (
 );
 
 
+DROP TABLE IF EXISTS PRIAM_AYANT_DROIT;
 CREATE TABLE PRIAM_AYANT_DROIT(
 
   ID int(11) NOT NULL AUTO_INCREMENT,
@@ -115,6 +119,7 @@ CREATE TABLE PRIAM_AYANT_DROIT(
 
 );
 
+DROP TABLE IF EXISTS PRIAM_EXPORT_PROGRAMME_FV;
 CREATE TABLE PRIAM_EXPORT_PROGRAMME_FV(
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `NUMPROG` varchar(8) NOT NULL,
@@ -127,6 +132,7 @@ CREATE TABLE PRIAM_EXPORT_PROGRAMME_FV(
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+DROP TABLE IF EXISTS PRIAM_IMPORT_PROGRAMME_FV;
 CREATE TABLE PRIAM_IMPORT_PROGRAMME_FV(
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `NUMPROG` varchar(8) NOT NULL,
@@ -141,8 +147,9 @@ CREATE TABLE PRIAM_IMPORT_PROGRAMME_FV(
 
 
 
-CREATE VIEW  EXPORT_FV_VIEW AS
-  SELECT FV.cdeFamilTypUtil, FV.cdeTypUtil, PP.NUMPROG as numProg, FV.rionEffet, FV_CTN.ide12,  FV_CTN.cdeTypIde12, PAD.IDE12REPCOAD, PAD.CDETYPIDE12REPCOAD, PAD.COAD,
+DROP VIEW IF EXISTS EXPORT_FV_VIEW;
+CREATE VIEW  EXPORT_FV_VIEW AS (
+  SELECT PP.CDEFAMILTYPUTIL, PP.CDETYPUTIL, PP.NUMPROG as numProg, FV_CTN.rionEffet, FV_CTN.ide12,  FV_CTN.cdeTypIde12, PAD.IDE12REPCOAD, PAD.CDETYPIDE12REPCOAD, FV_CTN.datsitu, FV_CTN.datconslt, PAD.COAD,
     PAD.NUMPERS, PAD.NUMCATAL, PAD.IDSTEAD, PAD.ROLAD, PAD.CLEAD, PAD.CDETYPPROTEC, PAD.COADORIEDTR, PAD.IDSTEORIEDTR, FV_CTN.tax, FV_CTN.durDif, FV_CTN.nbrDif,
     FV_CTN.typMt, FV_CTN.mt,
     FV.genreOeuvre, FV.titreOeuvre, FV.dureeDeposee, FV.taxOri, FV.paysOri, FV.indicRepart, PP.NOM AS NOM_PRG, PERS.NOM, PERS.PRENOM, PERS.INDICSACEM,
@@ -154,11 +161,10 @@ CREATE VIEW  EXPORT_FV_VIEW AS
     LEFT JOIN PRIAM_AYANT_DROIT_PERS PERS on PAD.NUMPERS = PERS.NUMPERS
     INNER JOIN PRIAM_LIGNE_PROGRAMME_FV FV_CTN ON FV.ID_OEUVRE_CTNU=FV_CTN.id
   WHERE FV.isOeuvreComplex = 0 AND FV.ID_OEUVRE_CTNU IS NOT NULL
-
-
+)
   UNION
-
-  SELECT FV.cdeFamilTypUtil, FV.cdeTypUtil, PP.NUMPROG as numProg, FV.rionEffet, FV.ide12,  FV.cdeTypIde12, PAD.IDE12REPCOAD, PAD.CDETYPIDE12REPCOAD, PAD.COAD,
+(
+  SELECT PP.CDEFAMILTYPUTIL, PP.CDETYPUTIL, PP.NUMPROG as numProg, FV.rionEffet, FV.ide12,  FV.cdeTypIde12, PAD.IDE12REPCOAD, PAD.CDETYPIDE12REPCOAD, FV.datsitu, FV.datconslt, PAD.COAD,
     PAD.NUMPERS, PAD.NUMCATAL, PAD.IDSTEAD, PAD.ROLAD, PAD.CLEAD, PAD.CDETYPPROTEC, PAD.COADORIEDTR, PAD.IDSTEORIEDTR, FV.tax, FV.durDif, FV.nbrDif,
     FV.typMt, FV.mt,
     FV.genreOeuvre, FV.titreOeuvre, FV.dureeDeposee, FV.taxOri, FV.paysOri, FV.indicRepart, PP.NOM AS NOM_PRG, PERS.NOM, PERS.PRENOM, PERS.INDICSACEM,
@@ -168,7 +174,8 @@ CREATE VIEW  EXPORT_FV_VIEW AS
     INNER JOIN PRIAM_PROGRAMME PP on PP.NUMPROG = PF.NUMPROG
     LEFT JOIN PRIAM_AYANT_DROIT PAD on FV.id = PAD.ID_FV
     LEFT JOIN PRIAM_AYANT_DROIT_PERS PERS on PAD.NUMPERS = PERS.NUMPERS
-  WHERE FV.isOeuvreComplex = 0 AND FV.ID_OEUVRE_CTNU IS NULL;
+  WHERE FV.ID_OEUVRE_CTNU IS NULL);
+
 
 
 
@@ -219,5 +226,54 @@ FROM PRIAM_PROGRAMME pr
   left join PRIAM_EXPORT_PROGRAMME_FV epf ON pr.NUMPROG = epf.NUMPROG
   left join PRIAM_IMPORT_PROGRAMME_FV ipf ON pr.NUMPROG = ipf.NUMPROG
 GROUP BY pr.NUMPROG;
+
+DROP TABLE  IF EXISTS PRIAM_IMPORT_PROGRAMME_FV_DATA_BATCH;
+create table PRIAM_IMPORT_PROGRAMME_FV_DATA_BATCH
+(
+	id int not null auto_increment
+		primary key,
+	cdeFamilTypUtil varchar(45) null,
+	cdeTypUtil varchar(45) null,
+	numProg int null,
+	rionEffet int null,
+	ide12 bigint null,
+	cdeTypIde12 varchar(45) null,
+	ide12RepCoad bigint null,
+	cdeTypIde12RepCoad varchar(45) null,
+	datsitu date null,
+	datconslt date null,
+	coad int(10) null,
+	numPers int(9) null,
+	numCatal int(9) null,
+	idSteAd varchar(10) null,
+	rolAd varchar(50) null,
+	typeDroit varchar(5) null,
+	cleAd double null,
+	coadOriEdtr int(8) null,
+	idSteOriEdtr varchar(10) null,
+	tax double null,
+	durDif int null,
+	nbrDif int null,
+	typMt varchar(45) null,
+	mt double null,
+	genreOeuvre varchar(250) null,
+	titreOeuvre varchar(250) null,
+	dureeDeposee int null,
+	taxOri double null,
+	labelValo varchar(250) null,
+	paysOri int(4) null,
+	indicRepart tinyint(1) null,
+	nom varchar(90) null,
+	prenom varchar(250) null,
+	indicSacem tinyint(1) null,
+	indicDrtPercus tinyint(1) null,
+	ID_FICHIER bigint null,
+	points double null,
+	NOM_PRG varchar(50) null,
+	cdeTypProtec varchar(5) null,
+	SOUS_ROLE varchar(250) null,
+	ANNEE_NAISSANCE int(4) null,
+	ANNEE_DECES int(4) null
+);
 
 COMMIT;

@@ -5,6 +5,9 @@ import fr.sacem.priam.batch.common.fv.writer.CsvFileItemWriter;
 import fr.sacem.priam.batch.common.fv.writer.StringHeaderWriter;
 import fr.sacem.priam.batch.fv.export.domain.ExportCsvDto;
 import fr.sacem.priam.model.dao.jpa.fv.LigneProgrammeFVDao;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor;
 import org.springframework.batch.item.file.transform.DelimitedLineAggregator;
 import org.springframework.batch.item.file.transform.FieldExtractor;
@@ -16,10 +19,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.core.io.FileSystemResource;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 @Configuration
 @ComponentScan(basePackages = {"fr.sacem.priam.batch.fv", "fr.sacem.priam.model"})
@@ -66,15 +65,16 @@ public class DatabaseCsvFileConfig {
 
         csvFileWriter.setResource(new FileSystemResource(fileName));
 
-        LineAggregator<ExportCsvDto> lineAggregator = createStudentLineAggregator();
+        LineAggregator<ExportCsvDto> lineAggregator = createLineAggregator();
         csvFileWriter.setLineAggregator(lineAggregator);
 
         return csvFileWriter;
     }
 
-    public LineAggregator<ExportCsvDto> createStudentLineAggregator() {
+    public DelimitedLineAggregator<ExportCsvDto> createLineAggregator() {
         DelimitedLineAggregator<ExportCsvDto> lineAggregator = new DelimitedLineAggregator<>();
         lineAggregator.setDelimiter(";");
+
 
         FieldExtractor<ExportCsvDto> fieldExtractor = createExtractor();
         lineAggregator.setFieldExtractor(fieldExtractor);

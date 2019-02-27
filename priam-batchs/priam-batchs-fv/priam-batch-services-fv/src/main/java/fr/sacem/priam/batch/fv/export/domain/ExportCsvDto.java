@@ -2,7 +2,6 @@ package fr.sacem.priam.batch.fv.export.domain;
 
 import fr.sacem.priam.batch.common.util.exception.PriamValidationException;
 import java.io.Serializable;
-import java.time.LocalDate;
 
 public class ExportCsvDto implements Serializable {
     private String cdeFamilTypUtil;
@@ -13,8 +12,8 @@ public class ExportCsvDto implements Serializable {
     private String cdeTypIde12;
     private Long ide12RepCoad;
     private String cdeTypIde12RepCoad;
-    private LocalDate datsitu;
-    private LocalDate datconslt;
+    private String datsitu;
+    private String datconslt;
     private Long coad;
     private Long numPers;
     private Long numCatal;
@@ -52,6 +51,8 @@ public class ExportCsvDto implements Serializable {
     private Integer lineNumber;
     private PriamValidationException exception;
     private Long idFichier;
+    private boolean numpersExist;
+    private boolean ayantDroitExist;
 
     public ExportCsvDto() {
 
@@ -59,6 +60,7 @@ public class ExportCsvDto implements Serializable {
 
     public ExportCsvDto(final PriamValidationException e) {
         exception = e;
+        lineNumber = e.getLineNumber();
     }
 
     public Long getIde12RepCoad() {
@@ -253,19 +255,19 @@ public class ExportCsvDto implements Serializable {
         this.cdeTypIde12 = cdeTypIde12;
     }
 
-    public LocalDate getDatsitu() {
+    public String getDatsitu() {
         return datsitu;
     }
 
-    public void setDatsitu(LocalDate datsitu) {
+    public void setDatsitu(String datsitu) {
         this.datsitu = datsitu;
     }
 
-    public LocalDate getDatconslt() {
+    public String getDatconslt() {
         return datconslt;
     }
 
-    public void setDatconslt(LocalDate datconslt) {
+    public void setDatconslt(String datconslt) {
         this.datconslt = datconslt;
     }
 
@@ -403,5 +405,29 @@ public class ExportCsvDto implements Serializable {
 
     public void setException(final PriamValidationException exception) {
         this.exception = exception;
+    }
+
+    public PriamValidationException getException() {
+        return exception;
+    }
+
+    public void setPoints(final Double points) {
+        this.points = points;
+    }
+
+    public void setNumpersExist(final boolean numpersExist) {
+        this.numpersExist = numpersExist;
+    }
+
+    public boolean isNumpersExist() {
+        return numpersExist;
+    }
+
+    public void setAyantDroitExist(final boolean ayantDroitExist) {
+        this.ayantDroitExist = ayantDroitExist;
+    }
+
+    public boolean isAyantDroitExist() {
+        return ayantDroitExist;
     }
 }
