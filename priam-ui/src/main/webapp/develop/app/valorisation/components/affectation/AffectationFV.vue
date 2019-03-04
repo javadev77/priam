@@ -772,6 +772,7 @@
                 return response.json();
               })
               .then(data => {
+                debugger;
                 this.deaffectationEncours = false;
                 this.$router.push({name: 'programme'});
 

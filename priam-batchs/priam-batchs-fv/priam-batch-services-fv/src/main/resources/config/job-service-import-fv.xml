@@ -51,7 +51,7 @@
 
     </job>
 
-    <bean id="listenerStepInsertDataImport" class=""></bean>
+    <bean id="listenerStepInsertDataImport" class="fr.sacem.priam.batch.fv.serviceimport.listener.InsertDataImportStepListener"></bean>
 
     <!-- This is to demo MultiWriters -->
     <bean id="classifierCompositeItemWriter" class="org.springframework.batch.item.support.ClassifierCompositeItemWriter" scope="step">

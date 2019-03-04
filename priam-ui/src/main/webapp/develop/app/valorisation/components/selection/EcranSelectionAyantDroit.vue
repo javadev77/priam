@@ -115,7 +115,7 @@
   import FiltreSelection from './FiltreAyantDroitSelection.vue';
   import Navbar from '../../../common/components/ui/priam-navbar.vue';
   import InformationsSelection from '../../../common/components/selection/InformationsSelection.vue';
-  import ActionSelection from '../../../common/components/selection/ActionSelection.vue';
+  import ActionSelection from '../../../valorisation/components/selection/ActionSelectionAD';
 
   export default {
 
@@ -200,7 +200,7 @@
               }
             },
             {
-              id: 'pointsMontant',
+              id: 'points',
               name: "Points",
               sortable: false,
               sortProperty: 'mt', // l'equivalent du JpaSort dans le back
@@ -250,7 +250,7 @@
           },
           findAyantDroitByProgramme: {
             method: 'POST',
-            url: process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/ligneProgramme/search?page={page}&size={size}&sort={sort},{dir}'
+            url: process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/ayantDroit/search?page={page}&size={size}&sort={sort},{dir}'
           },
           validerSelection: {
             method: 'POST',
@@ -379,7 +379,8 @@
 
       doSearch() {
         this.dataLoading = true;
-        this.resource.findLigneProgrammeByProgramme({
+        /*this.resource.findLigneProgrammeByProgramme({*/
+        this.resource.findAyantDroitByProgramme({
           page: this.defaultPageable.page - 1, size: this.defaultPageable.size,
           sort: this.defaultPageable.sort, dir: this.defaultPageable.dir
         }, this.filter)
@@ -455,6 +456,28 @@
 
         this.rechercher();
       },
+
+
+      valider(selection) {
+        this.selection = selection;
+
+        if (this.programmeInfo.statut == 'AFFECTE' || this.programmeInfo.statut == 'EN_COURS') {
+
+          /*if (this.dureeSelection.duree == 0) {
+            this.modalWaring = true;
+            this.modalVisible = true;
+            this.modalMessage = 'Attention la somme des points sur le programme est égale à 0';
+
+            return;
+          }*/
+
+        }
+        this.modalWaring = false;
+        this.modalVisible = true;
+        this.modalMessage = 'Etes-vous sûr de vouloir valider cette sélection?';
+
+      },
+
       validerSelection() {
         this.valider({
           all: false,

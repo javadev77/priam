@@ -1,11 +1,11 @@
-package fr.sacem.priam.model.domain.criteria;
+package fr.sacem.priam.services.dto;
 
-public class AyantDroitCriteria {
+public class AyantDroitProgrammeCritereRecherche {
 
     private String numProg;
     private Long ide12;
-    private String titre;
     private Long coad;
+    private String titre;
     private String participant;
 
     public String getNumProg() {
@@ -24,20 +24,20 @@ public class AyantDroitCriteria {
         this.ide12 = ide12;
     }
 
-    public String getTitre() {
-        return titre;
-    }
-
-    public void setTitre(String titre) {
-        this.titre = titre;
-    }
-
     public Long getCoad() {
         return coad;
     }
 
     public void setCoad(Long coad) {
         this.coad = coad;
+    }
+
+    public String getTitre() {
+        return titre;
+    }
+
+    public void setTitre(String titre) {
+        this.titre = titre;
     }
 
     public String getParticipant() {

@@ -24,13 +24,13 @@
                 <label class="col-md-6 control-label blueText text-right">COAD</label>
                 <div class="col-md-18 control-label">
                   <autocomplete
-                    id="filterIde12"
-                    :url="urlAutoCompleteIDE12"
+                    id="filterCoad"
+                    :url="urlAutoCompleteCOAD"
                     :custom-params="{ programme: $route.params.numProg }"
                     anchor="code"
                     :min="3"
-                    :on-select="selectIde12"
-                    :on-input="selectIde12"
+                    :on-select="selectCoad"
+                    :on-input="selectCoad"
                     :is-alpha-numeric="true"
                   >
                   </autocomplete>
@@ -43,13 +43,13 @@
                 <label class="col-md-6 control-label blueText text-right">Participant</label>
                 <div class="col-md-18 control-label">
                   <autocomplete
-                    id="filterTitreOeuvre"
-                    :url="urlAutoCompleteTitreOeuvre"
+                    id="filterParticipant"
+                    :url="urlAutoCompleteParticipant"
                     :custom-params="{ programme: $route.params.numProg }"
                     anchor="value"
                     :min="3"
-                    :on-select="selectTitreOeuvre"
-                    :on-input="selectTitreOeuvre"
+                    :on-select="selectParticipant"
+                    :on-input="selectParticipant"
                   >
                   </autocomplete>
                 </div>
@@ -90,8 +90,8 @@
         return {
           showMipsa : false,
           utilisateursOptions : [],
-          urlAutoCompleteIDE12 : process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/ligneProgramme/ide12',
-          urlAutoCompleteTitreOeuvre : process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/ligneProgramme/titreOeuvre'
+          urlAutoCompleteCOAD : process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/ayantDroit/coad',
+          urlAutoCompleteParticipant : process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/ayantDroit/participant'
         }
       },
 
@@ -103,17 +103,17 @@
       },
 
       methods : {
-        selectIde12(data) {
-          this.filter.ide12 = (data.code) ? data.code : data;
+        selectCoad(data) {
+          this.filter.coad = (data.code) ? data.code : data;
         },
 
-        selectTitreOeuvre(data) {
-          this.filter.titre = (data.value) ? data.value : data;
+        selectParticipant(data) {
+          this.filter.participant = (data.value) ? data.value : data;
         },
 
         resetForm() {
-          $("#filterIde12").val("");
-          $("#filterTitreOeuvre").val("");
+          $("#filterCoad").val("");
+          $("#filterParticipant").val("");
           this.retablir();
         }
       },

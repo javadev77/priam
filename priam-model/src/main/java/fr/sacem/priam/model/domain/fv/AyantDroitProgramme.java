@@ -1,21 +1,54 @@
-package fr.sacem.priam.model.domain.dto;
+package fr.sacem.priam.model.domain.fv;
 
-public class AyantDroitDto {
+import fr.sacem.priam.model.domain.Programme;
 
+import javax.persistence.*;
+import java.io.Serializable;
+
+@Entity
+@Table(name = "AYANT_DROIT_PROGRAMME_VIEW")
+public class AyantDroitProgramme implements Serializable {
+
+    @Id
+    @Column(name = "ID")
+    private long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "NUMPROG")
+    private Programme programme;
+
+    @Column(name = "ide12")
     private Long ide12;
+
+    @Column(name = "titre")
     private String titre;
+
+    @Column(name = "COAD")
     private Long coad;
+
+    @Column(name = "role")
     private String role;
+
+    @Column(name = "participant")
     private String participant;
+
+    @Column(name = "points")
     private Double points;
 
-    public AyantDroitDto(Long ide12, String titre, Long coad, String role, String participant, Double points) {
-        this.ide12 = ide12;
-        this.titre = titre;
-        this.coad = coad;
-        this.role = role;
-        this.participant = participant;
-        this.points = points;
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public Programme getProgramme() {
+        return programme;
+    }
+
+    public void setProgramme(Programme programme) {
+        this.programme = programme;
     }
 
     public Long getIde12() {
@@ -65,4 +98,5 @@ public class AyantDroitDto {
     public void setPoints(Double points) {
         this.points = points;
     }
+
 }

@@ -376,7 +376,7 @@
                   id :  'nom',
                   name :   'Nom',
                   sortable : true,
-                  hidden : true,
+                  hidden : false,
                   type : 'long-text',
                   cell : {
 
@@ -490,8 +490,9 @@
                         || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'
                         || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION'
                         || (famille === FAMILLES_PRIAM['VALORISATION'] &&
-                        (statutImportProgramme === null || statutImportProgramme === 'EN_COURS'
-                        || entry.statutExportProgramme === null || entry.statutExportProgramme === 'EN_GENERATION'))) {
+                          (statutImportProgramme === 'EN_COURS' || statutImportProgramme === 'CHARGEMENT_OK' || entry.statutExportProgramme === 'EN_GENERATION')
+                        )
+                      ) {
                         return {value : entry.fichiers, isLink : false}
                       } else {
                         return {value : entry.fichiers, isLink : true}
