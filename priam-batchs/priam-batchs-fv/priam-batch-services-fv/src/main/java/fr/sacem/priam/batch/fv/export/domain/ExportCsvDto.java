@@ -1,6 +1,7 @@
 package fr.sacem.priam.batch.fv.export.domain;
 
 import fr.sacem.priam.batch.common.util.exception.PriamValidationException;
+import fr.sacem.priam.model.domain.fv.LigneProgrammeFV;
 import java.io.Serializable;
 
 public class ExportCsvDto implements Serializable {
@@ -53,6 +54,9 @@ public class ExportCsvDto implements Serializable {
     private Long idFichier;
     private boolean numpersExist;
     private boolean ayantDroitExist;
+    private boolean oeuvreExist;
+    private LigneProgrammeFV ligneProgrammeFV;
+    private Long idOeuvreFv;
 
     public ExportCsvDto() {
 
@@ -429,5 +433,21 @@ public class ExportCsvDto implements Serializable {
 
     public boolean isAyantDroitExist() {
         return ayantDroitExist;
+    }
+
+    public void setOeuvreExist(final boolean oeuvreExist) {
+        this.oeuvreExist = oeuvreExist;
+    }
+
+    public boolean isOeuvreExist() {
+        return oeuvreExist;
+    }
+
+    public void setIdOeuvreFv(final Long idOeuvreFv) {
+        this.idOeuvreFv = idOeuvreFv;
+    }
+
+    public Long getIdOeuvreFv() {
+        return idOeuvreFv;
     }
 }

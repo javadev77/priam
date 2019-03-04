@@ -4,6 +4,7 @@ import fr.sacem.priam.batch.common.dao.AyanrtDroitPersDao;
 import fr.sacem.priam.batch.common.dao.AyantDroitDao;
 import fr.sacem.priam.batch.fv.export.domain.ExportCsvDto;
 import fr.sacem.priam.model.dao.jpa.fv.LigneProgrammeFVDao;
+import fr.sacem.priam.model.domain.fv.LigneProgrammeFV;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.BeforeStep;
@@ -44,13 +45,16 @@ public class ImportDataProcessor implements ItemProcessor<ExportCsvDto, ExportCs
 
         boolean ayantDroitExist = ayantDroitDao.isAyantDroitExist(exportCsvDto.getCoad());
         exportCsvDto.setAyantDroitExist(ayantDroitExist);
-//
-//        Long ide12 = Long.valueOf(exportCsvDto.getIde12());
-//        LigneProgrammeFV ligneProgrammeFV = ligneProgrammeFVDao.findOeuvreByIde12(ide12, exportCsvDto.getIdFichier());
-//
-//        if(ligneProgrammeFV != null) {
-//
-//        }
+
+        Long ide12 = Long.valueOf(exportCsvDto.getIde12());
+        LigneProgrammeFV ligneProgrammeFV = ligneProgrammeFVDao.findOeuvreByIde12(ide12, exportCsvDto.getIdFichier());
+
+        exportCsvDto.setOeuvreExist(ligneProgrammeFV != null);
+        if(exportCsvDto.isOeuvreExist()) {
+            exportCsvDto.setIdOeuvreFv(ligneProgrammeFV.getId());
+        }
+
+
 
         return exportCsvDto;
     }

@@ -376,7 +376,7 @@
                   id :  'nom',
                   name :   'Nom',
                   sortable : true,
-                  hidden : true,
+                  hidden : false,
                   type : 'long-text',
                   cell : {
 

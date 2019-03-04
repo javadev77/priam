@@ -51,7 +51,7 @@
 
     </job>
 
-    <bean id="listenerStepInsertDataImport" class=""></bean>
+    <bean id="listenerStepInsertDataImport" class="fr.sacem.priam.batch.fv.serviceimport.listener.InsertDataImportStepListener"/>
 
     <!-- This is to demo MultiWriters -->
     <bean id="classifierCompositeItemWriter" class="org.springframework.batch.item.support.ClassifierCompositeItemWriter" scope="step">
@@ -66,6 +66,7 @@
             <map>
                 <entry key="ayantDroit" value-ref="ayantDroitItemWriter" />
                 <entry key="compisteAll" value-ref="compositItemWriter" />
+                <entry key="createOeuvre" value-ref="oeuvreWriter"/>
             </map>
         </property>
     </bean>
@@ -203,8 +204,8 @@
         <property name="sql">
             <value>
                 <![CDATA[
-                    INSERT INTO PRIAM_AYANT_DROIT (IDE12REPCOAD, CDETYPIDE12REPCOAD, ROLAD, COAD, IDSTEAD, CLEAD, CDETYPPROTEC, COADORIEDTR, IDSTEORIEDTR, NUMCATAL, NUMPERS)
-                                VALUES (:ide12RepCoad, :cdeTypIde12RepCoad, :rolAd, :coad, :idSteAd, :cleAd, :cdeTypProtect, :coadOriEdtr, :idSteOriEdtr, :numCatal, :numPers)
+                    INSERT INTO PRIAM_AYANT_DROIT (IDE12REPCOAD, CDETYPIDE12REPCOAD, ROLAD, COAD, IDSTEAD, CLEAD, CDETYPPROTEC, COADORIEDTR, IDSTEORIEDTR, NUMCATAL, NUMPERS, points, ID_FV)
+                                VALUES (:ide12RepCoad, :cdeTypIde12RepCoad, :rolAd, :coad, :idSteAd, :cleAd, :cdeTypProtect, :coadOriEdtr, :idSteOriEdtr, :numCatal, :numPers, :points, :idOeuvreFv )
                 ]]>
             </value>
         </property>
@@ -229,6 +230,42 @@
     </bean>
 
 
+    <bean id="oeuvreItemWriter" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                   INSERT INTO PRIAM_LIGNE_PROGRAMME_FV ( id_fichier,
+                                                              cdeFamilTypUtil,
+                                                              cdeTypUtil,
+                                                              numProg,
+                                                              cdeTypIde12,
+                                                              ide12,
+                                                              durDif,
+                                                              nbrDif,
+                                                              mt,
+                                                              tax)
+                                                         VALUES (
+                                                              :idFichier,
+                                                              :cdeFamilTypUtil,
+                                                              :cdeTypUtil,
+                                                              :numProg,
+                                                              :cdeTypIde12,
+                                                              :ide12,
+                                                              :durDif,
+                                                              :nbrDif,
+                                                              :mt,
+                                                              :tax)
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
+
+
+
     <bean id="compositItemWriter" class="org.springframework.batch.item.support.CompositeItemWriter" scope="step">
         <property name="delegates">
             <list>
@@ -237,6 +274,17 @@
             </list>
         </property>
     </bean>
+
+
+    <bean id="oeuvreWriter" class="org.springframework.batch.item.support.CompositeItemWriter" scope="step">
+        <property name="delegates">
+            <list>
+                <ref bean="oeuvreItemWriter" />
+                <ref bean="ayantDroitItemWriter" />
+            </list>
+        </property>
+    </bean>
+
 
     <bean id="listenerCompletionImport"
         class="fr.sacem.priam.batch.fv.serviceimport.listener.JobImportFVListener"/>

@@ -13,7 +13,9 @@ public class ExampleWriterRouteImpl {
 
     @Classifier
     public String classify(ExportCsvDto exportCsvDto) {
-        String type =  exportCsvDto.isNumpersExist() ? "ayantDroit" : "compisteAll";
+        String type =  exportCsvDto.isNumpersExist() && exportCsvDto.isOeuvreExist() ?
+                                "ayantDroit" :
+                                 !exportCsvDto.isOeuvreExist() ? "createOeuvre" : "compisteAll";
         return type;
     }
 
