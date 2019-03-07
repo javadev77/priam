@@ -108,7 +108,6 @@ CREATE TABLE PRIAM_AYANT_DROIT(
   IDSTEORIEDTR VARCHAR(10) DEFAULT NULL,
   NUMCATAL INT(9) DEFAULT NULL,
   NUMPERS INT(9) DEFAULT NULL,
-
   ID_FV int null,
 
   PRIMARY KEY (ID),
@@ -277,10 +276,23 @@ create table PRIAM_IMPORT_PROGRAMME_FV_DATA_BATCH
 	ANNEE_DECES int(4) null
 );
 
+
 ALTER TABLE PRIAM_AYANT_DROIT ADD points double DEFAULT NULL;
 
 
--- Ajout des tables SAREF pour la validation des champs import
 
+DROP VIEW IF EXISTS AYANT_DROIT_PROGRAMME_VIEW;
+CREATE VIEW AYANT_DROIT_PROGRAMME_VIEW AS (
+  select AD.ID AS ID, PP.NUMPROG, LPF.ide12, LPF.titreOeuvre as titre, AD.COAD,
+         AD.ROLAD as role, concat(ADP.NOM, ' ', ADP.PRENOM) AS participant, AD.points
+  from PRIAM_AYANT_DROIT AD
+         inner join PRIAM_LIGNE_PROGRAMME_FV LPF on AD.ID_FV = LPF.id
+         inner join PRIAM_AYANT_DROIT_PERS ADP on AD.NUMPERS = ADP.NUMPERS
+         inner join PRIAM_FICHIER PF on LPF.ID_FICHIER = PF.ID
+         inner join PRIAM_PROGRAMME PP on PF.NUMPROG = PP.NUMPROG
+  );
+
+
+-- Ajout des tables SAREF pour la validation des champs import
 
 COMMIT;

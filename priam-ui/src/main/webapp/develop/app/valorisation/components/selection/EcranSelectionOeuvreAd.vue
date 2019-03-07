@@ -30,6 +30,7 @@
         :filter="filter"
         :retablir="retablirFiltre"
         :rechercher="launchRechercheEtCompteurs"
+        @maj-filtre-vue="changeVue"
       >
       </app-filtre-selection>
     </div>
@@ -60,7 +61,7 @@
               </div>
             </div>
 
-            <div v-if = "!dataLoading" style="width: 50%">
+            <div v-if = "!dataLoading" :style="[filtreVue ? {'width': '50%'} : {'width': '80%'}]">
               <priam-grid
                 v-if="priamGridFondsAyantDroit.gridData.content"
                 :data="priamGridFondsAyantDroit.gridData"
@@ -112,12 +113,14 @@
   import Grid from '../../../common/components/ui/Grid.vue';
   import Modal from '../../../common/components/ui/Modal.vue';
   import ProgrammeInfo from '../../../common/components/programme/ProgrammeInfo.vue';
-  import FiltreSelection from './FiltreAyantDroitSelection.vue';
+  import FiltreSelection from './FiltreOeuvreADSelection.vue';
   import Navbar from '../../../common/components/ui/priam-navbar.vue';
   import InformationsSelection from '../../../common/components/selection/InformationsSelection.vue';
   import ActionSelection from '../../../valorisation/components/selection/ActionSelectionAD';
 
+
   export default {
+    name: "EcranSelectionOeuvreAd",
 
     data() {
       var $this = this;
@@ -143,6 +146,8 @@
           selection: 'Tous'
         },
 
+        filtreVue : false,
+
         dureeSelection: {
           auto: 0,
           corrige: 0,
@@ -154,6 +159,38 @@
 
         priamGridFondsAyantDroit: {
           gridColumns: [
+            {
+              id: 'ide12',
+              name: 'IDE12',
+              sortable: false,
+              hidden : $this.filtreVue,
+              type: 'text-centre',
+              cell: {
+                toText: function (entry) {
+                  var result = entry;
+                  if (result !== undefined)
+                    return result;
+                  else
+                    return "";
+                }
+              }
+            },
+            {
+              id: 'titre',
+              name: "Titre",
+              sortable: false,
+              hidden : $this.filtreVue,
+              type: 'long-text',
+              cell: {
+                toText: function (entry) {
+                  var result = entry;
+                  if (result !== undefined)
+                    return result;
+                  else
+                    return "";
+                }
+              }
+            },
             {
               id: 'coad',
               name: 'COAD',
@@ -203,7 +240,6 @@
               id: 'points',
               name: "Points",
               sortable: false,
-              sortProperty: 'mt', // l'equivalent du JpaSort dans le back
               type: 'text-centre',
               cell: {
                 toText: function (entry) {
@@ -217,7 +253,7 @@
             },
 
           ],
-          gridData: {"content":[{"coad":6252545,"role":"DP","participant":"participant 1","pointsMontant":50}]},
+          gridData: {},
           searchQuery: ''
         },
         dataLoading: false,
@@ -234,6 +270,18 @@
 
       this.initProgramme();
     },
+
+    /*watch : {
+
+      priamGridFondsAyantDroit : function (newValueGrid) {
+
+        debugger;
+        console.log(newValueGrid);
+
+      }
+
+    },*/
+
 
     methods: {
       initProgramme() {
@@ -575,6 +623,26 @@
 
 
       },
+
+      changeVue(filtreVue){
+        let ide12ELement = this.priamGridFondsAyantDroit.gridColumns.find(function (element) {
+          return element.id === 'ide12';
+        });
+
+        let titreELement = this.priamGridFondsAyantDroit.gridColumns.find(function (element) {
+          return element.id === 'titre';
+        });
+
+        if(filtreVue != 'globale'){
+          this.filtreVue = true;
+          ide12ELement.hidden = true;
+          titreELement.hidden = true;
+        } else {
+          this.filtreVue = false;
+          ide12ELement.hidden = false;
+          titreELement.hidden = false;
+        }
+      }
     },
     components : {
       vSelect: vSelect,
@@ -652,3 +720,4 @@
 
 
 </style>
+

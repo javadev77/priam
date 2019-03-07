@@ -26,7 +26,6 @@ public class DatabaseCsvFileConfig {
 
     @Autowired
     LigneProgrammeFVDao ligneProgrammeFVDao;
-    //LigneProgrammeFVDao ligneProgrammeFVDao;
 
     private String head() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.FRANCE);

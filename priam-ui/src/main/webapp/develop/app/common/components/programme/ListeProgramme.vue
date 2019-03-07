@@ -490,8 +490,9 @@
                         || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'
                         || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION'
                         || (famille === FAMILLES_PRIAM['VALORISATION'] &&
-                        (statutImportProgramme === null || statutImportProgramme === 'EN_COURS'
-                        || entry.statutExportProgramme === null || entry.statutExportProgramme === 'EN_GENERATION'))) {
+                          (statutImportProgramme === 'EN_COURS' || statutImportProgramme === 'CHARGEMENT_OK' || entry.statutExportProgramme === 'EN_GENERATION')
+                        )
+                      ) {
                         return {value : entry.fichiers, isLink : false}
                       } else {
                         return {value : entry.fichiers, isLink : true}
@@ -1045,7 +1046,13 @@
                 } else if (row.famille === FAMILLES_PRIAM['COPIE_PRIVEE']) { //CP
                   this.$router.push({ name: 'selection', params: { numProg: row.numProg }});
                 } else if (row.famille === FAMILLES_PRIAM['VALORISATION']) {
-                  this.$router.push({ name: 'selection-fv-oeuvre', params: { numProg: row.numProg }});
+                  if(row.typeRepart==='OEUVRE') {
+                    this.$router.push({name: 'selection-fv-oeuvre', params: {numProg: row.numProg}});
+                  } else if (row.typeRepart==='OEUVRE_AD'){
+                    this.$router.push({name: 'selection-fv-oeuvre-ad', params: {numProg: row.numProg}});
+                  } else {
+                    this.$router.push({name: 'selection-fv-ad', params: {numProg: row.numProg}});
+                  }
                 }
 
               } else if(column.id !== undefined && column.id === 'repartition') {

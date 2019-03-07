@@ -145,7 +145,7 @@ public class BatchConfiguration extends CommonBatchConfig {
                         "nomParticipant1",
                         "cdeTypUtilOri",
                         "cdeFamilTypUtilOri",
-                        "rioneffet"
+                        "rionEffet"
                 });
             }});
             setFieldSetMapper(new BeanWrapperFieldSetMapper<LigneProgrammeFV>() {{
@@ -199,7 +199,8 @@ public class BatchConfiguration extends CommonBatchConfig {
                                                               "cdeTypUtilOri, " +
                                                               "cdeFamilTypUtilOri, " +
                                                               "libelleUtilisateur," +
-                                                              "ajout) "+
+                                                              "ajout," +
+                                                              "rionEffet) "+
                                                         " VALUES (" +
                                                               ":idFichier, " +
                                                               ":cdeCisac, " +
@@ -235,7 +236,8 @@ public class BatchConfiguration extends CommonBatchConfig {
                                                               ":cdeTypUtilOri, " +
                                                               ":cdeFamilTypUtilOri, " +
                                                               ":cdeUtil, " +
-                                                              "'AUTOMATIQUE' )");
+                                                              "'AUTOMATIQUE'," +
+                                                              ":rionEffet )");
 
         writer.setDataSource(dataSource);
         return writer;
@@ -314,7 +316,8 @@ public class BatchConfiguration extends CommonBatchConfig {
                 "cdeTypUtilOri, " +
                 "cdeFamilTypUtilOri, " +
                 "libelleUtilisateur," +
-                "ajout) "+
+                "ajout," +
+                "rionEffet) "+
                 " VALUES (" +
                 ":idFichier, " +
                 ":cdeCisac, " +
@@ -350,7 +353,8 @@ public class BatchConfiguration extends CommonBatchConfig {
                 ":cdeTypUtilOri, " +
                 ":cdeFamilTypUtilOri, " +
                 ":cdeUtil, " +
-                "'AUTOMATIQUE' )");
+                "'AUTOMATIQUE'," +
+                ":rionEffet )");
         writer.setDataSource(dataSource);
         return writer;
     }
@@ -395,7 +399,8 @@ public class BatchConfiguration extends CommonBatchConfig {
                 "cdeTypUtilOri, " +
                 "cdeFamilTypUtilOri, " +
                 "libelleUtilisateur," +
-                "ajout) "+
+                "ajout," +
+                "rionEffet) "+
                 " VALUES (" +
                 ":idFichier, " +
                 ":cdeCisac, " +
@@ -431,7 +436,8 @@ public class BatchConfiguration extends CommonBatchConfig {
                 ":cdeTypUtilOri, " +
                 ":cdeFamilTypUtilOri, " +
                 ":cdeUtil, " +
-                "'AUTOMATIQUE' )");
+                "'AUTOMATIQUE'," +
+                ":rionEffet )");
         writer.setDataSource(dataSource);
         return writer;
     }

@@ -51,6 +51,7 @@
 
     </job>
 
+
     <bean id="listenerStepInsertDataImport" class="fr.sacem.priam.batch.fv.serviceimport.listener.InsertDataImportStepListener"/>
 
     <!-- This is to demo MultiWriters -->
