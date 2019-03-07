@@ -56,4 +56,26 @@ public interface AyantDroitProgrammeFVDao extends JpaRepository<AyantDroitProgra
                     "ORDER BY adp.participant")
     List<KeyValueDto> findParticipantByNumProg(@Param("participant") String participant, @Param("programme") String programme);
 
+    @Transactional(readOnly = true)
+    @Query(value =
+            "SELECT " +
+                    " distinct  new fr.sacem.priam.model.domain.dto.KeyValueDto(adp.ide12) " +
+                    "FROM " +
+                    "AyantDroitProgramme adp " +
+                    "WHERE adp.programme.numProg =:programme " +
+                    "AND CONCAT(adp.ide12,'') like %:query% " +
+                    "ORDER BY adp.ide12")
+    List<KeyValueDto> findIDE12sByProgramme(@Param("query") Long query, @Param("programme") String programme);
+
+    @Transactional(readOnly = true)
+    @Query(value =
+            "SELECT " +
+                    " distinct new fr.sacem.priam.model.domain.dto.KeyValueDto(adp.titre) " +
+                    "FROM " +
+                    "AyantDroitProgramme adp " +
+                    "WHERE adp.programme.numProg =:programme " +
+                    "AND UPPER(adp.titre) like %:titre% " +
+                    "ORDER BY adp.titre")
+    List<KeyValueDto> findTitresByProgramme(@Param("titre") String titre, @Param("programme") String programme);
+
 }

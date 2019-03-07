@@ -81,6 +81,12 @@ public class BatchConfig extends CommonBatchConfig {
                     octavDTO.setIde12(ligneProgrammeFV.getIde12());
                     octavDTO.setCdeTypIde12(ligneProgrammeFV.getCdeTypIde12());
 
+                    String dateJour = new SimpleDateFormat("yyyyMMdd").format(new Date());
+                    octavDTO.setDatConsult(dateJour);
+                    octavDTO.setDatSitu(dateJour);
+
+                    ligneProgrammeFVDao.majOeuvreWithInfoOctav(octavDTO);
+
                     return octavDTO;
                 })
                 .writer(databaseCsvItemWriter)

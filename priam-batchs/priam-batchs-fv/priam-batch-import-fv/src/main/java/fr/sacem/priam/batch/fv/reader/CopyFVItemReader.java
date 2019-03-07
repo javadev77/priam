@@ -63,7 +63,8 @@ public class CopyFVItemReader extends JdbcPagingItemReader<LigneProgrammeFV> {
                 "                utilisateur," +
                 "                date_insertion," +
                 "                selection," +
-                "                ajout");
+                "                ajout," +
+                "                rionEffet");
         sqlPagingQueryProviderFactoryBean.setFromClause("FROM PRIAM_LIGNE_PROGRAMME_TRAITEMENT_BATCH");
         sqlPagingQueryProviderFactoryBean.setWhereClause("WHERE ID_FICHIER = " + idFichier);
         sqlPagingQueryProviderFactoryBean.setGroupClause("GROUP BY ide12");

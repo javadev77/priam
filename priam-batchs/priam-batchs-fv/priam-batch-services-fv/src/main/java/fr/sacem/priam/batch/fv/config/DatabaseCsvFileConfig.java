@@ -26,7 +26,6 @@ public class DatabaseCsvFileConfig {
 
     @Autowired
     LigneProgrammeFVDao ligneProgrammeFVDao;
-    //LigneProgrammeFVDao ligneProgrammeFVDao;
 
     private String head() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.FRANCE);
@@ -38,7 +37,7 @@ public class DatabaseCsvFileConfig {
                 "#-------------------------------------------------------------------------------------------------------------------;;;;;;;;;;;;;;;;;;;\n"+
                 "# " + dateFormat.format(new Date()) + " - PRIAM - Creation\n"+
                 "#DEBUT\n"+
-                "#cdeFamilTypUtil;cdeTypUtil;numProg;rionEffet;ide12;cdeTypIde12;ide12RepCoad;cdeTypIde12RepCoad;datsitu;datconslt;coad;numPers;numCatal;idSteAd;rolAd;typeDroit;cleAd;cdeTypProtect;coadOriEdtr;idSteOriEdtr;nomProgramme;tax;durDif;nbrDif;typMt;mt;genreOeuvre;titreOeuvre;dureeDeposee;taxOri;labelValo;paysOri;indicRepart;nom;prenom;indicSacem;sousRole;anneeNaissance;anneeDeces;indicDrtPercus";
+                "#cdeFamilTypUtil;cdeTypUtil;numProg;rionEffet;ide12;cdeTypIde12;ide12RepCoad;cdeTypIde12RepCoad;datsitu;datconslt;coad;numPers;numCatal;idSteAd;rolAd;typeDroit;cleAd;cdeTypProtect;coadOriEdtr;idSteOriEdtr;points;nomProgramme;tax;durDif;nbrDif;typMt;mt;genreOeuvre;titreOeuvre;dureeDeposee;taxOri;labelValo;paysOri;indicRepart;nom;prenom;indicSacem;sousRole;anneeNaissance;anneeDeces;indicDrtPercus";
     }
 
     private String foot(Long lignes) {
@@ -86,7 +85,7 @@ public class DatabaseCsvFileConfig {
     public FieldExtractor<ExportCsvDto> createExtractor() {
         BeanWrapperFieldExtractor<ExportCsvDto> extractor = new BeanWrapperFieldExtractor<>();
         extractor.setNames(new String[] {"cdeFamilTypUtil", "cdeTypUtil", "numProg", "rionEffet", "ide12", "cdeTypIde12", "ide12RepCoad", "cdeTypIde12RepCoad", "datsitu", "datconslt",
-                "coad", "numPers", "numCatal", "idSteAd", "rolAd", "typeDroit", "cleAd", "cdeTypProtect", "coadOriEdtr", "idSteOriEdtr",
+                "coad", "numPers", "numCatal", "idSteAd", "rolAd", "typeDroit", "cleAd", "cdeTypProtect", "coadOriEdtr", "idSteOriEdtr", "points",
                 "nomProgramme", "tax", "durDif", "nbrDif", "typMt", "mt", "genreOeuvre", "titreOeuvre", "dureeDeposee", "taxOri",
                 "labelValo", "paysOri", "indicRepart", "nom", "prenom", "indicSacem", "sousRole", "anneeNaissance", "anneeDeces", "indicDrtPercus"});
         return extractor;

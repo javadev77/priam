@@ -37,4 +37,14 @@ public class AyantDroitFVServiceImpl implements AyantDroitFVService {
         return ayantDroitProgrammeFVDao.findParticipantByNumProg(query, programme);
     }
 
+    @Override
+    public List<KeyValueDto> getListIDE12ByProgramme(Long ide12, String programme) {
+        return ayantDroitProgrammeFVDao.findIDE12sByProgramme(ide12, programme);
+    }
+
+    @Override
+    public List<KeyValueDto> getTitresByProgramme(String query, String programme) {
+        return ayantDroitProgrammeFVDao.findTitresByProgramme(query, programme);
+    }
+
 }

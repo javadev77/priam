@@ -14,4 +14,8 @@ public interface AyantDroitFVService {
     List<KeyValueDto> getListCoadByNumProg(Long coad, String numProg);
 
     List<KeyValueDto> getParticipantByNumProg(String query, String programme);
+
+    List<KeyValueDto> getListIDE12ByProgramme(Long ide12, String programme);
+
+    List<KeyValueDto> getTitresByProgramme(String query, String programme);
 }

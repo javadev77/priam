@@ -24,7 +24,7 @@
       </div>
 
         <div v-else-if="programmeInfo.statut == 'EN_COURS'">
-            <button class="btn btn-default btn-primary width-140" type="button" @click.prevent="valider()" :disabled="isLoadingDuree || inProcess || listSelectionVide || !isRightVLDSEL">Valider</button>
+            <button class="btn btn-default btn-primary pull-right width-140" type="button" @click.prevent="valider()" :disabled="isLoadingDuree || inProcess || listSelectionVide || !isRightVLDSEL">Valider</button>
         </div>
 
         <div v-else-if="programmeInfo.statut == 'VALIDE'">

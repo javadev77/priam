@@ -1,7 +1,5 @@
 package fr.sacem.priam.rest.valorisation.api;
 
-import fr.sacem.priam.batch.common.dao.AyantDroitDao;
-import fr.sacem.priam.model.dao.jpa.fv.AyantDroitProgrammeFVDao;
 import fr.sacem.priam.model.domain.criteria.AyantDroitCriteria;
 import fr.sacem.priam.model.domain.dto.AyantDroitDto;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
@@ -52,6 +50,32 @@ public class AyantDroitFVResource {
 
     }
 
+    @RequestMapping(value = "ayantDroit/ide12",
+            method = RequestMethod.GET,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<KeyValueDto> getListIDE12ByProgramme(@RequestParam(value = "q") String query, @RequestParam(value = "programme") String programme) {
+
+        Long ide12 ;
+
+        try {
+            ide12 = Long.parseLong(query);
+        }catch (NumberFormatException ex) {
+            return new ArrayList<>();
+        }
+
+        return ayantDroitFVService.getListIDE12ByProgramme(ide12, programme);
+    }
+
+
+    @RequestMapping(value = "ayantDroit/titre",
+            method = RequestMethod.GET,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<KeyValueDto> getTitresByProgramme(@RequestParam(value = "q") String query, @RequestParam(value = "programme") String programme) {
+        return ayantDroitFVService.getTitresByProgramme(query, programme);
+    }
+
     @RequestMapping(value = "ayantDroit/coad",
             method = RequestMethod.GET,
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -73,7 +97,7 @@ public class AyantDroitFVResource {
             method = RequestMethod.GET,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<KeyValueDto> getTitresByProgramme(@RequestParam(value = "q") String query, @RequestParam(value = "programme") String programme) {
+    public List<KeyValueDto> getparticipantByProgramme(@RequestParam(value = "q") String query, @RequestParam(value = "programme") String programme) {
         return ayantDroitFVService.getParticipantByNumProg(query, programme);
     }
 

@@ -1048,8 +1048,10 @@
                 } else if (row.famille === FAMILLES_PRIAM['VALORISATION']) {
                   if(row.typeRepart==='OEUVRE') {
                     this.$router.push({name: 'selection-fv-oeuvre', params: {numProg: row.numProg}});
-                  } else if (row.typeRepart==='AYANT_DROIT'){
-                    this.$router.push({name: 'selection-fv-ayant_droit', params: {numProg: row.numProg}});
+                  } else if (row.typeRepart==='OEUVRE_AD'){
+                    this.$router.push({name: 'selection-fv-oeuvre-ad', params: {numProg: row.numProg}});
+                  } else {
+                    this.$router.push({name: 'selection-fv-ad', params: {numProg: row.numProg}});
                   }
                 }
 

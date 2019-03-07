@@ -51,14 +51,14 @@
             id : 'programme',
             routeName : 'programme',
             label : 'Programme',
-            routes : ['programme', 'selection', 'selection-cms','affectation', 'affectation-cms', 'listeProg', 'selection-fv-oeuvre'],
+            routes : ['programme', 'selection', 'selection-cms','affectation', 'affectation-cms', 'affectation-fv', 'listeProg', 'selection-fv-oeuvre_ad'],
 
             authorized : this.hasRight('MENU_PRINCIPAL'),
             items : [
               {
                 id : 'listeProg',
                 routeName : 'programme',
-                routes : ['programme', 'selection', 'selection-cms', 'affectation', 'affectation-cms', 'affectation-fv', 'listeProg'],
+                routes : ['programme', 'selection', 'selection-cms', 'affectation', 'affectation-cms', 'affectation-fv', 'listeProg','selection-fv-oeuvre_ad'],
                 label : 'Liste programmes',
                 authorized : this.hasRight('MENU_PRINCIPAL')
               }

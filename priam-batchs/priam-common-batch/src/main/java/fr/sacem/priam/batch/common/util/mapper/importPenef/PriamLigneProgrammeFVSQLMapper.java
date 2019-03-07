@@ -54,6 +54,7 @@ public class PriamLigneProgrammeFVSQLMapper implements RowMapper<LigneProgrammeF
         ligneProgrammeFV.setDate_insertion(rs.getString("date_insertion"));
         ligneProgrammeFV.setAjout(rs.getString("ajout"));
         ligneProgrammeFV.setSelection(rs.getString("selection"));
+        ligneProgrammeFV.setRionEffet(rs.getString("rionEffet"));
 
         return ligneProgrammeFV;
     }
