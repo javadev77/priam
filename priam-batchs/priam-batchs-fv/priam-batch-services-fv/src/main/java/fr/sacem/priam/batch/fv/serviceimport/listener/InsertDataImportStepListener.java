@@ -41,5 +41,8 @@ public class InsertDataImportStepListener extends StepExecutionListenerSupport {
         //fichierDao.clearSelectedFichiers(numProg, Status.CHARGEMENT_OK);
         ayantDroitFVDao.deleteByNumProg(numProg);
         fichiersAffectes.forEach(f ->  ligneProgrammeFVDao.deleteAllByFichierId(f.getId()));
+
+        Fichier fichierLink = fichierDao.findFichierLink(numProg);
+        ligneProgrammeFVDao.deleteAllByFichierId(fichierLink.getId());
     }
 }

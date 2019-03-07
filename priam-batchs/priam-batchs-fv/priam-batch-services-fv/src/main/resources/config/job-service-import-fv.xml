@@ -64,9 +64,14 @@
         </property>
         <property name="matcherMap">
             <map>
-                <entry key="ayantDroit" value-ref="ayantDroitItemWriter" />
-                <entry key="compisteAll" value-ref="compositItemWriter" />
-                <entry key="createOeuvre" value-ref="oeuvreWriter"/>
+                <entry key="O+AD+PERS" value-ref="O_AD_PERS_Writer" />
+                <entry key="AD+PERS" value-ref="AD_PERS_Writer" />
+                <entry key="O+AD" value-ref="O_AD_Writer"/>
+
+                <entry key="AD" value-ref="ayantDroitItemWriter" />
+                <entry key="FULL_AD+PERS" value-ref="FULL_AD_PERS_Writer" />
+                <entry key="FULL_AD" value-ref="fullADItemWriter"/>
+
             </map>
         </property>
     </bean>
@@ -215,6 +220,22 @@
     </bean>
 
 
+    <bean id="fullADItemWriter" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    INSERT INTO PRIAM_AYANT_DROIT (IDE12REPCOAD, CDETYPIDE12REPCOAD, ROLAD, COAD, IDSTEAD, CLEAD, CDETYPPROTEC, COADORIEDTR, IDSTEORIEDTR, NUMCATAL, NUMPERS, points, ID_FV)
+                                VALUES (:ide12RepCoad, :cdeTypIde12RepCoad, :rolAd, :coad, :idSteAd, :cleAd, :cdeTypProtect, :coadOriEdtr, :idSteOriEdtr, :numCatal, :numPers, :points, :idOeuvreFv)
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
+
+
     <bean id="ayantDroitPersWriter" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
         <property name="dataSource" ref="dataSource"/>
         <property name="sql">
@@ -250,8 +271,8 @@
                                                               :cdeFamilTypUtil,
                                                               :cdeTypUtil,
                                                               :numProg,
-                                                              :cdeTypIde12,
-                                                              :ide12,
+                                                              :cdeTypIde12RepCoad,
+                                                              :ide12RepCoad,
                                                               :durDif,
                                                               :nbrDif,
                                                               :mt,
@@ -266,7 +287,20 @@
 
 
 
-    <bean id="compositItemWriter" class="org.springframework.batch.item.support.CompositeItemWriter" scope="step">
+    <bean id="O_AD_PERS_Writer" class="org.springframework.batch.item.support.CompositeItemWriter" scope="step">
+        <property name="delegates">
+            <list>
+                <ref bean="ayantDroitPersWriter" />
+                <!--<ref bean="oeuvreItemWriter" />-->
+                <ref bean="ayantDroitItemWriter" />
+            </list>
+        </property>
+    </bean>
+
+
+
+
+    <bean id="AD_PERS_Writer" class="org.springframework.batch.item.support.CompositeItemWriter" scope="step">
         <property name="delegates">
             <list>
                 <ref bean="ayantDroitPersWriter" />
@@ -276,14 +310,24 @@
     </bean>
 
 
-    <bean id="oeuvreWriter" class="org.springframework.batch.item.support.CompositeItemWriter" scope="step">
+    <bean id="O_AD_Writer" class="org.springframework.batch.item.support.CompositeItemWriter" scope="step">
         <property name="delegates">
             <list>
-                <ref bean="oeuvreItemWriter" />
+                <!--<ref bean="oeuvreItemWriter" />-->
                 <ref bean="ayantDroitItemWriter" />
             </list>
         </property>
     </bean>
+
+    <bean id="FULL_AD_PERS_Writer" class="org.springframework.batch.item.support.CompositeItemWriter" scope="step">
+        <property name="delegates">
+            <list>
+                <ref bean="ayantDroitPersWriter" />
+                <ref bean="fullADItemWriter" />
+            </list>
+        </property>
+    </bean>
+
 
 
     <bean id="listenerCompletionImport"

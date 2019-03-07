@@ -57,6 +57,7 @@ public class ExportCsvDto implements Serializable {
     private boolean oeuvreExist;
     private LigneProgrammeFV ligneProgrammeFV;
     private Long idOeuvreFv;
+    private boolean importAD;
 
     public ExportCsvDto() {
 
@@ -449,5 +450,13 @@ public class ExportCsvDto implements Serializable {
 
     public Long getIdOeuvreFv() {
         return idOeuvreFv;
+    }
+
+    public void setImportAD(final boolean importAD) {
+        this.importAD = importAD;
+    }
+
+    public boolean isImportAD() {
+        return importAD;
     }
 }
