@@ -43,12 +43,19 @@
         </div>
         <div class="panel-collapse">
           <div class="result-panel-body panel-body">
-            <!--<app-informations-selection
-              :dataLoadingDuree="dataLoadingDuree"
-              :dureeSelection="dureeSelection"
-              :typeUtilisation="programmeInfo.typeUtilisation"
-            >
-            </app-informations-selection>-->
+            <div class="form-group col-xs-6">
+              <label class="col-xs-3 control-label blueText text-right">Points</label>
+              <div class="col-xs-9 control-label text-left" v-if="!dataLoadingDuree">
+                {{sommePointsAyantDroit}}
+              </div>
+              <div class="col-xs-9">
+                <div class="spinner" v-if="dataLoading">
+                  <div class="rect1"></div>
+                  <div class="rect2"></div>
+                  <div class="rect3"></div>
+                </div>
+              </div>
+            </div>
 
             <div class="row center-div">
               <div class="spinner" v-if="dataLoading">
@@ -143,12 +150,7 @@
           selection: 'Tous'
         },
 
-        dureeSelection: {
-          auto: 0,
-          corrige: 0,
-          manuel: 0,
-          duree: 0
-        },
+        sommePointsAyantDroit: 0,
 
         currentGridState: {},
 
@@ -251,6 +253,11 @@
           findAyantDroitByProgramme: {
             method: 'POST',
             url: process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/ayantDroit/search?page={page}&size={size}&sort={sort},{dir}'
+          },
+
+          calculerPointsByProgramme: {
+            method: 'POST',
+            url: process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/ayantDroit/points'
           },
           validerSelection: {
             method: 'POST',
@@ -395,12 +402,24 @@
             this.priamGridFondsAyantDroit.gridData.number = data.number + 1;
             tab = this.priamGridFondsAyantDroit.gridData.content;
 
+            this.compterSommePoints();
 
             this.ligneProgramme = tab;
             this.dataLoading = false;
 
             // this.$store.dispatch('toutDesactiver', this.countNbSelected(this.ligneProgramme) == this.ligneProgramme.length);
             //this.selectAll();
+          });
+      },
+
+      compterSommePoints() {
+        this.sommePointsAyantDroit = 0;
+        this.resource.calculerPointsByProgramme({}, this.filter)
+          .then(response => {
+            return response.json();
+          })
+          .then(data => {
+            this.sommePointsAyantDroit = data;
           });
       },
 

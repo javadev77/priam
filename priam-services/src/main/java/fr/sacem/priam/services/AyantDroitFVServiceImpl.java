@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service("ayantDroitFVService")
 public class AyantDroitFVServiceImpl implements AyantDroitFVService {
@@ -45,6 +46,15 @@ public class AyantDroitFVServiceImpl implements AyantDroitFVService {
     @Override
     public List<KeyValueDto> getTitresByProgramme(String query, String programme) {
         return ayantDroitProgrammeFVDao.findTitresByProgramme(query, programme);
+    }
+
+    @Override
+    public Double calculerPointsByCriteria(AyantDroitCriteria criteria) {
+        return ayantDroitProgrammeFVDao.calculerPointsByCriteria(criteria.getNumProg(),
+                criteria.getIde12(),
+                criteria.getTitre(),
+                criteria.getCoad(),
+                criteria.getParticipant());
     }
 
 }

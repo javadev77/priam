@@ -1,5 +1,6 @@
 package fr.sacem.priam.model.dao.jpa.fv;
 
+import fr.sacem.priam.model.domain.criteria.AyantDroitCriteria;
 import fr.sacem.priam.model.domain.dto.AyantDroitDto;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.SelectionCMSDto;
@@ -34,6 +35,8 @@ public interface AyantDroitProgrammeFVDao extends JpaRepository<AyantDroitProgra
                                                      @Param("titre") String titre,
                                                      @Param("coad") Long coad,
                                                      @Param("participant") String participant, Pageable pageable);
+
+
 
     @Query(value =
             "SELECT " +
@@ -78,4 +81,17 @@ public interface AyantDroitProgrammeFVDao extends JpaRepository<AyantDroitProgra
                     "ORDER BY adp.titre")
     List<KeyValueDto> findTitresByProgramme(@Param("titre") String titre, @Param("programme") String programme);
 
+    @Transactional(readOnly = true)
+    @Query(value="SELECT sum(ayantDroitProgramme.points) as points "+
+            "FROM AyantDroitProgramme ayantDroitProgramme " +
+            "WHERE ayantDroitProgramme.programme.numProg =:numProg " +
+            "AND (ayantDroitProgramme.ide12 = :ide12 OR :ide12 IS NULL) " +
+            "AND (ayantDroitProgramme.titre like %:titre% OR :titre IS NULL) " +
+            "AND (ayantDroitProgramme.coad = :coad OR :coad IS NULL) " +
+            "AND (ayantDroitProgramme.participant like %:participant% OR :participant IS NULL) ")
+    Double calculerPointsByCriteria(@Param("numProg") String numProg,
+                                    @Param("ide12") Long ide12,
+                                    @Param("titre") String titre,
+                                    @Param("coad") Long coad,
+                                    @Param("participant") String participant);
 }
