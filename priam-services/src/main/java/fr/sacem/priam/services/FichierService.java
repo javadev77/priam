@@ -69,6 +69,7 @@ public class FichierService {
         }  else if(FamillePriam.VALORISATION.getCode().equals(fichier.getFamille().getCode())) {
 
             //TODO : HABIB - Ajouter la suppression en cascade sur LIGNE_PROG_FV
+
             ligneProgrammeFVDao.deleteAllByFichierId(fileId);
             ligneProgrammeCopyFVDao.deleteAllCopyByFichierId(fileId);
         }

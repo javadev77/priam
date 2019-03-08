@@ -11,7 +11,8 @@
                 <chunk
                         reader="exportCsvReader"
                         writer="csvExportFileWriter"
-                        commit-interval="${commit-interval}"
+                        commit-interval="3"
+
                         >
                 </chunk>
             </tasklet>
@@ -40,7 +41,15 @@
         <property name="fromClause" value="FROM EXPORT_FV_VIEW f "/>
         <property name="whereClause" value="WHERE f.numProg='#{jobParameters[numProg]}' "/>
         <property name="dataSource" ref="dataSource"/>
-        <property name="sortKey" value="f.COAD"/>
+        <!--<property name="sortKey" value="f.ide12, f.COAD, f.ROLAD"/>-->
+
+        <property name="sortKeys">
+            <map>
+                <entry key="ide12" value="ASCENDING"/>
+                <entry key="COAD" value="ASCENDING"/>
+                <entry key="ROLAD" value="ASCENDING"/>
+            </map>
+        </property>
     </bean>
 
 

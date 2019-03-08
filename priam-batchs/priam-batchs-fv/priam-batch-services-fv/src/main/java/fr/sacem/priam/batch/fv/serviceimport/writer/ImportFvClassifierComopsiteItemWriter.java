@@ -1,3 +1,4 @@
+/*
 package fr.sacem.priam.batch.fv.serviceimport.writer;
 
 import fr.sacem.priam.batch.fv.export.domain.ExportCsvDto;
@@ -8,12 +9,14 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.batch.item.ItemWriter;
 
+*/
 /**
  * Created with IntelliJ IDEA.
  * @author Yegor Bugayenko (yegor@tpc2.com)
  * @version $Id$
  * @since 1.0
- */
+ *//*
+
 public class ImportFvClassifierComopsiteItemWriter implements ItemWriter<ExportCsvDto> {
     private ImportFvItemClassifier classifier = new ImportFvItemClassifier( null);
 
@@ -47,3 +50,4 @@ public class ImportFvClassifierComopsiteItemWriter implements ItemWriter<ExportC
 
     }
 }
+*/

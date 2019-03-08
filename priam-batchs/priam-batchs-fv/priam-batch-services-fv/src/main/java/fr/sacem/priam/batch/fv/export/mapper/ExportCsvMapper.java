@@ -59,7 +59,6 @@ public class ExportCsvMapper implements RowMapper<ExportCsvDto> {
         exportCsvDto.setIndicRepart(resultSet.getInt("INDICDRTPERCUS"));
         exportCsvDto.setPoints(resultSet.getDouble("POINTS"));
 
-
         return exportCsvDto;
     }
 

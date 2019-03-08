@@ -13,8 +13,26 @@ public class ExampleWriterRouteImpl {
 
     @Classifier
     public String classify(ExportCsvDto exportCsvDto) {
-        String type =  exportCsvDto.isNumpersExist() ? "ayantDroit" : "compisteAll";
-        return type;
+
+        if (!exportCsvDto.isImportAD()) {
+            if (!exportCsvDto.isNumpersExist()) {
+                if (!exportCsvDto.isOeuvreExist()) {
+                    return "O+AD+PERS";
+                } else {
+                    return "AD+PERS";
+                }
+            } else if (!exportCsvDto.isOeuvreExist()) {
+                return "O+AD";
+            } else {
+                return "AD";
+            }
+
+        } else if (!exportCsvDto.isNumpersExist()) {
+            return "FULL_AD+PERS";
+        } else {
+            return "FULL_AD";
+        }
+
     }
 
 }
