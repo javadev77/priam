@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Map;
 
 public interface AyantDroitFVService {
     Page<? extends AyantDroitDto> findAyantDroitByCriteria(AyantDroitCriteria criteria, Pageable pageable);
@@ -18,4 +19,6 @@ public interface AyantDroitFVService {
     List<KeyValueDto> getListIDE12ByProgramme(Long ide12, String programme);
 
     List<KeyValueDto> getTitresByProgramme(String query, String programme);
+
+    Double calculerPointsByCriteria(AyantDroitCriteria criteria);
 }
