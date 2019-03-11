@@ -79,6 +79,8 @@ public class ImportFvItemProcessor implements ItemProcessor<ExportCsvDto, Export
 
             if (fe.getCode().startsWith("format.")) {
                 errorSet.add(String.format(MESSAGE_FORMAT, exportCsvDto.getLineNumber(), fe.getField(), fe.getRejectedValue()));
+            } if(fe.getCode().startsWith("saref.error")) {
+                errorSet.add(String.format("Ligne %s : Le champ \"%s\" avec la valeur \"%s\" n'a pas été trouvé sur Saref", exportCsvDto.getLineNumber(), fe.getField(), fe.getRejectedValue()));
             } else {
                 errorSet.add(String.format(MESSAGE_CHAMPS_OBLIGATOIRE, exportCsvDto.getLineNumber(), fe.getField()));
             }

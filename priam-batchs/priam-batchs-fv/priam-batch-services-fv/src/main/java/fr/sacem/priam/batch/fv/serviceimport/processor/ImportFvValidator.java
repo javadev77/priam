@@ -4,6 +4,16 @@ import static fr.sacem.priam.batch.common.fv.util.CategorieFondsEnum.CAT_04;
 import static fr.sacem.priam.batch.common.fv.util.CategorieFondsEnum.getValue;
 import fr.sacem.priam.batch.common.util.valdiator.importPenef.CommonValidator;
 import fr.sacem.priam.batch.fv.export.domain.ExportCsvDto;
+import fr.sacem.priam.model.dao.jpa.SareftrCategAdSacemDao;
+import fr.sacem.priam.model.dao.jpa.SareftrSteDao;
+import fr.sacem.priam.model.dao.jpa.SareftrTypProtecDao;
+import fr.sacem.priam.model.domain.TypeDroit;
+import fr.sacem.priam.model.domain.saref.SareftrCategAdSacem;
+import fr.sacem.priam.model.domain.saref.SareftrSte;
+import fr.sacem.priam.model.domain.saref.SareftrTypProtec;
+import java.util.List;
+import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import static org.springframework.validation.ValidationUtils.rejectIfEmptyOrWhitespace;
@@ -19,6 +29,16 @@ import org.springframework.validation.Validator;
 public class ImportFvValidator extends CommonValidator implements Validator  {
     public static final int IDE12_LENGTH_MAX = 12;
     public static final int IDE12_LENGTH_MIN = 6;
+
+
+    @Autowired
+    SareftrSteDao sareftrSteDao;
+
+    @Autowired
+    SareftrTypProtecDao sareftrTypProtecDao;
+
+    @Autowired
+    SareftrCategAdSacemDao sareftrCategAdSacemDao;
 
     @Override
     public boolean supports(final Class<?> aClass) {
@@ -74,6 +94,44 @@ public class ImportFvValidator extends CommonValidator implements Validator  {
         rejectIfEmptyOrWhitespace(errors, "idSteOriEdtr", "error.idSteOriEdtr");
         rejectIfEmptyOrWhitespace(errors, "points", "error.points");
 
+        List<SareftrSte> all = sareftrSteDao.findAll();
+        Optional<SareftrSte> first = all.stream().filter(s -> s.getIdSte().equals(Long.valueOf(exportCsvDto.getIdSteAd()))).findFirst();
+        if(!first.isPresent()) {
+            errors.rejectValue("idSteAd","saref.error.idSteAd");
+        }
+
+
+        //Verifier le idSteOriEdtr en DE,DR et PH uniquement
+        TypeDroit typeDroit = TypeDroit.getEnumValue(exportCsvDto.getTypeDroit());
+        if(typeDroit != null) {
+            switch (typeDroit) {
+                case DE:
+                case DR:
+                case PH:
+                    String idSteOriEdtr = exportCsvDto.getIdSteOriEdtr();
+                    Optional<SareftrSte> isExist = all.stream().filter(s -> s.getIdSte().equals(Long.valueOf(idSteOriEdtr))).findFirst();
+                    if(!isExist.isPresent()) {
+                        errors.rejectValue("idSteOriEdtr","saref.error.idSteOriEdtr");
+                    }
+
+                    String cdeTypProtect = exportCsvDto.getCdeTypProtect();
+                    List<SareftrTypProtec> sareftrTypProtecs = sareftrTypProtecDao.findAll();
+                    Optional<SareftrTypProtec> found = sareftrTypProtecs.stream().filter(s -> s.getCdeTypProtec().equals(cdeTypProtect)).findFirst();
+                    if(!found.isPresent()) {
+                        errors.rejectValue("cdeTypProtect","saref.error.cdeTypProtect");
+                    }
+
+                    break;
+            }
+        }
+
+        List<SareftrCategAdSacem> sareftrCategAdSacems = sareftrCategAdSacemDao.findAll();
+        String rolAd = exportCsvDto.getRolAd();
+        Optional<SareftrCategAdSacem> result = sareftrCategAdSacems.stream().filter(s -> s.getCdeCategAdSacem().equals(rolAd)).findFirst();
+
+        if(!result.isPresent()) {
+            errors.rejectValue("rolAd","saref.error.rolAd");
+        }
 
 
 

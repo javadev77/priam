@@ -92,7 +92,7 @@
         <property name="fromClause" value="FROM PRIAM_IMPORT_PROGRAMME_FV_DATA_BATCH l
                                             INNER JOIN PRIAM_FICHIER f ON l.ID_FICHIER=f.ID
                                             INNER JOIN PRIAM_PROGRAMME p ON p.NUMPROG=f.NUMPROG "/>
-        <property name="whereClause" value="WHERE p.NUMPROG='#{jobParameters[numProg]}'                               "/>
+        <property name="whereClause" value="WHERE p.NUMPROG='#{jobParameters[numProg]}'"/>
 
         <property name="dataSource" ref="dataSource"/>
         <property name="sortKey" value="l.id"/>

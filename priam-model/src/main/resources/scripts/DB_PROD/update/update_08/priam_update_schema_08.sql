@@ -294,5 +294,117 @@ CREATE VIEW AYANT_DROIT_PROGRAMME_VIEW AS (
 
 
 -- Ajout des tables SAREF pour la validation des champs import
+DROP TABLE IF EXISTS SAREFTR_STE;
+create table SAREFTR_STE
+(
+  IDSTE              BIGINT                                NOT NULL
+    PRIMARY KEY COMMENT 'Code Societe (Interne) pour OSCAR',
+  FILTRE             DECIMAL(20) NOT NULL
+  COMMENT 'Filtrage des donnees de la table',
+  ORDAFF             INT DEFAULT 0                         NOT NULL
+  COMMENT 'Ordre affichage',
+  COM                VARCHAR(300) COMMENT 'Le champ commentaire  n',
+  CDESTECISAC        VARCHAR(3),
+  LIBSTE             VARCHAR(300)                          NOT NULL,
+  SIGLESTE           VARCHAR(12),
+  CISAC              DOUBLE                                NOT NULL,
+  STEGESTIONSACEM    DOUBLE                                NOT NULL,
+  INDADRSTE          TINYINT,
+  INDCPTBENE         TINYINT,
+  REPART_SACEM       DOUBLE DEFAULT 0                      NOT NULL,
+  DATCRE             DATETIME                              NOT NULL,
+  USERCRE            VARCHAR(60)                           NOT NULL,
+  DATMAJ             DATETIME           NOT NULL,
+  USERMAJ            VARCHAR(60)                           NOT NULL,
+  DATDBTVLD          DATETIME                              NOT NULL,
+  DATFINVLD          DATETIME,
+  TERRESSTE          SMALLINT,
+  ORIEDTRRAES        TINYINT DEFAULT 2                     NOT NULL,
+  LOGOENTET          VARCHAR(80),
+  LOGOADR1A          VARCHAR(100),
+  LOGOADR1B          VARCHAR(100),
+  LOGOADR1C          VARCHAR(100),
+  LOGOADR1D          VARCHAR(100),
+  LOGOADR1E          VARCHAR(100),
+  BIEM               TINYINT DEFAULT 0,
+  FLGPREREPART       TINYINT DEFAULT 0                     NOT NULL,
+  FLGCOOP            TINYINT DEFAULT 0                     NOT NULL,
+  CDEDEVISE          VARCHAR(3),
+  FLGSTEHORSRION     TINYINT DEFAULT 0,
+  FLGRIONREALISSACEM TINYINT DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS SAREFTR_CATEGADSACEM;
+create table SAREFTR_CATEGADSACEM
+(
+  CDECATEGADSACEM VARCHAR(10) not null
+    primary key comment 'Code identifiant AD Sacem',
+  FILTRE DECIMAL(20) not null comment 'Filtrage des donnees de la table',
+  ORDAFF INT default 0  not null comment 'Ordre affichage',
+  COM VARCHAR(300) COMMENT 'Commentaires libres',
+  DATCRE DATETIME not null comment 'Date de creation',
+  USERCRE VARCHAR(60) not null comment 'Utilisateur ayant effectue la creation',
+  DATMAJ DATETIME  not null comment 'Date de modification',
+  USERMAJ VARCHAR(60) not null comment 'Utilisateur ayant effectue la modification',
+  DATDBTVLD DATETIME not null comment 'Date de debut de validite',
+  DATFINVLD DATETIME COMMENT 'Date de fin d evalidite',
+  NONAD CHAR default '0',
+  ADCRE CHAR default '0' COMMENT 'ind. Ayant droit de type createur',
+  CDEROLCISAC VARCHAR(2)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS SAREFTR_TYPDRTSACEM;
+create table SAREFTR_TYPDRTSACEM
+(
+  CDETYPDRTSACEM VARCHAR(3) not null
+    primary key comment 'Ce code permet de specifier le type de Droit SACEM (DE, DR ou PH par exemple)',
+  FILTRE DECIMAL(20) not null comment 'Filtrage des donnees de la table',
+  ORDAFF INT default 0  not null comment 'Ordre affichage',
+  COM VARCHAR(300) COMMENT 'Le champ commentaire  n',
+  DATCRE DATETIME not null,
+  USERCRE VARCHAR(60) not null,
+  DATMAJ DATETIME not null,
+  USERMAJ VARCHAR(60) not null,
+  DATDBTVLD DATETIME not null,
+  DATFINVLD DATETIME,
+  FLGIGNOREDP TINYINT default 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS SAREFTR_TYPPROTEC;
+create table SAREFTR_TYPPROTEC
+(
+  CDETYPPROTEC VARCHAR(3) not null primary key comment 'Code type protection des oeuvres',
+  FILTRE DECIMAL(20) not null comment 'Filtrage des donnees de la table',
+  ORDAFF INT default 0  not null comment 'Ordre affichage',
+  COM VARCHAR(300) COMMENT 'Commentaires libres',
+  DATCRE DATETIME not null comment 'Date de creation',
+  USERCRE VARCHAR(60) not null comment 'Utilisateur ayant cree l',
+  DATMAJ DATETIME not null,
+  USERMAJ VARCHAR(60) not null,
+  DATDBTVLD DATETIME not null,
+  DATFINVLD DATETIME,
+  FLGCPTEATT CHAR default 'N'  not null
+)  ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS SAREFTR_GREOEUV;
+create table SAREFTR_GREOEUV
+(
+  CDEGREOEUV VARCHAR(3) not null primary key,
+  FILTRE DECIMAL(20) not null,
+  ORDAFF INT default 0  not null,
+  COM VARCHAR(300),
+  DATCRE DATETIME not null,
+  USERCRE VARCHAR(60) not null,
+  DATMAJ DATETIME  not null,
+  USERMAJ VARCHAR(60) not null,
+  DATDBTVLD DATETIME not null,
+  DATFINVLD DATETIME,
+  CDETYPIDE12 VARCHAR(10) not null,
+  INDCMPLX CHAR default 'O'  not null,
+  REGPMTGRE VARCHAR(3) not null,
+  CDEMWCATEG VARCHAR(3) default 'UNC'  not null,
+  CDEGREDIF VARCHAR(10),
+  CDESSTYPIDE12 VARCHAR(3)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 COMMIT;
