@@ -45,11 +45,11 @@
           <div class="result-panel-body panel-body">
             <div class="form-group col-xs-6">
               <label class="col-xs-3 control-label blueText text-right">Points</label>
-              <div class="col-xs-9 control-label text-left" v-if="!dataLoadingDuree">
+              <div class="col-xs-9 control-label text-left" v-if="!dataLoadingPoints">
                 {{sommePointsAyantDroit}}
               </div>
               <div class="col-xs-9">
-                <div class="spinner" v-if="dataLoading">
+                <div class="spinner" v-if="dataLoadingPoints">
                   <div class="rect1"></div>
                   <div class="rect2"></div>
                   <div class="rect3"></div>
@@ -223,7 +223,7 @@
           searchQuery: ''
         },
         dataLoading: false,
-        dataLoadingDuree: false,
+        dataLoadingPoints: false,
         modalVisible: false,
         modalMessage: '',
         modalWaring: false,
@@ -413,6 +413,7 @@
       },
 
       compterSommePoints() {
+        this.dataLoadingPoints = true;
         this.sommePointsAyantDroit = 0;
         this.resource.calculerPointsByProgramme({}, this.filter)
           .then(response => {
@@ -420,6 +421,7 @@
           })
           .then(data => {
             this.sommePointsAyantDroit = data;
+            this.dataLoadingPoints = false;
           });
       },
 
