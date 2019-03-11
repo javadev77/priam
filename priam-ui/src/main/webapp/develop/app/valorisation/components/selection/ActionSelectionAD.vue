@@ -24,11 +24,11 @@
       </div>
 
         <div v-else-if="programmeInfo.statut == 'EN_COURS'">
-            <button class="btn btn-default btn-primary pull-right width-140" type="button" @click.prevent="valider()" :disabled="isLoadingDuree || inProcess || listSelectionVide || !isRightVLDSEL">Valider</button>
+            <button class="btn btn-default btn-primary pull-right width-140" type="button" @click.prevent="valider()" :disabled="isLoadingPoints || inProcess || listSelectionVide || !isRightVLDSEL">Valider</button>
         </div>
 
         <div v-else-if="programmeInfo.statut == 'VALIDE'">
-          <button class="btn btn-default btn-primary pull-right width-140" type="button" @click.prevent="invalider()" :disabled="isLoadingDuree || !isRightINVSEL">Invalider</button>
+          <button class="btn btn-default btn-primary pull-right width-140" type="button" @click.prevent="invalider()" :disabled="isLoadingPoints || !isRightINVSEL">Invalider</button>
           <span class="pull-right">
              {{ userValidation }} {{ programmeInfo.dateValidation | dateAffectation}}
           </span>
@@ -60,7 +60,7 @@
         edition : Boolean,
         inProcess : Boolean,
         annulerSelection : Function,
-        isLoadingDuree : Boolean
+        isLoadingPoints : Boolean
       },
 
      computed :{

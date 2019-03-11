@@ -29,7 +29,7 @@
       <app-filtre-selection
         :filter="filter"
         :retablir="retablirFiltre"
-        :rechercher="launchRechercheEtCompteurs"
+        :rechercher="doSearch"
       >
       </app-filtre-selection>
     </div>
@@ -87,9 +87,8 @@
         :listSelectionVide="ligneProgramme.length == 0"
         :valider="validerSelection"
         :invalider="invaliderProgramme"
-        :annulerSelection="annulerSelection"
         :inProcess="inProcess"
-        :isLoadingDuree="dataLoadingDuree"
+        :isLoadingPoints="dataLoadingPoints"
       >
       </app-action-selection>
       <modal v-if="modalVisible">
@@ -145,9 +144,9 @@
         filter: {
           ide12: null,
           numProg: this.$route.params.numProg,
-          titre: null,
+          titre: null/*,
           ajout: 'Tous',
-          selection: 'Tous'
+          selection: 'Tous'*/
         },
 
         sommePointsAyantDroit: 0,
@@ -246,10 +245,10 @@
             method: 'GET',
             url: process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/programme/numProg/{numProg}'
           },
-          findLigneProgrammeByProgramme: {
+          /*findLigneProgrammeByProgramme: {
             method: 'POST',
             url: process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/ligneProgramme/search?page={page}&size={size}&sort={sort},{dir}'
-          },
+          },*/
           findAyantDroitByProgramme: {
             method: 'POST',
             url: process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/ayantDroit/search?page={page}&size={size}&sort={sort},{dir}'
@@ -263,42 +262,10 @@
             method: 'POST',
             url: process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/ligneProgramme/selection/valider'
           },
-          modifierSelection: {
-            method: 'POST',
-            url: process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/ligneProgramme/selection/modifier'
-          },
-          updateSelectionTemporaire: {
-            method: 'POST',
-            url: process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/ligneProgramme/selection/temporaire/modifier'
-          },
           invaliderSelection: {
             method: 'POST',
             url: process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/ligneProgramme/selection/invalider'
           },
-          compteursProgramme: {
-            method: 'GET',
-            url: process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/ligneProgramme/selection/compteurs?numProg={numProg}&statut={statut}'
-          },
-          annulerSelection: {
-            method: 'POST',
-            url: process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/ligneProgramme/selection/annuler'
-          },
-          supprimerLigneProgramme: {
-            method: 'DELETE',
-            url: process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/ligneProgramme/{numProg}/{ide12}/'
-          },
-          enregistrerEdition: {
-            method: 'POST',
-            url: process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/ligneProgramme/selection/enregistrerEdition'
-          },
-          annulerEdition: {
-            method: 'POST',
-            url: process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/ligneProgramme/selection/annulerEdition'
-          },
-          getLastFinished: {
-            method: 'GET',
-            url: process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/programme/eligibilite/tmt/{numProg}'
-          }
         }
 
         this.resource = this.$resource('', {}, customActions);
@@ -323,30 +290,12 @@
 
             this.tableauSelectionnable = false;
 
-
-            //this.defaultPageable.sort = 'pointsMontant';
-
-            /*var pointsColumn = this.priamGridFondsAyantDroit.gridColumns.find(function (elem) {
-              return elem.id === 'pointsMontant';
-            });
-            debugger;
-            if (pointsColumn !== undefined) {
-              if (this.programmeInfo.typeUtilisation === "FD12") {
-                pointsColumn.sortProperty = 'nbrDifEdit';
-                pointsColumn.cellEditorFramework = QuantiteEditor;
-              } else {
-                pointsColumn.sortProperty = 'mtEdit';
-                pointsColumn.cellEditorFramework = PointsMontantEditor;
-              }
-
-            }*/
-
-            if (this.programmeInfo.statut == 'EN_COURS' || this.programmeInfo.statut == 'VALIDE') {
+            /*if (this.programmeInfo.statut == 'EN_COURS' || this.programmeInfo.statut == 'VALIDE') {
               this.filter.selection = 'Sélectionné';
               this.all = false;
-            }
-            this.rechercher();
-
+            }*/
+            /*this.rechercher();*/
+            this.doSearch();
           });
       },
 
@@ -358,7 +307,7 @@
         this.currentFilter.titre = this.filter.titre;
         this.currentFilter.selection = this.filter.selection;*/
 
-        if (!this.edition) {
+        /*if (!this.edition) {
           this.launchRechercheEtCompteurs();
         } else {
           this.modifierSelectionTemporaire();
@@ -374,7 +323,9 @@
             .catch(response => {
               console.log("Erreur technique lors de la validation de la selection du programme !! " + response);
             });
-        }
+        }*/
+
+        this.launchRechercheEtCompteurs();
 
       },
 
@@ -461,7 +412,7 @@
       onSort(currentPage, pageSize, sort) {
 
         this.dataLoading = true;
-        this.launchRequest(currentPage, pageSize, sort.property, sort.direction);
+        /*this.launchRequest(currentPage, pageSize, sort.property, sort.direction);*/
         this.defaultPageable.sort = sort.property;
         this.defaultPageable.dir = sort.direction;
       },
@@ -470,29 +421,19 @@
         this.filter = {
           ide12: null,
           numProg: this.$route.params.numProg,
-          titre: null,
+          titre: null/*,
           ajout: 'Tous',
-          selection: 'Tous'
+          selection: 'Tous'*/
         }
 
-        this.rechercher();
+        /*this.rechercher();*/
+        this.doSearch();
       },
 
 
       valider(selection) {
         this.selection = selection;
 
-        if (this.programmeInfo.statut == 'AFFECTE' || this.programmeInfo.statut == 'EN_COURS') {
-
-          /*if (this.dureeSelection.duree == 0) {
-            this.modalWaring = true;
-            this.modalVisible = true;
-            this.modalMessage = 'Attention la somme des points sur le programme est égale à 0';
-
-            return;
-          }*/
-
-        }
         this.modalWaring = false;
         this.modalVisible = true;
         this.modalMessage = 'Etes-vous sûr de vouloir valider cette sélection?';
@@ -528,19 +469,6 @@
             numProg: this.$route.params.numProg
           };
 
-          this.resource.annulerSelection(this.selection)
-            .then(response => {
-              return response.json();
-            })
-            .then(data => {
-              this.inProcess = false;
-              this.modalVisible = false;
-              this.$emit('cancel');
-              this.$router.push({name: 'programme'});
-            })
-            .catch(response => {
-              alert("Erreur technique lors de la validation de la selection du programme !! " + response);
-            });
         } else if (this.annulerAction != true && this.programmeInfo.statut == 'VALIDE') {
           this.inProcess = true;
 
@@ -587,15 +515,15 @@
         this.modalVisible = true;
         this.modalMessage = 'Etes-vous sûr de vouloir invalider ce programme?';
       },
-      annulerSelection() {
+
+      /*annulerSelection() {
 
         this.annulerAction = true;
         this.modalVisible = true;
         this.tableauSelectionnable = true;
         this.modalMessage = 'Toutes les opérations seront perdues. Etes-vous sûr de vouloir annuler la sélection ?';
 
-
-      },
+      },*/
     },
     components : {
       vSelect: vSelect,
