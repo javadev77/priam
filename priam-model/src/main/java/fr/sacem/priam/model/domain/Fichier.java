@@ -2,7 +2,7 @@ package fr.sacem.priam.model.domain;
 
 import fr.sacem.priam.model.domain.saref.SareftrFamiltyputil;
 import fr.sacem.priam.model.domain.saref.SareftrTyputil;
-import fr.sacem.priam.model.domain.saref.StatutEnrichissementFV;
+import fr.sacem.priam.model.domain.fv.StatutEnrichissementFV;
 
 import javax.persistence.*;
 import java.io.Serializable;

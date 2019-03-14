@@ -484,15 +484,10 @@
                       var result  = getters.statutProgramme.find(function (element) {
                         return element.code === entry.statut;
                       });
-                      var statutImportProgramme = entry.statutImportProgramme;
-                      let famille = entry.famille;
+
                       if(result.code === 'ABANDONNE' ||  entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
                         || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'
-                        || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION'
-                        || (famille === FAMILLES_PRIAM['VALORISATION'] &&
-                          (statutImportProgramme === 'EN_COURS' || statutImportProgramme === 'CHARGEMENT_OK' || entry.statutExportProgramme === 'EN_GENERATION')
-                        )
-                      ) {
+                        || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION' ) {
                         return {value : entry.fichiers, isLink : false}
                       } else {
                         return {value : entry.fichiers, isLink : true}

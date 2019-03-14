@@ -4,7 +4,6 @@ package fr.sacem.priam.model.dao.jpa;
 import fr.sacem.priam.model.domain.Fichier;
 import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.dto.FileDto;
-import fr.sacem.priam.model.domain.saref.StatutEnrichissementFV;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

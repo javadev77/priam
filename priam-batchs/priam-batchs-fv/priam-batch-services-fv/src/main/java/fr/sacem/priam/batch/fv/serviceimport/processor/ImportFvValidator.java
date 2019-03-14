@@ -5,12 +5,20 @@ import static fr.sacem.priam.batch.common.fv.util.CategorieFondsEnum.getValue;
 import fr.sacem.priam.batch.common.util.valdiator.importPenef.CommonValidator;
 import fr.sacem.priam.batch.fv.export.domain.ExportCsvDto;
 import fr.sacem.priam.model.dao.jpa.SareftrCategAdSacemDao;
+import fr.sacem.priam.model.dao.jpa.SareftrFamiltyputilDao;
+import fr.sacem.priam.model.dao.jpa.SareftrGreOeuvDao;
 import fr.sacem.priam.model.dao.jpa.SareftrSteDao;
+import fr.sacem.priam.model.dao.jpa.SareftrTypDrtSacemDao;
 import fr.sacem.priam.model.dao.jpa.SareftrTypProtecDao;
+import fr.sacem.priam.model.dao.jpa.SareftrTyputilDao;
 import fr.sacem.priam.model.domain.TypeDroit;
 import fr.sacem.priam.model.domain.saref.SareftrCategAdSacem;
+import fr.sacem.priam.model.domain.saref.SareftrFamiltyputil;
+import fr.sacem.priam.model.domain.saref.SareftrGreOeuv;
 import fr.sacem.priam.model.domain.saref.SareftrSte;
+import fr.sacem.priam.model.domain.saref.SareftrTypDrtSacem;
 import fr.sacem.priam.model.domain.saref.SareftrTypProtec;
+import fr.sacem.priam.model.domain.saref.SareftrTyputil;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +48,19 @@ public class ImportFvValidator extends CommonValidator implements Validator  {
     @Autowired
     SareftrCategAdSacemDao sareftrCategAdSacemDao;
 
+    @Autowired
+    SareftrFamiltyputilDao sareftrFamiltyputilDao;
+
+    @Autowired
+    SareftrTyputilDao sareftrTyputilDao;
+
+    @Autowired
+    SareftrTypDrtSacemDao sareftrTypDrtSacemDao;
+
+    @Autowired
+    SareftrGreOeuvDao sareftrGreOeuvDao;
+
+
     @Override
     public boolean supports(final Class<?> aClass) {
         return ExportCsvDto.class.equals(aClass);
@@ -56,7 +77,7 @@ public class ImportFvValidator extends CommonValidator implements Validator  {
         rejectIfEmptyOrWhitespace(errors, "cdeTypUtil", "error.cdeTypUtil");
         rejectIfEmptyOrWhitespace(errors, "numProg", "error.numProg");
         //Oeuvre
-        rejectIfEmptyOrWhitespace(errors, "rionEffet", "error.cdeTypIde12");
+        rejectIfEmptyOrWhitespace(errors, "rionEffet", "error.rionEffet");
 
         String cdeTypUtil = exportCsvDto.getCdeTypUtil();
         if(cdeTypUtil != null && !cdeTypUtil.isEmpty() && CAT_04.equals(getValue(cdeTypUtil))) {
@@ -133,11 +154,32 @@ public class ImportFvValidator extends CommonValidator implements Validator  {
             errors.rejectValue("rolAd","saref.error.rolAd");
         }
 
+        List<SareftrFamiltyputil> familtyputils = sareftrFamiltyputilDao.findAll();
+        Optional<SareftrFamiltyputil> rslt = familtyputils.stream().filter(s -> s.getCode().equals(exportCsvDto.getCdeFamilTypUtil())).findFirst();
 
+        if(!rslt.isPresent()) {
+            errors.rejectValue("cdeFamilTypUtil","saref.error.cdeFamilTypUtil");
+        }
 
+        List<SareftrTyputil> typutils = sareftrTyputilDao.findAll();
+        Optional<SareftrTyputil> rsltTypUtil = typutils.stream().filter(s -> s.getCode().equals(exportCsvDto.getCdeTypUtil())).findFirst();
 
+        if(!rsltTypUtil.isPresent()) {
+            errors.rejectValue("cdeTypUtil","saref.error.cdeTypUtil");
+        }
 
+        List<SareftrTypDrtSacem> typDrtSacems = sareftrTypDrtSacemDao.findAll();
+        boolean present = typDrtSacems.stream().anyMatch(s -> s.getCdeTypDrtSacem().equals(exportCsvDto.getTypeDroit()));
 
+        if(!present) {
+            errors.rejectValue("typeDroit","saref.error.typeDroit");
+        }
 
+        List<SareftrGreOeuv> greOeuvs = sareftrGreOeuvDao.findAll();
+        present = greOeuvs.stream().anyMatch(s -> s.getCdeGreOeuv().equals(exportCsvDto.getGenreOeuvre()));
+
+        if(!present) {
+            errors.rejectValue("genreOeuvre","saref.error.genreOeuvre");
+        }
     }
 }
