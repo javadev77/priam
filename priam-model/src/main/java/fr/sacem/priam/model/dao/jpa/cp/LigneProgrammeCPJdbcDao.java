@@ -2,23 +2,20 @@ package fr.sacem.priam.model.dao.jpa.cp;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
-import fr.sacem.priam.model.domain.Journal;
 import fr.sacem.priam.model.domain.cp.LigneProgrammeCP;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.PostConstruct;
+import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-
-import org.springframework.jdbc.core.PreparedStatementSetter;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
-import javax.sql.DataSource;
-import java.sql.*;
-import java.util.*;
-
-import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
 /**
  * Created by benmerzoukah on 12/04/2018.

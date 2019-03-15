@@ -514,7 +514,7 @@
 
 
                     cellTemplate: function (cellValue) {
-                      var tempalteExport = '<span class="glyphicon glyphicon-export" aria-hidden="true" style="padding-left: 0px;" title="Export"></span>';
+                      var templateExport = '<span class="glyphicon glyphicon-export" aria-hidden="true" style="padding-left: 0px;" title="Export"></span>';
                       var statusCode = cellValue.statut;
 
                       var template = [{}];
@@ -524,7 +524,7 @@
                         cellValue.statutEligibilite === null) {
                         if(statusCode !== undefined && 'AFFECTE' === statusCode) {
                           if(cellValue.statutExportProgramme === null || cellValue.statutExportProgramme === 'TELECHARGE'){
-                            template[0] = {event : 'exporter-programme', template : tempalteExport};
+                            template[0] = {event : 'exporter-programme', template : templateExport};
                           }
                         }
                       }

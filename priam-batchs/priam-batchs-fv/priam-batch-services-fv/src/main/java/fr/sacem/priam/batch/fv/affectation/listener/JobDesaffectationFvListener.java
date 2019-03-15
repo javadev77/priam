@@ -73,8 +73,6 @@ public class JobDesaffectationFvListener extends JobExecutionListenerSupport {
             }
 
             if(isAllDesaffecte) {
-
-
                 programmeBatchDao.updateProgramme(numProg, user);
 
 //                String userId = jobExecution.getJobParameters().getString("userId");
