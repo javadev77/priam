@@ -12,9 +12,9 @@
     </appender>
 
     <appender name="priam-file" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${priam.log.default.directory}/priam-batch-participants-rep.log</file>
+        <file>${priam.log.default.directory}/priam-batch-participants-rep-${typeCMS}.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <fileNamePattern>${priam.log.default.directory}/priam-batch-participants-rep.%i.log</fileNamePattern>
+            <fileNamePattern>${priam.log.default.directory}/priam-batch-participants-rep-${typeCMS}.%i.log</fileNamePattern>
             <maxIndex>20</maxIndex>
         </rollingPolicy>
         <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
