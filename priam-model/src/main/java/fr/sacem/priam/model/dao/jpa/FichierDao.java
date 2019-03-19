@@ -4,7 +4,6 @@ package fr.sacem.priam.model.dao.jpa;
 import fr.sacem.priam.model.domain.Fichier;
 import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.dto.FileDto;
-import fr.sacem.priam.model.domain.saref.StatutEnrichissementFV;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -80,7 +79,7 @@ public interface FichierDao extends JpaRepository<Fichier, Long> {
     
 
     @Modifying(clearAutomatically = true)
-    @Query("UPDATE Fichier f SET f.programme.numProg = NULL, f.statutEnrichissementFV = NULL WHERE f.programme.numProg = :numProg")
+    @Query("UPDATE Fichier f SET f.programme.numProg = NULL, f.statutEnrichissementFV = NULL, f.statut = 'CHARGEMENT_OK' WHERE f.programme.numProg = :numProg")
     void updateStatutEnrichissementFichiersAffectes(@Param("numProg") String numProg);
 
     @Modifying(clearAutomatically = true)

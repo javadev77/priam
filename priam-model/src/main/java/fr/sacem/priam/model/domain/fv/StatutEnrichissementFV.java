@@ -1,4 +1,4 @@
-package fr.sacem.priam.model.domain.saref;
+package fr.sacem.priam.model.domain.fv;
 
 public enum StatutEnrichissementFV {
 

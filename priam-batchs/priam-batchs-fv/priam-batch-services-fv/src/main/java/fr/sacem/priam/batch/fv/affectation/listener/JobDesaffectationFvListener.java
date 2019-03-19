@@ -2,8 +2,10 @@ package fr.sacem.priam.batch.fv.affectation.listener;
 
 import fr.sacem.priam.batch.common.dao.LigneProgrammeBatchDao;
 import fr.sacem.priam.batch.common.dao.ProgrammeBatchDao;
+import fr.sacem.priam.batch.common.domain.Programme;
 import fr.sacem.priam.batch.common.service.importPenef.FichierBatchService;
 import fr.sacem.priam.model.dao.jpa.FichierDao;
+import fr.sacem.priam.model.dao.jpa.fv.*;
 import fr.sacem.priam.model.domain.Fichier;
 import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.dto.FileDto;
@@ -12,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.apache.commons.lang.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.BatchStatus;
@@ -39,7 +43,24 @@ public class JobDesaffectationFvListener extends JobExecutionListenerSupport {
     private FichierDao fichierDao;
 
     @Autowired
+    private AyantDroitFVDao ayantDroitFVDao;
+
+    @Autowired
     LigneProgrammeBatchDao ligneProgrammeBatchDao;
+
+    @Autowired
+    LigneProgrammeFVDao ligneProgrammeFVDao;
+
+    @Autowired
+    ImportDataBatchFVJdbcDao importDataBatchFVJdbcDao;
+
+    @Autowired
+    ExportProgrammeFVDao exportProgrammeFVDao;
+
+    @Autowired
+    ImportProgrammeFVDao importProgrammeFVDao;
+
+    private static final String TYPE_REPART_OEUVRE = "OEUVRE";
 
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
@@ -65,17 +86,33 @@ public class JobDesaffectationFvListener extends JobExecutionListenerSupport {
             programmeBatchDao.majStattutEligibilite(numProg, "FIN_DESAFFECTATION");
 
           //  fichierRepository.deleteFichierLinkForAntille(numProg);
-            fichierDao.updateStatutEnrichissementFichiersAffectes(numProg);
-            fichierBatchService.clearSelectedFichiers(numProg, "CHARGEMENT_OK");
+//            fichierDao.updateStatutEnrichissementFichiersAffectes(numProg);
             String user = jobExecution.getJobParameters().getString("username");
             if(!isAllDesaffecte && isFichiersAffectesVide) {
+                fichierBatchService.clearSelectedFichiers(numProg, "CHARGEMENT_OK");
                 programmeBatchDao.updateProgramme(numProg, user);
             }
 
             if(isAllDesaffecte) {
 
-
                 programmeBatchDao.updateProgramme(numProg, user);
+
+                Programme programme = programmeBatchDao.findByNumProg(numProg);
+                if(!TYPE_REPART_OEUVRE.equals(programme.getTypeRepart())){
+                    List<Fichier> fichiersAffectes = fichierDao.findFichiersByIdProgramme(numProg, Status.AFFECTE);
+                    ayantDroitFVDao.deleteByNumProg(numProg);
+                    fichiersAffectes.forEach(f ->  ligneProgrammeFVDao.deleteAllByFichierId(f.getId()));
+                    Fichier fichierLink = fichierDao.findFichierLink(numProg);
+                    if(fichierLink !=null) {
+                        importDataBatchFVJdbcDao.deleteImportProgrammeByIdFichier(fichierLink.getId());
+                        ligneProgrammeFVDao.deleteAllByFichierId(fichierLink.getId());
+                    }
+                    fichierDao.updateStatutEnrichissementFichiersAffectes(numProg);
+                    exportProgrammeFVDao.deleteByNumProg(numProg);
+                    importProgrammeFVDao.deleteByNumProg(numProg);
+                }
+                fichierDao.updateStatutEnrichissementFichiersAffectes(numProg);
+
 
 //                String userId = jobExecution.getJobParameters().getString("userId");
 //                JournalBuilder journalBuilder = new JournalBuilder(numProg,null,userId);

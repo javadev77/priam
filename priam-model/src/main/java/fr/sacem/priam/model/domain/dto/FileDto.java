@@ -2,7 +2,7 @@ package fr.sacem.priam.model.domain.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import fr.sacem.priam.model.domain.Status;
-import fr.sacem.priam.model.domain.saref.StatutEnrichissementFV;
+import fr.sacem.priam.model.domain.fv.StatutEnrichissementFV;
 import fr.sacem.priam.model.util.CustomDateSerializer;
 
 import java.util.Date;

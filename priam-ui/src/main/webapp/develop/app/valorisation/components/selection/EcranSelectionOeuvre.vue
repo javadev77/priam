@@ -95,6 +95,7 @@
         :valider="validerSelection"
         :editer="editSelectionClickHandler"
         :invalider="invaliderProgramme"
+
         :edition="edition"
         :enregistrerEdition="enregistrerEdition"
         :annulerEdition="annulerEdition"

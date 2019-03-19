@@ -144,6 +144,9 @@
     <modal v-if="showModalDesactiver">
       <span class="homer-prompt-q control-label" slot="body">
         Etes-vous sûr de vouloir désaffecter tous les fichiers de ce programme?
+        <div v-if="programmeInfo.typeRepart!=='OEUVRE'">
+          Attention, ces fichiers ne seront affectables qu’après leur enrichissement qui peut prendre plusieurs minutes.
+        </div>
       </span>
       <template slot="footer">
         <button class="btn btn-default btn-primary pull-right no" @click="showModalDesactiver = false">Non</button>
@@ -373,13 +376,8 @@
           this.initData();
         });
 
-
     },
 
-
-    mounted() {
-
-    },
 
     watch: {
 
@@ -525,8 +523,8 @@
       },
 
       editer() {
-        this.tableauSelectionnable = true;
-        this.showButtonEnregistrer = true;
+        /*this.tableauSelectionnable = true;*/
+        /*this.showButtonEnregistrer = true;*/
         this.showButtonToutDesactiver = true;
         this.showButtonEditer = false;
         this.showButtonAnnuler = true;
@@ -591,8 +589,10 @@
           this.statutSelected = {id: statutFichier.code, value: statutFichier.libelle};
 
           if (this.programmeInfo.statut === 'AFFECTE') {
+            debugger
             this.tableauSelectionnable = false;
             this.showButtonEditer = true;
+
             this.showButtonEnregistrer = false;
           }
           else if (this.programmeInfo.statut === 'EN_COURS' || this.programmeInfo.statut === 'ABANDONNE' || this.programmeInfo.statut === 'MIS_EN_REPART' || this.programmeInfo.statut === 'REPARTI') {
