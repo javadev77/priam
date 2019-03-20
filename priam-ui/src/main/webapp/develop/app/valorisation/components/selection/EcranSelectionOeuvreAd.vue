@@ -91,6 +91,7 @@
         :listSelectionVide="ligneProgramme.length == 0"
         :valider="validerSelection"
         :invalider="invaliderProgramme"
+        :desaffecter="desaffecterProgramme"
         :inProcess="inProcess"
         :isLoadingPoints="dataLoadingPoints"
       >
@@ -110,6 +111,16 @@
             <button class="btn btn-default btn-primary pull-right yes" @click="yesContinue" :disabled="inProcess">Oui</button>
           </div>
 
+        </template>
+      </modal>
+      <modal v-if="showModalDesactiver">
+      <span class="homer-prompt-q control-label" slot="body">
+        Etes-vous sûr de vouloir désaffecter tous les fichiers de ce programme?<br>
+        Attention, ces fichiers ne seront affectables qu’après leur enrichissement qui peut prendre plusieurs minutes.
+      </span>
+        <template slot="footer">
+          <button class="btn btn-default btn-primary pull-right no" @click="showModalDesactiver = false">Non</button>
+          <button class="btn btn-default btn-primary pull-right yes" @click="onYesConfirmDesaffectation">Oui</button>
         </template>
       </modal>
     </div>
@@ -263,7 +274,15 @@
         modalVisible: false,
         modalMessage: '',
         modalWaring: false,
+        showModalDesactiver: false,
         inProcess: false,
+
+        fichiersDesaffectes: {
+          numProg: '',
+          allDesaffecte: false,
+          fichersAvantDesaffectation : []
+        },
+        fichersAvantDesaffectation : [],
       }
 
     },
@@ -302,6 +321,14 @@
             method: 'POST',
             url: process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/ligneProgramme/selection/invalider'
           },
+          findFichiersAffecte: {
+            method: 'GET',
+            url: process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/allFichiersAffectesByNumprog/{numProg}'
+          },
+          desaffecterProg: {
+            method: 'PUT',
+            url: process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/programme/toutDesaffecter'
+          }
         }
 
         this.resource = this.$resource('', {}, customActions);
@@ -357,8 +384,8 @@
           })
           .then(data => {
             this.sommePointsAyantDroit = data;
-            this.dataLoadingPoints = false;
           });
+        this.dataLoadingPoints = false;
       },
 
       loadPage: function (pageNum, size, sort) {
@@ -519,12 +546,48 @@
         }
       },
 
-      /*getPoints(){
-        this.dataLoadingDuree = true;
+      desaffecterProgramme(){
+        this.showModalDesactiver = true;
+        },
 
-      }*/
+      onYesConfirmDesaffectation(){
+        this.showModalDesactiver = false;
+        const numProgramme = this.$route.params.numProg;
+        if (numProgramme !== null || numProgramme !== "") {
+          this.resource.findFichiersAffecte({numProg: numProgramme})
+            .then(response => {
+              return response.json();
+            })
+            .then(data => {
+              for (let key in data) {
+                this.fichersAvantDesaffectation.push(data[key].id);
+              }
+              this.fichiersDesaffectes = {
+                numProg: numProgramme,
+                allDesaffecte: true,
+                fichersAvantDesaffectation: this.fichersAvantDesaffectation
+              }
+              this.resource.desaffecterProg(this.fichiersDesaffectes)
+                .then(response => {
+                  return response.json();
+                })
+                .then(data => {
+                  console.log("Déaffactation ok");
+                  this.showModalDesactiver = false;
+                  this.$router.push({name: 'programme'});
 
-    },
+                })
+                .catch(response => {
+                  console.error(response);
+                  alert("Erreur technique lors de désaffectation des fichiers du programme !! ");
+                });
+
+            });
+        }
+
+      }
+
+      },
     components : {
       vSelect: vSelect,
       priamGrid: Grid,

@@ -2,7 +2,9 @@ package fr.sacem.priam.batch.fv.affectation.listener;
 
 import fr.sacem.priam.batch.common.dao.AyantDroitDao;
 import fr.sacem.priam.batch.common.dao.LigneProgrammeBatchDao;
+import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
 import fr.sacem.priam.model.domain.Fichier;
+import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.services.FichierService;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,6 +28,9 @@ public class ListnerDeleteAfterDedoublonnageFV extends StepExecutionListenerSupp
     @Autowired
     AyantDroitDao ayantDroitDao;
 
+    @Autowired
+    ProgrammeViewDao programmeViewDao;
+
 
     @Override
     public void beforeStep(StepExecution stepExecution) {
@@ -44,8 +49,12 @@ public class ListnerDeleteAfterDedoublonnageFV extends StepExecutionListenerSupp
     public ExitStatus afterStep(StepExecution stepExecution) {
 
         String numProg = stepExecution.getJobParameters().getString("numProg");
-        this.ligneProgrammeBatchDao.deleteDedoublonnageFV(numProg);
-
+        ProgrammeDto programmeDto = programmeViewDao.findByNumProg(numProg);
+        if(programmeDto!=null && "OEUVRE".equals(programmeDto.getTypeRepart().name())) {
+            this.ligneProgrammeBatchDao.deleteDedoublonnageFVOeuvre(numProg);
+        } else {
+            this.ligneProgrammeBatchDao.deleteDedoublonnageFVAD(numProg);
+        }
         return stepExecution.getExitStatus();
     }
 }

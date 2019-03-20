@@ -66,7 +66,7 @@ public class ProgrammeBatchDao {
 
     @Transactional
     public Programme findByNumProg(String numProg) {
-        String sql = "SELECT p.NUMPROG as NUMPROG, p.CDETYPUTIL as CDETYPUTIL " +
+        String sql = "SELECT p.NUMPROG as NUMPROG, p.CDETYPUTIL as CDETYPUTIL, p.TYPE_REPART " +
                     "FROM PRIAM_PROGRAMME p " +
                     "WHERE p.NUMPROG=? ";
 
@@ -75,10 +75,11 @@ public class ProgrammeBatchDao {
             Programme programme = new Programme();
             programme.setNumProg(resultSet.getString("NUMPROG"));
             programme.setTypeUtilisation(resultSet.getString("CDETYPUTIL"));
+            programme.setTypeRepart(resultSet.getString("TYPE_REPART"));
 
             return programme;
 
-        }, numProg) ;
+        }, numProg);
     }
 }
 

@@ -516,13 +516,14 @@
                     cellTemplate: function (cellValue) {
                       var templateExport = '<span class="glyphicon glyphicon-export" aria-hidden="true" style="padding-left: 0px;" title="Export"></span>';
                       var statusCode = cellValue.statut;
+                      let famille = cellValue.famille;
 
                       var template = [{}];
 
                       if(cellValue.statutEligibilite === 'FIN_ELIGIBILITE' ||
                         cellValue.statutEligibilite === 'FIN_DESAFFECTATION' ||
                         cellValue.statutEligibilite === null) {
-                        if(statusCode !== undefined && 'AFFECTE' === statusCode) {
+                        if(statusCode !== undefined && 'AFFECTE' === statusCode && famille === FAMILLES_PRIAM['VALORISATION'] && cellValue.typeRepart!=='OEUVRE') {
                           if(cellValue.statutExportProgramme === null || cellValue.statutExportProgramme === 'TELECHARGE'){
                             template[0] = {event : 'exporter-programme', template : templateExport};
                           }
@@ -725,12 +726,12 @@
                         if(statusCode !== undefined && ('CREE' === statusCode || 'AFFECTE' === statusCode
                           || 'EN_COURS' === statusCode || 'VALIDE' === statusCode) ) {
 
-                          if((cellValue.statutExportProgramme === null || cellValue.statutExportProgramme === 'GENERE')
-                          && (cellValue.statutImportProgramme === null || cellValue.statutImportProgramme === 'CHARGEMENT_OK') ){
+                          // if((cellValue.statutExportProgramme === null || cellValue.statutExportProgramme === 'GENERE')
+                          // && (cellValue.statutImportProgramme === null || cellValue.statutImportProgramme === 'CHARGEMENT_OK') ){
                             if ($this.isRightMDYPRG) {
                               tempalte[0] = {event: 'update-programme', template: tempalteUpdate};
                             }
-                          }
+                          // }
                         }
 
                         if(statusCode !== undefined && 'CREE' === statusCode) {

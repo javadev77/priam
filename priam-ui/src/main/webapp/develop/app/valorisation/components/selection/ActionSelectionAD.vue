@@ -24,6 +24,7 @@
       </div>
 
         <div v-else-if="programmeInfo.statut == 'EN_COURS'">
+            <button class="btn btn-default btn-primary pull-left width-140" type="button" @click.prevent="desaffecter()" :disabled="isLoadingPoints || inProcess || !isRightVLDSEL">Désaffecter</button>
             <button class="btn btn-default btn-primary pull-right width-140" type="button" @click.prevent="valider()" :disabled="isLoadingPoints || inProcess || listSelectionVide || !isRightVLDSEL">Valider</button>
         </div>
 
@@ -54,6 +55,7 @@
         listSelectionVide : Boolean,
         valider : Function,
         invalider : Function,
+        desaffecter : Function,
         editer : Function,
         enregistrerEdition : Function,
         annulerEdition : Function,
