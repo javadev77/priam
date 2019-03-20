@@ -523,11 +523,18 @@
       },
 
       editer() {
-        /*this.tableauSelectionnable = true;*/
-        /*this.showButtonEnregistrer = true;*/
+        if(this.programmeInfo.typeRepart === 'OEUVRE') {
+          this.tableauSelectionnable = true;
+          this.showButtonEnregistrer = true;
+        } else {
+          this.tableauSelectionnable = false;
+          this.showButtonEnregistrer = false;
+        }
+
         this.showButtonToutDesactiver = true;
         this.showButtonEditer = false;
         this.showButtonAnnuler = true;
+
       },
 
       annuler() {
@@ -587,18 +594,21 @@
           this.typeUtilisationSelected = {id: 'ALL', value: 'Tous'};
           let statutFichier = this.getStatutFichierByCode('AFFECTE');
           this.statutSelected = {id: statutFichier.code, value: statutFichier.libelle};
-
+          this.tableauSelectionnable = false;
           if (this.programmeInfo.statut === 'AFFECTE') {
-            debugger
-            this.tableauSelectionnable = false;
+
+
             this.showButtonEditer = true;
 
             this.showButtonEnregistrer = false;
           }
-          else if (this.programmeInfo.statut === 'EN_COURS' || this.programmeInfo.statut === 'ABANDONNE' || this.programmeInfo.statut === 'MIS_EN_REPART' || this.programmeInfo.statut === 'REPARTI') {
+          else if (this.programmeInfo.statut === 'EN_COURS'
+            || this.programmeInfo.statut === 'ABANDONNE'
+            || this.programmeInfo.statut === 'MIS_EN_REPART'
+            || this.programmeInfo.statut === 'REPARTI') {
             this.showButtonEditer = false;
             this.showButtonToutDesactiver = false;
-            this.tableauSelectionnable = false;
+
             this.showButtonAnnuler = false;
             this.showButtonEnregistrer = false;
           }
