@@ -714,14 +714,14 @@
                       var tempalte = [{}, {}, {}];
 
 
-
-                      if(cellValue.statutEligibilite === 'FIN_ELIGIBILITE' ||
+                      if((cellValue.statutEligibilite === 'FIN_ELIGIBILITE' ||
                         cellValue.statutEligibilite === 'FIN_DESAFFECTATION' ||
-                        cellValue.statutEligibilite === null ||
-                        cellValue.statutExportProgramme === null ||
-                        cellValue.statutExportProgramme === 'GENERE' ||
-                        cellValue.statutImportProgramme === null ||
-                        cellValue.statutImportProgramme === 'CHARGEMENT_OK' ) {
+                        cellValue.statutEligibilite === null ) &&
+                        (cellValue.statutExportProgramme === null ||
+                        cellValue.statutExportProgramme === 'GENERE' ) &&
+                        (cellValue.statutImportProgramme === null ||
+                        cellValue.statutImportProgramme === 'CHARGEMENT_OK') ) {
+
                         if(statusCode !== undefined && ('CREE' === statusCode || 'AFFECTE' === statusCode
                           || 'EN_COURS' === statusCode || 'VALIDE' === statusCode) ) {
 
@@ -1260,6 +1260,7 @@
           var self = this;
           let numProg = this.selectedProgramme.numProg;
           this.selectedProgramme.statutExportProgramme = 'EN_GENERATION'
+          debugger
           this.resource.exportProgramme({numProg:  numProg})
             .then(response => {
               return response.json();
