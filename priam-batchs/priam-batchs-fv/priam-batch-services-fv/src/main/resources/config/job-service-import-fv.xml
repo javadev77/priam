@@ -9,7 +9,7 @@
 
     <job id="jobServiceImport" xmlns="http://www.springframework.org/schema/batch">
 
-        <step id="readFromCsvFile" next="insertData">
+        <step id="readFromCsvFile">
             <tasklet>
                 <chunk
                         reader="readFromCsv"
@@ -23,6 +23,14 @@
                     </retryable-exception-classes>
                 </chunk>
             </tasklet>
+
+            <end on="NOOP" />
+            <fail on="FAILED"/>
+            <next on="*" to="insertData"/>
+
+            <listeners merge="true">
+                <listener ref="stepReadCsvImportListener"></listener>
+            </listeners>
         </step>
 
         <step id="insertData">
@@ -52,6 +60,7 @@
     </job>
 
 
+    <bean id="stepReadCsvImportListener" class="fr.sacem.priam.batch.fv.serviceimport.listener.StepReadCsvImportListener"></bean>
     <bean id="listenerStepInsertDataImport" class="fr.sacem.priam.batch.fv.serviceimport.listener.InsertDataImportStepListener"/>
 
     <!-- This is to demo MultiWriters -->

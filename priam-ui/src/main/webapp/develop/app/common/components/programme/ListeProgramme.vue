@@ -485,9 +485,15 @@
                         return element.code === entry.statut;
                       });
 
-                      if(result.code === 'ABANDONNE' ||  entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
+                      debugger;
+                      if(result.code === 'ABANDONNE') {
+                        return {value : entry.fichiers, isLink : false}
+                      }
+                      if((entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
                         || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'
-                        || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION' ) {
+                        || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION') || (
+                        entry.statutExportProgramme === 'EN_GENERATION' ) || (
+                        entry.statutImportProgramme === 'EN_COURS' )) {
                         return {value : entry.fichiers, isLink : false}
                       } else {
                         return {value : entry.fichiers, isLink : true}
@@ -520,9 +526,20 @@
 
                       var template = [{}];
 
-                      if(cellValue.statutEligibilite === 'FIN_ELIGIBILITE' ||
+                      if(famille === FAMILLES_PRIAM['VALORISATION'] && cellValue.typeRepart === 'OEUVRE') {
+                        return template;
+                      }
+
+                      if((cellValue.statutEligibilite === 'FIN_ELIGIBILITE' ||
                         cellValue.statutEligibilite === 'FIN_DESAFFECTATION' ||
-                        cellValue.statutEligibilite === null) {
+                        cellValue.statutEligibilite === null ) &&
+                        (cellValue.statutExportProgramme === null ||
+                        cellValue.statutExportProgramme === 'TELECHARGE' ||
+                        cellValue.statutExportProgramme === 'GENERE') &&
+                        (cellValue.statutImportProgramme === null ||
+                        cellValue.statutImportProgramme === 'CHARGEMENT_OK' ||
+                        cellValue.statutImportProgramme === 'CHARGEMENT_KO') ) {
+
                         if(statusCode !== undefined && 'AFFECTE' === statusCode && famille === FAMILLES_PRIAM['VALORISATION'] && cellValue.typeRepart!=='OEUVRE') {
                           if(cellValue.statutExportProgramme === null || cellValue.statutExportProgramme === 'TELECHARGE'){
                             template[0] = {event : 'exporter-programme', template : templateExport};
@@ -574,9 +591,21 @@
 
                       var template = [{}, {}];
 
-                      if(cellValue.statutEligibilite === 'FIN_ELIGIBILITE' ||
+                      let famille = cellValue.famille;
+                      if(famille === FAMILLES_PRIAM['VALORISATION'] && cellValue.typeRepart === 'OEUVRE') {
+                        return template;
+                      }
+                      debugger;
+
+                      if((cellValue.statutEligibilite === 'FIN_ELIGIBILITE' ||
                         cellValue.statutEligibilite === 'FIN_DESAFFECTATION' ||
-                        cellValue.statutEligibilite === null) {
+                        cellValue.statutEligibilite === null ) &&
+                        (cellValue.statutExportProgramme === null ||
+                        cellValue.statutExportProgramme === 'TELECHARGE' ||
+                        cellValue.statutExportProgramme === 'GENERE') &&
+                        (cellValue.statutImportProgramme === null ||
+                        cellValue.statutImportProgramme === 'CHARGEMENT_OK' ||
+                        cellValue.statutImportProgramme === 'CHARGEMENT_KO') ) {
                         if( (statusCode !== undefined && 'EN_COURS' === statusCode) || ('AFFECTE' === statusCode && statutExportProgramme === 'TELECHARGE')) {
                           template[0] = {event : 'import-programme', template : tempalteExport};
                           if(statutImportProgramme === 'CHARGEMENT_KO') {
@@ -719,19 +748,21 @@
                         cellValue.statutEligibilite === 'FIN_DESAFFECTATION' ||
                         cellValue.statutEligibilite === null ) &&
                         (cellValue.statutExportProgramme === null ||
-                        cellValue.statutExportProgramme === 'GENERE' ) &&
+                        cellValue.statutExportProgramme === 'GENERE'  ||
+                        cellValue.statutExportProgramme === 'TELECHARGE') &&
                         (cellValue.statutImportProgramme === null ||
-                        cellValue.statutImportProgramme === 'CHARGEMENT_OK') ) {
+                        cellValue.statutImportProgramme === 'CHARGEMENT_OK' ||
+                        cellValue.statutImportProgramme === 'CHARGEMENT_KO') ) {
 
                         if(statusCode !== undefined && ('CREE' === statusCode || 'AFFECTE' === statusCode
                           || 'EN_COURS' === statusCode || 'VALIDE' === statusCode) ) {
 
-                          // if((cellValue.statutExportProgramme === null || cellValue.statutExportProgramme === 'GENERE')
-                          // && (cellValue.statutImportProgramme === null || cellValue.statutImportProgramme === 'CHARGEMENT_OK') ){
+                           /*if((cellValue.statutExportProgramme === null || cellValue.statutExportProgramme === 'GENERE')
+                           && (cellValue.statutImportProgramme === null || cellValue.statutImportProgramme === 'CHARGEMENT_OK') ){*/
                             if ($this.isRightMDYPRG) {
                               tempalte[0] = {event: 'update-programme', template: tempalteUpdate};
                             }
-                          // }
+                           //}
                         }
 
                         if(statusCode !== undefined && 'CREE' === statusCode) {

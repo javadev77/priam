@@ -114,6 +114,7 @@ public class ImportDataProcessor implements ItemProcessor<ExportCsvDto, ExportCs
             oeuvre.setNbrDif(Long.valueOf(exportCsvDto.getNbrDif()));
             oeuvre.setMt(exportCsvDto.getMt());
             oeuvre.setTax(Double.valueOf(exportCsvDto.getTax()));
+            oeuvre.setTitreOeuvre(exportCsvDto.getTitreOeuvre());
 
             LigneProgrammeFV result = ligneProgrammeFVDao.saveAndFlush(oeuvre);
             exportCsvDto.setIdOeuvreFv(result.getId());

@@ -100,9 +100,7 @@ public class JobDesaffectationFvListener extends JobExecutionListenerSupport {
 
                 Programme programme = programmeBatchDao.findByNumProg(numProg);
                 if(!TYPE_REPART_OEUVRE.equals(programme.getTypeRepart())){
-                    List<Fichier> fichiersAffectes = fichierDao.findFichiersByIdProgramme(numProg, Status.AFFECTE);
                     ayantDroitFVDao.deleteByNumProg(numProg);
-                    fichiersAffectes.forEach(f ->  ligneProgrammeFVDao.deleteAllByFichierId(f.getId()));
                     Fichier fichierLink = fichierDao.findFichierLink(numProg);
                     if(fichierLink !=null) {
                         importDataBatchFVJdbcDao.deleteImportProgrammeByIdFichier(fichierLink.getId());
