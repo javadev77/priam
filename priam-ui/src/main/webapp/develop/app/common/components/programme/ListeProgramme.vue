@@ -358,7 +358,7 @@
                         || entry.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
                         || entry.statutEligibilite === 'EN_COURS_ELIGIBILITE'
                         || entry.statutEligibilite === 'EN_COURS_DESAFFECTATION'
-                        || (famille === FAMILLES_PRIAM['VALORISATION'] && (statutImportProgramme === null || statutImportProgramme !== 'CHARGEMENT_OK' ))) {
+                        || (famille === FAMILLES_PRIAM['VALORISATION'] && entry.typeRepart !=='OEUVRE' && (statutImportProgramme === null || statutImportProgramme !== 'CHARGEMENT_OK' ))) {
 
                         return {value: entry.numProg, isLink: false
                         }
@@ -818,6 +818,7 @@
             getAllNomProgForAutocmplete : {method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/programme/nomprog/autocomplete'},
             validateFelixData : {method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/repartition/validateFelixData/{numProg}'},
             generateFelixData : {method : 'POST', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/repartition/generateFelixData'},
+            generateFichierFelixFV : {method : 'GET', url :process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/repartition/generateFichierFelixFV?numProg={numProg}&modeRepartition={modeRepartition}'},
             checkIfDone : {method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/repartition/fichierfelix/{numProg}'},
             exportProgramme :{method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/programme/export/{numProg}'},
             deleteExport :{method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/programme/deleteExport/{numProg}'},
@@ -1198,6 +1199,8 @@
               this.modeRepartition = modeRepartition;
               var self = this;
               let numProg = this.selectedProgramme.numProg;
+              let famille = this.selectedProgramme.famille;
+              if(famille !== 'FDSVAL'){
               this.resource.validateFelixData({numProg:  numProg})
                 .then(response => {
                   return response.json();
@@ -1257,8 +1260,36 @@
                   },
 
                     1000);
-
               });
+              } else {
+                this.resource.generateFichierFelixFV({numProg:  numProg, modeRepartition: self.modeRepartition})
+                  .then(response => {
+                    return response.json();
+                  })
+                  .then(data => {
+                    self.programmesEnCoursTraitement.push(numProg);
+                    self.intervalIDs[numProg] = setInterval(function () {
+                      self.resource.checkIfDone({numProg: numProg})
+                        .then(response => {
+                          return response.json();
+                        })
+                        .then(data => {
+                          var fichierFelix = data;
+                          if(fichierFelix !== undefined && fichierFelix.statut === 'GENERE') {
+                            let number = self.programmesEnCoursTraitement.indexOf(numProg);
+                            self.programmesEnCoursTraitement.splice(number, 1);
+                            if(self.modeRepartition === 'REPART_BLANC') {
+                              clearInterval(self.intervalIDs[numProg]);
+                              self.downloadCsvFile(process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/repartition/downloadFichierFelix', {numProg: numProg}, fichierFelix.nomFichier);
+
+                            }
+                          }
+
+                        });
+                      },
+                      1000);
+                  });
+              }
 
           },
 

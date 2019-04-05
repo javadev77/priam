@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <job id="jobRepartitionFVOeuvre" xmlns="http://www.springframework.org/schema/batch">
+
+        <step id="stepCopyTablePreprepFV" next="stepGeneration">
+            <tasklet>
+                <chunk
+                        reader="ligneProgrammeFVReader"
+                        writer="lignePreprepFVWriter"
+                        commit-interval="100">
+                </chunk>
+            </tasklet>
+        </step>
+
+        <step id="stepGeneration">
+            <tasklet>
+                <chunk
+                        reader="lignePreprepFVReader"
+                        writer="repartitionFVFileWriter"
+                        processor="lignePreprepFVProcessor"
+                        commit-interval="100">
+                </chunk>
+            </tasklet>
+            <listeners merge="true">
+                <listener ref="generationListner"/>
+            </listeners>
+        </step>
+        <listeners merge="true">
+            <listener ref="listenerCompletitionRepartitionFV"/>
+        </listeners>
+    </job>
+
+    <bean id="listenerCompletitionRepartitionFV" class="fr.sacem.priam.batch.fv.repartition.listener.JobCompletionRepartitionFVListener"/>
+
+    <bean id="ligneProgrammeFVReader"
+          class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="queryProvider" ref="ligneProgrammeFVQuery"/>
+        <property name="pageSize" value="100"/>
+        <property name="rowMapper" ref="lignePreprepFVCopyMapper"/>
+    </bean>
+
+    <bean id="ligneProgrammeFVQuery" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
+        <property name="databaseType" value="MySQL" />
+        <property name="selectClause" value="SELECT LPFV.cdeCisac, LPFV.paysOri AS cdeTer, LPFV.rionEffet, LPFV.cdeFamilTypUtil,
+                                             PP.NUMPROG AS numProg, LPFV.id, LPFV.cdeUtil, LPFV.cdeTypUtil,
+                                             PP.NOM AS libProg, PP.DATE_DBT_PRG AS datDbtProg, PP.DATE_FIN_PRG AS datFinProg,
+                                             LPFV.ide12, LPFV.cdeTypIde12, LPFV.datsitu, LPFV.datconslt,LPFV.durDif, LPFV.nbrDif,
+                                             LPFV.typMt, LPFV.mt"/>
+        <property name="fromClause" value="FROM  PRIAM_LIGNE_PROGRAMME_FV LPFV
+                                            INNER JOIN PRIAM_FICHIER PF ON LPFV.ID_FICHIER = PF.ID
+                                            INNER JOIN PRIAM_PROGRAMME PP ON PF.NUMPROG = PP.NUMPROG"/>
+        <property name="whereClause" value="WHERE PP.NUMPROG='#{jobParameters[numProg]}' AND PP.STATUT_PROG_CODE = 'VALIDE' "/>
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sortKey" value="LPFV.id"/>
+    </bean>
+
+    <bean id="lignePreprepFVCopyMapper" class="fr.sacem.priam.batch.fv.repartition.mapper.LignePreprepFVCopyMapper"/>
+
+    <bean id="lignePreprepFVWriter" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    INSERT INTO PRIAM_LIGNE_PREPREP_FV (
+                            typRepart,
+                            cdeCisac,
+                            cdeTer,
+                            rionEffet,
+                            cdeFamilTypUtil,
+                            numProg,
+                            cdeUtil,
+                            cdeTypUtil,
+                            cdeModFac,
+                            cdeTypProg,
+                            cdeCompl,
+                            libProg,
+                            datDbtProg,
+                            datFinProg,
+                            ide12,
+                            cdeTypIde12,
+                            datSitu,
+                            datConslt,
+                            durDif,
+                            nbrDif,
+                            typMt,
+                            mt
+                        )
+                        VALUES (
+                            'O',
+                            :cdeCisac,
+                            :cdeTer,
+                            :rionEffet,
+                            :cdeFamilTypUtil,
+                            :numProg,
+                            :cdeUtil,
+                            :cdeTypUtil,
+                            'FORFAI',
+                            'PRINC',
+                            'SANS',
+                            :libProg,
+                            :datDbtProg,
+                            :datFinProg,
+                            :ide12,
+                            :cdeTypIde12,
+                            :datSitu,
+                            :datConslt,
+                            :durDif,
+                            :nbrDif,
+                            :typMt,
+                            :mt
+                        )
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
+
+    <bean id="lignePreprepFVReader"
+          class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="queryProvider" ref="lignePreprepFVQuery"/>
+        <property name="pageSize" value="100"/>
+        <property name="rowMapper" ref="lignePreprepFVMapper"/>
+    </bean>
+
+    <bean id="lignePreprepFVQuery" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
+        <property name="databaseType" value="MySQL" />
+        <!--<property name="selectClause" value="SELECT LP.cdeCisac, LP.cdeTer, LP.rionEffet, LP.cdeFamilTypUtil,
+                       LP.NUMPROG, LP.id, LP.cdeUtil, LP.cdeTypUtil,
+                       LP.libProg, LP.datDbtProg, LP.datFinProg,
+                       LP.ide12, LP.cdeTypIde12, LP.datsitu, LP.datconslt, LP.durDif, LP.nbrDif,
+                       LP.typMt, LP.mt"/>-->
+        <property name="selectClause" value="SELECT LP.*"/>
+        <property name="fromClause" value="FROM PRIAM_LIGNE_PREPREP_FV LP"/>
+        <property name="whereClause" value="WHERE LP.numProg='#{jobParameters[numProg]}' "/>
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sortKey" value="LP.id"/>
+    </bean>
+
+    <bean id="lignePreprepFVMapper" class="fr.sacem.priam.batch.fv.repartition.mapper.LignePreprepFVMapper"/>
+
+    <bean id="programmeBatchDao" class="fr.sacem.priam.batch.common.dao.ProgrammeBatchDao" >
+        <property name="dataSource" ref="dataSource"/>
+        <property name="nomTableLigneProgramme" value="${nom.table.ligneprogramme}"/>
+    </bean>
+
+    <bean id="lignePreprepFVProcessor" class="fr.sacem.priam.batch.fv.repartition.processor.LignePreprepFVProcessor"/>
+
+    <bean id="generationListner" class="fr.sacem.priam.batch.fv.repartition.listener.GenerationListener"></bean>
+
+</beans>

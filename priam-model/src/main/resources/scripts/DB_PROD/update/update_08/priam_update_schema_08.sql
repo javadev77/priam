@@ -407,4 +407,42 @@ create table SAREFTR_GREOEUV
   CDESSTYPIDE12 VARCHAR(3)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS PRIAM_LIGNE_PREPREP_FV;
+CREATE TABLE PRIAM_LIGNE_PREPREP_FV (
+                                     id int(11) NOT NULL AUTO_INCREMENT,
+                                     typRepart varchar(10),
+                                     cdeCisac varchar(10) DEFAULT NULL,
+                                     cdeTer bigint(20) DEFAULT NULL,
+                                     rionEffet int(11) DEFAULT NULL,
+                                     cdeFamilTypUtil varchar(45) DEFAULT NULL,
+                                     numProg int(11) DEFAULT NULL,
+                                     cdeUtil varchar(45) DEFAULT NULL,
+                                     cdeTypUtil varchar(45) DEFAULT NULL,
+                                     cdeModFac varchar(45) DEFAULT NULL,
+                                     cdeTypProg varchar(45) DEFAULT NULL,
+                                     cdeCompl varchar(45) DEFAULT NULL,
+                                     libProg varchar(100) DEFAULT NULL,
+                                     datDbtProg datetime DEFAULT NULL,
+                                     datFinProg datetime DEFAULT NULL,
+                                     ide12 bigint(20) DEFAULT NULL,
+                                     cdeTypIde12 varchar(45) DEFAULT NULL,
+                                     datSitu DATE DEFAULT NULL,
+                                     datConslt DATE DEFAULT NULL,
+                                     durDif int(11) DEFAULT NULL,
+                                     nbrDif int(11) DEFAULT NULL,
+                                     typMt varchar(3) DEFAULT NULL,
+                                     mt double DEFAULT NULL,
+                                     cdeTypDrtSacem varchar(10) DEFAULT NULL,
+                                     coadPayer int(10) null,
+                                     idSteAd varchar(10) null,
+                                     rolAd varchar(50) null,
+                                     cleAd double null,
+                                     cdeTypProtec varchar(5) null,
+                                     coadOriEdtr INT(8) DEFAULT NULL,
+                                     idSteOriEdtr VARCHAR(10) DEFAULT NULL,
+                                     numCatal INT(9) DEFAULT NULL,
+                                     points double DEFAULT NULL,
+                                     PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 COMMIT;
