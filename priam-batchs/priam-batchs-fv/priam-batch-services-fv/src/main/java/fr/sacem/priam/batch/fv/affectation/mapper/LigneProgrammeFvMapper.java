@@ -3,6 +3,8 @@ package fr.sacem.priam.batch.fv.affectation.mapper;
 import fr.sacem.priam.batch.common.domain.LigneProgramme;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import fr.sacem.priam.batch.common.domain.LigneProgrammeFV;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
@@ -13,12 +15,12 @@ import org.springframework.jdbc.core.RowMapper;
  * @version $Id$
  * @since 1.0
  */
-public class LigneProgrammeFvMapper implements RowMapper<LigneProgramme> {
+public class LigneProgrammeFvMapper implements RowMapper<LigneProgrammeFV> {
     private static  final Logger LOGGER = LoggerFactory.getLogger(LigneProgrammeFvMapper.class);
 
     @Override
-    public LigneProgramme mapRow(final ResultSet rs, final int i) throws SQLException {
-        LigneProgramme ligneProgramme = new LigneProgramme();
+    public LigneProgrammeFV mapRow(final ResultSet rs, final int i) throws SQLException {
+        LigneProgrammeFV ligneProgramme = new LigneProgrammeFV();
 
         ligneProgramme.setId(rs.getLong("id"));
         ligneProgramme.setIdFichier(rs.getLong("ID_FICHIER"));
@@ -58,6 +60,7 @@ public class LigneProgrammeFvMapper implements RowMapper<LigneProgramme> {
         ligneProgramme.setDate_insertion(rs.getString("date_insertion"));
         ligneProgramme.setAjout(rs.getString("ajout"));
         ligneProgramme.setSelection(rs.getString("selection"));
+        ligneProgramme.setRionEffet(rs.getString("rionEffet"));
 
         LOGGER.info("LigneProgramme id=" + ligneProgramme.getId() +  " ide12= " + ligneProgramme.getIde12()
             + ", mt=" + ligneProgramme.getMt());
