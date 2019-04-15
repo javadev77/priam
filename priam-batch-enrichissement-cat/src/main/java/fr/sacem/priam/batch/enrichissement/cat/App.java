@@ -39,6 +39,7 @@ public class App {
                 Map<String, JobParameter> jobParametersMap = new HashMap<>();
                 jobParametersMap.put("time", new JobParameter(System.currentTimeMillis()));
                 jobParametersMap.put("input.archives", new JobParameter(admap.getInputFile()));
+                jobParametersMap.put("second.input.archives", new JobParameter(admap.getSecondInputFile()));
                 jobParametersMap.put("output.archives", new JobParameter(admap.getOutputFile()));
                 jobParametersMap.put("typeCMS", new JobParameter(typeCMS));
 

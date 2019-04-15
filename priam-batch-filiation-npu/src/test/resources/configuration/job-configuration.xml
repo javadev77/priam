@@ -37,9 +37,9 @@
     </bean>
 
     <bean id="flatFileItemReader"
-          class="fr.sacem.priam.batch.filiation.npu.mapper.OeuvreFiliationNPUFileItemReader">
+          class="fr.sacem.priam.batch.common.util.mapper.npu.OeuvreFiliationNPUFileItemReader">
         <property name="lineMapper">
-            <bean class="fr.sacem.priam.batch.filiation.npu.mapper.OeuvreFiliationNPULineMapper">
+            <bean class="fr.sacem.priam.batch.common.util.mapper.npu.OeuvreFiliationNPULineMapper">
                 <property name="lineTokenizer">
                     <bean class="org.springframework.batch.item.file.transform.DelimitedLineTokenizer">
                         <property name="names" value="ide12,ide12Rep,titreOriginal"/>
@@ -48,7 +48,7 @@
                 </property>
                 <property name="fieldSetMapper">
                     <bean class="org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper">
-                        <property name="targetType" value="fr.sacem.priam.batch.filiation.npu.domain.OeuvreFiliationNPU"/>
+                        <property name="targetType" value="fr.sacem.priam.batch.common.domain.OeuvreFiliationNPU"/>
                         <property name="customEditors">
                             <map>
                                 <entry key="java.time.LocalDateTime">

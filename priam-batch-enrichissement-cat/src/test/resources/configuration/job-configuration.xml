@@ -28,11 +28,22 @@
 
             <end on="NOOP" />
             <fail on="FAILED"/>
-            <next on="*" to="stepIDE12ExistEtDateSortieVide"/>
+            <next on="*" to="majOeuvresNpuStep"/>
 
             <listeners merge="true">
                 <listener ref="cataloguePenefFraReaderStepListner"/>
             </listeners>
+        </step>
+
+        <!-- MAJ des oeuvres npu -->
+        <step id="majOeuvresNpuStep" next="stepIDE12ExistEtDateSortieVide">
+            <tasklet>
+                <chunk
+                        reader="readerOeuvresNpuCsv"
+                        writer="oeuvresNpuWriter"
+                        commit-interval="${commit-interval}">
+                </chunk>
+            </tasklet>
         </step>
 
         <!-- Renouvellement des Oeuvres -->
@@ -153,18 +164,18 @@
     </bean>
 
     <bean id="qpRreaderStepIDE12NotExist" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
-        <property name="selectClause" value="SELECT CAT_PENEF.*"/>
-        <property name="fromClause" value="FROM PRIAM_CATCMS_PENEF CAT_PENEF
-                                               LEFT JOIN PRIAM_CATCMS_CATALOGUE CATALOGUE
-                                               ON CAT_PENEF.IDE12 = CATALOGUE.IDE12
-                                               AND CAT_PENEF.TYPE_CMS = CATALOGUE.TYPE_CMS"/>
-        <property name="whereClause" value="WHERE CAT_PENEF.ID_FICHIER=:idFichier
-                                                AND CATALOGUE.IDE12 IS NULL
-                                                AND CATALOGUE.TYPE_CMS IS NULL
-                                                AND CAT_PENEF.TYPE_CMS = '#{jobParameters[typeCMS]}'"/>
+        <property name="selectClause" value="SELECT *"/>
+        <property name="fromClause" value="FROM PRIAM_CATCMS_PENEF
+                                               LEFT JOIN PRIAM_CATCMS_CATALOGUE
+                                               ON PRIAM_CATCMS_PENEF.IDE12 = PRIAM_CATCMS_CATALOGUE.IDE12
+                                               AND PRIAM_CATCMS_PENEF.TYPE_CMS = PRIAM_CATCMS_CATALOGUE.TYPE_CMS"/>
+        <property name="whereClause" value="WHERE PRIAM_CATCMS_PENEF.ID_FICHIER=:idFichier
+                                                AND PRIAM_CATCMS_CATALOGUE.IDE12 IS NULL
+                                                AND PRIAM_CATCMS_CATALOGUE.TYPE_CMS IS NULL
+                                                AND PRIAM_CATCMS_PENEF.TYPE_CMS = '#{jobParameters[typeCMS]}'"/>
         <property name="databaseType" value="MySQL" />
         <property name="dataSource" ref="dataSource"/>
-        <property name="sortKey" value="CAT_PENEF.IDE12"/>
+        <property name="sortKey" value="PRIAM_CATCMS_PENEF.IDE12"/>
     </bean>
 
     <bean id="readerPriamCatCmsCsv"
@@ -532,6 +543,56 @@
         </property>
     </bean>
 
+    <bean id="readerOeuvresNpuCsv"
+          class="fr.sacem.priam.batch.enrichissement.cat.reader.CsvMultiResourceItemReader" scope="step">
+        <property name="delegate" ref="flatFileOeuvresNpuItemReader"/>
+        <property name="strict" value="false"/>
+    </bean>
+
+    <bean id="flatFileOeuvresNpuItemReader"
+          class="fr.sacem.priam.batch.common.util.mapper.npu.OeuvreFiliationNPUFileItemReader">
+        <property name="lineMapper">
+            <bean class="fr.sacem.priam.batch.common.util.mapper.npu.OeuvreFiliationNPULineMapper">
+                <property name="lineTokenizer">
+                    <bean class="org.springframework.batch.item.file.transform.DelimitedLineTokenizer">
+                        <property name="names" value="ide12,ide12Rep,titreOriginal"/>
+                        <property name="delimiter" value=";"/>
+                    </bean>
+                </property>
+                <property name="fieldSetMapper">
+                    <bean class="org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper">
+                        <property name="targetType" value="fr.sacem.priam.batch.common.domain.OeuvreFiliationNPU"/>
+                        <property name="customEditors">
+                            <map>
+                                <entry key="java.time.LocalDateTime">
+                                    <bean class="fr.sacem.priam.batch.common.util.DatePropertyEditor">
+                                    </bean>
+                                </entry>
+                            </map>
+                        </property>
+                    </bean>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="oeuvresNpuWriter" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    UPDATE PRIAM_CATCMS_PENEF
+                    SET IDE12 = :ide12Rep, TITRE_OEUVRE = :titreOriginal
+                    WHERE IDE12  = :ide12;
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
+
     <bean id="jobOperator" class="org.springframework.batch.core.launch.support.SimpleJobOperator"
           p:jobLauncher-ref="jobLauncher" p:jobExplorer-ref="jobExplorer"
           p:jobRepository-ref="jobRepository" p:jobRegistry-ref="jobRegistry"/>
@@ -565,7 +626,10 @@
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
-
+    <bean id="catalogueCmsRepositoryForTest" class="fr.sacem.priam.batch.enrichissement.cat.dao.CatalogueCmsRepositoryForTest">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="nomTableCatalogue" value="${nom.table.catalogue}"/>
+    </bean>
 
     <bean id="jobLauncherTestUtils" class="org.springframework.batch.test.JobLauncherTestUtils"/>
 </beans>

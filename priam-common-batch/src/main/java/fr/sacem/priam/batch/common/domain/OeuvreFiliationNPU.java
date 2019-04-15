@@ -1,4 +1,4 @@
-package fr.sacem.priam.batch.filiation.npu.domain;
+package fr.sacem.priam.batch.common.domain;
 
 public class OeuvreFiliationNPU {
 

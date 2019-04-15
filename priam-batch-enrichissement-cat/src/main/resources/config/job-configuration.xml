@@ -27,11 +27,22 @@
 
             <end on="NOOP" />
             <fail on="FAILED"/>
-            <next on="*" to="stepIDE12ExistEtDateSortieVide"/>
+            <next on="*" to="majOeuvresNpuStep"/>
 
             <listeners merge="true">
                 <listener ref="cataloguePenefFraReaderStepListner"/>
             </listeners>
+        </step>
+
+        <!-- MAJ des oeuvres npu -->
+        <step id="majOeuvresNpuStep" next="stepIDE12ExistEtDateSortieVide">
+            <tasklet>
+                <chunk
+                        reader="readerOeuvresNpuCsv"
+                        writer="oeuvresNpuWriter"
+                        commit-interval="${commit-interval}">
+                </chunk>
+            </tasklet>
         </step>
 
         <!-- Renouvellement des Oeuvres -->
@@ -528,6 +539,56 @@
 
                 <ref bean="writerJournalCatcmsIDE12NotExistOrDateSortieNonVide" />
             </list>
+        </property>
+    </bean>
+
+    <bean id="readerOeuvresNpuCsv"
+          class="fr.sacem.priam.batch.enrichissement.cat.reader.CsvMultiResourceItemReader" scope="step">
+        <property name="delegate" ref="flatFileOeuvresNpuItemReader"/>
+        <property name="strict" value="false"/>
+    </bean>
+
+    <bean id="flatFileOeuvresNpuItemReader"
+          class="fr.sacem.priam.batch.common.util.mapper.npu.OeuvreFiliationNPUFileItemReader">
+        <property name="lineMapper">
+            <bean class="fr.sacem.priam.batch.common.util.mapper.npu.OeuvreFiliationNPULineMapper">
+                <property name="lineTokenizer">
+                    <bean class="org.springframework.batch.item.file.transform.DelimitedLineTokenizer">
+                        <property name="names" value="ide12,ide12Rep,titreOriginal"/>
+                        <property name="delimiter" value=";"/>
+                    </bean>
+                </property>
+                <property name="fieldSetMapper">
+                    <bean class="org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper">
+                        <property name="targetType" value="fr.sacem.priam.batch.common.domain.OeuvreFiliationNPU"/>
+                        <property name="customEditors">
+                            <map>
+                                <entry key="java.time.LocalDateTime">
+                                    <bean class="fr.sacem.priam.batch.common.util.DatePropertyEditor">
+                                    </bean>
+                                </entry>
+                            </map>
+                        </property>
+                    </bean>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="oeuvresNpuWriter" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="assertUpdates" value="false"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    UPDATE PRIAM_CATCMS_PENEF
+                    SET IDE12 = :ide12Rep, TITRE_OEUVRE = :titreOriginal
+                    WHERE IDE12  = :ide12;
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
         </property>
     </bean>
 

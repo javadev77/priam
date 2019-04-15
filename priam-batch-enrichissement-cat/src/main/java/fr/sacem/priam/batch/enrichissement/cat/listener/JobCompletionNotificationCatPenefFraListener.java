@@ -1,5 +1,6 @@
 package fr.sacem.priam.batch.enrichissement.cat.listener;
 
+import com.google.common.base.Strings;
 import fr.sacem.priam.batch.common.service.importPenef.FichierBatchServiceImpl;
 import fr.sacem.priam.batch.common.util.UtilFile;
 import fr.sacem.priam.batch.enrichissement.cat.dao.CatalogueCmsPenefRepository;
@@ -13,6 +14,7 @@ import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -92,10 +94,24 @@ public class JobCompletionNotificationCatPenefFraListener extends JobExecutionLi
 
         utilFile.deplacerFichierEtSuppressionFlag(jobExecution);
         catalogueCmsPenefRepository.supprimerDonneesCatPenefParIdFichier(fileID);
+        renomerFichierNpu(jobExecution);
 
         if(jobExecution.getExecutionContext().containsKey("ID_FICHIER")) {
             StatistiqueCatcms statistiqueCatcms = getStatistiquesCatcms(jobExecution);
             statistiquesCatcmsRepository.saveStatistique(statistiqueCatcms);
+        }
+    }
+
+    private void renomerFichierNpu(JobExecution jobExecution) {
+        JobParameter fichierCSVEnCoursParam = (JobParameter)jobExecution.getExecutionContext().get("fichierCSVEnCours");
+        JobParameter nomFichierOriginalParam = (JobParameter)jobExecution.getExecutionContext().get("nomFichierOriginal");
+        String fichierCSVEnCours = (String) fichierCSVEnCoursParam.getValue();
+        String nomFichierOriginal = (String) nomFichierOriginalParam.getValue();
+        if(!Strings.isNullOrEmpty(fichierCSVEnCours) && !Strings.isNullOrEmpty(nomFichierOriginal)) {
+            File file = new File(fichierCSVEnCours);
+            String absolutePath = file.getAbsolutePath();
+            String filePath = absolutePath.substring(0, absolutePath.lastIndexOf(File.separator));
+            file.renameTo(new File(filePath + File.separator + nomFichierOriginal));
         }
     }
 
@@ -105,8 +121,16 @@ public class JobCompletionNotificationCatPenefFraListener extends JobExecutionLi
         String typeCMS = jobExecution.getJobParameters().getString("typeCMS");
         statistiqueCatcms.setTypeCMS(typeCMS);
 
-        String nomFichier = jobExecution.getExecutionContext().getString("nomFichier");
-        statistiqueCatcms.setNomFichier(nomFichier);
+        /*String nomFichier = jobExecution.getExecutionContext().getString("nomFichier");
+        statistiqueCatcms.setNomFichier(nomFichier);*/
+
+        jobExecution.getStepExecutions().forEach(stepExecution -> {
+            if(stepExecution.getStepName().equals("archiveFlatFileReaderStep")){
+                JobParameter nomFichierParam = (JobParameter) stepExecution.getExecutionContext().get("nomFichier");
+                statistiqueCatcms.setNomFichier((String) nomFichierParam.getValue());
+            }
+        });
+
 
         long idFichier= jobExecution.getExecutionContext().getLong("ID_FICHIER");
         Long nbOeuvres = catalogueCmsPenefRepository.nbLignesByIdFichier(idFichier);

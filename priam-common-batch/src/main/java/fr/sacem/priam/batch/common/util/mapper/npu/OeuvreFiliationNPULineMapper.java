@@ -1,7 +1,7 @@
-package fr.sacem.priam.batch.filiation.npu.mapper;
+package fr.sacem.priam.batch.common.util.mapper.npu;
 
+import fr.sacem.priam.batch.common.domain.OeuvreFiliationNPU;
 import fr.sacem.priam.batch.common.util.exception.PriamValidationException;
-import fr.sacem.priam.batch.filiation.npu.domain.OeuvreFiliationNPU;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.mapping.FieldSetMapper;
 import org.springframework.batch.item.file.transform.IncorrectTokenCountException;

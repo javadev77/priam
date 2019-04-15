@@ -5,6 +5,7 @@ package fr.sacem.priam.batch.common.domain;
  */
 public class Admap {
     String inputFile;
+    String secondInputFile;
     String outputFile;
     String patternFileName;
 
@@ -14,6 +15,14 @@ public class Admap {
 
     public void setInputFile(String inputFile) {
         this.inputFile = inputFile;
+    }
+
+    public String getSecondInputFile() {
+        return secondInputFile;
+    }
+
+    public void setSecondInputFile(String secondInputFile) {
+        this.secondInputFile = secondInputFile;
     }
 
     public String getOutputFile() {
