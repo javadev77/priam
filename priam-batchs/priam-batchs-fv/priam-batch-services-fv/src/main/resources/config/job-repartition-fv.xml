@@ -153,6 +153,6 @@
 
     <bean id="lignePreprepFVProcessor" class="fr.sacem.priam.batch.fv.repartition.processor.LignePreprepFVProcessor"/>
 
-    <bean id="generationListner" class="fr.sacem.priam.batch.fv.repartition.listener.GenerationListener"></bean>
+    <bean id="generationListner" class="fr.sacem.priam.batch.fv.repartition.listener.GenerationListener"/>
 
 </beans>

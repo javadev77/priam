@@ -36,17 +36,18 @@ public class LignePreprepFVDataSpringValidator implements Validator {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "datDbtProg", "error.datDbtProg");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "datFinProg", "error.datFinProg");
 
-        if(TypeUtilisationPriam.FD06.equals(cdeTypUtil) || TypeUtilisationPriam.FD12.equals(cdeTypUtil)) {
+        if(TypeUtilisationPriam.FD06.getCode().equals(cdeTypUtil)
+            || TypeUtilisationPriam.FD12.getCode().equals(cdeTypUtil)) {
             ValidationUtils.rejectIfEmptyOrWhitespace(errors, "ide12", "error.ide12");
             ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeTypIde12", "error.cdeTypIde12");
         }
 
-        if(TypeUtilisationPriam.FD06.equals(cdeTypUtil)){
+        if(TypeUtilisationPriam.FD06.getCode().equals(cdeTypUtil)){
             ValidationUtils.rejectIfEmptyOrWhitespace(errors, "typMt", "error.typMt");
             ValidationUtils.rejectIfEmptyOrWhitespace(errors, "nbrDif", "error.nbrDif");
         }
 
-        if(TypeUtilisationPriam.FD12.equals(cdeTypUtil)){
+        if(TypeUtilisationPriam.FD12.getCode().equals(cdeTypUtil)){
             ValidationUtils.rejectIfEmptyOrWhitespace(errors, "mt", "error.mt");
         }
 

@@ -1,18 +1,17 @@
 package fr.sacem.priam.batch.fv.repartition.mapper;
 
 import fr.sacem.priam.batch.fv.repartition.domain.LignePreprepFV;
-import org.apache.commons.math3.util.Precision;
-import org.springframework.jdbc.core.RowMapper;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DecimalFormat;
+import org.apache.commons.math3.util.Precision;
+import org.springframework.jdbc.core.RowMapper;
 
 public class LignePreprepFVCopyMapper implements RowMapper<LignePreprepFV> {
 
     @Override
     public LignePreprepFV mapRow(ResultSet rs, int i) throws SQLException {
         LignePreprepFV lignePreprepFV = new LignePreprepFV();
+
         lignePreprepFV.setId(rs.getLong("id"));
         lignePreprepFV.setCdeCisac(rs.getString("cdeCisac"));
         lignePreprepFV.setCdeTer(rs.getInt("cdeTer"));
@@ -32,6 +31,7 @@ public class LignePreprepFVCopyMapper implements RowMapper<LignePreprepFV> {
         lignePreprepFV.setNbrDif(rs.getLong("nbrDif"));
         lignePreprepFV.setTypMt(rs.getString("typMt"));
         lignePreprepFV.setMt(Precision.round(rs.getDouble("mt"),2));
+
         return lignePreprepFV;
     }
 }
