@@ -22,6 +22,7 @@ public class ConfigurationPriamProd {
 
     private Enum configurationFromAdMap = EnvConstants.BATCH_CONFIG_PROPERTIES;
     private String inputDirectory = String.valueOf(EnvConstants.CATCMS_ENRICHISSEMENT_INPUT);
+    private String secondInputDirectory = String.valueOf(EnvConstants.CATCMS_FILIATION_NPU_INPUT);
     private String outputDirectory = String.valueOf(EnvConstants.CATCMS_ENRICHISSEMENT_ARCHIVES);
 
     @Bean
@@ -48,6 +49,7 @@ public class ConfigurationPriamProd {
 
         admap.setInputFile(inputDirectory);
         admap.setOutputFile(outputDirectory);
+        admap.setSecondInputFile(secondInputDirectory);
 
         return admap;
     }
