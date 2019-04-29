@@ -18,6 +18,16 @@
 
 
             <div class="row">
+              <div class="form-group col-md-2"/>
+              <div class="form-group col-md-2">
+                <input type="radio" value="globale" @input="majVue" v-model="filtreVue">
+                <label class="blueText" style="margin-bottom: 0px !important;">Fichier importé</label>
+              </div>
+              <input type="radio" value="coad" @input="majVue" v-model="filtreVue">
+              <label class="blueText" style="margin-bottom: 0px !important;">Cumul COAD</label>
+            </div>
+
+            <div class="row">
               <div class="form-group col-md-1"/>
 
               <div class="form-group col-md-4">
@@ -91,7 +101,8 @@
           showMipsa : false,
           utilisateursOptions : [],
           urlAutoCompleteCOAD : process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/ayantDroit/coad',
-          urlAutoCompleteParticipant : process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/ayantDroit/participant'
+          urlAutoCompleteParticipant : process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/ayantDroit/participant',
+          filtreVue: 'globale'
         }
       },
 

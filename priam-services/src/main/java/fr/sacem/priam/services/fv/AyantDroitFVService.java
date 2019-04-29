@@ -3,11 +3,9 @@ package fr.sacem.priam.services.fv;
 import fr.sacem.priam.model.domain.criteria.AyantDroitCriteria;
 import fr.sacem.priam.model.domain.dto.AyantDroitDto;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import java.util.List;
-import java.util.Map;
 
 public interface AyantDroitFVService {
     Page<? extends AyantDroitDto> findAyantDroitByCriteria(AyantDroitCriteria criteria, Pageable pageable);

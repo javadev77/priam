@@ -5,13 +5,11 @@ import fr.sacem.priam.model.domain.criteria.AyantDroitCriteria;
 import fr.sacem.priam.model.domain.dto.AyantDroitDto;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.services.fv.AyantDroitFVService;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Map;
 
 @Service("ayantDroitFVService")
 public class AyantDroitFVServiceImpl implements AyantDroitFVService {

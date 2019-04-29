@@ -20,10 +20,10 @@
               <div class="form-group col-md-2"/>
               <div class="form-group col-md-2">
                 <input type="radio" value="globale" @input="majVue" v-model="filtreVue">
-                <label class="blueText" style="margin-bottom: 0px !important;">Vue globale</label>
+                <label class="blueText" style="margin-bottom: 0px !important;">Fichier importé</label>
               </div>
               <input type="radio" value="coad" @input="majVue" v-model="filtreVue">
-              <label class="blueText" style="margin-bottom: 0px !important;">Vue COAD</label>
+              <label class="blueText" style="margin-bottom: 0px !important;">Cumul COAD</label>
             </div>
 
 

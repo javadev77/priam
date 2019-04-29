@@ -1,18 +1,15 @@
 package fr.sacem.priam.model.dao.jpa.fv;
 
-import fr.sacem.priam.model.domain.criteria.AyantDroitCriteria;
 import fr.sacem.priam.model.domain.dto.AyantDroitDto;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
-import fr.sacem.priam.model.domain.dto.SelectionCMSDto;
 import fr.sacem.priam.model.domain.fv.AyantDroitProgramme;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 public interface AyantDroitProgrammeFVDao extends JpaRepository<AyantDroitProgramme, Long> {
 
@@ -29,7 +26,7 @@ public interface AyantDroitProgrammeFVDao extends JpaRepository<AyantDroitProgra
             "AND (ayantDroitProgramme.ide12 = :ide12 OR :ide12 IS NULL) " +
             "AND (ayantDroitProgramme.titre like %:titre% OR :titre IS NULL) " +
             "AND (ayantDroitProgramme.coad = :coad OR :coad IS NULL) " +
-            "AND (ayantDroitProgramme.participant like %:participant% OR :participant IS NULL) ")
+            "AND (ayantDroitProgramme.participant like %:participant% OR :participant IS NULL)")
     Page<AyantDroitDto> findCoadByCriteria(@Param("numProg") String numProg,
                                                      @Param("ide12") Long ide12,
                                                      @Param("titre") String titre,
