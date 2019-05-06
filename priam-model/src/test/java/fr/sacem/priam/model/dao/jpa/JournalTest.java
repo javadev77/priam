@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Created by monfleurm on 13/03/2018.
  */
 
-@Transactional
+@Transactional(value="transactionManager")
 public class JournalTest extends AbstractDaoTest {
     public static final Pageable PAGEABLE = new Pageable() {
         @Override

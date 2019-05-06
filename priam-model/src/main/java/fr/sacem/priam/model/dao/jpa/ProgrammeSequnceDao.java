@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Created by fandis on 22/06/2017.
  */
 @Lazy
-@Transactional(readOnly = true)
+@Transactional(value="transactionManager", readOnly = true)
 public interface ProgrammeSequnceDao extends JpaRepository<ProgrammeSequence, ProgrammeKey> {
 
     @Query(value="SELECT  max(p.programmeKey.codeSequence) from ProgrammeSequence p where p.programmeKey.annee=:currentAnnee")

@@ -53,7 +53,7 @@ public class JournalJdbcDao {
     }
 
 
-    //@Transactional(propagation = Propagation.REQUIRES_NEW)
+    //@Transactional(value="transactionManager", propagation = Propagation.REQUIRES_NEW)
     public void bathInsertJournal(List<Journal> journaux) {
         if(journaux == null || journaux.isEmpty()) {
             return;

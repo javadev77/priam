@@ -30,7 +30,7 @@ public class AffectationCPResourceTest extends RestResourceTest {
     private FichierDao fichierDao;
 
     @Test
-    @Transactional
+    @Transactional(value="transactionManager")
     public void test_affecterFichiers_all_vide() throws Exception {
         mockMvc.perform(
                 put("/app/rest/programme/affectation")
@@ -42,7 +42,7 @@ public class AffectationCPResourceTest extends RestResourceTest {
     }
 
     @Test
-    @Transactional
+    @Transactional(value="transactionManager")
     public void test_affecterFichiers() throws Exception {
         mockMvc.perform(
                 put("/app/rest/programme/affectation")
@@ -56,7 +56,7 @@ public class AffectationCPResourceTest extends RestResourceTest {
 
 
     @Test
-    @Transactional
+    @Transactional(value="transactionManager")
     public void test_deaffecterFichiers() throws Exception {
         DesaffectationDto desaffectationDto = new DesaffectationDto();
         desaffectationDto.setNumProg("180090");

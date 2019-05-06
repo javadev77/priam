@@ -22,6 +22,16 @@ import fr.sacem.priam.services.api.LigneProgrammeService;
 import fr.sacem.priam.services.cp.LigneProgrammeCPService;
 import fr.sacem.priam.services.dto.ValdierSelectionProgrammeInput;
 import fr.sacem.priam.services.journal.annotation.TypeLog;
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.persistence.EntityManager;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,13 +44,6 @@ import org.springframework.data.jpa.domain.JpaSort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityManager;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
 
 /**
  * Created by jbelwidane on 25/07/2017.
@@ -89,25 +92,25 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
     private static final Logger LOG = LoggerFactory.getLogger(LigneProgrammeCPServiceImpl.class);
 
 
-    @Transactional
+    @Transactional(value="transactionManager")
     @Override
     public List<KeyValueDto> getListIDE12ByProgramme(Long ide12, String programme) {
         return ligneProgrammeCPDao.findIDE12sByProgramme(ide12, programme);
     }
 
-    @Transactional
+    @Transactional(value="transactionManager")
     @Override
     public List<KeyValueDto> getTitresByProgramme(String titre, String programme) {
         return ligneProgrammeCPDao.findTitresByProgramme(titre.toUpperCase(), programme);
     }
 
-    @Transactional
+    @Transactional(value="transactionManager")
     @Override
     public List<String> getUtilisateursByProgramme(String programme) {
         return ligneProgrammeCPDao.findUtilisateursByProgramme(programme);
     }
 
-    @Transactional
+    @Transactional(value="transactionManager")
     @Override
     public Page<SelectionDto> findLigneProgrammeByCriteria(LigneProgrammeCriteria criteria, Pageable pageable) {
         long before = System.currentTimeMillis();
@@ -158,7 +161,7 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
 
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+   @Transactional(value="transactionManager",  propagation = Propagation.REQUIRES_NEW)
     @Override
     public void selectLigneProgramme(String numProg, Set<Map<String, String>> idLingesProgrammes) {
         List<LigneProgrammeCP> records = populateRecords(numProg, idLingesProgrammes, TRUE);
@@ -189,7 +192,7 @@ public class LigneProgrammeCPServiceImpl implements LigneProgrammeService, Ligne
         return records;
     }
 
-    @Transactional
+    @Transactional(value="transactionManager")
     @Override
     public void modifierDurOrNbrDifTemporaire(String numProg, Set<Map<String, String>> selected, Set<Map<String, String>> unselected, UserDTO userDTO) {
         Programme prog = programmeDao.findByNumProg(numProg);

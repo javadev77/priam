@@ -17,7 +17,7 @@ import java.util.List;
 
 public interface LigneProgrammeFVDao extends JpaRepository<LigneProgrammeFV, Long> {
 
-    @Transactional(readOnly = true)
+   @Transactional(value="transactionManager",  readOnly = true)
     @Query(value =
             "SELECT " +
                     " distinct  new fr.sacem.priam.model.domain.dto.KeyValueDto(l.ide12) " +
@@ -31,7 +31,7 @@ public interface LigneProgrammeFVDao extends JpaRepository<LigneProgrammeFV, Lon
                     "ORDER BY l.ide12")
     List<KeyValueDto> findIDE12sByProgramme(@Param("query") Long query, @Param("programme") String programme);
 
-    @Transactional(readOnly = true)
+   @Transactional(value="transactionManager",  readOnly = true)
     @Query(value =
             "SELECT " +
                     " distinct new fr.sacem.priam.model.domain.dto.KeyValueDto(l.titreOeuvre) " +
@@ -45,7 +45,7 @@ public interface LigneProgrammeFVDao extends JpaRepository<LigneProgrammeFV, Lon
                     "ORDER BY l.titreOeuvre")
     List<KeyValueDto> findTitresByProgramme(@Param("titre") String titre, @Param("programme") String programme);
 
-    @Transactional(readOnly = true)
+   @Transactional(value="transactionManager",  readOnly = true)
     @Query(value="SELECT new fr.sacem.priam.model.domain.dto.SelectionCMSDto("+
             "ligneProgramme.ide12, " +
             "ligneProgramme.titreOeuvre, " +
@@ -68,7 +68,7 @@ public interface LigneProgrammeFVDao extends JpaRepository<LigneProgrammeFV, Lon
                                                        @Param("ajout") String ajout,
                                                        @Param("selectionEnCours") Boolean selectionEnCours, Pageable pageable);
 
-    @Transactional(readOnly = true)
+   @Transactional(value="transactionManager",  readOnly = true)
     @Query(nativeQuery = true, value =
             "SELECT " +
                     "count(points), ajout" +
@@ -90,7 +90,7 @@ public interface LigneProgrammeFVDao extends JpaRepository<LigneProgrammeFV, Lon
                     "GROUP BY ajout")
     List<Object> compterOuvres(@Param("numProg") String numProg, @Param("selection") Integer selection);
 
-    @Transactional(readOnly = true)
+   @Transactional(value="transactionManager",  readOnly = true)
     @Query(nativeQuery = true, value =
             "SELECT sum(points) from ( SELECT " +
                     "(CASE WHEN l.cdeTypUtil = 'FD06' THEN sum(l.mtEdit) WHEN l.cdeTypUtil = 'FD12' THEN sum(l.nbrDifEdit) ELSE 0 END) points, " +
@@ -106,7 +106,7 @@ public interface LigneProgrammeFVDao extends JpaRepository<LigneProgrammeFV, Lon
     Double calculerPointsMontantOeuvres(@Param("numProg") String numProg, @Param("selection") Integer selection);
 
     @Modifying(clearAutomatically = true)
-    @Transactional
+    @Transactional(value="transactionManager")
     @Query(nativeQuery = true, value="update " +
             "  PRIAM_LIGNE_PROGRAMME_FV p " +
             "INNER JOIN " +
@@ -121,7 +121,7 @@ public interface LigneProgrammeFVDao extends JpaRepository<LigneProgrammeFV, Lon
                                                  @Param("select") int select);
 
     @Modifying(clearAutomatically = true)
-    @Transactional
+    @Transactional(value="transactionManager")
     @Query(nativeQuery = true, value = "update " +
             "PRIAM_LIGNE_PROGRAMME_FV p " +
             "INNER JOIN " +
@@ -200,7 +200,7 @@ public interface LigneProgrammeFVDao extends JpaRepository<LigneProgrammeFV, Lon
     LigneProgrammeFV findOeuvreManuelByIde12AndCdeUtil(@Param("numProg")String numProg, @Param("ide12") Long ide12);
 
     @Modifying(clearAutomatically = true)
-    @Transactional
+    @Transactional(value="transactionManager")
     @Query(nativeQuery = true, value="update " +
             "  PRIAM_LIGNE_PROGRAMME_FV p " +
             "INNER JOIN " +
@@ -213,7 +213,7 @@ public interface LigneProgrammeFVDao extends JpaRepository<LigneProgrammeFV, Lon
     void updatePointsMtTemporaireByNumProgramme(String numProg, Long ide12, Double mtEdit);
 
     @Modifying(clearAutomatically = true)
-    @Transactional
+    @Transactional(value="transactionManager")
     @Query(nativeQuery = true, value="update " +
             "  PRIAM_LIGNE_PROGRAMME_FV p " +
             "INNER JOIN " +
@@ -303,12 +303,12 @@ public interface LigneProgrammeFVDao extends JpaRepository<LigneProgrammeFV, Lon
         "  f.NUMPROG = ?1")
     void deselectAllByNumProgramme(@Param("numProg") String numProg, @Param("selection") boolean selection);
 
-    @Transactional
+    @Transactional(value="transactionManager")
     @Modifying(clearAutomatically = true)
     @Query("DELETE FROM LigneProgrammeFV lp WHERE lp.fichier.id = :fichierId")
     void deleteAllByFichierId(@Param("fichierId") Long fileId);
 
-    @Transactional(readOnly = true)
+   @Transactional(value="transactionManager",  readOnly = true)
     @Query(nativeQuery = true, value = "SELECT COUNT(*) AS NB_LIGNES FROM EXPORT_FV_VIEW FV " +
             "WHERE FV.numProg=:numProg ")
     Long countNbLignesForExport(@Param("numProg") Long numProg);

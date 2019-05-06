@@ -23,7 +23,7 @@ public class TraitementCmsDao {
     }
 
 
-    @Transactional
+    @Transactional(value="transactionManager")
     public long createTraitement(String numProg, Long nbOeuvres) {
         String sql =  "INSERT INTO PRIAM_TRAITEMENT_ELIGIBILITE_CMS (DATE_DEBUT_TMT, NUMPROG, STATUT_ELIGIBILITE, NB_OEUVRES_EXTRACT)" +
                 "  VALUES (?, ?, ?, ?)";
@@ -45,7 +45,7 @@ public class TraitementCmsDao {
     }
 
 
-    @Transactional
+    @Transactional(value="transactionManager")
     public void majTraitment(Long idTraitementCMS, Long nbOeuvresCatalogue,
                              Long oeuvresRetenues, Double sommePoints, String statutEligibilite) {
         String sql =  "UPDATE PRIAM_TRAITEMENT_ELIGIBILITE_CMS SET STATUT_ELIGIBILITE = ?, DATE_FIN_TMT = ?, " +
@@ -63,7 +63,7 @@ public class TraitementCmsDao {
     }
 
 
-    @Transactional
+    @Transactional(value="transactionManager")
     public void viderCatalogueOctav(String typeCms) {
         LOG.info("=== Suppression du contenu de la table PRIAM_CATALOGUE_OCTAV ====");
         String sql = "DELETE FROM PRIAM_CATALOGUE_OCTAV WHERE TYPE_CMS='" + typeCms + "'";
@@ -71,7 +71,7 @@ public class TraitementCmsDao {
     }
 
 
-    @Transactional
+    @Transactional(value="transactionManager")
     public void viderCatalogueOctavAnt(String numProg){
         LOG.info("=== Suppression du contenu de la table PRIAM_CATALOGUE_OCTAV ====");
         String sql = "DELETE FROM PRIAM_CATALOGUE_OCTAV_ANT WHERE NUMPROG="+ "'" + numProg + "'";

@@ -137,7 +137,7 @@ public class FichierBatchServiceImpl implements FichierBatchService {
     }
 
     @Override
-    @Transactional
+    @Transactional(value="transactionManager")
     public void clearSelectedFichiers(String numProg, String statut) {
         fichierRepository.clearSelectedFichiers(numProg, statut);
     }

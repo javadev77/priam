@@ -18,7 +18,7 @@ public class AyantDroitDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    @Transactional
+    @Transactional(value="transactionManager")
     public void deleteDedoublonnageTableAD(final String numProg) {
         String selectSql = "SELECT AD.ID AS id " +
                 "FROM PRIAM_LIGNE_PROGRAMME_FV FV " +
@@ -47,7 +47,7 @@ public class AyantDroitDao {
         }
     }
 
-    @Transactional
+    @Transactional(value="transactionManager")
     public boolean isAyantDroitExist(Long coad) {
         try {
             List<Long> result = jdbcTemplate.query("SELECT COAD  FROM PRIAM_AYANT_DROIT WHERE COAD=?",

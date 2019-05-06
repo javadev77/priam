@@ -19,4 +19,8 @@ public interface AyantDroitFVService {
     List<KeyValueDto> getTitresByProgramme(String query, String programme);
 
     Double calculerPointsByCriteria(AyantDroitCriteria criteria);
+
+    Page<? extends AyantDroitDto> findByCumulCoad(AyantDroitCriteria criteria, Pageable pageable);
+
+    Double calculerPointsByCumulCoad(AyantDroitCriteria criteria);
 }

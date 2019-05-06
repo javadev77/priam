@@ -18,6 +18,12 @@ public class AyantDroitDto {
         this.points = points;
     }
 
+    public AyantDroitDto(Long coad, String participant, Double points) {
+        this.coad = coad;
+        this.participant = participant;
+        this.points = points;
+    }
+
     public Long getIde12() {
         return ide12;
     }

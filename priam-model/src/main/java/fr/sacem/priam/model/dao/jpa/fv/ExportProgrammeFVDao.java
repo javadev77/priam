@@ -9,22 +9,22 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface ExportProgrammeFVDao extends JpaRepository<ExportProgrammeFV, Long> {
 
-    @Transactional(readOnly = true)
+   @Transactional(value="transactionManager",  readOnly = true)
     @Query(value ="SELECT e FROM ExportProgrammeFV e where e.programme.numProg =:numProg ")
     ExportProgrammeFV findByNumProg(@Param("numProg") String numProg);
 
-    @Transactional
+    @Transactional(value="transactionManager")
     @Modifying
     @Query(nativeQuery = true, value="INSERT INTO PRIAM_EXPORT_PROGRAMME_FV (NUMPROG, STATUT) " +
             "VALUES (?1, ?2)")
     void insertExportProgramme(@Param("numProg") String numProg, @Param("statut") String statut);
 
-    @Transactional
+    @Transactional(value="transactionManager")
     @Modifying
     @Query(nativeQuery = true, value="UPDATE PRIAM_EXPORT_PROGRAMME_FV SET FILENAME=?2, STATUT=?3, DATE_CREATION=NOW() WHERE NUMPROG =?1")
     void updateStatutExportProgramme(@Param("numProg") String numProg, @Param("fileName") String fileName, @Param("statut") String statut);
 
-    @Transactional
+    @Transactional(value="transactionManager")
     @Modifying
     @Query(nativeQuery = true, value="DELETE FROM PRIAM_EXPORT_PROGRAMME_FV WHERE NUMPROG =?1")
     void deleteByNumProg(@Param("numProg") String numProg);

@@ -56,7 +56,7 @@ public class FichierService {
     LigneProgrammeCopyFVDao ligneProgrammeCopyFVDao;
 
 
-    @Transactional
+    @Transactional(value="transactionManager")
     public void deleteDonneesFichiers(Long fileId) {
         Fichier fichier = fichierDao.findOne(fileId);
 
@@ -78,7 +78,7 @@ public class FichierService {
     }
     
     
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+   @Transactional(value="transactionManager",  propagation = Propagation.REQUIRES_NEW)
     public void majFichiersAffectesAuProgramme(String numProg, List<Fichier> nouveauxfichiersAffectes, String currentUserName){
         List<Long> idsNouveauxFichiersAffectes=new ArrayList<>();
         for(Fichier fichier : nouveauxfichiersAffectes){
@@ -123,7 +123,7 @@ public class FichierService {
         programmeDao.saveAndFlush(programme);
     }
 
-    @Transactional
+    @Transactional(value="transactionManager")
     public Fichier getOrCreateFichierLink(String numProg) {
 
         Fichier fichierLink = fichierDao.findFichierLink(numProg);

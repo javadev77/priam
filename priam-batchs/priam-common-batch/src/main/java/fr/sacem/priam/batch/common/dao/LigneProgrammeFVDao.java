@@ -78,7 +78,7 @@ public class LigneProgrammeFVDao {
     }
 
 
-    @Transactional
+    @Transactional(value="transactionManager")
     public void majOeuvreWithInfoOctav(final OctavDTO octavDTO) {
         String sql =  "UPDATE PRIAM_LIGNE_PROGRAMME_FV SET datconslt = ?, datsitu = ? WHERE ide12 = ?";
         DateTimeFormatter yyyyMMdd = DateTimeFormatter.ofPattern("yyyyMMdd");

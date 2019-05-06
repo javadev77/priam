@@ -78,7 +78,7 @@ public class FichierDaoTest extends AbstractDaoTest {
     private ProgrammeDao programmeDao;
     
     @Test
-    @Transactional
+    @Transactional(value="transactionManager")
     public void should_find_all_fichiers_affectes() {
         List<Status> status = Arrays.asList(Status.values());
         List<FileDto> all = fichierDao.findFichiersAffectes(Lists.newArrayList("COPIEPRIV"),
@@ -91,7 +91,7 @@ public class FichierDaoTest extends AbstractDaoTest {
     }
     
     @Test
-    @Transactional
+    @Transactional(value="transactionManager")
     public void should_find_all_fichiers_by_status() {
         List<Status> status = Arrays.asList(Status.values());
         Page<FileDto> allFichiersByStatus = fichierDao.findAllFichiersByStatus(status, PAGEABLE);
@@ -101,7 +101,7 @@ public class FichierDaoTest extends AbstractDaoTest {
     }
     
     @Test
-    @Transactional
+    @Transactional(value="transactionManager")
     public void should_find_all_fichiers_with_null_criteria() {
         List<Status> status = Arrays.asList(Status.values());
         List<String> typeUtilCode = Arrays.asList("COPRIVSON", "CPRIVSONPH", "CPRIVAUDV", "CPRIVSONRD", "CPRIVAUDPL");
@@ -115,7 +115,7 @@ public class FichierDaoTest extends AbstractDaoTest {
     }
     
     @Test
-    @Transactional
+    @Transactional(value="transactionManager")
     public void should_find_all_fichiers_by_famille_COPIEPRIVEE() {
         List<Status> status = Arrays.asList(Status.values());
         List<String> copiepriv = Lists.newArrayList("COPIEPRIV");
@@ -134,7 +134,7 @@ public class FichierDaoTest extends AbstractDaoTest {
     }
 
     @Test
-    @Transactional
+    @Transactional(value="transactionManager")
     public void clearSelectedFichiersTest(){
         fichierDao.clearSelectedFichiers("170001",Status.AFFECTE);
         List<Fichier> all = fichierDao.findFichiersByIdProgramme("170001",Status.AFFECTE);
@@ -143,7 +143,7 @@ public class FichierDaoTest extends AbstractDaoTest {
                 .hasSize(0);
     }
     @Test
-    @Transactional
+    @Transactional(value="transactionManager")
     public void updateStatusFichiersAffectesTest(){
         List<Long> idFichiers= new ArrayList<>();
         idFichiers.add(125l);
@@ -157,7 +157,7 @@ public class FichierDaoTest extends AbstractDaoTest {
                 .isNotNull();
     }
     @Test
-    @Transactional
+    @Transactional(value="transactionManager")
     public void findFichiersByIdProgrammeTest(){
         List<Fichier> all = fichierDao.findFichiersByIdProgramme("170001",Status.AFFECTE);
         assertThat(all)

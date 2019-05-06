@@ -17,7 +17,7 @@ import java.util.List;
  * Created by benmerzoukah on 03/05/2018.
  */
 @Lazy
-@Transactional
+@Transactional(value="transactionManager")
 public interface CatalogueCmsDao extends JpaRepository<CatalogueCms, Long> {
 
     /*@Query(value = "SELECT cat FROM CatalogueCms cat")
@@ -77,15 +77,15 @@ public interface CatalogueCmsDao extends JpaRepository<CatalogueCms, Long> {
                                                         @Param("typeInscription") String typeInscription,
                                                         @Param("typUtilGen") String typUtilGen, Pageable pageable);
 
-    @Transactional
+    @Transactional(value="transactionManager")
     @Query(value ="Select c from CatalogueCms c where c.ide12 = :ide12 and c.typeCMS = :typeCMS")
     CatalogueCms findByIde12AndTypeCMS (@Param("ide12") Long ide12,@Param("typeCMS") String typeCMS);
 
-    @Transactional
+    @Transactional(value="transactionManager")
     @Query(value ="Select c from CatalogueCms c where c.ide12 = :ide12 and c.typeCMS = :typeCMS and (c.dateSortie is null or c.dateSortie >= current_date)")
     CatalogueCms findOeuvreExistanteCatalogueByIde12AndTypeCMS (@Param("ide12") Long ide12,@Param("typeCMS") String typeCMS);
 
-    @Transactional(readOnly = true)
+   @Transactional(value="transactionManager",  readOnly = true)
     @Query(value ="SELECT " +
             "DISTINCT NEW fr.sacem.priam.model.domain.dto.KeyValueDto(c.titre)" +
             "FROM CatalogueCms c " +
@@ -94,7 +94,7 @@ public interface CatalogueCmsDao extends JpaRepository<CatalogueCms, Long> {
             "ORDER BY c.titre")
     List<KeyValueDto> findTitresByTypeCMS(@Param("titre") String titre, @Param("typeCMS") String typeCMS);
 
-    @Transactional(readOnly = true)
+   @Transactional(value="transactionManager",  readOnly = true)
     @Query(value ="SELECT cat.typeInscription, COUNT(cat.typeInscription)" +
             "FROM CatalogueCms cat " +
             "WHERE cat.typeCMS= :typeCMS " +
@@ -119,7 +119,7 @@ public interface CatalogueCmsDao extends JpaRepository<CatalogueCms, Long> {
                                          @Param("periodeSortieDateDebut") Date periodeSortieDateDebut,
                                          @Param("periodeSortieDateFin") Date periodeSortieDateFin);
 
-    @Transactional(readOnly = true)
+   @Transactional(value="transactionManager",  readOnly = true)
     @Query(value ="SELECT cat.typeInscription, COUNT(cat.typeInscription)" +
             "FROM CatalogueCms cat " +
             "WHERE cat.typeCMS= :typeCMS " +
@@ -188,7 +188,7 @@ public interface CatalogueCmsDao extends JpaRepository<CatalogueCms, Long> {
                                                                @Param("periodeRenouvellementDateFin") Date periodeRenouvellementDateFin,
                                                                @Param("periodeSortieDateFin") Date periodeSortieDateFin);
 
-    @Transactional
+    @Transactional(value="transactionManager")
     @Query(value ="Select c from CatalogueCms c where c.ide12 = :ide12")
     List<CatalogueCms> findByIde12 (@Param("ide12") Long ide12);
 

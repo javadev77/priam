@@ -22,7 +22,7 @@ public class ProgrammeBatchDao {
 
     }
 
-    @Transactional
+    @Transactional(value="transactionManager")
     public void majStattutEligibilite(String numProg, String statut) {
         String sql =  "UPDATE PRIAM_PROGRAMME SET STATUT_ELIGIBILITE = ? WHERE NUMPROG = ?";
         jdbcTemplate.update(sql, stmt -> {
@@ -31,7 +31,7 @@ public class ProgrammeBatchDao {
         });
     }
 
-    @Transactional
+    @Transactional(value="transactionManager")
     public void majStattutProgramme(String numProg, String statut) {
         String sql =  "UPDATE PRIAM_PROGRAMME SET STATUT_PROG_CODE = ? WHERE NUMPROG = ?";
         jdbcTemplate.update(sql, stmt -> {
@@ -52,7 +52,7 @@ public class ProgrammeBatchDao {
         this.nomTableLigneProgramme = nomTableLigneProgramme;
     }
 
-    @Transactional
+    @Transactional(value="transactionManager")
     public void updateProgramme(String numProg, String user) {
 
         String sql =  "UPDATE PRIAM_PROGRAMME SET STATUT_PROG_CODE=?, USERMAJ=?, DATMAJ=? WHERE NUMPROG = ?";
@@ -64,7 +64,7 @@ public class ProgrammeBatchDao {
         });
     }
 
-    @Transactional
+    @Transactional(value="transactionManager")
     public Programme findByNumProg(String numProg) {
         String sql = "SELECT p.NUMPROG as NUMPROG, p.CDETYPUTIL as CDETYPUTIL, p.TYPE_REPART " +
                     "FROM PRIAM_PROGRAMME p " +

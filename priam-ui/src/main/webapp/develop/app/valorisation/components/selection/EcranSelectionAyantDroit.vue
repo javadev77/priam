@@ -30,6 +30,7 @@
         :filter="filter"
         :retablir="retablirFiltre"
         :rechercher="doSearch"
+        @maj-filtre-vue="changeVue"
       >
       </app-filtre-selection>
     </div>
@@ -141,7 +142,7 @@
       return {
         defaultPageable: {
           page: 1,
-          sort: 'ide12',
+          sort: 'points',
           dir: 'desc',
           size: this.$store.getters.userPageSize
         },
@@ -199,7 +200,7 @@
             {
               id: 'participant',
               name: 'Participant',
-              sortable: false,
+              sortable: true,
               type: 'long-text',
               cell: {
                 toText: function (entry) {
@@ -214,8 +215,8 @@
             {
               id: 'points',
               name: "Points",
-              sortable: false,
-              sortProperty: 'mt', // l'equivalent du JpaSort dans le back
+              sortable: true,
+              sortProperty: 'points', // l'equivalent du JpaSort dans le back
               type: 'text-centre',
               cell: {
                 toText: function (entry) {
@@ -264,19 +265,27 @@
             method: 'GET',
             url: process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/programme/numProg/{numProg}'
           },
-          /*findLigneProgrammeByProgramme: {
-            method: 'POST',
-            url: process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/ligneProgramme/search?page={page}&size={size}&sort={sort},{dir}'
-          },*/
+
           findAyantDroitByProgramme: {
             method: 'POST',
             url: process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/ayantDroit/search?page={page}&size={size}&sort={sort},{dir}'
+          },
+
+          findCumulCoad : {
+            method: 'POST',
+            url: process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/cumulCoad/search?page={page}&size={size}&sort={sort},{dir}'
           },
 
           calculerPointsByProgramme: {
             method: 'POST',
             url: process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/ayantDroit/points'
           },
+
+          calculerPointsByCumulCoad : {
+            method: 'POST',
+            url: process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/cumulCoad/points'
+          },
+
           validerSelection: {
             method: 'POST',
             url: process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/ligneProgramme/selection/valider'
@@ -364,43 +373,86 @@
 
       doSearch() {
         this.dataLoading = true;
-        /*this.resource.findLigneProgrammeByProgramme({*/
-        this.resource.findAyantDroitByProgramme({
-          page: this.defaultPageable.page - 1, size: this.defaultPageable.size,
-          sort: this.defaultPageable.sort, dir: this.defaultPageable.dir
-        }, this.filter)
-          .then(response => {
-            return response.json();
-          })
-          .then(data => {
 
-            var tab = [];
+        if(!this.filtreVue) {
+          this.defaultPageable.sort = 'points';
+          this.defaultPageable.dir='DESC';
 
-            this.priamGridFondsAyantDroit.gridData = data;
-            this.priamGridFondsAyantDroit.gridData.number = data.number + 1;
-            tab = this.priamGridFondsAyantDroit.gridData.content;
+          this.resource.findAyantDroitByProgramme({
+            page: this.defaultPageable.page - 1, size: this.defaultPageable.size,
+            sort: this.defaultPageable.sort, dir: this.defaultPageable.dir
+          }, this.filter)
+            .then(response => {
+              return response.json();
+            })
+            .then(data => {
 
-            this.compterSommePoints();
+              var tab = [];
 
-            this.ligneProgramme = tab;
-            this.dataLoading = false;
+              this.priamGridFondsAyantDroit.gridData = data;
+              this.priamGridFondsAyantDroit.gridData.number = data.number + 1;
+              tab = this.priamGridFondsAyantDroit.gridData.content;
 
-            // this.$store.dispatch('toutDesactiver', this.countNbSelected(this.ligneProgramme) == this.ligneProgramme.length);
-            //this.selectAll();
-          });
+              this.compterSommePoints();
+              this.ligneProgramme = tab;
+              this.dataLoading = false;
+
+            });
+
+        } else {
+
+          this.defaultPageable.sort = 'sum(points)';
+          this.defaultPageable.dir='DESC';
+
+
+          this.resource.findCumulCoad({
+            page: this.defaultPageable.page - 1, size: this.defaultPageable.size,
+            sort: this.defaultPageable.sort, dir: this.defaultPageable.dir
+          }, this.filter)
+            .then(response => {
+              return response.json();
+            })
+            .then(data => {
+
+
+              this.priamGridFondsAyantDroit.gridData = data;
+              this.priamGridFondsAyantDroit.gridData.number = data.number + 1;
+              this.compterSommePoints();
+              this.ligneProgramme = this.priamGridFondsAyantDroit.gridData.content;
+              this.dataLoading = false;
+
+            });
+        }
       },
 
       compterSommePoints() {
         this.dataLoadingPoints = true;
         this.sommePointsAyantDroit = 0;
-        this.resource.calculerPointsByProgramme({}, this.filter)
-          .then(response => {
-            return response.json();
-          })
-          .then(data => {
-            this.sommePointsAyantDroit = data;
-          });
-        this.dataLoadingPoints = false;
+
+        if(!this.filtreVue) {
+          this.resource.calculerPointsByProgramme({}, this.filter)
+            .then(response => {
+              return response.json();
+            })
+            .then(data => {
+              this.sommePointsAyantDroit = data;
+              this.dataLoadingPoints = false;
+            });
+
+
+        } else {
+
+          this.resource.calculerPointsByCumulCoad({}, this.filter)
+            .then(response => {
+              return response.json();
+            })
+            .then(data => {
+              this.sommePointsAyantDroit = data;
+              this.dataLoadingPoints = false;
+            });
+
+
+        }
       },
 
       loadPage: function (pageNum, size, sort) {
@@ -408,38 +460,64 @@
         this.defaultPageable.size = size;
         let pageSize = this.defaultPageable.size;
 
+        this.launchRequest(pageNum, pageSize, sort.property, sort.direction);
+
       },
 
       launchRequest(pageNum, pageSize, sort, dir) {
 
-        this.currentGridState = {
-          pageNum: pageNum, pageSize: pageSize, sort: sort, dir: dir
-        };
 
         this.dataLoading = true;
 
-        this.resource.findLigneProgrammeByProgramme({
-          page: pageNum - 1, size: pageSize,
-          sort: sort, dir: dir
-        }, this.currentFilter)
-          .then(response => {
-            return response.json();
-          })
-          .then(data => {
+        if(!this.filtreVue) {
 
-            this.dataLoading = false;
+          this.resource.findAyantDroitByProgramme({
+            page : pageNum - 1, size : pageSize,
+            sort : sort, dir: dir
+          }, this.filter)
+            .then(response => {
+              return response.json();
+            })
+            .then(data => {
 
-            this.priamGridFondsAyantDroit.gridData = data;
-            this.priamGridFondsAyantDroit.gridData.number = data.number + 1;
-            this.ligneProgramme = this.priamGridFondsAyantDroit.gridData.content;
+              var tab = [];
 
-          });
+              this.priamGridFondsAyantDroit.gridData = data;
+              this.priamGridFondsAyantDroit.gridData.number = data.number + 1;
+              tab = this.priamGridFondsAyantDroit.gridData.content;
+
+              this.ligneProgramme = tab;
+              this.dataLoading = false;
+
+            });
+
+        } else {
+
+
+
+          this.resource.findCumulCoad({
+            page : pageNum - 1, size : pageSize,
+            sort : sort, dir: dir
+          }, this.filter)
+            .then(response => {
+              return response.json();
+            })
+            .then(data => {
+
+
+              this.priamGridFondsAyantDroit.gridData = data;
+              this.priamGridFondsAyantDroit.gridData.number = data.number + 1;
+              this.ligneProgramme = this.priamGridFondsAyantDroit.gridData.content;
+              this.dataLoading = false;
+
+            });
+        }
       },
 
       onSort(currentPage, pageSize, sort) {
 
-        this.dataLoading = true;
-        /*this.launchRequest(currentPage, pageSize, sort.property, sort.direction);*/
+        this.launchRequest(currentPage, pageSize, sort.property, sort.direction);
+
         this.defaultPageable.sort = sort.property;
         this.defaultPageable.dir = sort.direction;
       },
@@ -582,7 +660,29 @@
             });
         }
 
-      }
+      },
+
+
+      changeVue(filtreVue){
+
+        let roleElem = this.priamGridFondsAyantDroit.gridColumns.find(function (element) {
+          return element.id === 'role';
+        });
+        let pointElem = this.priamGridFondsAyantDroit.gridColumns.find(function (element) {
+          return element.id === 'points';
+        });
+        if(filtreVue !== 'globale'){
+          this.filtreVue = true;
+          roleElem.hidden = true;
+          pointElem.sortProperty = 'sum(points)';
+        } else {
+          this.filtreVue = false;
+          roleElem.hidden=false;
+          pointElem.sortProperty = 'points';
+        }
+
+        this.doSearch();
+      },
 
     },
     components : {

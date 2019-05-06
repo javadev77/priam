@@ -25,7 +25,7 @@ public class LigneProgrammeBatchDao {
 
     }
 
-    @Transactional
+    @Transactional(value="transactionManager")
     public void deleteDedoublonnage(String numProg) {
         String selectSql = "SELECT l2.id as id " +
         "FROM PRIAM_LIGNE_PROGRAMME_CMS l2 " +
@@ -106,7 +106,7 @@ public class LigneProgrammeBatchDao {
         this.nomTableLigneProgramme = nomTableLigneProgramme;
     }
 
-    @Transactional
+    @Transactional(value="transactionManager")
     public void deleteDoublonsMemeMontant(String numProg) {
 
         String selectSql = "SELECT l2.id as id " +
@@ -136,7 +136,7 @@ public class LigneProgrammeBatchDao {
         }
     }
 
-    @Transactional
+    @Transactional(value="transactionManager")
     public void deleteAfterCalculPointsAnt(String numProg){
         String selectSql = "SELECT ligne.id as id " +
                 "FROM PRIAM_LIGNE_PROGRAMME_CMS ligne " +
@@ -155,7 +155,7 @@ public class LigneProgrammeBatchDao {
         }
     }
 
-    @Transactional
+    @Transactional(value="transactionManager")
     public void deleteDedoublonnageCP(String numProg) {
         String selectSql = "SELECT l2.id as id " +
                 "FROM PRIAM_LIGNE_PROGRAMME_CP l2 " +
@@ -182,12 +182,12 @@ public class LigneProgrammeBatchDao {
         }
     }
 
-    @Transactional
+    @Transactional(value="transactionManager")
     public void deleteDonneesLigneCP(Long idFichier) {
         deleteDonneesLigneProg(idFichier, "PRIAM_LIGNE_PROGRAMME_CP");
     }
 
-    @Transactional
+    @Transactional(value="transactionManager")
     public void deleteDonneesLigneFV(Long idFichier) {
 
         jdbcTemplate.update("DELETE FROM PRIAM_AYANT_DROIT WHERE ID_FV IN (" +
@@ -202,7 +202,7 @@ public class LigneProgrammeBatchDao {
         jdbcTemplate.update(sql, idFichier);
     }
 
-    @Transactional
+    @Transactional(value="transactionManager")
     public void deleteDedoublonnageFVAD(final String numProg) {
 
         String selectSql = "SELECT l2.id as id " +
@@ -230,7 +230,7 @@ public class LigneProgrammeBatchDao {
             jdbcTemplate.update(sql);
         }
     }
-    @Transactional
+    @Transactional(value="transactionManager")
     public void deleteDedoublonnageFVOeuvre(final String numProg) {
 
         String selectSql = "SELECT l2.id as id " +

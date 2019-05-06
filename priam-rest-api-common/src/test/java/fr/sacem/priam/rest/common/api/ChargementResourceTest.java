@@ -76,7 +76,7 @@ public class ChargementResourceTest extends RestResourceTest {
     }
 
     @Test
-    @Transactional
+    @Transactional(value="transactionManager")
     public void deleteDonneesFichiers() throws Exception {
       FileDto fileDto = new FileDto();
       String fichier125 = "Fichier 125";

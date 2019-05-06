@@ -59,7 +59,7 @@ public class StatistiquesCatcmsRepository {
         });
     }
 
-    @Transactional
+    @Transactional(value="transactionManager")
     public long saveStatistique(StatistiqueCatcms statistiqueCatcms) {
         String sql =  "INSERT INTO PRIAM_CATCMS_STATISTIQUES (TYPE_CMS, DATE, NOM_FICHIER, NB_OEUVRES, NB_CREATION, NB_RENOUVELLEMENT, NB_TOTAL_OEUVRES)" +
                 "  VALUES (?, ?, ?, ?, ?, ?, ?)";

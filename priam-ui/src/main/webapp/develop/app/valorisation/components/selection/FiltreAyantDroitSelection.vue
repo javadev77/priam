@@ -126,6 +126,11 @@
           $("#filterCoad").val("");
           $("#filterParticipant").val("");
           this.retablir();
+        },
+
+        majVue() {
+
+          this.$emit('maj-filtre-vue', this.filtreVue)
         }
       },
 

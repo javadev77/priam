@@ -14,7 +14,7 @@ import java.util.Date;
 /**
  * Created by embouazzar on 09/08/2018.
  */
-@Transactional
+@Transactional(value="transactionManager")
 public interface JournalCatcmsDao extends JpaRepository<JournalCatcms, Long>{
     @Query(value = "SELECT j FROM JournalCatcms j WHERE " +
             "j.typeCMS = :typeCMS " +

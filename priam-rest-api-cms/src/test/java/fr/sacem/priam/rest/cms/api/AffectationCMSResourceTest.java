@@ -43,7 +43,7 @@ public class AffectationCMSResourceTest extends RestResourceTest {
     }*/
 
     @Test
-    @Transactional
+    @Transactional(value="transactionManager")
     public void affecterFichiers() throws Exception {
         AffectationDto affectationDto = createAffectationDto("180001", Collections.emptyList());
 
@@ -55,7 +55,7 @@ public class AffectationCMSResourceTest extends RestResourceTest {
     }
 
     @Test
-    @Transactional
+    @Transactional(value="transactionManager")
     @Ignore
     public void affecterFichiers_CMS_FRA() throws Exception {
         AffectationDto affectationDto = createAffectationDto("180001", Arrays.asList("Fichier_FRA01"));
@@ -68,7 +68,7 @@ public class AffectationCMSResourceTest extends RestResourceTest {
     }
 
     @Test
-    @Transactional
+    @Transactional(value="transactionManager")
     @Ignore
     public void affecterFichiers_CMS_ANT() throws Exception {
         AffectationDto affectationDto = createAffectationDto("180002", Arrays.asList("Fichier_ANT01"));
@@ -82,7 +82,7 @@ public class AffectationCMSResourceTest extends RestResourceTest {
     }
 
 
-    @Transactional
+    @Transactional(value="transactionManager")
     private AffectationDto createAffectationDto(String numProg, List<String> fichiers) {
         AffectationDto affectationDto = new AffectationDto();
 
@@ -107,7 +107,7 @@ public class AffectationCMSResourceTest extends RestResourceTest {
     }
 
     @Test
-    @Transactional
+    @Transactional(value="transactionManager")
     public void desaffecterFichiers() throws Exception {
 
         DesaffectationDto d = new DesaffectationDto();

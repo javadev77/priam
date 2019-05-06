@@ -49,7 +49,7 @@ public class FichierRepositoryImpl implements FichierRepository {
     }
     
     @Override
-    @Transactional
+    @Transactional(value="transactionManager")
     public void updateFichierById(Long idFichier) {
         String sql = "UPDATE " + this.nomTableFichier + " SET STATUT_CODE=?,DATE_FIN_CHGT=? " +
                          "WHERE ID=?";
@@ -70,7 +70,7 @@ public class FichierRepositoryImpl implements FichierRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(value="transactionManager")
     public void rejeterFichier(Long idFichier, Set<String> errors) {
 
         String sql = "UPDATE " + this.nomTableFichier + " SET STATUT_CODE=?,DATE_FIN_CHGT=? WHERE ID=?";
@@ -84,7 +84,7 @@ public class FichierRepositoryImpl implements FichierRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(value="transactionManager")
     public void supprimerLigneProgrammeParIdFichier(Long idFichier) {
 
         String sql = "DELETE FROM "+ this.nomTableLigneProgramme + " WHERE ID_FICHIER=?";
@@ -95,7 +95,7 @@ public class FichierRepositoryImpl implements FichierRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(value="transactionManager")
     public void enregistrerLog(Long idFichier, Set<String> errors) {
 
         String query = new StringBuilder("INSERT INTO " + this.nomTableLigneProgrammeLog + "(ID_FICHIER, DATE, LOG) VALUES (")
@@ -116,7 +116,7 @@ public class FichierRepositoryImpl implements FichierRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(value="transactionManager")
     public void clearSelectedFichiers(String numProg, String statut) {
         String sql = "UPDATE PRIAM_FICHIER SET NUMPROG = NULL, STATUT_CODE =? WHERE NUMPROG=?";
 
@@ -127,7 +127,7 @@ public class FichierRepositoryImpl implements FichierRepository {
 
     }
 
-    @Transactional
+    @Transactional(value="transactionManager")
     public Long addFichier(Fichier fichier) throws PriamValidationException {
         // traitement des données d'un ficiher
         // insetion des données de ficiher avec le statut EN COURS
@@ -216,7 +216,7 @@ public class FichierRepositoryImpl implements FichierRepository {
 
 
     @Override
-    @Transactional
+    @Transactional(value="transactionManager")
     public void updateFichierDate(String nomFichier) {
         String sql = "UPDATE " + this.nomTableFichier + " SET STATUT_CODE=?,DATE_FIN_CHGT=? " +
                      "WHERE NOM=? AND (STATUT_CODE IS NULL OR STATUT_CODE=?)";
@@ -230,7 +230,7 @@ public class FichierRepositoryImpl implements FichierRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(value="transactionManager")
     public Long addFichierLink(String numProg) {
 
         String selectSql = "SELECT f.ID FROM PRIAM_FICHIER f WHERE f.NUMPROG=? AND f.SOURCE_AUTO = 0";
@@ -258,7 +258,7 @@ public class FichierRepositoryImpl implements FichierRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(value="transactionManager")
     public void deleteFichierLinkForAntille(String numProg) {
         String sql = "DELETE FROM PRIAM_FICHIER WHERE NUMPROG=? AND SOURCE_AUTO = 0";
 

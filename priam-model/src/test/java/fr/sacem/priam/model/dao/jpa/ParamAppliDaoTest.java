@@ -21,7 +21,7 @@ public class ParamAppliDaoTest extends AbstractDaoTest {
 
 
     @Test
-    @Transactional
+    @Transactional(value="transactionManager")
     public  void add_param_appli(){
         ParamAppli paramAppli =new ParamAppli();
         paramAppli.setCdeParam("ANNEE_SEQ_PROGRAMME");
@@ -32,7 +32,7 @@ public class ParamAppliDaoTest extends AbstractDaoTest {
         assertThat(paramAppli1.getVal()).isEqualTo("2018");
     }
     @Test
-    @Transactional
+    @Transactional(value="transactionManager")
     public void should_return_all_param_appli() {
 
         List<ParamAppli> all = paramAppliDao.findAll();

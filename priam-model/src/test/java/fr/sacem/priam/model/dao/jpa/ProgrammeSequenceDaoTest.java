@@ -22,7 +22,7 @@ public class ProgrammeSequenceDaoTest extends AbstractDaoTest {
 
 
     @Test
-    @Transactional
+    @Transactional(value="transactionManager")
     public  void add_programme_sequence(){
         ProgrammeSequence programmeSequence =new ProgrammeSequence();
         programmeSequence.setProgrammeKey(new ProgrammeKey("2017",3l));
@@ -31,7 +31,7 @@ public class ProgrammeSequenceDaoTest extends AbstractDaoTest {
         assertThat(programmeSequence1.getProgrammeKey().getAnnee()).isEqualTo("2017");
     }
     @Test
-    @Transactional
+    @Transactional(value="transactionManager")
     public void should_return_all_programme_sequence() {
 
         List<ProgrammeSequence> all = programmeSequnceDao.findAll();
@@ -40,7 +40,7 @@ public class ProgrammeSequenceDaoTest extends AbstractDaoTest {
         assertThat(all.size()).isEqualTo(2);
     }
     @Test
-    @Transactional
+    @Transactional(value="transactionManager")
     public void get_max_for_year(){
         ProgrammeSequence programmeSequence1 =new ProgrammeSequence();
         programmeSequence1.setProgrammeKey(new ProgrammeKey("2020",3l));

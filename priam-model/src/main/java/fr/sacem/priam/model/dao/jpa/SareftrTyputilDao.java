@@ -14,7 +14,7 @@ import java.util.List;
  * Created by benmerzoukah on 15/05/2017.
  */
 @Lazy
-@Transactional(readOnly = true)
+@Transactional(value="transactionManager", readOnly = true)
 public interface SareftrTyputilDao extends JpaRepository<SareftrTyputil, String> {
     
     @Query("SELECT typu FROM SareftrTyputil typu " +

@@ -46,7 +46,7 @@ public class JournalService {
 	private JournalJdbcDao journalJdbcDao;
 
 
-	@Transactional
+	@Transactional(value="transactionManager")
 	public Page<Journal> findAllEvents(Pageable pageable) {
 		
 		Page<Journal> pageJournal = journalDao.findAll(pageable);
@@ -60,13 +60,13 @@ public class JournalService {
 		return pageJournal;
 	}*/
 
-	@Transactional
+	@Transactional(value="transactionManager")
 	public Page<Journal> findJournalByNumProg(String numProg, Pageable pageable){
 			Page<Journal> pageJournalEvent = journalDao.findJournalByNumProg(numProg, pageable);
 		return pageJournalEvent;
 	}
 
-	//@Transactional
+	//@Transactional(value="transactionManager")
 	public void logJournalOeuvre(ValdierSelectionProgrammeInput selectionProgrammeInput, UserDTO userDTO, TypeLog typeLog) {
 		String numProg = selectionProgrammeInput.getNumProg();
 

@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Created by belwidanej on 21/08/2017.
  */
 @Lazy
-@Transactional(readOnly = true)
+@Transactional(value="transactionManager", readOnly = true)
 public interface SareftrCategAdSacemDao extends JpaRepository<SareftrCategAdSacem, String> {
 
     @Cacheable("SareftrCategAdSacemAll")

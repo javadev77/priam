@@ -82,7 +82,7 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
     }
 
     @Override
-    @Transactional
+    @Transactional(value="transactionManager")
     public Page<SelectionCMSDto> findLigneProgrammeByCriteria(LigneProgrammeCriteria criteria, Pageable pageable) {
         Programme programme = programmeDao.findOne(criteria.getNumProg());
 
@@ -124,7 +124,7 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
     }
 
     @Override
-    @Transactional
+    @Transactional(value="transactionManager")
     public void selectLigneProgramme(String numProg, Set<Map<String, String>> idLingesProgrammes) {
         for (Map<String, String>  obj:  idLingesProgrammes) {
             if (obj != null && !obj.isEmpty()) {
@@ -135,7 +135,7 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
     }
 
     @Override
-    @Transactional
+    @Transactional(value="transactionManager")
     public void supprimerLigneProgramme(String numProg, Long ide12, SelectionDto selectedLigneProgramme) {
         LigneProgrammeCMS oeuvreManuelFound = new LigneProgrammeCMS();
         if(selectedLigneProgramme.getAjout().equals(MANUEL)){
@@ -168,7 +168,7 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
     }
 
     @Override
-    @Transactional
+    @Transactional(value="transactionManager")
     public void deselectLigneProgramme(String numProg, Set<Map<String, String>> unselected) {
         for (Map<String, String>  obj:  unselected) {
             if(obj != null && !obj.isEmpty()) {
@@ -179,7 +179,7 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
     }
 
     @Override
-    @Transactional
+    @Transactional(value="transactionManager")
     public void enregistrerEdition(String numProg) {
         Programme prog = programmeDao.findByNumProg(numProg);
 
@@ -201,7 +201,7 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
     }
 
     @Override
-    @Transactional
+    @Transactional(value="transactionManager")
     public void annulerEdition(String numProg, String utilisateur) {
         Programme prog = programmeDao.findByNumProg(numProg);
 
@@ -223,7 +223,7 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
     }
 
     @Override
-    @Transactional
+    @Transactional(value="transactionManager")
     public void annulerSelection(String numProg, String utilisateur) {
         List<LigneProgrammeCMS> allOeuvresManuelsByNumProg = ligneProgrammeCMSDao.findAllOeuvresManuelsByNumProg(numProg);
         allOeuvresManuelsByNumProg.forEach( oeuvreManuel -> deleteOeuvreManuel(oeuvreManuel));
@@ -256,7 +256,7 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
         return result;
     }
 
-    @Transactional
+    @Transactional(value="transactionManager")
     @Override
     public void ajouterOeuvreManuel(LigneProgrammeCMS input, UserDTO userDTO) {
         Programme programme = programmeDao.findOne(input.getNumProg());
@@ -389,7 +389,7 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
     }
 
     @Override
-    @Transactional
+    @Transactional(value="transactionManager")
     public boolean isEligible(Long ide12, String typeCMS){
         boolean result = false;
         CatalogueOctav oeuvreCatalogueOctav = null;

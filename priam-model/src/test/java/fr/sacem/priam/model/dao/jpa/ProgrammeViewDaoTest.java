@@ -33,7 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Created by benmerzoukah on 09/05/2017.
  */
 
-@Transactional
+@Transactional(value="transactionManager")
 public class ProgrammeViewDaoTest extends AbstractDaoTest{
     
     public static final Pageable PAGEABLE = new Pageable() {
@@ -107,7 +107,7 @@ public class ProgrammeViewDaoTest extends AbstractDaoTest{
     
     
     @Test
-    @Transactional
+    @Transactional(value="transactionManager")
     public void should_find_programmes_rion_619() {
         ProgrammeCriteria criteria = new ProgrammeCriteria();
         criteria.setStatut(Arrays.asList(StatutProgramme.values()));

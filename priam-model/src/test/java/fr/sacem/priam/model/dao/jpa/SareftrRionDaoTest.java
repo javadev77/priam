@@ -25,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestExecutionListeners(listeners = {
         DependencyInjectionTestExecutionListener.class,
         SareftrRionDaoTest.class})
-@Transactional
+@Transactional(value="transactionManager")
 public class SareftrRionDaoTest extends AbstractDaoTest {
 
     @Autowired

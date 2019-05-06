@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface CatalogueOctavDao extends JpaRepository<CatalogueOctav, Long>{
 
-    @Transactional
+    @Transactional(value="transactionManager")
     @Query(value ="Select c from CatalogueOctav c where c.ide12 = :ide12 and c.typeCMS = :typeCMS")
     CatalogueOctav findByIde12(@Param("ide12") Long ide12,@Param("typeCMS") String typeCMS);
 }

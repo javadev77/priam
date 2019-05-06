@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Created by benmerzoukah on 15/05/2017.
  */
 @Lazy
-@Transactional(readOnly = true)
+@Transactional(value="transactionManager", readOnly = true)
 public interface SareftrFamiltyputilDao extends JpaRepository<SareftrFamiltyputil, String> {
     //@Cacheable("familles")
     @Query("SELECT libFam FROM SareftrFamiltyputil libFam " +

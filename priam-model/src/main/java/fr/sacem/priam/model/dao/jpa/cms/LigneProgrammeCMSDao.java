@@ -18,10 +18,10 @@ import java.util.List;
 /**
  * Created by benmerzoukah on 29/05/2017.
  */
-@Transactional(readOnly = true)
+@Transactional(value="transactionManager", readOnly = true)
 public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, Long> {
 
-    @Transactional
+    @Transactional(value="transactionManager")
     @Modifying(clearAutomatically = true)
     @Query("DELETE FROM LigneProgrammeCMS lp WHERE lp.fichier.id = :fichierId")
     void deleteAllByFichierId(@Param("fichierId") Long fileId);
@@ -30,7 +30,7 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
 
     List<LigneProgrammeCMS> findByFichierId(Long fileId);
 
-    @Transactional
+    @Transactional(value="transactionManager")
     @Query(value="SELECT new fr.sacem.priam.model.domain.dto.SelectionCMSDto("+
                     "ligneProgramme.ide12, " +
                     "ligneProgramme.titreOeuvre, " +
@@ -55,7 +55,7 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
                                                        @Param("ajout") String ajout,
                                                        @Param("selectionEnCours") Boolean selectionEnCours, Pageable pageable);
 
-    @Transactional
+    @Transactional(value="transactionManager")
     @Query(value="SELECT  new fr.sacem.priam.model.domain.LignePreprep("+
                      "'058', " +
                      "prog.cdeTer, " +
@@ -93,7 +93,7 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
                      "prog.famille.code ASC, prog.typeUtilisation.code ASC, ligneProgramme.cdeUtil ASC, prog.dateDbtPrg ASC, prog.dateFinPrg ASC ")
     List<LignePreprep> findLigneProgrammeSelectionnesForFelix(@Param("numProg") String numProg);
 
-    @Transactional(readOnly = true)
+   @Transactional(value="transactionManager",  readOnly = true)
     @Query(value =
             "SELECT " +
                     " distinct  new fr.sacem.priam.model.domain.dto.KeyValueDto(l.ide12) " +
@@ -108,7 +108,7 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
     List<KeyValueDto> findIDE12sByProgramme(@Param("query") Long query, @Param("programme") String programme);
 
 
-    @Transactional(readOnly = true)
+   @Transactional(value="transactionManager",  readOnly = true)
     @Query(value =
             "SELECT " +
                     " distinct new fr.sacem.priam.model.domain.dto.KeyValueDto(l.titreOeuvre) " +
@@ -122,7 +122,7 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
                     "ORDER BY l.titreOeuvre")
     List<KeyValueDto> findTitresByProgramme(@Param("titre") String titre, @Param("programme") String programme);
 
-    @Transactional(readOnly = true)
+   @Transactional(value="transactionManager",  readOnly = true)
     @Query(value =
                "SELECT distinct ligneProgramme.libelleUtilisateur " +
                    "FROM LigneProgrammeCMS ligneProgramme inner join ligneProgramme.fichier as f "+
@@ -142,7 +142,7 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
     void updateSelectionTemporaireByNumProgramme(@Param("numProg") String numProg, @Param("selectionEnCours") boolean selectionEnCours);
 
     @Modifying(clearAutomatically = true)
-    @Transactional
+    @Transactional(value="transactionManager")
     @Query(nativeQuery = true, value="update " +
             "  PRIAM_LIGNE_PROGRAMME_CMS p " +
             "INNER JOIN " +
@@ -169,7 +169,7 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
                                                  @Param("ide12") Long ide12,
                                                  @Param("select") int select);
 
-    @Transactional
+    @Transactional(value="transactionManager")
     @Modifying(clearAutomatically = true)
     @Query(nativeQuery = true, value = "DELETE FROM " +
             "PRIAM_LIGNE_PROGRAMME_CMS p " +
@@ -250,7 +250,7 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
                                            "f.NUMPROG = ?1 AND p.selection=?2")
     void updateSelectionTemporaire(@Param("numProg") String numProg, @Param("selection") boolean value);
     
-    @Transactional
+    @Transactional(value="transactionManager")
     @Modifying(clearAutomatically = true)
     @Query(nativeQuery = true, value = "DELETE p.* FROM " +
                                            "PRIAM_LIGNE_PROGRAMME_CMS p " +
@@ -278,7 +278,7 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
                      "OR l.ajout = 'CORRIGE' ")
     List<LigneProgrammeCMS> findAllOeuvresManuelsByNumProg(@Param("numProg") String numProg);
     
-    @Transactional
+    @Transactional(value="transactionManager")
     @Modifying(clearAutomatically = true)
     @Query(nativeQuery = true, value = "DELETE p.* FROM " +
                                            "PRIAM_LIGNE_PROGRAMME_CMS p " +
@@ -313,7 +313,7 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
     LigneProgrammeCMS findByIde12AndCdeUtil(@Param("numProg") String numProg, @Param("ide12") Long ide12, @Param("cdeUtil") String cdeUtil);
 
 
-    @Transactional(readOnly = true)
+   @Transactional(value="transactionManager",  readOnly = true)
     @Query(nativeQuery = true, value =
             "SELECT " +
                     "count(points), ajout" +
@@ -335,7 +335,7 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
                     "GROUP BY ajout")
     List<Object> compterOuvres(@Param("numProg") String numProg, @Param("selection") Integer selection);
 
-    @Transactional(readOnly = true)
+   @Transactional(value="transactionManager",  readOnly = true)
     @Query(nativeQuery = true, value =
             "SELECT sum(points) from ( SELECT " +
                     "(CASE WHEN l.cdeTypUtil = 'SONOFRA' THEN sum(l.mtEdit) WHEN l.cdeTypUtil = 'SONOANT' THEN sum(l.nbrDifEdit) ELSE 0 END) points, " +
@@ -443,7 +443,7 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
     void updatePointsMtTemporaireByNumProgramme(String numProg, Long ide12, Double mtEdit);
 
 
-    @Transactional
+    @Transactional(value="transactionManager")
     @Query(value="SELECT new fr.sacem.priam.model.domain.dto.SelectionCMSDto("+
             "ligneProgramme.ide12, " +
             "ligneProgramme.titreOeuvre, " +

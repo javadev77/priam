@@ -132,7 +132,7 @@ public class LigneProgrammeCPResourceTest extends RestResourceTest {
   }
 
   @Test
-  @Transactional
+  @Transactional(value="transactionManager")
   public void testGetListIDE12ByProgramme() throws Exception {
 
     List<KeyValueDto> ide12sByProgramme = ligneProgrammeViewDao.findIDE12sByProgramme(INITIAL_IDE12, NUM_PROG);
@@ -267,7 +267,7 @@ public class LigneProgrammeCPResourceTest extends RestResourceTest {
   }
 
   @Test
-  @Transactional
+  @Transactional(value="transactionManager")
   public void supprimerLigneProgramme() throws Exception {
 
     LigneProgrammeCP input = createLigneProgramme("170001", 1454545L, "LU1");
@@ -294,7 +294,7 @@ public class LigneProgrammeCPResourceTest extends RestResourceTest {
   }
 
   @Test
-  @Transactional
+  @Transactional(value="transactionManager")
   public void testAjouterOeuvreManuel() throws Exception {
     long ide12 = 124578L;
     LigneProgrammeCP input = createLigneProgramme("170001", ide12, "LU1");
@@ -311,7 +311,7 @@ public class LigneProgrammeCPResourceTest extends RestResourceTest {
   }
 
   @Test
-  @Transactional
+  @Transactional(value="transactionManager")
   public void testEnregistrerEdition() throws Exception {
 
     ValdierSelectionProgrammeInput input = new ValdierSelectionProgrammeInput();
@@ -337,7 +337,7 @@ public class LigneProgrammeCPResourceTest extends RestResourceTest {
   }
 
   @Test
-  @Transactional
+  @Transactional(value="transactionManager")
   public void testAnnulerEdition() throws Exception {
 
     ValdierSelectionProgrammeInput input = new ValdierSelectionProgrammeInput();

@@ -15,22 +15,22 @@ public interface ImportProgrammeFVDao extends JpaRepository<ImportProgrammeFV, L
 
 
     @Query("SELECT ifv from ImportProgrammeFV ifv inner join ifv.programme prg where prg.numProg=:numProg and ifv.statutImportProgramme = 'EN_COURS'")
-    @Transactional(readOnly = true)
+   @Transactional(value="transactionManager",  readOnly = true)
     ImportProgrammeFV getFichierImporte(@Param("numProg") String numProg);
 
 
-    @Transactional(readOnly =true)
+   @Transactional(value="transactionManager",  readOnly =true)
     @Query(nativeQuery = true, value="SELECT FL.LOG from  PRIAM_IMPORT_PROGRAMME_FV_LOG FL " +
                                      "INNER JOIN PRIAM_IMPORT_PROGRAMME_FV IFV ON IFV.ID=FL.ID_FICHIER WHERE IFV.NUMPROG = ?1 AND IFV.STATUT='CHARGEMENT_KO' ORDER BY IFV.DATE_CREATION DESC, FL.LOG")
     Set<String> getLogs(@Param("numProg") String numProg);
 
 
-    @Transactional
+    @Transactional(value="transactionManager")
     @Modifying(clearAutomatically = true)
     @Query(nativeQuery = true, value="DELETE FROM PRIAM_IMPORT_PROGRAMME_FV WHERE NUMPROG=?1 ")
     void deleteByNumProg(@Param("numProg") String numProg);
 
-    @Transactional
+    @Transactional(value="transactionManager")
     @Modifying(clearAutomatically = true)
     @Query(nativeQuery = true, value="DELETE FROM PRIAM_IMPORT_PROGRAMME_FV_LOG WHERE ID_FICHIER IN (SELECT ID FROM PRIAM_IMPORT_PROGRAMME_FV WHERE NUMPROG=?1) ")
     void deleteLogsByNumProg(@Param("numProg") String numProg);

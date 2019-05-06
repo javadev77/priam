@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface LigneProgrammeCMSDaoForTest extends LigneProgrammeCMSDao {
 
-    @Transactional
+    @Transactional(value="transactionManager")
     @Query(value="SELECT l " +
             "FROM LigneProgrammeCMS l join l.fichier as f "+
             "WHERE l.fichier = f.id " +

@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestExecutionListeners(listeners = {
         DependencyInjectionTestExecutionListener.class,
         LigneProgrammeCMSDaoTest.class})
-@Transactional
+@Transactional(value="transactionManager")
 public class LigneProgrammeCMSDaoTest extends AbstractDaoTest {
 
     @Autowired
@@ -94,7 +94,7 @@ public class LigneProgrammeCMSDaoTest extends AbstractDaoTest {
     }
 
     @Test
-    @Transactional
+    @Transactional(value="transactionManager")
     public void deleteAllByFichierId(){
         /*List<Fichier> fichiers = fichierDao.findAll();*/
         List<Fichier> fichiers = fichierDao.findFichiersByIdProgramme(NUM_PROG, Status.AFFECTE);

@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-@Transactional
+@Transactional(value="transactionManager")
 public class CatalogueOctavDaoTest extends AbstractDaoTest {
 
     @Autowired

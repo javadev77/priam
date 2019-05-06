@@ -173,7 +173,7 @@ public abstract class FelixDataServiceAbstract {
         }
     }
  
-    @Transactional
+    @Transactional(value="transactionManager")
     @Async("threadPoolTaskExecutor")
     public void runAsyncCreateFichierFelix(String numProg) {
         LOGGER.info("===> Start Async Method runAsyncCreateFichierFelix() ");
@@ -213,7 +213,7 @@ public abstract class FelixDataServiceAbstract {
     
     }
     
-    @Transactional
+    @Transactional(value="transactionManager")
     public FichierFelixError createFichierFelixWithErrors(String numProg,
                                                           List<LignePreprep> lignePrepreps, boolean isToValidate
                                                           ) throws IOException {
@@ -276,7 +276,7 @@ public abstract class FelixDataServiceAbstract {
         return configAdmap.get(EnvConstants.FELIX_PREPREP_DIR.property());
     }
 
-    @Transactional
+    @Transactional(value="transactionManager")
     @Async("threadPoolTaskExecutor")
     public void asyncSendFichierFelix(ProgrammeDto programmeDto, UserDTO userDTO) {
         String numProg = programmeDto.getNumProg();

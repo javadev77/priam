@@ -15,7 +15,7 @@ import java.util.List;
  * Created by benmerzoukah on 15/05/2017.
  */
 @Lazy
-@Transactional(readOnly = true)
+@Transactional(value="transactionManager", readOnly = true)
 public interface LibelleFamilleDao extends JpaRepository<SareftjLibfamiltyputil, SareftjLibfamiltyputilPK> {
     
     //@Cacheable("libelle_familles")

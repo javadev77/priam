@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface AyantDroitFVDao extends JpaRepository<AyantDroit, Long> {
 
-    @Transactional
+    @Transactional(value="transactionManager")
     @Modifying
     @Query(nativeQuery = true, value="DELETE FROM PRIAM_AYANT_DROIT WHERE ID_FV IN (" +
         "SELECT FV.id FROM PRIAM_LIGNE_PROGRAMME_FV FV INNER JOIN PRIAM_FICHIER F ON F.NUMPROG=:numProg AND F.ID=FV.ID_FICHIER)")

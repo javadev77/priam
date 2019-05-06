@@ -643,8 +643,7 @@
       },
 
       sortAsc() {
-          console.log("this.sort.ascending="+this.sort.ascending)
-          return this.sort !== undefined && this.sort !== null && this.sort.ascending;
+         return this.sort !== undefined && this.sort !== null && this.sort.ascending;
       },
 
 

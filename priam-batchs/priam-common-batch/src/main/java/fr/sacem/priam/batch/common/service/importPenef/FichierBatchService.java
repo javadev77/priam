@@ -29,6 +29,6 @@ public interface FichierBatchService {
 
     void clearSelectedFichiers(String numProg, String chargement_ok);
 
-    @Transactional
+    @Transactional(value="transactionManager")
     void majFichiersAffectesAuProgramme(String numProg, List<Fichier> nouveauxfichiersAffectes, String currentUserName);
 }

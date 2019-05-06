@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Created by embouazzar on 30/08/2017.
  */
 
-@Transactional
+@Transactional(value="transactionManager")
 public class RoleDaoTest extends AbstractDaoTest {
 
     @Autowired

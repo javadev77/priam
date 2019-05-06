@@ -39,6 +39,25 @@ public class AyantDroitFVResource {
 
     }
 
+    @RequestMapping(value = "cumulCoad/search",
+        method = RequestMethod.POST,
+        consumes = MediaType.APPLICATION_JSON_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    Page<? extends AyantDroitDto> findByCumulCoad(@RequestBody AyantDroitProgrammeCritereRecherche ayantDroit, Pageable pageable){
+
+        AyantDroitCriteria criteria = new AyantDroitCriteria();
+
+        criteria.setNumProg(ayantDroit.getNumProg());
+        criteria.setCoad(ayantDroit.getCoad());
+        if (ayantDroit.getParticipant() != null && !ayantDroit.getParticipant().isEmpty()) {
+            criteria.setParticipant(ayantDroit.getParticipant());
+        }
+
+        return ayantDroitFVService.findByCumulCoad(criteria, pageable);
+
+    }
+
+
     @RequestMapping(value = "ayantDroit/points",
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -49,6 +68,18 @@ public class AyantDroitFVResource {
 
         return ayantDroitFVService.calculerPointsByCriteria(criteria);
     }
+
+    @RequestMapping(value = "cumulCoad/points",
+        method = RequestMethod.POST,
+        consumes = MediaType.APPLICATION_JSON_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    public Double sommePointsCumulCoad(@RequestBody AyantDroitProgrammeCritereRecherche ayantDroit) {
+
+        AyantDroitCriteria criteria = getAyantDroitCriteria(ayantDroit);
+
+        return ayantDroitFVService.calculerPointsByCumulCoad(criteria);
+    }
+
 
     private AyantDroitCriteria getAyantDroitCriteria(AyantDroitProgrammeCritereRecherche ayantDroit) {
         AyantDroitCriteria criteria = new AyantDroitCriteria();

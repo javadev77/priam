@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestExecutionListeners(listeners = {
         DependencyInjectionTestExecutionListener.class,
         LigneProgrammeFVDaoTest.class})
-@Transactional
+@Transactional(value="transactionManager")
 public class LigneProgrammeFVDaoTest extends AbstractDaoTest {
 
     private static final String NUM_PROG = "190003";

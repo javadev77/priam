@@ -15,7 +15,7 @@ import java.util.List;
  */
 public interface LignePreprepDao extends JpaRepository<LignePreprep, Long> {
     
-    @Transactional(readOnly = true)
+   @Transactional(value="transactionManager",  readOnly = true)
     @Query(value="SELECT lp " +
 			   "FROM LignePreprep lp "+
 			   "WHERE lp.numProg = :numProg " +
@@ -34,6 +34,6 @@ public interface LignePreprepDao extends JpaRepository<LignePreprep, Long> {
     
     @Modifying(clearAutomatically = true)
     @Query(value = "DELETE FROM LignePreprep lp WHERE lp.numProg = :numProg ")
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	@Transactional(value="transactionManager", propagation = Propagation.REQUIRES_NEW)
     void deleteAll(@Param("numProg") String numProg);
 }

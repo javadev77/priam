@@ -13,7 +13,7 @@ import java.util.List;
  * Created by benmerzoukah on 25/06/2018.
  */
 @Lazy
-@Transactional
+@Transactional(value="transactionManager")
 public interface ParticipantsCatcmsDao extends JpaRepository<ParticipantsCatcms, Long> {
 
     @Query(value = "SELECT part FROM ParticipantsCatcms part " +

@@ -21,7 +21,7 @@ public class JournalBatchDao {
 
     private JdbcTemplate jdbcTemplate;
 
-    @Transactional
+    @Transactional(value="transactionManager")
     public long saveJournal(Journal journal) {
         String sql =  "INSERT INTO PRIAM_JOURNAL_EVENEMENT (evenement, date, utilisateur, numprog)" +
                 "  VALUES (?, ?, ?, ?)";

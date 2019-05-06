@@ -8,7 +8,10 @@ import fr.sacem.priam.services.fv.AyantDroitFVService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.JpaSort;
 import org.springframework.stereotype.Service;
 
 @Service("ayantDroitFVService")
@@ -53,6 +56,40 @@ public class AyantDroitFVServiceImpl implements AyantDroitFVService {
                 criteria.getTitre(),
                 criteria.getCoad(),
                 criteria.getParticipant());
+    }
+
+    @Override
+    public Page<? extends AyantDroitDto> findByCumulCoad(final AyantDroitCriteria criteria, final Pageable pageable) {
+        Sort customSort = createCustomSort(pageable, criteria);
+        PageRequest pageRequest = new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), customSort);
+
+        return ayantDroitProgrammeFVDao.findByCumulCoad(criteria.getNumProg(),
+            criteria.getCoad(),
+            criteria.getParticipant(), pageRequest);
+    }
+
+    private Sort createCustomSort(final Pageable pageable, final AyantDroitCriteria criteria) {
+        Sort sort = pageable.getSort();
+
+        if(sort == null)
+            return sort;
+
+        Sort.Order sortBy = sort.iterator().next();
+
+        String sortProp = sortBy.getProperty();
+        if("points".equals(sortProp) ||
+            "sum(points)".equals(sortProp)){
+            Sort.Direction direction = sortBy.getDirection();
+            sort = JpaSort.unsafe(direction, "sum(points)");
+        }
+
+        return sort;
+    }
+
+    @Override
+    public Double calculerPointsByCumulCoad(final AyantDroitCriteria criteria) {
+        return ayantDroitProgrammeFVDao.calculerPointsByCumulCoad(criteria.getNumProg(), criteria.getCoad(), criteria.getParticipant());
+
     }
 
 }

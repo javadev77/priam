@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-@Transactional
+@Transactional(value="transactionManager")
 public class LigneProgrammeCPDaoTest extends AbstractDaoTest {
 
     private static final String CDE_UTIL = "";
@@ -99,7 +99,7 @@ public class LigneProgrammeCPDaoTest extends AbstractDaoTest {
 
 
     @Ignore
-    @Transactional
+    @Transactional(value="transactionManager")
     public void testUpdateSelectionByNumProgramme() throws Exception{
 
         boolean success = true;

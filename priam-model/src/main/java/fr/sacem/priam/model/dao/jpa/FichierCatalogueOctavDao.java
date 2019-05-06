@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public interface FichierCatalogueOctavDao extends JpaRepository<FichierCatalogueOctav, Long> {
 
-    @Transactional
+    @Transactional(value="transactionManager")
     @Query(value="SELECT f " +
             "FROM FichierCatalogueOctav f "+
             "ORDER BY f.dateDebutChargt DESC ")
