@@ -39,7 +39,7 @@ public class GeneralResourceTest extends RestResourceTest {
   private SareftjLibutilDao sareftjLibutilDao;
 
   @Test
-  @Transactional
+  @Transactional("transactionManager")
   public void getAllLibelleFamille() throws Exception {
     TestingAuthenticationToken principal = new TestingAuthenticationToken(new UserDTO("benmerzoukah"), null);
     SecurityContextHolder.getContext().setAuthentication(principal);
@@ -56,7 +56,7 @@ public class GeneralResourceTest extends RestResourceTest {
   }
 
   @Test
-  @Transactional
+  @Transactional("transactionManager")
   public void getAllLibelleTypeUtilisation() throws Exception {
       mockMvc.perform(
         get("/app/rest/general/libelletypeutil")
@@ -69,7 +69,7 @@ public class GeneralResourceTest extends RestResourceTest {
   }
 
   @Test
-  @Transactional
+  @Transactional("transactionManager")
   public void getFamilleByTypeUtilisation() throws Exception {
     mockMvc.perform(
       get("/app/rest/general/familleByTypeUil")
@@ -81,7 +81,7 @@ public class GeneralResourceTest extends RestResourceTest {
   }
 
   @Test
-  @Transactional
+  @Transactional("transactionManager")
   public void getRions() throws Exception {
 
     mockMvc.perform(
@@ -93,7 +93,7 @@ public class GeneralResourceTest extends RestResourceTest {
   }
 
   @Test
-  @Transactional
+  @Transactional("transactionManager")
   public void getRionsCreation() throws Exception {
     List<SareftrRion> sareftrRions = sareftrRionDao.findAllByDateRglmtAfterCurrentDate();
     mockMvc.perform(

@@ -24,12 +24,12 @@ public class LignePreprepFVProcessor implements ItemProcessor<LignePreprepFV, Li
     public static final String MESSAGE_CHAMPS_OBLIGATOIRE = "Ligne '%s': Le champ %s est obligatoire et non renseigné";
     public static final String LIGNE_PREPREP_ERRORS = "ligne-preprep-errors";
 
-    public static final String TYPE_REPART_OEUVRE = "O";
+    /*public static final String CDE_CISAC = "058";
     public static final String CDE_MOD_FAC = "FORFAI";
     public static final String PRINC = "PRINC";
     public static final String SANS = "SANS";
     public static final String CDE_UTIL = "XXX";
-    public static final Integer CDE_TER = 250;
+    public static final Integer CDE_TER = 250;*/
 
 
 
@@ -43,18 +43,17 @@ public class LignePreprepFVProcessor implements ItemProcessor<LignePreprepFV, Li
     @BeforeStep
     public void beforeStep(StepExecution stepExecution) {
         this.executionContext = stepExecution.getExecutionContext();
-
     }
 
     @Override
     public LignePreprepFV process(final LignePreprepFV lignePreprepFV) throws Exception {
 
-        lignePreprepFV.setTypRepart(TYPE_REPART_OEUVRE);
+        /*lignePreprepFV.setCdeCisac(CDE_CISAC);
         lignePreprepFV.setCdeModFac(CDE_MOD_FAC);
         lignePreprepFV.setCdeTypProg(PRINC);
         lignePreprepFV.setCdeCompl(SANS);
         lignePreprepFV.setCdeUtil(CDE_UTIL);
-        lignePreprepFV.setCdeTer(CDE_TER);
+        lignePreprepFV.setCdeTer(CDE_TER);*/
 
         List<String> errorList = (ArrayList<String>) executionContext.get(LIGNE_PREPREP_ERRORS);
         BindingResult errors = new BeanPropertyBindingResult(lignePreprepFV, "lignePreprepFV-"+ lineNumber);

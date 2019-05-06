@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface ExportProgrammeFVDao extends JpaRepository<ExportProgrammeFV, Long> {
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, value = "transactionManager")
     @Query(value ="SELECT e FROM ExportProgrammeFV e where e.programme.numProg =:numProg ")
     ExportProgrammeFV findByNumProg(@Param("numProg") String numProg);
 

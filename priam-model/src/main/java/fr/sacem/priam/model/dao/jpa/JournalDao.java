@@ -15,9 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * Created by monfleurm on 26/01/2018.
  */
-@Transactional
+@Transactional(readOnly = true, value = "transactionManager")
 public interface JournalDao extends JpaRepository<Journal, Long> {
-    /*@Transactional(readOnly = true)
+    /*@Transactional(readOnly = true, value = "transactionManager")
     @Query(value="SELECT new fr.sacem.priam.model.domain.Journal(j.numProg, j.evenement, j.ide12, j.date, j.utilisateur, av.SITUATION, ap.SITUATION) " +
             "FROM JournalEvenement j "+
             "INNER JOIN PRIAM_SITUATION_AVANT av ON j.id=av.ID_EVENEMENT " +
@@ -26,7 +26,7 @@ public interface JournalDao extends JpaRepository<Journal, Long> {
             "ORDER BY j.date")
     Page<Journal> findByNumProg(@Param("numProg") String numProg, Pageable pageable);*/
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, value = "transactionManager")
     //@Query(value="SELECT new fr.sacem.priam.model.domain.dto.JournalDto(j.numProg, j.evenement, j.ide12, j.date, j.utilisateur) " +
     @Query(value="SELECT j " +
             "FROM Journal as j " +

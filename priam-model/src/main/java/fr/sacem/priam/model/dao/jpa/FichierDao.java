@@ -21,10 +21,10 @@ import java.util.Set;
  * Created by benmerzoukah on 09/05/2017.
  */
 @Lazy
-@Transactional
+@Transactional(readOnly = true, value = "transactionManager")
 public interface FichierDao extends JpaRepository<Fichier, Long> {
     
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, value = "transactionManager")
     @Query("SELECT DISTINCT new fr.sacem.priam.model.domain.dto.FileDto(f.id, f.nomFichier, fam.code, typu.code, f.dateDebutChargt, f.dateFinChargt, f.nbLignes, f.statut) " +
             "FROM Fichier AS f LEFT JOIN f.famille AS fam LEFT JOIN f.typeUtilisation AS typu " +
             "WHERE f.statut IN (:status) " +
@@ -33,25 +33,25 @@ public interface FichierDao extends JpaRepository<Fichier, Long> {
             "AND f.automatique = true ")
     Page<FileDto> findAllFichiersByCriteria(@Param("familleCode") List<String> familleCode, @Param("typeUtilisationCode") List<String> typeUtilisationCode, @Param("status") List<Status> status, Pageable pageable);
     
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, value = "transactionManager")
     @Query("SELECT DISTINCT new fr.sacem.priam.model.domain.dto.FileDto(f.id, f.nomFichier, fam.code, typu.code, f.dateDebutChargt, f.dateFinChargt, f.nbLignes, f.statut) " +
             "FROM Fichier AS f JOIN f.famille AS fam JOIN f.typeUtilisation AS typu " +
             "WHERE f.statut IN (:status) AND f.automatique = true ")
 
     Page<FileDto> findAllFichiersByStatus(@Param("status") List<Status> status, Pageable pageable);
 
-    @Transactional
+    @Transactional(readOnly = true, value = "transactionManager")
     @Modifying(clearAutomatically = true)
     @Query("UPDATE Fichier f SET f.statut= :statut WHERE f.id = :id")
     void updateFichierStatus(@Param("id") Long fileId, @Param("statut") Status status);
     
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, value = "transactionManager")
     @Query("SELECT DISTINCT new fr.sacem.priam.model.domain.dto.FileDto(f.id, f.nomFichier, fam.code, typu.code, f.dateDebutChargt, f.dateFinChargt, f.nbLignes, f.statut) " +
             "FROM Fichier AS f JOIN f.famille AS fam JOIN f.typeUtilisation AS typu " +
             "WHERE f.id = :id ")
     FileDto findById(@Param("id") Long fileId);
     
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, value = "transactionManager")
     @Query("SELECT DISTINCT new fr.sacem.priam.model.domain.dto.FileDto(f.id, f.nomFichier, fam.code, typu.code, f.dateDebutChargt, f.dateFinChargt, f.nbLignes, f.statut, f.statutEnrichissementFV) " +
         "FROM Fichier AS f JOIN f.famille AS fam JOIN f.typeUtilisation AS typu " +
         "WHERE f.statut IN (:status) " +
@@ -63,14 +63,14 @@ public interface FichierDao extends JpaRepository<Fichier, Long> {
     List<FileDto> findFichiersAffectes(@Param("familleCode") List<String> familleCode, @Param("typeUtilisationCode") List<String> typeUtilisationCode,
                                        @Param("status") List<Status> status, @Param("numProg") String numProg);
 
-    @Transactional(readOnly =true)
+    @Transactional(readOnly = true, value = "transactionManager")
     @Query("SELECT f " +
             "FROM Fichier AS f " +
             "WHERE f.programme.numProg = :numProg " +
             "AND f.statut=:status")
     List<Fichier> findFichiersByIdProgramme(@Param("numProg") String numProg, @Param("status") Status status);
 
-    @Transactional(readOnly =true)
+    @Transactional(readOnly = true, value = "transactionManager")
     @Query("SELECT new fr.sacem.priam.model.domain.dto.FileDto(f.id, f.nomFichier, f.dateDebutChargt, f.dateFinChargt, f.nbLignes, f.statut) " +
             "FROM Fichier AS f " +
             "WHERE f.programme.numProg = :numProg " +
@@ -93,12 +93,12 @@ public interface FichierDao extends JpaRepository<Fichier, Long> {
 
     Fichier findByNomFichier(String s);
 
-    @Transactional(readOnly =true)
+    @Transactional(readOnly = true, value = "transactionManager")
     @Query(nativeQuery = true, value="SELECT LOG from  PRIAM_FICHIER_LOG FL WHERE FL.ID_FICHIER = ?1 ORDER BY LOG")
     Set<String> getChargementLog(@Param("idFichier") Long idFichier);
 
 
-    @Transactional(readOnly =true)
+    @Transactional(readOnly = true, value = "transactionManager")
     @Query("SELECT f " +
             "FROM Fichier AS f " +
             "WHERE f.programme.numProg = :numProg " +

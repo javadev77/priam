@@ -49,8 +49,7 @@ public class RepartitionFVResource {
     @RequestMapping(value = "/generateFichierFelixFV",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ProgrammeDto generateFichierFelix(@RequestParam(value = "numProg") String numProg, @RequestParam(value = "modeRepartition") String modeRepartition) throws IOException {
-        /*String numProg = request.getParameter("numProg");*/
+    public ProgrammeDto generateFichierFelix(@RequestParam(value = "numProg") String numProg, @RequestParam(value = "modeRepartition") String modeRepartition, @RequestParam(value = "typeRepartFV") String typeRepartFV) throws IOException {
         FichierFelix ff = fichierFelixDao.findByNumprog(numProg);
         if(ff != null) {
             fichierFelixDao.delete(ff);
@@ -64,12 +63,12 @@ public class RepartitionFVResource {
         fichierFelixDao.save(ff);
         fichierFelixDao.flush();
 
-        launchJobRepartitionFV(numProg, modeRepartition);
+        launchJobRepartitionFV(numProg, modeRepartition, typeRepartFV);
 
         return new ProgrammeDto();
     }
 
-    protected void launchJobRepartitionFV(String numProg, String modeRepartition){
+    protected void launchJobRepartitionFV(String numProg, String modeRepartition, String typeRepartFV){
         LOGGER.info("====== Lancement du job RepartitionFV ======");
         try {
             Map<String, JobParameter> jobParametersMap = new HashMap<>();
@@ -77,6 +76,7 @@ public class RepartitionFVResource {
             jobParametersMap.put("priam.felix.preprep.dir", new JobParameter(configAdmap.get(EnvConstants.FELIX_PREPREP_DIR.property())));
             jobParametersMap.put("numProg", new JobParameter(numProg));
             jobParametersMap.put("modeRepartition", new JobParameter(modeRepartition));
+            jobParametersMap.put("typeRepartFV", new JobParameter(typeRepartFV));
             JobParameters jobParameters = new JobParameters(jobParametersMap);
 
             jobLauncher.run(jobRepartitionFVOeuvre, jobParameters);

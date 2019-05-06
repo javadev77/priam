@@ -137,7 +137,7 @@ public class ProgrammeResourceTest extends RestResourceTest {
     }
 
     @Test
-    @Transactional
+    @Transactional("transactionManager")
     @Ignore
     public void add_programme() throws Exception {
       mockMvc.perform(
@@ -151,7 +151,7 @@ public class ProgrammeResourceTest extends RestResourceTest {
     }
 
     @Test
-    @Transactional
+    @Transactional("transactionManager")
     @Ignore
     public void test_abandonner_programme() throws Exception {
       mockMvc.perform(
@@ -166,7 +166,7 @@ public class ProgrammeResourceTest extends RestResourceTest {
 
 
   @Test
-  @Transactional
+  @Transactional("transactionManager")
   public void test_getAllNomProgForAutocmplete() throws Exception {
     mockMvc.perform(
       get("/app/rest/programme/nomprog/autocomplete")
@@ -177,7 +177,7 @@ public class ProgrammeResourceTest extends RestResourceTest {
   }
 
   @Test
-  @Transactional
+  @Transactional("transactionManager")
   public void test_getAllNumProgForAutocmplete() throws Exception {
     mockMvc.perform(
       get("/app/rest/programme/numprog/autocomplete")
@@ -189,7 +189,7 @@ public class ProgrammeResourceTest extends RestResourceTest {
 
 
     @Test
-    @Transactional
+    @Transactional("transactionManager")
     @Ignore
     public void test_modifier_programme() throws Exception {
         mockMvc.perform(

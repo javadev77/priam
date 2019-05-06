@@ -21,7 +21,7 @@ import java.util.List;
 @Lazy
 public interface ProgrammeViewDao extends JpaRepository<ProgrammeView, String> {
     
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, value = "transactionManager")
     @Query(value = "SELECT new fr.sacem.priam.model.domain.dto.ProgrammeDto(pr.numProg, pr.nom, pr.famille, pr.typeUtilisation, " +
                                                     "pr.rionTheorique, pr.dateCreation, pr.typeRepart, pr.statut, pr.rionPaiement, pr.fichiers, " +
                                                     "pr.usercre, pr.datmaj, pr.usermaj, pr.dataffect, pr.useraffect, " +
@@ -45,7 +45,7 @@ public interface ProgrammeViewDao extends JpaRepository<ProgrammeView, String> {
                                                   @Param("rionPaiement") Integer rionPaiement, @Param("typeRepart") TypeRepart typeRepart, Pageable pageable);
     
     
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, value = "transactionManager")
     @Query(value = "SELECT new fr.sacem.priam.model.domain.dto.ProgrammeDto(pr.numProg, pr.nom, pr.famille, pr.typeUtilisation, " +
                                                     "pr.rionTheorique, pr.dateCreation, pr.typeRepart, pr.typeDroit, pr.statut, pr.rionPaiement, pr.fichiers, " +
                                                     "pr.usercre, pr.datmaj, pr.usermaj, pr.dataffect, pr.useraffect, " +
@@ -55,12 +55,12 @@ public interface ProgrammeViewDao extends JpaRepository<ProgrammeView, String> {
     ProgrammeDto findByNumProg(@Param("numProg") String numProg);
     
     
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, value = "transactionManager")
     @Query(value = "SELECT pr.numProg " +
         "FROM ProgrammeView AS pr ORDER BY pr.numProg ASC ")
     List<String> findAllNumProgByCriteria();
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, value = "transactionManager")
     @Query(value = "SELECT DISTINCT pr.nom " +
             "FROM ProgrammeView AS pr ORDER BY pr.nom ASC ")
     List<String> findAllNomProgByCriteria();

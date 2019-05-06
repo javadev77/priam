@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * Created by benmerzoukah on 11/01/2018.
  */
-@Transactional(readOnly = true)
+@Transactional(readOnly = true, value = "transactionManager")
 public interface LigneProgrammeCopyFVDao extends JpaRepository<LigneProgrammeCopyFV, Long> {
 
     @Transactional

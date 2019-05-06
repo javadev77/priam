@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public interface ProgrammeDao extends JpaRepository<Programme, String> {
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, value = "transactionManager")
     @Query(value = "SELECT pr " +
             "FROM Programme AS pr " +
             "WHERE pr.numProg = :numProg ")

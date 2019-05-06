@@ -16,10 +16,10 @@ import java.util.List;
 @Lazy
 public interface RoleDao extends JpaRepository<Role,Long>, JpaSpecificationExecutor<Role>{
     
-    @Transactional(readOnly=true)
+    @Transactional(readOnly = true, value = "transactionManager")
     Role findByType(RoleType type);
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, value = "transactionManager")
     List<Role> findByExternalIdIn(List<String> externalIds);
 
 }

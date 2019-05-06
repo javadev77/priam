@@ -15,7 +15,7 @@ public interface ImportProgrammeFVDao extends JpaRepository<ImportProgrammeFV, L
 
 
     @Query("SELECT ifv from ImportProgrammeFV ifv inner join ifv.programme prg where prg.numProg=:numProg and ifv.statutImportProgramme = 'EN_COURS'")
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, value = "transactionManager")
     ImportProgrammeFV getFichierImporte(@Param("numProg") String numProg);
 
 

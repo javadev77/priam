@@ -209,7 +209,7 @@ public class CatalogueResource {
             value = "catalogue/oeuvre",
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    @Transactional
+    @Transactional("transactionManager")
     @LogCatalogueAjout(event = TypeLog.AJOUT_OEUVRE)
     public ResponseEntity ajouterOeuvreFromMipsa(@RequestBody CatalogueCms catalogueCms, UserDTO userDTO) {
         catalogueCms.setDateEntree(new Date());

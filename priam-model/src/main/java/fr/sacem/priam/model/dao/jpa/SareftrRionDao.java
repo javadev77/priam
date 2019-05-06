@@ -14,7 +14,7 @@ import java.util.List;
  * Created by benmerzoukah on 15/05/2017.
  */
 @Lazy
-@Transactional(readOnly = true)
+@Transactional(readOnly = true, value = "transactionManager")
 public interface SareftrRionDao extends JpaRepository<SareftrRion, Integer> {
     
     //@Cacheable("rions")

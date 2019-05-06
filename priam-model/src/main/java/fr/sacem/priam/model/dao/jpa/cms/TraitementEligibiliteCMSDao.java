@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public interface TraitementEligibiliteCMSDao extends JpaRepository<TraitementEligibiliteCMS, Long> {
 
-    @Transactional
+    @Transactional(readOnly = true, value = "transactionManager")
     @Query(value="SELECT l " +
             "FROM TraitementEligibiliteCMS l join l.programme as p "+
             "WHERE p.numProg = :numProg " +

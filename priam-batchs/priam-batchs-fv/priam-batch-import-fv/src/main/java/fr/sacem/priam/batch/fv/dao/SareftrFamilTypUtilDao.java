@@ -28,7 +28,7 @@ public class SareftrFamilTypUtilDao {
         this.jdbcTemplate = new JdbcTemplate(this.dataSource);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, value = "transactionManager")
     @Cacheable("SareftrFamilTyputil")
     public Map<String, List<String>> findAll(){
         String sql = "SELECT CDEFAMILTYPUTIL, CDETYPUTIL FROM SAREFTR_TYPUTIL ORDER BY CDEFAMILTYPUTIL ";

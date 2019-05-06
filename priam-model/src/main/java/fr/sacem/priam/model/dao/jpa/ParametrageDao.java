@@ -14,7 +14,7 @@ import java.util.List;
  * Created by belwidanej on 21/08/2017.
  */
 @Lazy
-@Transactional(readOnly = true)
+@Transactional(readOnly = true, value = "transactionManager")
 public interface ParametrageDao extends JpaRepository<Parametrage, ParametragePK> {
 
     @Query("SELECT parametrage FROM Parametrage parametrage " +

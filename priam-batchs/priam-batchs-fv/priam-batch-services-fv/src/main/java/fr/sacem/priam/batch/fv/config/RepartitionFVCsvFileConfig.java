@@ -53,7 +53,7 @@ public class RepartitionFVCsvFileConfig {
                 "#--------------------------------------------------------------------------\n" +
                 "# "+ dateFormat.format(new Date()) + " - PRIAM - Creation\n" +
                 "#DEBUT=====================================================================\n" +
-                "#typRepart;cdeCisac;cdeTer;rionEffet;cdeFamilTypUtil;numProg;keyLigPriam;cdeUtil;cdeTypUtil;cdeModFac;cdeTypProg;cdeCompl;libProg;datDbtProg;datFinProg;ide12;cdeTypIde12;datSitu;datConslt;durDif;nbrDif;typMt;mt;cdeTypDrtSacem;coadPayer;idSteAd;rolAd;cleAd;cdeTypProtec;coadOriEdtr;idSteOriEdtr;numCatal;points";
+                "#typRepart;cdeCisac;cdeTer;rionEffet;cdeFamilTypUtil;numProg;keyLigPriam;cdeUtil;cdeTypUtil;cdeModFac;cdeTypProg;cdeCompl;libProg;datDbtProg;datFinProg;ide12;cdeTypIde12;datSitu;datConslt;durDif;nbrDif;typMt;mt;cdeTypDrtSacem;coadPayer;idSteAd;rolAd;cleAd;cdeTypProtec;coadOriEdtr;idSteOriEdtr;numPers;numCatal;points";
     }
 
     private String foot(Long lignes) {
