@@ -28,7 +28,6 @@ import java.math.BigInteger;
 import java.util.*;
 
 import static fr.sacem.priam.common.TypeUtilisationEnum.FV_FONDS_06;
-import static fr.sacem.priam.common.TypeUtilisationEnum.FV_FONDS_12;
 import static fr.sacem.priam.services.LigneProgrammeCMSServiceImpl.AJOUT;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
@@ -69,7 +68,8 @@ public class LigneProgrammeFVServiceImpl implements LigneProgrammeService, Ligne
     }
 
     @Override
-    @Transactional
+    /*@Transactional*/
+    @Transactional("transactionManager")
     public Page<SelectionCMSDto> findLigneProgrammeByCriteria(LigneProgrammeCriteria criteria, Pageable pageable) {
         Programme programme = programmeDao.findOne(criteria.getNumProg());
 

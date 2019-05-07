@@ -16,6 +16,7 @@ import java.util.List;
 @Lazy
 public interface RoleDao extends JpaRepository<Role,Long>, JpaSpecificationExecutor<Role>{
     
+
    @Transactional(value="transactionManager",  readOnly=true)
     Role findByType(RoleType type);
 

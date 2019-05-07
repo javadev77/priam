@@ -15,20 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Lazy
 @Transactional(value="transactionManager", readOnly = true)
 public interface SareftrFamiltyputilDao extends JpaRepository<SareftrFamiltyputil, String> {
-    //@Cacheable("familles")
     @Query("SELECT libFam FROM SareftrFamiltyputil libFam " +
 		   "WHERE (libFam.dateDebut is null OR libFam.dateDebut <= CURRENT_DATE) " +
 		   "AND (libFam.dateFin is null OR libFam.dateFin >= CURRENT_DATE) " +
 		   "AND libFam.code IN (:familles)")
     List<SareftrFamiltyputil> findByFamilles(@Param("familles") List<String> familles);
     
-    /*@Cacheable("familles")
-    @Query("SELECT libFam FROM SareftrFamiltyputil libFam " +
-		   "WHERE (libFam.sareftrFamiltyputil.dateDebut is not null AND libFam.sareftrFamiltyputil.dateDebut <= CURRENT_DATE) " +
-		   "AND (libFam.sareftrFamiltyputil.dateFin is null OR libFam.sareftrFamiltyputil.dateFin >= CURRENT_DATE)" +
-		   "AND libFam.lang = :lang " +
-		   "AND libFam.code IN (familles)")
-    List<SareftrFamiltyputil> findByFamilles(@Param("lang") String lang, List<FamillePriam> familles);*/
 
     @Cacheable("familles")
     @Query("SELECT libFam FROM SareftrFamiltyputil libFam ")

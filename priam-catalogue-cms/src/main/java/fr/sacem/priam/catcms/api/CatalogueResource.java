@@ -5,29 +5,32 @@ import fr.sacem.priam.catcms.api.dto.KeyValueDtoCatcms;
 import fr.sacem.priam.catcms.journal.annotation.LogCatalogueAjout;
 import fr.sacem.priam.catcms.journal.annotation.LogCatalogueSuppression;
 import fr.sacem.priam.catcms.journal.annotation.TypeLog;
+import static fr.sacem.priam.common.util.FileUtils.CATALOGUE_TYPE_CMS_ANF;
+import static fr.sacem.priam.common.util.FileUtils.CATALOGUE_TYPE_CMS_FR;
 import fr.sacem.priam.model.dao.jpa.catcms.CatalogueCmsDao;
 import fr.sacem.priam.model.dao.jpa.catcms.ParticipantsCatcmsDao;
 import fr.sacem.priam.model.domain.catcms.CatalogueCms;
 import fr.sacem.priam.model.domain.catcms.ParticipantsCatcms;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.security.model.UserDTO;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.persistence.EntityManagerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.*;
-import java.util.*;
-
-import static fr.sacem.priam.common.util.FileUtils.CATALOGUE_TYPE_CMS_ANF;
-import static fr.sacem.priam.common.util.FileUtils.CATALOGUE_TYPE_CMS_FR;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/app/rest/")
@@ -209,7 +212,7 @@ public class CatalogueResource {
             value = "catalogue/oeuvre",
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    @Transactional(value="transactionManager")
+    @Transactional("transactionManager")
     @LogCatalogueAjout(event = TypeLog.AJOUT_OEUVRE)
     public ResponseEntity ajouterOeuvreFromMipsa(@RequestBody CatalogueCms catalogueCms, UserDTO userDTO) {
         catalogueCms.setDateEntree(new Date());

@@ -442,6 +442,7 @@ CREATE TABLE PRIAM_LIGNE_PREPREP_FV (
                                      idSteOriEdtr VARCHAR(10) DEFAULT NULL,
                                      numCatal INT(9) DEFAULT NULL,
                                      points double DEFAULT NULL,
+                                     numPers INT(11) DEFAULT NULL;
                                      PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

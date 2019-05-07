@@ -27,7 +27,7 @@ public class RepartitionResourceTest extends RestResourceTest {
   private FichierFelixDao fichierFelixDao;
 
   @Test
-  @Transactional(value="transactionManager")
+  @Transactional("transactionManager")
   public void arunAsyncCreateFichierFelix() throws Exception {
     mockMvc.perform(
       get(APP_REST_CREATE_FICHIER_FELIX, "170001")
@@ -68,9 +68,8 @@ public class RepartitionResourceTest extends RestResourceTest {
   }
 
   @Test
-  @Transactional(value="transactionManager")
+  @Transactional("transactionManager")
   public void generateFelixDataWithErrors_OK() throws Exception {
-    //FichierFelix ff = createMockFichierFelix("180001", StatutFichierFelix.EN_COURS);
 
     mockMvc.perform(
             post("/app/rest/repartition/downloadFichierFelixError?filename=test-f&numProg=180001")
@@ -80,7 +79,7 @@ public class RepartitionResourceTest extends RestResourceTest {
   }
 
   @Test
-  @Transactional(value="transactionManager")
+  @Transactional("transactionManager")
   public void downloadFichierFelixRepartitionABlanc_KO() throws Exception {
     mockMvc.perform(
             post("/app/rest/repartition/downloadFichierFelix?numProg=170001")
@@ -90,7 +89,7 @@ public class RepartitionResourceTest extends RestResourceTest {
   }
 
   @Test
-  @Transactional(value="transactionManager")
+  @Transactional("transactionManager")
   public void generateFelixData() throws Exception {
 
     ProgrammeDto pr = new ProgrammeDto();

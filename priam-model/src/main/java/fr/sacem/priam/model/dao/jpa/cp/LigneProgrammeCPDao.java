@@ -67,54 +67,6 @@ public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Lon
             "AND (ligneProgramme.oeuvreManuel IS NULL) ")// +
             //"GROUP BY ligneProgramme.ide12, ligneProgramme.cdeUtil")
 
-    /*@Query(nativeQuery = true,
-           countQuery = "SELECT count(*) " +
-                   "  FROM (" +
-                   "  SELECT ligneProgramme.ide12 AS ide12," +
-                   "       ligneProgramme.titreOeuvre as titreOeuvre," +
-                   "       ligneProgramme.roleParticipant1 as roleParticipant1," +
-                   "       ligneProgramme.nomParticipant1 as nomParticipant1," +
-                   "       ligneProgramme.ajout as ajout," +
-                   "       ligneProgramme.durDifEdit as durDifEdit," +
-                   "       ligneProgramme.nbrDifEdit as nbrDifEdit," +
-                   "       ligneProgramme.SEL_EN_COURS as SEL_EN_COURS," +
-                   "       ligneProgramme.libelleUtilisateur as libelleUtilisateur," +
-                   "       ligneProgramme.cdeUtil as cdeUtil" +
-                   "  FROM PRIAM_LIGNE_PROGRAMME_CP ligneProgramme " +
-                   "  inner join PRIAM_FICHIER  f ON f.ID=ligneProgramme.ID_FICHIER AND f.NUMPROG=:numProg " +
-                   "  WHERE" +
-                   "  (ligneProgramme.ide12 = :ide12 OR :ide12 IS NULL)" +
-                   "  AND (ligneProgramme.ajout = :ajout OR :ajout  IS NULL)" +
-                   "  AND (ligneProgramme.SEL_EN_COURS = :selectionEnCours OR :selectionEnCours IS NULL)" +
-                   "  AND (ligneProgramme.titreOeuvre = :titre OR :titre IS NULL)" +
-                   "  AND (ligneProgramme.cdeUtil = :utilisateur OR :utilisateur IS NULL)" +
-                   "  AND (ligneProgramme.idOeuvreManuel IS NULL)) temp" +
-                   "  GROUP BY temp.ide12, temp.cdeUtil",
-           value = "SELECT temp.ide12 as ide12, temp.titreOeuvre as titreOeuvre, temp.roleParticipant1 as roleParticipant1," +
-                          "temp.nomParticipant1 as nomParticipant1,temp.ajout as ajout,  sum(temp.durDifEdit) as durDifEdit, " +
-                          "sum(temp.nbrDifEdit) as nbrDifEdit, temp.SEL_EN_COURS as SEL_EN_COURS, temp.libelleUtilisateur as libelleUtilisateur, " +
-                          "temp.cdeUtil as cdeUtil " +
-                   "  FROM (" +
-                   "  SELECT ligneProgramme.ide12 AS ide12," +
-                   "       ligneProgramme.titreOeuvre as titreOeuvre," +
-                   "       ligneProgramme.roleParticipant1 as roleParticipant1," +
-                   "       ligneProgramme.nomParticipant1 as nomParticipant1," +
-                   "       ligneProgramme.ajout as ajout," +
-                   "       ligneProgramme.durDifEdit as durDifEdit," +
-                   "       ligneProgramme.nbrDifEdit as nbrDifEdit," +
-                   "       ligneProgramme.SEL_EN_COURS as SEL_EN_COURS," +
-                   "       ligneProgramme.libelleUtilisateur as libelleUtilisateur," +
-                   "       ligneProgramme.cdeUtil as cdeUtil "+
-                   "  FROM PRIAM_LIGNE_PROGRAMME_CP ligneProgramme " +
-                   "  inner join PRIAM_FICHIER  f ON f.ID=ligneProgramme.ID_FICHIER AND f.NUMPROG=:numProg " +
-                   "  WHERE" +
-                   "  (ligneProgramme.ide12 = :ide12 OR :ide12 IS NULL)" +
-                   "  AND (ligneProgramme.ajout = :ajout OR :ajout  IS NULL)" +
-                   "  AND (ligneProgramme.SEL_EN_COURS = :selectionEnCours OR :selectionEnCours IS NULL)" +
-                   "  AND (ligneProgramme.titreOeuvre = :titre OR :titre IS NULL)" +
-                   "  AND (ligneProgramme.cdeUtil = :utilisateur OR :utilisateur IS NULL)" +
-                   "  AND (ligneProgramme.idOeuvreManuel IS NULL)) temp" +
-                   "  GROUP BY temp.ide12, temp.cdeUtil \n#pageable\n")*/
     Page<SelectionDto> findLigneProgrammeByCriteria(@Param("numProg") String numProg,
                                       @Param("utilisateur") String utilisateur,
                                       @Param("ide12") Long ide12,
@@ -168,7 +120,7 @@ public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Lon
                                                   @Param("selectionEnCours") Boolean selectionEnCours,
                                                   @Param("selection") Boolean selection);
     
-    @Transactional(value="transactionManager")
+    @Transactional(readOnly = true, value = "transactionManager")
     @Query(value="SELECT  new fr.sacem.priam.model.domain.LignePreprep("+
                      "ligneProgramme.cdeCisac, " +
                      "prog.cdeTer, " +
@@ -207,7 +159,7 @@ public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Lon
                      "prog.famille.code ASC, prog.typeUtilisation.code ASC, ligneProgramme.cdeUtil ASC, prog.dateDbtPrg ASC, prog.dateFinPrg ASC ")
     List<LignePreprep> findLigneProgrammeSelectionnesForFelix(@Param("numProg") String numProg);
 
-   @Transactional(value="transactionManager",  readOnly = true)
+    @Transactional(readOnly = true, value = "transactionManager")
     @Query(value =
             "SELECT " +
                     " distinct  new fr.sacem.priam.model.domain.dto.KeyValueDto(l.ide12) " +
@@ -222,7 +174,7 @@ public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Lon
     List<KeyValueDto> findIDE12sByProgramme(@Param("query") Long query, @Param("programme") String programme);
 
 
-   @Transactional(value="transactionManager",  readOnly = true)
+    @Transactional(readOnly = true, value = "transactionManager")
     @Query(value =
             "SELECT " +
                     " distinct new fr.sacem.priam.model.domain.dto.KeyValueDto(l.titreOeuvre) " +
@@ -236,7 +188,7 @@ public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Lon
                     "ORDER BY l.titreOeuvre")
     List<KeyValueDto> findTitresByProgramme(@Param("titre") String titre, @Param("programme") String programme);
 
-   @Transactional(value="transactionManager",  readOnly = true)
+    @Transactional(readOnly = true, value = "transactionManager")
     @Query(value =
                "SELECT distinct ligneProgramme.libelleUtilisateur " +
                    "FROM LigneProgrammeCP ligneProgramme inner join ligneProgramme.fichier as f "+
@@ -256,7 +208,7 @@ public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Lon
     void updateSelectionTemporaireByNumProgramme(@Param("numProg") String numProg, @Param("selectionEnCours") boolean selectionEnCours);
 
     @Modifying(clearAutomatically = true)
-    @Transactional(value="transactionManager")
+    @Transactional("transactionManager")
     @Query(nativeQuery = true, value="update " +
             "  PRIAM_LIGNE_PROGRAMME_CP p " +
             "INNER JOIN " +
@@ -286,7 +238,7 @@ public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Lon
                                                  @Param("sel") int select);
 
 
-    @Transactional(value="transactionManager")
+    @Transactional("transactionManager")
     @Modifying(clearAutomatically = true)
     @Query(nativeQuery = true, value = "DELETE FROM " +
             "PRIAM_LIGNE_PROGRAMME_CP p " +
@@ -394,7 +346,7 @@ public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Lon
             "f.NUMPROG = ?1 AND p.selection=?2")
     void updateDurDifTemporaire(@Param("numProg") String numProg, @Param("selection") boolean selection);
 
-    @Transactional(value="transactionManager")
+    @Transactional("transactionManager")
     @Modifying(clearAutomatically = true)
     @Query(nativeQuery = true, value = "DELETE p.* FROM " +
                                            "PRIAM_LIGNE_PROGRAMME_CP p " +
@@ -422,7 +374,7 @@ public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Lon
                      "OR l.ajout = 'CORRIGE' ")
     List<LigneProgrammeCP> findAllOeuvresManuelsByNumProg(@Param("numProg") String numProg);
     
-    @Transactional(value="transactionManager")
+    @Transactional("transactionManager")
     @Modifying(clearAutomatically = true)
     @Query(nativeQuery = true, value = "DELETE p.* FROM " +
                                            "PRIAM_LIGNE_PROGRAMME_CP p " +
@@ -457,49 +409,14 @@ public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Lon
     LigneProgrammeCP findByIde12AndCdeUtil(@Param("numProg") String numProg, @Param("ide12") Long ide12, @Param("cdeUtil") String cdeUtil);
 
 
-   /*@Transactional(value="transactionManager",  readOnly = true)
-    @Query(nativeQuery = true, value =
-            "SELECT " +
-                    "count(duree), ajout" +
-                    " from ( " +
-                    "       SELECT " +
-                    "           count(l.durDif) duree, l.ide12, l.ajout " +
-                    "       FROM " +
-                    "           PRIAM_LIGNE_PROGRAMME_CP l " +
-                    "       inner join " +
-                    "           PRIAM_FICHIER as f on l.ID_FICHIER=f.ID " +
-                    "       WHERE " +
-                    "           f.numProg = ?1 " +
-                    "AND (?2 IS NULL OR l.SEL_EN_COURS = ?2) " +
-                    "AND l.idOeuvreManuel IS NULL " +
-                    "       GROUP BY " +
-                    "           l.ide12, l.ajout, l.cdeUtil" +
-                    "       ) result " +
-                    "GROUP BY ajout")
-    List<Object> compterOuvres(@Param("numProg") String numProg, @Param("selection") Integer selection);*/
-
-   @Transactional(value="transactionManager",  readOnly = true)
-    /*@Query(nativeQuery = true, value =
-            "  SELECT " +
-                    "           count(l.SEL_EN_COURS) duree, l.ajout " +
-                    "       FROM " +
-                    "           PRIAM_LIGNE_PROGRAMME_CP l " +
-                    "       inner join " +
-                    "           PRIAM_FICHIER as f on l.ID_FICHIER=f.ID " +
-                    "       WHERE " +
-                    "           f.numProg = ?1 " +
-                    "AND l.SEL_EN_COURS = 1 " +
-                    "AND l.idOeuvreManuel IS NULL " +
-                    "GROUP BY " +
-                    "l.ajout")*/
+    @Transactional(readOnly = true, value = "transactionManager")
     @Query(nativeQuery = true, value ="SELECT count(lp.SEL_EN_COURS) " +
                     "FROM PRIAM_LIGNE_PROGRAMME_CP lp " +
                     "INNER JOIN PRIAM_FICHIER as f on f.ID=lp.ID_FICHIER AND f.NUMPROG=?1 "+
                     "WHERE lp.SEL_EN_COURS=1 AND lp.ajout=?2")
-    //@Query(nativeQuery = true, value ="SELECT * FROM COUNT_VIEW cv WHERE cv.NUMPROG=?1 ")
     Long compterOuvres(@Param("numProg") String numProg, @Param("etat") String etat);
 
-   @Transactional(value="transactionManager",  readOnly = true)
+    @Transactional(readOnly = true, value = "transactionManager")
     @Query(nativeQuery = true, value =
             "SELECT sum(l.durDifEdit) duree " +
                     "FROM " +
@@ -511,31 +428,7 @@ public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Lon
                     "AND l.idOeuvreManuel IS NULL ")
     Long calculerDureeOeuvres(@Param("numProg") String numProg);
 
-/*   @Transactional(value="transactionManager",  readOnly = true)
-    @Query(nativeQuery = true, value =
-            "SELECT sum(duree) from ( SELECT " +
-                    "sum(l.durDifEdit) duree, l.ide12 " +
-                    "FROM " +
-                    "PRIAM_LIGNE_PROGRAMME_CP l inner join PRIAM_FICHIER as f " +
-                    "on l.ID_FICHIER=f.ID " +
-                    "WHERE " +
-                    "f.numProg = ?1 " +
-                    "AND (?2 IS NULL OR l.SEL_EN_COURS = ?2) " +
-                    "AND l.idOeuvreManuel IS NULL " +
-                    "GROUP BY l.ide12, l.cdeUtil) result ")
-    Long calculerDureeOeuvres(@Param("numProg") String numProg, @Param("selection") Integer selection);*/
-
-   @Transactional(value="transactionManager",  readOnly = true)
-    /*@Query(nativeQuery = true, value =
-            "SELECT sum(l.nbrDifEdit) quantite " +
-                    "FROM " +
-                    "PRIAM_LIGNE_PROGRAMME_CP l " +
-                    "inner join PRIAM_FICHIER as f " +
-                    "on l.ID_FICHIER=f.ID " +
-                    "WHERE f.numProg = ?1 " +
-                    "AND l.SEL_EN_COURS = 1 " +
-                    "AND l.idOeuvreManuel IS NULL ")*/
-
+    @Transactional(readOnly = true, value = "transactionManager")
     @Query(nativeQuery = true, value =
     "SELECT sum(ajout) "+
     "FROM(SELECT lp.nbrDifEdit as ajout "+
@@ -544,21 +437,6 @@ public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Lon
             "WHERE lp.SEL_EN_COURS=1 AND lp.idOeuvreManuel is null "+
     ") as temp")
     Long calculerQuantiteOeuvres(@Param("numProg") String numProg);
-
-    /*@Transactional(value="transactionManager", readOnly = true)
-    @Query(nativeQuery = true, value =
-            "SELECT sum(quantite) from ( SELECT " +
-                    "sum(l.nbrDifEdit) quantite, l.ide12 " +
-                    "FROM " +
-                    "PRIAM_LIGNE_PROGRAMME_CP l " +
-                    "inner join PRIAM_FICHIER as f " +
-                    "on l.ID_FICHIER=f.ID " +
-                    "WHERE f.numProg = ?1 " +
-                    "AND (?2 IS NULL OR l.SEL_EN_COURS = ?2) " +
-                    "AND l.idOeuvreManuel IS NULL " +
-                    "GROUP BY l.ide12, l.cdeUtil) result")
-    Long calculerQuantiteOeuvres(@Param("numProg") String numProg, @Param("selection") Integer selection);*/
-
 
 
     @Modifying(clearAutomatically = true)
@@ -599,7 +477,7 @@ public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Lon
 
 
     @Modifying(clearAutomatically = true)
-    @Transactional(value="transactionManager")
+    @Transactional("transactionManager")
     @Query(nativeQuery = true, value = "update " +
             "PRIAM_LIGNE_PROGRAMME_CP p " +
             "INNER JOIN " +
@@ -613,7 +491,7 @@ public interface LigneProgrammeCPDao extends JpaRepository<LigneProgrammeCP, Lon
     void updateNbrDif(@Param("numProg") String numProg);
 
     @Modifying(clearAutomatically = true)
-    @Transactional(value="transactionManager")
+    @Transactional("transactionManager")
     @Query(nativeQuery = true, value = "update " +
             "PRIAM_LIGNE_PROGRAMME_CP p " +
             "INNER JOIN " +

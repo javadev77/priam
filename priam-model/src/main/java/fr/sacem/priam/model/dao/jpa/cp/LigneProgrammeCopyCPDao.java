@@ -10,10 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * Created by benmerzoukah on 11/01/2018.
  */
-@Transactional(value="transactionManager", readOnly = true)
+@Transactional(readOnly = true, value = "transactionManager")
 public interface LigneProgrammeCopyCPDao extends JpaRepository<LigneProgrammeCopyCP, Long> {
 
-    @Transactional(value="transactionManager")
+    @Transactional("transactionManager")
     @Modifying(clearAutomatically = true)
     @Query("DELETE FROM LigneProgrammeCopyCP lp WHERE lp.fichier.id = :fichierId")
     void deleteAllCopyByFichierId(@Param("fichierId") Long fileId);

@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Lazy
 public interface FichierFelixDao extends JpaRepository<FichierFelix, Long> {
     
-   @Transactional(value="transactionManager",  readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    @Transactional(value="transactionManager",  readOnly = true, propagation = Propagation.REQUIRES_NEW)
     @Query(value = "SELECT f FROM FichierFelix f where f.numProg = :numProg")
     FichierFelix findByNumprog(@Param("numProg") String numProg);
 }

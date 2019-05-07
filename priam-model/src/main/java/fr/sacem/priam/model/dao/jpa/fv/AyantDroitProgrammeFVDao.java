@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface AyantDroitProgrammeFVDao extends JpaRepository<AyantDroitProgramme, Long> {
 
-   @Transactional(value="transactionManager",  readOnly = true)
+    @Transactional(readOnly = true, value = "transactionManager")
     @Query(value="SELECT new fr.sacem.priam.model.domain.dto.AyantDroitDto("+
             "ayantDroitProgramme.ide12, " +
             "ayantDroitProgramme.titre, " +
@@ -45,7 +45,7 @@ public interface AyantDroitProgrammeFVDao extends JpaRepository<AyantDroitProgra
                     "ORDER BY adp.coad")
     List<KeyValueDto> findCoadByNumProg(@Param("coad") Long coad, @Param("numProg") String numProg);
 
-   @Transactional(value="transactionManager",  readOnly = true)
+    @Transactional(readOnly = true, value = "transactionManager")
     @Query(value =
             "SELECT " +
                     " distinct new fr.sacem.priam.model.domain.dto.KeyValueDto(adp.participant) " +
@@ -56,7 +56,7 @@ public interface AyantDroitProgrammeFVDao extends JpaRepository<AyantDroitProgra
                     "ORDER BY adp.participant")
     List<KeyValueDto> findParticipantByNumProg(@Param("participant") String participant, @Param("programme") String programme);
 
-   @Transactional(value="transactionManager",  readOnly = true)
+    @Transactional(readOnly = true, value = "transactionManager")
     @Query(value =
             "SELECT " +
                     " distinct  new fr.sacem.priam.model.domain.dto.KeyValueDto(adp.ide12) " +
@@ -67,7 +67,7 @@ public interface AyantDroitProgrammeFVDao extends JpaRepository<AyantDroitProgra
                     "ORDER BY adp.ide12")
     List<KeyValueDto> findIDE12sByProgramme(@Param("query") Long query, @Param("programme") String programme);
 
-   @Transactional(value="transactionManager",  readOnly = true)
+    @Transactional(readOnly = true, value = "transactionManager")
     @Query(value =
             "SELECT " +
                     " distinct new fr.sacem.priam.model.domain.dto.KeyValueDto(adp.titre) " +
@@ -78,7 +78,7 @@ public interface AyantDroitProgrammeFVDao extends JpaRepository<AyantDroitProgra
                     "ORDER BY adp.titre")
     List<KeyValueDto> findTitresByProgramme(@Param("titre") String titre, @Param("programme") String programme);
 
-   @Transactional(value="transactionManager",  readOnly = true)
+    @Transactional(readOnly = true, value = "transactionManager")
     @Query(value="SELECT sum(ayantDroitProgramme.points) as points "+
             "FROM AyantDroitProgramme ayantDroitProgramme " +
             "WHERE ayantDroitProgramme.programme.numProg =:numProg " +
@@ -108,7 +108,7 @@ public interface AyantDroitProgrammeFVDao extends JpaRepository<AyantDroitProgra
     @Transactional(value="transactionManager",  readOnly = true)
     @Query(nativeQuery = true, value="SELECT sum(temp.points) " +
         "FROM (SELECT sum(ayantDroitProgramme.points) as points "+
-        "FROM priam_app.AYANT_DROIT_PROGRAMME_VIEW ayantDroitProgramme " +
+        "FROM AYANT_DROIT_PROGRAMME_VIEW ayantDroitProgramme " +
         "WHERE ayantDroitProgramme.NUMPROG =:numProg " +
         "AND (ayantDroitProgramme.COAD = :coad OR :coad IS NULL) " +
         "AND (ayantDroitProgramme.participant like %:participant% OR :participant IS NULL) " +

@@ -9,6 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
  * Created by embouazzar on 28/09/2018.
  */
 @Lazy
-@Transactional(value="transactionManager")
+@Transactional("transactionManager")
 public interface StatistiquesCatcmsDao extends JpaRepository<StatistiqueCatcms, Long> {
 }

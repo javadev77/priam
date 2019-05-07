@@ -30,7 +30,7 @@ public class FichierJdbcDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-   @Transactional(value="transactionManager",  readOnly = true)
+    @Transactional(readOnly = true, value = "transactionManager")
     public Fichier findById(Long idFichier) {
         String sql = "SELECT f.ID, f.STATUT_ENRICHISSEEMNT FROM PRIAM_FICHIER f WHERE f.ID=?";
         List<Fichier> result = jdbcTemplate.query(sql, (rs, i) -> {
@@ -44,7 +44,7 @@ public class FichierJdbcDao {
     }
 
 
-   @Transactional(value="transactionManager",  readOnly = true)
+    @Transactional(readOnly = true, value = "transactionManager")
     public List<Fichier> getFichiersFvByStatutEnrichissement(String statut) {
         return jdbcTemplate.query("SELECT * FROM PRIAM_FICHIER WHERE CDEFAMILTYPUTIL='FDSVAL' AND STATUT_ENRICHISSEEMNT = '" + statut + "'", (rs, i) -> {
             Fichier fichier = new Fichier();
@@ -65,7 +65,7 @@ public class FichierJdbcDao {
         });
     }
 
-   @Transactional(value="transactionManager",  readOnly = true)
+    @Transactional(readOnly = true, value = "transactionManager")
     public List<Fichier> getFichiersOctavCtnuEligible() {
         ArrayList<String> fonds = Lists.newArrayList("FD03", "FD04", "FD09", "FD10", "FD11");
         String inClause = "'" + Joiner.on("','").join(fonds) + "'";
@@ -81,7 +81,7 @@ public class FichierJdbcDao {
         });
     }
 
-   @Transactional(value="transactionManager",  readOnly = true)
+    @Transactional(readOnly = true, value = "transactionManager")
     public List<Fichier> getFichiersInfoOeuvreEligible() {
         ArrayList<String> fonds_AD = Lists.newArrayList("FD03", "FD04", "FD10", "FD11", "FD13");
         ArrayList<String> fonds_ADO = Lists.newArrayList("FD01", "FD02", "FD05", "FD07");

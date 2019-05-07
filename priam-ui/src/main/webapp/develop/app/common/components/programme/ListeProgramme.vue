@@ -1262,7 +1262,8 @@
                     1000);
               });
               } else {
-                this.resource.generateFichierFelixFV({numProg:  numProg, modeRepartition: self.modeRepartition})
+                let typeRepartFV = this.selectedProgramme.typeRepart;
+                this.resource.generateFichierFelixFV({numProg:  numProg, modeRepartition: self.modeRepartition, typeRepartFV: typeRepartFV})
                   .then(response => {
                     return response.json();
                   })

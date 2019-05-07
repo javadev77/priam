@@ -15,7 +15,7 @@ import java.util.List;
  */
 public interface LignePreprepDao extends JpaRepository<LignePreprep, Long> {
     
-   @Transactional(value="transactionManager",  readOnly = true)
+	@Transactional(value="transactionManager",  readOnly = true)
     @Query(value="SELECT lp " +
 			   "FROM LignePreprep lp "+
 			   "WHERE lp.numProg = :numProg " +
