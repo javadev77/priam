@@ -38,6 +38,7 @@ public class TypeRepartProcessor implements ItemProcessor<LignePreprepFV, LigneP
         lignePreprepFV.setCdeTypProg(PRINC);
         lignePreprepFV.setCdeCompl(SANS);
         lignePreprepFV.setCdeUtil(CDE_UTIL);
+
         return lignePreprepFV;
     }
 }
