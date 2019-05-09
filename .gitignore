@@ -34,10 +34,11 @@ target/
 
 ### NetBeans ###
 nbproject/private/
-build/
+#build/
 nbbuild/
 dist/
 nbdist/
+<<<<<<< HEAD
 .nb-gradle/
 
 
@@ -60,3 +61,6 @@ dist/
 /.idea/inspectionProfiles/
 /.idea/workspace.xml
 /.idea/encodings.xml
+=======
+.nb-gradle/
+>>>>>>> master

@@ -25,16 +25,9 @@
         <module>priam-security</module>
         <module>priam-services</module>
 
-
         <module>priam-batch-affectation-cp</module>
         <module>priam-batch-affectation-cms</module>
-
-        <module>priam-ui</module>
-        <module>priam-rest-api-common</module>
-        <module>priam-rest-api-copieprivee</module>
-        <module>priam-rest-api-cms</module>
-        <module>priam-catalogue-cms</module>
-
+        <module>priam-batch-felix-repart</module>
         <module>priam-batch-import-cp</module>
         <module>priam-batch-repartition</module>
         <module>priam-batch-import-cms-fra</module>
@@ -48,6 +41,12 @@
         <module>priam-batch-sortie-catcms</module>
         <module>priam-batch-purge-catcms</module>
         <module>priam-batch-generation-catalogue</module>
+
+        <module>priam-ui</module>
+        <module>priam-rest-api-common</module>
+        <module>priam-rest-api-copieprivee</module>
+        <module>priam-rest-api-cms</module>
+        <module>priam-catalogue-cms</module>
 
     </modules>
 

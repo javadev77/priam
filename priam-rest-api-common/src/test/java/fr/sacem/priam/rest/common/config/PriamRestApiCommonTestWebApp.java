@@ -15,10 +15,10 @@ import org.springframework.test.context.ActiveProfiles;
 /**
  * Created by benmerzoukah on 18/04/2017.
  */
-@Import({JpaConfigurationTest.class, RestMvcConfigTest.class})
-@SpringBootApplication(scanBasePackages = {"fr.sacem.priam.rest.common", "fr.sacem.priam.common", "fr.sacem.priam.services", "fr.sacem.priam.model"})
-@EnableCaching
 @ActiveProfiles("test")
+@Import({JpaConfigurationTest.class, AdmapConfigTest.class, RestMvcConfigTest.class})
+@SpringBootApplication(scanBasePackages = {"fr.sacem.priam.rest.common.api", "fr.sacem.priam.common", "fr.sacem.priam.services", "fr.sacem.priam.model"})
+@EnableCaching
 @EnableAutoConfiguration(exclude = { SecurityAutoConfiguration.class})
 public class PriamRestApiCommonTestWebApp extends SpringBootServletInitializer {
 

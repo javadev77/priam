@@ -51,14 +51,16 @@
             id : 'programme',
             routeName : 'programme',
             label : 'Programme',
-            routes : ['programme', 'selection', 'selection-cms','affectation', 'affectation-cms', 'listeProg'],
-            authorized : this.hasRight('MENUCMS'),
+            routes : ['programme', 'selection', 'selection-cms','affectation', 'affectation-cms', 'affectation-fv', 'listeProg', 'selection-fv-oeuvre-ad', 'selection-fv-ad'],
+
+            authorized : this.hasRight('MENU_PRINCIPAL'),
             items : [
               {
                 id : 'listeProg',
                 routeName : 'programme',
+                routes : ['programme', 'selection', 'selection-cms', 'affectation', 'affectation-cms', 'affectation-fv', 'listeProg','selection-fv-oeuvre-ad', 'selection-fv-ad'],
                 label : 'Liste programmes',
-                authorized : this.hasRight('MENUCMS')
+                authorized : this.hasRight('MENU_PRINCIPAL')
               }
             ]
           },
@@ -66,14 +68,15 @@
             id : 'chargement',
             routeName : 'chargement',
             label : 'Chargement',
-            authorized : this.hasRight('MENUCMS'),
+            authorized : this.hasRight('MENU_PRINCIPAL'),
             routes : ['chargement', 'fichiers'],
             items : [
               {
                 id : 'fichiers',
                 routeName : 'chargement',
                 label : 'Fichiers',
-                authorized : this.hasRight('MENUCMS')
+                routes : ['chargement', 'fichiers'],
+                authorized : this.hasRight('MENU_PRINCIPAL')
               }
             ]
           },
@@ -89,6 +92,7 @@
               {
                 id : 'catalogue',
                 routeName : 'catalogue-cms',
+                routes : ['catalogue-cms'],
                 label : 'Catalogue',
                 authorized : this.hasRight('MENUCATAL'),
               },
@@ -96,6 +100,7 @@
               {
                 id : 'journal',
                 routeName : 'journal',
+                routes : ['journal'],
                 label : 'Journal',
                 authorized : this.hasRight('MENUCATAL'),
               },
@@ -103,6 +108,7 @@
               {
                 id : 'stat',
                 routeName : 'stat',
+                routes : ['stat'],
                 label : 'Statistiques',
                 authorized : this.hasRight('MENUCATAL')
               }
@@ -114,7 +120,7 @@
             routeName : 'parametrage',
             label : 'Paramétrage',
             routes : ['parametrage'],
-            authorized : this.hasRight('MENUCMS')
+            authorized : this.hasRight('MENU_PRINCIPAL')
           }
 
 
@@ -134,8 +140,6 @@
     mixins : [ProgrammeMixin],
 
     created()  {
-
-        debugger;
         let currentRoute = this.$route.matched;
         this.setCurrentActiveMenu(currentRoute[0].name);
 
@@ -144,7 +148,6 @@
 
     computed : {
       displayName() {
-          debugger;
         let currentUser = this.$store.getters.getCurrentUser;
         return currentUser.displayName;
       },
@@ -170,7 +173,7 @@
             this.currentActiveMenu.id = foundMenu.id;
 
             let subMenu = foundMenu.items.find(elem => {
-              return elem && elem.routeName.indexOf(currentRouteViewName) > -1;
+              return elem && elem.routes.indexOf(currentRouteViewName) > -1;
             });
 
             if(subMenu !== undefined && subMenu !== null) {

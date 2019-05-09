@@ -1,19 +1,16 @@
-/*
 package fr.sacem.priam.ui.rest.api;
 
+/**
+ * Created by benmerzoukah.
+ */
+
 import fr.sacem.priam.common.constants.EnvConstants;
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.HashMap;
-import java.util.Map;
-
-*/
-/**
- * Created by benmerzoukah on 23/01/2018.
- *//*
 
 
 @RestController
@@ -36,4 +33,3 @@ public class AppConfigResource {
 
 
 }
-*/

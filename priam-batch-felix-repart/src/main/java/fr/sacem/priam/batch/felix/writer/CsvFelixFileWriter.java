@@ -3,14 +3,9 @@ package fr.sacem.priam.batch.felix.writer;
 
 import fr.sacem.priam.batch.felix.domain.FelixData;
 import fr.sacem.priam.common.constants.EnvConstants;
-import fr.sacem.priam.model.dao.jpa.LignePreprepDao;
 import fr.sacem.priam.model.dao.jpa.LignePreprepJdbcDao;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.priam.model.domain.Programme;
-import org.springframework.batch.item.ItemStream;
-import org.springframework.batch.item.ItemStreamWriter;
-import org.springframework.batch.item.ItemWriter;
-import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor;
 import org.springframework.batch.item.file.transform.DelimitedLineAggregator;
 import org.springframework.batch.item.file.transform.FieldExtractor;
@@ -20,9 +15,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Scope;
-import org.springframework.core.env.Environment;
 import org.springframework.core.io.FileSystemResource;
 
 import java.io.File;

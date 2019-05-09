@@ -18,5 +18,6 @@ public enum RoleRight {
     ABDCHGT,
     VIJREV,
     MENUCATAL,
-    MENUCMS
+    //MENUCMS
+    MENU_PRINCIPAL
 }
