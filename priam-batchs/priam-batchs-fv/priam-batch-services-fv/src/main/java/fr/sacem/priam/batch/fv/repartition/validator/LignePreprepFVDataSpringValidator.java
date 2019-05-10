@@ -2,7 +2,6 @@ package fr.sacem.priam.batch.fv.repartition.validator;
 
 
 import fr.sacem.priam.batch.fv.repartition.domain.LignePreprepFV;
-import fr.sacem.priam.batch.fv.repartition.util.TypeRepartitionFVEnum;
 import fr.sacem.priam.model.util.TypeUtilisationPriam;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -14,8 +13,7 @@ import static fr.sacem.priam.batch.fv.repartition.util.TypeRepartitionFVEnum.*;
 @Component
 public class LignePreprepFVDataSpringValidator implements Validator {
 
-    public static final String CODE_TYPREPART_OEUVRE = "O";
-    public static final String CODE_TYPREPART_AYANT_DROIT = "A";
+
 
     @Override
     public boolean supports(Class<?> aClass) {
@@ -44,9 +42,7 @@ public class LignePreprepFVDataSpringValidator implements Validator {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "datDbtProg", "error.datDbtProg");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "datFinProg", "error.datFinProg");
 
-        /*if(TypeUtilisationPriam.FD06.getCode().equals(cdeTypUtil) || TypeUtilisationPriam.FD12.getCode().equals(cdeTypUtil)
-            || TypeUtilisationPriam.FD01.getCode().equals(cdeTypUtil) || TypeUtilisationPriam.FD02.getCode().equals(cdeTypUtil)
-                || TypeUtilisationPriam.FD05.getCode().equals(cdeTypUtil) || TypeUtilisationPriam.FD07.getCode().equals(cdeTypUtil)) {*/
+
         if(OEUVRE.getCode().equals(typRepart) || OEUVRE_AD.getCode().equals(typRepart)) {
             ValidationUtils.rejectIfEmptyOrWhitespace(errors, "ide12", "error.ide12");
             ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeTypIde12", "error.cdeTypIde12");
@@ -62,7 +58,6 @@ public class LignePreprepFVDataSpringValidator implements Validator {
             ValidationUtils.rejectIfEmptyOrWhitespace(errors, "nbrDif", "error.nbrDif");
         }
 
-        /*if(!TypeUtilisationPriam.FD06.getCode().equals(cdeTypUtil) && !TypeUtilisationPriam.FD12.getCode().equals(cdeTypUtil)){*/
         if(AYANT_DROIT.getCode().equals(typRepart) || OEUVRE_AD.getCode().equals(typRepart)){
             ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cdeTypDrtSacem", "error.cdeTypDrtSacem");
             ValidationUtils.rejectIfEmptyOrWhitespace(errors, "coadPayer", "error.coadPayer");

@@ -29,7 +29,6 @@ import static fr.sacem.priam.common.util.SftpUtil.SftpServer.FELIX;
 public class JobCompletionRepartitionFVListener extends JobExecutionListenerSupport {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JobCompletionRepartitionFVListener.class);
-    public static final String EN_COURS_MISE_EN_REPART = "EN_COURS_MISE_EN_REPART";
     public static final String MIS_EN_REPART = "MIS_EN_REPART";
     private static String NOM_PREPREP_CSV = "REQ_FILE_NAME";
     private static String NOM_STEP_GENERATION = "stepGeneration";
@@ -59,6 +58,7 @@ public class JobCompletionRepartitionFVListener extends JobExecutionListenerSupp
         String modeRepartition = jobExecution.getJobParameters().getString("modeRepartition");
 
         if(MODE_REPART_MER.equals(modeRepartition)) {
+            lignePreprepFVJdbcDao.deleteByNumprog(numProg);
             /*programmeBatchDao.majStattutProgramme(numProg, EN_COURS_MISE_EN_REPART);*/
             FichierFelix ff = fichierFelixDao.findByNumprog(numProg);
             if(ff != null) {
