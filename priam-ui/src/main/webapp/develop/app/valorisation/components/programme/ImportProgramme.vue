@@ -7,8 +7,9 @@
         <br/>
         <br/>
 
-        <label>Bonjour {{ displayName }}, vous êtes sur le point d'importer un fichier sur PRIAM.<br/>
-               Votre action sera tracée dans l'outil.<br/><br/>
+        <label>Bonjour {{ displayName }}, , vous allez réaliser un import dans PRIAM,
+               les données que vous avez ajoutées, <br/>modifiées ou supprimées sont réalisées sous votre responsabilité.
+               Une historisation est conservée pour assurer une<br/> traçabilité des données. Votre action sera tracée dans l'outil.<br/><br/>
 
                Etes-vous sûr de vouloir continuer ?
         </label>

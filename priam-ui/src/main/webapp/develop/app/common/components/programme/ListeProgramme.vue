@@ -251,6 +251,31 @@
         </template>
       </modal>
     </template>
+
+    <modal v-if="showPopupExportOuiNon">
+      <label class="homer-prompt-q control-label" slot="body">
+        <label class="pull-right">Répartition à :  <b>{{ selectedProgramme.typeRepart }}</b></label>
+        <br/>
+        <br/>
+
+        <label>Bonjour {{ displayName }}, vous êtes sur le point d’extraire des données de PRIAM.<br/><br/>
+          Cette extraction est réalisée sous votre responsabilité et vous devez assurer la sécurité des données en respectant
+          <br/>les règles internes de sécurité (ex : enregistrement sur un serveur accessible aux seules personnes habilitées <br/>
+          à traiter ces données, pas de transfert vers des personnes non autorisées etc.).
+          <br/>
+          <br/>
+
+          Etes-vous sûr de vouloir continuer ?
+        </label>
+        <br/>
+        <br/>
+      </label>
+      <template slot="footer">
+        <button class="btn btn-default btn-primary pull-right no" @click="showPopupExportOuiNon = false">Non</button>
+        <button class="btn btn-default btn-primary pull-right yes" @click="launchExportProgramme">Oui</button>
+      </template>
+    </modal>
+
   </div>
 </template>
 
@@ -295,6 +320,7 @@
             showEcranModalMisEnRepart : false,
             showEcranModalImportProgramme : false,
             showLogImport : false,
+            showPopupExportOuiNon:false,
             logsImport  : [],
 
             resource : {},
@@ -909,6 +935,11 @@
 
             return statutProgramme;
 
+        },
+
+        displayName() {
+          let currentUser = this.$store.getters.getCurrentUser;
+          return currentUser && currentUser !== null ? currentUser.displayName : 'Guest';
         }
 
       },
@@ -1317,9 +1348,15 @@
 
         },
 
-
         onExporterProgramme(row, column) {
+
           this.selectedProgramme = row;
+          this.showPopupExportOuiNon = true;
+        },
+
+
+        launchExportProgramme() {
+          this.showPopupExportOuiNon = false;
           console.log('--- exportedProgramme numProg = ' + this.selectedProgramme.numProg);
           var self = this;
           let numProg = this.selectedProgramme.numProg;
