@@ -201,19 +201,31 @@
 
     <bean id="lignePreprepFVQuery" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
         <property name="databaseType" value="MySQL" />
-        <!--<property name="selectClause" value="SELECT LP.cdeCisac, LP.cdeTer, LP.rionEffet, LP.cdeFamilTypUtil,
-                       LP.NUMPROG, LP.id, LP.cdeUtil, LP.cdeTypUtil,
-                       LP.libProg, LP.datDbtProg, LP.datFinProg,
-                       LP.ide12, LP.cdeTypIde12, LP.datsitu, LP.datconslt, LP.durDif, LP.nbrDif,
-                       LP.typMt, LP.mt"/>-->
         <property name="selectClause" value="SELECT LP.*"/>
         <property name="fromClause" value="FROM PRIAM_LIGNE_PREPREP_FV LP"/>
         <property name="whereClause" value="WHERE LP.numProg='#{jobParameters[numProg]}' "/>
         <property name="dataSource" ref="dataSource"/>
-        <property name="sortKey" value="LP.id"/>
-    </bean>
+        <!--<property name="sortKey" value="LP.id"/>-->
+        <property name="sortKeys" >
+            <map>
+                <entry key="LP.typRepart" value="ASCENDING"/>
+                <entry key="LP.numProg" value="ASCENDING"/>
+                <entry key="LP.cdeCisac" value="ASCENDING"/>
+                <entry key="LP.cdeTer" value="ASCENDING"/>
+                <entry key="LP.rionEffet" value="ASCENDING"/>
+                <entry key="LP.cdeFamilTypUtil" value="ASCENDING"/>
+                <entry key="LP.cdeTypUtil" value="ASCENDING"/>
+                <entry key="LP.cdeUtil" value="ASCENDING"/>
+                <entry key="LP.cdeModFac" value="ASCENDING"/>
+                <entry key="LP.cdeTypProg" value="ASCENDING"/>
+                <entry key="LP.cdeCompl" value="ASCENDING"/>
+                <entry key="LP.datDbtProg" value="ASCENDING"/>
+                <entry key="LP.datFinProg" value="ASCENDING"/>
+                <entry key="LP.id" value="ASCENDING"/>
+            </map>
+        </property>
 
-    <bean id="lignePreprepFVMapper" class="fr.sacem.priam.batch.fv.repartition.mapper.LignePreprepFVMapper"/>
+    </bean>
 
     <bean id="programmeBatchDao" class="fr.sacem.priam.batch.common.dao.ProgrammeBatchDao" >
         <property name="dataSource" ref="dataSource"/>

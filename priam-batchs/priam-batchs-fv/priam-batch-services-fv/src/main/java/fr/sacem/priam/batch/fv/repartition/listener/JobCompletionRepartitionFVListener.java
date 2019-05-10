@@ -30,7 +30,6 @@ import org.springframework.stereotype.Component;
 public class JobCompletionRepartitionFVListener extends JobExecutionListenerSupport {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JobCompletionRepartitionFVListener.class);
-    public static final String EN_COURS_MISE_EN_REPART = "EN_COURS_MISE_EN_REPART";
     public static final String MIS_EN_REPART = "MIS_EN_REPART";
     private static String NOM_PREPREP_CSV = "REQ_FILE_NAME";
     private static String NOM_STEP_GENERATION = "stepGeneration";
@@ -59,11 +58,12 @@ public class JobCompletionRepartitionFVListener extends JobExecutionListenerSupp
         String numProg = jobExecution.getJobParameters().getString("numProg");
         String modeRepartition = jobExecution.getJobParameters().getString("modeRepartition");
 
+
         if(MODE_MISE_EN_REPART.equals(modeRepartition)) {
-            /*programmeBatchDao.majStattutProgramme(numProg, EN_COURS_MISE_EN_REPART);*/
+            lignePreprepFVJdbcDao.deleteByNumprog(numProg);
             FichierFelix ff = fichierFelixDao.findByNumprog(numProg);
             if(ff != null) {
-                ff.setStatut(StatutFichierFelix.EN_COURS_ENVOI);
+                ff.setStatut(StatutFichierFelix.EN_COURS);
                 fichierFelixDao.save(ff);
                 fichierFelixDao.flush();
             }
@@ -101,8 +101,12 @@ public class JobCompletionRepartitionFVListener extends JobExecutionListenerSupp
                             try {
                                 File tempFile = new File(path + File.separator + ff.getNomFichier());
                                 LOGGER.debug("==> Debut Envoi du fichier à FELIX = " + ff.getNomFichier());
+                                ff.setStatut(StatutFichierFelix.EN_COURS_ENVOI);
+                                fichierFelixDao.saveAndFlush(ff);
+
                                 SftpUtil.uploadFile(FELIX, tempFile, ff.getNomFichier());
                                 LOGGER.debug("<=== Fin Envoi du fichier à FELIX = " + ff.getNomFichier());
+
                                 programmeBatchDao.majStattutProgramme(numProg, MIS_EN_REPART);
                                 ff.setStatut(StatutFichierFelix.ENVOYE);
                                 if (tempFile.exists()) {
