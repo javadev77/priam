@@ -168,6 +168,15 @@ public class LigneProgrammeFV implements Serializable {
     @Column(name = "statut")
     private String statut;
 
+    @Column(name = "datsitu")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date datsitu;
+
+    @Column(name = "datconslt")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date datconslt;
+
+
     @ManyToOne
     @JoinColumn(name = "ID_OEUVRE_CTNU")
     private LigneProgrammeFV oeuvreCTNU;
@@ -604,6 +613,22 @@ public class LigneProgrammeFV implements Serializable {
 
     public void setAyantsDroit(final List<AyantDroit> ayantsDroit) {
         this.ayantsDroit = ayantsDroit;
+    }
+
+    public Date getDatconslt() {
+        return datconslt;
+    }
+
+    public void setDatconslt(final Date datconslt) {
+        this.datconslt = datconslt;
+    }
+
+    public Date getDatsitu() {
+        return datsitu;
+    }
+
+    public void setDatsitu(final Date datsitu) {
+        this.datsitu = datsitu;
     }
 
     @Override

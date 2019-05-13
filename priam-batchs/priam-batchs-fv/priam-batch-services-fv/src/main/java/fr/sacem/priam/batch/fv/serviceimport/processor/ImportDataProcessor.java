@@ -9,6 +9,8 @@ import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.priam.model.dao.jpa.fv.LigneProgrammeFVDao;
 import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.fv.LigneProgrammeFV;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.BeforeStep;
@@ -115,6 +117,14 @@ public class ImportDataProcessor implements ItemProcessor<ExportCsvDto, ExportCs
             oeuvre.setMt(exportCsvDto.getMt());
             oeuvre.setTax(Double.valueOf(exportCsvDto.getTax()));
             oeuvre.setTitreOeuvre(exportCsvDto.getTitreOeuvre());
+
+            String datconslt = exportCsvDto.getDatconslt();
+            Date dateConslt = datconslt != null && !datconslt.isEmpty() ? new SimpleDateFormat("yyyyMMdd").parse(datconslt) : null;
+            oeuvre.setDatconslt(dateConslt);
+
+            String datsitu = exportCsvDto.getDatsitu();
+            Date dateSitu= datsitu != null && !datsitu.isEmpty() ? new SimpleDateFormat("yyyyMMdd").parse(datsitu) : null;
+            oeuvre.setDatsitu(dateSitu);
 
             LigneProgrammeFV result = ligneProgrammeFVDao.saveAndFlush(oeuvre);
             exportCsvDto.setIdOeuvreFv(result.getId());
