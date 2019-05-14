@@ -3,7 +3,7 @@
     <modal>
       <template slot="body">
 
-        <label class="pull-right">Répartition à :  <b>{{ programme.typeRepart }}</b></label>
+        <label class="pull-right">Répartition à :  <b>{{ getModeRepartitionByCode(programme.typeRepart).value }}</b></label>
         <br/>
         <br/>
 
@@ -49,6 +49,7 @@
 <script>
 
   import Modal from '../../../common/components/ui/Modal.vue';
+  import CommonMixin from '../../../common/mixins/chargementMixin';
 
   export default {
 
@@ -58,6 +59,8 @@
 
 
     },
+
+    mixins : [CommonMixin],
 
     data() {
 

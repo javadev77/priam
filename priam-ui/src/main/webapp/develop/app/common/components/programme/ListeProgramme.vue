@@ -254,7 +254,7 @@
 
     <modal v-if="showPopupExportOuiNon">
       <label class="homer-prompt-q control-label" slot="body">
-        <label class="pull-right">Répartition à :  <b>{{ selectedProgramme.typeRepart }}</b></label>
+        <label class="pull-right">Répartition à :  <b>{{ getModeRepartitionByCode(selectedProgramme.typeRepart).value }}</b></label>
         <br/>
         <br/>
 
