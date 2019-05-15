@@ -42,7 +42,7 @@ public class ProgrammeResourceTest extends RestResourceTest {
                .contentType(contentType))
                .andExpect(status().isOk())
                .andExpect(jsonPath("$.totalPages",is(1)))
-               .andExpect(jsonPath("$.totalElements", is(6)));
+               .andExpect(jsonPath("$.totalElements", is(8)));
     }
 
     @Test
@@ -172,7 +172,7 @@ public class ProgrammeResourceTest extends RestResourceTest {
       get("/app/rest/programme/nomprog/autocomplete")
         .contentType(contentType))
       .andExpect(status().isOk())
-      .andExpect(jsonPath("$[0]", is("PROG FD06 TEST")));
+      .andExpect(jsonPath("$[0]", is("PROG FD01 TEST 3")));
 
   }
 
