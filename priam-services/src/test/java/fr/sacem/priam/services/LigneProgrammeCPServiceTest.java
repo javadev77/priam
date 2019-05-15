@@ -8,6 +8,12 @@ import fr.sacem.priam.model.domain.criteria.LigneProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.SelectionDto;
 import fr.sacem.priam.security.model.UserDTO;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -20,10 +26,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.*;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Created by belwidanej on 10/08/2017.
