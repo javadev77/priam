@@ -4,15 +4,20 @@ import fr.sacem.priam.batch.common.dao.LigneProgrammeBatchDao;
 import fr.sacem.priam.batch.common.dao.ProgrammeBatchDao;
 import fr.sacem.priam.batch.common.domain.Programme;
 import fr.sacem.priam.batch.common.service.importPenef.FichierBatchService;
+import fr.sacem.priam.common.TypeLog;
 import fr.sacem.priam.model.dao.jpa.FichierDao;
+import fr.sacem.priam.model.dao.jpa.JournalBatchDao;
 import fr.sacem.priam.model.dao.jpa.fv.AyantDroitFVDao;
 import fr.sacem.priam.model.dao.jpa.fv.ExportProgrammeFVDao;
 import fr.sacem.priam.model.dao.jpa.fv.ImportDataBatchFVJdbcDao;
 import fr.sacem.priam.model.dao.jpa.fv.ImportProgrammeFVDao;
 import fr.sacem.priam.model.dao.jpa.fv.LigneProgrammeFVDao;
 import fr.sacem.priam.model.domain.Fichier;
+import fr.sacem.priam.model.domain.Journal;
+import fr.sacem.priam.model.domain.SituationAvant;
 import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.dto.FileDto;
+import fr.sacem.priam.model.journal.JournalBuilder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +71,8 @@ public class JobDesaffectationFvListener extends JobExecutionListenerSupport {
 
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
+    @Autowired
+    private JournalBatchDao journalBatchDao;
 
     @Override
     public void beforeJob(JobExecution jobExecution) {
@@ -87,8 +94,6 @@ public class JobDesaffectationFvListener extends JobExecutionListenerSupport {
 
             programmeBatchDao.majStattutEligibilite(numProg, "FIN_DESAFFECTATION");
 
-          //  fichierRepository.deleteFichierLinkForAntille(numProg);
-//            fichierDao.updateStatutEnrichissementFichiersAffectes(numProg);
             String user = jobExecution.getJobParameters().getString("username");
             if(!isAllDesaffecte && isFichiersAffectesVide) {
                 fichierBatchService.clearSelectedFichiers(numProg, "CHARGEMENT_OK");
@@ -112,24 +117,24 @@ public class JobDesaffectationFvListener extends JobExecutionListenerSupport {
                 }
                 fichierDao.updateStatutEnrichissementFichiersAffectes(numProg);
 
+                String userId = jobExecution.getJobParameters().getString("userId");
+                JournalBuilder journalBuilder = new JournalBuilder(numProg,null,userId);
+                Journal journal = journalBuilder.addEvenement(TypeLog.ALL_DESAFFECTATION.getEvenement()).build();
 
-//                String userId = jobExecution.getJobParameters().getString("userId");
-//                JournalBuilder journalBuilder = new JournalBuilder(numProg,null,userId);
-//                Journal journal = journalBuilder.addEvenement(TypeLog.ALL_DESAFFECTATION.getEvenement()).build();
-//
-//                List<SituationAvant> situationAvantList = new ArrayList<>();
-//
-//                List<Fichier> listfichierAllDesaffecte = getListFichiersById(jobExecution.getJobParameters().getString("listIdFichiersAllDesaffectes"));
-//
-//
-//                listfichierAllDesaffecte.forEach(fichier -> {
-//                    SituationAvant situationAvant = new SituationAvant();
-//                    situationAvant.setSituation(fichier.getNomFichier()+ " " + simpleDateFormat.format(fichier.getDateFinChargt()));
-//                    situationAvantList.add(situationAvant);
-//                });
-//                journal.setListSituationAvant(situationAvantList);
-//                Long idJournal = journalBatchDao.saveJournal(journal);
-//                journalBatchDao.saveSituationAvantJournal(journal.getListSituationAvant(), idJournal);
+                List<SituationAvant> situationAvantList = new ArrayList<>();
+
+                List<Fichier> listfichierAllDesaffecte = getListFichiersById(jobExecution.getJobParameters().getString("listIdFichiersAllDesaffectes"));
+
+
+                listfichierAllDesaffecte.forEach(fichier -> {
+                    SituationAvant situationAvant = new SituationAvant();
+                    situationAvant.setSituation(fichier.getNomFichier()+ " " + simpleDateFormat.format(fichier.getDateFinChargt()));
+                    situationAvantList.add(situationAvant);
+                });
+                journal.setListSituationAvant(situationAvantList);
+                Long idJournal = journalBatchDao.saveJournal(journal);
+                journalBatchDao.saveSituationAvantJournal(journal.getListSituationAvant(), idJournal);
+
             }
 
 

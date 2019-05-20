@@ -3,8 +3,17 @@ package fr.sacem.priam.batch.fv.affectation.listener;
 import fr.sacem.priam.batch.common.dao.ProgrammeBatchDao;
 import fr.sacem.priam.batch.common.service.importPenef.FichierBatchService;
 import fr.sacem.priam.batch.common.util.UtilFile;
+import fr.sacem.priam.model.dao.jpa.FichierDao;
+import fr.sacem.priam.model.dao.jpa.JournalBatchDao;
 import fr.sacem.priam.model.domain.Fichier;
+import fr.sacem.priam.model.domain.Journal;
+import fr.sacem.priam.model.domain.Status;
+import fr.sacem.priam.model.util.JournalAffectationBuilder;
 import fr.sacem.priam.services.FichierService;
+import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.BatchStatus;
@@ -13,11 +22,6 @@ import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.text.SimpleDateFormat;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Component
 public class JobAffectationFVListener extends JobExecutionListenerSupport {
@@ -36,6 +40,14 @@ public class JobAffectationFVListener extends JobExecutionListenerSupport {
 
     @Autowired
     FichierService fichierService;
+
+    @Autowired
+    JournalBatchDao journalBatchDao;
+
+
+    @Autowired
+    private FichierDao fichierDao;
+
 
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
@@ -71,33 +83,15 @@ public class JobAffectationFVListener extends JobExecutionListenerSupport {
             programmeBatchDao.majStattutProgramme(numProg, "AFFECTE");
 
 
-//            List<SituationAvant> situationAvantList = new ArrayList<>();
-//            List<SituationApres> situationApresList = new ArrayList<>();
-//
-//            if(!listNomFichier.isEmpty()) {
-//                List<String> listNomFichierAvantAffecte = Arrays.asList(listNomFichier.split("\\s*,\\s*"));
-//                listNomFichierAvantAffecte.forEach(NomFichierAvantAffecte -> {
-//                    SituationAvant situationAvant = new SituationAvant();
-//                    situationAvant.setSituation(NomFichierAvantAffecte);
-//                    situationAvantList.add(situationAvant);
-//                });
-//            }
-//
-//            List<Fichier> listFichierAffecte = fichierDao.findFichiersByIdProgramme(numProg, Status.AFFECTE);
-//            listFichierAffecte.forEach(fichierAffecte ->{
-//                SituationApres situationApres = new SituationApres();
-//                situationApres.setSituation(fichierAffecte.getNomFichier() + " " + simpleDateFormat.format(fichierAffecte.getDateFinChargt()));
-//                situationApresList.add(situationApres);
-//            });
-//
-//            JournalBuilder journalBuilder = new JournalBuilder(numProg,null,userId);
-//            Journal journal = journalBuilder.addEvenement(TypeLog.AFFECTATION_DESAFFECTATION.getEvenement()).build();
-//            journal.setListSituationAvant(situationAvantList);
-//            journal.setListSituationApres(situationApresList);
-//
-//            Long idJournal = journalBatchDao.saveJournal(journal);
-//            journalBatchDao.saveSituationAvantJournal(journal.getListSituationAvant(), idJournal);
-//            journalBatchDao.saveSituationApresJournal(journal.getListSituationApres(), idJournal);
+            List<Fichier> listFichierAffecte = fichierDao.findFichiersByIdProgramme(numProg, Status.AFFECTE);
+            JournalAffectationBuilder journalAffectationBuilder = new JournalAffectationBuilder();
+            Journal journal = journalAffectationBuilder.create(numProg, listNomFichier, listFichierAffecte, userId);
+
+            Long idJournal = journalBatchDao.saveJournal(journal);
+
+            journalBatchDao.saveSituationAvantJournal(journal.getListSituationAvant(), idJournal);
+            journalBatchDao.saveSituationApresJournal(journal.getListSituationApres(), idJournal);
+
         } else {
 
             programmeBatchDao.majStattutEligibilite(numProg, ERREUR_ELIGIBILITE);

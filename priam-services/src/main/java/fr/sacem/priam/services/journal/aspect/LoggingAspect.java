@@ -320,7 +320,8 @@ public class LoggingAspect {
                 + " Date de début : " + simpleDateFormat.format(programme.getDateDbtPrg()) + "<br/>"
                 + " Date de fin : " + simpleDateFormat.format(programme.getDateFinPrg()) + "<br/>"
                 + " Territoire : " + getLibelleTerritoire(programme.getCdeTer(), GlobalConstants.FR_LANG) + "<br/>"
-                + " Mode de répartition : " + WordUtils.capitalize(programme.getTypeRepart().toString());
+                + " Mode de répartition : " + WordUtils.capitalize(programme.getTypeRepart().toString())  + "<br/>"
+                + ("FDSVAL".equalsIgnoreCase(programme.getFamille().getCode()) ? "Type de droit : " + programme.getTypeDroit().getValue() : "");
     }
 
     private String getInfoProgrammeDto(ProgrammeDto programmeDto) {
@@ -328,11 +329,11 @@ public class LoggingAspect {
                 + "Rion cible : " + getLibelleRion(programmeDto.getRionTheorique()) + "<br/>"
                 + "Famille : " + getLibelleFamille(programmeDto.getFamille(), GlobalConstants.FR_LANG) + "<br/>"
                 + "Type d'utilisation : " + getLibelleTypeUtil(programmeDto.getTypeUtilisation(), GlobalConstants.FR_LANG) + "<br/>"
-
                 + "Date de début : " + simpleDateFormat.format(programmeDto.getDateDbtPrg()) + "<br/>"
                 + "Date de fin : " + simpleDateFormat.format(programmeDto.getDateFinPrg()) + "<br/>"
                 + "Territoire : " + getLibelleTerritoire(programmeDto.getCdeTer(), GlobalConstants.FR_LANG) + "<br/>"
-                + "Mode de répartition : " + WordUtils.capitalize(programmeDto.getTypeRepart().toString());
+                + "Mode de répartition : " + WordUtils.capitalize(programmeDto.getTypeRepart().toString()) +  "<br/>"
+                + ("FDSVAL".equalsIgnoreCase(programmeDto.getFamille()) ? "Type de droit : " + programmeDto.getTypeDroit().getValue() : "");
     }
 
     private String getLibelleTerritoire(Integer code, String lang){

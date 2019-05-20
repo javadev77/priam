@@ -1,22 +1,19 @@
 package fr.sacem.priam.model.util;
 
 import fr.sacem.priam.common.TypeLog;
-import fr.sacem.priam.model.dao.jpa.FichierDao;
-import fr.sacem.priam.model.domain.*;
+import fr.sacem.priam.model.domain.Fichier;
+import fr.sacem.priam.model.domain.Journal;
+import fr.sacem.priam.model.domain.SituationApres;
+import fr.sacem.priam.model.domain.SituationAvant;
 import fr.sacem.priam.model.journal.JournalBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.springframework.stereotype.Component;
 
 @Component
 public class JournalAffectationBuilder {
-
-    @Autowired
-    private FichierDao fichierDao;
 
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
@@ -26,14 +23,13 @@ public class JournalAffectationBuilder {
 
         if(!listNomFichier.isEmpty()) {
             List<String> listNomFichierAvantAffecte = Arrays.asList(listNomFichier.split("\\s*,\\s*"));
-            listNomFichierAvantAffecte.forEach(NomFichierAvantAffecte -> {
+            listNomFichierAvantAffecte.forEach(nomFichierAvantAffecte -> {
                 SituationAvant situationAvant = new SituationAvant();
-                situationAvant.setSituation(NomFichierAvantAffecte);
+                situationAvant.setSituation(nomFichierAvantAffecte);
                 situationAvantList.add(situationAvant);
             });
         }
 
-        /*List<Fichier> listFichierAffecte = fichierDao.findFichiersByIdProgramme(numProg, Status.AFFECTE);*/
         listFichierAffecte.forEach(fichierAffecte ->{
             SituationApres situationApres = new SituationApres();
             situationApres.setSituation(fichierAffecte.getNomFichier() + " " + simpleDateFormat.format(fichierAffecte.getDateFinChargt()));
@@ -42,8 +38,15 @@ public class JournalAffectationBuilder {
 
         JournalBuilder journalBuilder = new JournalBuilder(numProg,null,userId);
         Journal journal = journalBuilder.addEvenement(TypeLog.AFFECTATION_DESAFFECTATION.getEvenement()).build();
-        journal.setListSituationAvant(situationAvantList);
-        journal.setListSituationApres(situationApresList);
+
+        if(!situationAvantList.isEmpty()) {
+            journal.setListSituationAvant(situationAvantList);
+        }
+
+        if(!situationApresList.isEmpty()) {
+            journal.setListSituationApres(situationApresList);
+        }
+
 
         return journal;
     }

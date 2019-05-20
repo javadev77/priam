@@ -3,21 +3,25 @@ package fr.sacem.priam.batch.affectation.listener;
 import fr.sacem.priam.batch.common.dao.LigneProgrammeBatchDao;
 import fr.sacem.priam.batch.common.dao.ProgrammeBatchDao;
 import fr.sacem.priam.batch.common.dao.TraitementCmsDao;
-
 import fr.sacem.priam.batch.common.domain.Programme;
-import fr.sacem.priam.batch.affectation.dao.JournalBatchDao;
+import fr.sacem.priam.batch.common.service.importPenef.FichierBatchService;
+import fr.sacem.priam.batch.common.util.UtilFile;
 import fr.sacem.priam.common.util.FileUtils;
 import fr.sacem.priam.model.dao.jpa.FichierDao;
+import fr.sacem.priam.model.dao.jpa.JournalBatchDao;
 import fr.sacem.priam.model.dao.jpa.JournalDao;
-
-
 import fr.sacem.priam.model.domain.Fichier;
 import fr.sacem.priam.model.domain.Journal;
 import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.util.JournalAffectationBuilder;
 import fr.sacem.priam.model.util.TypeUtilisationPriam;
-import fr.sacem.priam.batch.common.service.importPenef.FichierBatchService;
-import fr.sacem.priam.batch.common.util.UtilFile;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.BatchStatus;
@@ -28,11 +32,6 @@ import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
 
 
 @Component
@@ -92,9 +91,8 @@ public class JobCompletionNotificationAffectationCMSListener extends JobExecutio
         Long nbOeuvres = ligneProgrammeBatchDao.countNbOeuvres(numProg);
         long traitementID = traitementCmsDao.createTraitement(numProg, nbOeuvres);
 
-        /*List<Fichier> fichiersByIdProgramme = fichierDao.findFichiersByIdProgramme(numProg, Status.AFFECTE);*/
+
         jobExecution.getExecutionContext().put("ID_TMT_CMS", traitementID);
-        /*jobExecution.getExecutionContext().put(FICHIERS_AVANT_AFFECTATION, fichiersByIdProgramme);*/
     }
 
     @Override

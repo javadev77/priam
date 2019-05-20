@@ -1,6 +1,6 @@
 package fr.sacem.priam.batch.affectation.cp.listener;
 
-import fr.sacem.priam.batch.affectation.cp.dao.JournalBatchDao;
+import fr.sacem.priam.model.dao.jpa.JournalBatchDao;
 import fr.sacem.priam.batch.common.dao.LigneProgrammeBatchDao;
 import fr.sacem.priam.batch.common.dao.ProgrammeBatchDao;
 import fr.sacem.priam.batch.common.service.importPenef.FichierBatchService;

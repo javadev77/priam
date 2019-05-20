@@ -402,7 +402,7 @@
           this.programmeData.dateDbtPrg=this.dateDebutProgramme;
           this.programmeData.dateFinPrg=this.dateFinProgramme;
           this.programmeData.cdeTer=this.territoireSelected;
-          this.programmeData.typeDroit=this.typeDroit == null || this.typeDroit === '' ? null : this.typeDroit.trim();
+          this.programmeData.typeDroit=this.typeDroit === null || this.typeDroit === '' ? null : this.typeDroit.trim();
 
           this.resource.addProgramme(this.programmeData).then(response => {
             console.log("ajout ok");

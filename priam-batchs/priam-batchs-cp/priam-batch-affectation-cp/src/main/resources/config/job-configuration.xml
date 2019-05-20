@@ -187,7 +187,7 @@
 
 
 
-    <bean id="journalBatchDao" class="fr.sacem.priam.batch.affectation.cp.dao.JournalBatchDao">
+    <bean id="journalBatchDao" class="fr.sacem.priam.model.dao.jpa.JournalBatchDao">
         <property name="dataSource" ref="dataSource"/>
     </bean>
 

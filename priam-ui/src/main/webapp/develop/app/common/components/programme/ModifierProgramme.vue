@@ -426,17 +426,18 @@
         typeDroitMap : new Map([
           ["FD01,OEUVRE_AD", "DE"],
           ["FD02,OEUVRE_AD", "PH"],
-          ["FD03,AD", "DR"],
-          ["FD04,AD", "DE"],
+          ["FD03,AYANT_DROIT", "DR"],
+          ["FD04,AYANT_DROIT", "DE"],
           ["FD05,OEUVRE_AD", "DE"],
           ["FD06,OEUVRE", "PH"],
           ["FD07,OEUVRE_AD", "PH"],
-          ["FD09,AD", "DE"],
-          ["FD10,AD", "PH"],
-          ["FD11,AD", "DE"],
+          ["FD09,AYANT_DROIT", "DE"],
+          ["FD10,AYANT_DROIT", "PH"],
+          ["FD11,AYANT_DROIT", "DE"],
           ["FD12,OEUVRE", "DE/DR"],
-          ["FD13,AD", "DE"],
+          ["FD13,AYANT_DROIT", "DE"],
           ["FD14,OEUVRE", ""],
+
 
         ]),
 
@@ -453,7 +454,7 @@
           ["FD11","AYANT_DROIT"],
           ["FD12","OEUVRE"],
           ["FD13","AYANT_DROIT"],
-          ["FD14","OEUVRE"],
+          ["FD14","OEUVRE"]
 
         ]),
 
@@ -584,7 +585,7 @@
         this.programmeData.dateDbtPrg=this.dateDebutProgramme;
         this.programmeData.dateFinPrg=this.dateFinProgramme;
         this.programmeData.cdeTer=this.territoireSelected;
-
+        this.programmeData.typeDroit=this.typeDroit === null || this.typeDroit === '' ? null : this.typeDroit.trim();
         this.resource.updateProgramme(this.programmeData)
             .then(response => {
               debugger;

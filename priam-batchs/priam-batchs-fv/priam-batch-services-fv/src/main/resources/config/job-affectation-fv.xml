@@ -186,4 +186,9 @@
 
     <bean id="transactionManagerBatch" class="org.springframework.batch.support.transaction.ResourcelessTransactionManager"/>
 
+
+    <bean id="journalBatchDao" class="fr.sacem.priam.model.dao.jpa.JournalBatchDao">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
 </beans>
