@@ -117,7 +117,7 @@ public class UtilFile {
             ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(outputFile + fileNameExtensionZip), cs);
             addToZipFile(outputFile + fileName, zos);
 
-            //addFlag(outputFile, fileNameExtensionZip);
+            addFlag(outputFile, fileNameExtensionZip);
 
             File file = new File(outputFile + fileName);
             file.deleteOnExit();
