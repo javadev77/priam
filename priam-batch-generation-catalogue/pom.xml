@@ -3,7 +3,7 @@
     <parent>
         <artifactId>priam-parent</artifactId>
         <groupId>fr.sacem.priam</groupId>
-        <version>2.3.22</version>
+        <version>2.3.23</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>priam-batch-generation-catalogue</artifactId>
