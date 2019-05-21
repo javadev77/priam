@@ -92,7 +92,7 @@
         <property name="whereClause" value="WHERE c.TYPE_CMS='ANF' "/>
         <property name="databaseType" value="MySQL" />
         <property name="dataSource" ref="dataSource"/>
-        <property name="sortKey" value="ide12"/>
+        <property name="sortKey" value="ID"/>
     </bean>
 
     <bean id="ligneCatalogueOctavRowMapper" class="fr.sacem.priam.batch.affectation.mapper.LigneCatalogueOctavMapper"/>
@@ -146,11 +146,12 @@
                                             INNER JOIN PRIAM_PROGRAMME p ON p.NUMPROG=c.NUMPROG"/>
         <property name="whereClause" value="WHERE p.NUMPROG='#{jobParameters[numProg]}'
                                             AND c.TYPE_CMS='ANF'
-                                            AND p.STATUT_ELIGIBILITE = 'EN_ATTENTE_ELIGIBILITE'"/>
+                                            AND p.STATUT_ELIGIBILITE = 'EN_ATTENTE_ELIGIBILITE'
+                                            GROUP BY c.ide12 " />
 
         <property name="databaseType" value="MySQL" />
         <property name="dataSource" ref="dataSource"/>
-        <property name="sortKey" value="ide12"/>
+        <property name="sortKey" value="ID"/>
     </bean>
 
     <bean id="writerCalculPointsANT" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">

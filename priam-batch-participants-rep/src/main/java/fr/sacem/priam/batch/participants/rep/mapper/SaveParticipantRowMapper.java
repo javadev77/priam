@@ -1,12 +1,11 @@
 package fr.sacem.priam.batch.participants.rep.mapper;
 
 import fr.sacem.priam.batch.participants.rep.domain.Participant;
-import org.springframework.jdbc.core.RowMapper;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import org.springframework.jdbc.core.RowMapper;
 
-public class ParticipantRowMapper implements RowMapper<Participant> {
+public class SaveParticipantRowMapper implements RowMapper<Participant> {
 
     @Override
     public Participant mapRow(ResultSet resultSet, int i) throws SQLException {
@@ -17,8 +16,7 @@ public class ParticipantRowMapper implements RowMapper<Participant> {
         participant.setTypeCMS(resultSet.getString("TYPE_CMS"));
         participant.setRolPart(resultSet.getString("ROLE"));
         participant.setNomPart(resultSet.getString("PARTICIPANT"));
-
-        participant.setStatut(resultSet.getInt("STATUT"));
+        participant.setOeuvreSortie(resultSet.getInt("OEUVRE_SORTIE"));
 
         return participant;
     }

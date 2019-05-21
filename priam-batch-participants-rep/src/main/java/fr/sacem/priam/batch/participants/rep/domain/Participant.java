@@ -12,6 +12,7 @@ public class Participant {
     private String nomPart;
     private Integer statut;
     private Long idCatalogue;
+    private Integer oeuvreSortie;
     private Integer lineNumber;
     private Exception exception;
 
@@ -110,5 +111,11 @@ public class Participant {
         this.exception = exception;
     }
 
+    public Integer getOeuvreSortie() {
+        return oeuvreSortie;
+    }
 
+    public void setOeuvreSortie(final Integer oeuvreSortie) {
+        this.oeuvreSortie = oeuvreSortie;
+    }
 }
