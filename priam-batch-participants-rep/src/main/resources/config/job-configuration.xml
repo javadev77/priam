@@ -468,7 +468,6 @@
                                           WHERE PART.IDE12=:ide12
                                                 AND PART.TYPE_CMS=:typeCMS
                                                 AND PART.OEUVRE_SORTIE = 0
-                                          GROUP BY PART.TYPE_CMS, PART.IDE12
                                           LIMIT 4) AS TMP_RLE),
                             PARTICIPANTS=(SELECT GROUP_CONCAT(TMP_PART.PARTICIPANT SEPARATOR ',' )
                                           FROM (
@@ -477,7 +476,6 @@
                                           WHERE PART.IDE12=:ide12
                                                 AND PART.TYPE_CMS=:typeCMS
                                                 AND PART.OEUVRE_SORTIE = 0
-                                          GROUP BY PART.TYPE_CMS, PART.IDE12
                                           LIMIT 4) AS TMP_PART)
                                    WHERE IDE12=:ide12
                                    AND TYPE_CMS = :typeCMS

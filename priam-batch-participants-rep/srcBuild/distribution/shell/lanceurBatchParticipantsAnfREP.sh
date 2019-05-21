@@ -60,7 +60,7 @@ done
 echo ${LOCALCLASSPATH}
 echo ${SACEM_CONFIG}
 
-$JAVACMD -jar -Dspring.profiles.active=production -DtypeCMS=fra /usr1/priam/BatchParticipantsREP/bin/priam-batch-participants-rep.jar ANF
+$JAVACMD -jar -Dspring.profiles.active=production -DtypeCMS=anf /usr1/priam/BatchParticipantsREP/bin/priam-batch-participants-rep.jar ANF
 # Memoriser le numero de processus du programme java
 CHILD_PID=$!
 
