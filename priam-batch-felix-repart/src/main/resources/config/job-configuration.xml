@@ -13,13 +13,31 @@
 
     <job id="jobFelixRepart" xmlns="http://www.springframework.org/schema/batch">
 
-        <step id="prepareFelixData" next="generateFelixData">
+        <decision id="decision" decider="decider">
+            <next on="REPART_CP" to="prepareFelixDataCP" />
+            <next on="REPART_CMS" to="prepareFelixDataCMS" />
+        </decision>
+
+
+        <step id="prepareFelixDataCP" next="generateFelixData">
 
             <tasklet>
                 <chunk
                         reader="readLigneProgramme"
                         writer="writerToPreprep"
                         commit-interval="1000">
+                </chunk>
+            </tasklet>
+
+        </step>
+
+        <step id="prepareFelixDataCMS" next="generateFelixData">
+
+            <tasklet>
+                <chunk
+                    reader="readLigneProgrammeCMS"
+                    writer="writerToPreprep"
+                    commit-interval="1000">
                 </chunk>
             </tasklet>
 
@@ -46,7 +64,7 @@
 
     <bean id="jobCompletion" class="fr.sacem.priam.batch.felix.listener.JobCompletionFelixRepartListener" scope="prototype"/>
     <bean id="generateFelixFileStepListener" class="fr.sacem.priam.batch.felix.listener.GenerateFelixFileStepListener"/>
-
+    <bean id="decider" class="fr.sacem.priam.batch.felix.decision.FlowDecision"/>
 
     <bean id="readPreprep"
           class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
@@ -149,6 +167,67 @@
         <!--</property>-->
     </bean>
 
+
+    <bean id="readLigneProgrammeCMS"
+        class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="queryProvider" ref="qpCMS"/>
+        <property name="pageSize" value="1000"/>
+        <property name="rowMapper" ref="lignePreprepMapper"/>
+
+    </bean>
+
+
+    <bean id="qpCMS" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
+        <property name="selectClause" value="select
+                                                ligneProgramme.id as id,
+                                                '058' as cdeCisac,
+                                                prog.CDE_TER as cdeTer,
+                                                prog.RION_THEORIQUE as rionEffet,
+                                                prog.CDEFAMILTYPUTIL as cdeFamilTypUtil,
+                                                prog.NUMPROG as numProg,
+                                                'XXX' as cdeUtil,
+                                                'FORFAI' as cdeModFac,
+                                                prog.CDETYPUTIL as cdeTypUtil,
+                                                'PRINC' as cdeTypProg,
+                                                'SANS' as cdeCompl,
+                                                prog.NOM as libProg,
+                                                prog.DATE_DBT_PRG as datDbtProg,
+                                                prog.DATE_FIN_PRG as datFinProg,
+                                                ligneProgramme.cdeGreDif as cdeGreDif,
+                                                ligneProgramme.cdeModDif as cdeModDif,
+                                                'COCV' as cdeTypIde12,
+                                                ligneProgramme.ide12 as ide12,
+                                                0 as durDif,
+                                                (CASE WHEN prog.CDETYPUTIL = 'SONOFRA' THEN 1 ELSE ligneProgramme.nbrDif END) as nbrDif,
+                                                (CASE WHEN prog.CDETYPUTIL = 'SONOFRA' THEN ligneProgramme.mt ELSE 0.0 END) as mt,
+                                                ligneProgramme.ctna as ctna,
+                                                ligneProgramme.paramCoefHor as paramCoefHor,
+                                                ligneProgramme.durDifCtna as durDifCtna,
+                                                ligneProgramme.cdeLng as cdeLng,
+                                                ligneProgramme.indDoubSsTit as indDoubSsTit,
+                                                ligneProgramme.tax as tax"/>
+        <property name="fromClause" value="from PRIAM_LIGNE_PROGRAMME_CMS ligneProgramme
+                                            INNER JOIN PRIAM_FICHIER f ON ligneProgramme.ID_FICHIER=f.ID
+                                            INNER JOIN PRIAM_PROGRAMME prog ON prog.NUMPROG=f.NUMPROG"/>
+        <property name="whereClause" value="WHERE prog.NUMPROG='#{jobParameters[numProg]}' AND ligneProgramme.selection=1 AND ligneProgramme.idOeuvreManuel IS NULL "/>
+        <!--<property name="groupClause" value="GROUP BY ligneProgramme.ide12, ligneProgramme.cdeUtil "/>-->
+        <property name="databaseType" value="MySQL" />
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sortKey" value="id"/>
+        <!--<property name="sortKeys">-->
+        <!--<map>-->
+        <!--<entry key="cdeCisac" value="ASCENDING"/>-->
+        <!--<entry key="cdeTer" value="ASCENDING"/>-->
+        <!--<entry key="rionEffet" value="ASCENDING"/>-->
+        <!--<entry key="cdeFamilTypUtil" value="ASCENDING"/>-->
+        <!--<entry key="cdeTypUtil" value="ASCENDING"/>-->
+        <!--<entry key="cdeUtil" value="ASCENDING"/>-->
+        <!--<entry key="datDbtProg" value="ASCENDING"/>-->
+        <!--<entry key="datFinProg" value="ASCENDING"/>-->
+        <!--</map>-->
+        <!--</property>-->
+    </bean>
 
     <bean id="writerToPreprep" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
         <property name="dataSource" ref="dataSource"/>

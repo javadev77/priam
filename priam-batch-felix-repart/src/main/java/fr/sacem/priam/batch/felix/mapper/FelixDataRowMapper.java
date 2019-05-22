@@ -1,13 +1,15 @@
 package fr.sacem.priam.batch.felix.mapper;
 
 import fr.sacem.priam.batch.felix.domain.FelixData;
-import org.springframework.jdbc.core.RowMapper;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
+import org.springframework.jdbc.core.RowMapper;
 
 /**
  * Created by benmerzoukah on 23/07/2018.
@@ -53,7 +55,8 @@ public class FelixDataRowMapper implements RowMapper<FelixData> {
         felixData.setHrDif(rs.getString("hrDif"));
         felixData.setDurDif(rs.getLong("durDif"));
         felixData.setNbrDif(rs.getLong("nbrDif"));
-        felixData.setMt(rs.getDouble("mt"));
+        DecimalFormat decimalFormat = new DecimalFormat("##0.00", DecimalFormatSymbols.getInstance(Locale.FRANCE));
+        felixData.setMt(decimalFormat.format(rs.getDouble("mt")));
         felixData.setCtna(rs.getString("ctna"));
         felixData.setParamCoefHor(rs.getString("paramCoefHor"));
 

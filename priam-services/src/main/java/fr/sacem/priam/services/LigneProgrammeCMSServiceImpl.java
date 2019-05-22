@@ -181,6 +181,13 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
     @Override
     @Transactional
     public void enregistrerEdition(String numProg) {
+
+    }
+
+    @Override
+    @Transactional
+    public void enregistrerEdition(ValdierSelectionProgrammeInput input, UserDTO userDTO) {
+        String numProg = input.getNumProg();
         Programme prog = programmeDao.findByNumProg(numProg);
 
         ligneProgrammeCMSDao.updateSelection(numProg, TRUE);
@@ -193,11 +200,6 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
         }
 
         ligneProgrammeCMSDao.flush();
-    }
-
-    @Override
-    public void enregistrerEdition(ValdierSelectionProgrammeInput input, UserDTO userDTO) {
-
     }
 
     @Override

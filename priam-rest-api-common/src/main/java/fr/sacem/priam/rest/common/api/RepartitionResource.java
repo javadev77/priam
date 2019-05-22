@@ -3,7 +3,9 @@ package fr.sacem.priam.rest.common.api;
 import fr.sacem.priam.common.constants.EnvConstants;
 import fr.sacem.priam.common.exception.TechnicalException;
 import fr.sacem.priam.model.dao.jpa.FichierFelixDao;
+import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.priam.model.domain.FichierFelix;
+import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.StatutFichierFelix;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.security.model.UserDTO;
@@ -53,6 +55,9 @@ public class RepartitionResource {
 
     @Autowired
     private FichierFelixDao fichierFelixDao;
+
+    @Autowired
+    ProgrammeDao programmeDao;
 
     @Autowired
     @Qualifier(value = "configAdmap")
@@ -153,12 +158,13 @@ public class RepartitionResource {
 
         }
         //getFelixDataService(numProg).asyncSendFichierFelix(programme, userDto);
-        launchJobFelixRepart(numProg, userDto.getUserId());
+        Programme prog = programmeDao.findByNumProg(numProg);
+        launchJobFelixRepart(numProg, userDto.getUserId(), prog.getFamille().getCode());
 
 
     }
 
-    private void launchJobFelixRepart(String numProg, String userId) {
+    private void launchJobFelixRepart(String numProg, String userId, final String famille) {
         //lancer le job
         logger.info("====== Lancement du job Generation Felix Repart ======");
 
@@ -168,6 +174,7 @@ public class RepartitionResource {
             jobParametersMap.put("time", new JobParameter(System.currentTimeMillis()));
             jobParametersMap.put("numProg", new JobParameter(numProg));
             jobParametersMap.put("userId", new JobParameter(userId));
+            jobParametersMap.put("famille", new JobParameter(famille));
 
             JobParameters jobParameters = new JobParameters(jobParametersMap);
 

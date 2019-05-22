@@ -36,7 +36,7 @@ public class FelixData implements Serializable {
     private String hrDif;
     private Long durDif;
     private Long nbrDif;
-    private Double mt;
+    private String mt;
     private String ctna;
     private String paramCoefHor;
     private Long durDifCtna;
@@ -240,11 +240,11 @@ public class FelixData implements Serializable {
         this.nbrDif = nbrDif;
     }
     
-    public Double getMt() {
+    public String getMt() {
         return mt;
     }
     
-    public void setMt(Double mt) {
+    public void setMt(String mt) {
         this.mt = mt;
     }
     

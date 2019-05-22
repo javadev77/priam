@@ -4,7 +4,7 @@ import fr.sacem.priam.model.domain.LignePreprep;
 import fr.sacem.priam.model.domain.cms.LigneProgrammeCMS;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.SelectionCMSDto;
-import fr.sacem.priam.model.domain.dto.SelectionDto;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,8 +12,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 /**
  * Created by benmerzoukah on 29/05/2017.
@@ -444,24 +442,14 @@ public interface LigneProgrammeCMSDao extends JpaRepository<LigneProgrammeCMS, L
 
 
     @Transactional
-    @Query(value="SELECT new fr.sacem.priam.model.domain.dto.SelectionCMSDto("+
-            "ligneProgramme.ide12, " +
-            "ligneProgramme.titreOeuvre, " +
-            "ligneProgramme.roleParticipant1, " +
-            "ligneProgramme.nomParticipant1, " +
-            "ligneProgramme.ajout, " +
-            "ligneProgramme.selectionEnCours, " +
-            "(CASE WHEN f.programme.typeUtilisation.code = 'SONOFRA' THEN sum(ligneProgramme.mtEdit) WHEN f.programme.typeUtilisation.code = 'SONOANT' THEN sum(ligneProgramme.nbrDifEdit) ELSE 0 END)) "+
-            "FROM LigneProgrammeCMS ligneProgramme join ligneProgramme.fichier  f " +
-            //"SareftjLibutil lu "+
-            "WHERE ligneProgramme.fichier = f.id " +
-            //"AND lu.cdeUtil = ligneProgramme.cdeUtil "+
-            "AND f.programme.numProg = :numProg " +
-            "AND (ligneProgramme.selectionEnCours = :selectionEnCours OR :selectionEnCours IS NULL) " +
-            "AND (ligneProgramme.selection = :selection OR :selection IS NULL) " +
-            "AND (ligneProgramme.oeuvreManuel IS NULL) " +
-            "GROUP BY ligneProgramme.ide12")
-    List<SelectionCMSDto> findLigneProgrammePreselected(@Param("numProg") String numProg,
+    @Query(value="SELECT ligneProgramme.ide12 " +
+        "FROM LigneProgrammeCMS ligneProgramme inner join ligneProgramme.fichier  f " +
+        "WHERE ligneProgramme.fichier.id = f.id " +
+        "AND f.programme.numProg = :numProg " +
+        "AND (ligneProgramme.selectionEnCours = :selectionEnCours OR :selectionEnCours IS NULL) " +
+        "AND (ligneProgramme.selection = :selection OR :selection IS NULL) " +
+        "AND (ligneProgramme.oeuvreManuel IS NULL) ")
+    List<Long> findLigneProgrammePreselected(@Param("numProg") String numProg,
                                                      @Param("selectionEnCours") Boolean selectionEnCours,
                                                      @Param("selection") Boolean selection);
 }
