@@ -291,7 +291,8 @@
         </property>
     </bean>-->
 
-    <bean id="jobCompletionFiliationNpuListener" class="fr.sacem.priam.batch.filiation.npu.listener.JobCompletionFiliationNpuListener"></bean>
+    <!--<bean id="jobCompletionFiliationNpuListener" class="fr.sacem.priam.batch.filiation.npu.listener.JobCompletionFiliationNpuListener"></bean>-->
+    <bean id="jobCompletionFiliationNpuListener" class="fr.sacem.priam.batch.common.listener.JobCompletionListener"></bean>
 
     <bean id="jobOperator" class="org.springframework.batch.core.launch.support.SimpleJobOperator"
           p:jobLauncher-ref="jobLauncher" p:jobExplorer-ref="jobExplorer"

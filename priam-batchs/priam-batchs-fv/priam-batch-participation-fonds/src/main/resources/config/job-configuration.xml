@@ -6,6 +6,113 @@
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="searchSystemEnvironment" value="true"/>
+        <property name="ignoreResourceNotFound" value="true"/>
+        <property name="location" value="classpath:config/application-${spring.profiles.active}.properties"/>
+    </bean>
+
+    <job id="jobInitialisationReferentiel" xmlns="http://www.springframework.org/schema/batch">
+
+        <step id="initialisationReferentiel" >
+            <tasklet>
+                <chunk
+                        reader="referentielReader"
+                        processor="referentielProcessor"
+                        writer="referentielWriter"
+                        commit-interval="${commit-interval}">
+                </chunk>
+            </tasklet>
+        </step>
+
+        <listeners merge="true">
+            <listener ref="jobCompletionReferentielListener"/>
+        </listeners>
+    </job>
+
+    <bean id="referentielReader"
+          class="fr.sacem.priam.batch.common.reader.CsvMultiResourceItemReader" scope="step">
+        <property name="delegate" ref="flatFileItemReader"/>
+        <property name="strict" value="false"/>
+    </bean>
+
+    <bean id="flatFileItemReader"
+          class="fr.sacem.priam.batch.fv.participation.fonds.mapper.ReferentielParticipationFondsFileItemReader">
+        <property name="lineMapper">
+            <bean class="fr.sacem.priam.batch.fv.participation.fonds.mapper.ReferentielParticipationFondsLineMapper">
+                <property name="lineTokenizer">
+                    <bean class="org.springframework.batch.item.file.transform.DelimitedLineTokenizer">
+                        <property name="names" value="ide12,cdeTypIde12,cdeFamilleTypeUtil,cdeTypUtil,rionPaiementMax,statut"/>
+                        <property name="delimiter" value=";"/>
+                    </bean>
+                </property>
+                <property name="fieldSetMapper">
+                    <bean class="org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper">
+                        <property name="targetType" value="fr.sacem.priam.batch.fv.participation.fonds.domain.ReferentielParticipationFonds"/>
+                    </bean>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="referentielProcessor" class="fr.sacem.priam.batch.fv.participation.fonds.processor.ReferentielProcessor"/>
+
+    <bean id="referentielWriter" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    INSERT INTO PRIAM_REFERENTIEL_PARTICIPATION_FDS (
+                            ide12,cdeTypUtil,rionPaiementMax)
+                        VALUES (
+                            :ide12,
+                            :cdeTypUtil,
+                            :rionPaiementMax)
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
+
+    <bean id="jobCompletionReferentielListener" class="fr.sacem.priam.batch.common.listener.JobCompletionListener"/>
+
+    <bean id="jobOperator" class="org.springframework.batch.core.launch.support.SimpleJobOperator"
+          p:jobLauncher-ref="jobLauncher" p:jobExplorer-ref="jobExplorer"
+          p:jobRepository-ref="jobRepository" p:jobRegistry-ref="jobRegistry"/>
+
+    <bean id="jobExplorer" class="org.springframework.batch.core.explore.support.JobExplorerFactoryBean"
+          p:dataSource-ref="dataSource"/>
+
+    <bean id="jobRegistry" class="org.springframework.batch.core.configuration.support.MapJobRegistry"/>
+
+    <bean class="org.springframework.batch.core.configuration.support.JobRegistryBeanPostProcessor"
+          p:jobRegistry-ref="jobRegistry"/>
+
+    <bean id="jobLauncher" class="org.springframework.batch.core.launch.support.SimpleJobLauncher"
+          p:jobRepository-ref="jobRepository"/>
+
+    <bean id="jobRepository" class="org.springframework.batch.core.repository.support.JobRepositoryFactoryBean"
+          p:dataSource-ref="dataSource"
+          p:transactionManager-ref="transactionManager"/>
+
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <bean id="utilFile" class="fr.sacem.priam.batch.common.util.UtilFile" scope="prototype">
+        <property name="fichierBatchService" ref="fichierBatchService"/>
+    </bean>
+
+    <bean id="fichierBatchService" class="fr.sacem.priam.batch.common.service.importPenef.FichierBatchServiceImpl">
+        <constructor-arg ref="fichierRepository"/>
+    </bean>
+
+    <bean id="fichierRepository" class="fr.sacem.priam.batch.common.dao.FichierCatcmsRepositoryImpl">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="nomTableFichier" value="${nom.table.fichier}"/>
+    </bean>
 
 
 </beans>
