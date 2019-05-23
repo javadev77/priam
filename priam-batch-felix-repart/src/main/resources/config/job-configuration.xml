@@ -80,26 +80,26 @@
     <bean id="lignePreprepMapper" class="fr.sacem.priam.batch.felix.mapper.LignePreprepRowMapper"/>
 
     <bean id="queryProviderStep3" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
-        <property name="selectClause" value="select lp.* "/>
-        <property name="fromClause" value="from PRIAM_LIGNE_PREPREP lp "/>
-        <property name="whereClause" value="WHERE lp.numProg='#{jobParameters[numProg]}' "/>
+        <property name="selectClause" value="select * "/>
+        <property name="fromClause" value="from PRIAM_LIGNE_PREPREP "/>
+        <property name="whereClause" value="WHERE numProg='#{jobParameters[numProg]}' "/>
         <property name="databaseType" value="MySQL" />
         <property name="dataSource" ref="dataSource"/>
         <!--<property name="sortKey" value="lp.keyLigPenel"/>-->
         <property name="sortKeys" >
             <map>
-                <entry key="lp.cdeCisac" value="ASCENDING"/>
-                <entry key="lp.cdeTer" value="ASCENDING"/>
-                <entry key="lp.rionEffet" value="ASCENDING"/>
-                <entry key="lp.cdeFamilTypUtil" value="ASCENDING"/>
-                <entry key="lp.cdeTypUtil" value="ASCENDING"/>
-                <entry key="lp.cdeUtil" value="ASCENDING"/>
-                <entry key="lp.cdeModFac" value="ASCENDING"/>
-                <entry key="lp.cdeTypProg" value="ASCENDING"/>
-                <entry key="lp.cdeCompl" value="ASCENDING"/>
-                <entry key="lp.datDbtProg" value="ASCENDING"/>
-                <entry key="lp.datFinProg" value="ASCENDING"/>
-                <entry key="lp.keyLigPenel" value="ASCENDING"/>
+                <entry key="cdeCisac" value="ASCENDING"/>
+                <entry key="cdeTer" value="ASCENDING"/>
+                <entry key="rionEffet" value="ASCENDING"/>
+                <entry key="cdeFamilTypUtil" value="ASCENDING"/>
+                <entry key="cdeTypUtil" value="ASCENDING"/>
+                <entry key="cdeUtil" value="ASCENDING"/>
+                <entry key="cdeModFac" value="ASCENDING"/>
+                <entry key="cdeTypProg" value="ASCENDING"/>
+                <entry key="cdeCompl" value="ASCENDING"/>
+                <entry key="datDbtProg" value="ASCENDING"/>
+                <entry key="datFinProg" value="ASCENDING"/>
+                <entry key="keyLigPenel" value="ASCENDING"/>
             </map>
         </property>
     </bean>
@@ -118,7 +118,7 @@
 
     <bean id="qp4" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
         <property name="selectClause" value="select
-                                                ligneProgramme.id as id,
+                                                ligneProgramme.id as id_cp,
                                                 ligneProgramme.cdeCisac as cdeCisac,
                                                 prog.CDE_TER as cdeTer,
                                                 prog.RION_THEORIQUE as rionEffet,
@@ -152,19 +152,13 @@
         <property name="groupClause" value="GROUP BY ligneProgramme.ide12, ligneProgramme.cdeUtil "/>
         <property name="databaseType" value="MySQL" />
         <property name="dataSource" ref="dataSource"/>
-        <property name="sortKey" value="id"/>
-        <!--<property name="sortKeys">-->
-            <!--<map>-->
-                <!--<entry key="cdeCisac" value="ASCENDING"/>-->
-                <!--<entry key="cdeTer" value="ASCENDING"/>-->
-                <!--<entry key="rionEffet" value="ASCENDING"/>-->
-                <!--<entry key="cdeFamilTypUtil" value="ASCENDING"/>-->
-                <!--<entry key="cdeTypUtil" value="ASCENDING"/>-->
-                <!--<entry key="cdeUtil" value="ASCENDING"/>-->
-                <!--<entry key="datDbtProg" value="ASCENDING"/>-->
-                <!--<entry key="datFinProg" value="ASCENDING"/>-->
-            <!--</map>-->
-        <!--</property>-->
+        <property name="sortKeys" >
+            <map>
+                <entry key="id_cp" value="ASCENDING"/>
+
+            </map>
+        </property>
+
     </bean>
 
 
@@ -180,7 +174,7 @@
 
     <bean id="qpCMS" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
         <property name="selectClause" value="select
-                                                ligneProgramme.id as id,
+                                                ligneProgramme.id as id_cms,
                                                 '058' as cdeCisac,
                                                 prog.CDE_TER as cdeTer,
                                                 prog.RION_THEORIQUE as rionEffet,
@@ -214,19 +208,12 @@
         <!--<property name="groupClause" value="GROUP BY ligneProgramme.ide12, ligneProgramme.cdeUtil "/>-->
         <property name="databaseType" value="MySQL" />
         <property name="dataSource" ref="dataSource"/>
-        <property name="sortKey" value="id"/>
-        <!--<property name="sortKeys">-->
-        <!--<map>-->
-        <!--<entry key="cdeCisac" value="ASCENDING"/>-->
-        <!--<entry key="cdeTer" value="ASCENDING"/>-->
-        <!--<entry key="rionEffet" value="ASCENDING"/>-->
-        <!--<entry key="cdeFamilTypUtil" value="ASCENDING"/>-->
-        <!--<entry key="cdeTypUtil" value="ASCENDING"/>-->
-        <!--<entry key="cdeUtil" value="ASCENDING"/>-->
-        <!--<entry key="datDbtProg" value="ASCENDING"/>-->
-        <!--<entry key="datFinProg" value="ASCENDING"/>-->
-        <!--</map>-->
-        <!--</property>-->
+        <property name="sortKeys" >
+            <map>
+                <entry key="id_cms" value="ASCENDING"/>
+
+            </map>
+       </property>
     </bean>
 
     <bean id="writerToPreprep" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">

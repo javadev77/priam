@@ -215,7 +215,7 @@
             <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
         </property>
     </bean>
-    <bean id="listnerDeleteAfterCalcul" class="fr.sacem.priam.batch.affectation.listener.ListenerDeleteAfterCalculPointsAnt"></bean>
+    <bean id="listnerDeleteAfterCalcul" class="fr.sacem.priam.batch.affectation.listener.ListenerDeleteAfterCalculPointsAnt"/>
 
     <bean id="readerCopierLigneProgrammeCMS"
           class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
