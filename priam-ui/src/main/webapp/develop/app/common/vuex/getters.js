@@ -100,6 +100,7 @@ export default {
   },
 
   rionsSaref : state => {
+    debugger;
     return state.rions;
   },
 
