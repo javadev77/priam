@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -73,6 +74,30 @@ public class ChargementResourceTest extends RestResourceTest {
           .contentType(contentType))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$[0].statut", is("AFFECTE")));
+
+      criteria.setNumProg("190004");
+      mockMvc.perform(
+              post("/app/rest/chargement/allFichiers")
+                      .content(this.json(criteria))
+                      .contentType(contentType))
+              .andExpect(status().isOk())
+              .andExpect(jsonPath("$", hasSize(1)));
+
+      criteria.setNumProg("190002");
+      mockMvc.perform(
+              post("/app/rest/chargement/allFichiers")
+                      .content(this.json(criteria))
+                      .contentType(contentType))
+              .andExpect(status().isOk())
+              .andExpect(jsonPath("$", hasSize(1)));
+
+        criteria.setNumProg("190005");
+        mockMvc.perform(
+                post("/app/rest/chargement/allFichiers")
+                        .content(this.json(criteria))
+                        .contentType(contentType))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)));
     }
 
     @Test
@@ -89,6 +114,10 @@ public class ChargementResourceTest extends RestResourceTest {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.nomFichier", is(fichier125)))
         .andExpect(jsonPath("$.statut", is("ABANDONNE")));
+
+    }
+
+    public void findFichiersAffectes() throws Exception {
 
     }
 

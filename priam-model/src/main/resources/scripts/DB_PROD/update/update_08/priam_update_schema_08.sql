@@ -105,7 +105,7 @@ CREATE TABLE PRIAM_AYANT_DROIT(
   CLEAD double DEFAULT NULL,
   CDETYPPROTEC VARCHAR(5) DEFAULT NULL,
   COADORIEDTR INT(8) DEFAULT NULL,
-  IDSTEORIEDTR VARCHAR(10) DEFAULT NULL,
+  IDSTEORIEDTR BIGINT(15) DEFAULT NULL,
   NUMCATAL INT(9) DEFAULT NULL,
   NUMPERS INT(9) DEFAULT NULL,
   ID_FV int null,
@@ -250,7 +250,7 @@ create table PRIAM_IMPORT_PROGRAMME_FV_DATA_BATCH
 	typeDroit varchar(5) null,
 	cleAd double null,
 	coadOriEdtr int(8) null,
-	idSteOriEdtr varchar(10) null,
+	idSteOriEdtr BIGINT(15) null,
 	tax double null,
 	durDif int null,
 	nbrDif int null,
@@ -439,11 +439,19 @@ CREATE TABLE PRIAM_LIGNE_PREPREP_FV (
                                      cleAd double null,
                                      cdeTypProtec varchar(5) null,
                                      coadOriEdtr INT(8) DEFAULT NULL,
-                                     idSteOriEdtr VARCHAR(10) DEFAULT NULL,
+                                     idSteOriEdtr BIGINT(15) DEFAULT NULL,
                                      numCatal INT(9) DEFAULT NULL,
                                      points double DEFAULT NULL,
                                      numPers INT(11) DEFAULT NULL;
                                      PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS PRIAM_REFERENTIEL_PARTICIPATION_FDS;
+CREATE TABLE PRIAM_REFERENTIEL_PARTICIPATION_FDS (
+ide12 bigint default null,
+cdeTypUtil varchar(45) DEFAULT NULL,
+rionPaiementMax int(11) DEFAULT NULL,
+PRIMARY KEY (ide12,cdeTypUtil)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 COMMIT;

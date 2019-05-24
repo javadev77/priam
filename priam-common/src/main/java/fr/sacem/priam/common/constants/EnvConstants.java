@@ -407,6 +407,19 @@ public enum EnvConstants implements ConfigurableProperty {
         public String property() {
             return "priam.export.programme.fv";
         }
+    },
+
+    PRIAM_PARTICIPATION_FONDS_IN_DIR {
+        @Override
+        public String property() {
+            return "priam.participation.fonds.in.dir";
+        }
+    },
+    PRIAM_PARTICIPATION_FONDS_ARCHIVES_DIR {
+        @Override
+        public String property() {
+            return "priam.participation.fonds.archives.dir";
+        }
     };
 
     @Override

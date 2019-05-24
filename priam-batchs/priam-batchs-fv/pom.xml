@@ -21,6 +21,8 @@
         <module>priam-batch-fv-service-ad-info-rep</module>
 
         <module>priam-batch-services-fv</module>
+        <module>priam-batch-participation-fonds</module>
+
     </modules>
 
     <parent>
