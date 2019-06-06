@@ -23,7 +23,7 @@ public class CsvMultiResourceItemReader<T> extends MultiResourceItemReader<T> {
     private static final Logger LOG = LoggerFactory.getLogger(CsvMultiResourceItemReader.class);
     private static final String EXTENTION_CSV = "^.*\\.(csv|CSV)$";
     public static final String INPUT_OUTPUT_EMPTY_ERROR ="Les parametres output.archives et input.archives ne doit pas être nulls";
-    public static final String MESSAGE_NOM_FICHIER_INCORRECTE ="Le nom du fichier reponse en cours de traitement n'est pas correcte. Le nom doit être FF_PRIAM_PARTICIPANTS_FRA_REP";
+    public static final String MESSAGE_NOM_FICHIER_INCORRECTE ="Le nom du fichier reponse en cours de traitement n'est pas correcte. Le nom doit être %s";
     private Resource[] fichiersCSV;
     private StepExecution stepExecution;
 
@@ -34,10 +34,6 @@ public class CsvMultiResourceItemReader<T> extends MultiResourceItemReader<T> {
     private String patternFileName = null;
 
     private static String FILE_CSV_EN_COURS_DE_TRAITEMENT = "_en_cours_de_traitement";
-
-    @Autowired
-    private UtilFile utilFile;
-
 
     @Override
     public void open(ExecutionContext executionContext) throws ItemStreamException {
@@ -86,9 +82,6 @@ public class CsvMultiResourceItemReader<T> extends MultiResourceItemReader<T> {
                                     File fichierEnCoursDeTraitement = new File(rep + file.getName() + FILE_CSV_EN_COURS_DE_TRAITEMENT);
                                     JobParameter jobParameterFichierCSVEnCours = new JobParameter(fichierEnCoursDeTraitement.getAbsolutePath());
                                     JobParameter jobParameterNomFichierOriginal = new JobParameter(file.getName());
-                                    utilFile.suppressionFlag(fichierEnCoursDeTraitement);
-                                    LOG.debug("=== renomer le fichier en : "+fichierEnCoursDeTraitement.getName()+" ===");
-
 
                                     boolean renommageOk = file.renameTo(fichierEnCoursDeTraitement);
                                     if (renommageOk) {
@@ -107,10 +100,10 @@ public class CsvMultiResourceItemReader<T> extends MultiResourceItemReader<T> {
                                 //on traite qu'un seul fichier csv par operation, ce fichier csv va etre déplacer si le batch est ok
                                 File file = fichiersCSVDansLeRepertoire.get(0);
                                 String filenameCsv = FilenameUtils.getBaseName(file.getName());
-
+                                LOG.info(String.format("filenameCsv : %s", filenameCsv));
                                 if(!filenameCsv.matches(patternFileName)) {
                                     Set<String> errorSet = (Set<String>) executionContext.get("repartition-errors");
-                                    LOG.error(MESSAGE_NOM_FICHIER_INCORRECTE);
+                                    LOG.error(String.format(MESSAGE_NOM_FICHIER_INCORRECTE, patternFileName));
                                     errorSet.add(MESSAGE_NOM_FICHIER_INCORRECTE);
                                     this.stepExecution.getJobExecution().stop();
                                 }else{

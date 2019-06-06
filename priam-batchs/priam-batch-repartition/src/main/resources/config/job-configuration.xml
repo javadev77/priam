@@ -9,12 +9,12 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
          http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
-    <context:property-placeholder location="classpath:config/application.properties"/>
+    <context:property-placeholder location="classpath:config/application-local.properties"/>
     <util:properties id="envProperties"
-                     location="classpath:config/application.properties"/>
+                     location="classpath:config/application-local.properties"/>
     <job id="csvArchiveFlatFileReaderJob" xmlns="http://www.springframework.org/schema/batch">
 
-        <step id="csvArchiveFlatFileReaderStep">
+        <step id="csvArchiveFlatFileReaderStep" next="decisionMajReferentiel">
             <tasklet>
                 <chunk
                         reader="readerPriamCsv"
@@ -24,16 +24,35 @@
                 </chunk>
             </tasklet>
         </step>
+        <decision id="decisionMajReferentiel" decider="decider">
+            <next on="MAJ_REFERENTIEL" to="stepMajReferentiel" />
+            <end on="COMPLETED"/>
+        </decision>
+        <step id="stepMajReferentiel">
+            <tasklet>
+                <chunk
+                        reader="majReferentielReader"
+                        processor="majReferentielProcessor"
+                        writer="classifierReferencielItemWriter"
+                        commit-interval="100">
+
+                </chunk>
+            </tasklet>
+        </step>
         <listeners merge="true">
             <listener ref="listenerCompletition"/>
         </listeners>
     </job>
 
 
-    <bean id="listenerCompletition" class="fr.sacem.priam.batch.repartition.listener.JobCompletionNotificationLigneProgrammeRepartitionListener">
-    </bean>
-    <bean id="readerPriamCsv"
+    <bean id="listenerCompletition" class="fr.sacem.priam.batch.repartition.listener.JobCompletionNotificationLigneProgrammeRepartitionListener"/>
+    <!--<bean id="readerPriamCsv"
           class="fr.sacem.priam.batch.repartition.service.CsvMultiResourceItemReader" scope="step">
+        <property name="delegate" ref="flatFileItemReader"/>
+        <property name="strict" value="false"/>
+    </bean>-->
+    <bean id="readerPriamCsv"
+          class="fr.sacem.priam.batch.common.reader.CsvMultiResourceItemReader" scope="step">
         <property name="delegate" ref="flatFileItemReader"/>
         <property name="strict" value="false"/>
     </bean>
@@ -89,6 +108,91 @@
             </bean>
         </property>
     </bean>
+
+    <bean id="decider" class="fr.sacem.priam.batch.repartition.fv.decision.FlowDecision"/>
+
+    <bean id="majReferentielReader"
+          class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="queryProvider" ref="majReferentielQuery"/>
+        <property name="pageSize" value="100"/>
+        <property name="rowMapper" ref="referentielParticipationMapper"/>
+    </bean>
+
+    <bean id="majReferentielQuery" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
+        <property name="databaseType" value="MySQL" />
+        <property name="selectClause" value="SELECT LPFV.ide12, LPFV.cdeTypUtil, LPFV.rionEffet"/>
+        <property name="fromClause" value="FROM  PRIAM_LIGNE_PREPREP_FV LPFV"/>
+        <property name="whereClause" value="WHERE LPFV.numProg='#{jobExecutionContext['numeroProgramme']}'"/>
+        <property name="groupClause" value="LPFV.ide12"/>
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sortKey" value="LPFV.ide12"/>
+    </bean>
+
+    <bean id="majReferentielProcessor" class="fr.sacem.priam.batch.repartition.service.MajReferentielProcessor"/>
+
+    <bean id="classifierReferencielItemWriter" class="org.springframework.batch.item.support.ClassifierCompositeItemWriter" scope="step">
+        <property name="classifier" ref="classifierReferenciel" />
+    </bean>
+
+    <bean id="classifierReferenciel"  class="org.springframework.classify.BackToBackPatternClassifier">
+        <property name="routerDelegate">
+            <bean class="fr.sacem.priam.batch.repartition.fv.writer.ReferentielWriterRouteImpl" />
+        </property>
+        <property name="matcherMap">
+            <map>
+                <entry key="INSERT" value-ref="insert_Writer" />
+                <entry key="UPDATE" value-ref="update_Writer" />
+            </map>
+        </property>
+    </bean>
+
+    <bean id="insert_Writer" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    INSERT INTO PRIAM_REFERENTIEL_PARTICIPATION_FDS (
+                            ide12,
+                            cdeTypUtil,
+                            rionPaiementMax
+                        )
+                        VALUES (
+                            :ide12,
+                            :cdeTypUtil,
+                            :rionPaiementMax
+                        )
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
+
+    <bean id="update_Writer" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sql">
+            <value>
+                <![CDATA[
+                    UPDATE PRIAM_REFERENTIEL_PARTICIPATION_FDS
+                    set rionPaiementMax =:rionPaiementMax
+                    where ide12 =:ide12 and cdeTypUtil =:cdeTypUtil
+                ]]>
+            </value>
+        </property>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
+
+    <bean id="referentielParticipationMapper" class="fr.sacem.priam.batch.repartition.fv.mapper.ReferentielParticipationMapper"/>
+
+    <bean id="programmeBatchDao" class="fr.sacem.priam.batch.common.dao.ProgrammeBatchDao" >
+        <property name="dataSource" ref="dataSource"/>
+        <property name="nomTableLigneProgramme" value="${nom.table.ligneprogramme}"/>
+    </bean>
+
     <bean id="jobOperator" class="org.springframework.batch.core.launch.support.SimpleJobOperator"
           p:jobLauncher-ref="jobLauncher" p:jobExplorer-ref="jobExplorer"
           p:jobRepository-ref="jobRepository" p:jobRegistry-ref="jobRegistry"/>

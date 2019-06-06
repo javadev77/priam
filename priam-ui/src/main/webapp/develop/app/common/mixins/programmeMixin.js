@@ -10,7 +10,6 @@ module.exports = {
       var rightEle = rights.find(function (elem) {
         return elem === right;
       });
-      debugger;
       return rightEle !== undefined;
     }
   }

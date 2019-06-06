@@ -690,7 +690,6 @@
 
     created() {
 
-        debugger;
         this.sort = this.data.sort !== undefined ? this.data.sort[0] : undefined;
 
         if(this.isLocalSort) {
@@ -712,7 +711,6 @@
 
 
       isVisible(property) {
-        debugger;
         return (property.hidden !== undefined && !property.hidden )|| (property.hidden === undefined)
       },
 
@@ -750,7 +748,7 @@
       },
 
       inputValue(event, column, columnModel) {
-          debugger;
+
         columnModel = event;
         this.$emit('onCellValueChanged', column, columnModel);
       },
@@ -832,7 +830,6 @@
         this.sort.direction = isAsc ? 'ASC' : 'DESC';
 
 
-        debugger;
 
         this.$emit('on-sort', this.currentPage, this.pageSize, this.sort);
       },

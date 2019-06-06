@@ -50,11 +50,10 @@ module.exports = {
      getLibelleRionById(id) {
 
        let result = this.$store.getters.rionsSaref.find(function (element) {
-         debugger;
          return element.id == id;
        });
 
-       debugger
+
 
        return result !== undefined ? result.value : '';
 

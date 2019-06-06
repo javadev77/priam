@@ -32,10 +32,18 @@ public class RepartitionItemProcessor implements ItemProcessor<Repartition, Repa
     @Autowired
     private RepartitionSpringValidator validator;
 
+    @BeforeStep
+    public void beforeStep(StepExecution stepExecution) {
+        this.executionContext = stepExecution.getJobExecution().getExecutionContext();
+
+    }
+
     @Override
     public Repartition process(final Repartition repartition) throws Exception {
 
         Set<String> errorSet = (Set<String>) executionContext.get(REPARTITION_ERRORS);
+
+        executionContext.put("numeroProgramme", repartition.getNumeroProgramme());
 
         BindingResult errors = new BeanPropertyBindingResult(repartition, "repartition-"+ repartition.getLineNumber());
         validator.validate(repartition, errors);
@@ -75,9 +83,9 @@ public class RepartitionItemProcessor implements ItemProcessor<Repartition, Repa
 
     }
 
-    @BeforeStep
+    /*@BeforeStep
     public void beforeStep(StepExecution stepExecution) {
         this.executionContext = stepExecution.getExecutionContext();
-    }
+    }*/
 
 }

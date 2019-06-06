@@ -167,7 +167,7 @@
         },
 
         setCurrentActiveMenu(currentRouteViewName) {
-            debugger;
+
           let foundMenu = this.findMenu(currentRouteViewName);
           if(foundMenu && foundMenu !== undefined) {
             this.currentActiveMenu.id = foundMenu.id;

@@ -103,7 +103,7 @@
               if (typeof str === 'string' && str.length > 3 && str.length < 11) {
                   var parts = str.split("/");
                   var date = null;
-                  debugger
+
                   if(this.isZeroHour) {
                       date = moment.utc([parts[2], parts[1] - 1, parts[0]]).toDate();
 
@@ -112,7 +112,7 @@
                       date = moment.utc([parts[2], parts[1] - 1, parts[0], 23, 59, 59, 999]).toDate();
                   }
 
-                  debugger;
+
                   return date;
 
               }
@@ -120,7 +120,7 @@
           },
 
         dateToString(date) {
-          debugger;
+
              if(date !== null) {
                var m = moment.utc(date);
                return m.format("DD/MM/YYYY");
@@ -142,7 +142,7 @@
 
 
             element.datepicker('setDate', formattedDate);
-            debugger;
+
             this.$emit('input', dateValue);
         },
 
@@ -152,7 +152,7 @@
               element.val(value);
               let date = this.stringToDate(value);
 
-            debugger;
+
               element.datepicker('setDate', date);
               this.$emit('input', date);
           }

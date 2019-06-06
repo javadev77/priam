@@ -16,12 +16,13 @@ import java.util.Properties;
 @ComponentScan(basePackages = {"fr.sacem.priam.batch.repartition", "fr.sacem.priam.batch.common.util"})
 @ImportResource(value = "classpath:config/job-configuration.xml")
 @Profile("production")
-@PropertySource("classpath:config/application.properties")
+@PropertySource("classpath:config/application-production.properties")
 public class ConfigurationPriamProd {
 
     private Enum ConfigurationFromAdMap = EnvConstants.BATCH_CONFIG_PROPERTIES;
     private String inputDirectory = String.valueOf(EnvConstants.FELIX_ACQT_INPUT_DIR);
     private String outputDirectory = String.valueOf(EnvConstants.FELIX_ACQT_ARCHIVES_DIR);
+    private String prefixFileName = String.valueOf(EnvConstants.PATTERN_FILE_NAME);
     @Bean
     public DataSource dataSource() {
             Properties defaultProps = new Properties();
@@ -46,6 +47,7 @@ public class ConfigurationPriamProd {
 
         admap.setInputFile(inputDirectory);
         admap.setOutputFile(outputDirectory);
+        admap.setPatternFileName(prefixFileName);
         return admap;
     }
     ConfigurationPriamProd(){

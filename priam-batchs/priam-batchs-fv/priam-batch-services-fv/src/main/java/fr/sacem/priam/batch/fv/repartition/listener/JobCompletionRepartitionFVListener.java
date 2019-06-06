@@ -112,6 +112,7 @@ public class JobCompletionRepartitionFVListener extends JobExecutionListenerSupp
                                 if (tempFile.exists()) {
                                     FileUtils.forceDelete(tempFile);
                                 }
+
                             } catch (Exception e) {
                                 LOGGER.error(String.format("Erreur lors de la mise en repartition du programme %s !!", numProg), e);
                                 ff.setStatut(StatutFichierFelix.EN_ERREUR);
@@ -136,4 +137,5 @@ public class JobCompletionRepartitionFVListener extends JobExecutionListenerSupp
         fichierFelixLogDao.save(felixLog);
         ff.getLogs().add(felixLog);
     }
+
 }

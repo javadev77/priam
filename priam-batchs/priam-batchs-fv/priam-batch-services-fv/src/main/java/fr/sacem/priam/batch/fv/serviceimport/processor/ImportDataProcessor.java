@@ -9,6 +9,8 @@ import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.priam.model.dao.jpa.fv.LigneProgrammeFVDao;
 import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.fv.LigneProgrammeFV;
+
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.springframework.batch.core.JobExecution;
@@ -89,6 +91,7 @@ public class ImportDataProcessor implements ItemProcessor<ExportCsvDto, ExportCs
 
             exportCsvDto.setIdOeuvreFv(result.getId());
 
+            prepareDto(exportCsvDto, result);
             return exportCsvDto;
         }
 
@@ -107,24 +110,7 @@ public class ImportDataProcessor implements ItemProcessor<ExportCsvDto, ExportCs
 
             LigneProgrammeFV oeuvre = new LigneProgrammeFV();
             oeuvre.setFichier(fichierDao.findOne(exportCsvDto.getIdFichier()));
-            oeuvre.setCdeFamilTypUtil(exportCsvDto.getCdeFamilTypUtil());
-            oeuvre.setCdeTypUtil(exportCsvDto.getCdeTypUtil());
-            oeuvre.setNumProg(String.valueOf(exportCsvDto.getNumProg()));
-            oeuvre.setCdeTypIde12(exportCsvDto.getCdeTypIde12());
-            oeuvre.setIde12(Long.valueOf(exportCsvDto.getIde12()));
-            oeuvre.setDurDif(Long.valueOf(exportCsvDto.getDurDif()));
-            oeuvre.setNbrDif(Long.valueOf(exportCsvDto.getNbrDif()));
-            oeuvre.setMt(exportCsvDto.getMt());
-            oeuvre.setTax(Double.valueOf(exportCsvDto.getTax()));
-            oeuvre.setTitreOeuvre(exportCsvDto.getTitreOeuvre());
-
-            String datconslt = exportCsvDto.getDatconslt();
-            Date dateConslt = datconslt != null && !datconslt.isEmpty() ? new SimpleDateFormat("yyyyMMdd").parse(datconslt) : null;
-            oeuvre.setDatconslt(dateConslt);
-
-            String datsitu = exportCsvDto.getDatsitu();
-            Date dateSitu= datsitu != null && !datsitu.isEmpty() ? new SimpleDateFormat("yyyyMMdd").parse(datsitu) : null;
-            oeuvre.setDatsitu(dateSitu);
+            prepareDto(exportCsvDto, oeuvre);
 
             LigneProgrammeFV result = ligneProgrammeFVDao.saveAndFlush(oeuvre);
             exportCsvDto.setIdOeuvreFv(result.getId());
@@ -133,5 +119,26 @@ public class ImportDataProcessor implements ItemProcessor<ExportCsvDto, ExportCs
 
 
         return exportCsvDto;
+    }
+
+    private void prepareDto(ExportCsvDto exportCsvDto, LigneProgrammeFV oeuvre) throws ParseException {
+        oeuvre.setCdeFamilTypUtil(exportCsvDto.getCdeFamilTypUtil());
+        oeuvre.setCdeTypUtil(exportCsvDto.getCdeTypUtil());
+        oeuvre.setNumProg(String.valueOf(exportCsvDto.getNumProg()));
+        oeuvre.setCdeTypIde12(exportCsvDto.getCdeTypIde12());
+        oeuvre.setIde12(Long.valueOf(exportCsvDto.getIde12()));
+        oeuvre.setDurDif(Long.valueOf(exportCsvDto.getDurDif()));
+        oeuvre.setNbrDif(Long.valueOf(exportCsvDto.getNbrDif()));
+        oeuvre.setMt(exportCsvDto.getMt());
+        oeuvre.setTax(Double.valueOf(exportCsvDto.getTax()));
+        oeuvre.setTitreOeuvre(exportCsvDto.getTitreOeuvre());
+
+        String datconslt = exportCsvDto.getDatconslt();
+        Date dateConslt = datconslt != null && !datconslt.isEmpty() ? new SimpleDateFormat("yyyyMMdd").parse(datconslt) : null;
+        oeuvre.setDatconslt(dateConslt);
+
+        String datsitu = exportCsvDto.getDatsitu();
+        Date dateSitu= datsitu != null && !datsitu.isEmpty() ? new SimpleDateFormat("yyyyMMdd").parse(datsitu) : null;
+        oeuvre.setDatsitu(dateSitu);
     }
 }

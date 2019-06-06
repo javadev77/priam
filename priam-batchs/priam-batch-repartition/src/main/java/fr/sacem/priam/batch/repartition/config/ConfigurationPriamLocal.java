@@ -14,6 +14,7 @@ import javax.sql.DataSource;
 @ComponentScan(basePackages = {"fr.sacem.priam.batch.repartition", "fr.sacem.priam.batch.common.util"})
 @ImportResource(value = "classpath:config/job-configuration.xml")
 @Profile("local")
+@PropertySource("classpath:config/application-${spring.profiles.active}.properties")
 public class ConfigurationPriamLocal {
     @Value("${spring.datasource.url}")
     String urlDb;
@@ -27,6 +28,8 @@ public class ConfigurationPriamLocal {
     String inputDirectory;
     @Value("${output.archives}")
     String outputDirectory;
+    @Value("${pattern.file.name}")
+    String patternFileName;
     @Bean
     public DataSource dataSource() {
         return DataSourceBuilder
@@ -42,6 +45,7 @@ public class ConfigurationPriamLocal {
         Admap admap = new Admap();
         admap.setInputFile(inputDirectory);
         admap.setOutputFile(outputDirectory);
+        admap.setPatternFileName(patternFileName);
         return admap;
     }
     ConfigurationPriamLocal(){

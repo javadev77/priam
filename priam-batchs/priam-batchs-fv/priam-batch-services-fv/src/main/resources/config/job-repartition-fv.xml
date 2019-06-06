@@ -42,11 +42,7 @@
                         commit-interval="100">
                 </chunk>
             </tasklet>
-            <listeners merge="true">
-                <listener ref="generationListner"/>
-            </listeners>
         </step>
-
         <listeners merge="true">
             <listener ref="listenerCompletitionRepartitionFV"/>
         </listeners>
@@ -227,6 +223,7 @@
 
     </bean>
 
+
     <bean id="programmeBatchDao" class="fr.sacem.priam.batch.common.dao.ProgrammeBatchDao" >
         <property name="dataSource" ref="dataSource"/>
         <property name="nomTableLigneProgramme" value="${nom.table.ligneprogramme}"/>
@@ -235,8 +232,5 @@
     <bean id="lignePreprepFVProcessor" class="fr.sacem.priam.batch.fv.repartition.processor.LignePreprepFVProcessor"/>
 
     <bean id="typeRepartProcessor" class="fr.sacem.priam.batch.fv.repartition.processor.TypeRepartProcessor"/>
-
-    <bean id="generationListner" class="fr.sacem.priam.batch.fv.repartition.listener.GenerationListener"/>
-
 
 </beans>

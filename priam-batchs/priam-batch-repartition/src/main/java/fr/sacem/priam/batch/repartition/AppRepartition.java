@@ -2,6 +2,8 @@ package fr.sacem.priam.batch.repartition;
 
 import fr.sacem.priam.batch.repartition.config.ConfigurationPriam;
 import fr.sacem.priam.batch.common.domain.Admap;
+import fr.sacem.priam.batch.repartition.config.ConfigurationPriamLocal;
+import fr.sacem.priam.batch.repartition.config.ConfigurationPriamProd;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
@@ -24,7 +26,7 @@ public class AppRepartition {
 
     public static void main(String[] args) {
 
-        ApplicationContext context = new AnnotationConfigApplicationContext(ConfigurationPriam.class);
+        ApplicationContext context = new AnnotationConfigApplicationContext(ConfigurationPriamLocal.class, ConfigurationPriamProd.class);
 
         JobLauncher jobLauncher = (JobLauncher) context.getBean("jobLauncher");
         //DataSource dataSource=(DataSource) context.getBean("dataSource");
@@ -33,8 +35,9 @@ public class AppRepartition {
         try {
             Map<String, JobParameter> jobParametersMap = new HashMap<String, JobParameter>();
             jobParametersMap.put("time", new JobParameter(System.currentTimeMillis()));
-            jobParametersMap.put("input.felix", new JobParameter(admap.getInputFile()));
-            jobParametersMap.put("output.felix", new JobParameter(admap.getOutputFile()));
+            jobParametersMap.put("input.archives", new JobParameter(admap.getInputFile()));
+            jobParametersMap.put("output.archives", new JobParameter(admap.getOutputFile()));
+            jobParametersMap.put("pattern.file.name", new JobParameter(admap.getPatternFileName()));
             JobParameters jobParameters = new JobParameters(jobParametersMap);
             JobExecution execution = jobLauncher.run(job, jobParameters);
             System.out.println("Exit Status : " + execution.getStatus());

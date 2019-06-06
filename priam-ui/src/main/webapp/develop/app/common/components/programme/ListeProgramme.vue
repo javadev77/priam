@@ -511,7 +511,7 @@
                         return element.code === entry.statut;
                       });
 
-                      debugger;
+
                       if(result.code === 'ABANDONNE') {
                         return {value : entry.fichiers, isLink : false}
                       }
@@ -621,7 +621,6 @@
                       if(famille === FAMILLES_PRIAM['VALORISATION'] && cellValue.typeRepart === 'OEUVRE') {
                         return template;
                       }
-                      debugger;
 
                       if((cellValue.statutEligibilite === 'FIN_ELIGIBILITE' ||
                         cellValue.statutEligibilite === 'FIN_DESAFFECTATION' ||
@@ -1316,8 +1315,8 @@
 
                             }
                           }
-
                         });
+
                       },
                       1000);
                   });
@@ -1361,7 +1360,7 @@
           var self = this;
           let numProg = this.selectedProgramme.numProg;
           this.selectedProgramme.statutExportProgramme = 'EN_GENERATION'
-          debugger
+
           this.resource.exportProgramme({numProg:  numProg})
             .then(response => {
               return response.json();
@@ -1375,7 +1374,7 @@
 
         telechargerExport(row, column){
           var self = this;
-          debugger;
+
           let numProg = self.row.numProg;
           this.downloadExport(process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/programme/downloadExport',{numProg: numProg})
         },
