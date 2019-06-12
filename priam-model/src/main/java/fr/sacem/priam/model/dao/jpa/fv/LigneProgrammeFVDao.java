@@ -315,5 +315,16 @@ public interface LigneProgrammeFVDao extends JpaRepository<LigneProgrammeFV, Lon
 
     @Query(value = "SELECT fv from LigneProgrammeFV fv where fv.ide12 =:ide12 and fv.fichier.id =:idFichier ")
     LigneProgrammeFV findOeuvreByIde12(@Param("ide12") Long ide12, @Param("idFichier") Long idFichier);
+
+    @Query(value="SELECT ligneProgramme.ide12 " +
+            "FROM LigneProgrammeFV ligneProgramme inner join ligneProgramme.fichier  f " +
+            "WHERE ligneProgramme.fichier.id = f.id " +
+            "AND f.programme.numProg = :numProg " +
+            "AND (ligneProgramme.selectionEnCours = :selectionEnCours OR :selectionEnCours IS NULL) " +
+            "AND (ligneProgramme.selection = :selection OR :selection IS NULL) " +
+            "AND (ligneProgramme.oeuvreManuel IS NULL) ")
+    List<Long> findLigneProgrammePreselected(@Param("numProg") String numProg,
+                                             @Param("selectionEnCours") Boolean selectionEnCours,
+                                             @Param("selection") Boolean selection);
 }
 

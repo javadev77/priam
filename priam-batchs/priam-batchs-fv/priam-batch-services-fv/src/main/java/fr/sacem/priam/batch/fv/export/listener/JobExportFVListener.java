@@ -1,7 +1,14 @@
 package fr.sacem.priam.batch.fv.export.listener;
 
+import fr.sacem.priam.batch.fv.journal.JournalUtil;
+import fr.sacem.priam.batch.fv.journal.TypeLog;
+import fr.sacem.priam.model.dao.jpa.JournalBatchDao;
 import fr.sacem.priam.model.dao.jpa.fv.ExportProgrammeFVDao;
 import fr.sacem.priam.model.dao.jpa.fv.ImportProgrammeFVDao;
+import fr.sacem.priam.model.domain.Journal;
+import fr.sacem.priam.model.domain.SituationApres;
+import fr.sacem.priam.model.domain.SituationAvant;
+import fr.sacem.priam.model.journal.JournalBuilder;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.StepExecution;
@@ -10,8 +17,12 @@ import org.springframework.batch.item.ExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
+
+import static fr.sacem.priam.batch.fv.journal.TypeLog.EXPORT;
 
 @Component
 public class JobExportFVListener extends JobExecutionListenerSupport {
@@ -28,6 +39,9 @@ public class JobExportFVListener extends JobExecutionListenerSupport {
     @Autowired
     ImportProgrammeFVDao importProgrammeFVDao;
 
+    @Autowired
+    JournalUtil journalUtil;
+
     @Override
     public void beforeJob(JobExecution jobExecution) {
         Collection<StepExecution> stepExecutions = jobExecution.getStepExecutions();
@@ -40,6 +54,7 @@ public class JobExportFVListener extends JobExecutionListenerSupport {
         Collection<StepExecution> stepExecutions = jobExecution.getStepExecutions();
         String numProg = jobExecution.getJobParameters().getString("numProg");
         String path = jobExecution.getJobParameters().getString("priam.export.programme.fv");
+
         if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
             Iterator it = stepExecutions.iterator();
             while (it.hasNext()) {
@@ -55,9 +70,14 @@ public class JobExportFVListener extends JobExecutionListenerSupport {
                         importProgrammeFVDao.deleteLogsByNumProg(numProg);
                         importProgrammeFVDao.deleteByNumProg(numProg);
 
+                        String userId = jobExecution.getJobParameters().getString("userId");
+                        journalUtil.saveJournal(userId, EXPORT.getEvenement(), numProg, null);
+
                     }
                 }
             }
         }
     }
+
+
 }

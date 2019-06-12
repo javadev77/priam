@@ -5,9 +5,11 @@ import fr.sacem.priam.model.dao.jpa.*;
 import fr.sacem.priam.model.dao.jpa.cms.LigneProgrammeCMSDao;
 import fr.sacem.priam.model.dao.jpa.cp.LigneProgrammeCPDao;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
+import fr.sacem.priam.model.dao.jpa.fv.LigneProgrammeFVDao;
 import fr.sacem.priam.model.domain.*;
 import fr.sacem.priam.model.domain.dto.JournalDto;
 import fr.sacem.priam.model.domain.dto.SelectionCMSDto;
+import fr.sacem.priam.model.util.FamillePriam;
 import fr.sacem.priam.security.model.UserDTO;
 import fr.sacem.priam.services.dto.ValdierSelectionProgrammeInput;
 import fr.sacem.priam.services.journal.annotation.TypeLog;
@@ -41,6 +43,9 @@ public class JournalService {
 
 	@Autowired
 	private LigneProgrammeCMSDao ligneProgrammeCMSDao;
+
+	@Autowired
+	private LigneProgrammeFVDao ligneProgrammeFVDao;
 
 	@Autowired
 	private JournalJdbcDao journalJdbcDao;
@@ -84,58 +89,12 @@ public class JournalService {
 			listLigneProgrammePredeselectionnees = ligneProgrammeCPDao.findLigneProgrammePreselected(numProg, false, true);
 
 			for (Long ide12 : listLigneProgrammePreselectionnees) {
-				Journal journal = new Journal();
-				journal.setEvenement(typeLog.getEvenement());
-				journal.setNumProg(selectionProgrammeInput.getNumProg());
-				journal.setIde12(ide12);
-				journal.setDate(new Date());
-				journal.setUtilisateur(userDTO.getUserId());
-
-				List<SituationAvant> situationAvantList = new ArrayList<>();
-				List<SituationApres> situationApresList = new ArrayList<>();
-
-				SituationAvant situationAvant = new SituationAvant();
-				SituationApres situationApres = new SituationApres();
-
-				situationAvant.setSituation(OEUVRE_DESELECTIONNEE);
-				situationApres.setSituation(OEUVRE_SELECTIONNEE);
-
-				situationAvantList.add(situationAvant);
-				situationApresList.add(situationApres);
-
-				journal.setListSituationAvant(situationAvantList);
-				journal.setListSituationApres(situationApresList);
-
-				//journalDao.save(journal);
-				journaux.add(journal);
+				buildJournal(typeLog.getEvenement(), numProg, userDTO, journaux, ide12);
 			}
 
 
 			for (Long ide12 : listLigneProgrammePredeselectionnees) {
-				Journal journal = new Journal();
-				journal.setEvenement(TypeLog.DESELECTION.getEvenement());
-				journal.setNumProg(selectionProgrammeInput.getNumProg());
-				journal.setIde12(ide12);
-				journal.setDate(new Date());
-				journal.setUtilisateur(userDTO.getUserId());
-
-				List<SituationAvant> situationAvantList = new ArrayList<>();
-				List<SituationApres> situationApresList = new ArrayList<>();
-
-				SituationAvant situationAvant = new SituationAvant();
-				SituationApres situationApres = new SituationApres();
-
-				situationAvant.setSituation(OEUVRE_SELECTIONNEE);
-				situationApres.setSituation(OEUVRE_DESELECTIONNEE);
-
-				situationAvantList.add(situationAvant);
-				situationApresList.add(situationApres);
-
-				journal.setListSituationAvant(situationAvantList);
-				journal.setListSituationApres(situationApresList);
-
-				//journalDao.save(journal);
-				journaux.add(journal);
+				buildJournal(TypeLog.DESELECTION.getEvenement(), numProg, userDTO, journaux, ide12);
 			}
 
 		} else if(selectionProgrammeInput.isFromSelection() && programme.getFamille().getCode().equals(TypeUtilisationEnum.CMS_FRA.getCodeFamille())){
@@ -143,62 +102,60 @@ public class JournalService {
 			listLigneProgrammePredeselectionneesCMS = ligneProgrammeCMSDao.findLigneProgrammePreselected(numProg, false, true);
 
 			for (SelectionCMSDto ligneSelectionnee : listLigneProgrammePreselectionneesCMS) {
-				Journal journal = new Journal();
-				journal.setEvenement(typeLog.getEvenement());
-				journal.setNumProg(selectionProgrammeInput.getNumProg());
-				journal.setIde12(ligneSelectionnee.getIde12());
-				journal.setDate(new Date());
-				journal.setUtilisateur(userDTO.getUserId());
-
-				List<SituationAvant> situationAvantList = new ArrayList<>();
-				List<SituationApres> situationApresList = new ArrayList<>();
-
-				SituationAvant situationAvant = new SituationAvant();
-				SituationApres situationApres = new SituationApres();
-
-				situationAvant.setSituation(OEUVRE_DESELECTIONNEE);
-				situationApres.setSituation(OEUVRE_SELECTIONNEE);
-
-				situationAvantList.add(situationAvant);
-				situationApresList.add(situationApres);
-
-				journal.setListSituationAvant(situationAvantList);
-				journal.setListSituationApres(situationApresList);
-
-				//journalDao.save(journal);
-				journaux.add(journal);
+				buildJournal(typeLog.getEvenement(), numProg, userDTO, journaux, ligneSelectionnee.getIde12());
 			}
 
 
 			for (SelectionCMSDto ligneDeselectionnee : listLigneProgrammePredeselectionneesCMS) {
-				Journal journal = new Journal();
-				journal.setEvenement(TypeLog.DESELECTION.getEvenement());
-				journal.setNumProg(selectionProgrammeInput.getNumProg());
-				journal.setIde12(ligneDeselectionnee.getIde12());
-				journal.setDate(new Date());
-				journal.setUtilisateur(userDTO.getUserId());
+				buildJournal(TypeLog.DESELECTION.getEvenement(), numProg, userDTO, journaux, ligneDeselectionnee.getIde12());
+			}
+		} else if(selectionProgrammeInput.isFromSelection() && programme.getFamille().getCode().equals(FamillePriam.VALORISATION.getCode())){
+			listLigneProgrammePreselectionnees = ligneProgrammeFVDao.findLigneProgrammePreselected(numProg,  true, false);
+			listLigneProgrammePredeselectionnees = ligneProgrammeFVDao.findLigneProgrammePreselected(numProg, false, true);
 
-				List<SituationAvant> situationAvantList = new ArrayList<>();
-				List<SituationApres> situationApresList = new ArrayList<>();
+			for (Long ide12 : listLigneProgrammePreselectionnees) {
+				buildJournal(typeLog.getEvenement(), numProg, userDTO, journaux, ide12);
+			}
 
-				SituationAvant situationAvant = new SituationAvant();
-				SituationApres situationApres = new SituationApres();
 
-				situationAvant.setSituation(OEUVRE_SELECTIONNEE);
-				situationApres.setSituation(OEUVRE_DESELECTIONNEE);
-
-				situationAvantList.add(situationAvant);
-				situationApresList.add(situationApres);
-
-				journal.setListSituationAvant(situationAvantList);
-				journal.setListSituationApres(situationApresList);
-
-				//journalDao.save(journal);
-				journaux.add(journal);
+			for (Long ide12 : listLigneProgrammePredeselectionnees) {
+				buildJournal(TypeLog.DESELECTION.getEvenement(), numProg, userDTO, journaux, ide12);
 			}
 		}
 
 
 		journalJdbcDao.bathInsertJournal(journaux);
+	}
+
+	private void buildJournal(String evenement, String numProg, UserDTO userDTO, List<Journal> journaux, Long ide12) {
+
+		Journal journal = new Journal();
+		journal.setEvenement(evenement);
+		journal.setNumProg(numProg);
+		journal.setIde12(ide12);
+		journal.setDate(new Date());
+		journal.setUtilisateur(userDTO.getUserId());
+
+		List<SituationAvant> situationAvantList = new ArrayList<>();
+		List<SituationApres> situationApresList = new ArrayList<>();
+
+		SituationAvant situationAvant = new SituationAvant();
+		SituationApres situationApres = new SituationApres();
+
+		if(TypeLog.SELECTION.getEvenement().equals(evenement)) {
+			situationAvant.setSituation(OEUVRE_DESELECTIONNEE);
+			situationApres.setSituation(OEUVRE_SELECTIONNEE);
+		} else {
+			situationAvant.setSituation(OEUVRE_SELECTIONNEE);
+			situationApres.setSituation(OEUVRE_DESELECTIONNEE);
+		}
+
+		situationAvantList.add(situationAvant);
+		situationApresList.add(situationApres);
+
+		journal.setListSituationAvant(situationAvantList);
+		journal.setListSituationApres(situationApresList);
+
+		journaux.add(journal);
 	}
 }

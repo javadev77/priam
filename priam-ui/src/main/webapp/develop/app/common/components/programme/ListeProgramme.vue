@@ -631,7 +631,7 @@
                         (cellValue.statutImportProgramme === null ||
                         cellValue.statutImportProgramme === 'CHARGEMENT_OK' ||
                         cellValue.statutImportProgramme === 'CHARGEMENT_KO') ) {
-                        if( (statusCode !== undefined && 'EN_COURS' === statusCode) || ('AFFECTE' === statusCode && statutExportProgramme === 'TELECHARGE')) {
+                        if(((statusCode !== undefined && 'EN_COURS' === statusCode) || ('AFFECTE' === statusCode && statutExportProgramme === 'TELECHARGE'))&& famille === FAMILLES_PRIAM['VALORISATION'] && cellValue.typeRepart!=='OEUVRE') {
                           template[0] = {event : 'import-programme', template : tempalteExport};
                           if(statutImportProgramme === 'CHARGEMENT_KO') {
                             template[1] = {event : 'show-log-import', template : '<span class="glyphicon glyphicon-list-alt" aria-hidden="true" title="Log"></span>'};

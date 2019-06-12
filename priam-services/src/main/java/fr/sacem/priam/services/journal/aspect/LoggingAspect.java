@@ -5,6 +5,7 @@ import fr.sacem.priam.model.dao.jpa.*;
 import fr.sacem.priam.model.dao.jpa.cms.LigneProgrammeCMSDao;
 import fr.sacem.priam.model.dao.jpa.cp.LigneProgrammeCPDao;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
+import fr.sacem.priam.model.dao.jpa.fv.LigneProgrammeFVDao;
 import fr.sacem.priam.model.domain.Journal;
 import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.SituationApres;
@@ -13,11 +14,13 @@ import fr.sacem.priam.model.domain.cms.LigneProgrammeCMS;
 import fr.sacem.priam.model.domain.cp.LigneProgrammeCP;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.model.domain.dto.SelectionDto;
+import fr.sacem.priam.model.domain.fv.LigneProgrammeFV;
 import fr.sacem.priam.model.domain.saref.SareftjLibfamiltyputil;
 import fr.sacem.priam.model.domain.saref.SareftjLibter;
 import fr.sacem.priam.model.domain.saref.SareftjLibtyputil;
 import fr.sacem.priam.model.domain.saref.SareftrRion;
 import fr.sacem.priam.model.util.EtatOeuvreEnum;
+import fr.sacem.priam.model.util.FamillePriam;
 import fr.sacem.priam.model.util.GlobalConstants;
 import fr.sacem.priam.security.model.UserDTO;
 import fr.sacem.priam.services.JournalService;
@@ -63,6 +66,8 @@ public class LoggingAspect {
     @Autowired private LigneProgrammeCPDao ligneProgrammeCPDao;
 
     @Autowired private LigneProgrammeCMSDao ligneProgrammeCMSDao;
+
+    @Autowired private LigneProgrammeFVDao ligneProgrammeFVDao;
 
     @Autowired private SareftjLibterDao sareftjLibterDao;
 
@@ -263,6 +268,25 @@ public class LoggingAspect {
                     situationApres.setSituation(String.valueOf(nbrDif));
                     situationApresList.add(situationApres);
                 }
+            } else if(programme.getFamille().getCode().equals(FamillePriam.VALORISATION.getCode())){
+                LigneProgrammeFV oeuvreCorrigeeFV = ligneProgrammeFVDao.findOeuvreCorrigeByIde12(numProg, ide12);
+                List<LigneProgrammeFV> listLigneProgrammeFVLiee = ligneProgrammeFVDao.findOeuvresAutoByIdOeuvreManuel(oeuvreCorrigeeFV.getId());
+
+                if(oeuvreCorrigeeFV.getCdeTypUtil().equals(TypeUtilisationEnum.FV_FONDS_06.getCode())){
+                    situationAvant.setSituation(String.valueOf(oeuvreCorrigeeFV.getMt()));
+                    situationAvantList.add(situationAvant);
+                    Double mt = listLigneProgrammeFVLiee.stream().mapToDouble(LigneProgrammeFV::getMt).sum();
+                    situationApres.setSituation(String.valueOf(mt));
+                    situationApresList.add(situationApres);
+                } else if(oeuvreCorrigeeFV.getCdeTypUtil().equals(TypeUtilisationEnum.FV_FONDS_12.getCode())){
+                    situationAvant.setSituation(String.valueOf(oeuvreCorrigeeFV.getNbrDif()));
+                    situationAvantList.add(situationAvant);
+
+                    Long nbrDif = listLigneProgrammeFVLiee.stream().mapToLong(LigneProgrammeFV::getNbrDif).sum();
+                    situationApres.setSituation(String.valueOf(nbrDif));
+                    situationApresList.add(situationApres);
+                }
+
             }
 
 
@@ -293,6 +317,19 @@ public class LoggingAspect {
                     situationApresList.add(situationApres);
                 }else if(oeuvreManuelCMS.getCdeTypUtil().equals(TypeUtilisationEnum.CMS_ANT.getCode())){
                     situationAvant.setSituation(String.valueOf(oeuvreManuelCMS.getNbrDif()));
+                    situationAvantList.add(situationAvant);
+                    situationApres.setSituation("0");
+                    situationApresList.add(situationApres);
+                }
+            } else if(programme.getFamille().getCode().equals(FamillePriam.VALORISATION.getCode())){
+                LigneProgrammeFV oeuvreManuelFV = ligneProgrammeFVDao.findOeuvreManuelByIde12(numProg, ide12);
+                if(oeuvreManuelFV.getCdeTypUtil().equals(TypeUtilisationEnum.FV_FONDS_06.getCode())){
+                    situationAvant.setSituation(String.valueOf(oeuvreManuelFV.getMt()));
+                    situationAvantList.add(situationAvant);
+                    situationApres.setSituation("0");
+                    situationApresList.add(situationApres);
+                }else if(oeuvreManuelFV.getCdeTypUtil().equals(TypeUtilisationEnum.FV_FONDS_12.getCode())){
+                    situationAvant.setSituation(String.valueOf(oeuvreManuelFV.getNbrDif()));
                     situationAvantList.add(situationAvant);
                     situationApres.setSituation("0");
                     situationApresList.add(situationApres);

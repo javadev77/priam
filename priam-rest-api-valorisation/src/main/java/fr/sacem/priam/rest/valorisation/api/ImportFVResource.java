@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import fr.sacem.priam.security.model.UserDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
@@ -48,7 +50,7 @@ public class ImportFVResource {
 
 
     @PostMapping("programme/import")
-    public ResponseEntity<String> importProgramme(@RequestParam("file") MultipartFile file, @RequestParam("numProg") String numProg) throws IOException {
+    public ResponseEntity<String> importProgramme(@RequestParam("file") MultipartFile file, @RequestParam("numProg") String numProg, UserDTO userDTO) throws IOException {
         if (file == null) {
             throw new RuntimeException("You must select the a file for uploading");
         }
@@ -81,20 +83,21 @@ public class ImportFVResource {
 
         importProgrammeFVDao.save(importProgrammeFV);
 
-        launchJobImport(numProg);
+        launchJobImport(numProg, userDTO);
 
 
         return new ResponseEntity<>(originalName, HttpStatus.OK);
     }
 
 
-    protected void launchJobImport(String numProg){
+    protected void launchJobImport(String numProg, UserDTO userDTO){
         logger.info("====== Lancement du job Import ======");
 
         try {
             Map<String, JobParameter> jobParametersMap = new HashMap<>();
             jobParametersMap.put("time", new JobParameter(System.currentTimeMillis()));
             jobParametersMap.put("numProg", new JobParameter(numProg));
+            jobParametersMap.put("userId", new JobParameter(userDTO.getUserId()));
 
             JobParameters jobParameters = new JobParameters(jobParametersMap);
 

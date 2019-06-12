@@ -2,18 +2,16 @@ package fr.sacem.priam.batch.fv.serviceimport.listener;
 
 import fr.sacem.priam.batch.common.dao.FichierRepository;
 import fr.sacem.priam.batch.common.util.exception.PriamValidationException;
+import fr.sacem.priam.batch.fv.journal.JournalUtil;
+import fr.sacem.priam.batch.fv.journal.TypeLog;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.priam.model.dao.jpa.fv.ImportProgrammeFVDao;
-import fr.sacem.priam.model.domain.Fichier;
-import fr.sacem.priam.model.domain.Programme;
-import fr.sacem.priam.model.domain.StatutImportProgramme;
-import fr.sacem.priam.model.domain.StatutProgramme;
+import fr.sacem.priam.model.domain.*;
 import fr.sacem.priam.model.domain.fv.ImportProgrammeFV;
+import fr.sacem.priam.model.journal.JournalBuilder;
 import fr.sacem.priam.services.FichierService;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+
+import java.util.*;
 import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +23,8 @@ import org.springframework.batch.item.ExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+
+import static fr.sacem.priam.batch.fv.journal.TypeLog.IMPORT;
 
 @Component
 public class JobImportFVListener extends JobExecutionListenerSupport {
@@ -47,6 +47,9 @@ public class JobImportFVListener extends JobExecutionListenerSupport {
 
     @Autowired
     FichierService fichierService;
+
+    @Autowired
+    JournalUtil journalUtil;
 
     @Override
     public void beforeJob(JobExecution jobExecution) {
@@ -75,9 +78,15 @@ public class JobImportFVListener extends JobExecutionListenerSupport {
                 fichierImporte.setStatutImportProgramme(StatutImportProgramme.CHARGEMENT_OK);
 
                 Programme prog = programmeDao.findOne(numProg);
+
+                String userId = jobExecution.getJobParameters().getString("userId");
+                journalUtil.saveJournal(userId, IMPORT.getEvenement(), numProg, prog.getStatut());
+
                 prog.setStatut(StatutProgramme.EN_COURS);
 
                 programmeDao.saveAndFlush(prog);
+
+
             }
 
             importProgrammeFVDao.save(fichierImporte);
@@ -122,4 +131,6 @@ public class JobImportFVListener extends JobExecutionListenerSupport {
 
         }
     }
+
+
 }

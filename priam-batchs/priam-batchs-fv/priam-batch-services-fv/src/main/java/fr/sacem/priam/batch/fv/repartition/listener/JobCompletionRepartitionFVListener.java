@@ -1,7 +1,11 @@
 package fr.sacem.priam.batch.fv.repartition.listener;
 
 import fr.sacem.priam.batch.common.dao.ProgrammeBatchDao;
+import fr.sacem.priam.batch.fv.journal.JournalUtil;
+import fr.sacem.priam.batch.fv.journal.TypeLog;
 import fr.sacem.priam.common.util.SftpUtil;
+
+import static fr.sacem.priam.batch.fv.journal.TypeLog.MISE_EN_REPART;
 import static fr.sacem.priam.common.util.SftpUtil.SftpServer.FELIX;
 import fr.sacem.priam.model.dao.jpa.FichierFelixDao;
 import fr.sacem.priam.model.dao.jpa.FichierFelixLogDao;
@@ -15,6 +19,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+
+import fr.sacem.priam.model.domain.StatutProgramme;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +57,9 @@ public class JobCompletionRepartitionFVListener extends JobExecutionListenerSupp
 
     @Autowired
     LignePreprepFVJdbcDao lignePreprepFVJdbcDao;
+
+    @Autowired
+    JournalUtil journalUtil;
 
     @Override
     public void beforeJob(JobExecution jobExecution) {
@@ -112,6 +121,8 @@ public class JobCompletionRepartitionFVListener extends JobExecutionListenerSupp
                                 if (tempFile.exists()) {
                                     FileUtils.forceDelete(tempFile);
                                 }
+                                String userId = jobExecution.getJobParameters().getString("userId");
+                                journalUtil.saveJournal(userId, MISE_EN_REPART.getEvenement(), numProg, StatutProgramme.MIS_EN_REPART);
 
                             } catch (Exception e) {
                                 LOGGER.error(String.format("Erreur lors de la mise en repartition du programme %s !!", numProg), e);

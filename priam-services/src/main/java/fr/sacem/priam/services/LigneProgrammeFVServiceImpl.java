@@ -1,19 +1,26 @@
 package fr.sacem.priam.services;
 
 import fr.sacem.priam.common.TypeUtilisationEnum;
+import fr.sacem.priam.model.dao.jpa.JournalDao;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.priam.model.dao.jpa.fv.LigneProgrammeFVDao;
+import fr.sacem.priam.model.domain.Journal;
 import fr.sacem.priam.model.domain.Programme;
+import fr.sacem.priam.model.domain.SituationApres;
+import fr.sacem.priam.model.domain.SituationAvant;
 import fr.sacem.priam.model.domain.criteria.LigneProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.SelectionCMSDto;
 import fr.sacem.priam.model.domain.dto.SelectionDto;
 import fr.sacem.priam.model.domain.fv.LigneProgrammeFV;
+import fr.sacem.priam.model.domain.saref.SareftrTyputil;
+import fr.sacem.priam.model.journal.JournalBuilder;
 import fr.sacem.priam.model.util.TypeUtilisationPriam;
 import fr.sacem.priam.security.model.UserDTO;
 import fr.sacem.priam.services.api.LigneProgrammeService;
 import fr.sacem.priam.services.dto.ValdierSelectionProgrammeInput;
 import fr.sacem.priam.services.fv.LigneProgrammeFVService;
+import fr.sacem.priam.services.journal.annotation.TypeLog;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -53,6 +60,9 @@ public class LigneProgrammeFVServiceImpl implements LigneProgrammeService, Ligne
 
     @Autowired
     private ProgrammeDao programmeDao;
+
+    @Autowired
+    JournalDao journalDao;
 
     @Autowired
     private FichierService fichierService;
@@ -191,12 +201,12 @@ public class LigneProgrammeFVServiceImpl implements LigneProgrammeService, Ligne
     public void ajouterOeuvreManuel(LigneProgrammeFV input, UserDTO userDTO) {
         Programme programme = programmeDao.findOne(input.getNumProg());
 
-        /*Journal journal = createJournal(input, programme);
+        Journal journal = createJournal(input, programme);
         journal.setUtilisateur(userDTO.getUserId());
         SituationAvant situationAvant = new SituationAvant();
         SituationApres situationApres = new SituationApres();
 
-        situationApres.setSituation(getPointsOrMtAsString(programme, input));*/
+        situationApres.setSituation(getPointsOrMtAsString(programme, input));
 
         List<LigneProgrammeFV> founds = ligneProgrammeFVDao.findOeuvresAutoByIde12AndCdeUtil(input.getNumProg(), input.getIde12());
         if(founds != null && !founds.isEmpty()) {
@@ -210,22 +220,22 @@ public class LigneProgrammeFVServiceImpl implements LigneProgrammeService, Ligne
             }
 
 
-            /*SareftrTyputil typeUtilisation = programme.getTypeUtilisation();
-            if(TypeUtilisationPriam.SONOFRA.getCode().equals(typeUtilisation.getCode())) {
+            SareftrTyputil typeUtilisation = programme.getTypeUtilisation();
+            if(TypeUtilisationPriam.FD06.getCode().equals(typeUtilisation.getCode())) {
                 situationAvant.setSituation(String.valueOf(sumOfMt(founds)));
                 situationApres.setSituation(String.valueOf(input.getMt()));
-            } else if(TypeUtilisationPriam.SONOANT.getCode().equals(typeUtilisation.getCode())) {
+            } else if(TypeUtilisationPriam.FD12.getCode().equals(typeUtilisation.getCode())) {
                 situationAvant.setSituation(String.valueOf(sumOfNbrDif(founds)));
                 situationApres.setSituation(String.valueOf(input.getNbrDif()));
             }
 
-            journal.setEvenement(TypeLog.MODIFIER_OEUVRE.getEvenement());*/
+            journal.setEvenement(TypeLog.MODIFIER_OEUVRE.getEvenement());
         } else {
             LigneProgrammeFV oeuvreCorrigeFound = ligneProgrammeFVDao.findOeuvreCorrigeByIde12(input.getNumProg(), input.getIde12());
             List<LigneProgrammeFV> oeuvresAutoLinkCorrige = ligneProgrammeFVDao.findOeuvresAutoLinkCorrigeByIde12AndCdeUtil(input.getNumProg(), input.getIde12());
             if(oeuvreCorrigeFound != null) {
-                /*situationAvant.setSituation(getPointsOrMtAsString(programme, oeuvreCorrigeFound));
-                journal.setEvenement(TypeLog.MODIFIER_OEUVRE.getEvenement());*/
+                situationAvant.setSituation(getPointsOrMtAsString(programme, oeuvreCorrigeFound));
+                journal.setEvenement(TypeLog.MODIFIER_OEUVRE.getEvenement());
                 if(!isBackToEtatAuto(programme, input, oeuvresAutoLinkCorrige)){
                     oeuvreCorrigeFound.setAjout(CORRIGE);
                     updateOeuvre(input, programme, oeuvreCorrigeFound);
@@ -236,10 +246,10 @@ public class LigneProgrammeFVServiceImpl implements LigneProgrammeService, Ligne
                 LigneProgrammeFV oeuvreManuelFound = ligneProgrammeFVDao.findOeuvreManuelByIde12AndCdeUtil(input.getNumProg(), input.getIde12());
                 if(oeuvreManuelFound != null) {
                     oeuvreManuelFound.setAjout(MANUEL);
-                    //situationAvant.setSituation(getPointsOrMtAsString(programme, oeuvreManuelFound));
+                    situationAvant.setSituation(getPointsOrMtAsString(programme, oeuvreManuelFound));
                     updateOeuvre(input, programme, oeuvreManuelFound);
 
-                    //journal.setEvenement(TypeLog.MODIFIER_OEUVRE.getEvenement());
+                    journal.setEvenement(TypeLog.MODIFIER_OEUVRE.getEvenement());
 
                 } else {
                     input.setAjout(MANUEL);
@@ -248,16 +258,16 @@ public class LigneProgrammeFVServiceImpl implements LigneProgrammeService, Ligne
                     input.setNbrDifEdit(input.getNbrDif());
                     createOeuvreManuel(input, programme);
 
-                    //situationAvant.setSituation("0");
-                    //journal.setEvenement(TypeLog.AJOUT_OEUVRE.getEvenement());
+                    situationAvant.setSituation("0");
+                    journal.setEvenement(TypeLog.AJOUT_OEUVRE.getEvenement());
 
                 }
             }
         }
 
-        /*journal.getListSituationAvant().add(situationAvant);
+        journal.getListSituationAvant().add(situationAvant);
         journal.getListSituationApres().add(situationApres);
-        journalDao.saveAndFlush(journal);*/
+        journalDao.saveAndFlush(journal);
     }
 
 
@@ -413,6 +423,82 @@ public class LigneProgrammeFVServiceImpl implements LigneProgrammeService, Ligne
     @Override
     @Transactional
     public void enregistrerEdition(String numProg) {
+        /*Programme prog = programmeDao.findByNumProg(numProg);
+
+        ligneProgrammeFVDao.updateSelection(numProg, TRUE);
+        ligneProgrammeFVDao.updateSelection(numProg, FALSE);
+
+        if(prog.getTypeUtilisation().getCode().equals(TypeUtilisationPriam.FD06.getCode())) {
+            ligneProgrammeFVDao.updatePointsMt(numProg);
+        } else if(prog.getTypeUtilisation().getCode().equals(TypeUtilisationPriam.FD12.getCode())) {
+            ligneProgrammeFVDao.updatePoints(numProg);
+        }
+
+        ligneProgrammeFVDao.flush();*/
+    }
+
+    private void correctionOeuvreCorrige(String numProg, LigneProgrammeFV inputLigneFV, UserDTO userDTO) {
+        Programme programme = programmeDao.findByNumProg(numProg);
+
+        List<LigneProgrammeFV> oeuvresAutoLinkCorrige = ligneProgrammeFVDao.findOeuvresAutoLinkCorrigeByIde12AndCdeUtil(numProg, inputLigneFV.getIde12());
+        LigneProgrammeFV currentOeuvreCorrige = ligneProgrammeFVDao.findOeuvreCorrigeByIde12(numProg, inputLigneFV.getIde12());
+        if(programme.getTypeUtilisation().getCode().equals(FV_FONDS_06.getCode())){
+            if(!oeuvresAutoLinkCorrige.isEmpty()) {
+                Double sumTotal = sumOfMt(oeuvresAutoLinkCorrige);
+                if(!inputLigneFV.getMtEdit().equals(currentOeuvreCorrige.getMtEdit())) {
+                    Journal journal = saveJournal(programme, inputLigneFV, userDTO);
+                    SituationApres situationApres = new SituationApres();
+                    situationApres.setSituation(getPointsOrMtAsString(programme, inputLigneFV));
+                    journal.getListSituationApres().add(situationApres);
+
+                    if(!inputLigneFV.getMtEdit().equals(sumTotal)){
+                        ligneProgrammeFVDao.updatePointsMtTemporaireByNumProgramme(numProg, inputLigneFV.getIde12(), inputLigneFV.getMtEdit());
+                    } else {
+                        deleteOeuvreCorrigeLinkAuto(numProg, inputLigneFV);
+                    }
+
+
+                    inputLigneFV.setMtEdit(currentOeuvreCorrige.getMtEdit());
+                    SituationAvant situationAvant = new SituationAvant();
+                    situationAvant.setSituation(getPointsOrMtAsString(programme, inputLigneFV));
+                    journal.getListSituationAvant().add(situationAvant);
+
+                    journalDao.saveAndFlush(journal);
+
+                }
+            }
+        } else if(programme.getTypeUtilisation().getCode().equals(TypeUtilisationEnum.FV_FONDS_12.getCode())){
+            if(!oeuvresAutoLinkCorrige.isEmpty()) {
+                Long sumTotal = sumOfNbrDif(oeuvresAutoLinkCorrige);
+                if(!inputLigneFV.getNbrDifEdit().equals(currentOeuvreCorrige.getNbrDifEdit())) {
+                    Journal journal = saveJournal(programme, inputLigneFV, userDTO);
+                    SituationApres situationApres = new SituationApres();
+                    situationApres.setSituation(getPointsOrMtAsString(programme, inputLigneFV));
+                    journal.getListSituationApres().add(situationApres);
+
+
+                    if (!inputLigneFV.getNbrDifEdit().equals(sumTotal)) {
+                        ligneProgrammeFVDao.updatePointsTemporaireByNumProgramme(numProg, inputLigneFV.getIde12(), inputLigneFV.getNbrDifEdit());
+                    } else {
+                        deleteOeuvreCorrigeLinkAuto(numProg, inputLigneFV);
+                    }
+
+                    inputLigneFV.setNbrDifEdit(currentOeuvreCorrige.getNbrDifEdit());
+
+                    SituationAvant situationAvant = new SituationAvant();
+                    situationAvant.setSituation(getPointsOrMtAsString(programme, inputLigneFV));
+                    journal.getListSituationAvant().add(situationAvant);
+
+                    journalDao.saveAndFlush(journal);
+
+                }
+            }
+        }
+    }
+
+    @Override
+    public void enregistrerEdition(ValdierSelectionProgrammeInput input, UserDTO userDTO) {
+        String numProg = input.getNumProg();
         Programme prog = programmeDao.findByNumProg(numProg);
 
         ligneProgrammeFVDao.updateSelection(numProg, TRUE);
@@ -425,69 +511,6 @@ public class LigneProgrammeFVServiceImpl implements LigneProgrammeService, Ligne
         }
 
         ligneProgrammeFVDao.flush();
-    }
-
-    private void correctionOeuvreCorrige(String numProg, LigneProgrammeFV inputLigneFV, UserDTO userDTO) {
-        Programme programme = programmeDao.findByNumProg(numProg);
-
-        List<LigneProgrammeFV> oeuvresAutoLinkCorrige = ligneProgrammeFVDao.findOeuvresAutoLinkCorrigeByIde12AndCdeUtil(numProg, inputLigneFV.getIde12());
-        LigneProgrammeFV currentOeuvreCorrige = ligneProgrammeFVDao.findOeuvreCorrigeByIde12(numProg, inputLigneFV.getIde12());
-        if(programme.getTypeUtilisation().getCode().equals(FV_FONDS_06.getCode())){
-            if(!oeuvresAutoLinkCorrige.isEmpty()) {
-                Double sumTotal = sumOfMt(oeuvresAutoLinkCorrige);
-                if(!inputLigneFV.getMtEdit().equals(currentOeuvreCorrige.getMtEdit())) {
-                    /*Journal journal = saveJournal(programme, inputLigneCMS, userDTO);
-                    SituationApres situationApres = new SituationApres();
-                    situationApres.setSituation(getPointsOrMtAsString(programme, inputLigneCMS));
-                    journal.getListSituationApres().add(situationApres)*/;
-
-                    if(!inputLigneFV.getMtEdit().equals(sumTotal)){
-                        ligneProgrammeFVDao.updatePointsMtTemporaireByNumProgramme(numProg, inputLigneFV.getIde12(), inputLigneFV.getMtEdit());
-                    } else {
-                        deleteOeuvreCorrigeLinkAuto(numProg, inputLigneFV);
-                    }
-
-
-                    inputLigneFV.setMtEdit(currentOeuvreCorrige.getMtEdit());
-                    /*SituationAvant situationAvant = new SituationAvant();
-                    situationAvant.setSituation(getPointsOrMtAsString(programme, inputLigneCMS));
-                    journal.getListSituationAvant().add(situationAvant);
-
-                    journalDao.saveAndFlush(journal);*/
-
-                }
-            }
-        } else if(programme.getTypeUtilisation().getCode().equals(TypeUtilisationEnum.FV_FONDS_12.getCode())){
-            if(!oeuvresAutoLinkCorrige.isEmpty()) {
-                Long sumTotal = sumOfNbrDif(oeuvresAutoLinkCorrige);
-                if(!inputLigneFV.getNbrDifEdit().equals(currentOeuvreCorrige.getNbrDifEdit())) {
-                    /*Journal journal = saveJournal(programme, inputLigneCMS, userDTO);
-                    SituationApres situationApres = new SituationApres();
-                    situationApres.setSituation(getPointsOrMtAsString(programme, inputLigneCMS));
-                    journal.getListSituationApres().add(situationApres);*/
-
-
-                    if (!inputLigneFV.getNbrDifEdit().equals(sumTotal)) {
-                        ligneProgrammeFVDao.updatePointsTemporaireByNumProgramme(numProg, inputLigneFV.getIde12(), inputLigneFV.getNbrDifEdit());
-                    } else {
-                        deleteOeuvreCorrigeLinkAuto(numProg, inputLigneFV);
-                    }
-
-                    inputLigneFV.setNbrDifEdit(currentOeuvreCorrige.getNbrDifEdit());
-
-                    /*SituationAvant situationAvant = new SituationAvant();
-                    situationAvant.setSituation(getPointsOrMtAsString(programme, inputLigneCMS));
-                    journal.getListSituationAvant().add(situationAvant);
-
-                    journalDao.saveAndFlush(journal);*/
-
-                }
-            }
-        }
-    }
-
-    @Override
-    public void enregistrerEdition(ValdierSelectionProgrammeInput input, UserDTO userDTO) {
 
     }
 
@@ -524,4 +547,27 @@ public class LigneProgrammeFVServiceImpl implements LigneProgrammeService, Ligne
 
         ligneProgrammeFVDao.flush();
     }
+
+    private Journal createJournal(LigneProgrammeFV input, Programme prog) {
+        JournalBuilder jb = new JournalBuilder(input.getNumProg(), input.getIde12(), input.getUtilisateur());
+        return jb.build();
+    }
+
+    private String getPointsOrMtAsString(Programme prog, LigneProgrammeFV input) {
+        SareftrTyputil typeUtilisation = prog.getTypeUtilisation();
+        if(TypeUtilisationPriam.FD06.getCode().equals(typeUtilisation.getCode())) {
+            return String.valueOf(input.getMtEdit());
+        } else if(TypeUtilisationPriam.FD12.getCode().equals(typeUtilisation.getCode())) {
+            return  String.valueOf(input.getNbrDifEdit());
+        }
+        return "";
+    }
+
+    private Journal saveJournal(Programme programme, LigneProgrammeFV ligneProgrammeFV, UserDTO userDTO){
+        Journal journal = createJournal(ligneProgrammeFV, programme);
+        journal.setUtilisateur(userDTO.getUserId());
+        journal.setEvenement(TypeLog.MODIFIER_OEUVRE.getEvenement());
+        return journal;
+    }
+
 }
