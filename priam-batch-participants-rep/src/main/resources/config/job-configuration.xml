@@ -301,7 +301,7 @@
     <bean id="processorPriamParticipantCsv" class="fr.sacem.priam.batch.participants.rep.processor.ParticipantFraProcessor" scope="step"/>
 
 
-    <bean id="jobCompletionParticipantListener" class="fr.sacem.priam.batch.participants.rep.listener.JobCompletionParticipantListener"></bean>
+    <bean id="jobCompletionParticipantListener" class="fr.sacem.priam.batch.participants.rep.listener.JobCompletionParticipantListener"/>
 
     <bean id="readerStepStatutRoleParticipant"
           class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
@@ -315,7 +315,7 @@
     <bean id="qpReaderStepStatutRoleParticipant" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
         <property name="selectClause" value="SELECT ID, TYPE_CMS, ROLE, PARTICIPANT, IDE12, BIT_AND(STATUT) AS STATUT"/>
         <property name="fromClause" value="FROM PRIAM_CATCMS_PARTICIPANTS_TRTMT"/>
-        <property name="whereClause" value="STATUT=0"/>
+        <property name="whereClause" value="WHERE TYPE_CMS='#{jobParameters['typeCMS']}' AND STATUT=0"/>
         <property name="groupClause" value="GROUP BY IDE12, TYPE_CMS"/>
         <property name="databaseType" value="MySQL" />
         <property name="dataSource" ref="dataSource"/>
@@ -353,6 +353,7 @@
     <bean id="qpReaderStepMajParticipant" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
         <property name="selectClause" value="SELECT *"/>
         <property name="fromClause" value="FROM PRIAM_CATCMS_PARTICIPANTS_TRTMT"/>
+        <property name="whereClause" value="WHERE TYPE_CMS='#{jobParameters['typeCMS']}'"/>
         <property name="groupClause" value="GROUP BY IDE12"/>
         <property name="databaseType" value="MySQL" />
         <property name="dataSource" ref="dataSource"/>
@@ -455,6 +456,7 @@
     <bean id="qpReaderStepInsertParticipant" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
         <property name="selectClause" value="SELECT *"/>
         <property name="fromClause" value="FROM PRIAM_CATCMS_PARTICIPANTS_TRTMT"/>
+        <property name="whereClause" value="WHERE TYPE_CMS='#{jobParameters['typeCMS']}'"/>
         <property name="databaseType" value="MySQL" />
         <property name="dataSource" ref="dataSource"/>
         <property name="sortKey" value="ID"/>

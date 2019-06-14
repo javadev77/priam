@@ -1,23 +1,29 @@
 package fr.sacem.priam.batch.affectation.listener;
 
+import fr.sacem.priam.batch.affectation.dao.JournalBatchDao;
 import fr.sacem.priam.batch.common.dao.LigneProgrammeBatchDao;
 import fr.sacem.priam.batch.common.dao.ProgrammeBatchDao;
 import fr.sacem.priam.batch.common.dao.TraitementCmsDao;
-
 import fr.sacem.priam.batch.common.domain.Programme;
-import fr.sacem.priam.batch.affectation.dao.JournalBatchDao;
+import fr.sacem.priam.batch.common.service.importPenef.FichierBatchService;
+import fr.sacem.priam.batch.common.util.UtilFile;
 import fr.sacem.priam.common.util.FileUtils;
 import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.dao.jpa.JournalDao;
-
-
+import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
 import fr.sacem.priam.model.domain.Fichier;
 import fr.sacem.priam.model.domain.Journal;
 import fr.sacem.priam.model.domain.Status;
+import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.model.util.JournalAffectationBuilder;
 import fr.sacem.priam.model.util.TypeUtilisationPriam;
-import fr.sacem.priam.batch.common.service.importPenef.FichierBatchService;
-import fr.sacem.priam.batch.common.util.UtilFile;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.BatchStatus;
@@ -27,12 +33,8 @@ import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
-
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
 
 
 @Component
@@ -79,6 +81,12 @@ public class JobCompletionNotificationAffectationCMSListener extends JobExecutio
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
     @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
+
+    @Autowired
+    ProgrammeViewDao programmeViewDao;
+
+    @Autowired
     public JobCompletionNotificationAffectationCMSListener() {
 
         utilFile = new UtilFile();
@@ -99,10 +107,10 @@ public class JobCompletionNotificationAffectationCMSListener extends JobExecutio
 
     @Override
     public void afterJob(JobExecution jobExecution) {
+        String numProg = jobExecution.getJobParameters().getString("numProg");
 
         if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
 
-            String numProg = jobExecution.getJobParameters().getString("numProg");
             String userId = jobExecution.getJobParameters().getString("userId");
             String listNomFichier = jobExecution.getJobParameters().getString("listNomFichier");
 
@@ -121,7 +129,6 @@ public class JobCompletionNotificationAffectationCMSListener extends JobExecutio
 
                     if (errors == null || errors.isEmpty()) {
                         if (parameterNomFichierCSV != null) {
-                            String nomFichier = (String) parameterNomFichierCSV.getValue();
                             JobParameter idFichier = (JobParameter) executionContext.get("idFichier");
                             fichierBatchService.updateFichierById((Long) idFichier.getValue());
 
@@ -143,6 +150,7 @@ public class JobCompletionNotificationAffectationCMSListener extends JobExecutio
 
                     programmeBatchDao.majStattutEligibilite(numProg, "FIN_ELIGIBILITE");
                     programmeBatchDao.majStattutProgramme(numProg, "AFFECTE");
+
 
                     Long idTraitementCMS = jobExecution.getExecutionContext().getLong("ID_TMT_CMS");
                     Long nbOeuvresRetenues = ligneProgrammeBatchDao.countNbOeuvres(numProg);
@@ -171,6 +179,7 @@ public class JobCompletionNotificationAffectationCMSListener extends JobExecutio
             Long idJournal = journalBatchDao.saveJournal(journal);
             journalBatchDao.saveSituationAvantJournal(journal.getListSituationAvant(), idJournal);
             journalBatchDao.saveSituationApresJournal(journal.getListSituationApres(), idJournal);
+
         } else {
             Collection<StepExecution> stepExecutions = jobExecution.getStepExecutions();
             Iterator it = stepExecutions.iterator();
@@ -185,7 +194,7 @@ public class JobCompletionNotificationAffectationCMSListener extends JobExecutio
                 utilFile.deplacerFichier(parameterFichierZipEnCours, parameterNomFichierOriginal, outputDirectory);
             }
 
-            String numProg = jobExecution.getJobParameters().getString("numProg");
+
             programmeBatchDao.majStattutEligibilite(numProg, ERREUR_ELIGIBILITE);
             Long idTraitementCMS = jobExecution.getExecutionContext().getLong("ID_TMT_CMS");
             traitementCmsDao.majTraitment(idTraitementCMS, 0L, 0L, 0.0d, ERREUR_ELIGIBILITE);
@@ -194,6 +203,9 @@ public class JobCompletionNotificationAffectationCMSListener extends JobExecutio
 
 
         }
+
+        final ProgrammeDto payload = programmeViewDao.findByNumProg(numProg);
+        simpMessagingTemplate.convertAndSend("/global-message/affectation", payload);
 
     }
 

@@ -139,7 +139,8 @@ public class JournalService {
 				journaux.add(journal);
 			}
 
-		} else if(selectionProgrammeInput.isFromSelection() && programme.getFamille().getCode().equals(TypeUtilisationEnum.CMS_FRA.getCodeFamille())){
+		} else if(selectionProgrammeInput.isFromSelection()
+			&& programme.getFamille().getCode().equals(TypeUtilisationEnum.CMS_FRA.getCodeFamille())){
 			listLigneProgrammePreselectionneesCMS = ligneProgrammeCMSDao.findLigneProgrammePreselected(numProg, true, false);
 			listLigneProgrammePredeselectionneesCMS = ligneProgrammeCMSDao.findLigneProgrammePreselected(numProg, false, true);
 

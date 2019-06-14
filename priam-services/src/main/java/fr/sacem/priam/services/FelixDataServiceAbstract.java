@@ -42,7 +42,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.nio.charset.Charset;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -288,7 +287,7 @@ public abstract class FelixDataServiceAbstract {
             SftpUtil.uploadFile(FELIX, tempFile, ff.getNomFichier());
             LOGGER.debug("<=== Fin Envoi du fichier à FELIX = " + ff.getNomFichier());
             programmeDto.setStatut(StatutProgramme.MIS_EN_REPART);
-            programmeService.majStatut(programmeDto, userDTO);
+            programmeService.majStatutToMisEnRepartition(programmeDto, userDTO);
             
             ff.setStatut(StatutFichierFelix.ENVOYE);
             fichierFelixDao.saveAndFlush(ff);

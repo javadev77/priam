@@ -111,7 +111,7 @@ public class JobCompletionFelixRepartListener extends JobExecutionListenerSuppor
             programmeDto.setUsermaj(userId);
             UserDTO userDTO = new UserDTO();
 
-            programmeService.majStatut(programmeDto, userDTO);
+            programmeService.majStatutToMisEnRepartition(programmeDto, userDTO);
 
             FichierFelix ff = fichierFelixDao.findByNumprog(numProg);
             ff.setNomFichier(felixRepartFilename);

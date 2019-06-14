@@ -240,6 +240,8 @@
   import { FAMILLES_PRIAM } from '../../../../consts';
   import Navbar from '../../../common/components/ui/priam-navbar.vue';
 
+  import SockJS from 'sockjs-client'
+  import Stomp from 'webstomp-client'
 
   export default {
       mixins : [ChargementMixin, programmeMixin],
@@ -251,6 +253,9 @@
 
 
         return {
+            received_messages : [],
+            connected: false,
+
             numProgItems : [],
             nomProgItems : [],
             isCollapsed : false,
@@ -690,18 +695,10 @@
 
 
       mounted() {
-
-//        for(var i in  this.priamGrid.gridData.content) {
-//
-//          var prog = this.priamGrid.gridData.content[i];
-//          console.log("prog = " + prog);
-//          if(prog.statutEligibilite === 'EN_ATTENTE_ELIGIBILITE'
-//            || prog.statutEligibilite === 'EN_COURS_ELIGIBILITE') {
-//            $("#" + prog.numProg).css("background-color", "grey");
-//          }
-//        }
-
+        this.connect();
       },
+
+
 
       created() {
 
@@ -805,8 +802,75 @@
         }
       },
 
+      destroy() {
+
+        if (this.stompClient) {
+          this.stompClient.disconnect()
+        }
+
+        if (this.stompClientCms) {
+          this.stompClientCms.disconnect()
+        }
+
+        this.connected = false;
+      },
+
 
       methods : {
+
+        connect() {
+          console.log("connect to websocket")
+          this.socket = new SockJS(process.env.CONTEXT_ROOT_PRIAM_CP + 'websocket-endpoint');
+          this.stompClient = Stomp.over(this.socket);
+          this.stompClient.connect({}, (frame) => {
+            this.connected = true;
+
+            this.stompClient.subscribe('/global-message/affectation', (tick) => {
+
+             // this.received_messages.push(tick);
+
+              let message = JSON.parse(tick.body);
+              this.updateProgrammmeOnBatchFinished(message);
+
+            })
+          }, (error) => {
+            console.log(error);
+            this.connected = false;
+          })
+
+          this.socketCms = new SockJS(process.env.CONTEXT_ROOT_PRIAM_CMS + 'websocket-endpoint');
+          this.stompClientCms = Stomp.over(this.socketCms);
+          this.stompClientCms.connect({}, (frame) => {
+            this.connected = true;
+
+            this.stompClientCms.subscribe('/global-message/affectation', (tick) => {
+
+              //this.received_messages.push(tick);
+
+              let message = JSON.parse(tick.body);
+              this.updateProgrammmeOnBatchFinished(message);
+            })
+          }, (error) => {
+            console.log(error);
+            this.connected = false;
+          })
+        },
+
+        updateProgrammmeOnBatchFinished(programme) {
+
+          let progRow = this.priamGrid.gridData.content.find(function (elem) {
+
+            return elem.numProg === programme.numProg;
+          });
+
+          if(progRow !== undefined ){
+            progRow.statutEligibilite = programme.statutEligibilite;
+            progRow.statut = programme.statut;
+            progRow.statutFichierFelix = programme.statutFichierFelix;
+            progRow.fichiers = programme.fichiers;
+          }
+
+        },
 
         afficherTootlip(entry) {
 

@@ -264,14 +264,14 @@
                             'Automatique',
                             :dateSortie,
                             :typeSortie,
-                            (SELECT GROUP_CONCAT(PART.ROLE SEPARATOR ',' )
+                            (SELECT substring_index(GROUP_CONCAT(PART.ROLE  ORDER BY PART.ID ASC SEPARATOR ',' ), ',', 4)
                              FROM PRIAM_CATCMS_PARTICIPANTS PART
                               WHERE PART.IDE12 = :ide12
                               AND PART.TYPE_CMS=:typeCMS
                               AND PART.OEUVRE_SORTIE=0
                                GROUP BY PART.TYPE_CMS, PART.IDE12, PART.OEUVRE_SORTIE),
 
-                             (SELECT GROUP_CONCAT(PART.PARTICIPANT SEPARATOR ',' )
+                             (SELECT substring_index(GROUP_CONCAT(PART.PARTICIPANT  ORDER BY PART.ID ASC SEPARATOR ',' ), ',', 4)
                              FROM PRIAM_CATCMS_PARTICIPANTS PART
                               WHERE PART.IDE12=:ide12
                               AND PART.TYPE_CMS=:typeCMS

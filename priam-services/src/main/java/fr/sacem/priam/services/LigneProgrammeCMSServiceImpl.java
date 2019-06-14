@@ -285,10 +285,8 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
             SareftrTyputil typeUtilisation = programme.getTypeUtilisation();
             if(TypeUtilisationPriam.SONOFRA.getCode().equals(typeUtilisation.getCode())) {
                 situationAvant.setSituation(String.valueOf(sumOfMt(founds)));
-                situationApres.setSituation(String.valueOf(input.getMt()));
             } else if(TypeUtilisationPriam.SONOANT.getCode().equals(typeUtilisation.getCode())) {
                 situationAvant.setSituation(String.valueOf(sumOfNbrDif(founds)));
-                situationApres.setSituation(String.valueOf(input.getNbrDif()));
             }
 
             journal.setEvenement(TypeLog.MODIFIER_OEUVRE.getEvenement());
@@ -434,7 +432,8 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
                     } else if(CORRIGE.equals(ajout)){
                         correctionOeuvreCorrige(numProg, inputLigneCMS, userDTO);
                     } else {
-                        ligneProgrammeCMSDao.updatePointsTemporaireByNumProgramme(numProg, inputLigneCMS.getIde12(), nbrDifEdit);
+                        //ligneProgrammeCMSDao.updatePointsTemporaireByNumProgramme(numProg, inputLigneCMS.getIde12(), nbrDifEdit);
+                        ajouterOeuvreManuel(inputLigneCMS, userDTO);
                     }
                 } else if(prog.getTypeUtilisation().getCode().equals(TypeUtilisationPriam.SONOFRA.getCode())) {
                     String mtValue = obj.get(POINTS_MONTANT);
@@ -452,7 +451,8 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
                     } else if(CORRIGE.equals(ajout)){
                         correctionOeuvreCorrige(numProg, inputLigneCMS, userDTO);
                     } else {
-                        ligneProgrammeCMSDao.updatePointsMtTemporaireByNumProgramme(numProg, inputLigneCMS.getIde12(), mtEdit);
+                        ajouterOeuvreManuel(inputLigneCMS, userDTO);
+                        //ligneProgrammeCMSDao.updatePointsMtTemporaireByNumProgramme(numProg, inputLigneCMS.getIde12(), mtEdit);
                     }
 
                 }

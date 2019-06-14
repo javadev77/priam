@@ -7,17 +7,20 @@ import fr.sacem.priam.model.dao.jpa.cms.LigneProgrammeCopyCMSDao;
 import fr.sacem.priam.model.dao.jpa.cp.LigneProgrammeCPDao;
 import fr.sacem.priam.model.dao.jpa.cp.LigneProgrammeCopyCPDao;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
-import fr.sacem.priam.model.domain.*;
+import fr.sacem.priam.model.domain.Fichier;
+import fr.sacem.priam.model.domain.Programme;
+import fr.sacem.priam.model.domain.Status;
+import fr.sacem.priam.model.domain.StatutEligibilite;
+import fr.sacem.priam.model.domain.StatutProgramme;
 import fr.sacem.priam.model.util.FamillePriam;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 ;
 

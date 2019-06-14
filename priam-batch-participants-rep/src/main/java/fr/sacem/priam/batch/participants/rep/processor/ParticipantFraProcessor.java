@@ -46,8 +46,14 @@ public class ParticipantFraProcessor implements ItemProcessor<Participant, Parti
                     participant.setStatut(1);
                 }
 
+            log.info(
+                String.format("IDE12=[%s], Participant=[%s], Role=[%s], Statut=[%s]", participant.getIde12(), participant.getNomPart(), participant.getRolPart(), participant.getStatut())
+            );
+
+
             return participant;
         }
+
 
         return null;
     }

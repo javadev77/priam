@@ -1,17 +1,23 @@
 package fr.sacem.priam.batch.affectation.cp.listener;
 
-
 import fr.sacem.priam.batch.affectation.cp.dao.JournalBatchDao;
 import fr.sacem.priam.batch.common.dao.ProgrammeBatchDao;
 import fr.sacem.priam.batch.common.service.importPenef.FichierBatchService;
 import fr.sacem.priam.batch.common.util.UtilFile;
 import fr.sacem.priam.common.TypeLog;
 import fr.sacem.priam.model.dao.jpa.FichierDao;
-import fr.sacem.priam.model.domain.*;
+import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
+import fr.sacem.priam.model.domain.Fichier;
+import fr.sacem.priam.model.domain.Journal;
+import fr.sacem.priam.model.domain.SituationApres;
+import fr.sacem.priam.model.domain.SituationAvant;
+import fr.sacem.priam.model.domain.Status;
+import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.model.journal.JournalBuilder;
-import fr.sacem.priam.services.FichierService;
-
-
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.BatchStatus;
@@ -19,12 +25,8 @@ import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 
 @Component
@@ -56,13 +58,16 @@ public class JobCompletionNotificationAffectationCPListener extends JobExecution
     @Autowired
     JournalBatchDao journalBatchDao;
 
-    @Autowired
-    FichierService fichierService;
-
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
     @Autowired
     private FichierDao fichierDao;
+
+    @Autowired
+    SimpMessagingTemplate simpMessagingTemplate;
+
+    @Autowired
+    private ProgrammeViewDao programmeViewDao;
 
     @Autowired
     public JobCompletionNotificationAffectationCPListener() {
@@ -81,8 +86,8 @@ public class JobCompletionNotificationAffectationCPListener extends JobExecution
 
     @Override
     public void afterJob(JobExecution jobExecution) {
-
         String numProg = jobExecution.getJobParameters().getString("numProg");
+
         if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
 
 
@@ -123,14 +128,19 @@ public class JobCompletionNotificationAffectationCPListener extends JobExecution
             Long idJournal = journalBatchDao.saveJournal(journal);
             journalBatchDao.saveSituationAvantJournal(journal.getListSituationAvant(), idJournal);
             journalBatchDao.saveSituationApresJournal(journal.getListSituationApres(), idJournal);
+
+
+
         } else {
 
             programmeBatchDao.majStattutEligibilite(numProg, ERREUR_ELIGIBILITE);
-
             fichierBatchService.clearSelectedFichiers(numProg, CHARGEMENT_OK);
 
-
         }
+
+        final ProgrammeDto payload = programmeViewDao.findByNumProg(numProg);
+        simpMessagingTemplate.convertAndSend("/global-message/affectation", payload);
+
     }
 
     public FichierBatchService getFichierBatchService() {
