@@ -1,15 +1,16 @@
 package fr.sacem.priam.batch.fv.adclesprotection.req.writer;
 
-import fr.sacem.priam.batch.common.fv.writer.AbstractConfig;
 import fr.sacem.priam.batch.common.fv.util.OctavDTO;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import fr.sacem.priam.batch.common.fv.writer.AbstractConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor;
 import org.springframework.batch.item.file.transform.FieldExtractor;
 import org.springframework.context.annotation.Configuration;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by benmerzoukah on 13/06/2018.
@@ -31,7 +32,7 @@ public class FlatFileWriterConfig extends AbstractConfig<OctavDTO>{
                         "#-------------------------------------------------------------------------------------------------------------------;;;;;;;;;;;;;;;;;;;\n"+
                         "# " + dateFormat.format(new Date()) + " - PRIAM - Creation\n"+
                         "#DEBUT;;;;;;;;;;;;;;;;;;;\n"+
-                        "#IDE12;CDETYPIDE12;;;;;;;;;;;;;;;;;;";
+                        "#cdeCisac;cdeTer;cdeFamilTypUtil;cdeTypUtil;cdeTypDrtSacem;ide12;cdeTypIde12;datConsult;datSitu;rionStatut;rionCalc;idRevend;filler;ide12RepCoad;cdeTypIde12RepCoad;rolad;coad;idSteAd;cleAd;cdeTypProtec;coadOriEdtr;idSteOriEdtr;statut;numPers;numCatal";
     }
 
     @Override
@@ -61,7 +62,9 @@ public class FlatFileWriterConfig extends AbstractConfig<OctavDTO>{
 
 
         extractor.setNames(new String[] {"cdeCisac", "cdeTer", "cdeFamilTypUtil","cdeTypUtil", "cdeTypDrtSacem",
-            "ide12", "cdeTypIde12", "datConsult", "datSitu", "rionStatut", "rionCalc", "idRevend"});
+            "ide12", "cdeTypIde12", "datConsult", "datSitu", "rionStatut", "rionCalc", "idRevend"
+        ,"filler", "ide12RepCoad", "cdeTypIde12RepCoad", "rolad", "coad", "idStead", "clead", "cdeTypProtec",
+                "coadori", "idSteOri", "statut", "numPers", "numCatal"});
         return extractor;
     }
 

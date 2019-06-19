@@ -13,13 +13,14 @@ public class AyantDroitPers implements Serializable {
     private Integer anneeDeces;
     private Boolean indicSacem;
     private String sousRole;
+    private String statut;
     private Exception exception;
     private Integer lineNumber;
 
     public AyantDroitPers() {
     }
 
-    public AyantDroitPers(Long numPers, String prenom, String nom, Integer anneeNaissance, Integer anneeDeces, Boolean indicSacem, String sousRole) {
+    public AyantDroitPers(Long numPers, String prenom, String nom, Integer anneeNaissance, Integer anneeDeces, Boolean indicSacem, String sousRole, String statut) {
         this.numPers = numPers;
         this.prenom = prenom;
         this.nom = nom;
@@ -27,6 +28,7 @@ public class AyantDroitPers implements Serializable {
         this.anneeDeces = anneeDeces;
         this.indicSacem = indicSacem;
         this.sousRole = sousRole;
+        this.statut = statut;
     }
 
     public AyantDroitPers(PriamValidationException e) {
@@ -102,5 +104,13 @@ public class AyantDroitPers implements Serializable {
 
     public void setException(Exception exception) {
         this.exception = exception;
+    }
+
+    public String getStatut() {
+        return statut;
+    }
+
+    public void setStatut(String statut) {
+        this.statut = statut;
     }
 }

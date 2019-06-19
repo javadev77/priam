@@ -30,13 +30,13 @@ public class OctavDTO implements Serializable {
     private String ide12RepCoad ;
     private String cdeTypIde12RepCoad ;
     private String rolad ;                      // rôle
-    private String coad ;                       // identifiant Ayant Droit
-    private String idStead ;
-    private BigDecimal clead ;
+    private Long coad ;
+    private Long idStead ;
+    private Double clead ;
     private String cdeTypProtec ;
     private String roladori ;
-    private String coadori ;
-    private String idSteOri ;
+    private Long coadori ;
+    private Long idSteOri ;
     private Integer statut ;
     private String numPers;
     private String numCatal;
@@ -186,29 +186,20 @@ public class OctavDTO implements Serializable {
         this.rolad = rolad;
     }
 
-    public String getCoad() {
+    public Long getCoad() {
         return coad;
     }
 
-    public void setCoad(String coad) {
+    public void setCoad(Long coad) {
         this.coad = coad;
     }
 
-    public String getIdStead() {
+    public Long getIdStead() {
         return idStead;
     }
 
-    public void setIdStead(String idStead) {
+    public void setIdStead(Long idStead) {
         this.idStead = idStead;
-    }
-
-    public BigDecimal getClead() {
-        return clead;
-    }
-
-    //json processor
-    public void setClead(Double clead) {
-        this.clead = (clead == null || Double.isNaN(clead)) ? null : new BigDecimal(clead, MathContext.DECIMAL64);
     }
 
     public String getCdeTypProtec() {
@@ -227,19 +218,20 @@ public class OctavDTO implements Serializable {
         this.roladori = roladori;
     }
 
-    public String getCoadori() {
+
+    public Long getCoadori() {
         return coadori;
     }
 
-    public void setCoadori(String coadori) {
+    public void setCoadori(Long coadori) {
         this.coadori = coadori;
     }
 
-    public String getIdSteOri() {
+    public Long getIdSteOri() {
         return idSteOri;
     }
 
-    public void setIdSteOri(String idSteOri) {
+    public void setIdSteOri(Long idSteOri) {
         this.idSteOri = idSteOri;
     }
 
@@ -321,7 +313,11 @@ public class OctavDTO implements Serializable {
         this.idOeuvreFv = idOeuvreFv;
     }
 
-    public void setClead(final BigDecimal clead) {
+    public Double getClead() {
+        return clead;
+    }
+
+    public void setClead(Double clead) {
         this.clead = clead;
     }
 }

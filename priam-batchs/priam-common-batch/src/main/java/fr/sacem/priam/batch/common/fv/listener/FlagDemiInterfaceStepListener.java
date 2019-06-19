@@ -25,8 +25,8 @@ public class FlagDemiInterfaceStepListener extends StepListenerSupport {
 
     @Override
     public ExitStatus afterStep(StepExecution stepExecution) {
-        String reqFileName = FilenameUtils.removeExtension(stepExecution.getExecutionContext().getString("REQ_FILE_NAME"));
-        try(OutputStream out = new FileOutputStream(new File(admap.getOutputFile() + File.separator + "Flag_" + reqFileName))){
+        String reqFileName = stepExecution.getExecutionContext().getString("REQ_FILE_NAME");
+        try(OutputStream out = new FileOutputStream(new File(admap.getOutputFile() + File.separator + "Flag_" + FilenameUtils.removeExtension(reqFileName)))){
             out.write((reqFileName + "\n").getBytes());
         } catch (IOException e) {
             LOGGER.error("Erreur lors de la generation du fichier Flag !!! ", e);

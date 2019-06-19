@@ -109,11 +109,10 @@
                                             INNER JOIN PRIAM_FICHIER f ON l.ID_FICHIER=f.ID
                                             INNER JOIN PRIAM_PROGRAMME p ON p.NUMPROG=f.NUMPROG"/>
         <property name="whereClause" value="WHERE p.NUMPROG='#{jobParameters[numProg]}' AND p.STATUT_ELIGIBILITE = 'EN_ATTENTE_ELIGIBILITE'
-                                              GROUP BY l.ide12
                                                "/>
-
+        <property name="groupClause" value="GROUP BY ide12"/>
         <property name="dataSource" ref="dataSource"/>
-        <property name="sortKey" value="l.ide12"/>
+        <property name="sortKey" value="ide12"/>
     </bean>
 
     <bean id="ligneProgrammeRowMapper" class="fr.sacem.priam.batch.fv.affectation.mapper.LigneProgrammeFvMapper"/>

@@ -6,13 +6,17 @@ import fr.sacem.priam.batch.common.fv.config.CommonBatchConfig;
 import fr.sacem.priam.batch.common.fv.reader.CsvRepReader;
 import fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementEnum;
 import fr.sacem.priam.batch.common.fv.util.OctavDTO;
+import fr.sacem.priam.batch.common.util.DoublePropertyEditor;
 import fr.sacem.priam.batch.common.util.UtilFile;
 import fr.sacem.priam.batch.fv.adclesprotection.rep.listener.JobListener;
 import fr.sacem.priam.batch.fv.adclesprotection.rep.mapper.AdclesProtectionRepLineMapper;
 import fr.sacem.priam.batch.fv.adclesprotection.rep.processor.AdclesProtectionRepProcessor;
 import fr.sacem.priam.batch.fv.adclesprotection.rep.reader.AdclesProtectionRepFlatItemReader;
-import java.util.ArrayList;
-import java.util.List;
+
+import java.beans.PropertyEditor;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.sql.DataSource;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -44,7 +48,8 @@ import org.springframework.context.annotation.Configuration;
 @EnableBatchProcessing
 @Configuration
 public class BatchConfig extends CommonBatchConfig {
-    public static final String NAMES = "ide12RepCoad;cdeTypIde12RepCoad;rolad;coad;idStead;clead;cdeTypProtec;coadori;idSteOri;numPers;numCatal;statut";
+    public static final String NAMES = "cdeCisac;cdeTer;cdeFamilTypUtil;cdeTypUtil;cdeTypDrtSacem;ide12;cdeTypIde12;datConsult;datSitu;rionStatut;rionCalc;idRevend;filler;ide12RepCoad;cdeTypIde12RepCoad;rolad;coad;idStead;clead;cdeTypProtec;coadori;idSteOri;statut;numPers;numCatal";
+
 
     @Autowired
     StepBuilderFactory stepBuilderFactory;
@@ -112,7 +117,10 @@ public class BatchConfig extends CommonBatchConfig {
     private BeanWrapperFieldSetMapper fieldSetMapper() {
         BeanWrapperFieldSetMapper beanWrapperFieldSetMapper = new BeanWrapperFieldSetMapper();
         beanWrapperFieldSetMapper.setTargetType(OctavDTO.class);
-
+        Map<Class, PropertyEditor> customEditors = Stream.of(
+                new AbstractMap.SimpleEntry<>(Double.class, new DoublePropertyEditor()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        beanWrapperFieldSetMapper.setCustomEditors(customEditors);
         return beanWrapperFieldSetMapper;
     }
 

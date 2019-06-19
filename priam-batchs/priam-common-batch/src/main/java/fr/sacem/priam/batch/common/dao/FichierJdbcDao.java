@@ -67,7 +67,7 @@ public class FichierJdbcDao {
 
     @Transactional(readOnly = true, value = "transactionManager")
     public List<Fichier> getFichiersOctavCtnuEligible() {
-        ArrayList<String> fonds = Lists.newArrayList("FD03", "FD04", "FD09", "FD10", "FD11");
+        ArrayList<String> fonds = Lists.newArrayList("FD03", "FD04", "FD10", "FD11", "FD13");
         String inClause = "'" + Joiner.on("','").join(fonds) + "'";
         return jdbcTemplate.query("SELECT * FROM PRIAM_FICHIER WHERE CDEFAMILTYPUTIL='FDSVAL' " +
                 "AND (STATUT_CODE= 'CHARGEMENT_OK' AND CDETYPUTIL IN (" + inClause + ") ) " +

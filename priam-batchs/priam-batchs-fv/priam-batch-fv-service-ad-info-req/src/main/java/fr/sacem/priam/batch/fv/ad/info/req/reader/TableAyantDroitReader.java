@@ -29,7 +29,7 @@ public class TableAyantDroitReader extends JdbcPagingItemReader<AyantDroit> {
                 "INNER JOIN PRIAM_FICHIER f ON l.ID_FICHIER=f.ID ");
         sqlPagingQueryProviderFactoryBean.setWhereClause("WHERE f.ID = " + idFichier);
         sqlPagingQueryProviderFactoryBean.setGroupClause("GROUP BY AD.NUMPERS");
-        sqlPagingQueryProviderFactoryBean.setSortKey("AD.ID");
+        sqlPagingQueryProviderFactoryBean.setSortKey("ID");
 
         try {
             this.setQueryProvider(sqlPagingQueryProviderFactoryBean.getObject());

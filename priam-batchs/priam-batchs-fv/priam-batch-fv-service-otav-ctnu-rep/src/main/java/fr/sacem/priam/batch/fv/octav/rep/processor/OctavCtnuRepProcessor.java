@@ -2,12 +2,14 @@ package fr.sacem.priam.batch.fv.octav.rep.processor;
 
 import fr.sacem.priam.batch.common.dao.LigneProgrammeFVDao;
 import fr.sacem.priam.batch.common.domain.LigneProgrammeFV;
-import fr.sacem.priam.batch.fv.octav.rep.reader.OeuvreCtnuRep;
+import fr.sacem.priam.batch.common.domain.OctavCtnu;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Optional;
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @version $Id$
  * @since 1.0
  */
-public class OctavCtnuRepProcessor implements ItemProcessor<OeuvreCtnuRep, LigneProgrammeFV> {
+public class OctavCtnuRepProcessor implements ItemProcessor<OctavCtnu, LigneProgrammeFV> {
 
     @Autowired
     LigneProgrammeFVDao ligneProgrammeFVDao;
@@ -29,19 +31,24 @@ public class OctavCtnuRepProcessor implements ItemProcessor<OeuvreCtnuRep, Ligne
     }
 
     @Override
-    public LigneProgrammeFV process(OeuvreCtnuRep oeuvreCtnuRep) throws Exception {
-        if(oeuvreCtnuRep != null) {
-            if(oeuvreCtnuRep.getStatut() >= 0 && !oeuvreCtnuRep.getIde12().equals(oeuvreCtnuRep.getIde12cmplx())) {
+    public LigneProgrammeFV process(OctavCtnu octavCtnu) throws Exception {
+        if(octavCtnu != null) {
+            if((Integer.valueOf(octavCtnu.getStatut()) >= 0) && !octavCtnu.getIde12().equals(octavCtnu.getIde12Ctnu())) {
                 Long idFichier = jobExecutionContext.getLong("idFichier");
-                LigneProgrammeFV oeuvreComplxContenant = ligneProgrammeFVDao.findOeuvreByIde12(Long.valueOf(oeuvreCtnuRep.getIde12cmplx()), idFichier);
 
-                if(oeuvreComplxContenant == null) {
-                    return null;
+                Optional<String> opt = Optional.ofNullable(octavCtnu.getIde12Ctnu()).filter(s -> !s.isEmpty());
+                if(opt.isPresent()) {
+                    LigneProgrammeFV oeuvreComplxContenant =
+                            ligneProgrammeFVDao.findOeuvreByIde12(
+                                    Long.valueOf(octavCtnu.getIde12Ctnu()), idFichier);
+                    if(oeuvreComplxContenant == null) {
+                        return null;
+                    }
+                    oeuvreComplxContenant.setIde12Complx(octavCtnu.getIde12());
+                    oeuvreComplxContenant.setCdetypide12cmplx(octavCtnu.getCdeTypIde12());
+
+                    return oeuvreComplxContenant;
                 }
-                oeuvreComplxContenant.setIde12Complx(oeuvreCtnuRep.getIde12());
-                oeuvreComplxContenant.setCdetypide12cmplx(oeuvreCtnuRep.getCdetypide12());
-
-                return oeuvreComplxContenant;
             }
         }
 

@@ -1,11 +1,12 @@
 package fr.sacem.priam.batch.fv.octav.req.config;
 
 import fr.sacem.priam.batch.common.dao.LigneProgrammeFVDao;
-import fr.sacem.priam.batch.common.domain.LigneProgrammeFV;
 import fr.sacem.priam.batch.common.fv.writer.AbstractConfig;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+
+import fr.sacem.priam.batch.common.domain.OctavCtnu;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor;
@@ -18,7 +19,7 @@ import org.springframework.context.annotation.Configuration;
  */
 
 @Configuration
-public class FlatFileWriterConfig extends AbstractConfig<LigneProgrammeFV> {
+public class FlatFileWriterConfig extends AbstractConfig<OctavCtnu> {
 
     private static final Logger LOG = LoggerFactory.getLogger(FlatFileWriterConfig.class);
     private LigneProgrammeFVDao ligneProgrammeFVDao;
@@ -39,7 +40,7 @@ public class FlatFileWriterConfig extends AbstractConfig<LigneProgrammeFV> {
             "#-------------------------------------------------------------------------------------------------------------------;;;;;;;;;;;;;;;;;;;\n"+
             "# " + dateFormat.format(new Date()) + " - PRIAM - Creation\n"+
             "#DEBUT;;;;;;;;;;;;;;;;;;;\n"+
-            "#IDE12CMPLX;CDETYPIDE12CMPLX;;;;;;;;;;;;;;;;;;";
+            "#cdeCisac;cdeTer;cdeFamilTypUtilOri;cdeTypUtilOri;cdeUtil;ide12;cdeTypIde12;datConslt;datSitu;rionStatut;rionCalc;cdeLng;indDoubSsTit;filler;ide12Ctnu;cdeTypIde12Ctnu;indCmplxCtnu;seqOeuvCtnu;seqOeuvPere;durDsOeuvPere;taxatDsOeuvPere;cdeGreDifDsOeuvPere;oeuvPreExist;pctDvaltn;numOrd;indDroitTotEnAttente;statut";
     }
 
     @Override
@@ -62,9 +63,12 @@ public class FlatFileWriterConfig extends AbstractConfig<LigneProgrammeFV> {
     }
 
     @Override
-    public FieldExtractor<LigneProgrammeFV> createExtractor() {
-        BeanWrapperFieldExtractor<LigneProgrammeFV> extractor = new BeanWrapperFieldExtractor<>();
-        extractor.setNames(new String[] {"ide12", "cdeTypIde12"});
+    public FieldExtractor<OctavCtnu> createExtractor() {
+        BeanWrapperFieldExtractor<OctavCtnu> extractor = new BeanWrapperFieldExtractor<>();
+        extractor.setNames(new String[] {"cdeCisac", "cdeTer", "cdeFamilTypUtilOri","cdeTypUtilOri","cdeUtil","ide12",
+                "cdeTypIde12","datConsult","datSitu","rionStatut","rionCalc","cdeLng","indDoubSsTit","ide12Ctnu",
+                "cdeTypIde12Ctnu","indCmplxCtnu","seqOeuvCtnu","seqOeuvPere","durDsOeuvPere","taxatDsOeuvPere",
+                "cdeGreDifDsOeuvPere","oeuvPreExist","pctDvaltn","numOrd","indDroitTotEnAttente","statut"});
         return extractor;
     }
 }

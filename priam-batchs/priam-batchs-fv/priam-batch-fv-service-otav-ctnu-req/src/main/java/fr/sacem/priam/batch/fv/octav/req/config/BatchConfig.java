@@ -4,13 +4,16 @@ import fr.sacem.priam.batch.common.domain.LigneProgrammeFV;
 import fr.sacem.priam.batch.common.fv.listener.FlagDemiInterfaceStepListener;
 import fr.sacem.priam.batch.common.fv.reader.TableLigneProgrammeFVReader;
 import fr.sacem.priam.batch.common.fv.writer.CsvFileItemWriter;
+import fr.sacem.priam.batch.common.domain.OctavCtnu;
 import fr.sacem.priam.batch.fv.octav.req.listener.JobListener;
+import fr.sacem.priam.batch.fv.octav.req.processor.OctavCtnuReqProcessor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -45,15 +48,20 @@ public class BatchConfig {
     }
 
     @Bean
-    public Step stepPrepareAndGenerateREQ(CsvFileItemWriter<LigneProgrammeFV> databaseCsvItemWriter, TableLigneProgrammeFVReader tableLigneProgrammeFVReader) {
-        return stepBuilderFactory.get("stepPrepareAndGenerateREQ").<LigneProgrammeFV, LigneProgrammeFV>chunk(2000)
+    public Step stepPrepareAndGenerateREQ(CsvFileItemWriter<OctavCtnu> databaseCsvItemWriter, TableLigneProgrammeFVReader tableLigneProgrammeFVReader) {
+        return stepBuilderFactory.get("stepPrepareAndGenerateREQ").
+                <LigneProgrammeFV, OctavCtnu>chunk(2000)
                 .reader(tableLigneProgrammeFVReader)
+                .processor(octavCtnuProcessor())
                 .writer(databaseCsvItemWriter)
                 .listener(stepListener())
                 .build();
     }
 
-
+    @Bean
+    public ItemProcessor<LigneProgrammeFV, OctavCtnu> octavCtnuProcessor() {
+        return new OctavCtnuReqProcessor();
+    }
 
     @Bean
     public StepExecutionListener stepListener(){

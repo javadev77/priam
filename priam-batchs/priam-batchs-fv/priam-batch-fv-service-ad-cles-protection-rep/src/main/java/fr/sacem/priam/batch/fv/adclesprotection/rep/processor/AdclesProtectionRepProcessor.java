@@ -5,6 +5,8 @@ import fr.sacem.priam.batch.common.dao.LigneProgrammeFVDao;
 import fr.sacem.priam.batch.common.domain.LigneProgrammeFV;
 import fr.sacem.priam.batch.common.fv.util.OctavDTO;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.ExecutionContext;
@@ -18,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @since 1.0
  */
 public class AdclesProtectionRepProcessor implements ItemProcessor<OctavDTO, OctavDTO> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AdclesProtectionRepProcessor.class);
 
     @Autowired
     LigneProgrammeFVDao ligneProgrammeFVDao;
@@ -40,18 +44,18 @@ public class AdclesProtectionRepProcessor implements ItemProcessor<OctavDTO, Oct
                 Long idFichier = jobExecutionContext.getLong("idFichier");
                 LigneProgrammeFV oeuvreByIde12 = ligneProgrammeFVDao.findOeuvreByIde12(Long.valueOf(octavDTO.getIde12RepCoad()), idFichier);
 
-                if(oeuvreByIde12 == null) {
+                if(oeuvreByIde12 == null || octavDTO.getCoad() == null) {
                     return null;
                 }
 
                 octavDTO.setIdOeuvreFv(oeuvreByIde12.getId());
-                if(StringUtils.isEmpty(octavDTO.getCoadori())) {
+                /*if(StringUtils.isEmpty(octavDTO.getCoadori())) {
                     octavDTO.setCoadori(octavDTO.getCoad());
                 }
 
                 if(StringUtils.isEmpty(octavDTO.getIdSteOri())) {
                     octavDTO.setIdSteOri(octavDTO.getIdStead());
-                }
+                }*/
 
                 octavDTO.setNumpersExist(ayanrtDroitPersDao.isNumpersExist(octavDTO.getNumPers()));
 

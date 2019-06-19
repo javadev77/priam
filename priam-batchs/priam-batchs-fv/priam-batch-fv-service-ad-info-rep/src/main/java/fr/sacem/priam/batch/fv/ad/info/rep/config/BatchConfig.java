@@ -103,7 +103,7 @@ public class BatchConfig extends CommonBatchConfig {
     public PriamFileADInfoMapper lineMapper(){
         PriamFileADInfoMapper lineMapper = new PriamFileADInfoMapper();
         DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer();
-        lineTokenizer.setNames(new String[]{"numPers", "prenom", "nom", "anneeNaissance", "anneeDeces", "indicSacem", "sousRole"});
+        lineTokenizer.setNames(new String[]{"numPers", "prenom", "nom", "anneeNaissance", "anneeDeces", "indicSacem", "sousRole", "statut"});
         lineTokenizer.setDelimiter(";");
         BeanWrapperFieldSetMapper<AyantDroitPers> fieldSetMapper = new BeanWrapperFieldSetMapper<>();
         fieldSetMapper.setTargetType(AyantDroitPers.class);

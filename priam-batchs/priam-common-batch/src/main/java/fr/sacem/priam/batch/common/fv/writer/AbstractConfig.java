@@ -35,7 +35,7 @@ public abstract class AbstractConfig<T> {
 
 
 
-        CsvFileItemWriter csvFileWriter = new CsvFileItemWriter();
+        CsvFileItemWriter<T> csvFileWriter = new CsvFileItemWriter<>();
 
         StringHeaderWriter headerWriter = new StringHeaderWriter(head());
         csvFileWriter.setHeaderCallback(headerWriter);

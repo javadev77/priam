@@ -3,6 +3,8 @@ package fr.sacem.priam.batch.common.dao;
 import fr.sacem.priam.batch.common.domain.LigneProgrammeFV;
 import fr.sacem.priam.batch.common.fv.util.OctavDTO;
 import fr.sacem.priam.batch.common.util.mapper.importPenef.PriamLigneProgrammeFVSQLMapper;
+
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -81,8 +83,8 @@ public class LigneProgrammeFVDao {
     @Transactional(value="transactionManager")
     public void majOeuvreWithInfoOctav(final OctavDTO octavDTO) {
         String sql =  "UPDATE PRIAM_LIGNE_PROGRAMME_FV SET datconslt = ?, datsitu = ? WHERE ide12 = ?";
-        DateTimeFormatter yyyyMMdd = DateTimeFormatter.ofPattern("yyyyMMdd");
         jdbcTemplate.update(sql, stmt -> {
+            DateTimeFormatter yyyyMMdd = DateTimeFormatter.ofPattern("yyyyMMdd");
             LocalDate localDate = LocalDate.parse(octavDTO.getDatConsult(), yyyyMMdd);
             Date from = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
             stmt.setDate(1, new java.sql.Date(from.getTime()));
@@ -91,6 +93,20 @@ public class LigneProgrammeFVDao {
             from = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
             stmt.setDate(2, new java.sql.Date(from.getTime()));
             stmt.setString(3, octavDTO.getIde12());
+        });
+    }
+
+    @Transactional(value="transactionManager")
+    public void majDateConsultSitu(Long idFichier){
+        String sql =  "UPDATE PRIAM_LIGNE_PROGRAMME_FV SET datconslt = ?, datsitu = ? WHERE ID_FICHIER =? ";
+        jdbcTemplate.update(sql, stmt -> {
+            String dateJour = new SimpleDateFormat("yyyyMMdd").format(new Date());
+            DateTimeFormatter yyyyMMdd = DateTimeFormatter.ofPattern("yyyyMMdd");
+            LocalDate localDate = LocalDate.parse(dateJour, yyyyMMdd);
+            Date from = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+            stmt.setDate(1, new java.sql.Date(from.getTime()));
+            stmt.setDate(2, new java.sql.Date(from.getTime()));
+            stmt.setLong(3, idFichier);
         });
     }
 }

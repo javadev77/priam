@@ -1,5 +1,6 @@
 package fr.sacem.priam.batch.fv.octav.rep.reader;
 
+import fr.sacem.priam.batch.common.domain.OctavCtnu;
 import fr.sacem.priam.batch.common.util.exception.PriamValidationException;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -31,8 +32,8 @@ import org.springframework.validation.BindException;
  * @version $Id$
  * @since 1.0
  */
-public class OctavRepFlatItemReader extends AbstractItemCountingItemStreamItemReader<OeuvreCtnuRep> implements
-    ResourceAwareItemReaderItemStream<OeuvreCtnuRep>, InitializingBean {
+public class OctavRepFlatItemReader extends AbstractItemCountingItemStreamItemReader<OctavCtnu> implements
+    ResourceAwareItemReaderItemStream<OctavCtnu>, InitializingBean {
 
     private static final Log logger = LogFactory.getLog(OctavRepFlatItemReader.class);
 
@@ -53,7 +54,7 @@ public class OctavRepFlatItemReader extends AbstractItemCountingItemStreamItemRe
 
     private String encoding = DEFAULT_CHARSET;
 
-    private LineMapper<OeuvreCtnuRep> lineMapper;
+    private LineMapper<OctavCtnu> lineMapper;
 
     private int linesToSkip = 0;
 
@@ -96,7 +97,7 @@ public class OctavRepFlatItemReader extends AbstractItemCountingItemStreamItemRe
      * Setter for line processor. This property is required to be set.
      * @param lineMapper maps line to item
      */
-    public void setLineMapper(LineMapper<OeuvreCtnuRep> lineMapper) {
+    public void setLineMapper(LineMapper<OctavCtnu> lineMapper) {
         this.lineMapper = lineMapper;
     }
 
@@ -134,7 +135,7 @@ public class OctavRepFlatItemReader extends AbstractItemCountingItemStreamItemRe
     }
 
     @Override
-    protected OeuvreCtnuRep doRead() throws Exception {
+    protected OctavCtnu doRead() throws Exception {
         if (noInput) {
             return null;
         }

@@ -1,5 +1,6 @@
 package fr.sacem.priam.batch.fv.octav.rep.mapper;
 
+import fr.sacem.priam.batch.common.domain.OctavCtnu;
 import fr.sacem.priam.batch.common.util.exception.PriamValidationException;
 import static fr.sacem.priam.batch.common.util.exception.PriamValidationException.ErrorType.FORMAT_ATTRIBUT;
 import fr.sacem.priam.batch.fv.octav.rep.reader.OeuvreCtnuRep;
@@ -10,25 +11,25 @@ import org.springframework.batch.item.file.transform.LineTokenizer;
 import org.springframework.util.Assert;
 import org.springframework.validation.BindException;
 
-public class OeuvreCtnuRepLineMapper extends DefaultLineMapper<OeuvreCtnuRep> {
+public class OeuvreCtnuRepLineMapper extends DefaultLineMapper<OctavCtnu> {
 
     private LineTokenizer tokenizer;
 
-    private FieldSetMapper<OeuvreCtnuRep> fieldSetMapper;
+    private FieldSetMapper<OctavCtnu> fieldSetMapper;
 
     @Override
-    public OeuvreCtnuRep mapLine(String line, int lineNumber) throws Exception {
+    public OctavCtnu mapLine(String line, int lineNumber) throws Exception {
 
         try{
 
-            OeuvreCtnuRep participant = fieldSetMapper.mapFieldSet(tokenizer.tokenize(line));
-            participant.setLineNumber(lineNumber);
-            return participant;
+            OctavCtnu octavCtnu = fieldSetMapper.mapFieldSet(tokenizer.tokenize(line));
+            octavCtnu.setLineNumber(lineNumber);
+            return octavCtnu;
 
         } catch ( IncorrectTokenCountException e ) {
             throw e;
         } catch ( BindException | RuntimeException ex) {
-            return new OeuvreCtnuRep(new PriamValidationException(lineNumber, ex, FORMAT_ATTRIBUT, null));
+            return new OctavCtnu(new PriamValidationException(lineNumber, ex, FORMAT_ATTRIBUT, null));
         }
 
 
@@ -38,7 +39,7 @@ public class OeuvreCtnuRepLineMapper extends DefaultLineMapper<OeuvreCtnuRep> {
         this.tokenizer = tokenizer;
     }
 
-    public void setFieldSetMapper(FieldSetMapper<OeuvreCtnuRep> fieldSetMapper) {
+    public void setFieldSetMapper(FieldSetMapper<OctavCtnu> fieldSetMapper) {
         this.fieldSetMapper = fieldSetMapper;
     }
 

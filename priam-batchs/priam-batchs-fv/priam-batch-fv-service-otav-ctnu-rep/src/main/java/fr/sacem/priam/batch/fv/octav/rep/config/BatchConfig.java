@@ -2,6 +2,7 @@ package fr.sacem.priam.batch.fv.octav.rep.config;
 
 import fr.sacem.priam.batch.common.dao.FichierJdbcDao;
 import fr.sacem.priam.batch.common.domain.LigneProgrammeFV;
+import fr.sacem.priam.batch.common.domain.OctavCtnu;
 import fr.sacem.priam.batch.common.fv.config.CommonBatchConfig;
 import fr.sacem.priam.batch.common.fv.reader.CsvRepReader;
 import fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementEnum;
@@ -40,7 +41,8 @@ import static fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementEnum.IN_SRV
 @EnableBatchProcessing
 public class BatchConfig extends CommonBatchConfig{
 
-    public static final String NAMES = "ide12cmplx;cdetypide12cmplx;ide12;cdetypide12;cdegenreide12cmplx;cdegenreide12;titreoriginalcmplx;titrealternatifprinpalcmplx;titreoriginaloeuvreperecmplx;titrealternatifoeuvreperecmplx;duree;cdepaysorigineiso4n;anneeproduction;realisateur;acteur;producteur;numepisode;seqcuesheet;dureecontenu;statut";
+    public static final String NAMES = "cdeCisac;cdeTer;cdeFamilTypUtilOri;cdeTypUtilOri;cdeUtil;ide12;cdeTypIde12;datConsult;datSitu;rionStatut;rionCalc;cdeLng;indDoubSsTit;filler;ide12Ctnu;cdeTypIde12Ctnu;indCmplxCtnu;seqOeuvCtnu;seqOeuvPere;durDsOeuvPere;taxatDsOeuvPere;cdeGreDifDsOeuvPere;oeuvPreExist;pctDvaltn;numOrd;indDroitTotEnAtten;statut;cdeGreValorisationDoc;oeuvreSynchrone;indVOCueSheet;cdeLngCtnu;flagImpose";
+
     @Autowired
     StepBuilderFactory stepBuilderFactory;
 
@@ -79,7 +81,8 @@ public class BatchConfig extends CommonBatchConfig{
 
     @Bean
     public CsvRepReader reader() {
-        CsvRepReader<OeuvreCtnuRep> lp = new CsvRepReader<>();
+        /*CsvRepReader<OeuvreCtnuRep> lp = new CsvRepReader<>();*/
+        CsvRepReader<OctavCtnu> lp = new CsvRepReader<>();
         lp.setEtapeEnrichissement(IN_SRV_OCTAV_CTNU);
         lp.setFichierJdbcDao(fichierJdbcDao);
         OctavRepFlatItemReader delegate = new OctavRepFlatItemReader();
@@ -98,8 +101,8 @@ public class BatchConfig extends CommonBatchConfig{
 
     private BeanWrapperFieldSetMapper fieldSetMapper() {
         BeanWrapperFieldSetMapper beanWrapperFieldSetMapper = new BeanWrapperFieldSetMapper();
-        beanWrapperFieldSetMapper.setTargetType(OeuvreCtnuRep.class);
-
+        /*beanWrapperFieldSetMapper.setTargetType(OeuvreCtnuRep.class);*/
+        beanWrapperFieldSetMapper.setTargetType(OctavCtnu.class);
         return beanWrapperFieldSetMapper;
     }
 
@@ -144,6 +147,8 @@ public class BatchConfig extends CommonBatchConfig{
             "cdeGreDif, " +
             "cdeModDif, " +
             "cdeTypIde12, " +
+            "datconslt, "+
+            "datsitu, "+
             "ide12, " +
             "durDif, " +
             "nbrDif, " +
@@ -181,6 +186,8 @@ public class BatchConfig extends CommonBatchConfig{
             ":cdeGreDif, " +
             ":cdeModDif, " +
             ":cdetypide12cmplx, " +
+            ":datConsult, " +
+            ":datSitu, " +
             ":ide12Complx, " +
             ":durDif, " +
             ":nbrDif, " +

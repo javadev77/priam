@@ -5,14 +5,11 @@ import fr.sacem.priam.batch.common.dao.LigneProgrammeFVDao;
 import fr.sacem.priam.batch.common.domain.LigneProgrammeFV;
 import fr.sacem.priam.batch.common.fv.config.CommonBatchConfig;
 import fr.sacem.priam.batch.common.fv.listener.FlagDemiInterfaceStepListener;
-import fr.sacem.priam.batch.common.fv.writer.CsvFileItemWriter;
-import fr.sacem.priam.batch.fv.adclesprotection.req.listener.JobListener;
 import fr.sacem.priam.batch.common.fv.util.OctavDTO;
 import fr.sacem.priam.batch.common.fv.util.OctavDTO.FondsCategory;
+import fr.sacem.priam.batch.common.fv.writer.CsvFileItemWriter;
+import fr.sacem.priam.batch.fv.adclesprotection.req.listener.JobListener;
 import fr.sacem.priam.batch.fv.adclesprotection.req.reader.AdClesPersReqFVReader;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Map;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.StepExecutionListener;
@@ -22,6 +19,10 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Map;
 
 /**
  * Created by embouazzar on 20/12/2018.
@@ -72,7 +73,6 @@ public class BatchConfig extends CommonBatchConfig {
                 .processor(ligneProgrammeFV -> {
 
                     OctavDTO octavDTO = new OctavDTO();
-
                     octavDTO.setCdeCisac(ligneProgrammeFV.getCdeCisac());
                     octavDTO.setCdeTer(250);
                     octavDTO.setCdeFamilTypUtil(ligneProgrammeFV.getCdeFamilTypUtil());
@@ -80,12 +80,11 @@ public class BatchConfig extends CommonBatchConfig {
                     octavDTO.setCdeTypDrtSacem(rightCategoryMap.get(FondsCategory.toEnum(ligneProgrammeFV.getCdeTypUtil())));
                     octavDTO.setIde12(ligneProgrammeFV.getIde12());
                     octavDTO.setCdeTypIde12(ligneProgrammeFV.getCdeTypIde12());
-
                     String dateJour = new SimpleDateFormat("yyyyMMdd").format(new Date());
                     octavDTO.setDatConsult(dateJour);
                     octavDTO.setDatSitu(dateJour);
 
-                    ligneProgrammeFVDao.majOeuvreWithInfoOctav(octavDTO);
+                    //ligneProgrammeFVDao.majOeuvreWithInfoOctav(octavDTO);
 
                     return octavDTO;
                 })

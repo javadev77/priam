@@ -20,7 +20,6 @@ public class AdclesProtectionRepLineMapper extends DefaultLineMapper<OctavDTO> {
     public OctavDTO mapLine(String line, int lineNumber) throws Exception {
 
         try{
-
             OctavDTO octavDTO = fieldSetMapper.mapFieldSet(tokenizer.tokenize(line));
             octavDTO.setLineNumber(lineNumber);
             return octavDTO;
