@@ -90,7 +90,7 @@
         <property name="selectClause" value="select c.*"/>
         <property name="fromClause" value="from PRIAM_CATALOGUE_OCTAV c"/>
         <property name="whereClause" value="WHERE c.TYPE_CMS='ANF' "/>
-        <property name="groupClause" value="GROUP BY c.IDE12 "/>
+        <property name="groupClause" value="GROUP BY c.IDE12"/>
         <property name="databaseType" value="MySQL" />
         <property name="dataSource" ref="dataSource"/>
         <property name="sortKey" value="IDE12"/>
@@ -230,6 +230,7 @@
         <property name="selectClause" value="select c.*"/>
         <property name="fromClause" value="from PRIAM_CATALOGUE_OCTAV_ANT c"/>
         <property name="whereClause" value="WHERE c.NUMPROG = '#{jobParameters[numProg]}'"/>
+        <property name="groupClause" value="GROUP BY c.IDE12"/>
         <property name="databaseType" value="MySQL" />
         <property name="dataSource" ref="dataSource"/>
         <property name="sortKey" value="ide12"/>
@@ -275,7 +276,7 @@
         </property>
     </bean>
 
-    <bean id="listnerCopierLigneProgrammeCMS" class="fr.sacem.priam.batch.affectation.listener.ListnerCopierLigneProgrammeCMS"></bean>
+    <bean id="listnerCopierLigneProgrammeCMS" class="fr.sacem.priam.batch.affectation.listener.ListnerCopierLigneProgrammeCMS"/>
 
     <bean id="copierLigneProgrammeCMSProcessor" class="fr.sacem.priam.batch.affectation.processor.LigneCatalogueOctavProcessor"/>
 
