@@ -1,14 +1,17 @@
 package fr.sacem.priam.model.domain.catcms;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import fr.sacem.priam.model.util.SimpleDateSerializer;
-
-import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "PRIAM_CATCMS_CATALOGUE")
@@ -61,30 +64,8 @@ public class CatalogueCms implements Serializable {
     @Column(name = "PARTICIPANTS")
     private String participants;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "ID_CATALOGUE")
-    private List<ParticipantsCatcms> participantsCatcms = new ArrayList<>();
-
     @Column(name = "ELIGIBLE_CREATION")
     private Boolean eligibleCreation;
-
-
-    /*@OneToMany(fetch = FetchType.LAZY)
-    @JoinColumns({
-            @JoinColumn(name="TYPE_CMS", referencedColumnName = "TYPE_CMS"),
-            @JoinColumn(name="IDE12", referencedColumnName = "IDE12")})
-    @JsonIgnore //C'est ça qui pose probleme , on va faire autrement on mappe que participants  & roles et on insere directement via DAO de ParticipantsCatcms
-    private List<ParticipantsCatcms> participantsCatcms = new ArrayList<>();*/
-//
-//
-//    private transient List<ParticipantsCatcms> participants = new ArrayList<>();
-//
-
-    //    @OneToMany
-//    @JoinColumns({
-//            @JoinColumn(name="TYPE_CMS", referencedColumnName = "TYPE_CMS"),
-//            @JoinColumn(name="IDE12", referencedColumnName = "IDE12")})
-//    private transient List<ParticipantsCatcms> roles = new ArrayList<>();
 
     public String getRoles() {
         return this.roles;
@@ -199,21 +180,6 @@ public class CatalogueCms implements Serializable {
         this.eligibleCreation = eligibleCreation;
     }
 
-    /* public List<ParticipantsCatcms> getParticipantsCatcms() {
-        return participantsCatcms;
-    }
-
-    public void setParticipantsCatcms(List<ParticipantsCatcms> participantsCatcms) {
-        this.participantsCatcms = participantsCatcms;
-    }*/
-
-    public List<ParticipantsCatcms> getParticipantsCatcms() {
-        return participantsCatcms;
-    }
-
-    public void setParticipantsCatcms(List<ParticipantsCatcms> participantsCatcms) {
-        this.participantsCatcms = participantsCatcms;
-    }
 
     public CatalogueCms() {}
 }

@@ -1,7 +1,7 @@
 package fr.sacem.priam.batch.filiation.npu.processor;
 
+import fr.sacem.priam.batch.common.domain.OeuvreFiliationNPU;
 import fr.sacem.priam.batch.filiation.npu.dao.JournalCatcmsRepository;
-import fr.sacem.priam.batch.filiation.npu.domain.OeuvreFiliationNPU;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 

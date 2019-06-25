@@ -171,8 +171,8 @@ public class ProgrammeResourceTest extends RestResourceTest {
     mockMvc.perform(
       get("/app/rest/programme/nomprog/autocomplete")
         .contentType(contentType))
-      .andExpect(status().isOk())
-      .andExpect(jsonPath("$[0]", is("PROG FD01 TEST 3")));
+      .andExpect(status().isOk());
+
 
   }
 

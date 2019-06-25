@@ -34,6 +34,7 @@ import static fr.sacem.priam.common.constants.EnvConstants.*;
 public class GeneralResource {
 
     private static final Integer RION_639 = 639 ;
+
     private static final String RION_FORMAT_MMMM_yyyy = "MMMM yyyy";
     private static final String USER_FAMILLE = "USER_FAMILLE";
     private static final String USER_FAMILLE_ALL = "ALL,Toutes";

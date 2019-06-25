@@ -27,7 +27,8 @@ public class ParticipantFileItemReader extends AbstractItemCountingItemStreamIte
     private static final Log logger = LogFactory.getLog(ParticipantFileItemReader.class);
 
     // default encoding for input files
-    public static final String DEFAULT_CHARSET = Charset.defaultCharset().name();
+    //Using Cp1252(ANSI) encoding to fix BUG PRIAM-447
+    public static final String DEFAULT_CHARSET = Charset.forName("Cp1252").name();
 
     private RecordSeparatorPolicy recordSeparatorPolicy = new SimpleRecordSeparatorPolicy();
 

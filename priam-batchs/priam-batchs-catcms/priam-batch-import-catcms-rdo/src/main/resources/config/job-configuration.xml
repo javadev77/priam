@@ -119,6 +119,8 @@
                 </property>
             </bean>
         </property>
+        <!-- FIX BUG PRIAM-447 -->
+        <property name="encoding" value="Cp1252"/>
     </bean>
 
     <bean id="compositeWriterPriamCatalogueCMSRDO" class="org.springframework.batch.item.support.CompositeItemWriter" scope="step">
@@ -393,11 +395,11 @@
             <value>
                 <![CDATA[
                     UPDATE PRIAM_CATCMS_CATALOGUE SET
-                            ROLES = (SELECT GROUP_CONCAT(PART.ROLE SEPARATOR ',' )
+                            ROLES = (SELECT substring_index(GROUP_CONCAT(PART.ROLE  ORDER BY PART.ID ASC SEPARATOR ',' ), ',', 4)
                              FROM PRIAM_CATCMS_PARTICIPANTS PART
                               WHERE PART.IDE12 = :ide12 AND PART.TYPE_CMS=:typeCMS
                                GROUP BY PART.TYPE_CMS, PART.IDE12),
-                            PARTICIPANTS = (SELECT GROUP_CONCAT(PART.PARTICIPANT SEPARATOR ',' )
+                            PARTICIPANTS = (SELECT substring_index(GROUP_CONCAT(PART.PARTICIPANT  ORDER BY PART.ID ASC SEPARATOR ',' ), ',', 4)
                              FROM PRIAM_CATCMS_PARTICIPANTS PART
                               WHERE PART.IDE12=:ide12 AND PART.TYPE_CMS=:typeCMS
                                GROUP BY PART.TYPE_CMS, PART.IDE12)

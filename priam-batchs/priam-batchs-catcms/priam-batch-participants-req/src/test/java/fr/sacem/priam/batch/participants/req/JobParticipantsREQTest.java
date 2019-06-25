@@ -1,12 +1,16 @@
 package fr.sacem.priam.batch.participants.req;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameter;
@@ -17,14 +21,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 /**
  * Created by benmerzoukah on 25/05/2018.
  */
@@ -32,8 +28,7 @@ import static org.junit.Assert.assertTrue;
 @ActiveProfiles("test")
 public class JobParticipantsREQTest {
     public static final String PREFIX_PART_REQ = "^FF_PRIAM_\\d{14}_PARTICIPANTS_(FRA|ANF)_REQ.csv$";
-    public static final String PREFIX_FLAG = "^Flag_FF_PRIAM_\\d{14}_PARTICIPANTS_(FRA|ANF)_REQ.csv$";
-    private final Logger LOG = LoggerFactory.getLogger(getClass());
+    public static final String PREFIX_FLAG = "^Flag_FF_PRIAM_\\d{14}_PARTICIPANTS_(FRA|ANF)_REQ$";
 
     private JobLauncherTestUtils jobLauncherTestUtils;
     private ApplicationContext context;

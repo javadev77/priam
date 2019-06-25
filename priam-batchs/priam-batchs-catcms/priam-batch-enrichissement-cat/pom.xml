@@ -3,13 +3,12 @@
     <parent>
         <artifactId>priam-batchs-catcms</artifactId>
         <groupId>fr.sacem.priam</groupId>
-        <version>2.4.0-SNAPSHOT</version>
+        <version>2.4.1-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>priam-batch-enrichissement-cat</artifactId>
-
     <packaging>jar</packaging>
 
     <name>BatchEnrichissement</name>
@@ -135,7 +134,7 @@
             <dependency>
                 <groupId>fr.sacem.priam</groupId>
                 <artifactId>priam-model</artifactId>
-                <version>2.4.0-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
         </dependencies>
 

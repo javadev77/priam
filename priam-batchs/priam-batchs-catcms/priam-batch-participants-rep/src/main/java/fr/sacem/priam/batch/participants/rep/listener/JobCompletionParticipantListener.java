@@ -90,6 +90,8 @@ public class JobCompletionParticipantListener extends JobExecutionListenerSuppor
                 LOG.info(errors.toString());
                 utilFile.deplacerFichier(parameterFichierCSVEnCours, parameterNomFichierOriginal, outputDirectory);
 
+
+
             }
         }
 

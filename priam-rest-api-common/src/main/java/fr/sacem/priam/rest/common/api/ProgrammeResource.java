@@ -152,9 +152,4 @@ public class ProgrammeResource {
 
         return programmeService.findAllNomProgByCriteria();
     }
-
-
-
-
-
 }

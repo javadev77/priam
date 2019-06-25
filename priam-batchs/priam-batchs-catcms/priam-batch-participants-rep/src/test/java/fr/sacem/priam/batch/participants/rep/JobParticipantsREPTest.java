@@ -44,7 +44,7 @@ public class JobParticipantsREPTest {
     private static final String inputDirectory = "target/inputDirectory/";
     private static final String outputDirectory = "target/outputDirectory/";
 
-    private static final String PATTERN_FILE_NAME = "^FF_PRIAM_PARTICIPANTS_FRA_REP_\\d{14}$";
+    private static final String PATTERN_FILE_NAME = "^FF_PRIAM_PARTICIPANTS_(ANF|FRA)_REP_\\d{14}$";
 
 
     private ParticipantRepositoryForTest participantRepository;

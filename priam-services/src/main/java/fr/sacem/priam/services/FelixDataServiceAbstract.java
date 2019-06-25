@@ -67,9 +67,6 @@ import org.springframework.validation.FieldError;
 public abstract class FelixDataServiceAbstract {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FelixDataServiceAbstract.class);
-    public static final String CDE_MOD_FAC = "FORFAI";
-    public static final String PRINC = "PRINC";
-    public static final String SANS = "SANS";
     private static final String DOC_PREFIX ="FF_PRIAM_PREPREP101_" ;
     
 
@@ -299,7 +296,7 @@ public abstract class FelixDataServiceAbstract {
             SftpUtil.uploadFile(FELIX, tempFile, ff.getNomFichier());
             LOGGER.debug("<=== Fin Envoi du fichier à FELIX = " + ff.getNomFichier());
             programmeDto.setStatut(StatutProgramme.MIS_EN_REPART);
-            programmeService.majStatut(programmeDto, userDTO);
+            programmeService.majStatutToMisEnRepartition(programmeDto, userDTO);
             
             ff.setStatut(StatutFichierFelix.ENVOYE);
             fichierFelixDao.saveAndFlush(ff);

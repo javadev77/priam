@@ -10,8 +10,6 @@ import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
 
 public class ParticipantFraProcessor implements ItemProcessor<Participant, Participant> {
 
@@ -48,8 +46,14 @@ public class ParticipantFraProcessor implements ItemProcessor<Participant, Parti
                     participant.setStatut(1);
                 }
 
+            log.info(
+                String.format("IDE12=[%s], Participant=[%s], Role=[%s], Statut=[%s]", participant.getIde12(), participant.getNomPart(), participant.getRolPart(), participant.getStatut())
+            );
+
+
             return participant;
         }
+
 
         return null;
     }

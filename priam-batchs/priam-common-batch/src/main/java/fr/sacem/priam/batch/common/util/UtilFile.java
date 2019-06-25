@@ -2,6 +2,23 @@ package fr.sacem.priam.batch.common.util;
 
 import fr.sacem.priam.batch.common.service.importPenef.FichierBatchService;
 import fr.sacem.priam.batch.common.util.exception.PriamValidationException;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.nio.charset.Charset;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,16 +28,6 @@ import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
-
-import java.io.*;
-import java.nio.charset.Charset;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipOutputStream;
 
 /**
  * Created by fandis on 10/05/2017.
@@ -117,7 +124,7 @@ public class UtilFile {
             ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(outputFile + fileNameExtensionZip), cs);
             addToZipFile(outputFile + fileName, zos);
 
-            //addFlag(outputFile, fileNameExtensionZip);
+            addFlag(outputFile, fileNameExtensionZip);
 
             File file = new File(outputFile + fileName);
             file.deleteOnExit();
@@ -163,12 +170,22 @@ public class UtilFile {
     public void suppressionFlag(File fichierEnCoursDeTraitement){
         if(fichierEnCoursDeTraitement != null){
             String nomFichierFlag = FilenameUtils.removeExtension(fichierEnCoursDeTraitement.getAbsolutePath()) + EXTENTION_FLAG;
-            File fichierFlag = new File(nomFichierFlag);
-            if(fichierFlag.exists()){
-                fichierFlag.delete();
-            } else {
-                LOG.error("Suppresion flag KO ");
-            }
+            deleteFile(nomFichierFlag);
+        }
+    }
+
+    private void deleteFile(String nomFichierFlag) {
+        File fichierFlag = new File(nomFichierFlag);
+        if (fichierFlag.exists()) {
+            fichierFlag.delete();
+        } else {
+            LOG.error("Le fichier Flag n'existe pas");
+        }
+    }
+
+    public void suppressionFlagDemiInterface(String flagFilename){
+        if(flagFilename != null){
+            deleteFile(flagFilename);
         }
     }
 

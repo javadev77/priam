@@ -6,17 +6,12 @@ import fr.sacem.priam.common.constants.EnvConstants;
 import fr.sacem.priam.common.util.SftpUtil;
 import fr.sacem.priam.model.dao.jpa.FichierFelixDao;
 import fr.sacem.priam.model.dao.jpa.FichierFelixLogDao;
-import fr.sacem.priam.model.dao.jpa.LignePreprepDao;
-import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.priam.model.domain.FichierFelix;
 import fr.sacem.priam.model.domain.FichierFelixLog;
 import fr.sacem.priam.model.domain.StatutFichierFelix;
 import fr.sacem.priam.model.domain.StatutProgramme;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.security.model.UserDTO;
-import fr.sacem.priam.services.FelixDataCMSService;
-import fr.sacem.priam.services.FelixDataCPService;
-import fr.sacem.priam.services.ParametrageService;
 import fr.sacem.priam.services.ProgrammeService;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -26,8 +21,10 @@ import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import javax.sql.DataSource;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
@@ -53,19 +50,22 @@ public class JobCompletionFelixRepartListener extends JobExecutionListenerSuppor
 
     @Autowired
     private FichierFelixLogDao fichierFelixLogDao;
+//
+//    @Autowired
+//    private LignePreprepDao lignePreprepDao;
+
+//    @Autowired
+//    private FelixDataCPService felixDataCPService;
+//
+//
+//    @Autowired
+//    private FelixDataCMSService felixDataCMSService;
+//
+//    @Autowired
+//    private ProgrammeDao programmeDao;
 
     @Autowired
-    private LignePreprepDao lignePreprepDao;
-
-    @Autowired
-    private FelixDataCPService felixDataCPService;
-
-
-    @Autowired
-    private FelixDataCMSService felixDataCMSService;
-
-    @Autowired
-    private ProgrammeDao programmeDao;
+    DataSource dataSource;
 
     @Override
     public void beforeJob(JobExecution jobExecution) {
@@ -75,12 +75,9 @@ public class JobCompletionFelixRepartListener extends JobExecutionListenerSuppor
         jobExecution.getExecutionContext().put("FELIX_REPART_FILENAME", "");
 
         LOGGER.info(">>>>>> prepare FelixData <<<<<<");
-        lignePreprepDao.deleteAll(numProg);
 
-//        String codeFamille = programmeDao.findByNumProg(numProg).getFamille().getCode();
-//        if("UC".equalsIgnoreCase(codeFamille)) {
-//
-//        }
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        jdbcTemplate.update("DELETE FROM PRIAM_LIGNE_PREPREP WHERE numProg=?", numProg);
     }
 
     @Override
@@ -93,10 +90,11 @@ public class JobCompletionFelixRepartListener extends JobExecutionListenerSuppor
 
             // Envoi du fichier via FTP
             File tempFile = new File(getPreprepDir() + File.separator + felixRepartFilename);
-            LOGGER.debug("==> Debut Envoi du fichier à FELIX = " + felixRepartFilename);
+            LOGGER.info("==> Debut Envoi du fichier à FELIX = " + felixRepartFilename);
 
             try {
                 SftpUtil.uploadFile(FELIX, tempFile, felixRepartFilename);
+                LOGGER.info("<=== Fin Envoi du fichier à FELIX = " + felixRepartFilename);
             } catch (JSchException e) {
                 processErrorSendFile(numProg, e);
             } catch (SftpException e) {
@@ -105,7 +103,7 @@ public class JobCompletionFelixRepartListener extends JobExecutionListenerSuppor
                 processErrorSendFile(numProg, e);
             }
 
-            LOGGER.debug("<=== Fin Envoi du fichier à FELIX = " + felixRepartFilename);
+
             ProgrammeDto programmeDto = new ProgrammeDto();
             programmeDto.setNumProg(numProg);
             programmeDto.setStatut(StatutProgramme.MIS_EN_REPART);
@@ -113,7 +111,7 @@ public class JobCompletionFelixRepartListener extends JobExecutionListenerSuppor
             programmeDto.setUsermaj(userId);
             UserDTO userDTO = new UserDTO();
 
-            programmeService.majStatut(programmeDto, userDTO);
+            programmeService.majStatutToMisEnRepartition(programmeDto, userDTO);
 
             FichierFelix ff = fichierFelixDao.findByNumprog(numProg);
             ff.setNomFichier(felixRepartFilename);

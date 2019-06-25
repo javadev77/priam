@@ -34,10 +34,11 @@ target/
 
 ### NetBeans ###
 nbproject/private/
-build/
+#build/
 nbbuild/
 dist/
 nbdist/
+<<<<<<< HEAD
 .nb-gradle/
 
 
@@ -60,8 +61,14 @@ dist/
 /.idea/inspectionProfiles/
 /.idea/workspace.xml
 /.idea/encodings.xml
+<<<<<<< HEAD
 
 
 .mvn/
 mvnw
 mvnw.cmd
+=======
+=======
+.nb-gradle/
+>>>>>>> master
+>>>>>>> release-INT-2.3.x

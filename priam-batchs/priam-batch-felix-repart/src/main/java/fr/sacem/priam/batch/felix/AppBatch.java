@@ -18,10 +18,10 @@ import java.util.Map;
  */
 public class AppBatch {
 
-    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(AppBatch.class);;
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(AppBatch.class);
 
     public static void main(String[] args) {
-        LOGGER.info("Lancement du Batch Affectation CP ");
+        LOGGER.info("Lancement du Batch Felix");
 
         ApplicationContext context = new AnnotationConfigApplicationContext(BatchFelixConfigLocal.class);
 
@@ -30,9 +30,9 @@ public class AppBatch {
         Job jobAffectationCP = (Job) context.getBean("jobFelixRepart");
 
         try {
-            Map<String, JobParameter> jobParametersMap = new HashMap<String, JobParameter>();
+            Map<String, JobParameter> jobParametersMap = new HashMap<>();
             jobParametersMap.put("time", new JobParameter(System.currentTimeMillis()));
-            jobParametersMap.put("numProg", new JobParameter("180014"));
+            jobParametersMap.put("numProg", new JobParameter("180036"));
             JobParameters jobParameters = new JobParameters(jobParametersMap);
 
             JobExecution execution = jobLauncher.run(jobAffectationCP, jobParameters);

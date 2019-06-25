@@ -11,12 +11,15 @@ public class ParticipantRowMapper implements RowMapper<Participant> {
     @Override
     public Participant mapRow(ResultSet resultSet, int i) throws SQLException {
         Participant participant = new Participant();
+
         participant.setId(resultSet.getInt("ID"));
         participant.setIde12(resultSet.getLong("IDE12"));
         participant.setTypeCMS(resultSet.getString("TYPE_CMS"));
         participant.setRolPart(resultSet.getString("ROLE"));
         participant.setNomPart(resultSet.getString("PARTICIPANT"));
+
         participant.setStatut(resultSet.getInt("STATUT"));
+
         return participant;
     }
 }

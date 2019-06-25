@@ -95,7 +95,6 @@ public class ProgrammeServiceTest {
 		Integer lastSeq = StringUtils.isNotEmpty(lastElement) ?  Integer.valueOf(lastElement) : 0;
 		
 		Programme programme = programmeService.addProgramme(programmeDto, userDTO);
-		
 		assertThat(programme.getNumProg()).isEqualTo(year  + StringUtils.leftPad(String.valueOf(lastSeq + 1), 4, "0"));
 		assertThat(programme.getNom()).isEqualTo("Test-PR01");
 		assertThat(programme.getRionTheorique().getRion()).isEqualTo(619);

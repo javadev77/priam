@@ -2,7 +2,7 @@
 
   <div class="container-fluid">
 
-    <navbar titre1="Programme" titre2="Liste programmes" titre3="Affectation CMS" backButton="true"></navbar>
+    <navbar titre1="Programme" titre2="Liste programmes" titre3="Affectation CMS" :backButton="true"></navbar>
 
 
     <div class="container-fluid sacem-formula">

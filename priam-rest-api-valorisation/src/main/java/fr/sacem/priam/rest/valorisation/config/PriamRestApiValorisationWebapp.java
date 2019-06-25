@@ -10,6 +10,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Profile;
 
 /**
  * Entry point for config of Valorisation WebApp
@@ -18,8 +19,8 @@ import org.springframework.context.annotation.Import;
 @Import(value = {PropertiesWithJavaConfig.class, RestMvcConfig.class,
     JpaConfiguration.class, SecurityRestConfiguration.class, BatchConfigProd.class})
 @SpringBootApplication(scanBasePackages = {"fr.sacem.priam.rest.valorisation", "fr.sacem.priam.common", "fr.sacem.priam.services", "fr.sacem.priam.model"})
-
 @EnableCaching
+@Profile({"prod", "re7", "dev"})
 public class PriamRestApiValorisationWebapp extends SpringBootServletInitializer {
 
     @Override

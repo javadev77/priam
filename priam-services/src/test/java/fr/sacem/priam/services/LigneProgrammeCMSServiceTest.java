@@ -3,7 +3,6 @@ package fr.sacem.priam.services;
 import ch.vorburger.mariadb4j.springframework.MariaDB4jSpringService;
 import com.google.common.collect.Iterables;
 import fr.sacem.priam.model.dao.JpaConfigurationTest;
-import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.dao.jpa.LigneProgrammeCMSDaoForTest;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.priam.model.domain.Programme;
@@ -12,6 +11,15 @@ import fr.sacem.priam.model.domain.criteria.LigneProgrammeCriteria;
 import fr.sacem.priam.model.domain.dto.KeyValueDto;
 import fr.sacem.priam.model.domain.dto.SelectionCMSDto;
 import fr.sacem.priam.security.model.UserDTO;
+import static java.lang.Boolean.TRUE;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.is;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,12 +35,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AbstractTestExecutionListener;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.*;
-
-import static java.lang.Boolean.TRUE;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.is;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -107,8 +109,6 @@ public class LigneProgrammeCMSServiceTest extends AbstractTestExecutionListener 
     @Autowired
     LigneProgrammeCMSDaoForTest ligneProgrammeCMSDao;
 
-    @Autowired
-    FichierDao fichierDao;
 
     @Autowired
     ProgrammeDao programmeDao;

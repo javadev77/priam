@@ -1,27 +1,28 @@
 package fr.sacem.priam.services;
 
 import fr.sacem.priam.common.TypeUtilisationEnum;
-import fr.sacem.priam.model.dao.jpa.*;
+import fr.sacem.priam.model.dao.jpa.JournalDao;
+import fr.sacem.priam.model.dao.jpa.JournalJdbcDao;
 import fr.sacem.priam.model.dao.jpa.cms.LigneProgrammeCMSDao;
 import fr.sacem.priam.model.dao.jpa.cp.LigneProgrammeCPDao;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.priam.model.dao.jpa.fv.LigneProgrammeFVDao;
-import fr.sacem.priam.model.domain.*;
-import fr.sacem.priam.model.domain.dto.JournalDto;
-import fr.sacem.priam.model.domain.dto.SelectionCMSDto;
+import fr.sacem.priam.model.domain.Journal;
+import fr.sacem.priam.model.domain.Programme;
+import fr.sacem.priam.model.domain.SituationApres;
+import fr.sacem.priam.model.domain.SituationAvant;
 import fr.sacem.priam.model.util.FamillePriam;
 import fr.sacem.priam.security.model.UserDTO;
 import fr.sacem.priam.services.dto.ValdierSelectionProgrammeInput;
 import fr.sacem.priam.services.journal.annotation.TypeLog;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Created by monfleurm on 15/03/2018.
@@ -79,8 +80,8 @@ public class JournalService {
 
 		List<Long> listLigneProgrammePreselectionnees;
 		List<Long> listLigneProgrammePredeselectionnees;
-		List<SelectionCMSDto> listLigneProgrammePreselectionneesCMS;
-		List<SelectionCMSDto> listLigneProgrammePredeselectionneesCMS;
+		List<Long> listLigneProgrammePreselectionneesCMS;
+		List<Long> listLigneProgrammePredeselectionneesCMS;
 
 		List<Journal> journaux = new ArrayList<>();
 
@@ -97,17 +98,19 @@ public class JournalService {
 				buildJournal(TypeLog.DESELECTION.getEvenement(), numProg, userDTO, journaux, ide12);
 			}
 
-		} else if(selectionProgrammeInput.isFromSelection() && programme.getFamille().getCode().equals(TypeUtilisationEnum.CMS_FRA.getCodeFamille())){
+		} else if(selectionProgrammeInput.isFromSelection()
+			&& programme.getFamille().getCode().equals(TypeUtilisationEnum.CMS_FRA.getCodeFamille())){
 			listLigneProgrammePreselectionneesCMS = ligneProgrammeCMSDao.findLigneProgrammePreselected(numProg, true, false);
 			listLigneProgrammePredeselectionneesCMS = ligneProgrammeCMSDao.findLigneProgrammePreselected(numProg, false, true);
 
-			for (SelectionCMSDto ligneSelectionnee : listLigneProgrammePreselectionneesCMS) {
-				buildJournal(typeLog.getEvenement(), numProg, userDTO, journaux, ligneSelectionnee.getIde12());
+
+			for (Long ligneSelectionnee : listLigneProgrammePreselectionneesCMS) {
+				buildJournal(typeLog.getEvenement(), numProg, userDTO, journaux, ligneSelectionnee);
 			}
 
 
-			for (SelectionCMSDto ligneDeselectionnee : listLigneProgrammePredeselectionneesCMS) {
-				buildJournal(TypeLog.DESELECTION.getEvenement(), numProg, userDTO, journaux, ligneDeselectionnee.getIde12());
+			for (Long ligneDeselectionnee : listLigneProgrammePredeselectionneesCMS) {
+				buildJournal(TypeLog.DESELECTION.getEvenement(), numProg, userDTO, journaux, ligneDeselectionnee);
 			}
 		} else if(selectionProgrammeInput.isFromSelection() && programme.getFamille().getCode().equals(FamillePriam.VALORISATION.getCode())){
 			listLigneProgrammePreselectionnees = ligneProgrammeFVDao.findLigneProgrammePreselected(numProg,  true, false);

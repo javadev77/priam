@@ -151,10 +151,14 @@ public class AffectationCMSResource {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ProgrammeDto desaffecterFichiers (@RequestBody DesaffectationDto desaffectationDto, UserDTO userDTO){
-        LOGGER.info("desaffecterFichiers() ==> numProg=" + desaffectationDto.getNumProg());
+        String numProg = desaffectationDto.getNumProg();
+        LOGGER.info("desaffecterFichiers() ==> numProg=" + numProg);
 
-        Programme programme = programmeDao.findByNumProg(desaffectationDto.getNumProg());
+        List<FileDto> fichiersAvantDesaffectation = fichierDao.findFichiersAffecteByIdProgramme(numProg, Status.AFFECTE);
+        List<Long> collectedIds = fichiersAvantDesaffectation.stream().map(FileDto::getId).collect(Collectors.toList());
+        desaffectationDto.setFichersAvantDesaffectation(collectedIds);
 
+        Programme programme = programmeDao.findByNumProg(numProg);
         programme.setStatutEligibilite(StatutEligibilite.EN_COURS_DESAFFECTATION);
         programmeDao.saveAndFlush(programme);
 
@@ -165,7 +169,7 @@ public class AffectationCMSResource {
 
             Map<String, JobParameter> jobParametersMap = new HashMap<>();
             jobParametersMap.put("time", new JobParameter(System.currentTimeMillis()));
-            jobParametersMap.put("numProg", new JobParameter(desaffectationDto.getNumProg()));
+            jobParametersMap.put("numProg", new JobParameter(numProg));
             jobParametersMap.put("username", new JobParameter(userDTO.getDisplayName()));
             jobParametersMap.put("isAllDesaffecte", new JobParameter(String.valueOf(desaffectationDto.isAllDesaffecte())));
             jobParametersMap.put("userId", new JobParameter(userDTO.getUserId()));

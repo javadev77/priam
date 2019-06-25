@@ -60,9 +60,9 @@ done
 echo ${LOCALCLASSPATH}
 echo ${SACEM_CONFIG}
 
-$JAVACMD -jar -Dspring.profiles.active=production /usr1/priam/BatchParticipantsREP/bin/priam-batch-participants-rep.jar FRA
+$JAVACMD -jar -Dspring.profiles.active=production -DtypeCMS=fra /usr1/priam/BatchParticipantsREP/bin/priam-batch-participants-rep.jar FRA
 # Memoriser le numero de processus du programme java
-CHILD_PID=$
+CHILD_PID=$!
 
 # Intercepter les demandes d'arret du batch
 # et les transmettre sous forme de SIGINT (Ctrl-C) au programme Java

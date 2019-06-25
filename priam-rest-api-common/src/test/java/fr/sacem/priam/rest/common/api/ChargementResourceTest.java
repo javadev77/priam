@@ -1,22 +1,21 @@
 package fr.sacem.priam.rest.common.api;
 
+import static com.google.common.collect.Lists.newArrayList;
 import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.dto.FileDto;
 import fr.sacem.priam.rest.common.api.dto.AffectationCriteria;
 import fr.sacem.priam.rest.common.api.dto.InputChgtCriteria;
 import fr.sacem.priam.rest.common.config.RestResourceTest;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-
-import static com.google.common.collect.Lists.newArrayList;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by benmerzoukah on 13/07/2017.

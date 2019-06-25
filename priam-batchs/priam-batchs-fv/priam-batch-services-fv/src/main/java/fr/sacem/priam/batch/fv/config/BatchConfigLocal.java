@@ -19,7 +19,7 @@ import org.springframework.transaction.PlatformTransactionManager;
  */
 @Configuration
 @ComponentScan(basePackages = {"fr.sacem.priam.batch.fv", "fr.sacem.priam.batch.common", "fr.sacem.priam.model.dao.*"})
-@Profile({"local", "test"})
+@Profile({"local"})
 @PropertySource("classpath:config/application-local.properties")
 @ImportResource(value = "classpath:config/job-affectation-fv.xml")
 public class BatchConfigLocal {

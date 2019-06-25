@@ -7,18 +7,17 @@ import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.dto.AffectationDto;
 import fr.sacem.priam.model.domain.dto.DesaffectationDto;
 import fr.sacem.priam.rest.cms.config.RestResourceTest;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
+import org.junit.Ignore;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by benmerzoukah on 17/01/2018.
@@ -30,7 +29,7 @@ public class AffectationCMSResourceTest extends RestResourceTest {
 
     List<Fichier> fichierANT = new ArrayList<>();
 
-    List<Fichier> fichierFRA = new ArrayList<>();;
+    List<Fichier> fichierFRA = new ArrayList<>();
 
     /*@Override
     public void setup() throws Exception {
@@ -55,7 +54,6 @@ public class AffectationCMSResourceTest extends RestResourceTest {
     }
 
     @Test
-    @Transactional(value="transactionManager")
     @Ignore
     public void affecterFichiers_CMS_FRA() throws Exception {
         AffectationDto affectationDto = createAffectationDto("180001", Arrays.asList("Fichier_FRA01"));
@@ -82,7 +80,7 @@ public class AffectationCMSResourceTest extends RestResourceTest {
     }
 
 
-    @Transactional(value="transactionManager")
+    @Transactional(value="transactionManager", propagation = Propagation.REQUIRES_NEW)
     private AffectationDto createAffectationDto(String numProg, List<String> fichiers) {
         AffectationDto affectationDto = new AffectationDto();
 
@@ -95,7 +93,7 @@ public class AffectationCMSResourceTest extends RestResourceTest {
             fichier.setStatut(Status.CHARGEMENT_OK);
             fichier.setAutomatique(Boolean.TRUE);
 
-            fichierDao.save(fichier);
+            fichier = fichierDao.saveAndFlush(fichier);
 
            // return fichierDao.findByNomFichier(f);
             return fichier;

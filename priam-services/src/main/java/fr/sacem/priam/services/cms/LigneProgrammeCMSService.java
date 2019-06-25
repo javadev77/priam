@@ -3,8 +3,6 @@ package fr.sacem.priam.services.cms;
 import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.cms.LigneProgrammeCMS;
 import fr.sacem.priam.security.model.UserDTO;
-import fr.sacem.priam.services.journal.annotation.LogOeuvre;
-import fr.sacem.priam.services.journal.annotation.TypeLog;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;

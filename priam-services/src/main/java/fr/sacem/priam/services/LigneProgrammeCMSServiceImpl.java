@@ -185,6 +185,7 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
     }
 
     @Override
+    @Transactional(value="transactionManager")
     public void enregistrerEdition(ValdierSelectionProgrammeInput input, UserDTO userDTO) {
         String numProg = input.getNumProg();
         Programme prog = programmeDao.findByNumProg(numProg);
@@ -284,10 +285,8 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
             SareftrTyputil typeUtilisation = programme.getTypeUtilisation();
             if(TypeUtilisationPriam.SONOFRA.getCode().equals(typeUtilisation.getCode())) {
                 situationAvant.setSituation(String.valueOf(sumOfMt(founds)));
-                situationApres.setSituation(String.valueOf(input.getMt()));
             } else if(TypeUtilisationPriam.SONOANT.getCode().equals(typeUtilisation.getCode())) {
                 situationAvant.setSituation(String.valueOf(sumOfNbrDif(founds)));
-                situationApres.setSituation(String.valueOf(input.getNbrDif()));
             }
 
             journal.setEvenement(TypeLog.MODIFIER_OEUVRE.getEvenement());
@@ -433,7 +432,8 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
                     } else if(CORRIGE.equals(ajout)){
                         correctionOeuvreCorrige(numProg, inputLigneCMS, userDTO);
                     } else {
-                        ligneProgrammeCMSDao.updatePointsTemporaireByNumProgramme(numProg, inputLigneCMS.getIde12(), nbrDifEdit);
+                        //ligneProgrammeCMSDao.updatePointsTemporaireByNumProgramme(numProg, inputLigneCMS.getIde12(), nbrDifEdit);
+                        ajouterOeuvreManuel(inputLigneCMS, userDTO);
                     }
                 } else if(prog.getTypeUtilisation().getCode().equals(TypeUtilisationPriam.SONOFRA.getCode())) {
                     String mtValue = obj.get(POINTS_MONTANT);
@@ -451,7 +451,8 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
                     } else if(CORRIGE.equals(ajout)){
                         correctionOeuvreCorrige(numProg, inputLigneCMS, userDTO);
                     } else {
-                        ligneProgrammeCMSDao.updatePointsMtTemporaireByNumProgramme(numProg, inputLigneCMS.getIde12(), mtEdit);
+                        ajouterOeuvreManuel(inputLigneCMS, userDTO);
+                        //ligneProgrammeCMSDao.updatePointsMtTemporaireByNumProgramme(numProg, inputLigneCMS.getIde12(), mtEdit);
                     }
 
                 }
@@ -569,7 +570,7 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
                     result = true;
                 }
             } else {
-                if(ligneProgrammeCMS.getMtEdit().equals(sumOfMt(oeuvresAutoLink))){
+                if(ligneProgrammeCMS.getMtEdit() != null && ligneProgrammeCMS.getMtEdit().equals(sumOfMt(oeuvresAutoLink))){
                     result = true;
                 }
             }
@@ -579,7 +580,7 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
                     result = true;
                 }
             } else {
-                if(ligneProgrammeCMS.getNbrDifEdit().equals(sumOfNbrDif(oeuvresAutoLink))){
+                if(ligneProgrammeCMS.getNbrDifEdit() != null && ligneProgrammeCMS.getNbrDifEdit().equals(sumOfNbrDif(oeuvresAutoLink))){
                     result = true;
                 }
             }

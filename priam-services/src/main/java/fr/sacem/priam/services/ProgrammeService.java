@@ -139,7 +139,7 @@ public class ProgrammeService {
 		return mappedProgramme;
 	}
 	
-	@Transactional
+	@Transactional("transactionManager")
 	public List<Programme> serachProgrammeByNom(String nom) {
 		List<Programme> resultat = new ArrayList<>();
 		if (StringUtils.isNotEmpty(nom)) {
@@ -272,7 +272,7 @@ public class ProgrammeService {
 
 	@Transactional
 	@LogEtatProgramme(event = TypeLog.REPARTITION)
-	public void majStatut(ProgrammeDto programmeDTO, UserDTO userDTO) {
+	public void majStatutToMisEnRepartition(ProgrammeDto programmeDTO, UserDTO userDTO) {
 		Programme prog = programmeDao.findOne(programmeDTO.getNumProg());
 		prog.setStatut(programmeDTO.getStatut());
 		prog.setUsermaj(programmeDTO.getUsermaj());

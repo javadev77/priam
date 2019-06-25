@@ -35,6 +35,7 @@ public class App {
         if(args.length == 1 && args[0].equals(PATTERN_TYPE_CMS_FR) || args[0].equals(FileUtils.CATALOGUE_TYPE_CMS_ANF)) {
 
             String typeCMS = args[0];
+            typeCMS = "FRA".equalsIgnoreCase(typeCMS) ? "FR" : "ANF";
             ApplicationContext context = new AnnotationConfigApplicationContext(ConfigurationPriamLocal.class, ConfigurationPriamProd.class);
 
             JobLauncher jobLauncher = (JobLauncher) context.getBean("jobLauncher");

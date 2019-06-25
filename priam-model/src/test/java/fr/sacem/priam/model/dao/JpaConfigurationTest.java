@@ -2,14 +2,22 @@ package fr.sacem.priam.model.dao;
 
 import ch.vorburger.exec.ManagedProcessException;
 import ch.vorburger.mariadb4j.springframework.MariaDB4jSpringService;
+import java.sql.Driver;
+import java.util.HashMap;
+import java.util.Map;
+import javax.sql.DataSource;
 import org.hibernate.dialect.MySQL5InnoDBDialect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -19,11 +27,6 @@ import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
-
-import javax.sql.DataSource;
-import java.sql.Driver;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by benmerzoukah on 09/05/2017.
@@ -59,6 +62,7 @@ public class JpaConfigurationTest {
 
         return mariaDb;
     }
+
     @Bean
     @DependsOn("dataSource")
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {

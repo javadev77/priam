@@ -28,8 +28,14 @@ public class ConfigurationPriamLocal {
     @Value("${input.archives}")
     String inputDirectory;
 
+    @Value("${second.input.archives}")
+    String secondInputDirectory;
+
     @Value("${output.archives}")
     String outputDirectory;
+
+    @Value("${pattern.file.name}")
+    String patternFileName;
 
     @Bean
     public DataSource dataSource() {
@@ -46,7 +52,9 @@ public class ConfigurationPriamLocal {
     public Admap admap(){
         Admap admap = new Admap();
         admap.setInputFile(inputDirectory);
+        admap.setSecondInputFile(secondInputDirectory);
         admap.setOutputFile(outputDirectory);
+        admap.setPatternFileName(patternFileName);
         return admap;
     }
 

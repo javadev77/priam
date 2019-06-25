@@ -10,9 +10,11 @@ import fr.sacem.priam.common.util.FileUtils;
 import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.dao.jpa.JournalBatchDao;
 import fr.sacem.priam.model.dao.jpa.JournalDao;
+import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
 import fr.sacem.priam.model.domain.Fichier;
 import fr.sacem.priam.model.domain.Journal;
 import fr.sacem.priam.model.domain.Status;
+import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.model.util.JournalAffectationBuilder;
 import fr.sacem.priam.model.util.TypeUtilisationPriam;
 import java.text.SimpleDateFormat;
@@ -31,24 +33,24 @@ import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
 
 @Component
 public class JobCompletionNotificationAffectationCMSListener extends JobExecutionListenerSupport {
     public static final String LIGNE_PROGRAMME_ERRORS = "ligne-programme-errors";
-    public static final String MESSAGE_ERREUR_TECHNIQUE = "Le chargement a été interrompu à cause d'un problème technique";
     public static final String MESSAGE_FICHIER_CHARGE = " - Le fichier \"%s\" a bien été chargé";
     public static final String FORMAT_DATE = "dd/MM/yyyy HH:mm";
-    public static final String MESSAGE_FORMAT_FICHIER = "Le fichier ne peut être chargé car il n'a pas le bon format";
+
     public static final String ERREUR_ELIGIBILITE = "ERREUR_ELIGIBILITE";
     public static final String CHARGEMENT_OK = "CHARGEMENT_OK";
-    public static final String FICHIERS_AVANT_AFFECTATION = "FICHIERS_AVANT_AFFECTATION";
+
     private static String NOM_FICHIER_CSV_EN_COURS = "nomFichier";
     private static String FICHIER_ZIP_EN_COURS = "fichierZipEnCours";
     private static String NOM_ORIGINAL_FICHIER_ZIP = "nomFichierOriginal";
     private static String REPERTOIRE_DE_DESTINATION = "archives.catalog.octav";
-    private static String FILE_ERREUR = "erreur";
+
     private ExecutionContext executionContext;
 
     @Autowired
@@ -78,6 +80,12 @@ public class JobCompletionNotificationAffectationCMSListener extends JobExecutio
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
     @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
+
+    @Autowired
+    ProgrammeViewDao programmeViewDao;
+
+    @Autowired
     public JobCompletionNotificationAffectationCMSListener() {
 
         utilFile = new UtilFile();
@@ -97,10 +105,10 @@ public class JobCompletionNotificationAffectationCMSListener extends JobExecutio
 
     @Override
     public void afterJob(JobExecution jobExecution) {
+        String numProg = jobExecution.getJobParameters().getString("numProg");
 
         if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
 
-            String numProg = jobExecution.getJobParameters().getString("numProg");
             String userId = jobExecution.getJobParameters().getString("userId");
             String listNomFichier = jobExecution.getJobParameters().getString("listNomFichier");
 
@@ -119,7 +127,6 @@ public class JobCompletionNotificationAffectationCMSListener extends JobExecutio
 
                     if (errors == null || errors.isEmpty()) {
                         if (parameterNomFichierCSV != null) {
-                            String nomFichier = (String) parameterNomFichierCSV.getValue();
                             JobParameter idFichier = (JobParameter) executionContext.get("idFichier");
                             fichierBatchService.updateFichierById((Long) idFichier.getValue());
 
@@ -141,6 +148,7 @@ public class JobCompletionNotificationAffectationCMSListener extends JobExecutio
 
                     programmeBatchDao.majStattutEligibilite(numProg, "FIN_ELIGIBILITE");
                     programmeBatchDao.majStattutProgramme(numProg, "AFFECTE");
+
 
                     Long idTraitementCMS = jobExecution.getExecutionContext().getLong("ID_TMT_CMS");
                     Long nbOeuvresRetenues = ligneProgrammeBatchDao.countNbOeuvres(numProg);
@@ -169,6 +177,7 @@ public class JobCompletionNotificationAffectationCMSListener extends JobExecutio
             Long idJournal = journalBatchDao.saveJournal(journal);
             journalBatchDao.saveSituationAvantJournal(journal.getListSituationAvant(), idJournal);
             journalBatchDao.saveSituationApresJournal(journal.getListSituationApres(), idJournal);
+
         } else {
             Collection<StepExecution> stepExecutions = jobExecution.getStepExecutions();
             Iterator it = stepExecutions.iterator();
@@ -183,7 +192,7 @@ public class JobCompletionNotificationAffectationCMSListener extends JobExecutio
                 utilFile.deplacerFichier(parameterFichierZipEnCours, parameterNomFichierOriginal, outputDirectory);
             }
 
-            String numProg = jobExecution.getJobParameters().getString("numProg");
+
             programmeBatchDao.majStattutEligibilite(numProg, ERREUR_ELIGIBILITE);
             Long idTraitementCMS = jobExecution.getExecutionContext().getLong("ID_TMT_CMS");
             traitementCmsDao.majTraitment(idTraitementCMS, 0L, 0L, 0.0d, ERREUR_ELIGIBILITE);
@@ -192,6 +201,9 @@ public class JobCompletionNotificationAffectationCMSListener extends JobExecutio
 
 
         }
+
+        final ProgrammeDto payload = programmeViewDao.findByNumProg(numProg);
+        simpMessagingTemplate.convertAndSend("/global-message/affectation", payload);
 
     }
 

@@ -1,26 +1,21 @@
 package fr.sacem.priam.rest.valorisation.api;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import fr.sacem.priam.model.dao.jpa.fv.LigneProgrammeFVDao;
-
 import fr.sacem.priam.model.domain.fv.LigneProgrammeFV;
+import static fr.sacem.priam.model.util.EtatOeuvreEnum.AUTOMATIQUE;
 import fr.sacem.priam.rest.valorisation.config.RestResourceTest;
 import fr.sacem.priam.services.dto.ValdierSelectionProgrammeInput;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
-
-import java.util.*;
-
-
-import static fr.sacem.priam.model.util.EtatOeuvreEnum.AUTOMATIQUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -33,7 +28,6 @@ public class LigneProgrammeFVResourceTest extends RestResourceTest {
     private LigneProgrammeFVDao ligneProgrammeFVDao;
 
     @Test
-    @Ignore
     public void getDurDifProgramme() throws Exception {
 
         ObjectMapper mapper = new ObjectMapper();
@@ -57,7 +51,6 @@ public class LigneProgrammeFVResourceTest extends RestResourceTest {
 
 
     @Test
-    @Ignore
     public void modifierSelectionTemporaire() throws Exception {
 
         ValdierSelectionProgrammeInput input = new ValdierSelectionProgrammeInput();

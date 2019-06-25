@@ -41,15 +41,15 @@
     </job>
 
     <bean id="readerPriamFiliationNpuCsv"
-          class="fr.sacem.priam.batch.common.reader.CsvMultiResourceItemReader" scope="step">
+          class="fr.sacem.priam.batch.filiation.npu.reader.CsvMultiResourceItemReader" scope="step">
         <property name="delegate" ref="flatFileItemReader"/>
         <property name="strict" value="false"/>
     </bean>
 
     <bean id="flatFileItemReader"
-          class="fr.sacem.priam.batch.filiation.npu.mapper.OeuvreFiliationNPUFileItemReader">
+          class="fr.sacem.priam.batch.common.util.mapper.npu.OeuvreFiliationNPUFileItemReader">
         <property name="lineMapper">
-            <bean class="fr.sacem.priam.batch.filiation.npu.mapper.OeuvreFiliationNPULineMapper">
+            <bean class="fr.sacem.priam.batch.common.util.mapper.npu.OeuvreFiliationNPULineMapper">
                 <property name="lineTokenizer">
                     <bean class="org.springframework.batch.item.file.transform.DelimitedLineTokenizer">
                         <property name="names" value="ide12,ide12Rep,titreOriginal"/>
@@ -58,7 +58,7 @@
                 </property>
                 <property name="fieldSetMapper">
                     <bean class="org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper">
-                        <property name="targetType" value="fr.sacem.priam.batch.filiation.npu.domain.OeuvreFiliationNPU"/>
+                        <property name="targetType" value="fr.sacem.priam.batch.common.domain.OeuvreFiliationNPU"/>
                         <property name="customEditors">
                             <map>
                                 <entry key="java.time.LocalDateTime">
@@ -176,12 +176,14 @@
 
     <bean id="qpReaderMajFlagCatalogueEtParticipant" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
         <property name="selectClause" value="SELECT CATALOGUE.ID, CATALOGUE.TYPE_CMS, CATALOGUE.IDE12, CATALOGUE.DATE_SORTIE"/>
-        <property name="fromClause" value="FROM PRIAM_CATCMS_CATALOGUE CATALOGUE INNER JOIN
-                                    (SELECT ID, TYPE_CMS, IDE12, MAX(DATE_SORTIE) AS DATE_SORTIE
-                                    FROM PRIAM_CATCMS_CATALOGUE
-                                    WHERE (TYPE_CMS, IDE12) NOT IN (SELECT TYPE_CMS, IDE12 FROM PRIAM_CATCMS_CATALOGUE WHERE DATE_SORTIE IS NULL)
-                                         AND DATE_SORTIE &lt;= date_add(current_date,INTERVAL -1 DAY) AND ELIGIBLE_CREATION = 0 GROUP BY TYPE_CMS) REQUETE
-                                    ON REQUETE.TYPE_CMS = CATALOGUE.TYPE_CMS AND REQUETE.IDE12 = CATALOGUE.IDE12 AND REQUETE.DATE_SORTIE = CATALOGUE.DATE_SORTIE"/>
+        <property name="fromClause" value="FROM PRIAM_CATCMS_CATALOGUE CATALOGUE "/>
+        <property name="whereClause" value="WHERE DATE_SORTIE IS NOT NULL
+                                                    AND DATE_SORTIE &lt;= date_add(current_date,INTERVAL-1 DAY) AND ELIGIBLE_CREATION = 0
+                                                    AND DATE_SORTIE = (
+                                                      SELECT MAX(DATE_SORTIE) FROM PRIAM_CATCMS_CATALOGUE FF
+                                                      WHERE DATE_SORTIE IS NOT NULL
+                                                      AND DATE_SORTIE &lt;= date_add(current_date,INTERVAL-1 DAY) AND ELIGIBLE_CREATION = 0
+                                                        AND FF.IDE12=CATALOGUE.IDE12 AND CATALOGUE.TYPE_CMS=FF.TYPE_CMS)"/>
         <property name="databaseType" value="MySQL" />
         <property name="dataSource" ref="dataSource"/>
         <property name="sortKey" value="CATALOGUE.ID"/>

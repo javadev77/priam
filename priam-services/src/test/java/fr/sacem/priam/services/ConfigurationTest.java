@@ -17,7 +17,8 @@ import static fr.sacem.priam.common.constants.EnvConstants.FELIX_PREPREP_DIR;
 @ComponentScan(basePackages = {"fr.sacem.priam.services", "fr.sacem.priam.common", "fr.sacem.priam.model"},
         excludeFilters = {
                 @ComponentScan.Filter(type = FilterType.REGEX, pattern = "fr.sacem.priam.common.web.*"),
-                @ComponentScan.Filter(type = FilterType.REGEX, pattern = "fr.sacem.priam.model.config.*")
+                @ComponentScan.Filter(type = FilterType.REGEX, pattern = "fr.sacem.priam.model.config.*"),
+                @ComponentScan.Filter(type = FilterType.REGEX, pattern = "fr.sacem.priam.common.config.WebSocketConfig*")
 })
 public class ConfigurationTest {
 	

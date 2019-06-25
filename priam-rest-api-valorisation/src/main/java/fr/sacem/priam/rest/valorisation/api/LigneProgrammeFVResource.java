@@ -7,19 +7,20 @@ import fr.sacem.priam.services.api.LigneProgrammeResource;
 import fr.sacem.priam.services.api.LigneProgrammeService;
 import fr.sacem.priam.services.dto.ValdierSelectionProgrammeInput;
 import fr.sacem.priam.services.fv.LigneProgrammeFVService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Profile;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/app/rest/")
-@Profile({"dev", "prod","re7"})
 public class LigneProgrammeFVResource extends LigneProgrammeResource {
 
     private LigneProgrammeService ligneProgrammeService;
