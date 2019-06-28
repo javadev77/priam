@@ -3,6 +3,9 @@ spring:
     active: @spring.active.profiles@
   jmx:
     enabled: false
+  http:
+    multipart:
+      max-file-size: -1
 
 endpoints:
   health:

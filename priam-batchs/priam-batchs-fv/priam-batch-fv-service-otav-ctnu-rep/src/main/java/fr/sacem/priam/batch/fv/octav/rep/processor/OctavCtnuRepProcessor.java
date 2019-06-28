@@ -33,21 +33,22 @@ public class OctavCtnuRepProcessor implements ItemProcessor<OctavCtnu, LigneProg
     @Override
     public LigneProgrammeFV process(OctavCtnu octavCtnu) throws Exception {
         if(octavCtnu != null) {
-            if((Integer.valueOf(octavCtnu.getStatut()) >= 0) && !octavCtnu.getIde12().equals(octavCtnu.getIde12Ctnu())) {
-                Long idFichier = jobExecutionContext.getLong("idFichier");
+            Optional<String> opt = Optional.ofNullable(octavCtnu.getIde12Ctnu()).filter(s -> !s.isEmpty());
+            if(opt.isPresent()) {
+                if((Integer.valueOf(octavCtnu.getStatut()) >= 0) && !octavCtnu.getIde12().equals(octavCtnu.getIde12Ctnu())) {
+                    Long idFichier = jobExecutionContext.getLong("idFichier");
 
-                Optional<String> opt = Optional.ofNullable(octavCtnu.getIde12Ctnu()).filter(s -> !s.isEmpty());
-                if(opt.isPresent()) {
                     LigneProgrammeFV oeuvreComplxContenant =
                             ligneProgrammeFVDao.findOeuvreByIde12(
-                                    Long.valueOf(octavCtnu.getIde12Ctnu()), idFichier);
-                    if(oeuvreComplxContenant == null) {
+                                    Long.valueOf(octavCtnu.getIde12()), idFichier);
+                    if (oeuvreComplxContenant == null) {
                         return null;
                     }
-                    oeuvreComplxContenant.setIde12Complx(octavCtnu.getIde12());
-                    oeuvreComplxContenant.setCdetypide12cmplx(octavCtnu.getCdeTypIde12());
+                    oeuvreComplxContenant.setIde12Complx(octavCtnu.getIde12Ctnu());
+                    oeuvreComplxContenant.setCdetypide12cmplx(octavCtnu.getCdeTypIde12Ctnu());
 
                     return oeuvreComplxContenant;
+
                 }
             }
         }

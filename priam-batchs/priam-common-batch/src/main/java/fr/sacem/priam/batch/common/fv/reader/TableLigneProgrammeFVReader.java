@@ -28,7 +28,7 @@ public class TableLigneProgrammeFVReader extends JdbcPagingItemReader<LigneProgr
         sqlPagingQueryProviderFactoryBean.setSelectClause("SELECT l.*");
         sqlPagingQueryProviderFactoryBean.setFromClause("FROM PRIAM_LIGNE_PROGRAMME_FV l " +
                 "INNER JOIN PRIAM_FICHIER f ON l.ID_FICHIER=f.ID");
-        sqlPagingQueryProviderFactoryBean.setWhereClause("WHERE f.ID = " + idFichier );
+        sqlPagingQueryProviderFactoryBean.setWhereClause("WHERE f.ID = " + idFichier + " AND l.cdeTypIde12 = 'COPT'");
         sqlPagingQueryProviderFactoryBean.setGroupClause("l.ide12");
         sqlPagingQueryProviderFactoryBean.setSortKey("id");
 

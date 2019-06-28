@@ -16,6 +16,10 @@ import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.validation.constraints.Null;
+
+import static fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementEnum.DONE_SRV_INFO_OEUVRE;
+
 /**
  * Created with IntelliJ IDEA.
  * @version $Id$
@@ -93,7 +97,7 @@ public class JobListener extends JobExecutionListenerSupport {
                 }
                 LOG.info(errors.toString());
                 utilFile.deplacerFichier(parameterFichierCSVEnCours, parameterNomFichierOriginal, outputDirectory);
-
+                fichierJdbcDao.majStatutEnrichissement((Long) idFichier, null);
             }
         }
 

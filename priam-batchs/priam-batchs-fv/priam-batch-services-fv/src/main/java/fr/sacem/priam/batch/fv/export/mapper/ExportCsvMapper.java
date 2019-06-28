@@ -49,6 +49,7 @@ public class ExportCsvMapper implements RowMapper<ExportCsvDto> {
         exportCsvDto.setTaxOri(resultSet.getDouble("taxOri"));
         exportCsvDto.setPaysOri(resultSet.getString("paysOri"));
         exportCsvDto.setIndicRepart(resultSet.getInt("indicRepart"));
+        exportCsvDto.setParticipantFonds(resultSet.getString("PARTICIPATION_FONDS"));
         exportCsvDto.setNomProgramme(resultSet.getString("NOM_PRG"));
         exportCsvDto.setNom(resultSet.getString("NOM"));
         exportCsvDto.setPrenom(resultSet.getString("PRENOM"));
