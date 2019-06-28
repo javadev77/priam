@@ -3,15 +3,21 @@ package fr.sacem.priam.batch.fv.serviceimport.listener;
 import fr.sacem.priam.batch.common.dao.FichierRepository;
 import fr.sacem.priam.batch.common.util.exception.PriamValidationException;
 import fr.sacem.priam.batch.fv.journal.JournalUtil;
-import fr.sacem.priam.batch.fv.journal.TypeLog;
+import static fr.sacem.priam.batch.fv.journal.TypeLog.IMPORT;
+import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.priam.model.dao.jpa.fv.ImportProgrammeFVDao;
-import fr.sacem.priam.model.domain.*;
+import fr.sacem.priam.model.domain.Fichier;
+import fr.sacem.priam.model.domain.Programme;
+import fr.sacem.priam.model.domain.StatutImportProgramme;
+import fr.sacem.priam.model.domain.StatutProgramme;
+import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.model.domain.fv.ImportProgrammeFV;
-import fr.sacem.priam.model.journal.JournalBuilder;
 import fr.sacem.priam.services.FichierService;
-
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,9 +28,8 @@ import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
-
-import static fr.sacem.priam.batch.fv.journal.TypeLog.IMPORT;
 
 @Component
 public class JobImportFVListener extends JobExecutionListenerSupport {
@@ -50,6 +55,13 @@ public class JobImportFVListener extends JobExecutionListenerSupport {
 
     @Autowired
     JournalUtil journalUtil;
+
+    @Autowired
+    private ProgrammeViewDao programmeViewDao;
+
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
+
 
     @Override
     public void beforeJob(JobExecution jobExecution) {
@@ -130,6 +142,10 @@ public class JobImportFVListener extends JobExecutionListenerSupport {
             importProgrammeFVDao.save(fichierImporte);
 
         }
+
+
+        final ProgrammeDto payload = programmeViewDao.findByNumProg(numProg);
+        simpMessagingTemplate.convertAndSend("/global-message/affectation", payload);
     }
 
 

@@ -1,6 +1,8 @@
 package fr.sacem.priam.batch.fv.serviceimport.processor;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.primitives.Doubles;
+import com.google.common.primitives.Longs;
 import fr.sacem.priam.batch.common.dao.AyanrtDroitPersDao;
 import fr.sacem.priam.batch.common.dao.AyantDroitDao;
 import fr.sacem.priam.batch.fv.export.domain.ExportCsvDto;
@@ -9,10 +11,10 @@ import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.priam.model.dao.jpa.fv.LigneProgrammeFVDao;
 import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.fv.LigneProgrammeFV;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.BeforeStep;
@@ -97,7 +99,7 @@ public class ImportDataProcessor implements ItemProcessor<ExportCsvDto, ExportCs
 
         exportCsvDto.setImportAD(false);
 
-        Long ide12RepCoad = Long.valueOf(exportCsvDto.getIde12RepCoad());
+        Long ide12RepCoad = exportCsvDto.getIde12RepCoad();
         LigneProgrammeFV ligneProgrammeFV = ligneProgrammeFVDao.findOeuvreByIde12(ide12RepCoad, idFichierLink);
 
         exportCsvDto.setOeuvreExist(ligneProgrammeFV != null);
@@ -126,11 +128,11 @@ public class ImportDataProcessor implements ItemProcessor<ExportCsvDto, ExportCs
         oeuvre.setCdeTypUtil(exportCsvDto.getCdeTypUtil());
         oeuvre.setNumProg(String.valueOf(exportCsvDto.getNumProg()));
         oeuvre.setCdeTypIde12(exportCsvDto.getCdeTypIde12());
-        oeuvre.setIde12(Long.valueOf(exportCsvDto.getIde12()));
-        oeuvre.setDurDif(Long.valueOf(exportCsvDto.getDurDif()));
-        oeuvre.setNbrDif(Long.valueOf(exportCsvDto.getNbrDif()));
+        oeuvre.setIde12(Longs.tryParse(StringUtils.defaultIfEmpty(exportCsvDto.getIde12(), "")));
+        oeuvre.setDurDif(Longs.tryParse(StringUtils.defaultIfEmpty(exportCsvDto.getDurDif(), "")));
+        oeuvre.setNbrDif(Longs.tryParse(StringUtils.defaultIfEmpty(exportCsvDto.getNbrDif(), "")));
         oeuvre.setMt(exportCsvDto.getMt());
-        oeuvre.setTax(Double.valueOf(exportCsvDto.getTax()));
+        oeuvre.setTax(Doubles.tryParse(StringUtils.defaultIfEmpty(exportCsvDto.getTax(), "")));
         oeuvre.setTitreOeuvre(exportCsvDto.getTitreOeuvre());
 
         String datconslt = exportCsvDto.getDatconslt();

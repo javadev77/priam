@@ -3,6 +3,7 @@ package fr.sacem.priam.batch.fv.export.domain;
 import fr.sacem.priam.batch.common.util.exception.PriamValidationException;
 import fr.sacem.priam.model.domain.fv.LigneProgrammeFV;
 import java.io.Serializable;
+import org.apache.commons.lang.StringUtils;
 
 public class ExportCsvDto implements Serializable {
     private String cdeFamilTypUtil;
@@ -245,7 +246,7 @@ public class ExportCsvDto implements Serializable {
     }
 
     public String getIde12() {
-        return ide12;
+        return StringUtils.defaultIfEmpty(ide12, null);
     }
 
     public void setIde12(String ide12) {

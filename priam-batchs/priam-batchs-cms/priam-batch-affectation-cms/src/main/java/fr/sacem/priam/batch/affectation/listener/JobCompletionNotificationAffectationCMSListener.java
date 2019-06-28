@@ -9,7 +9,6 @@ import fr.sacem.priam.batch.common.util.UtilFile;
 import fr.sacem.priam.common.util.FileUtils;
 import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.dao.jpa.JournalBatchDao;
-import fr.sacem.priam.model.dao.jpa.JournalDao;
 import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
 import fr.sacem.priam.model.domain.Fichier;
 import fr.sacem.priam.model.domain.Journal;
@@ -17,7 +16,6 @@ import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.model.util.JournalAffectationBuilder;
 import fr.sacem.priam.model.util.TypeUtilisationPriam;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
@@ -66,9 +64,6 @@ public class JobCompletionNotificationAffectationCMSListener extends JobExecutio
     FichierDao fichierDao;
 
     @Autowired
-    JournalDao journalDao;
-
-    @Autowired
     JournalBatchDao journalBatchDao;
 
     @Autowired
@@ -76,8 +71,6 @@ public class JobCompletionNotificationAffectationCMSListener extends JobExecutio
 
     @Autowired
     LigneProgrammeBatchDao ligneProgrammeBatchDao;
-
-    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;

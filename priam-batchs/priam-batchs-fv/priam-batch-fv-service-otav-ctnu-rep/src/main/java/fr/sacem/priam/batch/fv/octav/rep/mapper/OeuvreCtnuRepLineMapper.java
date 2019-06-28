@@ -3,7 +3,6 @@ package fr.sacem.priam.batch.fv.octav.rep.mapper;
 import fr.sacem.priam.batch.common.domain.OctavCtnu;
 import fr.sacem.priam.batch.common.util.exception.PriamValidationException;
 import static fr.sacem.priam.batch.common.util.exception.PriamValidationException.ErrorType.FORMAT_ATTRIBUT;
-import fr.sacem.priam.batch.fv.octav.rep.reader.OeuvreCtnuRep;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.mapping.FieldSetMapper;
 import org.springframework.batch.item.file.transform.IncorrectTokenCountException;

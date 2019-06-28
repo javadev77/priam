@@ -1,28 +1,21 @@
 package fr.sacem.priam.batch.fv.export.listener;
 
 import fr.sacem.priam.batch.fv.journal.JournalUtil;
-import fr.sacem.priam.batch.fv.journal.TypeLog;
-import fr.sacem.priam.model.dao.jpa.JournalBatchDao;
+import static fr.sacem.priam.batch.fv.journal.TypeLog.EXPORT;
+import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
 import fr.sacem.priam.model.dao.jpa.fv.ExportProgrammeFVDao;
 import fr.sacem.priam.model.dao.jpa.fv.ImportProgrammeFVDao;
-import fr.sacem.priam.model.domain.Journal;
-import fr.sacem.priam.model.domain.SituationApres;
-import fr.sacem.priam.model.domain.SituationAvant;
-import fr.sacem.priam.model.journal.JournalBuilder;
+import fr.sacem.priam.model.domain.dto.ProgrammeDto;
+import java.util.Collection;
+import java.util.Iterator;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-
-import static fr.sacem.priam.batch.fv.journal.TypeLog.EXPORT;
 
 @Component
 public class JobExportFVListener extends JobExecutionListenerSupport {
@@ -41,6 +34,13 @@ public class JobExportFVListener extends JobExecutionListenerSupport {
 
     @Autowired
     JournalUtil journalUtil;
+
+    @Autowired
+    private ProgrammeViewDao programmeViewDao;
+
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
+
 
     @Override
     public void beforeJob(JobExecution jobExecution) {
@@ -77,6 +77,9 @@ public class JobExportFVListener extends JobExecutionListenerSupport {
                 }
             }
         }
+
+        final ProgrammeDto payload = programmeViewDao.findByNumProg(numProg);
+        simpMessagingTemplate.convertAndSend("/global-message/affectation", payload);
     }
 
 
