@@ -1,6 +1,7 @@
 package fr.sacem.priam.batch.fv.octav.info.oeuvre.rep.listener;
 
 import fr.sacem.priam.batch.common.dao.FichierJdbcDao;
+import fr.sacem.priam.batch.common.domain.Fichier;
 import fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementEnum;
 import fr.sacem.priam.batch.common.util.UtilFile;
 import fr.sacem.priam.batch.common.util.exception.PriamValidationException;
@@ -14,9 +15,9 @@ import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
+
+import static fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementEnum.DONE_SRV_OCTAV_CTNU;
 
 /**
  * Created by embouazzar on 27/12/2018.
@@ -44,6 +45,8 @@ public class JobListener extends JobExecutionListenerSupport {
 
     @Override
     public void afterJob(JobExecution jobExecution) {
+        Object idFichier = jobExecution.getExecutionContext().get("idFichier");
+
         if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
             Collection<StepExecution> stepExecutions = jobExecution.getStepExecutions();
             Iterator it = stepExecutions.iterator();
@@ -54,9 +57,9 @@ public class JobListener extends JobExecutionListenerSupport {
                     JobParameter parameterFichierCSVEnCours = (JobParameter) executionContext.get(FICHIER_CSV_EN_COURS);
                     JobParameter parameterNomFichierOriginal = (JobParameter) executionContext.get(NOM_ORIGINAL_FICHIER_CSV);
                     JobParameter outputDirectory = jobExecution.getJobParameters().getParameters().get(REPERTOIRE_DE_DESTINATION);
-                    Long idFichier = (Long)jobExecution.getExecutionContext().get("idFichier");
+//                    Long idFichier = (Long)jobExecution.getExecutionContext().get("idFichier");
                     utilFile.deplacerFichier(parameterFichierCSVEnCours, parameterNomFichierOriginal, outputDirectory);
-                    fichierJdbcDao.majStatutEnrichissement(idFichier, EtapeEnrichissementEnum.DONE_SRV_INFO_OEUVRE.getCode());
+                    fichierJdbcDao.majStatutEnrichissement((Long)idFichier, EtapeEnrichissementEnum.DONE_SRV_INFO_OEUVRE.getCode());
                 }
             }
         } else {
@@ -70,7 +73,7 @@ public class JobListener extends JobExecutionListenerSupport {
                 JobParameter parameterNomFichierOriginal = (JobParameter) executionContext.get(NOM_ORIGINAL_FICHIER_CSV);
                 JobParameter outputDirectory = jobExecution.getJobParameters().getParameters().get(REPERTOIRE_DE_DESTINATION);
 
-                Set<String> errors = (Set<String>) executionContext.get("repartition-errors");
+                Set<String> errors = (Set<String>) executionContext.get("errors");
                 if(myStepExecution.getStatus() == BatchStatus.STOPPED || "FAILED".equals(myStepExecution.getExitStatus().getExitCode())){
                     Throwable exception = myStepExecution.getFailureExceptions().iterator().next();
                     if(exception instanceof PriamValidationException) {
@@ -88,7 +91,13 @@ public class JobListener extends JobExecutionListenerSupport {
                 }
                 LOGGER.info(errors.toString());
                 utilFile.deplacerFichier(parameterFichierCSVEnCours, parameterNomFichierOriginal, outputDirectory);
-
+                Fichier fichier = fichierJdbcDao.findById((Long) idFichier);
+                List<String> fondsTypeUtilisationO_AD = Arrays.asList("FD01", "FD02", "FD05", "FD07");
+                if(fondsTypeUtilisationO_AD.contains(fichier.getTypeUtilisation())) {
+                    fichierJdbcDao.majStatutEnrichissement((Long) idFichier, null);
+                } else {
+                    fichierJdbcDao.majStatutEnrichissement((Long) idFichier, DONE_SRV_OCTAV_CTNU.getCode());
+                }
             }
         }
     }

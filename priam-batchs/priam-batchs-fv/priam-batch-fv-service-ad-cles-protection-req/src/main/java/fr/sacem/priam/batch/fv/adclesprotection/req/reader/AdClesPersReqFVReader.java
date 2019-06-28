@@ -30,6 +30,7 @@ public class AdClesPersReqFVReader extends JdbcPagingItemReader<LigneProgrammeFV
         sqlPagingQueryProviderFactoryBean.setGroupClause("GROUP BY l.ide12");
         sqlPagingQueryProviderFactoryBean.setSortKey("l.id");
 
+
         try {
             this.setQueryProvider(sqlPagingQueryProviderFactoryBean.getObject());
             this.setDataSource(dataSource);

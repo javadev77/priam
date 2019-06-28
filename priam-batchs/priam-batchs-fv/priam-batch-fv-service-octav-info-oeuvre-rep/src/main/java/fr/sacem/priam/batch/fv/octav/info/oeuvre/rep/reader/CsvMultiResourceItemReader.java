@@ -99,7 +99,7 @@ public class CsvMultiResourceItemReader<T> extends MultiResourceItemReader<T> {
                                         this.stepExecution.getExecutionContext().put("nomFichierOriginal", jobParameterNomFichierOriginal);
                                         this.stepExecution.getExecutionContext().put("fichierCSVEnCours", jobParameterFichierCSVEnCours);
                                         this.stepExecution.getExecutionContext().put("output.archives", outputDirectory);
-                                        this.stepExecution.getExecutionContext().put("repartition-errors", new HashSet<>());
+                                        this.stepExecution.getExecutionContext().put("errors", new HashSet<>());
                                     }
 
                                     nbrDeFichierCSVATraiter = nbrDeFichierCSVATraiter + 1;

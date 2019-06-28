@@ -41,6 +41,7 @@ public class ExportCsvDto implements Serializable {
     private String labelValo;
     private String paysOri;
     private Integer indicRepart;
+    private String participantFonds;
 //    particpant
     private String nom;
     private String prenom;
@@ -387,6 +388,14 @@ public class ExportCsvDto implements Serializable {
 
     public void setIndicRepart(Integer indicRepart) {
         this.indicRepart = indicRepart;
+    }
+
+    public String getParticipantFonds() {
+        return participantFonds;
+    }
+
+    public void setParticipantFonds(String participantFonds) {
+        this.participantFonds = participantFonds;
     }
 
     public Integer getIndicDrtPercus() {

@@ -32,11 +32,12 @@ public class FichierJdbcDao {
 
     @Transactional(readOnly = true, value = "transactionManager")
     public Fichier findById(Long idFichier) {
-        String sql = "SELECT f.ID, f.STATUT_ENRICHISSEEMNT FROM PRIAM_FICHIER f WHERE f.ID=?";
+        String sql = "SELECT f.ID, f.CDETYPUTIL, f.STATUT_ENRICHISSEEMNT FROM PRIAM_FICHIER f WHERE f.ID=?";
         List<Fichier> result = jdbcTemplate.query(sql, (rs, i) -> {
             Fichier fichier = new Fichier();
             fichier.setStatutEnrichissement(rs.getString("STATUT_ENRICHISSEEMNT"));
             fichier.setId(rs.getLong("ID"));
+            fichier.setTypeUtilisation(rs.getString("CDETYPUTIL"));
             return fichier;
         }, String.valueOf(idFichier));
 

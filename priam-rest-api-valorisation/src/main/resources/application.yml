@@ -6,6 +6,7 @@ spring:
   http:
     multipart:
       max-file-size: -1
+
 endpoints:
   health:
     sensitive: false
