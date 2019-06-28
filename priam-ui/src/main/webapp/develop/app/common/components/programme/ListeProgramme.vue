@@ -957,7 +957,7 @@
       methods : {
 
         connect() {
-          console.log("connect to websocket")
+
           this.socket = new SockJS(process.env.CONTEXT_ROOT_PRIAM_CP + 'websocket-endpoint');
           this.stompClient = Stomp.over(this.socket);
           this.stompClient.connect({}, (frame) => {
@@ -974,7 +974,7 @@
           }, (error) => {
             console.log(error);
             this.connected = false;
-          })
+          });
 
           this.socketCms = new SockJS(process.env.CONTEXT_ROOT_PRIAM_CMS + 'websocket-endpoint');
           this.stompClientCms = Stomp.over(this.socketCms);
@@ -991,7 +991,25 @@
           }, (error) => {
             console.log(error);
             this.connected = false;
-          })
+          });
+
+
+
+          this.socketFv = new SockJS(process.env.CONTEXT_ROOT_PRIAM_FV + 'websocket-endpoint');
+          this.stompClientFv = Stomp.over(this.socketFv);
+          this.stompClientFv.connect({}, (frame) => {
+            this.connected = true;
+
+            this.stompClientFv.subscribe('/global-message/affectation', (tick) => {
+
+              let message = JSON.parse(tick.body);
+              this.updateProgrammmeOnBatchFinished(message);
+
+            })
+          }, (error) => {
+            console.log(error);
+            this.connected = false;
+          });
         },
 
         updateProgrammmeOnBatchFinished(programme) {
@@ -1006,6 +1024,9 @@
             progRow.statut = programme.statut;
             progRow.statutFichierFelix = programme.statutFichierFelix;
             progRow.fichiers = programme.fichiers;
+
+            progRow.statutExportProgramme = programme.statutExportProgramme
+            progRow.statutImportProgramme = programme.statutImportProgramme
           }
 
         },

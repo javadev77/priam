@@ -138,6 +138,20 @@ public class ProgrammeDto {
 		this.typeDroit = typeDroit;
 	}
 
+	public ProgrammeDto(String numProg, String nom, String famille, String typeUtilisation, Integer rionTheorique, Date dateCreation, TypeRepart typeRepart, TypeDroit typeDroit,
+		StatutProgramme statut, Integer rionPaiement, Long fichiers, String usercre, Date datmaj, String usermaj,
+		Date dataffecte, String useraffecte, Date dateDbtPrg,
+		Date dateFinPrg, Integer cdeTer, String userValidation, Date dateValidation, StatutFichierFelix statutFichierFelix, Date dateRepartition, StatutEligibilite statutEligibilite,
+	    StatutExportProgramme statutExportProgramme, StatutImportProgramme statutImportProgramme) {
+
+		this(numProg, nom, famille, typeUtilisation, rionTheorique, dateCreation,
+			typeRepart, typeDroit, statut, rionPaiement, fichiers, usercre, datmaj, usermaj, dataffecte, useraffecte, dateDbtPrg, dateFinPrg,
+			cdeTer, userValidation, dateValidation, statutFichierFelix, dateRepartition, statutEligibilite);
+
+		this.statutExportProgramme = statutExportProgramme;
+		this.statutImportProgramme = statutImportProgramme;
+	}
+
 	public ProgrammeDto(String numProg, String nom, String famille, String typeUtilisation, Integer rionTheorique, Date dateCreation, TypeRepart typeRepart,
 						StatutProgramme statut, Integer rionPaiement, Long fichiers, String usercre, Date datmaj, String usermaj,
 						Date dataffecte, String useraffecte, Date dateDbtPrg,

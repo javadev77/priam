@@ -5,35 +5,34 @@ import fr.sacem.priam.batch.common.service.importPenef.FichierBatchService;
 import fr.sacem.priam.batch.common.util.UtilFile;
 import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.dao.jpa.JournalBatchDao;
+import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
 import fr.sacem.priam.model.domain.Fichier;
 import fr.sacem.priam.model.domain.Journal;
 import fr.sacem.priam.model.domain.Status;
+import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.model.util.JournalAffectationBuilder;
 import fr.sacem.priam.services.FichierService;
-import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.listener.JobExecutionListenerSupport;
-import org.springframework.batch.item.ExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
 public class JobAffectationFVListener extends JobExecutionListenerSupport {
     public static final String ERREUR_ELIGIBILITE = "ERREUR_ELIGIBILITE";
     public static final String CHARGEMENT_OK = "CHARGEMENT_OK";
-    private ExecutionContext executionContext;
+
 
     @Autowired
     private FichierBatchService fichierBatchService;
 
     private UtilFile utilFile;
-    private static final Logger LOG = LoggerFactory.getLogger(JobAffectationFVListener.class);
+
 
     @Autowired
     ProgrammeBatchDao programmeBatchDao;
@@ -48,8 +47,12 @@ public class JobAffectationFVListener extends JobExecutionListenerSupport {
     @Autowired
     private FichierDao fichierDao;
 
+    @Autowired
+    private ProgrammeViewDao programmeViewDao;
 
-    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
+
 
     @Autowired
     public JobAffectationFVListener() {
@@ -97,6 +100,11 @@ public class JobAffectationFVListener extends JobExecutionListenerSupport {
             programmeBatchDao.majStattutEligibilite(numProg, ERREUR_ELIGIBILITE);
             fichierBatchService.clearSelectedFichiers(numProg, CHARGEMENT_OK);
         }
+
+
+        final ProgrammeDto payload = programmeViewDao.findByNumProg(numProg);
+        simpMessagingTemplate.convertAndSend("/global-message/affectation", payload);
+
     }
 
     public FichierBatchService getFichierBatchService() {

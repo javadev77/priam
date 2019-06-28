@@ -4,7 +4,6 @@ import fr.sacem.priam.batch.common.dao.AyanrtDroitPersDao;
 import fr.sacem.priam.batch.common.dao.LigneProgrammeFVDao;
 import fr.sacem.priam.batch.common.domain.LigneProgrammeFV;
 import fr.sacem.priam.batch.common.fv.util.OctavDTO;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepExecution;
@@ -49,14 +48,6 @@ public class AdclesProtectionRepProcessor implements ItemProcessor<OctavDTO, Oct
                 }
 
                 octavDTO.setIdOeuvreFv(oeuvreByIde12.getId());
-                /*if(StringUtils.isEmpty(octavDTO.getCoadori())) {
-                    octavDTO.setCoadori(octavDTO.getCoad());
-                }
-
-                if(StringUtils.isEmpty(octavDTO.getIdSteOri())) {
-                    octavDTO.setIdSteOri(octavDTO.getIdStead());
-                }*/
-
                 octavDTO.setNumpersExist(ayanrtDroitPersDao.isNumpersExist(octavDTO.getNumPers()));
 
                 return octavDTO;
