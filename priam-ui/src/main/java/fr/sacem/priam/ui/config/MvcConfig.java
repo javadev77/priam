@@ -22,7 +22,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
-//import static fr.sacem.fwk.config.Environment.getParameter;
 
 /**
  * Created by benmerzoukah on 19/04/2017.
@@ -37,7 +36,6 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
     @Autowired
     private ResourceLoader resourceLoader;
 
-    //@Value( "${webapp.mode}" )
     private String webappMode;
 
     @Value("${vuejs.server.url}")
@@ -67,11 +65,11 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
 
         webappMode = Environment.getParameter("webapp.mode");
 
-        /*if("dev".equalsIgnoreCase(webappMode)) {
+        if("dev".equalsIgnoreCase(webappMode)) {
             registry.addMapping("/app/rest/**")
                     .allowedMethods("PUT", "DELETE", "GET", "POST", "OPTIONS")
                     .allowedOrigins(vuejsDevServerUrl);
-        }*/
+        }
 
     }
 

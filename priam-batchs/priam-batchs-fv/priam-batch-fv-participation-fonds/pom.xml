@@ -6,10 +6,20 @@
         <version>2.4.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>priam-batch-fv-service-otav-ctnu-rep</artifactId>
+    <artifactId>priam-batch-fv-participation-fonds</artifactId>
     <packaging>jar</packaging>
 
-    <name>BatchSrvOctavCtnuREP</name>
+    <name>BatchParticipationFonds</name>
+
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <failOnMissingWebXml>false</failOnMissingWebXml>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.8</java.version>
+
+    </properties>
 
     <dependencies>
         <dependency>
@@ -23,30 +33,8 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework.batch</groupId>
-            <artifactId>spring-batch-infrastructure</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-batch</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.batch</groupId>
-            <artifactId>spring-batch-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jdbc</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -55,18 +43,10 @@
             <version>1.4.195</version>
             <scope>test</scope>
         </dependency>
-
-        <dependency>
-            <groupId>fr.sacem.priam</groupId>
-            <artifactId>priam-common-batch</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-            <type>test-jar</type>
-        </dependency>
     </dependencies>
 
     <build>
-        <finalName>${project.artifactId}</finalName>
+        <finalName>priam-batch-participation-fonds</finalName>
 
         <plugins>
 
@@ -81,7 +61,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>fr.sacem.priam.batch.fv.octav.rep.App</mainClass>
+                            <mainClass>fr.sacem.priam.batch.fv.participation.fonds.App</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

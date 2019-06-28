@@ -6,7 +6,7 @@
         <version>2.4.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>priam-batch-import-fv</artifactId>
+    <artifactId>priam-batch-fv-import</artifactId>
     <packaging>jar</packaging>
 
     <name>BatchImportFV</name>

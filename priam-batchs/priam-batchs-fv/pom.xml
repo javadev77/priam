@@ -5,11 +5,10 @@
 
     <modelVersion>4.0.0</modelVersion>
     <modules>
-        <module>priam-batch-import-fv</module>
+        <module>priam-batch-fv-import</module>
 
-
-        <module>priam-batch-fv-service-otav-ctnu-req</module>
-        <module>priam-batch-fv-service-otav-ctnu-rep</module>
+        <module>priam-batch-fv-service-octav-ctnu-req</module>
+        <module>priam-batch-fv-service-octav-ctnu-rep</module>
 
         <module>priam-batch-fv-service-octav-info-oeuvre-req</module>
         <module>priam-batch-fv-service-octav-info-oeuvre-rep</module>
@@ -20,8 +19,8 @@
         <module>priam-batch-fv-service-ad-info-req</module>
         <module>priam-batch-fv-service-ad-info-rep</module>
 
-        <module>priam-batch-services-fv</module>
-        <module>priam-batch-participation-fonds</module>
+        <module>priam-batch-fv-services</module>
+        <module>priam-batch-fv-participation-fonds</module>
 
     </modules>
 
