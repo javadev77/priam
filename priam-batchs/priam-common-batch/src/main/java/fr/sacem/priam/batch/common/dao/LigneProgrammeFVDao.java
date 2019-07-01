@@ -66,7 +66,7 @@ public class LigneProgrammeFVDao {
                 "count(*) AS NB_LIGNES FROM (SELECT DISTINCT l.ide12 " +
                 "FROM " +
                 "PRIAM_LIGNE_PROGRAMME_FV l " +
-                "WHERE l.ID_FICHIER=?) as NB_LIGNES ";
+                "WHERE l.ID_FICHIER=? AND l.cdeTypIde12='COPT') as NB_LIGNES ";
         return jdbcTemplate.queryForObject(sql, (resultSet, i) -> resultSet.getLong("NB_LIGNES"), idFichier);
     }
 
@@ -109,4 +109,16 @@ public class LigneProgrammeFVDao {
             stmt.setLong(3, idFichier);
         });
     }
+
+
+    public Long countNbLignesAdclesByIdFichier(Long idFichier){
+        String sql = "SELECT " +
+            "count(*) AS NB_LIGNES FROM (SELECT DISTINCT l.ide12 " +
+            "FROM " +
+            "PRIAM_LIGNE_PROGRAMME_FV l " +
+            "WHERE l.ID_FICHIER=? AND l.isOeuvreComplex=0 " +
+            "GROUP BY l.ide12) as NB_LIGNES ";
+        return jdbcTemplate.queryForObject(sql, (resultSet, i) -> resultSet.getLong("NB_LIGNES"), idFichier);
+    }
+
 }

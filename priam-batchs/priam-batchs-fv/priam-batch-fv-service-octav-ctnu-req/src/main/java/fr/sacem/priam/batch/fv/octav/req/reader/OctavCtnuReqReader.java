@@ -1,4 +1,4 @@
-package fr.sacem.priam.batch.common.fv.reader;
+package fr.sacem.priam.batch.fv.octav.req.reader;
 
 import fr.sacem.priam.batch.common.domain.LigneProgrammeFV;
 import fr.sacem.priam.batch.common.util.mapper.importPenef.PriamLigneProgrammeFVSQLMapper;
@@ -18,11 +18,11 @@ import javax.sql.DataSource;
  */
 @Component
 @StepScope
-public class TableLigneProgrammeFVReader extends JdbcPagingItemReader<LigneProgrammeFV> {
+public class OctavCtnuReqReader extends JdbcPagingItemReader<LigneProgrammeFV> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TableLigneProgrammeFVReader.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(OctavCtnuReqReader.class);
 
-    public TableLigneProgrammeFVReader(@Value("#{jobParameters['idFichier']}") Long idFichier, @Autowired DataSource dataSource) {
+    public OctavCtnuReqReader(@Value("#{jobParameters['idFichier']}") Long idFichier, @Autowired DataSource dataSource) {
         final SqlPagingQueryProviderFactoryBean sqlPagingQueryProviderFactoryBean = new SqlPagingQueryProviderFactoryBean();
         sqlPagingQueryProviderFactoryBean.setDataSource(dataSource);
         sqlPagingQueryProviderFactoryBean.setSelectClause("SELECT l.*");

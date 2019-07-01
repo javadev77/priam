@@ -1,5 +1,6 @@
 package fr.sacem.priam.batch.fv.adclesprotection.req.writer;
 
+import fr.sacem.priam.batch.common.dao.LigneProgrammeFVDao;
 import fr.sacem.priam.batch.common.fv.util.OctavDTO;
 import fr.sacem.priam.batch.common.fv.writer.AbstractConfig;
 import org.slf4j.Logger;
@@ -19,6 +20,13 @@ import java.util.Locale;
 public class FlatFileWriterConfig extends AbstractConfig<OctavDTO>{
 
     public static final Logger LOGGER = LoggerFactory.getLogger(FlatFileWriterConfig.class);
+
+    private LigneProgrammeFVDao ligneProgrammeFVDao;
+
+    public FlatFileWriterConfig(LigneProgrammeFVDao ligneProgrammeFVDao) {
+
+        this.ligneProgrammeFVDao = ligneProgrammeFVDao;
+    }
 
     @Override
     public String head() {
@@ -53,7 +61,7 @@ public class FlatFileWriterConfig extends AbstractConfig<OctavDTO>{
 
     @Override
     public Long countNbLignes(final Long idFichier) {
-        return 0L;
+        return ligneProgrammeFVDao.countNbLignesAdclesByIdFichier(idFichier);
     }
 
     @Override

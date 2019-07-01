@@ -2,7 +2,7 @@ package fr.sacem.priam.batch.fv.octav.req.config;
 
 import fr.sacem.priam.batch.common.domain.LigneProgrammeFV;
 import fr.sacem.priam.batch.common.fv.listener.FlagDemiInterfaceStepListener;
-import fr.sacem.priam.batch.common.fv.reader.TableLigneProgrammeFVReader;
+import fr.sacem.priam.batch.fv.octav.req.reader.OctavCtnuReqReader;
 import fr.sacem.priam.batch.common.fv.writer.CsvFileItemWriter;
 import fr.sacem.priam.batch.common.domain.OctavCtnu;
 import fr.sacem.priam.batch.fv.octav.req.listener.JobListener;
@@ -48,10 +48,10 @@ public class BatchConfig {
     }
 
     @Bean
-    public Step stepPrepareAndGenerateREQ(CsvFileItemWriter<OctavCtnu> databaseCsvItemWriter, TableLigneProgrammeFVReader tableLigneProgrammeFVReader) {
+    public Step stepPrepareAndGenerateREQ(CsvFileItemWriter<OctavCtnu> databaseCsvItemWriter, OctavCtnuReqReader octavCtnuReqReader) {
         return stepBuilderFactory.get("stepPrepareAndGenerateREQ").
                 <LigneProgrammeFV, OctavCtnu>chunk(2000)
-                .reader(tableLigneProgrammeFVReader)
+                .reader(octavCtnuReqReader)
                 .processor(octavCtnuProcessor())
                 .writer(databaseCsvItemWriter)
                 .listener(stepListener())

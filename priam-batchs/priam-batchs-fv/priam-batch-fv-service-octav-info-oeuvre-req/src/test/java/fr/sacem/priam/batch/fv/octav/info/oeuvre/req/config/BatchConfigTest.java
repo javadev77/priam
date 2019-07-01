@@ -2,10 +2,9 @@ package fr.sacem.priam.batch.fv.octav.info.oeuvre.req.config;
 
 import fr.sacem.priam.batch.common.domain.LigneProgrammeFV;
 import fr.sacem.priam.batch.common.fv.listener.FlagDemiInterfaceStepListener;
-import fr.sacem.priam.batch.common.fv.reader.TableLigneProgrammeFVReader;
 import fr.sacem.priam.batch.common.fv.writer.CsvFileItemWriter;
 import fr.sacem.priam.batch.fv.octav.info.oeuvre.req.listener.JobListener;
-
+import fr.sacem.priam.batch.fv.octav.info.oeuvre.req.reader.InfoOeuvreReqReader;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.StepExecutionListener;
@@ -35,7 +34,7 @@ public class BatchConfigTest {
     JobBuilderFactory jobBuilderFactory;
 
     @Autowired
-    TableLigneProgrammeFVReader tableLigneProgrammeFVReader;
+    InfoOeuvreReqReader infoOeuvreReqReader;
 
 
     @Bean
@@ -54,7 +53,7 @@ public class BatchConfigTest {
     @Bean
     public Step stepPrepareAndGenerateREQ(CsvFileItemWriter<LigneProgrammeFV> databaseCsvItemWriter) {
         return stepBuilderFactory.get("stepPrepareAndGenerateREQ").<LigneProgrammeFV, LigneProgrammeFV>chunk(2000)
-                .reader(tableLigneProgrammeFVReader)
+                .reader(infoOeuvreReqReader)
                 .writer(databaseCsvItemWriter)
                 .listener(stepListener())
                 .build();
