@@ -24,9 +24,7 @@
     "vue-router": "2.3.0",
     "vue-shortkey": "2.1.8",
     "vuex": "2.2.1",
-    "webcomponents.js": "0.7.24",
-    "sockjs-client": "^1.1.4",
-    "webstomp-client": "^1.0.6"
+    "webcomponents.js": "0.7.24"
   },
   "devDependencies": {
     "autoprefixer": "^6.7.2",

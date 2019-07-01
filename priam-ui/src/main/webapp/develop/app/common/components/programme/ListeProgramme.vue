@@ -299,8 +299,6 @@
   import Navbar from '../../../common/components/ui/priam-navbar.vue';
   import ImportProgramme from '../../../valorisation/components/programme/ImportProgramme.vue';
 
-  import SockJS from 'sockjs-client'
-  import Stomp from 'webstomp-client'
 
   export default {
       mixins : [ChargementMixin, programmeMixin],
@@ -312,8 +310,6 @@
 
 
         return {
-            received_messages : [],
-            connected: false,
 
             numProgItems : [],
             nomProgItems : [],
@@ -821,7 +817,7 @@
 
 
       mounted() {
-        this.connect();
+        //this.connect();
       },
 
 
@@ -942,7 +938,7 @@
 
       destroy() {
 
-        if (this.stompClient) {
+        /*if (this.stompClient) {
           this.stompClient.disconnect()
         }
 
@@ -950,13 +946,13 @@
           this.stompClientCms.disconnect()
         }
 
-        this.connected = false;
+        this.connected = false;*/
       },
 
 
       methods : {
 
-        connect() {
+        /*connect() {
 
           this.socket = new SockJS(process.env.CONTEXT_ROOT_PRIAM_CP + 'websocket-endpoint');
           this.stompClient = Stomp.over(this.socket);
@@ -1029,7 +1025,7 @@
             progRow.statutImportProgramme = programme.statutImportProgramme
           }
 
-        },
+        },*/
 
         afficherTootlip(entry) {
 

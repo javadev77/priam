@@ -7,7 +7,6 @@ import fr.sacem.priam.batch.common.service.importPenef.FichierBatchService;
 import fr.sacem.priam.common.TypeLog;
 import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.dao.jpa.JournalBatchDao;
-import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
 import fr.sacem.priam.model.dao.jpa.fv.AyantDroitFVDao;
 import fr.sacem.priam.model.dao.jpa.fv.ExportProgrammeFVDao;
 import fr.sacem.priam.model.dao.jpa.fv.ImportDataBatchFVJdbcDao;
@@ -18,7 +17,6 @@ import fr.sacem.priam.model.domain.Journal;
 import fr.sacem.priam.model.domain.SituationAvant;
 import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.dto.FileDto;
-import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.model.journal.JournalBuilder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,7 +29,6 @@ import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
 /**
@@ -77,11 +74,11 @@ public class JobDesaffectationFvListener extends JobExecutionListenerSupport {
     @Autowired
     private JournalBatchDao journalBatchDao;
 
-    @Autowired
+    /*@Autowired
     private ProgrammeViewDao programmeViewDao;
 
     @Autowired
-    private SimpMessagingTemplate simpMessagingTemplate;
+    private SimpMessagingTemplate simpMessagingTemplate;*/
 
 
     @Override
@@ -152,8 +149,8 @@ public class JobDesaffectationFvListener extends JobExecutionListenerSupport {
             programmeBatchDao.majStattutEligibilite(numProg, "ERREUR_DESAFFECTATION");
         }
 
-        final ProgrammeDto payload = programmeViewDao.findByNumProg(numProg);
-        simpMessagingTemplate.convertAndSend("/global-message/affectation", payload);
+        //final ProgrammeDto payload = programmeViewDao.findByNumProg(numProg);
+        //simpMessagingTemplate.convertAndSend("/global-message/affectation", payload);
     }
 
     private List<Fichier> getListFichiersById(String listIdFichiers) {

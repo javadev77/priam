@@ -9,11 +9,9 @@ import fr.sacem.priam.batch.common.util.UtilFile;
 import fr.sacem.priam.common.util.FileUtils;
 import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.dao.jpa.JournalBatchDao;
-import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
 import fr.sacem.priam.model.domain.Fichier;
 import fr.sacem.priam.model.domain.Journal;
 import fr.sacem.priam.model.domain.Status;
-import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.model.util.JournalAffectationBuilder;
 import fr.sacem.priam.model.util.TypeUtilisationPriam;
 import java.time.LocalDateTime;
@@ -31,7 +29,6 @@ import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
 
@@ -72,11 +69,11 @@ public class JobCompletionNotificationAffectationCMSListener extends JobExecutio
     @Autowired
     LigneProgrammeBatchDao ligneProgrammeBatchDao;
 
-    @Autowired
+    /*@Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
 
     @Autowired
-    ProgrammeViewDao programmeViewDao;
+    ProgrammeViewDao programmeViewDao;*/
 
     @Autowired
     public JobCompletionNotificationAffectationCMSListener() {
@@ -195,8 +192,8 @@ public class JobCompletionNotificationAffectationCMSListener extends JobExecutio
 
         }
 
-        final ProgrammeDto payload = programmeViewDao.findByNumProg(numProg);
-        simpMessagingTemplate.convertAndSend("/global-message/affectation", payload);
+        /*final ProgrammeDto payload = programmeViewDao.findByNumProg(numProg);
+        simpMessagingTemplate.convertAndSend("/global-message/affectation", payload);*/
 
     }
 

@@ -4,14 +4,12 @@ import fr.sacem.priam.batch.common.dao.FichierRepository;
 import fr.sacem.priam.batch.common.util.exception.PriamValidationException;
 import fr.sacem.priam.batch.fv.journal.JournalUtil;
 import static fr.sacem.priam.batch.fv.journal.TypeLog.IMPORT;
-import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.priam.model.dao.jpa.fv.ImportProgrammeFVDao;
 import fr.sacem.priam.model.domain.Fichier;
 import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.StatutImportProgramme;
 import fr.sacem.priam.model.domain.StatutProgramme;
-import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.model.domain.fv.ImportProgrammeFV;
 import fr.sacem.priam.services.FichierService;
 import java.util.Collection;
@@ -28,7 +26,6 @@ import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -56,11 +53,11 @@ public class JobImportFVListener extends JobExecutionListenerSupport {
     @Autowired
     JournalUtil journalUtil;
 
-    @Autowired
+    /*@Autowired
     private ProgrammeViewDao programmeViewDao;
 
     @Autowired
-    private SimpMessagingTemplate simpMessagingTemplate;
+    private SimpMessagingTemplate simpMessagingTemplate;*/
 
 
     @Override
@@ -144,8 +141,8 @@ public class JobImportFVListener extends JobExecutionListenerSupport {
         }
 
 
-        final ProgrammeDto payload = programmeViewDao.findByNumProg(numProg);
-        simpMessagingTemplate.convertAndSend("/global-message/affectation", payload);
+       /* final ProgrammeDto payload = programmeViewDao.findByNumProg(numProg);
+        simpMessagingTemplate.convertAndSend("/global-message/affectation", payload);*/
     }
 
 

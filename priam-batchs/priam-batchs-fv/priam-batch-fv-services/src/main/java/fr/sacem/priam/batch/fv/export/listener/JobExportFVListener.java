@@ -2,10 +2,8 @@ package fr.sacem.priam.batch.fv.export.listener;
 
 import fr.sacem.priam.batch.fv.journal.JournalUtil;
 import static fr.sacem.priam.batch.fv.journal.TypeLog.EXPORT;
-import fr.sacem.priam.model.dao.jpa.ProgrammeViewDao;
 import fr.sacem.priam.model.dao.jpa.fv.ExportProgrammeFVDao;
 import fr.sacem.priam.model.dao.jpa.fv.ImportProgrammeFVDao;
-import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import java.util.Collection;
 import java.util.Iterator;
 import org.springframework.batch.core.BatchStatus;
@@ -14,7 +12,6 @@ import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -35,11 +32,11 @@ public class JobExportFVListener extends JobExecutionListenerSupport {
     @Autowired
     JournalUtil journalUtil;
 
-    @Autowired
+    /*@Autowired
     private ProgrammeViewDao programmeViewDao;
 
     @Autowired
-    private SimpMessagingTemplate simpMessagingTemplate;
+    private SimpMessagingTemplate simpMessagingTemplate;*/
 
 
     @Override
@@ -78,8 +75,8 @@ public class JobExportFVListener extends JobExecutionListenerSupport {
             }
         }
 
-        final ProgrammeDto payload = programmeViewDao.findByNumProg(numProg);
-        simpMessagingTemplate.convertAndSend("/global-message/affectation", payload);
+        /*final ProgrammeDto payload = programmeViewDao.findByNumProg(numProg);
+        simpMessagingTemplate.convertAndSend("/global-message/affectation", payload);*/
     }
 
 

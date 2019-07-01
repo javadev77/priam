@@ -1,3 +1,4 @@
+/*
 package fr.sacem.priam.common.config;
 
 import org.springframework.context.annotation.Configuration;
@@ -22,3 +23,4 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
         registry.setApplicationDestinationPrefixes("/app-receive");
     }
 }
+*/
