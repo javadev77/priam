@@ -9,6 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 
 /**
@@ -17,6 +18,7 @@ import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 @Configuration
 @ComponentScan(basePackages = {"fr.sacem.priam.batch.felix", "fr.sacem.priam.model"})
 @ImportResource(value = "classpath:config/job-configuration.xml")
+@PropertySource("classpath:config/application-batch.properties")
 @Profile({"re7", "prod", "dev"})
 public class BatchFelixConfigProd {
 
