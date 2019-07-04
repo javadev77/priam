@@ -41,7 +41,7 @@ public class AdclesProtectionRepProcessor implements ItemProcessor<OctavDTO, Oct
         if(octavDTO != null) {
             if(octavDTO.getStatut() >= 0 ) {
                 Long idFichier = jobExecutionContext.getLong("idFichier");
-                LigneProgrammeFV oeuvreByIde12 = ligneProgrammeFVDao.findOeuvreByIde12(Long.valueOf(octavDTO.getIde12RepCoad()), idFichier);
+                LigneProgrammeFV oeuvreByIde12 = ligneProgrammeFVDao.findOeuvreByIde12(Long.valueOf(octavDTO.getIde12()), idFichier);
 
                 if(oeuvreByIde12 == null || octavDTO.getCoad() == null) {
                     return null;

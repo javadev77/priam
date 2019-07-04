@@ -3,6 +3,7 @@ package fr.sacem.priam.batch.fv.export.mapper;
 import fr.sacem.priam.batch.fv.export.domain.ExportCsvDto;
 import java.sql.Date;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -49,7 +50,11 @@ public class ExportCsvMapper implements RowMapper<ExportCsvDto> {
         exportCsvDto.setTaxOri(resultSet.getDouble("taxOri"));
         exportCsvDto.setPaysOri(resultSet.getString("paysOri"));
         exportCsvDto.setIndicRepart(resultSet.getInt("indicRepart"));
-        exportCsvDto.setParticipantFonds(resultSet.getString("PARTICIPATION_FONDS"));
+
+        if(doesColumnExist("PARTICIPATION_FONDS", resultSet)) {
+            exportCsvDto.setParticipantFonds(resultSet.getString("PARTICIPATION_FONDS"));
+        }
+
         exportCsvDto.setNomProgramme(resultSet.getString("NOM_PRG"));
         exportCsvDto.setNom(resultSet.getString("NOM"));
         exportCsvDto.setPrenom(resultSet.getString("PRENOM"));
@@ -68,5 +73,18 @@ public class ExportCsvMapper implements RowMapper<ExportCsvDto> {
         return Instant.ofEpochMilli(date.getTime())
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate();
+    }
+
+    public static boolean doesColumnExist(String columnName, ResultSet rs) throws SQLException{
+        ResultSetMetaData meta = rs.getMetaData();
+        int numCol = meta.getColumnCount();
+        for (int i = 1; i <= numCol; i++) {
+            if(meta.getColumnName(i).equalsIgnoreCase(columnName)) {
+                return true;
+
+            }
+
+        }
+        return false;
     }
 }

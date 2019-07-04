@@ -3,7 +3,7 @@
 <configuration scan="true">
 
   <include resource="logback-common.xml"/>
-
+  <property name="priam.log.default.directory" value="/export/home/mylogs/priam" />
   <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
       <charset>utf-8</charset>

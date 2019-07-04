@@ -72,10 +72,16 @@ public class BatchConfig {
     public Step stepOctavInfosOeuvresREP() {
         return stepBuilderFactory.get("stepOctavInfosOeuvresREP").<LigneProgrammeFV, LigneProgrammeFV>chunk(2000)
                 .reader(multiResourceItemReader())
+                .processor(ligneProgrammeFV -> {
+                    if(Integer.valueOf(ligneProgrammeFV.getStatut()) >= 0){
+                        return ligneProgrammeFV;
+                    }
+                    return null;
+                })
                 .writer(writer())
-                //.listener(stepListener())
                 .build();
     }
+
 
     @Bean
     public CsvRepReader<LigneProgrammeFV> multiResourceItemReader(){

@@ -105,7 +105,7 @@ public class CsvMultiResourceItemReader<T> extends MultiResourceItemReader<T> {
                                 if(!filenameCsv.matches(patternFileName)) {
                                     Set<String> errorSet = (Set<String>) executionContext.get("repartition-errors");
                                     LOG.error(String.format(MESSAGE_NOM_FICHIER_INCORRECTE, patternFileName));
-                                    errorSet.add(MESSAGE_NOM_FICHIER_INCORRECTE);
+                                    errorSet.add(String.format(MESSAGE_NOM_FICHIER_INCORRECTE, patternFileName));
                                     this.stepExecution.getJobExecution().stop();
                                 }else{
                                     JobParameter jobParameterNomDuFichier = new JobParameter(file.getName());

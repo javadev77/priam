@@ -134,10 +134,10 @@ public class LigneProgrammeFVSpringValidator extends CommonValidator implements 
 
         /*règle de validation valeur cdeGreIde12*/
         String cdeGreIde12 = ((LigneProgrammeFV) o).getCdeGreIde12();
-        if(("FD03".equals(cdeTypUtil) || "FD04".equals(cdeTypUtil) || "FD01".equals(cdeTypUtil) || "FD02".equals(cdeTypUtil))
+        /*if(("FD03".equals(cdeTypUtil) || "FD04".equals(cdeTypUtil) || "FD01".equals(cdeTypUtil) || "FD02".equals(cdeTypUtil))
                 && !checkValeurCdeGreIde12ByCdeTypUtil(cdeGreIde12, VAL1_CDEGREIDE12)){
             errors.rejectValue("cdeGreIde12", "format.error.cdeGreIde12");
-        } else if(("FD10".equals(cdeTypUtil) || "FD11".equals(cdeTypUtil)) && !checkValeurCdeGreIde12ByCdeTypUtil(cdeGreIde12, VAL2_CDEGREIDE12)){
+        } else */if(("FD10".equals(cdeTypUtil) || "FD11".equals(cdeTypUtil)) && !checkValeurCdeGreIde12ByCdeTypUtil(cdeGreIde12, VAL2_CDEGREIDE12)){
             errors.rejectValue("cdeGreIde12", "format.error.cdeGreIde12");
         } else if(("FD05".equals(cdeTypUtil) || "FD06".equals(cdeTypUtil) || "FD07".equals(cdeTypUtil))
                 && !checkValeurCdeGreIde12ByCdeTypUtil(cdeGreIde12, VAL4_CDEGREIDE12)){

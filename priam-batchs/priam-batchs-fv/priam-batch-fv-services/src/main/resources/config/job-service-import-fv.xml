@@ -122,7 +122,7 @@
                             value="cdeFamilTypUtil,cdeTypUtil,numProg,rionEffet,ide12,cdeTypIde12,ide12RepCoad,cdeTypIde12RepCoad,datsitu,datconslt,
                                     coad,numPers,numCatal,idSteAd,rolAd,typeDroit,cleAd,cdeTypProtect,coadOriEdtr,idSteOriEdtr,points,
                                     nomProgramme,tax,durDif,nbrDif,typMt,mt,genreOeuvre,titreOeuvre,dureeDeposee,taxOri,
-                                    labelValo,paysOri,indicRepart,nom,prenom,indicSacem,sousRole,anneeNaissance,anneeDeces,indicDrtPercus"/>
+                                    labelValo,paysOri,indicRepart,participantFonds,nom,prenom,indicSacem,sousRole,anneeNaissance,anneeDeces,indicDrtPercus"/>
 
                         <property name="delimiter" value=";"/>
                     </bean>

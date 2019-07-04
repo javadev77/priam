@@ -24,7 +24,7 @@ public class AdInfoProcessor implements ItemProcessor<AyantDroitPers, AyantDroit
     @Override
     public AyantDroitPers process(AyantDroitPers ayantDroitPers) throws Exception {
         Long idFichier = jobExecutionContext.getLong("idFichier");
-        if(ayantDroitPers!=null){
+        if(ayantDroitPers!=null && "OK".equals(ayantDroitPers.getStatut())){
             if(ayanrtDroitPersDao.isNumpersExistByIdFichier(ayantDroitPers.getNumPers(), idFichier)){
                 return ayantDroitPers;
             }

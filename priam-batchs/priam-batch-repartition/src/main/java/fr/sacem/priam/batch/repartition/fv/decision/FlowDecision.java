@@ -26,13 +26,8 @@ public class FlowDecision implements JobExecutionDecider {
         Optional<String> optionalNumProg = Optional.ofNullable(numeroProgramme);
         if(optionalNumProg.isPresent()){
             Programme programme = programmeBatchDao.findByNumProg(numeroProgramme);
-            /*if(FAMILLE_VALORISATION.equals(programme.getTypeUtilisation()) && (TYPE_REPART_AYANT_DROIT.equals(programme.getTypeRepart())
-                    || TYPE_REPART_OEUVRE_AD.equals(programme.getTypeRepart()))){
-                return new FlowExecutionStatus("MAJ_REFERENTIEL");
-            }*/
             if(FAMILLE_VALORISATION.equals(TypeUtilisationEnum.getValue(programme.getTypeUtilisation()).getCodeFamille())
-                    && (TYPE_REPART_AYANT_DROIT.equals(programme.getTypeRepart())
-                    || TYPE_REPART_OEUVRE_AD.equals(programme.getTypeRepart()))){
+                    && TYPE_REPART_OEUVRE_AD.equals(programme.getTypeRepart())){
                 return new FlowExecutionStatus("MAJ_REFERENTIEL");
             }
         }

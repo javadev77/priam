@@ -42,7 +42,7 @@
             <bean class="fr.sacem.priam.batch.fv.participation.fonds.mapper.ReferentielParticipationFondsLineMapper">
                 <property name="lineTokenizer">
                     <bean class="org.springframework.batch.item.file.transform.DelimitedLineTokenizer">
-                        <property name="names" value="ide12,cdeTypIde12,cdeFamilleTypeUtil,cdeTypUtil,rionPaiementMax,statut"/>
+                        <property name="names" value="ide12,cdeTypUtil,rionPaiementMax,statut"/>
                         <property name="delimiter" value=";"/>
                     </bean>
                 </property>
