@@ -1,47 +1,51 @@
-package fr.sacem.priam.batch.fv.repartition.domain;
+package fr.sacem.priam.batch.felix.domain;
 
-public class LignePreprepFVCsv {
+import java.io.Serializable;
+import java.util.Date;
 
-    private String id;
+public class LignePreprepFV implements Serializable {
+
+    private Long id;
     private String typRepart;
     private String cdeCisac;
-    private String cdeTer;
-    private String rionEffet;
+    private Integer cdeTer;
+    private Integer rionEffet;
     private String cdeFamilTypUtil;
-    private String numProg;
+    private Integer numProg;
     private String cdeUtil;
     private String cdeTypUtil;
     private String cdeModFac;
     private String cdeTypProg;
     private String cdeCompl;
     private String libProg;
-    private String datDbtProg;
-    private String datFinProg;
-    private String ide12;
+    private Date datDbtProg;
+    private Date datFinProg;
+    private Long ide12;
     private String cdeTypIde12;
-    private String datSitu;
-    private String datConslt;
-    private String durDif;
-    private String nbrDif;
+    private Date datSitu;
+    private Date datConslt;
+    private Long durDif;
+    private Long nbrDif;
     private String typMt;
-    private String mt;
+    private Double mt;
     private String cdeTypDrtSacem;
-    private String coadPayer;
-    private String idSteAd;
+    private Long coadPayer;
+    private Long idSteAd;
     private String rolAd;
-    private String cleAd;
+    private Double cleAd;
     private String cdeTypProtec;
-    private String coadOriEdtr;
-    private String idSteOriEdtr;
-    private String numPers;
-    private String numCatal;
-    private String points;
+    private Long coadOriEdtr;
+    private Long idSteOriEdtr;
+    private Long numPers;
+    private Long numCatal;
+    private Double points;
+    private Integer lineNumber;
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -61,19 +65,19 @@ public class LignePreprepFVCsv {
         this.cdeCisac = cdeCisac;
     }
 
-    public String getCdeTer() {
+    public Integer getCdeTer() {
         return cdeTer;
     }
 
-    public void setCdeTer(String cdeTer) {
+    public void setCdeTer(Integer cdeTer) {
         this.cdeTer = cdeTer;
     }
 
-    public String getRionEffet() {
+    public Integer getRionEffet() {
         return rionEffet;
     }
 
-    public void setRionEffet(String rionEffet) {
+    public void setRionEffet(Integer rionEffet) {
         this.rionEffet = rionEffet;
     }
 
@@ -85,11 +89,11 @@ public class LignePreprepFVCsv {
         this.cdeFamilTypUtil = cdeFamilTypUtil;
     }
 
-    public String getNumProg() {
+    public Integer getNumProg() {
         return numProg;
     }
 
-    public void setNumProg(String numProg) {
+    public void setNumProg(Integer numProg) {
         this.numProg = numProg;
     }
 
@@ -141,27 +145,27 @@ public class LignePreprepFVCsv {
         this.libProg = libProg;
     }
 
-    public String getDatDbtProg() {
+    public Date getDatDbtProg() {
         return datDbtProg;
     }
 
-    public void setDatDbtProg(String datDbtProg) {
+    public void setDatDbtProg(Date datDbtProg) {
         this.datDbtProg = datDbtProg;
     }
 
-    public String getDatFinProg() {
+    public Date getDatFinProg() {
         return datFinProg;
     }
 
-    public void setDatFinProg(String datFinProg) {
+    public void setDatFinProg(Date datFinProg) {
         this.datFinProg = datFinProg;
     }
 
-    public String getIde12() {
+    public Long getIde12() {
         return ide12;
     }
 
-    public void setIde12(String ide12) {
+    public void setIde12(Long ide12) {
         this.ide12 = ide12;
     }
 
@@ -173,35 +177,35 @@ public class LignePreprepFVCsv {
         this.cdeTypIde12 = cdeTypIde12;
     }
 
-    public String getDatSitu() {
+    public Date getDatSitu() {
         return datSitu;
     }
 
-    public void setDatSitu(String datSitu) {
+    public void setDatSitu(Date datSitu) {
         this.datSitu = datSitu;
     }
 
-    public String getDatConslt() {
+    public Date getDatConslt() {
         return datConslt;
     }
 
-    public void setDatConslt(String datConslt) {
+    public void setDatConslt(Date datConslt) {
         this.datConslt = datConslt;
     }
 
-    public String getDurDif() {
+    public Long getDurDif() {
         return durDif;
     }
 
-    public void setDurDif(String durDif) {
+    public void setDurDif(Long durDif) {
         this.durDif = durDif;
     }
 
-    public String getNbrDif() {
+    public Long getNbrDif() {
         return nbrDif;
     }
 
-    public void setNbrDif(String nbrDif) {
+    public void setNbrDif(Long nbrDif) {
         this.nbrDif = nbrDif;
     }
 
@@ -213,11 +217,11 @@ public class LignePreprepFVCsv {
         this.typMt = typMt;
     }
 
-    public String getMt() {
+    public Double getMt() {
         return mt;
     }
 
-    public void setMt(String mt) {
+    public void setMt(Double mt) {
         this.mt = mt;
     }
 
@@ -229,19 +233,19 @@ public class LignePreprepFVCsv {
         this.cdeTypDrtSacem = cdeTypDrtSacem;
     }
 
-    public String getCoadPayer() {
+    public Long getCoadPayer() {
         return coadPayer;
     }
 
-    public void setCoadPayer(String coadPayer) {
+    public void setCoadPayer(Long coadPayer) {
         this.coadPayer = coadPayer;
     }
 
-    public String getIdSteAd() {
+    public Long getIdSteAd() {
         return idSteAd;
     }
 
-    public void setIdSteAd(String idSteAd) {
+    public void setIdSteAd(Long idSteAd) {
         this.idSteAd = idSteAd;
     }
 
@@ -253,11 +257,11 @@ public class LignePreprepFVCsv {
         this.rolAd = rolAd;
     }
 
-    public String getCleAd() {
+    public Double getCleAd() {
         return cleAd;
     }
 
-    public void setCleAd(String cleAd) {
+    public void setCleAd(Double cleAd) {
         this.cleAd = cleAd;
     }
 
@@ -269,46 +273,54 @@ public class LignePreprepFVCsv {
         this.cdeTypProtec = cdeTypProtec;
     }
 
-    public String getCoadOriEdtr() {
+    public Long getCoadOriEdtr() {
         return coadOriEdtr;
     }
 
-    public void setCoadOriEdtr(String coadOriEdtr) {
+    public void setCoadOriEdtr(Long coadOriEdtr) {
         this.coadOriEdtr = coadOriEdtr;
     }
 
-    public String getIdSteOriEdtr() {
+    public Long getIdSteOriEdtr() {
         return idSteOriEdtr;
     }
 
-    public void setIdSteOriEdtr(String idSteOriEdtr) {
+    public void setIdSteOriEdtr(Long idSteOriEdtr) {
         this.idSteOriEdtr = idSteOriEdtr;
     }
 
-    public String getNumPers() {
+    public Long getNumPers() {
         return numPers;
     }
 
-    public void setNumPers(String numPers) {
+    public void setNumPers(Long numPers) {
         this.numPers = numPers;
     }
 
-    public String getNumCatal() {
+    public Long getNumCatal() {
         return numCatal;
     }
 
-    public void setNumCatal(String numCatal) {
+    public void setNumCatal(Long numCatal) {
         this.numCatal = numCatal;
     }
 
-    public String getPoints() {
+    public Double getPoints() {
         return points;
     }
 
-    public void setPoints(String points) {
+    public void setPoints(Double points) {
         this.points = points;
     }
 
-    public LignePreprepFVCsv() {
+    public Integer getLineNumber() {
+        return lineNumber;
+    }
+
+    public void setLineNumber(final Integer lineNumber) {
+        this.lineNumber = lineNumber;
+    }
+
+    public LignePreprepFV() {
     }
 }

@@ -1,14 +1,16 @@
-package fr.sacem.priam.batch.fv.config;
+package fr.sacem.priam.batch.felix.writer;
 
-import fr.sacem.priam.batch.common.domain.Admap;
-import fr.sacem.priam.batch.common.fv.writer.CsvFileItemWriter;
 import fr.sacem.priam.batch.common.fv.writer.StringHeaderWriter;
-
-import fr.sacem.priam.batch.fv.repartition.domain.LignePreprepFV;
+import fr.sacem.priam.batch.felix.domain.LignePreprepFV;
 import fr.sacem.priam.common.constants.EnvConstants;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.priam.model.dao.jpa.fv.LignePreprepFVJdbcDao;
 import fr.sacem.priam.model.domain.Programme;
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Map;
 import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor;
 import org.springframework.batch.item.file.transform.DelimitedLineAggregator;
 import org.springframework.batch.item.file.transform.FieldExtractor;
@@ -17,19 +19,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.core.io.FileSystemResource;
 
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.util.Map;
 
 @Configuration
-@ComponentScan(basePackages = {"fr.sacem.priam.batch.fv", "fr.sacem.priam.model"})
 public class RepartitionFVCsvFileConfig {
 
     private static final String DOC_PREFIX ="FF_PRIAM_PREPREP101_" ;
@@ -48,7 +43,7 @@ public class RepartitionFVCsvFileConfig {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.FRANCE);
         return "#--------------------------------------------------------------------------\n" +
                 "# Extraction a destination de FELIX pour les calculs de repartition\n" +
-                "#--------------------------------------------------------------------------" +
+                "#--------------------------------------------------------------------------\n" +
                 "# JJ/MM/AAAA HH:MM - Auteur - Objet\n" +
                 "#--------------------------------------------------------------------------\n" +
                 "# "+ dateFormat.format(new Date()) + " - PRIAM - Creation\n" +
@@ -66,11 +61,11 @@ public class RepartitionFVCsvFileConfig {
 
     @Bean(name = "repartitionFVFileWriter")
     @Scope(value = "step")
-    CsvFileItemWriter<LignePreprepFV> databaseCsvItemWriter(@Value("#{jobParameters['numProg']}")  Long numProg) {
+    FelixCsvFileItemWriter<LignePreprepFV> databaseCsvItemWriter(@Value("#{jobParameters['numProg']}")  Long numProg) {
 
         Programme programme = programmeDao.findOne(String.valueOf(numProg));
 
-        CsvFileItemWriter<LignePreprepFV> csvFileWriter = new CsvFileItemWriter<>();
+        FelixCsvFileItemWriter<LignePreprepFV> csvFileWriter = new FelixCsvFileItemWriter<>();
         StringHeaderWriter headerWriter = new StringHeaderWriter(head());
 
         csvFileWriter.setFooterCallback(writer -> writer.write(foot(countNbLignes(numProg))));

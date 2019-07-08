@@ -22,7 +22,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 @Profile({"local"})
 @PropertySource("classpath:config/application-local.properties")
 @ImportResource(value = "classpath:config/job-affectation-fv.xml")
-public class BatchConfigLocal {
+public class BatchServicesConfigLocal {
 
     @Value("${spring.datasource.url}")
     String urlDb;

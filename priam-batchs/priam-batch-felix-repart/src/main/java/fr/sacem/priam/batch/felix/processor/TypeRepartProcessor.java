@@ -1,12 +1,12 @@
-package fr.sacem.priam.batch.fv.repartition.processor;
+package fr.sacem.priam.batch.felix.processor;
 
-import fr.sacem.priam.batch.fv.repartition.domain.LignePreprepFV;
+import fr.sacem.priam.batch.felix.domain.LignePreprepFV;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.ItemProcessor;
 
-import static fr.sacem.priam.batch.fv.repartition.util.TypeRepartitionFVEnum.*;
+import static fr.sacem.priam.batch.felix.util.TypeRepartitionFVEnum.*;
 
 public class TypeRepartProcessor implements ItemProcessor<LignePreprepFV, LignePreprepFV> {
 
@@ -25,7 +25,7 @@ public class TypeRepartProcessor implements ItemProcessor<LignePreprepFV, LigneP
 
     @Override
     public LignePreprepFV process(LignePreprepFV lignePreprepFV) throws Exception {
-        String typeRepartFV = this.jobExecution.getJobParameters().getString("typeRepartFV");
+        String typeRepartFV = this.jobExecution.getJobParameters().getString("typeRepart");
         if(OEUVRE.getLibelle().equals(typeRepartFV)){
             lignePreprepFV.setTypRepart(OEUVRE.getCode());
         } else if (AYANT_DROIT.getLibelle().equals(typeRepartFV)) {

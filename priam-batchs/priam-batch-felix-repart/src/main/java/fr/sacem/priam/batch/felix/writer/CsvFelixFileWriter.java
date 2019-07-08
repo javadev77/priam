@@ -70,8 +70,8 @@ public class CsvFelixFileWriter {
 
     @Bean(name = "csvFileWriter")
     @Scope(value = "step")
-    FelixCsvFileItemWriter databaseCsvItemWriter(@Value("#{jobParameters['numProg']}") String numProg) {
-        FelixCsvFileItemWriter csvFileWriter = new FelixCsvFileItemWriter();
+    FelixCsvFileItemWriter<FelixData> databaseCsvItemWriter(@Value("#{jobParameters['numProg']}") String numProg) {
+        FelixCsvFileItemWriter<FelixData> csvFileWriter = new FelixCsvFileItemWriter<>();
 
 
         csvFileWriter.setHeaderCallback(writer -> writer.write(head()));

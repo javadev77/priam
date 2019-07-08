@@ -1,10 +1,21 @@
-package fr.sacem.priam.batch.fv.repartition.processor;
+package fr.sacem.priam.batch.felix.processor;
 
-import fr.sacem.priam.batch.fv.repartition.domain.LignePreprepFV;
-import fr.sacem.priam.batch.fv.repartition.domain.LignePreprepFVCsv;
-import fr.sacem.priam.batch.fv.repartition.validator.LignePreprepFVDataSpringValidator;
+import fr.sacem.priam.batch.felix.domain.LignePreprepFV;
+import fr.sacem.priam.batch.felix.domain.LignePreprepFVCsv;
+import fr.sacem.priam.batch.felix.validator.LignePreprepFVDataSpringValidator;
+import fr.sacem.priam.model.dao.jpa.FichierFelixDao;
+import fr.sacem.priam.model.dao.jpa.FichierFelixLogDao;
+import fr.sacem.priam.model.domain.FichierFelix;
+import fr.sacem.priam.model.domain.FichierFelixLog;
+import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.ExecutionContext;
@@ -13,14 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-
-import java.text.DateFormat;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
 public class LignePreprepFVProcessor implements ItemProcessor<LignePreprepFV, LignePreprepFVCsv> {
 
@@ -37,32 +40,58 @@ public class LignePreprepFVProcessor implements ItemProcessor<LignePreprepFV, Li
     @Autowired
     LignePreprepFVDataSpringValidator validator;
 
+    @Autowired
+    FichierFelixDao fichierFelixDao;
+
+    private JobExecution jobExecution;
+    private StepExecution stepExecution;
+
+    @Autowired
+    private FichierFelixLogDao fichierFelixLogDao;
+
     @BeforeStep
     public void beforeStep(StepExecution stepExecution) {
+
         this.executionContext = stepExecution.getExecutionContext();
+        jobExecution = stepExecution.getJobExecution();
+        this.stepExecution = stepExecution;
+        jobExecution.getExecutionContext().put("IsError", "false");
     }
 
     @Override
     public LignePreprepFVCsv process(final LignePreprepFV lignePreprepFV) throws Exception {
+        LOGGER.info(String.format("Read count = %d", stepExecution.getReadCount()));
+        lineNumber = stepExecution.getReadCount() +  1 + 8;
 
-        List<String> errorList = (ArrayList<String>) executionContext.get(LIGNE_PREPREP_ERRORS);
+        LOGGER.info(String.format("Line number = %d", lineNumber));
+
         BindingResult errors = new BeanPropertyBindingResult(lignePreprepFV, "lignePreprepFV-"+ lineNumber);
         validator.validate(lignePreprepFV, errors);
 
         if (!errors.hasErrors()) {
             return mapper(lignePreprepFV);
         }
+
+        jobExecution.getExecutionContext().put("IsError", "true");
+        String numProg = jobExecution.getJobParameters().getString("numProg");
+        FichierFelix ff = fichierFelixDao.findByNumprog(numProg);
+        String error = null;
         for(FieldError fe : errors.getFieldErrors()) {
 
             if (fe.getCode().startsWith("format.")) {
-                errorList.add(String.format(MESSAGE_FORMAT, lineNumber, fe.getField(), fe.getRejectedValue()));
+                error = String.format(MESSAGE_FORMAT, lineNumber, fe.getField(), fe.getRejectedValue());
             } else {
-                errorList.add(String.format(MESSAGE_CHAMPS_OBLIGATOIRE, lineNumber, fe.getField()));
+                error = String.format(MESSAGE_CHAMPS_OBLIGATOIRE, lineNumber, fe.getField());
             }
-
+            FichierFelixLog felixLog = new FichierFelixLog();
+            felixLog.setLog(error);
+            felixLog.setDateCreation(new Date());
+            fichierFelixLogDao.save(felixLog);
+            ff.getLogs().add(felixLog);
         }
+        fichierFelixDao.saveAndFlush(ff);
 
-        lineNumber++;
+
 
         return mapper(lignePreprepFV);
     }

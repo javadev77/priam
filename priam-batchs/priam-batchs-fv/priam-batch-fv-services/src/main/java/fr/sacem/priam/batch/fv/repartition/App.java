@@ -1,8 +1,9 @@
 package fr.sacem.priam.batch.fv.repartition;
 
 import fr.sacem.priam.batch.common.domain.Admap;
-import fr.sacem.priam.batch.fv.config.BatchConfigLocal;
-import fr.sacem.priam.batch.fv.config.BatchConfigProd;
+import fr.sacem.priam.batch.fv.config.BatchServicesConfigLocal;
+import java.util.HashMap;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
@@ -13,9 +14,6 @@ import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by benmerzoukah on 16/05/2018.
@@ -29,7 +27,7 @@ public class App {
 
     public static void main(String[] args) {
 
-        ApplicationContext context = new AnnotationConfigApplicationContext(BatchConfigLocal.class);
+        ApplicationContext context = new AnnotationConfigApplicationContext(BatchServicesConfigLocal.class);
         JobLauncher jobLauncher = (JobLauncher) context.getBean("jobLauncher");
         Job job = (Job) context.getBean("jobRepartitionFVOeuvre");
         Admap admap =(Admap) context.getBean("admap");

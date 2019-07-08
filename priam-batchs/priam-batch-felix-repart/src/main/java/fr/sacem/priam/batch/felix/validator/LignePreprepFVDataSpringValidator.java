@@ -1,9 +1,9 @@
-package fr.sacem.priam.batch.fv.repartition.validator;
+package fr.sacem.priam.batch.felix.validator;
 
-import fr.sacem.priam.batch.fv.repartition.domain.LignePreprepFV;
-import static fr.sacem.priam.batch.fv.repartition.util.TypeRepartitionFVEnum.AYANT_DROIT;
-import static fr.sacem.priam.batch.fv.repartition.util.TypeRepartitionFVEnum.OEUVRE;
-import static fr.sacem.priam.batch.fv.repartition.util.TypeRepartitionFVEnum.OEUVRE_AD;
+import fr.sacem.priam.batch.felix.domain.LignePreprepFV;
+import static fr.sacem.priam.batch.felix.util.TypeRepartitionFVEnum.AYANT_DROIT;
+import static fr.sacem.priam.batch.felix.util.TypeRepartitionFVEnum.OEUVRE;
+import static fr.sacem.priam.batch.felix.util.TypeRepartitionFVEnum.OEUVRE_AD;
 import fr.sacem.priam.model.util.TypeUtilisationPriam;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;

@@ -29,7 +29,7 @@
             <next on="*" to="insertData"/>
 
             <listeners merge="true">
-                <listener ref="stepReadCsvImportListener"></listener>
+                <listener ref="stepReadCsvImportListener"/>
             </listeners>
         </step>
 
@@ -60,7 +60,7 @@
     </job>
 
 
-    <bean id="stepReadCsvImportListener" class="fr.sacem.priam.batch.fv.serviceimport.listener.StepReadCsvImportListener"></bean>
+    <bean id="stepReadCsvImportListener" class="fr.sacem.priam.batch.fv.serviceimport.listener.StepReadCsvImportListener"/>
     <bean id="listenerStepInsertDataImport" class="fr.sacem.priam.batch.fv.serviceimport.listener.InsertDataImportStepListener"/>
 
     <!-- This is to demo MultiWriters -->
@@ -122,7 +122,7 @@
                             value="cdeFamilTypUtil,cdeTypUtil,numProg,rionEffet,ide12,cdeTypIde12,ide12RepCoad,cdeTypIde12RepCoad,datsitu,datconslt,
                                     coad,numPers,numCatal,idSteAd,rolAd,typeDroit,cleAd,cdeTypProtect,coadOriEdtr,idSteOriEdtr,points,
                                     nomProgramme,tax,durDif,nbrDif,typMt,mt,genreOeuvre,titreOeuvre,dureeDeposee,taxOri,
-                                    labelValo,paysOri,indicRepart,nom,prenom,indicSacem,sousRole,anneeNaissance,anneeDeces,indicDrtPercus"/>
+                                    labelValo,paysOri,indicRepart,participantFonds,nom,prenom,indicSacem,sousRole,anneeNaissance,anneeDeces,indicDrtPercus"/>
 
                         <property name="delimiter" value=";"/>
                     </bean>

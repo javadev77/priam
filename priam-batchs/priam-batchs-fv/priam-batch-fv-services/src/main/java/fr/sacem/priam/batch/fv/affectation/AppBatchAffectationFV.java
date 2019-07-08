@@ -1,6 +1,6 @@
 package fr.sacem.priam.batch.fv.affectation;
 
-import fr.sacem.priam.batch.fv.config.BatchConfigLocal;
+import fr.sacem.priam.batch.fv.config.BatchServicesConfigLocal;
 import java.util.HashMap;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -24,7 +24,7 @@ public class AppBatchAffectationFV {
     public static void main(String[] args) {
         LOGGER.info("Lancement du Batch Affectation FV ");
 
-        ApplicationContext context = new AnnotationConfigApplicationContext(BatchConfigLocal.class);
+        ApplicationContext context = new AnnotationConfigApplicationContext(BatchServicesConfigLocal.class);
 
 
         JobLauncher jobLauncher = (JobLauncher) context.getBean("jobLauncher");
