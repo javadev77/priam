@@ -1,50 +1,47 @@
-package fr.sacem.priam.batch.fv.repartition.domain;
+package fr.sacem.priam.batch.felix.domain;
 
-import java.io.Serializable;
-import java.util.Date;
+public class LignePreprepFVCsv {
 
-public class LignePreprepFV implements Serializable {
-
-    private Long id;
+    private String id;
     private String typRepart;
     private String cdeCisac;
-    private Integer cdeTer;
-    private Integer rionEffet;
+    private String cdeTer;
+    private String rionEffet;
     private String cdeFamilTypUtil;
-    private Integer numProg;
+    private String numProg;
     private String cdeUtil;
     private String cdeTypUtil;
     private String cdeModFac;
     private String cdeTypProg;
     private String cdeCompl;
     private String libProg;
-    private Date datDbtProg;
-    private Date datFinProg;
-    private Long ide12;
+    private String datDbtProg;
+    private String datFinProg;
+    private String ide12;
     private String cdeTypIde12;
-    private Date datSitu;
-    private Date datConslt;
-    private Long durDif;
-    private Long nbrDif;
+    private String datSitu;
+    private String datConslt;
+    private String durDif;
+    private String nbrDif;
     private String typMt;
-    private Double mt;
+    private String mt;
     private String cdeTypDrtSacem;
-    private Long coadPayer;
-    private Long idSteAd;
+    private String coadPayer;
+    private String idSteAd;
     private String rolAd;
-    private Double cleAd;
+    private String cleAd;
     private String cdeTypProtec;
-    private Long coadOriEdtr;
-    private Long idSteOriEdtr;
-    private Long numPers;
-    private Long numCatal;
-    private Double points;
+    private String coadOriEdtr;
+    private String idSteOriEdtr;
+    private String numPers;
+    private String numCatal;
+    private String points;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -64,19 +61,19 @@ public class LignePreprepFV implements Serializable {
         this.cdeCisac = cdeCisac;
     }
 
-    public Integer getCdeTer() {
+    public String getCdeTer() {
         return cdeTer;
     }
 
-    public void setCdeTer(Integer cdeTer) {
+    public void setCdeTer(String cdeTer) {
         this.cdeTer = cdeTer;
     }
 
-    public Integer getRionEffet() {
+    public String getRionEffet() {
         return rionEffet;
     }
 
-    public void setRionEffet(Integer rionEffet) {
+    public void setRionEffet(String rionEffet) {
         this.rionEffet = rionEffet;
     }
 
@@ -88,11 +85,11 @@ public class LignePreprepFV implements Serializable {
         this.cdeFamilTypUtil = cdeFamilTypUtil;
     }
 
-    public Integer getNumProg() {
+    public String getNumProg() {
         return numProg;
     }
 
-    public void setNumProg(Integer numProg) {
+    public void setNumProg(String numProg) {
         this.numProg = numProg;
     }
 
@@ -144,27 +141,27 @@ public class LignePreprepFV implements Serializable {
         this.libProg = libProg;
     }
 
-    public Date getDatDbtProg() {
+    public String getDatDbtProg() {
         return datDbtProg;
     }
 
-    public void setDatDbtProg(Date datDbtProg) {
+    public void setDatDbtProg(String datDbtProg) {
         this.datDbtProg = datDbtProg;
     }
 
-    public Date getDatFinProg() {
+    public String getDatFinProg() {
         return datFinProg;
     }
 
-    public void setDatFinProg(Date datFinProg) {
+    public void setDatFinProg(String datFinProg) {
         this.datFinProg = datFinProg;
     }
 
-    public Long getIde12() {
+    public String getIde12() {
         return ide12;
     }
 
-    public void setIde12(Long ide12) {
+    public void setIde12(String ide12) {
         this.ide12 = ide12;
     }
 
@@ -176,35 +173,35 @@ public class LignePreprepFV implements Serializable {
         this.cdeTypIde12 = cdeTypIde12;
     }
 
-    public Date getDatSitu() {
+    public String getDatSitu() {
         return datSitu;
     }
 
-    public void setDatSitu(Date datSitu) {
+    public void setDatSitu(String datSitu) {
         this.datSitu = datSitu;
     }
 
-    public Date getDatConslt() {
+    public String getDatConslt() {
         return datConslt;
     }
 
-    public void setDatConslt(Date datConslt) {
+    public void setDatConslt(String datConslt) {
         this.datConslt = datConslt;
     }
 
-    public Long getDurDif() {
+    public String getDurDif() {
         return durDif;
     }
 
-    public void setDurDif(Long durDif) {
+    public void setDurDif(String durDif) {
         this.durDif = durDif;
     }
 
-    public Long getNbrDif() {
+    public String getNbrDif() {
         return nbrDif;
     }
 
-    public void setNbrDif(Long nbrDif) {
+    public void setNbrDif(String nbrDif) {
         this.nbrDif = nbrDif;
     }
 
@@ -216,11 +213,11 @@ public class LignePreprepFV implements Serializable {
         this.typMt = typMt;
     }
 
-    public Double getMt() {
+    public String getMt() {
         return mt;
     }
 
-    public void setMt(Double mt) {
+    public void setMt(String mt) {
         this.mt = mt;
     }
 
@@ -232,19 +229,19 @@ public class LignePreprepFV implements Serializable {
         this.cdeTypDrtSacem = cdeTypDrtSacem;
     }
 
-    public Long getCoadPayer() {
+    public String getCoadPayer() {
         return coadPayer;
     }
 
-    public void setCoadPayer(Long coadPayer) {
+    public void setCoadPayer(String coadPayer) {
         this.coadPayer = coadPayer;
     }
 
-    public Long getIdSteAd() {
+    public String getIdSteAd() {
         return idSteAd;
     }
 
-    public void setIdSteAd(Long idSteAd) {
+    public void setIdSteAd(String idSteAd) {
         this.idSteAd = idSteAd;
     }
 
@@ -256,11 +253,11 @@ public class LignePreprepFV implements Serializable {
         this.rolAd = rolAd;
     }
 
-    public Double getCleAd() {
+    public String getCleAd() {
         return cleAd;
     }
 
-    public void setCleAd(Double cleAd) {
+    public void setCleAd(String cleAd) {
         this.cleAd = cleAd;
     }
 
@@ -272,46 +269,46 @@ public class LignePreprepFV implements Serializable {
         this.cdeTypProtec = cdeTypProtec;
     }
 
-    public Long getCoadOriEdtr() {
+    public String getCoadOriEdtr() {
         return coadOriEdtr;
     }
 
-    public void setCoadOriEdtr(Long coadOriEdtr) {
+    public void setCoadOriEdtr(String coadOriEdtr) {
         this.coadOriEdtr = coadOriEdtr;
     }
 
-    public Long getIdSteOriEdtr() {
+    public String getIdSteOriEdtr() {
         return idSteOriEdtr;
     }
 
-    public void setIdSteOriEdtr(Long idSteOriEdtr) {
+    public void setIdSteOriEdtr(String idSteOriEdtr) {
         this.idSteOriEdtr = idSteOriEdtr;
     }
 
-    public Long getNumPers() {
+    public String getNumPers() {
         return numPers;
     }
 
-    public void setNumPers(Long numPers) {
+    public void setNumPers(String numPers) {
         this.numPers = numPers;
     }
 
-    public Long getNumCatal() {
+    public String getNumCatal() {
         return numCatal;
     }
 
-    public void setNumCatal(Long numCatal) {
+    public void setNumCatal(String numCatal) {
         this.numCatal = numCatal;
     }
 
-    public Double getPoints() {
+    public String getPoints() {
         return points;
     }
 
-    public void setPoints(Double points) {
+    public void setPoints(String points) {
         this.points = points;
     }
 
-    public LignePreprepFV() {
+    public LignePreprepFVCsv() {
     }
 }

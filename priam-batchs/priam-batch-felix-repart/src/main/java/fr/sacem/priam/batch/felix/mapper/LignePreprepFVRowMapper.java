@@ -1,6 +1,6 @@
-package fr.sacem.priam.batch.fv.repartition.mapper;
+package fr.sacem.priam.batch.felix.mapper;
 
-import fr.sacem.priam.batch.fv.repartition.domain.LignePreprepFV;
+import fr.sacem.priam.batch.felix.domain.LignePreprepFV;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -8,11 +8,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math3.util.Precision;
 import org.springframework.jdbc.core.RowMapper;
 
-public class LignePreprepFVCopyMapper implements RowMapper<LignePreprepFV> {
+public class LignePreprepFVRowMapper implements RowMapper<LignePreprepFV> {
 
     @Override
     public LignePreprepFV mapRow(ResultSet rs, int i) throws SQLException {
         LignePreprepFV lignePreprepFV = new LignePreprepFV();
+        lignePreprepFV.setLineNumber(i);
         if(hasColumn(rs,"typRepart")) lignePreprepFV.setTypRepart(rs.getString("typRepart"));
         if(hasColumn(rs,"cdeCisac")) lignePreprepFV.setCdeCisac(rs.getString("cdeCisac"));
         if(hasColumn(rs,"CDE_TER") || hasColumn(rs,"cdeTer")) lignePreprepFV.setCdeTer(rs.getInt("cdeTer"));

@@ -1,4 +1,4 @@
-package fr.sacem.priam.batch.fv.repartition.util;
+package fr.sacem.priam.batch.felix.util;
 
 public enum TypeRepartitionFVEnum {
 

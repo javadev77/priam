@@ -7,11 +7,9 @@ import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
 import fr.sacem.priam.model.domain.FichierFelix;
 import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.StatutFichierFelix;
-import fr.sacem.priam.model.domain.dto.ProgrammeDto;
 import fr.sacem.priam.security.model.UserDTO;
 import fr.sacem.priam.services.FelixDataCMSService;
 import fr.sacem.priam.services.FelixDataCPService;
-import fr.sacem.priam.services.FelixDataServiceAbstract;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -27,14 +25,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameter;
 import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersInvalidException;
 import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -74,7 +77,52 @@ public class RepartitionResource {
 
 
 
-    @RequestMapping(value = "validateFelixData/{numProg}",
+
+    @RequestMapping(value = "/generateFichierFelix",
+                    method = RequestMethod.GET)
+    public ResponseEntity generateFichierFelix(@RequestParam(value = "numProg") String numProg,
+                                               @RequestParam(value = "modeRepartition") String modeRepartition,
+                                               @RequestParam(value = "typeRepart") String typeRepart,
+                                               UserDTO userDTO) {
+
+        FichierFelix ff = fichierFelixDao.findByNumprog(numProg);
+        if(ff != null) {
+            fichierFelixDao.delete(ff);
+            fichierFelixDao.flush();
+        }
+
+        ff = new FichierFelix();
+        ff.setDateCreation(new Date());
+        ff.setStatut(StatutFichierFelix.EN_COURS);
+        ff.setNumProg(numProg);
+        fichierFelixDao.save(ff);
+        fichierFelixDao.flush();
+
+        Programme prog = programmeDao.findByNumProg(numProg);
+
+        Map<String, JobParameter> jobParametersMap = new HashMap<>();
+        jobParametersMap.put("time", new JobParameter(System.currentTimeMillis()));
+        jobParametersMap.put("priam.felix.preprep.dir", new JobParameter(configAdmap.get(EnvConstants.FELIX_PREPREP_DIR.property())));
+        jobParametersMap.put("numProg", new JobParameter(numProg));
+        jobParametersMap.put("modeRepartition", new JobParameter(modeRepartition));
+        jobParametersMap.put("typeRepart", new JobParameter(typeRepart));
+        jobParametersMap.put("famille", new JobParameter(prog.getFamille().getCode()));
+        jobParametersMap.put("userId", new JobParameter(userDTO.getUserId()));
+        JobParameters jobParameters = new JobParameters(jobParametersMap);
+
+        try {
+            jobLauncher.run(jobFelixRepart, jobParameters);
+        } catch (JobExecutionAlreadyRunningException | JobRestartException | JobParametersInvalidException | JobInstanceAlreadyCompleteException e) {
+            throw new TechnicalException("Erreur Technique lors du lancement du Job !! ", e);
+        }
+
+        return ResponseEntity.ok().build();
+    }
+
+
+
+
+    /*@RequestMapping(value = "validateFelixData/{numProg}",
                   method = RequestMethod.GET,
                   produces = MediaType.APPLICATION_JSON_VALUE)
     public ProgrammeDto runAsyncCreateFichierFelix(@PathVariable("numProg") String numProg) throws IOException {
@@ -94,7 +142,7 @@ public class RepartitionResource {
         getFelixDataService(numProg).runAsyncCreateFichierFelix(numProg);
 
         return new ProgrammeDto();
-    }
+    }*/
 
 
     @RequestMapping(value = "fichierfelix/{numProg}",
@@ -105,7 +153,7 @@ public class RepartitionResource {
     }
 
 
-    @RequestMapping(value = "/downloadFichierFelixError",
+   /* @RequestMapping(value = "/downloadFichierFelixError",
                    method = RequestMethod.POST)
     public void generateFelixDataWithErrors(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String filename = request.getParameter("filename");
@@ -113,7 +161,7 @@ public class RepartitionResource {
 
 
         generateFelixCsvData(response, numProg, filename);
-    }
+    }*/
 
     protected void generateFelixCsvData(HttpServletResponse response, String numProg, String filename) throws IOException {
         response.setContentType("text/csv");
@@ -141,14 +189,14 @@ public class RepartitionResource {
 
         FichierFelix fichierFelix = fichierFelixDao.findByNumprog(numProg);
         if (fichierFelix == null) {
-            return;
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
-        if(fichierFelix.getLogs() == null || fichierFelix.getLogs().isEmpty()) {
+        //if(fichierFelix.getLogs() == null || fichierFelix.getLogs().isEmpty()) {
             generateFelixCsvData(response, numProg, fichierFelix.getNomFichier());
-        }
+        //}
     }
 
-    @RequestMapping(value = "/generateFelixData",
+    /*@RequestMapping(value = "/generateFelixData",
                     method = RequestMethod.POST,
                     consumes = MediaType.APPLICATION_JSON_VALUE)
     public void generateFelixData(@RequestBody ProgrammeDto programme, UserDTO userDto) throws TechnicalException {
@@ -197,5 +245,5 @@ public class RepartitionResource {
         } else {
             return felixDataCPService;
         }
-    }
+    }*/
 }

@@ -29,7 +29,7 @@
             <next on="*" to="insertData"/>
 
             <listeners merge="true">
-                <listener ref="stepReadCsvImportListener"></listener>
+                <listener ref="stepReadCsvImportListener"/>
             </listeners>
         </step>
 
@@ -60,7 +60,7 @@
     </job>
 
 
-    <bean id="stepReadCsvImportListener" class="fr.sacem.priam.batch.fv.serviceimport.listener.StepReadCsvImportListener"></bean>
+    <bean id="stepReadCsvImportListener" class="fr.sacem.priam.batch.fv.serviceimport.listener.StepReadCsvImportListener"/>
     <bean id="listenerStepInsertDataImport" class="fr.sacem.priam.batch.fv.serviceimport.listener.InsertDataImportStepListener"/>
 
     <!-- This is to demo MultiWriters -->

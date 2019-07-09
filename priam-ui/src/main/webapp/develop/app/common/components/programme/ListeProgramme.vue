@@ -833,9 +833,10 @@
             abandonnerProgramme : {method : 'PUT', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/programme/abandon'},
             getAllNumProgForAutocmplete : {method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/programme/numprog/autocomplete'},
             getAllNomProgForAutocmplete : {method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/programme/nomprog/autocomplete'},
-            validateFelixData : {method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/repartition/validateFelixData/{numProg}'},
-            generateFelixData : {method : 'POST', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/repartition/generateFelixData'},
+            /*validateFelixData : {method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/repartition/validateFelixData/{numProg}'},
+            generateFelixData : {method : 'POST', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/repartition/generateFelixData'},*/
             generateFichierFelixFV : {method : 'GET', url :process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/repartition/generateFichierFelixFV?numProg={numProg}&modeRepartition={modeRepartition}'},
+            generateFichierFelix : {method : 'GET', url :process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/repartition/generateFichierFelix?numProg={numProg}&modeRepartition={modeRepartition}&typeRepart={typeRepart}'},
             checkIfDone : {method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/repartition/fichierfelix/{numProg}'},
             exportProgramme :{method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/programme/export/{numProg}'},
             deleteExport :{method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/programme/deleteExport/{numProg}'},
@@ -1310,12 +1311,10 @@
               var self = this;
               let numProg = this.selectedProgramme.numProg;
               let famille = this.selectedProgramme.famille;
-              if(famille !== 'FDSVAL'){
-              this.resource.validateFelixData({numProg:  numProg})
-                .then(response => {
-                  return response.json();
-                })
+              //if(famille !== 'FDSVAL'){
+              this.resource.generateFichierFelix({numProg:  numProg, modeRepartition: self.modeRepartition, typeRepart: this.selectedProgramme.typeRepart})
                 .then(data => {
+                  debugger;
                    self.programmesEnCoursTraitement.push(numProg);
                   // self.$store.commit('ADD_PROG_EN_COURS', numProg);
                    self.intervalIDs[numProg] = setInterval(function () {
@@ -1334,20 +1333,6 @@
                               clearInterval(self.intervalIDs[numProg]);
                               self.downloadCsvFile(process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/repartition/downloadFichierFelix', {numProg: numProg}, fichierFelix.nomFichier);
 
-                            } else if(self.modeRepartition === 'MISE_EN_REPART') {
-                              self.programmesEnCoursTraitement.push(numProg);
-                              self.resource.generateFelixData({numProg : numProg})
-                                .then(response => {
-                                  console.log("Genetation OK");
-                                  //clearInterval(self.intervalIDs[numProg]);
-                                  //self.rechercherProgrammes();
-
-                                })
-                                .catch(error => {
-                                  alert("Erreur technique lors de la Genetation du fichier Felix !! ");
-
-                                });
-
                             }
                           } else if(fichierFelix.statut === 'EN_ERREUR' ) {
                               clearInterval(self.intervalIDs[numProg]);
@@ -1355,7 +1340,7 @@
 
                               if(fichierFelix.logs !== undefined && fichierFelix.logs.length > 0) {
                                 self.fichierFelixErrors = fichierFelix.logs;
-                                self.downloadCsvFile(process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/repartition/downloadFichierFelixError',
+                                self.downloadCsvFile(process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/repartition/downloadFichierFelix',
                                   {numProg: numProg, tmpFilename : fichierFelix.nomFichier, filename : fichierFelix.nomFichier},
                                   fichierFelix.nomFichier);
                               }
@@ -1369,9 +1354,9 @@
                         });
                   },
 
-                    1000);
+                    1000 * 10);
               });
-              } else {
+             /* } else {
                 let typeRepartFV = this.selectedProgramme.typeRepart;
                 this.resource.generateFichierFelixFV({numProg:  numProg, modeRepartition: self.modeRepartition, typeRepartFV: typeRepartFV})
                   .then(response => {
@@ -1400,7 +1385,7 @@
                       },
                       1000);
                   });
-              }
+              }*/
 
           },
 

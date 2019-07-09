@@ -6,7 +6,6 @@
        xsi:schemaLocation="http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <import resource="job-repartition-fv.xml"/>
     <import  resource="job-desaffectation-fv.xml"/>
     <import resource="job-service-export-fv.xml"/>
     <import resource="job-service-import-fv.xml"/>
