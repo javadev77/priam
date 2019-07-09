@@ -24,7 +24,9 @@ public enum EtapeEnrichissementEnum {
     //Service Ayant Droit Clés Pers OCTAV
     TO_SRV_AD_INFO("TO_SRV_AD_INFO"),
     IN_SRV_AD_INFO("IN_SRV_AD_INFO"),
-    DONE_SRV_AD_INFO("DONE_SRV_AD_INFO");
+    DONE_SRV_AD_INFO("DONE_SRV_AD_INFO"),
+
+    ERROR_SRV_ENRICHISSEMENT("ERROR_SRV_ENRICHISSEMENT");
 
 
     private final String code;

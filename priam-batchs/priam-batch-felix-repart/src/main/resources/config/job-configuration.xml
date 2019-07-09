@@ -448,12 +448,6 @@
 
     </bean>
 
-
-    <bean id="programmeBatchDao" class="fr.sacem.priam.batch.common.dao.ProgrammeBatchDao" >
-        <property name="dataSource" ref="dataSource"/>
-        <property name="nomTableLigneProgramme" value="${nom.table.ligneprogramme}"/>
-    </bean>
-
     <bean id="journalBatchDao" class="fr.sacem.priam.model.dao.jpa.JournalBatchDao">
         <property name="dataSource" ref="dataSource"/>
     </bean>
