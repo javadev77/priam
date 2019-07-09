@@ -51,10 +51,7 @@ public class ExportCsvMapper implements RowMapper<ExportCsvDto> {
         exportCsvDto.setPaysOri(resultSet.getString("paysOri"));
         exportCsvDto.setIndicRepart(resultSet.getInt("indicRepart"));
 
-        if(doesColumnExist("PARTICIPATION_FONDS", resultSet)) {
-            exportCsvDto.setParticipantFonds(resultSet.getString("PARTICIPATION_FONDS"));
-        }
-
+        exportCsvDto.setParticipantFonds(resultSet.getString("PARTICIPATION_FONDS"));
         exportCsvDto.setNomProgramme(resultSet.getString("NOM_PRG"));
         exportCsvDto.setNom(resultSet.getString("NOM"));
         exportCsvDto.setPrenom(resultSet.getString("PRENOM"));
@@ -75,16 +72,4 @@ public class ExportCsvMapper implements RowMapper<ExportCsvDto> {
                 .toLocalDate();
     }
 
-    public static boolean doesColumnExist(String columnName, ResultSet rs) throws SQLException{
-        ResultSetMetaData meta = rs.getMetaData();
-        int numCol = meta.getColumnCount();
-        for (int i = 1; i <= numCol; i++) {
-            if(meta.getColumnName(i).equalsIgnoreCase(columnName)) {
-                return true;
-
-            }
-
-        }
-        return false;
-    }
 }

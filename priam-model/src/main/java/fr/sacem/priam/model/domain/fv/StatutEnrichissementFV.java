@@ -13,5 +13,6 @@ public enum StatutEnrichissementFV {
     DONE_SRV_AD_CLES_PROTECTION,
     TO_SRV_AD_INFO,
     IN_SRV_AD_INFO,
-    DONE_SRV_AD_INFO
+    DONE_SRV_AD_INFO,
+    ERROR_SRV_ENRICHISSEMENT
 }

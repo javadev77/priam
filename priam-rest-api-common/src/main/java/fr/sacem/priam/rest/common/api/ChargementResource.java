@@ -5,6 +5,7 @@ import fr.sacem.priam.common.TypeUtilisationEnum;
 import fr.sacem.priam.model.dao.jpa.FichierDao;
 import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.dto.FileDto;
+import fr.sacem.priam.model.domain.fv.EnrichissementLog;
 import fr.sacem.priam.model.domain.fv.StatutEnrichissementFV;
 import fr.sacem.priam.rest.common.api.dto.AffectationCriteria;
 import fr.sacem.priam.rest.common.api.dto.InputChgtCriteria;
@@ -130,4 +131,5 @@ public class ChargementResource {
   public Set<String> getChargementLog(@PathVariable(name = "idFichier") Long idFichier) {
      return fichierService.getChargementLog(idFichier);
   }
+
 }

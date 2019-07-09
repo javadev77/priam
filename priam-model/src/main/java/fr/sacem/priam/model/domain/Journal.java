@@ -1,11 +1,8 @@
 package fr.sacem.priam.model.domain;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import fr.sacem.priam.model.util.CustomDateSerializer;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import fr.sacem.priam.model.util.SimpleDateSerializer;
-
 
 import javax.persistence.*;
 import java.io.Serializable;

@@ -159,8 +159,7 @@
                             cdeFamilTypUtil,cdeTypUtil,numProg,rionEffet,ide12,cdeTypIde12,ide12RepCoad,cdeTypIde12RepCoad,datsitu,datconslt,
                             coad,numPers,numCatal,idSteAd,rolAd,typeDroit,cleAd,cdeTypProtec,coadOriEdtr,idSteOriEdtr,points,
                             NOM_PRG,tax,durDif,nbrDif,typMt,mt,genreOeuvre,titreOeuvre,dureeDeposee,taxOri,
-                            labelValo,paysOri,indicRepart,nom,prenom,indicSacem,SOUS_ROLE,ANNEE_NAISSANCE,ANNEE_DECES,indicDrtPercus
-
+                            labelValo,paysOri,indicRepart,PARTICIPATION_FONDS,nom,prenom,indicSacem,SOUS_ROLE,ANNEE_NAISSANCE,ANNEE_DECES,indicDrtPercus
                         )
                         VALUES (
                             :idFichier,
@@ -198,6 +197,7 @@
                             :labelValo,
                             :paysOri,
                             :indicRepart,
+                            :participantFonds,
                             :nom,
                             :prenom,
                             :indicSacem,

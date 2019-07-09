@@ -1,11 +1,10 @@
 package fr.sacem.priam.batch.fv.octav.rep.listener;
 
+import fr.sacem.priam.batch.common.dao.FichierFVEnrichissementLogDao;
 import fr.sacem.priam.batch.common.dao.FichierJdbcDao;
+import fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementEnum;
 import fr.sacem.priam.batch.common.util.UtilFile;
 import fr.sacem.priam.batch.common.util.exception.PriamValidationException;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.BatchStatus;
@@ -16,9 +15,13 @@ import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.validation.constraints.Null;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Set;
 
-import static fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementEnum.DONE_SRV_INFO_OEUVRE;
+import static fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementEnum.DONE_SRV_OCTAV_CTNU;
+import static fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementEnum.ERROR_SRV_ENRICHISSEMENT;
+import static fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementLogEnum.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -38,6 +41,9 @@ public class JobListener extends JobExecutionListenerSupport {
     @Autowired
     FichierJdbcDao fichierJdbcDao;
 
+    @Autowired
+    FichierFVEnrichissementLogDao fichierFVEnrichissementLogDao;
+
     private ExecutionContext executionContext;
 
     private UtilFile utilFile;
@@ -48,8 +54,7 @@ public class JobListener extends JobExecutionListenerSupport {
 
     @Override
     public void afterJob(JobExecution jobExecution) {
-        Object idFichier = jobExecution.getExecutionContext().get("idFichier");
-
+        Long idFichier = (Long) jobExecution.getExecutionContext().get("idFichier");
         if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
 
             Collection<StepExecution> stepExecutions = jobExecution.getStepExecutions();
@@ -63,7 +68,7 @@ public class JobListener extends JobExecutionListenerSupport {
                     JobParameter outputDirectory = jobExecution.getJobParameters().getParameters().get(REPERTOIRE_DE_DESTINATION);
 
                     utilFile.deplacerFichier(parameterFichierCSVEnCours, parameterNomFichierOriginal, outputDirectory);
-
+                    fichierJdbcDao.majStatutEnrichissement((Long)idFichier, EtapeEnrichissementEnum.DONE_SRV_INFO_OEUVRE.getCode());
                 }
             }
 
@@ -97,12 +102,14 @@ public class JobListener extends JobExecutionListenerSupport {
                 }
                 LOG.info(errors.toString());
                 utilFile.deplacerFichier(parameterFichierCSVEnCours, parameterNomFichierOriginal, outputDirectory);
-                fichierJdbcDao.majStatutEnrichissement((Long) idFichier, null);
+                fichierJdbcDao.majStatutEnrichissement(idFichier, ERROR_SRV_ENRICHISSEMENT.getCode());
+                fichierFVEnrichissementLogDao.enregistrerLog(idFichier, LOG_ERROR_SRV_CTNU.getLibelle());
             }
         }
 
         if (idFichier != null && jobExecution.getStatus() == BatchStatus.COMPLETED) {
-            fichierJdbcDao.majStatutEnrichissement((Long) idFichier, "DONE_SRV_OCTAV_CTNU");
+            fichierJdbcDao.majStatutEnrichissement(idFichier, DONE_SRV_OCTAV_CTNU.getCode());
+            fichierFVEnrichissementLogDao.enregistrerLog(idFichier, LOG_DONE_SRV_CTNU.getLibelle());
         }
     }
 

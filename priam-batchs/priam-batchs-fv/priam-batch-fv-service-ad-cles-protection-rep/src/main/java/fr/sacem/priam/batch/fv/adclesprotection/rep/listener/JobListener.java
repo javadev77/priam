@@ -1,14 +1,9 @@
 package fr.sacem.priam.batch.fv.adclesprotection.rep.listener;
 
+import fr.sacem.priam.batch.common.dao.FichierFVEnrichissementLogDao;
 import fr.sacem.priam.batch.common.dao.FichierJdbcDao;
-import static fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementEnum.DONE_SRV_AD_CLES_PROTECTION;
-import static fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementEnum.DONE_SRV_INFO_OEUVRE;
 import fr.sacem.priam.batch.common.util.UtilFile;
 import fr.sacem.priam.batch.common.util.exception.PriamValidationException;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.BatchStatus;
@@ -18,6 +13,15 @@ import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
+import static fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementEnum.*;
+import static fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementLogEnum.LOG_DONE_SRV_AD_CLE;
+import static fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementLogEnum.LOG_ERROR_SRV_AD_CLE;
 
 /**
  * Created with IntelliJ IDEA.
@@ -36,6 +40,9 @@ public class JobListener extends JobExecutionListenerSupport {
 
     @Autowired
     FichierJdbcDao fichierJdbcDao;
+
+    @Autowired
+    FichierFVEnrichissementLogDao fichierFVEnrichissementLogDao;
 
     private ExecutionContext executionContext;
 
@@ -97,12 +104,14 @@ public class JobListener extends JobExecutionListenerSupport {
                 }
                 LOG.info(errors.toString());
                 utilFile.deplacerFichier(parameterFichierCSVEnCours, parameterNomFichierOriginal, outputDirectory);
-                fichierJdbcDao.majStatutEnrichissement((Long) idFichier, DONE_SRV_INFO_OEUVRE.getCode());
+                fichierJdbcDao.majStatutEnrichissement((Long) idFichier, ERROR_SRV_ENRICHISSEMENT.getCode());
+                fichierFVEnrichissementLogDao.enregistrerLog((Long) idFichier, LOG_ERROR_SRV_AD_CLE.getLibelle());
             }
         }
 
         if (idFichier != null && jobExecution.getStatus() == BatchStatus.COMPLETED) {
             fichierJdbcDao.majStatutEnrichissement((Long) idFichier, DONE_SRV_AD_CLES_PROTECTION.getCode());
+            fichierFVEnrichissementLogDao.enregistrerLog((Long) idFichier, LOG_DONE_SRV_AD_CLE.getLibelle());
         }
     }
 

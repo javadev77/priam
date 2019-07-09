@@ -7,6 +7,7 @@ import fr.sacem.priam.model.dao.jpa.cms.LigneProgrammeCopyCMSDao;
 import fr.sacem.priam.model.dao.jpa.cp.LigneProgrammeCPDao;
 import fr.sacem.priam.model.dao.jpa.cp.LigneProgrammeCopyCPDao;
 import fr.sacem.priam.model.dao.jpa.cp.ProgrammeDao;
+import fr.sacem.priam.model.dao.jpa.fv.EnrichissementLogDao;
 import fr.sacem.priam.model.dao.jpa.fv.LigneProgrammeCopyFVDao;
 import fr.sacem.priam.model.dao.jpa.fv.LigneProgrammeFVDao;
 import fr.sacem.priam.model.domain.Fichier;
@@ -14,12 +15,15 @@ import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.Status;
 import fr.sacem.priam.model.domain.StatutEligibilite;
 import fr.sacem.priam.model.domain.StatutProgramme;
+import fr.sacem.priam.model.domain.fv.EnrichissementLog;
 import fr.sacem.priam.model.util.FamillePriam;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,6 +58,9 @@ public class FichierService {
 
     @Autowired
     LigneProgrammeCopyFVDao ligneProgrammeCopyFVDao;
+
+    @Autowired
+    EnrichissementLogDao enrichissementLogDao;
 
 
     @Transactional(value="transactionManager")
@@ -142,6 +149,17 @@ public class FichierService {
 
     public Set<String> getChargementLog(Long idFichier) {
         return fichierDao.getChargementLog(idFichier);
+    }
+
+    @Transactional(value="transactionManager")
+    public Page<EnrichissementLog> getEnrichissementLog(Long idFichier, Pageable pageable){
+        Page<EnrichissementLog> pageEnrichissementLog = enrichissementLogDao.getEnrichissementLog(idFichier, pageable);
+        return pageEnrichissementLog;
+    }
+
+    @Transactional(value="transactionManager")
+    public void relancerEnrichissement(Long idFichier) {
+        fichierDao.updateStatutEnrichissement(idFichier);
     }
 
 

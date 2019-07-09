@@ -86,6 +86,7 @@
               @load-page="loadPage"
               @on-sort="onSort"
               @show-log="onShowLog"
+              @show-log-enrichissement="onShowEnrichissementLog"
             >
             </priam-grid>
           </div>
@@ -117,6 +118,13 @@
       </app-log-chargement>
     </template>
 
+    <ecran-modal v-if="showLogEnrichissement">
+      <template>
+        <!--<log-enrichissement :idFichier="selectedIdFichier" slot="body" @cancel="closePopupEnrichissementLog"/>-->
+        <log-enrichissement :fichier="fichier" slot="body" @cancel="closePopupEnrichissementLog"/>
+      </template>
+    </ecran-modal>
+
   </div>
 </template>
 
@@ -131,6 +139,8 @@
   import moment from 'moment';
   import LogChargement from './LogChargement.vue';
   import programmeMixin from '../../mixins/programmeMixin';
+  import EcranModal from '../ui/EcranModal.vue';
+  import LogEnrichissement from './LogEnrichissement'
 
   export default {
 
@@ -258,10 +268,15 @@
               cell : {
                 cellTemplate: function (cellValue) {
                   var templateLog = '<span class="glyphicon glyphicon-list-alt" aria-hidden="true" title="Log"></span>';
-                  var template = [];
+                  var templateLogEnrichissement = '<span class="glyphicon glyphicon-th-list" aria-hidden="true" title="LogEnrichissement"></span>';
+                  var template = [{},{}];
 
-                  template.push({event : 'show-log', template : templateLog});
-
+                  //template.push({event : 'show-log', template : templateLog});
+                  template[0] = {event : 'show-log', template : templateLog};
+                  if((cellValue.famille !== undefined && cellValue.typeUtilisation !== undefined && cellValue.statut !== undefined)
+                    && 'FDSVAL'=== cellValue.famille && 'CHARGEMENT_OK'===cellValue.statut && 'FD12'!==cellValue.typeUtilisation && 'FD06'!==cellValue.typeUtilisation) {
+                    template[1] = {event: 'show-log-enrichissement', template: templateLogEnrichissement};
+                  }
 
                   return template;
 
@@ -296,6 +311,11 @@
         },
 
         showLogChargement : false,
+        showLogEnrichissement : false,
+        fichier : {
+          id: '',
+          statutEnrichissementFV:''
+        },
         selectedIdFichier : null,
         hasErrors : false
 
@@ -458,7 +478,18 @@
         this.selectedIdFichier = row.id;
         this.hasErrors = (row.statut === 'CHARGEMENT_KO');
         this.showLogChargement = true;
-      }
+      },
+
+      onShowEnrichissementLog(row, column) {
+        /*this.selectedIdFichier = row.id;*/
+        this.fichier.id = row.id;
+        this.fichier.statutEnrichissementFV = row.statutEnrichissementFV;
+        this.showLogEnrichissement = true;
+      },
+
+      closePopupEnrichissementLog(){
+        this.showLogEnrichissement = false;
+      },
     },
 
     components : {
@@ -466,7 +497,9 @@
         vSelect : vSelect,
         modal : Modal,
         select2: select2,
-        AppLogChargement : LogChargement
+        AppLogChargement : LogChargement,
+        ecranModal : EcranModal,
+        logEnrichissement : LogEnrichissement
     }
 
   }

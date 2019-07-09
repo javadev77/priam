@@ -310,7 +310,6 @@
 
 
         return {
-
             numProgItems : [],
             nomProgItems : [],
             isCollapsed : false,

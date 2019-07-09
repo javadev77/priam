@@ -152,7 +152,7 @@ CREATE VIEW  EXPORT_FV_VIEW AS (
           PAD.NUMPERS, PAD.NUMCATAL, PAD.IDSTEAD, PAD.ROLAD,
           CASE WHEN PP.TYPE_DROIT = 'DE_DR' THEN 'DE/DR'  ELSE PP.TYPE_DROIT END AS typeDroit, PAD.CLEAD, PAD.CDETYPPROTEC, PAD.COADORIEDTR, PAD.IDSTEORIEDTR, FV_CTN.tax, FV_CTN.durDif, FV_CTN.nbrDif,
           FV_CTN.typMt, FV_CTN.mt,
-          FV.genreOeuvre, FV.titreOeuvre, FV.dureeDeposee, FV.taxOri, FV.paysOri, FV.indicRepart, PAD.POINTS, NULL , PP.NOM AS NOM_PRG, PERS.NOM, PERS.PRENOM, PERS.INDICSACEM,
+          FV.genreOeuvre, FV.titreOeuvre, FV.dureeDeposee, FV.taxOri, FV.paysOri, FV.indicRepart, PAD.POINTS, NULL AS PARTICIPATION_FONDS, PP.NOM AS NOM_PRG, PERS.NOM, PERS.PRENOM, PERS.INDICSACEM,
           PERS.SOUS_ROLE, PERS.ANNEE_NAISSANCE, PERS.ANNEE_DECES, PERS.INDICDRTPERCUS
    FROM PRIAM_LIGNE_PROGRAMME_FV FV
           INNER JOIN PRIAM_FICHIER PF on FV.ID_FICHIER = PF.ID
@@ -271,6 +271,7 @@ create table PRIAM_IMPORT_PROGRAMME_FV_DATA_BATCH
 	labelValo varchar(250) null,
 	paysOri int(4) null,
 	indicRepart tinyint(1) null,
+	PARTICIPATION_FONDS varchar(250) null,
 	nom varchar(90) null,
 	prenom varchar(250) null,
 	indicSacem tinyint(1) null,
