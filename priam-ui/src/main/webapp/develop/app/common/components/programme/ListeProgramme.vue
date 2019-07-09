@@ -1324,9 +1324,9 @@
                       })
                       .then(data => {
                           var fichierFelix = data;
-
+                          let number = self.programmesEnCoursTraitement.indexOf(numProg);
                           if(fichierFelix !== undefined && fichierFelix.statut === 'GENERE') {
-                            let number = self.programmesEnCoursTraitement.indexOf(numProg);
+
                             self.programmesEnCoursTraitement.splice(number, 1);
 
                             if(self.modeRepartition === 'REPART_BLANC') {
@@ -1336,16 +1336,15 @@
                             }
                           } else if(fichierFelix.statut === 'EN_ERREUR' ) {
                               clearInterval(self.intervalIDs[numProg]);
+                              self.programmesEnCoursTraitement.splice(number, 1);
                               self.programmesEnErreur.push(numProg);
 
                               if(fichierFelix.logs !== undefined && fichierFelix.logs.length > 0) {
                                 self.fichierFelixErrors = fichierFelix.logs;
-                                self.downloadCsvFile(process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/repartition/downloadFichierFelix',
-                                  {numProg: numProg, tmpFilename : fichierFelix.nomFichier, filename : fichierFelix.nomFichier},
-                                  fichierFelix.nomFichier);
+                                self.downloadCsvFile(process.env.CONTEXT_ROOT_PRIAM_COMMON + 'app/rest/repartition/downloadFichierFelix', {numProg: numProg}, fichierFelix.nomFichier);
                               }
+
                           } else if(fichierFelix.statut === 'ENVOYE' ) {
-                              let number = self.programmesEnCoursTraitement.indexOf(numProg);
                               self.programmesEnCoursTraitement.splice(number, 1);
                               clearInterval(self.intervalIDs[numProg]);
                               self.rechercherProgrammes();
