@@ -1,7 +1,7 @@
 package fr.sacem.priam.batch.felix.validator;
 
+import fr.sacem.priam.batch.felix.domain.FelixData;
 import fr.sacem.priam.common.TypeUtilisationEnum;
-import fr.sacem.priam.model.domain.dto.FelixData;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;

@@ -2,6 +2,10 @@ package fr.sacem.priam.batch.fv.adclesprotection.rep.listener;
 
 import fr.sacem.priam.batch.common.dao.FichierFVEnrichissementLogDao;
 import fr.sacem.priam.batch.common.dao.FichierJdbcDao;
+
+import static fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementEnum.DONE_SRV_AD_CLES_PROTECTION;
+import static fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementEnum.ERROR_SRV_ENRICHISSEMENT;
+
 import fr.sacem.priam.batch.common.util.UtilFile;
 import fr.sacem.priam.batch.common.util.exception.PriamValidationException;
 import org.slf4j.Logger;
@@ -105,7 +109,9 @@ public class JobListener extends JobExecutionListenerSupport {
                 LOG.info(errors.toString());
                 utilFile.deplacerFichier(parameterFichierCSVEnCours, parameterNomFichierOriginal, outputDirectory);
                 fichierJdbcDao.majStatutEnrichissement((Long) idFichier, ERROR_SRV_ENRICHISSEMENT.getCode());
+
                 fichierFVEnrichissementLogDao.enregistrerLog((Long) idFichier, LOG_ERROR_SRV_AD_CLE.getLibelle());
+
             }
         }
 

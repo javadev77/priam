@@ -8,8 +8,6 @@ import fr.sacem.priam.model.domain.FichierFelix;
 import fr.sacem.priam.model.domain.Programme;
 import fr.sacem.priam.model.domain.StatutFichierFelix;
 import fr.sacem.priam.security.model.UserDTO;
-import fr.sacem.priam.services.FelixDataCMSService;
-import fr.sacem.priam.services.FelixDataCPService;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -48,16 +46,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class RepartitionResource {
 
     private static Logger logger = LoggerFactory.getLogger(RepartitionResource.class);
-
-
-
-   @Autowired
-   private FelixDataCPService felixDataCPService;
-
-
-    @Autowired
-    private FelixDataCMSService felixDataCMSService;
-
 
     @Autowired
     private FichierFelixDao fichierFelixDao;
@@ -110,40 +98,20 @@ public class RepartitionResource {
         jobParametersMap.put("userId", new JobParameter(userDTO.getUserId()));
         JobParameters jobParameters = new JobParameters(jobParametersMap);
 
+        launchJobFelixRepart(jobParameters);
+
+        return ResponseEntity.ok().build();
+    }
+
+    protected void launchJobFelixRepart(final JobParameters jobParameters) {
+
+
         try {
             jobLauncher.run(jobFelixRepart, jobParameters);
         } catch (JobExecutionAlreadyRunningException | JobRestartException | JobParametersInvalidException | JobInstanceAlreadyCompleteException e) {
             throw new TechnicalException("Erreur Technique lors du lancement du Job !! ", e);
         }
-
-        return ResponseEntity.ok().build();
     }
-
-
-
-
-    /*@RequestMapping(value = "validateFelixData/{numProg}",
-                  method = RequestMethod.GET,
-                  produces = MediaType.APPLICATION_JSON_VALUE)
-    public ProgrammeDto runAsyncCreateFichierFelix(@PathVariable("numProg") String numProg) throws IOException {
-        FichierFelix ff = fichierFelixDao.findByNumprog(numProg);
-        if(ff != null) {
-          fichierFelixDao.delete(ff);
-          fichierFelixDao.flush();
-        }
-
-        ff = new FichierFelix();
-        ff.setDateCreation(new Date());
-        ff.setStatut(StatutFichierFelix.EN_COURS);
-        ff.setNumProg(numProg);
-        fichierFelixDao.save(ff);
-        fichierFelixDao.flush();
-
-        getFelixDataService(numProg).runAsyncCreateFichierFelix(numProg);
-
-        return new ProgrammeDto();
-    }*/
-
 
     @RequestMapping(value = "fichierfelix/{numProg}",
       method = RequestMethod.GET,
@@ -153,17 +121,7 @@ public class RepartitionResource {
     }
 
 
-   /* @RequestMapping(value = "/downloadFichierFelixError",
-                   method = RequestMethod.POST)
-    public void generateFelixDataWithErrors(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String filename = request.getParameter("filename");
-        String numProg = request.getParameter("numProg");
-
-
-        generateFelixCsvData(response, numProg, filename);
-    }*/
-
-    protected void generateFelixCsvData(HttpServletResponse response, String numProg, String filename) throws IOException {
+   protected void generateFelixCsvData(HttpServletResponse response, String numProg, String filename) throws IOException {
         response.setContentType("text/csv");
         response.setHeader("Content-Disposition", "attachment; filename=" + filename);
 
@@ -191,59 +149,7 @@ public class RepartitionResource {
         if (fichierFelix == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
-        //if(fichierFelix.getLogs() == null || fichierFelix.getLogs().isEmpty()) {
             generateFelixCsvData(response, numProg, fichierFelix.getNomFichier());
-        //}
     }
 
-    /*@RequestMapping(value = "/generateFelixData",
-                    method = RequestMethod.POST,
-                    consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void generateFelixData(@RequestBody ProgrammeDto programme, UserDTO userDto) throws TechnicalException {
-        String numProg = programme.getNumProg();
-        FichierFelix ff = fichierFelixDao.findByNumprog(numProg);
-        if(ff != null) {
-            ff.setStatut(StatutFichierFelix.EN_COURS_ENVOI);
-            fichierFelixDao.save(ff);
-            fichierFelixDao.flush();
-
-        }
-        //getFelixDataService(numProg).asyncSendFichierFelix(programme, userDto);
-        Programme prog = programmeDao.findByNumProg(numProg);
-        launchJobFelixRepart(numProg, userDto.getUserId(), prog.getFamille().getCode());
-
-
-    }
-
-    private void launchJobFelixRepart(String numProg, String userId, final String famille) {
-        //lancer le job
-        logger.info("====== Lancement du job Generation Felix Repart ======");
-
-        try {
-
-            Map<String, JobParameter> jobParametersMap = new HashMap<>();
-            jobParametersMap.put("time", new JobParameter(System.currentTimeMillis()));
-            jobParametersMap.put("numProg", new JobParameter(numProg));
-            jobParametersMap.put("userId", new JobParameter(userId));
-            jobParametersMap.put("famille", new JobParameter(famille));
-
-            JobParameters jobParameters = new JobParameters(jobParametersMap);
-
-            jobLauncher.run(jobFelixRepart, jobParameters);
-
-
-        } catch (Exception e) {
-            logger.error("Error d'exécution du Batch ", e);
-        }
-
-        logger.info("====== Fin de Traitement ======");
-    }
-
-    private FelixDataServiceAbstract getFelixDataService(String numProg) {
-        if (felixDataCPService.getFamilleUtil(numProg).equals("UC")) {
-            return felixDataCMSService;
-        } else {
-            return felixDataCPService;
-        }
-    }*/
 }

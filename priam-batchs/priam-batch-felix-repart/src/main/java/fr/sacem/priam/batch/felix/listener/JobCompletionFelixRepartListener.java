@@ -111,7 +111,7 @@ public class JobCompletionFelixRepartListener extends JobExecutionListenerSuppor
             String felixRepartFilename = jobExecution.getExecutionContext().getString("FELIX_REPART_FILENAME");
             String isError = jobExecution.getExecutionContext().getString("IsError");
             ff.setNomFichier(felixRepartFilename);
-            boolean isErrorValidation = !Boolean.valueOf(isError);
+            boolean isErrorValidation = Boolean.valueOf(isError);
             ff.setStatut(isErrorValidation ? StatutFichierFelix.EN_ERREUR : StatutFichierFelix.GENERE);
             fichierFelixDao.saveAndFlush(ff);
 
@@ -127,11 +127,7 @@ public class JobCompletionFelixRepartListener extends JobExecutionListenerSuppor
                 try {
                     SftpUtil.uploadFile(FELIX, tempFile, felixRepartFilename);
                     LOGGER.info("<=== Fin Envoi du fichier à FELIX = " + felixRepartFilename);
-                } catch (JSchException e) {
-                    processErrorSendFile(numProg, e);
-                } catch (SftpException e) {
-                    processErrorSendFile(numProg, e);
-                } catch (IOException e) {
+                } catch (JSchException | SftpException | IOException e) {
                     processErrorSendFile(numProg, e);
                 }
 
