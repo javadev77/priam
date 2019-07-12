@@ -14,11 +14,13 @@ import fr.sacem.priam.batch.common.util.mapper.importPenef.PriamFileFVItemReader
 import fr.sacem.priam.batch.common.util.mapper.importPenef.PriamLineFVMapper;
 import fr.sacem.priam.batch.fv.octav.info.oeuvre.rep.listener.JobListener;
 
+import fr.sacem.priam.batch.fv.octav.info.oeuvre.rep.processor.InfoOeuvreRepProcessor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 
@@ -72,16 +74,15 @@ public class BatchConfig {
     public Step stepOctavInfosOeuvresREP() {
         return stepBuilderFactory.get("stepOctavInfosOeuvresREP").<LigneProgrammeFV, LigneProgrammeFV>chunk(2000)
                 .reader(multiResourceItemReader())
-                .processor(ligneProgrammeFV -> {
-                    if(Integer.valueOf(ligneProgrammeFV.getStatut()) >= 0){
-                        return ligneProgrammeFV;
-                    }
-                    return null;
-                })
+                .processor(processor())
                 .writer(writer())
                 .build();
     }
 
+    @Bean
+    public InfoOeuvreRepProcessor processor() {
+        return new InfoOeuvreRepProcessor();
+    }
 
     @Bean
     public CsvRepReader<LigneProgrammeFV> multiResourceItemReader(){

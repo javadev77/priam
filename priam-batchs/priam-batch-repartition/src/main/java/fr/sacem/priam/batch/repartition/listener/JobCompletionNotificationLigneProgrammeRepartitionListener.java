@@ -31,7 +31,7 @@ public class JobCompletionNotificationLigneProgrammeRepartitionListener extends 
     private static String NOM_FICHIER_CSV_EN_COURS = "nomFichier";
     private static String FICHIER_CSV_EN_COURS = "fichierCSVEnCours";
     private static String NOM_ORIGINAL_FICHIER_CSV = "nomFichierOriginal";
-    private static String REPERTOIRE_DE_DESTINATION = "output.felix";
+    private static String REPERTOIRE_DE_DESTINATION = "output.archives";
     private static String MESSAGE_ERREUR_TECHNIQUE = "Erreur technique dans l'application priam" ;
     private ExecutionContext executionContext;
     private UtilFile utilFile;

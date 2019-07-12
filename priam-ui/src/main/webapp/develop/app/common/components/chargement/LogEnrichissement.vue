@@ -174,12 +174,11 @@
             /*this.resource.relancerEnrichissement({id : this.idFichier})*/
             this.resource.relancerEnrichissement({id : idFichier})
               .then(response => {
-                return response.json();
+                /// ...
+
               })
-              .then(data => {
-                console.log('data = ' + data);
-
-
+              .catch(error => {
+                  alert("Erreur lors de la relance de l'enrichissment ");
 
               });
           }

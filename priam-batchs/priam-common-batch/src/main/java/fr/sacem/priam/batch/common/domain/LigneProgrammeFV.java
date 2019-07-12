@@ -20,27 +20,22 @@ public class LigneProgrammeFV extends LigneProgramme {
     private String idRevend;
     private String cdeTer;
 
+    private String rionEffet;
+    private String labelValo;
+    private Integer dureeDeposee;
+    private Double taxOri;
+    private Integer indicRepart;
+    private String genreOeuvre;
+    private String paysOri;
+    private String statut;
+
 
     public LigneProgrammeFV() {
     }
 
     public LigneProgrammeFV(PriamValidationException e) {
     }
-    private String rionEffet;
 
-    private String labelValo;
-
-    private Integer dureeDeposee;
-
-    private Double taxOri;
-
-    private Integer indicRepart;
-
-    private String genreOeuvre;
-
-    private String paysOri;
-
-    private String statut;
 
     public String getRionEffet() {
         return rionEffet;
