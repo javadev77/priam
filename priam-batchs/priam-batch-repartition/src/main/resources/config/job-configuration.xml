@@ -46,11 +46,7 @@
 
 
     <bean id="listenerCompletition" class="fr.sacem.priam.batch.repartition.listener.JobCompletionNotificationLigneProgrammeRepartitionListener"/>
-    <!--<bean id="readerPriamCsv"
-          class="fr.sacem.priam.batch.repartition.service.CsvMultiResourceItemReader" scope="step">
-        <property name="delegate" ref="flatFileItemReader"/>
-        <property name="strict" value="false"/>
-    </bean>-->
+
     <bean id="readerPriamCsv"
           class="fr.sacem.priam.batch.common.reader.CsvMultiResourceItemReader" scope="step">
         <property name="delegate" ref="flatFileItemReader"/>

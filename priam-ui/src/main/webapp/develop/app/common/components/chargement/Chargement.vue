@@ -120,8 +120,7 @@
 
     <ecran-modal v-if="showLogEnrichissement">
       <template>
-        <!--<log-enrichissement :idFichier="selectedIdFichier" slot="body" @cancel="closePopupEnrichissementLog"/>-->
-        <log-enrichissement :fichier="fichier" slot="body" @cancel="closePopupEnrichissementLog"/>
+        <log-enrichissement :fichier="fichier" slot="body" @cancel="closePopupEnrichissementLog" @relance="onValidateEcranModal"/>
       </template>
     </ecran-modal>
 
@@ -489,6 +488,12 @@
 
       closePopupEnrichissementLog(){
         this.showLogEnrichissement = false;
+      },
+
+      onValidateEcranModal() {
+        console.log('onValidateEcranModal()')
+        this.closePopupEnrichissementLog();
+        this.rechercher();
       },
     },
 

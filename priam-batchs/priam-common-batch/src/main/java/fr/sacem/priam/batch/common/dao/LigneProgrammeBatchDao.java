@@ -202,10 +202,10 @@ public class LigneProgrammeBatchDao {
         jdbcTemplate.update(sql, idFichier);
     }
 
-    @Transactional(value="transactionManager")
+    //@Transactional(value="transactionManager")
     public void deleteDedoublonnageFVAD(final String numProg) {
 
-        String selectSql = "SELECT l2.id as id " +
+        /*String selectSql = "SELECT l2.id as id " +
             "FROM PRIAM_LIGNE_PROGRAMME_FV l2 " +
             "INNER JOIN PRIAM_FICHIER f ON l2.ID_FICHIER=f.ID " +
             "INNER JOIN PRIAM_PROGRAMME p ON p.NUMPROG=f.NUMPROG "+
@@ -218,7 +218,23 @@ public class LigneProgrammeBatchDao {
             "INNER JOIN PRIAM_PROGRAMME p ON p.NUMPROG=f.NUMPROG " +
             "INNER JOIN PRIAM_AYANT_DROIT ad on l.id = ad.ID_FV "+
             "WHERE p.NUMPROG=? AND p.STATUT_ELIGIBILITE = 'EN_ATTENTE_ELIGIBILITE' "+
-            ") as  temp) ";
+            ") as  temp) ";*/
+
+        String selectSql = "SELECT l2.id as id " +
+                "            FROM PRIAM_LIGNE_PROGRAMME_FV l2 " +
+                "            INNER JOIN PRIAM_FICHIER f ON l2.ID_FICHIER=f.ID " +
+                "            INNER JOIN PRIAM_PROGRAMME p ON p.NUMPROG=f.NUMPROG " +
+                "            WHERE p.NUMPROG=? AND p.STATUT_ELIGIBILITE = 'EN_ATTENTE_ELIGIBILITE' AND l2.isOeuvreComplex = 0 " +
+                "            AND l2.id not IN (SELECT temp.id3 " +
+                "            from ( " +
+                "                   SELECT AD.ID_FV AS id3 " +
+                "                   FROM PRIAM_LIGNE_PROGRAMME_FV FV " +
+                "                          INNER JOIN PRIAM_FICHIER PF ON FV.ID_FICHIER = PF.ID " +
+                "                          INNER JOIN PRIAM_PROGRAMME p ON p.NUMPROG=PF.NUMPROG " +
+                "                          INNER JOIN PRIAM_AYANT_DROIT AD ON FV.id = AD.ID_FV " +
+                "                   WHERE PF.NUMPROG=? AND p.STATUT_ELIGIBILITE = 'EN_ATTENTE_ELIGIBILITE' " +
+                "                   GROUP BY AD.COAD, AD.ROLAD " +
+                "            ) as  temp) ";
 
 
 

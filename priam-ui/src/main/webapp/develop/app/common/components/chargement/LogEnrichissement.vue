@@ -115,7 +115,7 @@
 
       created() {
         const customActions = {
-          findEnrichissementLogByFichier : {method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/enrichissement/fichier/{idFichier}/log?page={page}&size={size}&sort={sort},{dir}'},
+          findEnrichissementLogByFichier : {method : 'GET', url : process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/enrichissement/fichier/{idFichier}/logs?page={page}&size={size}&sort={sort},{dir}'},
           relancerEnrichissement : {method : 'PUT', url : process.env.CONTEXT_ROOT_PRIAM_FV + 'app/rest/enrichissement/fichier/relancer'}
         }
         this.resource = this.$resource('', {}, customActions);
@@ -171,51 +171,15 @@
           this.showModalRelancer = false;
           var idFichier = this.fichier.id;
           if (idFichier != null || idFichier !== "") {
-            /*this.resource.relancerEnrichissement({id : this.idFichier})*/
             this.resource.relancerEnrichissement({id : idFichier})
               .then(response => {
-                return response.json();
+                this.$emit('relance');
               })
-              .then(data => {
-                console.log('data = ' + data);
-
-
-
+              .catch(response => {
+                console.log("Erreur technique lors de la relance de l'enrichissement !! " + response);
               });
           }
-
-          /*const numProgramme = this.$route.params.numProg;
-          if (numProgramme !== null || numProgramme !== "") {
-            this.resource.findFichiersAffecte({numProg: numProgramme})
-              .then(response => {
-                return response.json();
-              })
-              .then(data => {
-                for (let key in data) {
-                  this.fichersAvantDesaffectation.push(data[key].id);
-                }
-                this.fichiersDesaffectes = {
-                  numProg: numProgramme,
-                  allDesaffecte: true,
-                  fichersAvantDesaffectation: this.fichersAvantDesaffectation
-                }
-                this.resource.desaffecterProg(this.fichiersDesaffectes)
-                  .then(response => {
-                    return response.json();
-                  })
-                  .then(data => {
-                    console.log("Déaffactation ok");
-                    this.showModalDesactiver = false;
-                    this.$router.push({name: 'programme'});
-
-                  })
-                  .catch(response => {
-                    console.error(response);
-                    alert("Erreur technique lors de désaffectation des fichiers du programme !! ");
-                  });
-
-              });*/
-          }
+        }
       },
 
       computed :{

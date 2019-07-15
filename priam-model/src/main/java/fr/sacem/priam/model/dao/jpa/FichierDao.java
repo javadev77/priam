@@ -25,7 +25,7 @@ import java.util.Set;
 public interface FichierDao extends JpaRepository<Fichier, Long> {
     
     @Transactional(value="transactionManager",  readOnly = true)
-    @Query("SELECT DISTINCT new fr.sacem.priam.model.domain.dto.FileDto(f.id, f.nomFichier, fam.code, typu.code, f.dateDebutChargt, f.dateFinChargt, f.nbLignes, f.statut) " +
+    @Query("SELECT DISTINCT new fr.sacem.priam.model.domain.dto.FileDto(f.id, f.nomFichier, fam.code, typu.code, f.dateDebutChargt, f.dateFinChargt, f.nbLignes, f.statut, f.statutEnrichissementFV) " +
             "FROM Fichier AS f LEFT JOIN f.famille AS fam LEFT JOIN f.typeUtilisation AS typu " +
             "WHERE f.statut IN (:status) " +
             "AND (fam.code IN (:familleCode) OR fam.code IS NULL) " +
