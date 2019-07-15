@@ -33,16 +33,16 @@ public class FichierEnrichissementResource {
         return fichierService.getEnrichissementLog(idFichier, pageable);
     }
 
-    @RequestMapping(value = "/relancer",
+    @RequestMapping(value = "/{idFichier}",
             method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity relancerEnrichissement(@RequestBody FileDto fileDtoBody) {
         Long idFichier = fileDtoBody.getId();
         try {
             fichierService.relancerEnrichissement(idFichier);
-            return ResponseEntity.ok().build();
-        } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return  ResponseEntity.ok().build();//http = 200
+        }catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); //http 500 Erreur Interne
         }
     }
 

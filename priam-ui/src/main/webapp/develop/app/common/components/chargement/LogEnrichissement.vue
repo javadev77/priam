@@ -173,10 +173,12 @@
           if (idFichier != null || idFichier !== "") {
             this.resource.relancerEnrichissement({id : idFichier})
               .then(response => {
+
                 this.$emit('relance');
               })
               .catch(response => {
                 console.log("Erreur technique lors de la relance de l'enrichissement !! " + response);
+
               });
           }
         }

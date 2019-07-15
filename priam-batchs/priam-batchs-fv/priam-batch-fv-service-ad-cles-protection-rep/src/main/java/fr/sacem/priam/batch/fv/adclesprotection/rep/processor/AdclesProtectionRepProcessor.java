@@ -11,6 +11,8 @@ import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindingResult;
 
 /**
  * Created with IntelliJ IDEA.
@@ -28,31 +30,41 @@ public class AdclesProtectionRepProcessor implements ItemProcessor<OctavDTO, Oct
     @Autowired
     AyanrtDroitPersDao ayanrtDroitPersDao;
 
+    @Autowired
+    AdclesRepValidator validator;
+
     private ExecutionContext jobExecutionContext;
+    private StepExecution stepExecution;
 
     @BeforeStep
     public void beforeStep(StepExecution stepExecution) {
         this.jobExecutionContext = stepExecution.getJobExecution().getExecutionContext();
-
+        this.stepExecution = stepExecution;
     }
 
     @Override
     public OctavDTO process(OctavDTO octavDTO) throws Exception {
-        if(octavDTO != null) {
-            if(octavDTO.getStatut() >= 0 ) {
-                Long idFichier = jobExecutionContext.getLong("idFichier");
-                LigneProgrammeFV oeuvreByIde12 = ligneProgrammeFVDao.findOeuvreByIde12(Long.valueOf(octavDTO.getIde12()), idFichier);
 
-                if(oeuvreByIde12 == null || octavDTO.getCoad() == null) {
-                    return null;
-                }
+        BindingResult errors = new BeanPropertyBindingResult(octavDTO, "octavDTO-" + octavDTO.getLineNumber());
+        validator.validate(octavDTO, errors);
 
-                octavDTO.setIdOeuvreFv(oeuvreByIde12.getId());
-                octavDTO.setNumpersExist(ayanrtDroitPersDao.isNumpersExist(octavDTO.getNumPers()));
+        if (errors.hasErrors()) {
+            stepExecution.getJobExecution().stop();
+            return null;
+        }
+        if (octavDTO.getStatut() >= 0) {
+            Long idFichier = jobExecutionContext.getLong("idFichier");
+            LigneProgrammeFV oeuvreByIde12 = ligneProgrammeFVDao.findOeuvreByIde12(Long.valueOf(octavDTO.getIde12()), idFichier);
 
-                return octavDTO;
-
+            if (oeuvreByIde12 == null || octavDTO.getCoad() == null) {
+                return null;
             }
+
+            octavDTO.setIdOeuvreFv(oeuvreByIde12.getId());
+            octavDTO.setNumpersExist(ayanrtDroitPersDao.isNumpersExist(octavDTO.getNumPers()));
+
+            return octavDTO;
+
         }
 
         return null;

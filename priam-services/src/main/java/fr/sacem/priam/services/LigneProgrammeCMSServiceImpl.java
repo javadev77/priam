@@ -305,11 +305,15 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
             } else {
                 LigneProgrammeCMS oeuvreManuelFound = ligneProgrammeCMSDao.findOeuvreManuelByIde12AndCdeUtil(input.getNumProg(), input.getIde12());
                 if(oeuvreManuelFound != null) {
-                    oeuvreManuelFound.setAjout(MANUEL);
-                    situationAvant.setSituation(getPointsOrMtAsString(programme, oeuvreManuelFound));
-                    updateOeuvre(input, programme, oeuvreManuelFound);
+                    if(!Objects.equals(oeuvreManuelFound.getMtEdit(), input.getMtEdit())) {
+                        oeuvreManuelFound.setAjout(MANUEL);
+                        situationAvant.setSituation(getPointsOrMtAsString(programme, oeuvreManuelFound));
+                        updateOeuvre(input, programme, oeuvreManuelFound);
 
-                    journal.setEvenement(TypeLog.MODIFIER_OEUVRE.getEvenement());
+                        journal.setEvenement(TypeLog.MODIFIER_OEUVRE.getEvenement());
+                    } else {
+                        journal = null;
+                    }
 
                 } else {
                     input.setAjout(MANUEL);
@@ -324,9 +328,11 @@ public class LigneProgrammeCMSServiceImpl implements LigneProgrammeService, Lign
             }
         }
 
-        journal.getListSituationAvant().add(situationAvant);
-        journal.getListSituationApres().add(situationApres);
-        journalDao.saveAndFlush(journal);
+        if(journal != null) {
+            journal.getListSituationAvant().add(situationAvant);
+            journal.getListSituationApres().add(situationApres);
+            journalDao.saveAndFlush(journal);
+        }
 
     }
 
