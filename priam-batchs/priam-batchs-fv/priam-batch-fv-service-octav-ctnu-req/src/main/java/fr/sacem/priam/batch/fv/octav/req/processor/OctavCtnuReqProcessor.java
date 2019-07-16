@@ -25,14 +25,6 @@ public class OctavCtnuReqProcessor implements ItemProcessor<LigneProgrammeFV, Oc
     @Override
     public OctavCtnu process(LigneProgrammeFV oeuvre) throws Exception {
 
-        /*OctavDTO octavDTO = new OctavDTO();
-        octavDTO.setIde12(oeuvre.getIde12());
-        String dateJour = new SimpleDateFormat("yyyyMMdd").format(new Date());
-        octavDTO.setDatConsult(dateJour);
-        octavDTO.setDatSitu(dateJour);
-
-        ligneProgrammeFVDao.majOeuvreWithInfoOctav(octavDTO);
-        oeuvre.setCdeTer("250");*/
         OctavCtnu octavCtnu = new OctavCtnu();
         octavCtnu.setCdeCisac(oeuvre.getCdeCisac());
         octavCtnu.setCdeTer("250");

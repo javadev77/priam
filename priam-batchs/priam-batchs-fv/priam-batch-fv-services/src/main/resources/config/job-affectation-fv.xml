@@ -10,6 +10,7 @@
     <import resource="job-service-export-fv.xml"/>
     <import resource="job-service-import-fv.xml"/>
     <import resource="job-affectation-fv-ad.xml"/>
+    <import resource="job-relance-enrichissement-fv.xml"/>
 
     <!--<context:component-scan base-package="fr.sacem.priam.batch.fv"/>-->
 

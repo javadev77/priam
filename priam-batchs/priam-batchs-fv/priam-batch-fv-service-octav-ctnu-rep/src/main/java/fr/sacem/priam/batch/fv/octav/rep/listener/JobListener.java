@@ -50,6 +50,7 @@ public class JobListener extends JobExecutionListenerSupport {
 
     @Override
     public void beforeJob(final JobExecution jobExecution) {
+        //jobExecution.getExecutionContext().put("NB_IDE12_RECUS", 0);
     }
 
     @Override
@@ -107,10 +108,16 @@ public class JobListener extends JobExecutionListenerSupport {
             }
         }
 
-        if (idFichier != null && jobExecution.getStatus() == BatchStatus.COMPLETED) {
+        if (idFichier != null && jobExecution.getStatus() == BatchStatus.COMPLETED && isAllReceived(jobExecution)) {
             fichierJdbcDao.majStatutEnrichissement(idFichier, DONE_SRV_OCTAV_CTNU.getCode());
             fichierFVEnrichissementLogDao.enregistrerLog(idFichier, LOG_DONE_SRV_CTNU.getLibelle());
         }
+    }
+
+    private boolean isAllReceived(JobExecution jobExecution) {
+        boolean result = false;
+
+        return result;
     }
 
     public void setUtilFile(final UtilFile utilFile) {

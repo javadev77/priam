@@ -1,5 +1,6 @@
 package fr.sacem.priam.batch.fv.octav.req.listener;
 
+import fr.sacem.priam.batch.common.dao.FichierFVEnrichissementEnvoyeDao;
 import fr.sacem.priam.batch.common.dao.FichierFVEnrichissementLogDao;
 import fr.sacem.priam.batch.common.dao.FichierJdbcDao;
 import fr.sacem.priam.batch.common.dao.LigneProgrammeFVDao;
@@ -30,10 +31,14 @@ public class JobListener extends JobExecutionListenerSupport {
     @Autowired
     FichierFVEnrichissementLogDao fichierFVEnrichissementLogDao;
 
+    @Autowired
+    FichierFVEnrichissementEnvoyeDao fichierFVEnrichissementEnvoyeDao;
+
     @Override
     public void beforeJob(final JobExecution jobExecution) {
         Long idFichier = jobExecution.getJobParameters().getLong("idFichier");
         fichierJdbcDao.majStatutEnrichissement(idFichier, TO_SRV_OCTAV_CTNU.getCode());
+        fichierFVEnrichissementEnvoyeDao.supprimerNbIde12Envoye(idFichier, "SRV_OCTAV_CTNU");
     }
 
     @Override
@@ -43,6 +48,9 @@ public class JobListener extends JobExecutionListenerSupport {
             fichierJdbcDao.majStatutEnrichissement(idFichier, IN_SRV_OCTAV_CTNU.getCode());
             ligneProgrammeFVDao.majDateConsultSitu(idFichier);
             fichierFVEnrichissementLogDao.enregistrerLog(idFichier, LOG_IN_SRV_CTNU.getLibelle());
+
+            Long nbIde12Envoye = ligneProgrammeFVDao.countNbLignesOeuvreCtnuByIdFichier(idFichier);
+            fichierFVEnrichissementEnvoyeDao.enregistrerNbIde12Envoye(idFichier, "SRV_OCTAV_CTNU", nbIde12Envoye);
 
         } else if (jobExecution.getStatus() == BatchStatus.FAILED) {
             fichierJdbcDao.majStatutEnrichissement(idFichier, ERROR_SRV_ENRICHISSEMENT.getCode());

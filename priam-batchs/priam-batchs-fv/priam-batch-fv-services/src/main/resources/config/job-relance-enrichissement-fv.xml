@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch.xsd
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <job id="jobRelanceEnrichissementFV" xmlns="http://www.springframework.org/schema/batch">
+        <step id="copyDonneesVersTableFV">
+            <tasklet>
+                <chunk
+                        reader="copyDonneesRelanceEnrichissementReader"
+                        writer="copyDonneesWriter"
+                        commit-interval="${commit-interval}"
+                        retry-limit="10">
+                    <retryable-exception-classes>
+                        <include class="org.springframework.dao.DeadlockLoserDataAccessException"/>
+                        <include class="org.springframework.dao.CannotAcquireLockException"/>
+                    </retryable-exception-classes>
+                </chunk>
+            </tasklet>
+        </step>
+
+        <listeners>
+            <listener ref="listenerJobRelanceEnrichissementFV"/>
+        </listeners>
+    </job>
+
+    <bean id="copyDonneesRelanceEnrichissementReader"
+          class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="queryProvider" ref="queryCopyDonneesRelanceEnrichissementReader"/>
+        <property name="pageSize" value="${commit-interval}"/>
+        <property name="rowMapper" ref="ligneProgrammeRowMapper"/>
+
+    </bean>
+
+    <bean id="queryCopyDonneesRelanceEnrichissementReader" class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean" scope="step">
+        <property name="databaseType" value="MySQL" />
+        <property name="selectClause" value="select l.* "/>
+        <property name="fromClause" value="FROM PRIAM_LIGNE_PROGRAMME_FV_COPY l"/>
+        <property name="whereClause" value="WHERE l.ID_FICHIER='#{jobParameters[idFichier]}'"/>
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sortKey" value="id"/>
+    </bean>
+
+    <bean id="listenerJobRelanceEnrichissementFV" class="fr.sacem.priam.batch.fv.enrichissement.listener.JobRelanceEnrichissementFVListener"/>
+
+
+</beans>
