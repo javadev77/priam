@@ -25,8 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class LigneProgrammeFVDao {
     private static final Logger LOGGER = LoggerFactory.getLogger(LigneProgrammeFVDao.class);
 
-
-
     private JdbcTemplate jdbcTemplate;
 
     public LigneProgrammeFVDao(@Autowired DataSource dataSource) {
@@ -57,7 +55,7 @@ public class LigneProgrammeFVDao {
             "count(l.ID) as NB_LIGNES " +
             "FROM " +
             "PRIAM_LIGNE_PROGRAMME_FV l " +
-            "WHERE l.ID_FICHIER=?";
+            "WHERE l.ID_FICHIER=? AND l.isOeuvreComplex=0";
         return jdbcTemplate.queryForObject(sql, (resultSet, i) -> resultSet.getLong("NB_LIGNES"), idFichier);
     }
 
@@ -71,11 +69,12 @@ public class LigneProgrammeFVDao {
     }
 
     public Long countNbLignesInfosADByIdFichier(Long idFichier){
-        String sql = "SELECT COUNT(AD.NUMPERS) AS NB_LIGNES " +
+        String sql = "SELECT " +
+                "count(*) AS NB_LIGNES FROM (SELECT COUNT(AD.NUMPERS) AS NB_LIGNES " +
                 "FROM PRIAM_AYANT_DROIT AD " +
                 "INNER JOIN PRIAM_LIGNE_PROGRAMME_FV l ON l.ID = AD.ID_FV " +
                 "INNER JOIN PRIAM_FICHIER f ON l.ID_FICHIER = f.ID " +
-                "WHERE f.ID = ?";
+                "WHERE f.ID = ? GROUP BY AD.NUMPERS) AS NB_LIGNES ";
         return jdbcTemplate.queryForObject(sql, (resultSet, i) -> resultSet.getLong("NB_LIGNES"), idFichier);
     }
 

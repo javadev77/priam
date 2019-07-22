@@ -10,8 +10,8 @@ import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementEnum.*;
-import static fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementLogEnum.LOG_ERROR_SRV_CTNU;
-import static fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementLogEnum.LOG_IN_SRV_CTNU;
+import static fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementLogEnum.LOG_ERROR_SRV_OCTAV_CTNU;
+import static fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementLogEnum.LOG_IN_SRV_OCTAV_CTNU;
 
 
 /**
@@ -38,7 +38,7 @@ public class JobListener extends JobExecutionListenerSupport {
     public void beforeJob(final JobExecution jobExecution) {
         Long idFichier = jobExecution.getJobParameters().getLong("idFichier");
         fichierJdbcDao.majStatutEnrichissement(idFichier, TO_SRV_OCTAV_CTNU.getCode());
-        fichierFVEnrichissementEnvoyeDao.supprimerNbIde12Envoye(idFichier, "SRV_OCTAV_CTNU");
+        fichierFVEnrichissementEnvoyeDao.supprimerNbInfoEnvoye(idFichier, "SRV_OCTAV_CTNU");
     }
 
     @Override
@@ -47,14 +47,14 @@ public class JobListener extends JobExecutionListenerSupport {
         if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
             fichierJdbcDao.majStatutEnrichissement(idFichier, IN_SRV_OCTAV_CTNU.getCode());
             ligneProgrammeFVDao.majDateConsultSitu(idFichier);
-            fichierFVEnrichissementLogDao.enregistrerLog(idFichier, LOG_IN_SRV_CTNU.getLibelle());
+            fichierFVEnrichissementLogDao.enregistrerLog(idFichier, LOG_IN_SRV_OCTAV_CTNU.getLibelle());
 
             Long nbIde12Envoye = ligneProgrammeFVDao.countNbLignesOeuvreCtnuByIdFichier(idFichier);
-            fichierFVEnrichissementEnvoyeDao.enregistrerNbIde12Envoye(idFichier, "SRV_OCTAV_CTNU", nbIde12Envoye);
+            fichierFVEnrichissementEnvoyeDao.enregistrerNbInfoEnvoye(idFichier, "SRV_OCTAV_CTNU", nbIde12Envoye);
 
         } else if (jobExecution.getStatus() == BatchStatus.FAILED) {
             fichierJdbcDao.majStatutEnrichissement(idFichier, ERROR_SRV_ENRICHISSEMENT.getCode());
-            fichierFVEnrichissementLogDao.enregistrerLog(idFichier, LOG_ERROR_SRV_CTNU.getLibelle());
+            fichierFVEnrichissementLogDao.enregistrerLog(idFichier, LOG_ERROR_SRV_OCTAV_CTNU.getLibelle());
         }
     }
 }

@@ -23,8 +23,9 @@ public class InfoOeuvreRepValidator implements Validator {
     public void validate(final Object o, final Errors errors) {
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "titreOeuvre", "error.titreOeuvre");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "labelValo", "error.labelValo");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "dureeDeposee", "error.dureeDeposee");
+//        Donnée non obligatoire d'après FRIES
+//        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "labelValo", "error.labelValo");
+//        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "dureeDeposee", "error.dureeDeposee");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "taxOri", "error.taxOri");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "indicRepart", "error.indicRepart");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "genreOeuvre", "error.genreOeuvre");

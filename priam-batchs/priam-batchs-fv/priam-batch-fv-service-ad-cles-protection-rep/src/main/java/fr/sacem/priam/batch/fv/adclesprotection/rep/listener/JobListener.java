@@ -2,6 +2,7 @@ package fr.sacem.priam.batch.fv.adclesprotection.rep.listener;
 
 import fr.sacem.priam.batch.common.dao.FichierFVEnrichissementLogDao;
 import fr.sacem.priam.batch.common.dao.FichierJdbcDao;
+import fr.sacem.priam.batch.common.fv.util.EnrichissementUtils;
 import fr.sacem.priam.batch.common.util.UtilFile;
 import fr.sacem.priam.batch.common.util.exception.PriamValidationException;
 import org.slf4j.Logger;
@@ -21,8 +22,8 @@ import java.util.Set;
 
 import static fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementEnum.DONE_SRV_AD_CLES_PROTECTION;
 import static fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementEnum.ERROR_SRV_ENRICHISSEMENT;
-import static fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementLogEnum.LOG_DONE_SRV_AD_CLE;
-import static fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementLogEnum.LOG_ERROR_SRV_AD_CLE;
+import static fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementLogEnum.LOG_DONE_SRV_AD_CLES_PROTECTION;
+import static fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementLogEnum.LOG_ERROR_SRV_AD_CLES_PROTECTION;
 
 
 
@@ -39,7 +40,7 @@ public class JobListener extends JobExecutionListenerSupport {
     private static final String REPERTOIRE_DE_DESTINATION = "output.archives";
     private static final String MESSAGE_FORMAT_FICHIER = "Le fichier ne peut être chargé car il n'a pas le bon format";
     private static final String MESSAGE_ERREUR_TECHNIQUE = "Erreur technique dans l'application priam" ;
-
+    private static final String SRV_AD_CLES_PROTECTION = "SRV_AD_CLES_PROTECTION";
 
     @Autowired
     FichierJdbcDao fichierJdbcDao;
@@ -47,18 +48,22 @@ public class JobListener extends JobExecutionListenerSupport {
     @Autowired
     FichierFVEnrichissementLogDao fichierFVEnrichissementLogDao;
 
+    @Autowired
+    EnrichissementUtils enrichissementUtils;
+
     private ExecutionContext executionContext;
 
     private UtilFile utilFile;
 
     @Override
     public void beforeJob(final JobExecution jobExecution) {
+        jobExecution.getExecutionContext().putString("SRV", SRV_AD_CLES_PROTECTION);
     }
 
     @Override
     public void afterJob(JobExecution jobExecution) {
         Object idFichier = jobExecution.getExecutionContext().get("idFichier");
-
+        enrichissementUtils.setJobExecution(jobExecution);
         if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
 
             Collection<StepExecution> stepExecutions = jobExecution.getStepExecutions();
@@ -75,7 +80,7 @@ public class JobListener extends JobExecutionListenerSupport {
 
                 }
             }
-
+            enrichissementUtils.checkAllInfosReceived();
         } else {
             Collection<StepExecution> stepExecutions = jobExecution.getStepExecutions();
             Iterator it = stepExecutions.iterator();
@@ -108,26 +113,10 @@ public class JobListener extends JobExecutionListenerSupport {
                             errors.add(MESSAGE_ERREUR_TECHNIQUE);
                         }
                     }
-
-
                     LOG.info(errors.toString());
                 }
-
             }
-
-            if (idFichier != null) {
-                fichierJdbcDao.majStatutEnrichissement((Long) idFichier, ERROR_SRV_ENRICHISSEMENT.getCode());
-
-                fichierFVEnrichissementLogDao.enregistrerLog((Long) idFichier, LOG_ERROR_SRV_AD_CLE.getLibelle());
-
-            }
-
-
-        }
-
-        if (idFichier != null && jobExecution.getStatus() == BatchStatus.COMPLETED) {
-            fichierJdbcDao.majStatutEnrichissement((Long) idFichier, DONE_SRV_AD_CLES_PROTECTION.getCode());
-            fichierFVEnrichissementLogDao.enregistrerLog((Long) idFichier, LOG_DONE_SRV_AD_CLE.getLibelle());
+            enrichissementUtils.majStatutEnrichissementFichier(true);
         }
     }
 

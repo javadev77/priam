@@ -23,10 +23,11 @@ public class AdInfoRepValidator implements Validator {
     public void validate(final Object o, final Errors errors) {
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "nom", "error.nom");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "prenom", "error.prenom");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "anneeNaissance", "error.anneeNaissance");
+//        Donnée non obligatoire d'après FRIES car pour les Editeurs donnees non remplies
+//        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "prenom", "error.prenom");
+//        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "anneeNaissance", "error.anneeNaissance");
+//        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "sousRole", "error.sousRole");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "indicSacem", "error.indicSacem");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "sousRole", "error.sousRole");
 
     }
 }

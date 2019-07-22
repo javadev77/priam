@@ -26,7 +26,7 @@ public class InfoOeuvreReqReader extends JdbcPagingItemReader<LigneProgrammeFV> 
         sqlPagingQueryProviderFactoryBean.setDataSource(dataSource);
         sqlPagingQueryProviderFactoryBean.setSelectClause("SELECT l.*");
         sqlPagingQueryProviderFactoryBean.setFromClause("FROM PRIAM_LIGNE_PROGRAMME_FV l INNER JOIN PRIAM_FICHIER f ON l.ID_FICHIER=f.ID");
-        sqlPagingQueryProviderFactoryBean.setWhereClause("WHERE f.ID = " + idFichier );
+        sqlPagingQueryProviderFactoryBean.setWhereClause("WHERE f.ID = " + idFichier + " AND l.isOeuvreComplex = 0");
         sqlPagingQueryProviderFactoryBean.setGroupClause("l.ide12");
         sqlPagingQueryProviderFactoryBean.setSortKey("id");
 

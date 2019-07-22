@@ -1,6 +1,7 @@
 package fr.sacem.priam.batch.common.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
@@ -20,20 +21,20 @@ public class FichierFVEnrichissementEnvoyeDao {
     }
 
     @Transactional(value="transactionManager")
-    public Long getNbIde12Envoye(Long idFichier, String service){
-        String sql = "SELECT NB_IDE12_ENVOYE FROM PRIAM_FICHIER_FV_ENRICHISSEMENT_ENVOYE WHERE ID_FICHIER=? AND SERVICE=?";
+    public Long getNbInfosEnvoye(Long idFichier, String service) throws EmptyResultDataAccessException {
+        String sql = "SELECT NB_INFO_ENVOYE FROM PRIAM_FICHIER_FV_ENRICHISSEMENT_ENVOYE WHERE ID_FICHIER=? AND SERVICE=?";
         return jdbcTemplate.queryForObject(sql, Long.class, idFichier, service);
     }
 
     @Transactional(value="transactionManager")
-    public Long enregistrerNbIde12Envoye(Long idFichier, String service, Long nbIde12Envoye) {
-        String sql = "INSERT INTO PRIAM_FICHIER_FV_ENRICHISSEMENT_ENVOYE (ID_FICHIER, SERVICE, NB_IDE12_ENVOYE) VALUES(?,?,?)";
+    public Long enregistrerNbInfoEnvoye(Long idFichier, String service, Long nbInfoEnvoye) {
+        String sql = "INSERT INTO PRIAM_FICHIER_FV_ENRICHISSEMENT_ENVOYE (ID_FICHIER, SERVICE, NB_INFO_ENVOYE) VALUES(?,?,?)";
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             stmt.setLong(1, idFichier);
             stmt.setString(2, service);
-            stmt.setLong(3, nbIde12Envoye);
+            stmt.setLong(3, nbInfoEnvoye);
             return stmt;
         }, keyHolder);
 
@@ -42,7 +43,7 @@ public class FichierFVEnrichissementEnvoyeDao {
     }
 
     @Transactional(value="transactionManager")
-    public void supprimerNbIde12Envoye(Long idFichier, String service){
+    public void supprimerNbInfoEnvoye(Long idFichier, String service){
         if(idFichier != null) {
             String deleteSql = "DELETE FROM PRIAM_FICHIER_FV_ENRICHISSEMENT_ENVOYE WHERE ID_FICHIER=? AND SERVICE=?";
             jdbcTemplate.update(deleteSql, preparedStatement -> {

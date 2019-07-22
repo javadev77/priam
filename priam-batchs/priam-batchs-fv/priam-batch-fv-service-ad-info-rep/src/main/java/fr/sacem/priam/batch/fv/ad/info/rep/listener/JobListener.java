@@ -4,8 +4,10 @@ import fr.sacem.priam.batch.common.dao.FichierFVEnrichissementLogDao;
 import fr.sacem.priam.batch.common.dao.FichierJdbcDao;
 import static fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementEnum.DONE_SRV_AD_INFO;
 import static fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementEnum.ERROR_SRV_ENRICHISSEMENT;
-import static fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementLogEnum.LOG_DONE_SRV_AD_INFOS;
-import static fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementLogEnum.LOG_ERROR_SRV_AD_INFOS;
+import static fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementLogEnum.LOG_DONE_SRV_AD_INFO;
+import static fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementLogEnum.LOG_ERROR_SRV_AD_INFO;
+
+import fr.sacem.priam.batch.common.fv.util.EnrichissementUtils;
 import fr.sacem.priam.batch.common.util.UtilFile;
 import fr.sacem.priam.batch.common.util.exception.PriamValidationException;
 import java.util.Collection;
@@ -34,6 +36,7 @@ public class JobListener extends JobExecutionListenerSupport {
     private static String REPERTOIRE_DE_DESTINATION = "output.archives";
     public static final String MESSAGE_FORMAT_FICHIER = "Le fichier ne peut être chargé car il n'a pas le bon format";
     private static String MESSAGE_ERREUR_TECHNIQUE = "Erreur technique dans l'application priam" ;
+    private static final String SRV_AD_INFO = "SRV_AD_INFO";
     private ExecutionContext executionContext;
 
     private UtilFile utilFile;
@@ -49,9 +52,18 @@ public class JobListener extends JobExecutionListenerSupport {
         this.utilFile = utilFile;
     }
 
+    @Autowired
+    EnrichissementUtils enrichissementUtils;
+
+    @Override
+    public void beforeJob(JobExecution jobExecution) {
+        jobExecution.getExecutionContext().putString("SRV", SRV_AD_INFO);
+    }
+
     @Override
     public void afterJob(JobExecution jobExecution) {
         Object o = jobExecution.getExecutionContext().get("idFichier");
+        enrichissementUtils.setJobExecution(jobExecution);
         Long idFichier = o != null ? (Long)o : null;
         if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
             Collection<StepExecution> stepExecutions = jobExecution.getStepExecutions();
@@ -66,10 +78,11 @@ public class JobListener extends JobExecutionListenerSupport {
                     utilFile.deplacerFichier(parameterFichierCSVEnCours, parameterNomFichierOriginal, outputDirectory);
                     if(idFichier!=null){
                         fichierJdbcDao.majStatutEnrichissement(idFichier, DONE_SRV_AD_INFO.getCode());
-                        fichierFVEnrichissementLogDao.enregistrerLog(idFichier, LOG_DONE_SRV_AD_INFOS.getLibelle());
+                        fichierFVEnrichissementLogDao.enregistrerLog(idFichier, LOG_DONE_SRV_AD_INFO.getLibelle());
                     }
                 }
             }
+            enrichissementUtils.checkAllInfosReceived();
         } else {
             Collection<StepExecution> stepExecutions = jobExecution.getStepExecutions();
             Iterator it = stepExecutions.iterator();
@@ -100,12 +113,7 @@ public class JobListener extends JobExecutionListenerSupport {
                 }
                 LOGGER.info(errors.toString());
                 utilFile.deplacerFichier(parameterFichierCSVEnCours, parameterNomFichierOriginal, outputDirectory);
-
-                if(idFichier != null) {
-                    fichierJdbcDao.majStatutEnrichissement(idFichier, ERROR_SRV_ENRICHISSEMENT.getCode());
-                    fichierFVEnrichissementLogDao.enregistrerLog(idFichier, LOG_ERROR_SRV_AD_INFOS.getLibelle());
-                }
-
+                enrichissementUtils.majStatutEnrichissementFichier(true);
             }
         }
     }

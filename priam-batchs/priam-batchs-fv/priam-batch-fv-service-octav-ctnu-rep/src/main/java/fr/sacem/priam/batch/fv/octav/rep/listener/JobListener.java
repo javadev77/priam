@@ -2,7 +2,7 @@ package fr.sacem.priam.batch.fv.octav.rep.listener;
 
 import fr.sacem.priam.batch.common.dao.FichierFVEnrichissementLogDao;
 import fr.sacem.priam.batch.common.dao.FichierJdbcDao;
-import fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementEnum;
+import fr.sacem.priam.batch.common.fv.util.EnrichissementUtils;
 import fr.sacem.priam.batch.common.util.UtilFile;
 import fr.sacem.priam.batch.common.util.exception.PriamValidationException;
 import org.slf4j.Logger;
@@ -19,10 +19,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 
-import static fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementEnum.DONE_SRV_OCTAV_CTNU;
-import static fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementEnum.ERROR_SRV_ENRICHISSEMENT;
-import static fr.sacem.priam.batch.common.fv.util.EtapeEnrichissementLogEnum.*;
-
 /**
  * Created with IntelliJ IDEA.
  * @version $Id$
@@ -36,7 +32,7 @@ public class JobListener extends JobExecutionListenerSupport {
     private static String REPERTOIRE_DE_DESTINATION = "output.archives";
     private static final String MESSAGE_FORMAT_FICHIER = "Le fichier ne peut être chargé car il n'a pas le bon format";
     private static String MESSAGE_ERREUR_TECHNIQUE = "Erreur technique dans l'application priam" ;
-
+    private static String SRV_OCTAV_CTNU = "SRV_OCTAV_CTNU";
 
     @Autowired
     FichierJdbcDao fichierJdbcDao;
@@ -44,18 +40,22 @@ public class JobListener extends JobExecutionListenerSupport {
     @Autowired
     FichierFVEnrichissementLogDao fichierFVEnrichissementLogDao;
 
+    @Autowired
+    EnrichissementUtils enrichissementUtils;
+
     private ExecutionContext executionContext;
 
     private UtilFile utilFile;
 
     @Override
     public void beforeJob(final JobExecution jobExecution) {
-        //jobExecution.getExecutionContext().put("NB_IDE12_RECUS", 0);
+        jobExecution.getExecutionContext().putString("SRV", SRV_OCTAV_CTNU);
     }
 
     @Override
     public void afterJob(JobExecution jobExecution) {
         Long idFichier = (Long) jobExecution.getExecutionContext().get("idFichier");
+        enrichissementUtils.setJobExecution(jobExecution);
         if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
 
             Collection<StepExecution> stepExecutions = jobExecution.getStepExecutions();
@@ -69,10 +69,9 @@ public class JobListener extends JobExecutionListenerSupport {
                     JobParameter outputDirectory = jobExecution.getJobParameters().getParameters().get(REPERTOIRE_DE_DESTINATION);
 
                     utilFile.deplacerFichier(parameterFichierCSVEnCours, parameterNomFichierOriginal, outputDirectory);
-                    fichierJdbcDao.majStatutEnrichissement((Long)idFichier, EtapeEnrichissementEnum.DONE_SRV_INFO_OEUVRE.getCode());
                 }
             }
-
+            enrichissementUtils.checkAllInfosReceived();
         } else {
             Collection<StepExecution> stepExecutions = jobExecution.getStepExecutions();
             Iterator it = stepExecutions.iterator();
@@ -103,22 +102,11 @@ public class JobListener extends JobExecutionListenerSupport {
                 }
                 LOG.info(errors.toString());
                 utilFile.deplacerFichier(parameterFichierCSVEnCours, parameterNomFichierOriginal, outputDirectory);
-                fichierJdbcDao.majStatutEnrichissement(idFichier, ERROR_SRV_ENRICHISSEMENT.getCode());
-                fichierFVEnrichissementLogDao.enregistrerLog(idFichier, LOG_ERROR_SRV_CTNU.getLibelle());
+                enrichissementUtils.majStatutEnrichissementFichier(true);
             }
         }
-
-        if (idFichier != null && jobExecution.getStatus() == BatchStatus.COMPLETED && isAllReceived(jobExecution)) {
-            fichierJdbcDao.majStatutEnrichissement(idFichier, DONE_SRV_OCTAV_CTNU.getCode());
-            fichierFVEnrichissementLogDao.enregistrerLog(idFichier, LOG_DONE_SRV_CTNU.getLibelle());
-        }
     }
 
-    private boolean isAllReceived(JobExecution jobExecution) {
-        boolean result = false;
-
-        return result;
-    }
 
     public void setUtilFile(final UtilFile utilFile) {
         this.utilFile = utilFile;

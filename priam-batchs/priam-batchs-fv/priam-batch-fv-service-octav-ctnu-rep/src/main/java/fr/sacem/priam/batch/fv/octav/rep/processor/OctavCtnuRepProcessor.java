@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 
+import static fr.sacem.priam.batch.common.fv.util.EnrichissementUtils.NB_INFOS_RECUS;
+
 /**
  * Created with IntelliJ IDEA.
  * @author Yegor Bugayenko (yegor@tpc2.com)
@@ -25,6 +27,7 @@ import org.springframework.validation.BindingResult;
 public class OctavCtnuRepProcessor implements ItemProcessor<OctavCtnu, LigneProgrammeFV> {
 
     private static String INDICATEUR_COMPLEXE_CTNU = "O";
+
 
     @Autowired
     LigneProgrammeFVDao ligneProgrammeFVDao;
@@ -41,13 +44,14 @@ public class OctavCtnuRepProcessor implements ItemProcessor<OctavCtnu, LigneProg
     public void beforeStep(StepExecution stepExecution) {
         this.jobExecutionContext = stepExecution.getJobExecution().getExecutionContext();
         this.stepExecution = stepExecution;
+        this.jobExecutionContext.putLong(NB_INFOS_RECUS, 0);
     }
 
     @Override
     public LigneProgrammeFV process(OctavCtnu octavCtnu) throws Exception {
         if(octavCtnu != null) {
             ide12Recus.add(Long.valueOf(octavCtnu.getIde12()));
-            jobExecutionContext.putInt("NB_IDE12_RECUS", ide12Recus.size());
+            jobExecutionContext.putLong(NB_INFOS_RECUS, ide12Recus.size());
             BindingResult errors = new BeanPropertyBindingResult(octavCtnu, "octavCtnu-"+ octavCtnu.getLineNumber());
 
             if(!INDICATEUR_COMPLEXE_CTNU.equals(octavCtnu.getIndCmplxCtnu())) {

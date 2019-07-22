@@ -14,6 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+import static fr.sacem.priam.batch.common.fv.util.EnrichissementUtils.NB_INFOS_RECUS;
+
 /**
  * Created with IntelliJ IDEA.
  * @author Yegor Bugayenko (yegor@tpc2.com)
@@ -36,15 +41,19 @@ public class AdclesProtectionRepProcessor implements ItemProcessor<OctavDTO, Oct
     private ExecutionContext jobExecutionContext;
     private StepExecution stepExecution;
 
+    private static Set<Long> ide12Recus = new LinkedHashSet<>();
+
     @BeforeStep
     public void beforeStep(StepExecution stepExecution) {
         this.jobExecutionContext = stepExecution.getJobExecution().getExecutionContext();
         this.stepExecution = stepExecution;
+        this.jobExecutionContext.putLong(NB_INFOS_RECUS, 0);
     }
 
     @Override
     public OctavDTO process(OctavDTO octavDTO) throws Exception {
-
+        ide12Recus.add(Long.valueOf(octavDTO.getIde12()));
+        jobExecutionContext.putLong(NB_INFOS_RECUS, ide12Recus.size());
         BindingResult errors = new BeanPropertyBindingResult(octavDTO, "octavDTO-" + octavDTO.getLineNumber());
         validator.validate(octavDTO, errors);
 
