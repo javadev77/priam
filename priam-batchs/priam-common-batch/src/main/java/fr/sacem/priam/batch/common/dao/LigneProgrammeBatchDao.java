@@ -187,7 +187,6 @@ public class LigneProgrammeBatchDao {
         deleteDonneesLigneProg(idFichier, "PRIAM_LIGNE_PROGRAMME_CP");
     }
 
-    @Transactional(value="transactionManager")
     public void deleteDonneesLigneFV(Long idFichier) {
 
         jdbcTemplate.update("DELETE FROM PRIAM_AYANT_DROIT WHERE ID_FV IN (" +

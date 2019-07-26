@@ -39,7 +39,7 @@ public class RepartitionItemProcessor implements ItemProcessor<Repartition, Repa
     }
 
     @Override
-    public Repartition process(final Repartition repartition) throws Exception {
+    public Repartition process(Repartition repartition) throws Exception {
 
         Set<String> errorSet = (Set<String>) executionContext.get(REPARTITION_ERRORS);
 

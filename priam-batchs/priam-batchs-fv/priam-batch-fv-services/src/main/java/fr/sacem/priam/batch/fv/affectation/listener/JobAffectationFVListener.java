@@ -57,16 +57,6 @@ public class JobAffectationFVListener extends JobExecutionListenerSupport {
         utilFile = new UtilFile();
     }
 
-    @Override
-    public void beforeJob(JobExecution jobExecution) {
-
-        String numProg = jobExecution.getJobParameters().getString("numProg");
-        String[] fichiersAffectes = jobExecution.getJobParameters().getString("fichiersAffectes").split(",");
-        List<Long> fichiersAffectesIds = Stream.of(fichiersAffectes).map(Long::parseLong).collect(Collectors.toList());
-        List<Fichier> listFichiersByIds = fichierService.findListFichiersByIds(fichiersAffectesIds);
-        String userId = jobExecution.getJobParameters().getString("userId");
-        fichierService.majFichiersAffectesAuProgramme(numProg, listFichiersByIds, userId);
-    }
 
     @Override
     public void afterJob(JobExecution jobExecution) {

@@ -41,7 +41,7 @@ public class ListnerDeleteAfterDedoublonnageFV extends StepExecutionListenerSupp
         String userId = stepExecution.getJobParameters().getString("userId");
         fichierService.majFichiersAffectesAuProgramme(numProg, listFichiersByIds, userId);
 
-        /*ayantDroitDao.deleteDedoublonnageTableAD(numProg);*/
+
     }
 
     @Override
@@ -53,7 +53,6 @@ public class ListnerDeleteAfterDedoublonnageFV extends StepExecutionListenerSupp
             this.ligneProgrammeBatchDao.deleteDedoublonnageFVOeuvre(numProg);
         } else {
             ayantDroitDao.deleteDedoublonnageTableAD(numProg);
-            /*this.ligneProgrammeBatchDao.deleteDedoublonnageFVAD(numProg);*/
             this.ligneProgrammeBatchDao.deleteDedoublonnageFVOeuvre(numProg);
         }
         return stepExecution.getExitStatus();

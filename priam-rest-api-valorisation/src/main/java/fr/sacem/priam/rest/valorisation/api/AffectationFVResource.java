@@ -125,7 +125,7 @@ public class AffectationFVResource extends AffectationResource {
 
     private void launchJobAffectation(String numProg, List<Fichier> fichiers, UserDTO userDTO, String listNomFichiersAvantAffectation) {
         //lancer le job
-        LOGGER.info("====== Lancement du job Affectation CP ======");
+        LOGGER.info("====== Lancement du job Affectation FV ======");
 
         try {
 

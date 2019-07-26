@@ -1153,8 +1153,8 @@
       },
 
       countPointsSelection: function (newValue) {
-        console.log("Points sélection a cahnge " + newValue);
-        this.dureeSelection.duree = newValue;
+        console.log("Points sélection a change " + newValue);
+        //this.dureeSelection.duree = newValue;
       }
 
     },

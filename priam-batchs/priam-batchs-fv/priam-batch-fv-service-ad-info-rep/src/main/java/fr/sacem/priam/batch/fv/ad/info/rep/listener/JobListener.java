@@ -76,10 +76,10 @@ public class JobListener extends JobExecutionListenerSupport {
                     JobParameter parameterNomFichierOriginal = (JobParameter) executionContext.get(NOM_ORIGINAL_FICHIER_CSV);
                     JobParameter outputDirectory = jobExecution.getJobParameters().getParameters().get(REPERTOIRE_DE_DESTINATION);
                     utilFile.deplacerFichier(parameterFichierCSVEnCours, parameterNomFichierOriginal, outputDirectory);
-                    if(idFichier!=null){
+                    /*if(idFichier!=null){
                         fichierJdbcDao.majStatutEnrichissement(idFichier, DONE_SRV_AD_INFO.getCode());
                         fichierFVEnrichissementLogDao.enregistrerLog(idFichier, LOG_DONE_SRV_AD_INFO.getLibelle());
-                    }
+                    }*/
                 }
             }
             enrichissementUtils.checkAllInfosReceived();
