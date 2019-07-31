@@ -271,7 +271,6 @@ public class ProgrammeService {
 	}
 
 	@Transactional
-	@LogEtatProgramme(event = TypeLog.REPARTITION)
 	public void majStatutToMisEnRepartition(ProgrammeDto programmeDTO, UserDTO userDTO) {
 		Programme prog = programmeDao.findOne(programmeDTO.getNumProg());
 		prog.setStatut(programmeDTO.getStatut());
