@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:util="http://www.springframework.org/schema/util"
        xmlns:p="http://www.springframework.org/schema/p"
        xsi:schemaLocation="http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch.xsd
-		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <!--<context:property-placeholder location="classpath:config/application-local.properties"/>
     <util:properties id="envProperties"
@@ -20,29 +16,14 @@
     </bean>
     <job id="csvArchiveFlatFileReaderJob" xmlns="http://www.springframework.org/schema/batch">
 
-        <step id="csvArchiveFlatFileReaderStep" next="decisionMajReferentiel">
+        <!--<step id="csvArchiveFlatFileReaderStep" next="decisionMajReferentiel">-->
+        <step id="csvArchiveFlatFileReaderStep">
             <tasklet>
                 <chunk
                         reader="readerPriamCsv"
                         processor="repartitionItemProcessor"
                         writer="writerPriamCsv"
                         commit-interval="${commit-interval}">
-                </chunk>
-            </tasklet>
-        </step>
-        <decision id="decisionMajReferentiel" decider="decider">
-            <next on="MAJ_REFERENTIEL" to="stepMajReferentiel" />
-            <fail on="FAILED"/>
-            <end on="COMPLETED"/>
-        </decision>
-        <step id="stepMajReferentiel">
-            <tasklet>
-                <chunk
-                        reader="majReferentielReader"
-                        processor="majReferentielProcessor"
-                        writer="classifierReferencielItemWriter"
-                        commit-interval="100">
-
                 </chunk>
             </tasklet>
         </step>
@@ -112,7 +93,7 @@
         </property>
     </bean>
 
-    <bean id="decider" class="fr.sacem.priam.batch.repartition.fv.decision.FlowDecision"/>
+    <!--<bean id="decider" class="fr.sacem.priam.batch.repartition.fv.decision.FlowDecision"/>
 
     <bean id="majReferentielReader"
           class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
@@ -187,13 +168,17 @@
         <property name="itemSqlParameterSourceProvider">
             <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
         </property>
-    </bean>
+    </bean>-->
 
     <bean id="referentielParticipationMapper" class="fr.sacem.priam.batch.repartition.fv.mapper.ReferentielParticipationMapper"/>
 
     <bean id="programmeBatchDao" class="fr.sacem.priam.batch.common.dao.ProgrammeBatchDao" >
         <property name="dataSource" ref="dataSource"/>
         <property name="nomTableLigneProgramme" value="${nom.table.ligneprogramme}"/>
+    </bean>
+
+    <bean id="journalBatchDao" class="fr.sacem.priam.model.dao.jpa.JournalBatchDao">
+        <property name="dataSource" ref="dataSource"/>
     </bean>
 
     <bean id="jobOperator" class="org.springframework.batch.core.launch.support.SimpleJobOperator"
