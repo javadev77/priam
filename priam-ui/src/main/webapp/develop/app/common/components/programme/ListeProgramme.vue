@@ -367,6 +367,8 @@
                 statutCode : ['EN_COURS', 'AFFECTE', 'CREE', 'VALIDE', 'MIS_EN_REPART', 'EN_COURS_MISE_EN_REPART']
             },
 
+          lastRionPaiement : null,
+
 
             priamGrid : {
 
@@ -676,7 +678,8 @@
                       var tempalteRepartABlanc = '<img src="static/images/iconescontextes/transfertgestionnaire.gif" title="Mise en répartition" width="20px"/>';
                       var statusCode = cellValue.statut;
                       var template = [];
-                      if(statusCode !== undefined && 'VALIDE' === statusCode) {
+                      debugger
+                      if(statusCode !== undefined && 'VALIDE' === statusCode && getters.rionsAddProg[0].id == cellValue.rionTheorique) {
                         template.push({event : 'mise-en-repart', template : tempalteRepartABlanc});
                         return template;
                       }
